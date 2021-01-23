@@ -1,0 +1,19 @@
+{
+    "breadcrumbs.symbolSortOrder": "type",
+    "editor.minimap.enabled": false,
+    "editor.rulers": [
+        80,
+        100,
+        120
+    ],
+    "editor.showFoldingControls": "always",
+    "terminal.integrated.scrollback": 999999,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.editor.limit.enabled": true,
+    "workbench.editor.limit.perEditorGroup": true,
+    "workbench.editor.limit.value": 1,
+    "workbench.statusBar.visible": true,
+    "workbench.tree.indent": 22,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.view.alwaysShowHeaderActions": true,
+}

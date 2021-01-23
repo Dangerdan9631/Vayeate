@@ -1,0 +1,21 @@
+{
+    "name": "vayeate",
+    "displayName": "Vayeate",
+    "description": "",
+    "version": "1.0.0",
+    "engines": {
+        "vscode": "^1.52.0"
+    },
+    "categories": [
+        "Themes"
+    ],
+    "contributes": {
+        "themes": [
+            {
+                "label": "Vayeate",
+                "uiTheme": "vs-dark",
+                "path": "./themes/vayeate-color-theme.json"
+            }
+        ]
+    }
+}
