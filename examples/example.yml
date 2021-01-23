@@ -20,7 +20,7 @@ clients:
     email: 'kirstensellers@emergent.com'
     phone: '+1 (831) 564-2190'
     address: 886 Gallatin Place, Fannett, Arkansas, 4656
-	  
+
   - id: 59761c23fcb6254b1a06dad5
     isActive: true
     age: 30
