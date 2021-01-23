@@ -1,0 +1,52 @@
+{
+    "psi-header.config": {
+        "forceToTop": true,
+        "company": "[COMPANY NAME]" // Replace this with your [COMPANY NAME].
+    },
+    "psi-header.changes-tracking": {
+        "isActive": true,
+        "autoHeader": "autoSave",
+        "enforceHeader": true,
+        "exclude": [
+            "json",
+            "jsonc",
+            "markdown"
+        ]
+    },
+    "psi-header.lang-config": [
+        {
+            "language": "csharp",
+            "begin": "// -----------------------------------------------------------------------------",
+            "prefix":"//",
+            "end": "// -----------------------------------------------------------------------------",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "xml",
+            "begin": "<!--",
+            "prefix": "",
+            "end": "-->",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "t4",
+            "begin": "<# // --------------------------------------------------------------------------",
+            "prefix": "   //",
+            "end": "   // ---------------------------------------------------------------------- #>",
+            "blankLinesAfter": 1
+        }
+    ],
+    "psi-header.templates": [
+        {
+            "language": "*",
+             // Replace the [LICENSE URL] below.
+            "template": [
+                "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
+                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
+                "      Licensed under the MIT License.",
+                "      See [LICENSE URL] for full license information.",
+                "  </copyright>"
+            ]
+        }
+    ]
+}
