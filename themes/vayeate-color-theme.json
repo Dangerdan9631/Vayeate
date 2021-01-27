@@ -218,16 +218,18 @@
             "scope": [
                 "entity.name",
                 "meta.use.rust",
+                "punctuation.accessor",
                 "punctuation.brackets",
                 "punctuation.comma",
                 "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
                 "punctuation.parenthesis",
                 "punctuation.squarebracket",
-                "punctuation.accessor",
+                "punctuation.section",
                 "punctuation.semi",
                 "punctuation.separator",
                 "punctuation.terminator",
-                "punctuation.definition.typeparameters",
                 "source",
             ],
             "settings": {
@@ -274,7 +276,9 @@
             "scope": [
                 "meta.attribute",
                 "meta.attribute keyword",
-                "meta.attribute punctuation.brackets"
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation",
             ],
             "settings": {
                 "foreground": "#bea73c"
@@ -297,6 +301,8 @@
             "scope": [
                 "entity.name.type.class",
                 "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.other.inherited-class",
                 "storage.type",
                 "variable.other.object",
             ],
@@ -317,6 +323,8 @@
             "name": "Constant",
             "scope": [
                 "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum",
             ],
             "settings": {
                 "foreground": "#c589e7"
@@ -327,6 +335,7 @@
             "scope": [
                 "entity.name.variable.field",
                 "variable.other",
+                "source.powershell support.variable",
             ],
             "settings": {
                 "foreground": "#db9052"
@@ -338,6 +347,7 @@
                 "entity.name.function",
                 "entity.name.variable.property",
                 "variable.other.object.property",
+                "source.powershell support.function"
             ],
             "settings": {
                 "foreground": "#fc7676"
@@ -349,6 +359,8 @@
                 "variable.parameter",
                 "entity.name.variable.parameter",
                 "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
             ],
             "settings": {
                 "foreground": "#bea73c"
@@ -634,6 +646,7 @@
             "namespace": "#9faab6",
             "operator": "#9faab6",
             "punctuation": "#9faab6",
+            "variable": "#9faab6",
 
         "comment":"#486e4b",
         "string":"#6fad6e",
@@ -649,9 +662,11 @@
         "constant": "#c589e7",
             "enumMember": "#c589e7",
             "variable.static.readonly":"#c589e7",
+            "property.static.readonly":"#c589e7",
             "field.static":"#c589e7",
 
         "field": "#db9052",
+            "property:java": "#db9052",
         "method":"#fc7676",
             "property":"#fc7676",
         "parameter": "#bea73c",

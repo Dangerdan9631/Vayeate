@@ -7,6 +7,8 @@
         120
     ],
     "editor.showFoldingControls": "always",
+    "extensions.autoUpdate": true,
+    "files.autoSave": "afterDelay",
     "terminal.integrated.scrollback": 999999,
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.editor.limit.enabled": true,

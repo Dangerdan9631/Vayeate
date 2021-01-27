@@ -7,10 +7,16 @@
         "isActive": true,
         "autoHeader": "autoSave",
         "enforceHeader": true,
+        "include": [
+            "csharp",
+            "java",
+            "kotlin",
+            "powershell",
+            "rust",
+            "xml"
+        ],
         "exclude": [
-            "json",
-            "jsonc",
-            "markdown"
+            "*"
         ]
     },
     "psi-header.lang-config": [
@@ -22,31 +28,81 @@
             "blankLinesAfter": 1
         },
         {
+            "language": "java",
+            "begin": "/* ",
+            "prefix": " * ",
+            "end": " */",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "kotlin",
+            "begin": "/* ",
+            "prefix": " * ",
+            "end": " */",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "powershell",
+            "begin": "# -----------------------------------------------------------------------------",
+            "prefix":"#",
+            "end": "# -----------------------------------------------------------------------------",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "rust",
+            "begin": "",
+            "prefix": "// ",
+            "end": "",
+            "blankLinesAfter": 1
+        },
+        {
             "language": "xml",
             "begin": "<!--",
             "prefix": "",
             "end": "-->",
             "blankLinesAfter": 1
         },
-        {
-            "language": "t4",
-            "begin": "<# // --------------------------------------------------------------------------",
-            "prefix": "   //",
-            "end": "   // ---------------------------------------------------------------------- #>",
-            "blankLinesAfter": 1
-        }
     ],
     "psi-header.templates": [
         {
             "language": "*",
-             // Replace the [LICENSE URL] below.
+            "template": [
+                "<<filename>>",
+                "",
+                "Copyright (c) <<year>> <<company>>. All rights reserved.",
+                "Licensed under the MIT License.",
+                "See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+            ],
+        },
+        {
+            "language": "csharp",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
                 "      Copyright (c) <<year>> <<company>>. All rights reserved.",
                 "      Licensed under the MIT License.",
-                "      See [LICENSE URL] for full license information.",
-                "  </copyright>"
-            ]
-        }
+                "      See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "  </copyright>",
+            ],
+        },
+        {
+            "language": "powershell",
+            "template": [
+                "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
+                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
+                "      Licensed under the MIT License.",
+                "      See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "  </copyright>",
+            ],
+        },
+        {
+            "language": "xml",
+            "template": [
+                "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
+                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
+                "      Licensed under the MIT License.",
+                "      See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "  </copyright>",
+            ],
+        },
     ]
 }
