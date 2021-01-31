@@ -17,6 +17,9 @@ This repo contains all of the files necessary for the extension.
 * `examples` - This folder includes files in several different languages that 
   can be used to test color themes.
 * `settings` - This folder includes exported settings used within VS Code.
+  * `settings/VSCode/keybindings.json` - VS Code keyboard bindings that can be
+    added using the JSON keybinding editor. 
+    `Command Palette -> Preferences: Open Keyboard Shortcuts (JSON)`
   * `settings/VSCode/*` - VS Code settings that can be added using the JSON
     settings editor. `Command Palette -> Preferences: Open Settings (JSON)`
   * `settings/Omnisharp` - C# formatting settings that can be used by copying

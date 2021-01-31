@@ -92,10 +92,10 @@
         "editorIndentGuide.activeBackground": "#6699cc",
         // =====================================================================
         // Gutter
-        "editorGutter.addedBackground": "#00ff00",
+        "editorGutter.addedBackground": "#6fad6e",
         "editorGutter.background": "#1b3046",
-        "editorGutter.deletedBackground": "#ff0000",
-        "editorGutter.modifiedBackground": "#0000ff",
+        "editorGutter.deletedBackground": "#fc7676",
+        "editorGutter.modifiedBackground": "#3399ff66",
         // =====================================================================
         // Editor matching
         "editor.findMatchBackground": "#176431",

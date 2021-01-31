@@ -1,0 +1,45 @@
+[
+    // -------------------------------------------------------------------------
+    // Use ctrl+shift+s to split editor.
+    {
+        "key": "ctrl+shift+s",
+        "command": "-workbench.action.files.saveAs"
+    },
+    {
+        "key": "ctrl+shift+s",
+        "command": "-workbench.action.files.saveLocalFile",
+        "when": "remoteFileDialogVisible"
+    },
+    {
+        "key": "ctrl+shift+s",
+        "command": "workbench.action.splitEditor"
+    },
+    {
+        "key": "ctrl+\\",
+        "command": "-workbench.action.splitEditor"
+    },
+    // -------------------------------------------------------------------------
+    // Terminal focus controls
+    {
+        "key": "shift+alt+right",
+        "command": "workbench.action.terminal.focusNext"
+    },
+    {
+        "key": "shift+alt+left",
+        "command": "workbench.action.terminal.focusPrevious"
+    },
+    {
+        "key": "shift+alt+up",
+        "command": "terminal.focus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.terminal.clear"
+    },
+    // -------------------------------------------------------------------------
+    // Sidebar visibility
+    {
+        "key": "ctrl+1",
+        "command": "workbench.action.toggleSidebarVisibility"
+    }
+]
