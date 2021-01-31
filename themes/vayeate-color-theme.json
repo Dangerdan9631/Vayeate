@@ -320,6 +320,7 @@
                 "entity.name.type.class",
                 "entity.name.type.kotlin",
                 "entity.name.type.enum",
+                "entity.name.type.struct",
                 "entity.other.inherited-class",
                 "storage.type",
                 "variable.other.object",
@@ -421,7 +422,8 @@
                 "comment.line.documentation",
             ],
             "settings": {
-                "foreground": "#667068"
+                "foreground": "#667068",
+                "fontStyle": "italic",
             }
         },
         {
@@ -674,6 +676,7 @@
         // Concrete types
         "class": "#35a2fa",
         "enum": "#35a2fa",
+        "struct": "#35a2fa",
         // Interface
         "interface": "#26b995",
         // Constant values
@@ -694,12 +697,27 @@
         // Numbers
         "number": "#fa8484",
         // Doc Comment Attribute
-        "xmlDocCommentAttributeName": "#4f7696",
+        "xmlDocCommentAttributeName": {
+            "italic": true,
+            "foreground": "#4f7696",
+        },
         // Doc Comment Tokens
-        "xmlDocCommentName": "#4e6350",
-        "xmlDocCommentAttributeQuotes": "#4e6350",
-        "xmlDocCommentDelimiter": "#4e6350",
+        "xmlDocCommentName": {
+            "italic": true,
+            "foreground": "#4e6350",
+        },
+        "xmlDocCommentAttributeQuotes": {
+            "italic": true,
+            "foreground": "#4e6350",
+        },
+        "xmlDocCommentDelimiter": {
+            "italic": true,
+            "foreground": "#4e6350",
+        },
         // Doc Comment Text
-        "xmlDocCommentText": "#88998b",
+        "xmlDocCommentText": {
+            "italic": true,
+            "foreground": "#6b776d",
+        },
     }
 }
