@@ -677,6 +677,7 @@
         "class": "#35a2fa",
         "enum": "#35a2fa",
         "struct": "#35a2fa",
+        "delegate": "#35a2fa",
         // Interface
         "interface": "#26b995",
         // Constant values
