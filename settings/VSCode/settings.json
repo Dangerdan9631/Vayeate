@@ -1,4 +1,5 @@
 {
+    // ----- Vayeate -------------------------------------------------------- //
     "breadcrumbs.symbolSortOrder": "type",
     "csharp.format.enable": true,
     "csharp.semanticHighlighting.enabled": true,
