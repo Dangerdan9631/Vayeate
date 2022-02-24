@@ -1,0 +1,9 @@
+{
+    "psi-header.config": {
+        "company": "DangerDan9631",
+        "license": "MIT"
+    },
+    "psi-header.changes-tracking": {
+        "isActive": true
+    }
+}

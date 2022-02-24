@@ -2,10 +2,9 @@
     // ----- Vayeate  psi-header -------------------------------------------- //
     "psi-header.config": {
         "forceToTop": true,
-        "company": "[COMPANY NAME]" // Replace this with your [COMPANY NAME].
     },
     "psi-header.changes-tracking": {
-        "isActive": true,
+        "isActive": false,
         "autoHeader": "autoSave",
         "enforceHeader": true,
         "include": [
@@ -70,18 +69,18 @@
             "template": [
                 "<<filename>>",
                 "",
-                "Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "Licensed under the MIT License.",
-                "See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "Licensed under the <<licensename>> License.",
+                "See <<licenseurl>> for full license information.",
             ],
         },
         {
             "language": "csharp",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "      Licensed under the MIT License.",
-                "      See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "      Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
         },
@@ -89,9 +88,9 @@
             "language": "powershell",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "      Licensed under the MIT License.",
-                "      See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "      Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
         },
@@ -99,9 +98,9 @@
             "language": "xml",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "      Licensed under the MIT License.",
-                "      See https://github.com/Dangerdan9631/Licenses/blob/main/LICENSE-MIT for full license information.",
+                "      Copyright (c) <<yeartoyear>> <<company>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
         },
