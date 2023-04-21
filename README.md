@@ -22,6 +22,9 @@ This repo contains all of the files necessary for the extension.
     `Command Palette -> Preferences: Open Keyboard Shortcuts (JSON)`
   * `settings/VSCode/*` - VS Code settings that can be added using the JSON
     settings editor. `Command Palette -> Preferences: Open Settings (JSON)`
+    * `settings/VSCode/*.workspace.json` - VS Code settings that should be 
+    configured per workspace by adding to the `.vscode/settings.json` file in
+    the workspace root.
   * `settings/Omnisharp` - C# formatting settings that can be used by copying
     the json file into the `<user home>/.omnisharp` folder and replace the
     substitution values inside of `[]`.

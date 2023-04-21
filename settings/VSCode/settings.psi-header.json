@@ -1,18 +1,22 @@
 {
+    // ----- Vayeate psi-header -------------------------------------------- //
     "psi-header.config": {
         "forceToTop": true,
-        "company": "[COMPANY NAME]" // Replace this with your [COMPANY NAME].
+        "company": "",
     },
     "psi-header.changes-tracking": {
-        "isActive": true,
+        "isActive": false,
         "autoHeader": "autoSave",
         "enforceHeader": true,
         "include": [
             "csharp",
             "java",
+            "javascript",
             "kotlin",
             "powershell",
+            "ruby",
             "rust",
+            "typescript",
             "xml"
         ],
         "exclude": [
@@ -23,12 +27,19 @@
         {
             "language": "csharp",
             "begin": "// -----------------------------------------------------------------------------",
-            "prefix":"//",
+            "prefix": "//",
             "end": "// -----------------------------------------------------------------------------",
             "blankLinesAfter": 1
         },
         {
             "language": "java",
+            "begin": "/* ",
+            "prefix": " * ",
+            "end": " */",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "javascript",
             "begin": "/* ",
             "prefix": " * ",
             "end": " */",
@@ -43,9 +54,9 @@
         },
         {
             "language": "powershell",
-            "begin": "# -----------------------------------------------------------------------------",
-            "prefix":"#",
-            "end": "# -----------------------------------------------------------------------------",
+            "begin": "# ------------------------------------------------------------------------------",
+            "prefix": "#",
+            "end": "# ------------------------------------------------------------------------------",
             "blankLinesAfter": 1
         },
         {
@@ -53,6 +64,20 @@
             "begin": "",
             "prefix": "// ",
             "end": "",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "ruby",
+            "begin": "# ------------------------------------------------------------------------------",
+            "prefix": "#",
+            "end": "# ------------------------------------------------------------------------------",
+            "blankLinesAfter": 1
+        },
+        {
+            "language": "typescript",
+            "begin": "/* ",
+            "prefix": " * ",
+            "end": " */",
             "blankLinesAfter": 1
         },
         {
@@ -69,18 +94,18 @@
             "template": [
                 "<<filename>>",
                 "",
-                "Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "Licensed under the MIT License.",
-                "See https://github.com/Dangerdan9631/Vayeate/blob/main/LICENSE for full license information.",
+                "Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
+                "Licensed under the <<licensename>> License.",
+                "See <<licenseurl>> for full license information.",
             ],
         },
         {
             "language": "csharp",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "      Licensed under the MIT License.",
-                "      See https://github.com/Dangerdan9631/Vayeate/blob/main/LICENSE for full license information.",
+                "      Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
         },
@@ -88,9 +113,9 @@
             "language": "powershell",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "      Licensed under the MIT License.",
-                "      See https://github.com/Dangerdan9631/Vayeate/blob/main/LICENSE for full license information.",
+                "      Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
         },
@@ -98,11 +123,11 @@
             "language": "xml",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<company>>. All rights reserved.",
-                "      Licensed under the MIT License.",
-                "      See https://github.com/Dangerdan9631/Vayeate/blob/main/LICENSE for full license information.",
+                "      Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
+                "      Licensed under the <<licensename>> License.",
+                "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
         },
-    ]
+    ],
 }

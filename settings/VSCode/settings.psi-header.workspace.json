@@ -1,0 +1,10 @@
+{
+    // ----- Vayeate workspace psi-header -------------------------------------------- //
+    "psi-header.config": {
+        "company": "[COMPANY NAME]", // Replace this with your [COMPANY NAME].
+        "license": "Apache-2.0", // Replace this with your license.
+    },
+    "psi-header.changes-tracking": {
+        "isActive": true,
+    }
+}
