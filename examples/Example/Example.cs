@@ -19,7 +19,9 @@ namespace Example {
     /// A test interface of the <see cref="IInterface"/> type.
     /// </summary>
     public interface IInterface {
+        /// <summary>
         /// Gets or sets a value that indicates whether it is set.
+        /// </summary>
         bool IsSet { get; set; }
     }
 
