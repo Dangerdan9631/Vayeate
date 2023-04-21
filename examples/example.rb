@@ -2,8 +2,8 @@
 # example.rb
 # 
 # Copyright (c) 2023 DangerDan9631. All rights reserved.
-# Licensed under the Apache License 2.0 License.
-# See https://www.apache.org/licenses/LICENSE-2.0 for full license information.
+# Licensed under the MIT License.
+# See https://opensource.org/licenses/MIT for full license information.
 #
 
 module Example

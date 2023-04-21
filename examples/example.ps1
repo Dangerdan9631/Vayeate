@@ -1,10 +1,10 @@
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 #  <copyright file="example.ps1" company="DangerDan9631">
-#      Copyright (c) 2021 DangerDan9631. All rights reserved.
+#      Copyright (c) 2021 - 2023 DangerDan9631. All rights reserved.
 #      Licensed under the MIT License.
-#      See https://github.com/Dangerdan9631/Vayeate/blob/main/LICENSE for full license information.
+#      See https://opensource.org/licenses/MIT for full license information.
 #  </copyright>
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 ################################################################################
 # Function in PowerShell

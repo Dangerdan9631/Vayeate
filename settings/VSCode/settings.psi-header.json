@@ -68,9 +68,8 @@
         },
         {
             "language": "ruby",
-            "begin": "# ------------------------------------------------------------------------------",
-            "prefix": "#",
-            "end": "# ------------------------------------------------------------------------------",
+            "begin": "##",
+            "prefix": "# ",
             "blankLinesAfter": 1
         },
         {
@@ -94,8 +93,8 @@
             "template": [
                 "<<filename>>",
                 "",
-                "Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
-                "Licensed under the <<licensename>> License.",
+                "Copyright (c) <<yeartoyear(fc)>> <<copyrightholder>>. All rights reserved.",
+                "Licensed under the <<licensename>>.",
                 "See <<licenseurl>> for full license information.",
             ],
         },
@@ -103,8 +102,8 @@
             "language": "csharp",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
-                "      Licensed under the <<licensename>> License.",
+                "      Copyright (c) <<yeartoyear(fc)>> <<copyrightholder>>. All rights reserved.",
+                "      Licensed under the <<licensename>>.",
                 "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
@@ -113,8 +112,8 @@
             "language": "powershell",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
-                "      Licensed under the <<licensename>> License.",
+                "      Copyright (c) <<yeartoyear(fc)>> <<copyrightholder>>. All rights reserved.",
+                "      Licensed under the <<licensename>>.",
                 "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
@@ -123,8 +122,8 @@
             "language": "xml",
             "template": [
                 "  <copyright file=\"<<filename>>\" company=\"<<company>>\">",
-                "      Copyright (c) <<year>> <<copyrightholder>>. All rights reserved.",
-                "      Licensed under the <<licensename>> License.",
+                "      Copyright (c) <<yeartoyear(fc)>> <<copyrightholder>>. All rights reserved.",
+                "      Licensed under the <<licensename>>.",
                 "      See <<licenseurl>> for full license information.",
                 "  </copyright>",
             ],
