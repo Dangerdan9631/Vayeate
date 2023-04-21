@@ -25,6 +25,7 @@ This repo contains all of the files necessary for the extension.
   * `settings/Omnisharp` - C# formatting settings that can be used by copying
     the json file into the `<user home>/.omnisharp` folder and replace the
     substitution values inside of `[]`.
+  * `settings/Idea` - IDEA settings. See [README.md](./settings/Idea/README.md) for instructions.
 
 ## Testing color themes
 
