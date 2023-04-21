@@ -90,6 +90,8 @@
         "editorLineNumber.activeForeground": "#6699cc",
         "editorIndentGuide.background": "#34516d",
         "editorIndentGuide.activeBackground": "#6699cc",
+        "editorInlayHint.foreground": "#707e8f",
+        "editorInlayHint.background": "#3b4046",
         // =====================================================================
         // Gutter
         "editorGutter.addedBackground": "#6fad6e",
