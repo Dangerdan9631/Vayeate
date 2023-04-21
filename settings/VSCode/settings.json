@@ -1,4 +1,5 @@
 {
+    // ----- Vayeate -------------------------------------------------------- //
     "breadcrumbs.symbolSortOrder": "type",
     "csharp.format.enable": true,
     "csharp.semanticHighlighting.enabled": true,
@@ -19,7 +20,7 @@
     "editor.smoothScrolling": true,
     "explorer.openEditors.visible": 0,
     "extensions.autoUpdate": true,
-    "files.autoSave": "afterDelay",
+    "files.autoSave": "onFocusChange",
     "omnisharp.enableDecompilationSupport": true,
     "omnisharp.enableImportCompletion": true,
     "omnisharp.enableRoslynAnalyzers": true,

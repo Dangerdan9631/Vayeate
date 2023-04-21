@@ -3,30 +3,55 @@
     // Use ctrl+shift+s to split editor.
     {
         "key": "ctrl+shift+s",
-        "command": "-workbench.action.files.saveAs"
+        "command": "-workbench.action.files.saveAs",
+        "when": "isWindows"
+    },
+    {
+        "key": "cmd+shift+s",
+        "command": "-workbench.action.files.saveAs",
+        "when": "isMac"
     },
     {
         "key": "ctrl+shift+s",
         "command": "-workbench.action.files.saveLocalFile",
-        "when": "remoteFileDialogVisible"
+        "when": "remoteFileDialogVisible && isWindows"
+    },
+    {
+        "key": "cmd+shift+s",
+        "command": "-workbench.action.files.saveLocalFile",
+        "when": "remoteFileDialogVisible && isMac"
     },
     {
         "key": "ctrl+shift+s",
-        "command": "workbench.action.splitEditor"
+        "command": "workbench.action.splitEditor",
+        "when": "isWindows"
+    },
+    {
+        "key": "cmd+shift+s",
+        "command": "workbench.action.splitEditor",
+        "when": "isMac"
     },
     {
         "key": "ctrl+\\",
-        "command": "-workbench.action.splitEditor"
+        "command": "-workbench.action.splitEditor",
+        "when": "isWindows"
+    },
+    {
+        "key": "cmd+\\",
+        "command": "-workbench.action.splitEditor",
+        "when": "isMac"
     },
     // -------------------------------------------------------------------------
     // Terminal focus controls
     {
         "key": "shift+alt+right",
-        "command": "workbench.action.terminal.focusNext"
+        "command": "workbench.action.terminal.focusNext",
+        "when": "terminalFocus"
     },
     {
         "key": "shift+alt+left",
-        "command": "workbench.action.terminal.focusPrevious"
+        "command": "workbench.action.terminal.focusPrevious",
+        "when": "terminalFocus"
     },
     {
         "key": "shift+alt+up",
@@ -34,13 +59,47 @@
     },
     {
         "key": "ctrl+k",
-        "command": "workbench.action.terminal.clear"
+        "command": "workbench.action.terminal.clear",
+        "when": "isWindows"
+    },
+    {
+        "key": "cmd+k",
+        "command": "workbench.action.terminal.clear",
+        "when": "isMac"
     },
     // -------------------------------------------------------------------------
     // Sidebar visibility
     {
         "key": "ctrl+1",
-        "command": "workbench.action.toggleSidebarVisibility"
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "isWindows"
+    },
+    {
+        "key": "cmd+1",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "isMac"
+    },
+    // -------------------------------------------------------------------------
+    // Mac terminal
+    {
+        "key": "ctrl+`",
+        "command": "-workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active && isMac"
+    },
+    {
+        "key": "cmd+`",
+        "command": "workbench.action.terminal.toggleTerminal",
+        "when": "terminal.active && isMac"
+    },
+    {
+        "key": "ctrl+shift+`",
+        "command": "-workbench.action.terminal.new",
+        "when": "terminalProcessSupported && isMac"
+    },
+    {
+        "key": "cmd+shift+`",
+        "command": "workbench.action.terminal.new",
+        "when": "terminalProcessSupported && isMac"
     },
     // -------------------------------------------------------------------------
     // Cursor movement
