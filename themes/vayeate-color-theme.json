@@ -103,7 +103,7 @@
         "editor.findRangeHighlightBackground": "#3399ff11",
         "editorLink.activeForeground": "#4e94ce",
         "editorCodeLens.foreground": "#3399ff66",
-        "editorBracketMatch.background": "#3399ff66",
+        "editorBracketMatch.background": "#174470",
         "editorBracketMatch.border": "#3399ff66",
         "editorRuler.foreground": "#334557",
         // =====================================================================
