@@ -425,7 +425,6 @@
             ],
             "settings": {
                 "foreground": "#667068",
-                "fontStyle": "italic",
             }
         },
         {
@@ -667,8 +666,10 @@
         "variable": "#9faab6",
         // Comment
         "comment": "#486e4b",
+        "comment.documentation": "#6b776d",
         // String
         "string": "#6fad6e",
+        "regexp": "#79d6c7",
         // String Excapes
         "stringEscapeCharacter": "#aca374",
         // Keywords
@@ -700,27 +701,12 @@
         // Numbers
         "number": "#fa8484",
         // Doc Comment Attribute
-        "xmlDocCommentAttributeName": {
-            "italic": true,
-            "foreground": "#4f7696",
-        },
+        "xmlDocCommentAttributeName": "#4f7696",
         // Doc Comment Tokens
-        "xmlDocCommentName": {
-            "italic": true,
-            "foreground": "#4e6350",
-        },
-        "xmlDocCommentAttributeQuotes": {
-            "italic": true,
-            "foreground": "#4e6350",
-        },
-        "xmlDocCommentDelimiter": {
-            "italic": true,
-            "foreground": "#4e6350",
-        },
+        "xmlDocCommentName": "#4e6350",
+        "xmlDocCommentAttributeQuotes": "#4e6350",
+        "xmlDocCommentDelimiter": "#4e6350",
         // Doc Comment Text
-        "xmlDocCommentText": {
-            "italic": true,
-            "foreground": "#6b776d",
-        },
+        "xmlDocCommentText": "#6b776d",
     }
 }
