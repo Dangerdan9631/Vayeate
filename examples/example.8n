@@ -1,0 +1,494 @@
+##
+| Infinity Notation Grammar
+| 
+| This grammar is used to define the Infinity Notation syntax used to define 
+| grammars.
+##
+name: InfinityNotation
+version: 0.1
+rules:
+    ## The grammar root rule. ##
+    def *: inner -> Grammar
+
+    # --------------------------------------------------------------------------
+    # Grammar Definition
+    
+    ## 
+    | The root grammar definition.
+    |
+    | # Object
+    | - Docs - The [Docs] object containing documentation for the grammar.
+    | - Name - The name [Value] of the grammar.
+    | - Version - The version [Value] of the grammar.
+    | - Rules - The [RuleSet] object containing the grammar's rule 
+    |           definitions.
+    ##
+    def Grammar: object ->
+        [Docs] _Docs 
+        [Name] GrammarNameDefinition
+        [Version] GrammarVersionDefinition
+        [Rules] GrammarRuleSetDefinitions
+        
+    ##
+    | The line that defines the name of the grammar.
+    |
+    | # Element
+    | - Name - The name [Value] of the grammar.
+    ##
+    def GrammarNameDefinition: element(Name) ->
+        'name' ![<EOL>>! _ ':' _ [Name] GrammarName _SL EOL ]!
+        
+    ##
+    | The line that defines the version of the grammar.
+    | 
+    | # Element
+    | - Version - The version [Value] of the grammar.
+    ##
+    def GrammarVersionDefinition: element(Version) ->
+        'version' ![<EOL>>! _ ':' _ [Version] VersionNumber _SL EOL ]!
+        
+    ##
+    | The rest of the document that defines the rules of the grammar.
+    |
+    | # Element
+    | - Rules - The [RuleSet] object containing the grammar's rule
+    |           definitions.
+    ##
+    def GrammarRuleSetDefinitions: element(Rules) ->
+        'rules' ! _ ':' _SL EOL [Rules] RuleSet
+    
+    ##
+    | A set of rule definitions that make up the rules of the grammar.
+    |
+    | # Self
+    | - Terms - The [List] of [RuleDefinition]s that make up the rules of
+    |           the grammar.
+    ##
+    def RuleSet ->
+        RuleDefinition+
+        
+    # --------------------------------------------------------------------------
+    # Rule Definition
+    
+    ##
+    | A rule definition.
+    |
+    | # Object
+    | - Docs - The [Docs] object containing documentation for the rule.
+    | - Name - The name [Value] of the rule.
+    | - Return - The [RuleReturn] object containing the rule's return type.
+    | - Definition - The [RuleExpr] object containing the rule's definition.
+    ##
+    def RuleDefinition: object ->
+        [Docs] _Docs 'def' ![<<Op_DefineRule>! _ [Name] RuleName [Return] ![<<Op_RuleDefinition> RuleReturn? _ ]! '->' _ [Definition] RuleExpr ]!
+    
+    ##
+    | The types that can be returned from a rule.
+    |
+    | # Object
+    | - Returns - The [RuleReturnExpr] object containing the rule's return 
+    |             type.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after matching
+    | the return operator ':', or if there is an error while matching the
+    | [RuleReturnExpr].
+    ##
+    def RuleReturn: object ->
+        ':' ! [Returns] RuleReturnExpr
+    
+    ##
+    | An expression defining the types that can be returned from a rule.
+    |
+    | # Inner
+    | - [RuleReturnSelf]
+    | - [RuleReturnInner]
+    | - [RuleReturnObject]
+    | - [RuleReturnElement]
+    | - [RuleReturnConditional]
+    |
+    | Error
+    | An error can occur while matching the [RuleReturnElement] or 
+    | [RuleReturnConditional] options.
+    ##
+    def RuleReturnExpr ->
+        RuleReturnSelf 
+        | RuleReturnInner 
+        | RuleReturnObject 
+        | RuleReturnElement 
+        | RuleReturnConditional
+        
+    ##
+    | A non-capturing, opaque return value that contains a list of all
+    | matched terms.
+    |
+    | # Self
+    | - Terms - The 'self' keyword.
+    ##
+    def RuleReturnSelf -> 'self'
+    
+    ##
+    | A non-capturing, transparent return value that returns the single 
+    | matched term.
+    |
+    | # Self
+    | - Terms - The 'inner' keyword.
+    ##
+    def RuleReturnInner -> 'inner'
+    
+    ## 
+    | A capturing, opaque return value that contains named references to 
+    | each of the captured terms.
+    |
+    | # Self
+    | - Terms - The 'object' keyword.
+    ##
+    def RuleReturnObject -> 'object'      
+    
+    ##
+    | A capturing, transparent return value that contains a single captured 
+    | term.
+    |
+    | # Object
+    | - ElementName - The name [Value] of the captured property to be 
+    |                 returned.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after matching
+    | the 'element' keyword.
+    ##      
+    def RuleReturnElement: object -> 
+        'element' ! _SL '(' _SL [ElementName] AliasName _SL ')'
+        
+    ##
+    | A rule return expression that will return one of two values based on 
+    | the presence of a captured value.
+    |
+    | # Object
+    | - Condition - The name [Value] of the captured property to check for.
+    | - ThenOperand - The [RuleReturnExpr] object for the type to return
+    |                 when the condition value is present.
+    | - ElseOperand - The [RuleReturnExpr] object for the type to return
+    |                 when the condition value is not present.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after matching
+    | the 'if' keyword. An error can also occur while matching a 
+    | [RuleReturnExpr] in the then or else operands.
+    ##
+    def RuleReturnConditional: Object ->
+        'if' ! WS [Condition] AliasName WS 
+        'then' WS [ThenOperand] RuleReturnExpr WS 
+        'else' WS [ElseOperand] RuleReturnExpr
+            
+    # --------------------------------------------------------------------------
+    # Rule Pattern Definition
+    
+    ##
+    | An expression defining how the rule should match.
+    |
+    | # Inner
+    | - [Literal]
+    | - [Pattern]
+    | - [Sequence]
+    ##
+    def RuleExpr: inner ->
+        Literal | Pattern | Sequence 
+        
+    ##
+    | A rule that matches a literal value.
+    |
+    | # Object
+    | - Value - The literal [Value] to match.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the open
+    | literal operator '"' is matched.
+    ##
+    def Literal: object ->
+        '"' ! [Value] LiteralValue '"'
+        
+    ##
+    | A rule that matches a pattern value.
+    |
+    | # Object
+    | - Value - The pattern [Value] to match.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the open
+    | pattern operator '$"' is matched.
+    ##
+    def Pattern: object ->
+        '$"' ! [Value] PatternValue '"'
+        
+    ##
+    | A rule that matches a sequence of terms.
+    |
+    | # Object
+    | Returned if the sequence contains more than a single term.
+    | - Left - The first [Choice] term in the sequence.
+    | - Right - A [List] of the following [Choice] terms in the sequence.
+    | 
+    | # Element
+    | Returned if the sequence contains only a single term.
+    | - Left - The [Choice] term that was matched.
+    ##  
+    def Sequence: if Right then object else element(Left) ->
+        [Left] Choice (WS [Right] Choice)+
+        
+    ##
+    | A rule that matches only one of a choice to terms.
+    |
+    | # Object
+    | Returned if the choice contains more than a single term.
+    | - Left - The first [Capture] term in the choice.
+    | - Right - A [List] of the following [Capture] terms in the choice.
+    |
+    | # Element
+    | Returned if the choice contains only a single term.
+    | - Left - The [Capture] term that was matched.
+    ##
+    def Choice: if Right then object else element(Left) ->
+        [Left] Capture (_ '|' _ [Right] Capture)+
+    
+    ##
+    | A rule that captures a term in a named property.
+    |
+    | # Object
+    | Returned if the capture contains an alias.
+    | - Alias - The alias [Value] of the captured property.
+    | - Term - The [UnaryTerm] term that was captured.
+    |
+    | # Element
+    | Returned if the capture does not contain an alias.
+    | - Term - The [UnaryTerm] term that was captured.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the open
+    | alias operator '[' is matched.
+    ##
+    def Capture: if Alias then object else element(Term) ->
+        ('[' ! _ [Alias] AliasName _ ']' _)? [Term] UnaryTerm
+    
+    ##
+    | A rule that matches a term with a unary operator.
+    |
+    | # Object
+    | Returned if the term contains a unary operator.
+    | - Term - The [Term] term that was matched.
+    | - Op - The [UnaryOp] operator that was matched.
+    |
+    | # Element
+    | Returned if the term does not contain a unary operator.
+    | - Term - The [Term] term that was matched.
+    ##
+    def UnaryTerm: if Op then object else element(Term) -> 
+        [Term] Term _ [Op] UnaryOp?
+        
+    ##
+    | The unary operators that can be applied to a term.
+    |
+    | # Inner
+    | - [Optional]
+    | - [ZeroOrMore]
+    | - [OneOrMore]
+    | - [RepeatExactly]
+    | - [RepeatAtLeast]
+    | - [RepeatRange]
+    ##
+    def UnaryOp: inner ->
+        Optional | ZeroOrMore | OneOrMore | RepeatExactly | RepeatAtLeast | RepeatRange
+    
+    ##
+    | A rule that matches the optional operator.
+    |
+    | # Self
+    | - Terms - The '?' operator.
+    ##
+    def Optional -> '?'
+    
+    ##
+    | A rule that matches the zero or more operator.
+    |
+    | # Self
+    | - Terms - The '*' operator.
+    ##
+    def ZeroOrMore -> '*'
+    
+    ##
+    | A rule that matches the one or more operator.
+    |
+    | # Self
+    | - Terms - The '+' operator.
+    ##
+    def OneOrMore -> '+'
+    
+    ##
+    | A rule that matches the repeat exactly operator.
+    |
+    | # Object
+    | - Count - The [Value] of the number of times to repeat.
+    ##
+    def RepeatExactly: object ->
+        '{' _ [Count] Integer _ '}'
+        
+    ##
+    | A rule that matches the repeat at least operator.
+    |
+    | # Object
+    | - Min - The [Value] of the minimum number of times to repeat.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the or 
+    | more operator '+' is matched.
+    ##
+    def RepeatAtLeast: object ->
+        '{' _ [Min] Integer _ ',' _ '+' ! _ '}'
+    
+    ##
+    | A rule that matches the repeat range operator.
+    |
+    | # Object
+    | - Min - The [Value] of the minimum number of times to repeat.
+    | - Max - The [Value] of the maximum number of times to repeat.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the max 
+    | value token is matched.
+    ##
+    def RepeatRange: object ->
+        '{' _ [Min] Integer _ ',' _ [Max] Integer ! _ '}'
+        
+    ##
+    | A rule that matches a single term.
+    |
+    | # Inner
+    | - [Reference]
+    | - [InlineLiteral]
+    | - [Group]
+    | - [EndOfInput]
+    | - [RequireMatch]
+    | - [ResolveError]
+    ##  
+    def Term: inner ->
+        Reference | InlineLiteral | Group | EndOfInput | RequireMatch | ResolveError
+    
+    ##
+    | A rule that matches a reference to another rule.
+    |
+    | # Object
+    | - Name - The [Value] of the name of the rule to reference.
+    ##
+    def Reference: object ->
+        [RuleName] RuleName
+        
+    ##
+    | A rule that matches an inline literal value.
+    |
+    | # Object
+    | - Value - The [Value] of the literal to match.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the open
+    | inline literal operator ''' is matched.
+    ##
+    def InlineLiteral: object ->
+        Op_OpenInlineLiteral ! [Value] LiteralValue  Op_CloseInlineLiteral
+        
+    ##
+    | A rule that matches a group of terms.
+    |
+    | # Object
+    | - Terms - The [Sequence] of terms in the group.
+    |
+    | # Error
+    | An error occurs if the rule is not completely matched after the open
+    | group operator '(' is matched.
+    ##
+    def Group: object ->
+        '(' ! _ [Term] Sequence _ ')'
+    
+    ##
+    | A rule that matches the end of the input.
+    |
+    | # Self
+    | - Terms - The '<end>' operator.
+    ##
+    def EndOfInput ->
+        '<end>'
+        
+    ##
+    | A rule that indicates the current rule must be matched.
+    |
+    | # Object
+    | - Before - If present, indicates the synchronizing reference should 
+    |            not be included in the skip following an error.
+    | - Reference - The [RuleName] of the synchronizing reference that 
+    |               should be used to continue parsing after error. If not
+    |               present, the parsing should stop.
+    | - After - If present, indicates the synchronizing reference should
+    |           be included in the skip following an error.
+    ##
+    def RequireMatch: object ->
+        '<' [Before] '<'? _ [Reference] RuleName? _ '>' [After] '>'?
+        
+    ##
+    | A rule that indicates any errors that occur within it's scope should
+    | be resolved and not propagated further.
+    |
+    | # Object
+    | - Term - The [Term] that defines the scope of what should be resolved.
+    ##
+    def ResolveError: object ->
+        '~' _ [Term] Sequence _ '~'
+        
+    # --------------------------------------------------------------------------
+    # Whitespace
+    
+    # A required span of multiline whitespace
+    def WS ->
+        ([Whitespace] Whitespace | [Comment] Comment | [Newline] Newline)+
+    # A required span of single-line whitespace
+    def WSSL ->
+        ([Whitespace] Whitespace | [Comment] Comment)+
+    
+    # An optional span of whitespace.
+    def _: Inner -> WS?
+    # An optional span of single-line whitespace.
+    def _SL: Inner -> WSSL?
+    # An optional span of whitespace that may contain docs.
+    def _Docs: Inner -> (WS | Docs)*
+    
+    def EOL -> Newline | EOF
+    def EOF -> <end>
+    
+    def Whitespace -> $"[ \t]+"
+    def Newline -> $"\r?\n"
+    def Comment: Properties -> Op_Comment [Text] CommentText EOL
+    def CommentText => $"[^\r\n]*"
+    def Docs: Properties -> Op_DocsOpen _SL (([Text] SingleLineDocs) | (Newline [Text] DocsText+)) _SL Op_DocsClose
+    def SingleLineDocs -> $"(.(?!##))+[^#]?"
+    def DocsText => _SL Op_DocsLineStart [Text] DocsLineText EOL
+    def DocsLineText => $"[^\r\n]*"
+    
+    
+    # --------------------------------------------------------------------------
+    # Operators
+    def Op_RepeatClose -> "}"
+    def Op_OpenInlineLiteral -> "'"
+    def Op_CloseInlineLiteral -> "'"
+    def Op_GroupClose -> ")"
+    def Op_LiteralClose -> """"
+    def Op_PatternClose -> """"
+    def Op_DefineRule -> "def"
+    
+    # --------------------------------------------------------------------------
+    # Identifiers
+    
+    def GrammarName -> $"[a-zA-Z_](\w)*"
+    def VersionNumber -> $"[0-9]+(\.[0-9]+)*(-[a-zA-Z_\-]+)?"
+    def RuleName -> $"[a-zA-Z_](\w)*"
+    def AliasName -> $"[a-zA-Z_](\w)*"
+    def LiteralValue -> $"(("""")|[^""\r\n])*"
+    def PatternValue -> $"(("""")|[^""\r\n])*"
+    def Integer -> $"[0-9]+"
