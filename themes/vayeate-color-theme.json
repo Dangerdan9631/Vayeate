@@ -76,10 +76,6 @@
         "extensionButton.prominentForeground": "#99ccff",
         "extensionButton.prominentHoverBackground": "#345a80",
         // =====================================================================
-        // Welcome Page
-        "welcomePage.buttonBackground": "#336699",
-        "welcomePage.buttonHoverBackground": "#345a80",
-        // =====================================================================
         // Editor View
         "editor.foreground": "#9faab6",
         "editor.background": "#282e35",
@@ -117,7 +113,7 @@
         "gitDecoration.conflictingResourceForeground": "#cc9900",
         "gitDecoration.deletedResourceForeground": "#b90e0e",
         "gitDecoration.ignoredResourceForeground": "#a35e5e",
-        "gitDecoration.modifiedResourceForeground": "#90b7ca",
+        "gitDecoration.modifiedResourceForeground": "#618394",
         "gitDecoration.untrackedResourceForeground": "#999966",
         "diffEditor.insertedTextBackground": "#07792733",
         "diffEditor.removedTextBackground": "#793d3d33",

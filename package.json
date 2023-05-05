@@ -18,7 +18,7 @@
             },
             {
                 "label": "Vayeate Light",
-                "uiTheme": "vs-light",
+                "uiTheme": "vs",
                 "path": "./themes/vayeate-light-color-theme.json"
             }
         ]
