@@ -1,6 +1,11 @@
 {
     "name": "vayeate",
     "displayName": "Vayeate",
+    "icon": "./images/icon.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Dangerdan9631/Vayeate"
+    },
     "description": "",
     "version": "1.0.0",
     "engines": {
