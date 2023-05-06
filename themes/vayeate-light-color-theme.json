@@ -697,9 +697,9 @@
         // Numbers
         "number": "#fa8484",
         // Doc Comment Attribute
-        "xmlDocCommentAttributeName": "#4f7696",
+        "xmlDocCommentAttributeName": "#468dc7",
         // Doc Comment Tokens
-        "xmlDocCommentName": "#4e6350",
+        "xmlDocCommentName": "#da5d10",
         "xmlDocCommentAttributeQuotes": "#4e6350",
         "xmlDocCommentDelimiter": "#4e6350",
         // Doc Comment Text

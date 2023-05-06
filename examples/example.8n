@@ -1,11 +1,3 @@
-#  -----------------------------------------------------------------------------
-# example.8n
-# 
-# Copyright (c) 2023 DangerDan9631. All rights reserved.
-# Licensed under the MIT License.
-# See https://opensource.org/licenses/MIT for full license information.
-#  -----------------------------------------------------------------------------
-
 ##
 | Infinity Notation Grammar
 | 
@@ -19,27 +11,122 @@ rules:
     def *: inner -> Grammar
 
     # --------------------------------------------------------------------------
+    # Whitespace
+    
+    ##
+    | Matches a span of multiline whitespace that must contain at least one 
+    | whitespace character or newline.
+    | # Returns
+    | [self]
+    | - Terms - The [List] of terms that make up the whitespace. This could be
+    |   one of:
+    |   * A [Whitespace] object containing a continuous span of whitespace
+    |     characters.
+    |   * A [Comment] object containing a single line of comment text.
+    |   * A [Newline] object containing a single newline sequence.
+    ##
+    def WS ->
+        ([Whitespace] Whitespace | [Comment] Comment | [Newline] Newline)+
+
+    ##
+    | Matches a span of single-line whitespace that must contain at least one
+    | whitespace character.
+    | # Returns
+    | [self]
+    | - Terms - The [List] of terms that make up the whitespace. This could be
+    |   one of:
+    |   * A [Whitespace] object containing a continuous span of whitespace
+    |     characters.
+    |   * A [Comment] object containing a single line of comment text.
+    ##
+    def WSSL ->
+        ([Whitespace] Whitespace | [Comment] Comment)+
+    
+    ##
+    | Matches an optional span of multiline whitespace.
+    | # Returns
+    | [self]
+    | - Terms - The [List] of terms that make up the whitespace. This could be
+    |   one of:
+    |   * An empty [List].
+    |   * A [Whitespace] object containing a continuous span of whitespace
+    |     characters.
+    |   * A [Comment] object containing a single line of comment text.
+    |   * A [Newline] object containing a single newline sequence.
+    ##
+    def _: Inner -> WS?
+    
+    ##
+    | Matches an optional span of single-line whitespace.
+    | # Returns
+    | [self]
+    | - Terms - The [List] of terms that make up the whitespace. This could be
+    |   one of:
+    |   * An empty [List].
+    |   * A [Whitespace] object containing a continuous span of whitespace
+    |     characters.
+    |   * A [Comment] object containing a single line of comment text.
+    ##
+    def _SL: Inner -> WSSL?
+    
+    def EOL -> Newline | EOF
+    def EOF -> <end>
+    
+    ##
+    | Matches one or more whitespace characters.
+    | # Returns
+    | [self]
+    | - Terms - A single [Value] containing the matched whitespace characters.
+    ##
+    def Whitespace -> $"[ \t]+"
+    
+    ##
+    | Matches the newline sequence.
+    | # Returns
+    | [self]
+    | - Terms - A single [Value] containing the matched newline sequence.
+    ##
+    def Newline -> $"\r?\n"
+
+    ##
+    | Matches a single line of comment text, not including the newline sequence.
+    | # Returns
+    | [object]
+    | - Text - The [CommentText] object containing the matched comment text.
+    ##
+    def Comment: object -> Op_Comment [Text] CommentText EOL
+    val CommentText -> $"[^\r\n]*"
+
+
+
+
+    def Docs: Properties -> Op_DocsOpen _SL (([Text] SingleLineDocs) | (Newline [Text] DocsText+)) _SL Op_DocsClose
+    val SingleLineDocs -> $"(.(?!##))+[^#]?"
+    def DocsText -> _SL Op_DocsLineStart [Text] DocsLineText EOL
+    val DocsLineText -> $"[^\r\n]*"
+
+
+
+    # --------------------------------------------------------------------------
     # Grammar Definition
     
     ## 
-    | The root grammar definition.
-    |
-    | # Object
+    | Matches the entire Grammar definition.
+    | # Returns
+    | [object]
     | - Docs - The [Docs] object containing documentation for the grammar.
     | - Name - The name [Value] of the grammar.
     | - Version - The version [Value] of the grammar.
-    | - Rules - The [RuleSet] object containing the grammar's rule 
-    |           definitions.
+    | - Rules - The [RuleSet] object containing the grammar's rule definitions.
     ##
     def Grammar: object ->
-        [Docs] _Docs 
+        [Docs] Docs 
         [Name] GrammarNameDefinition
         [Version] GrammarVersionDefinition
         [Rules] GrammarRuleSetDefinitions
         
     ##
     | The line that defines the name of the grammar.
-    |
     | # Element
     | - Name - The name [Value] of the grammar.
     ##
@@ -73,7 +160,7 @@ rules:
     |           the grammar.
     ##
     def RuleSet ->
-        RuleDefinition+
+        RuleDefinition+ _ <end>
         
     # --------------------------------------------------------------------------
     # Rule Definition
@@ -88,7 +175,7 @@ rules:
     | - Definition - The [RuleExpr] object containing the rule's definition.
     ##
     def RuleDefinition: object ->
-        [Docs] _Docs 'def' ![<<Op_DefineRule>! _ [Name] RuleName [Return] ![<<Op_RuleDefinition> RuleReturn? _ ]! '->' _ [Definition] RuleExpr ]!
+        _ [Docs] Docs 'def' ![<<Op_DefineRule>! _ [Name] RuleName [Return] ![<<Op_RuleDefinition> RuleReturn? _ ]! '->' _ [Definition] RuleExpr ]!
     
     ##
     | The types that can be returned from a rule.
@@ -451,52 +538,22 @@ rules:
         '~' _ [Term] Sequence _ '~'
         
     # --------------------------------------------------------------------------
-    # Whitespace
-    
-    # A required span of multiline whitespace
-    def WS ->
-        ([Whitespace] Whitespace | [Comment] Comment | [Newline] Newline)+
-    # A required span of single-line whitespace
-    def WSSL ->
-        ([Whitespace] Whitespace | [Comment] Comment)+
-    
-    # An optional span of whitespace.
-    def _: Inner -> WS?
-    # An optional span of single-line whitespace.
-    def _SL: Inner -> WSSL?
-    # An optional span of whitespace that may contain docs.
-    def _Docs: Inner -> (WS | Docs)*
-    
-    def EOL -> Newline | EOF
-    def EOF -> <end>
-    
-    def Whitespace -> $"[ \t]+"
-    def Newline -> $"\r?\n"
-    def Comment: Properties -> Op_Comment [Text] CommentText EOL
-    def CommentText => $"[^\r\n]*"
-    def Docs: Properties -> Op_DocsOpen _SL (([Text] SingleLineDocs) | (Newline [Text] DocsText+)) _SL Op_DocsClose
-    def SingleLineDocs -> $"(.(?!##))+[^#]?"
-    def DocsText => _SL Op_DocsLineStart [Text] DocsLineText EOL
-    def DocsLineText => $"[^\r\n]*"
-    
-    
-    # --------------------------------------------------------------------------
     # Operators
-    def Op_RepeatClose -> "}"
-    def Op_OpenInlineLiteral -> "'"
-    def Op_CloseInlineLiteral -> "'"
-    def Op_GroupClose -> ")"
-    def Op_LiteralClose -> """"
-    def Op_PatternClose -> """"
-    def Op_DefineRule -> "def"
+    val Op_RepeatClose -> "}"
+    val Op_OpenInlineLiteral -> "'"
+    val Op_CloseInlineLiteral -> "'"
+    val Op_GroupClose -> ")"
+    val Op_LiteralClose -> """"
+    val Op_PatternClose -> """"
+    val Op_DefineRule -> "def"
     
     # --------------------------------------------------------------------------
     # Identifiers
     
-    def GrammarName -> $"[a-zA-Z_](\w)*"
-    def VersionNumber -> $"[0-9]+(\.[0-9]+)*(-[a-zA-Z_\-]+)?"
-    def RuleName -> $"[a-zA-Z_](\w)*"
-    def AliasName -> $"[a-zA-Z_](\w)*"
-    def LiteralValue -> $"(("""")|[^""\r\n])*"
-    def PatternValue -> $"(("""")|[^""\r\n])*"
-    def Integer -> $"[0-9]+"
+    val GrammarName -> $"[a-zA-Z_](\w)*"
+    val VersionNumber -> $"[0-9]+(\.[0-9]+)*(-[a-zA-Z_\-]+)?"
+    val RuleName -> $"[a-zA-Z_](\w)*"
+    val AliasName -> $"[a-zA-Z_](\w)*"
+    val LiteralValue -> $"(("""")|[^""\r\n])*"
+    val PatternValue -> $"(("""")|[^""\r\n])*"
+    val Integer -> $"[0-9]+"
