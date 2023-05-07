@@ -704,5 +704,9 @@
         "xmlDocCommentDelimiter": "#4e6350",
         // Doc Comment Text
         "xmlDocCommentText": "#6b776d",
+        // Deprecated values
+        "*.deprecated": {
+            "strikethrough": true
+        }
     }
 }
