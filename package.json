@@ -10,7 +10,7 @@
     "publisher": "Dangerdan9631",
     "version": "1.1.0",
     "engines": {
-        "vscode": "^1.75.0"
+        "vscode": "^1.76.0"
     },
     "categories": [
         "Themes"
@@ -28,5 +28,8 @@
                 "path": "./themes/vayeate-light-color-theme.json"
             }
         ]
+    },
+    "scripts": {
+        "install-extension": "vsce package && code --install-extension vayeate-1.1.0.vsix"
     }
 }

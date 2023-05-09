@@ -53,5 +53,12 @@ matched against one or more scopes.
 
 ## Install the extension
 
-* To start using the extension with Visual Studio Code copy it into the
-  `<user home>/.vscode/extensions` folder and restart Code.
+Install the `Visual Studio Code Extensions` CLI
+```shell
+ npm install -g @vscode/vsce
+ ```
+
+Run the install-extension script
+```shell
+npm run install-extension
+```
