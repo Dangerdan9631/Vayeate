@@ -29,6 +29,7 @@ This repo contains all of the files necessary for the extension.
     the json file into the `<user home>/.omnisharp` folder and replace the
     substitution values inside of `[]`.
   * `settings/Idea` - IDEA settings. See [README.md](./settings/Idea/README.md) for instructions.
+* `scripts` - Vayeate BlueShell Scripts. See [README.md](./scripts/README.md).
 
 ## Testing color themes
 
