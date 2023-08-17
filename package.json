@@ -35,6 +35,6 @@
         ]
     },
     "scripts": {
-        "install-extension": "vsce package && code --install-extension vayeate-1.1.0.vsix"
+        "install-extension": "vsce package && code --install-extension vayeate-1.2.0.vsix"
     }
 }
