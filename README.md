@@ -6,7 +6,9 @@
 </div>
 
 A custom extension and settings for Visual Studio Code.
-![Vayeate](/images/Screenshot.png)
+![Vayeate](/images/vayeate-theme.png)
+![Mercurius](/images/mercurius-theme.png)
+![Vayeate Light](/images/vayeate-light-theme.png)
 
 ## What's in the repo?
 

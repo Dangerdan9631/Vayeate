@@ -8,7 +8,7 @@
     },
     "description": "A custom color theme for VS Code",
     "publisher": "Dangerdan9631",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "engines": {
         "vscode": "^1.76.0"
     },
@@ -26,6 +26,11 @@
                 "label": "Vayeate Light",
                 "uiTheme": "vs",
                 "path": "./themes/vayeate-light-color-theme.json"
+            },
+            {
+                "label": "Mercurius",
+                "uiTheme": "vs-dark",
+                "path": "./themes/mercurius-color-theme.json"
             }
         ]
     },
