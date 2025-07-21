@@ -652,6 +652,192 @@
                 "foreground": "#aca374"
             }
         },
+        // =====================================================================
+        // Regex Pipeline Obsidian
+        // =====================================================================
+        {
+            "name": "Keywords",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+            ],
+            "settings": {
+                "foreground": "#979bd6"
+            }
+        },
+        {
+            "name": "Operators",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+            ],
+            "settings": {
+                "foreground": "#fc7676"
+            }
+        },
+        {
+            "name": "Names",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+            ],
+            "settings": {
+                "foreground": "#35a2fa"
+            }
+        },
+        {
+            "name": "Regex Escape Characters",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+            ],
+            "settings": {
+                "foreground": "#aca374"
+            }
+        },
+        {
+            "name": "Regex Control Characters",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+            ],
+            "settings": {
+                "foreground": "#979bd6"
+            }
+        },
+        {
+            "name": "Regex Parens",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+            ],
+            "settings": {
+                "foreground": "#35a2fa"
+            }
+        },
+        {
+            "name": "Pattern Regex",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#6fad6e"
+            }
+        },
+        {
+            "name": "Pattern Regex String",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#6fad6e"
+            }
+        },
+        {
+            "name": "Regex",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp",
+            ],
+            "settings": {
+                "fontStyle": "bold",
+            }
+        },
+        {
+            "name": "Replace Regex String",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#79d6c7"
+            }
+        },
+        {
+            "name": "Options 1",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+            ],
+            "settings": {
+                "foreground": "#979bd6"
+            }
+        },
+        {
+            "name": "Options 2",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+            ],
+            "settings": {
+                "foreground": "#fc7676"
+            }
+        },
+        {
+            "name": "Options 3",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+            ],
+            "settings": {
+                "foreground": "#c589e7"
+            }
+        },
+        {
+            "name": "Options 4",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+            ],
+            "settings": {
+                "foreground": "#35a2fa"
+            }
+        },
+        {
+            "name": "Options 5",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+            ],
+            "settings": {
+                "foreground": "#db9052"
+            }
+        },
+        {
+            "name": "Options 6",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#bea73c"
+            }
+        },
+        {
+            "name": "Options 7",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8b7364"
+            }
+        },
+        {
+            "name": "Options 8",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+            ],
+            "settings": {
+                "foreground": "#6b776d"
+            }
+        },
+        {
+            "name": "Line Comments",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+            ],
+            "settings": {
+                "foreground": "#486e4b"
+            }
+        },
+        {
+            "name": "Text Comments",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8f5252"
+            }
+        },
     ],
     "semanticTokenColors": {
         // Default Text
