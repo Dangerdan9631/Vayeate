@@ -684,6 +684,15 @@
             }
         },
         {
+            "name": "Regex",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp",
+            ],
+            "settings": {
+                "fontStyle": "bold",
+            }
+        },
+        {
             "name": "Regex Escape Characters",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
@@ -711,30 +720,12 @@
             }
         },
         {
-            "name": "Pattern Regex",
-            "scope": [
-                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
-            ],
-            "settings": {
-                "foreground": "#6fad6e"
-            }
-        },
-        {
             "name": "Pattern Regex String",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
             ],
             "settings": {
                 "foreground": "#6fad6e"
-            }
-        },
-        {
-            "name": "Regex",
-            "scope": [
-                "source.regex-pipeline.obsidian string.regexp",
-            ],
-            "settings": {
-                "fontStyle": "bold",
             }
         },
         {
