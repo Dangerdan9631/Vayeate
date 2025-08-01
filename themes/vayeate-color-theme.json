@@ -660,6 +660,7 @@
             "scope": [
                 "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
             ],
             "settings": {
                 "foreground": "#979bd6"
@@ -669,9 +670,19 @@
             "name": "Operators",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
             ],
             "settings": {
                 "foreground": "#fc7676"
+            }
+        },
+        {
+            "name": "Operators2",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+            ],
+            "settings": {
+                "foreground": "#db9052"
             }
         },
         {
@@ -681,6 +692,15 @@
             ],
             "settings": {
                 "foreground": "#35a2fa"
+            }
+        },
+        {
+            "name": "Names2",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#fc7676"
             }
         },
         {
