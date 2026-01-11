@@ -7,6 +7,11 @@
         "when": "isWindows"
     },
     {
+        "key": "ctrl+shift+s",
+        "command": "-workbench.action.files.saveAs",
+        "when": "isLinux"
+    },
+    {
         "key": "cmd+shift+s",
         "command": "-workbench.action.files.saveAs",
         "when": "isMac"
@@ -15,6 +20,11 @@
         "key": "ctrl+shift+s",
         "command": "-workbench.action.files.saveLocalFile",
         "when": "remoteFileDialogVisible && isWindows"
+    },
+    {
+        "key": "ctrl+shift+s",
+        "command": "-workbench.action.files.saveLocalFile",
+        "when": "remoteFileDialogVisible && isLinux"
     },
     {
         "key": "cmd+shift+s",
@@ -27,6 +37,11 @@
         "when": "isWindows"
     },
     {
+        "key": "ctrl+shift+s",
+        "command": "workbench.action.splitEditor",
+        "when": "isLinux"
+    },
+    {
         "key": "cmd+shift+s",
         "command": "workbench.action.splitEditor",
         "when": "isMac"
@@ -35,6 +50,11 @@
         "key": "ctrl+\\",
         "command": "-workbench.action.splitEditor",
         "when": "isWindows"
+    },
+    {
+        "key": "ctrl+\\",
+        "command": "-workbench.action.splitEditor",
+        "when": "isLinux"
     },
     {
         "key": "cmd+\\",
@@ -63,6 +83,11 @@
         "when": "isWindows"
     },
     {
+        "key": "ctrl+k",
+        "command": "workbench.action.terminal.clear",
+        "when": "isLinux"
+    },
+    {
         "key": "cmd+k",
         "command": "workbench.action.terminal.clear",
         "when": "isMac"
@@ -73,6 +98,11 @@
         "key": "ctrl+1",
         "command": "workbench.action.toggleSidebarVisibility",
         "when": "isWindows"
+    },
+    {
+        "key": "ctrl+1",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "isLinux"
     },
     {
         "key": "cmd+1",
@@ -142,5 +172,5 @@
         "key": "ctrl+shift+left",
         "command": "-cursorWordStartLeftSelect",
         "when": "textInputFocus"
-    },
+    }
 ]
