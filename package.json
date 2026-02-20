@@ -41,6 +41,56 @@
                 "label": "Virgo",
                 "uiTheme": "vs-dark",
                 "path": "./themes/virgo-color-theme.json"
+            },
+            {
+                "label": "Tallgeese",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tallgeese-color-theme.json"
+            },
+            {
+                "label": "Tallgeese Light",
+                "uiTheme": "vs",
+                "path": "./themes/tallgeese-light-color-theme.json"
+            },
+            {
+                "label": "Epyon",
+                "uiTheme": "vs-dark",
+                "path": "./themes/epyon-color-theme.json"
+            },
+            {
+                "label": "Epyon Light",
+                "uiTheme": "vs",
+                "path": "./themes/epyon-light-color-theme.json"
+            },
+            {
+                "label": "Sandrock",
+                "uiTheme": "vs-dark",
+                "path": "./themes/sandrock-color-theme.json"
+            },
+            {
+                "label": "Sandrock Light",
+                "uiTheme": "vs",
+                "path": "./themes/sandrock-light-color-theme.json"
+            },
+            {
+                "label": "Heavyarms",
+                "uiTheme": "vs-dark",
+                "path": "./themes/heavyarms-color-theme.json"
+            },
+            {
+                "label": "Heavyarms Light",
+                "uiTheme": "vs",
+                "path": "./themes/heavyarms-light-color-theme.json"
+            },
+            {
+                "label": "Deathscythe",
+                "uiTheme": "vs-dark",
+                "path": "./themes/deathscythe-color-theme.json"
+            },
+            {
+                "label": "Deathscythe Light",
+                "uiTheme": "vs",
+                "path": "./themes/deathscythe-light-color-theme.json"
             }
         ]
     },

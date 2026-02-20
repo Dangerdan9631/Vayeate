@@ -1,0 +1,914 @@
+{
+    "name": "Heavyarms",
+    "type": "dark",
+    "semanticHighlighting": true,
+    "colors": {
+        // =====================================================================
+        // Title Bar
+        "titleBar.activeBackground": "#2e4030",
+        "titleBar.activeForeground": "#b8c8ac",
+        "titleBar.border": "#2e4030",
+        "titleBar.inactiveBackground": "#28342a",
+        "titleBar.inactiveForeground": "#6e7c5e",
+        "focusBorder": "#2e4030",
+        // =====================================================================
+        // Menu Bar
+        "menu.background": "#28342a",
+        "menu.foreground": "#b8c8ac",
+        "menu.separatorBackground": "#4a5c44",
+        "menu.selectionForeground": "#c4d4b0",
+        "menu.selectionBackground": "#344238",
+        "menubar.selectionForeground": "#c4d4b0",
+        "menubar.selectionBackground": "#344238",
+        // =====================================================================
+        // Activity Bar
+        "activityBar.foreground": "#6a9058",
+        "activityBar.background": "#1a2018",
+        "activityBar.activeBorder": "#6a9058",
+        "activityBar.dropBorder": "#b8c8ac",
+        "activityBar.inactiveForeground": "#4a5c44",
+        // =====================================================================
+        // Breadcrumb
+        "breadcrumb.foreground": "#6e7c5e",
+        "breadcrumb.background": "#1a2018",
+        "breadcrumb.focusForeground": "#b8c8ac",
+        "breadcrumb.activeSelectionForeground": "#6a9058",
+        "breadcrumbPicker.background": "#1a2018",
+        // =====================================================================
+        // Side Bar
+        "sideBar.background": "#181e1a",
+        "sideBar.foreground": "#b4c4a8",
+        "sideBarSectionHeader.background": "#1e2620",
+        "sideBarSectionHeader.foreground": "#6a9058",
+        "sideBarTitle.foreground": "#b4c4a8",
+        "sideBar.dropBackground": "#344238",
+        "sideBar.border": "#2e4030",
+        // =====================================================================
+        // Status Bar
+        "statusBar.background": "#28342a",
+        "statusBar.foreground": "#b8c8ac",
+        "statusBar.debuggingBackground": "#2e4030",
+        "statusBar.debuggingForeground": "#b8c8ac",
+        "statusBarItem.remoteForeground": "#8a6030",
+        "statusBar.noFolderBackground": "#6a7828",
+        "statusBar.noFolderForeground": "#c8d8b4",
+        "statusBarItem.activeBackground": "#b8c8ac2e",
+        "statusBarItem.errorBackground": "#6a7828",
+        "statusBarItem.errorForeground": "#c8d8b4",
+        "statusBarItem.hoverBackground": "#c8d8b42e",
+        "progressBar.background": "#6a9058",
+        // =====================================================================
+        // Notifications
+        "notifications.foreground": "#b8c8ac",
+        "notifications.background": "#1e2620",
+        "notifications.border": "#2e4030",
+        "notificationToast.border": "#2e4030",
+        "notificationCenterHeader.foreground": "#b8c8ac",
+        "notificationCenterHeader.background": "#28342a",
+        "notificationCenter.border": "#2e4030",
+        "notificationsInfoIcon.foreground": "#98b080",
+        "notificationsWarningIcon.foreground": "#8a6030",
+        "notificationsErrorIcon.foreground": "#8a6030",
+        "notificationLink.foreground": "#6a9058",
+        // =====================================================================
+        // Extension Pane
+        "extensionButton.prominentBackground": "#344238",
+        "extensionButton.prominentForeground": "#c4d4b0",
+        "extensionButton.prominentHoverBackground": "#3e5040",
+        // =====================================================================
+        // Editor View
+        "editor.foreground": "#b4c4a8",
+        "editor.background": "#121814",
+        "editorCursor.foreground": "#6a9058",
+        "editor.lineHighlightBackground": "#1a2018",
+        "editor.selectionBackground": "#344238",
+        "editorLineNumber.foreground": "#50604a",
+        "editorLineNumber.activeForeground": "#6e7c5e",
+        "editorIndentGuide.background": "#2c3428",
+        "editorIndentGuide.activeBackground": "#4a5c44",
+        "editorInlayHint.foreground": "#5e6c50",
+        "editorInlayHint.background": "#1e2620",
+        // =====================================================================
+        // Gutter
+        "editorGutter.addedBackground": "#506850",
+        "editorGutter.background": "#121814",
+        "editorGutter.deletedBackground": "#8a6030",
+        "editorGutter.modifiedBackground": "#60786866",
+        // =====================================================================
+        // Editor matching
+        "editor.findMatchBackground": "#344238",
+        "editor.findMatchHighlightBackground": "#34423866",
+        "editor.findRangeHighlightBackground": "#60786811",
+        "editorLink.activeForeground": "#90b878",
+        "editorCodeLens.foreground": "#60786866",
+        "editorBracketMatch.background": "#2a3228",
+        "editorBracketMatch.border": "#60786866",
+        "editorRuler.foreground": "#2e4030",
+        // =====================================================================
+        // Editor Group
+        "editorGroupHeader.tabsBackground": "#121814",
+        "editorGroup.emptyBackground": "#121814",
+        // =====================================================================
+        // Git and Diff Editor
+        "gitDecoration.conflictingResourceForeground": "#8a6030",
+        "gitDecoration.deletedResourceForeground": "#8a6030",
+        "gitDecoration.ignoredResourceForeground": "#50604a",
+        "gitDecoration.modifiedResourceForeground": "#7aaa68",
+        "gitDecoration.untrackedResourceForeground": "#78a868",
+        "diffEditor.insertedTextBackground": "#2e3a2a33",
+        "diffEditor.removedTextBackground": "#5a482033",
+        // =====================================================================
+        // Terminal Colors
+        "terminal.ansiBlack": "#101410",
+        "terminal.ansiBlue": "#7aaa68",
+        "terminal.ansiBrightBlack": "#5e6c50",
+        "terminal.ansiBrightBlue": "#90b878",
+        "terminal.ansiBrightCyan": "#80a870",
+        "terminal.ansiBrightGreen": "#80a870",
+        "terminal.ansiBrightMagenta": "#b0c890",
+        "terminal.ansiBrightRed": "#b8b060",
+        "terminal.ansiBrightWhite": "#ccd8b8",
+        "terminal.ansiBrightYellow": "#b8c880",
+        "terminal.ansiCyan": "#608060",
+        "terminal.ansiGreen": "#607850",
+        "terminal.ansiMagenta": "#98b078",
+        "terminal.ansiRed": "#8a6030",
+        "terminal.ansiWhite": "#b8c8ac",
+        "terminal.ansiYellow": "#90a458",
+        "terminal.border": "#2e4030",
+        "terminal.foreground": "#bccca4",
+        "terminal.background": "#121814",
+        "textPreformat.foreground": "#b4c4a8",
+        // =====================================================================
+        // Widgets
+        "editorWidget.foreground": "#b8c8ac",
+        "editorWidget.background": "#1e2620",
+        "editorWidget.border": "#2e4030",
+        "widget.shadow": "#0c1010",
+        // =====================================================================
+        // Badges
+        "activityBarBadge.foreground": "#c4d4b0",
+        "activityBarBadge.background": "#405a30",
+        "badge.foreground": "#c4d4b0",
+        "badge.background": "#405a30",
+        "extensionBadge.remoteForeground": "#c4d4b0",
+        "extensionBadge.remoteBackground": "#405a30",
+        // =====================================================================
+        // Panels
+        "panel.border": "#2e4030",
+        "panelTitle.activeForeground": "#b8c8ac",
+        "panelTitle.activeBorder": "#6a9058",
+        "panelTitle.inactiveForeground": "#6e7c5e",
+        "panel.background": "#1e2620",
+        "panel.dropBorder": "#2e4030",
+        "panelSection.border": "#2e4030",
+        "panelSection.dropBackground": "#1e2620",
+        "panelSectionHeader.background": "#28342a",
+        // =====================================================================
+        // Lists
+        "list.activeSelectionBackground": "#344238cc",
+        "list.activeSelectionForeground": "#ccd8b8",
+        "list.focusBackground": "#344238cc",
+        "list.focusForeground": "#bccca4",
+        "list.highlightForeground": "#98b080",
+        "list.hoverBackground": "#2a3428cc",
+        "list.hoverForeground": "#bccca4",
+        "list.inactiveSelectionBackground": "#28342acc",
+        "list.inactiveSelectionForeground": "#6e7c5e",
+        "list.invalidItemForeground": "#8a6030",
+        // =====================================================================
+        // Buttons
+        "button.background": "#344238",
+        "button.foreground": "#c4d4b0",
+        "button.hoverBackground": "#3e5040",
+        "button.secondaryBackground": "#28342a",
+        "button.secondaryForeground": "#b8c8ac",
+        "button.secondaryHoverBackground": "#2e4030",
+        // =====================================================================
+        // Dropdowns
+        "dropdown.background": "#121814",
+        "dropdown.border": "#2e4030",
+        "dropdown.foreground": "#b4c4a8",
+        "dropdown.listBackground": "#1e2620",
+        // =====================================================================
+        // Scroll Bar
+        "scrollbar.shadow": "#0c1010",
+        "scrollbarSlider.activeBackground": "#60786866",
+        "scrollbarSlider.background": "#2e403066",
+        "scrollbarSlider.hoverBackground": "#3e504066",
+        // =====================================================================
+        // Input Boxes
+        "input.background": "#121814",
+        "input.border": "#2e4030",
+        "input.foreground": "#b4c4a8",
+        "input.placeholderForeground": "#4a5c44",
+        "inputOption.activeForeground": "#bccca4",
+        "inputOption.activeBorder": "#6a9058",
+        "inputValidation.errorBackground": "#6a7828",
+        "inputValidation.errorForeground": "#c8d8b4",
+        "inputValidation.infoBackground": "#405a30",
+        "inputValidation.infoForeground": "#ccd8b8",
+        "inputValidation.warningBackground": "#8a6030",
+        "inputValidation.warningForeground": "#c8d8b4",
+        // =====================================================================
+        // Tabs
+        "tab.activeBackground": "#1e2620",
+        "tab.activeForeground": "#bccca4",
+        "tab.border": "#2e4030",
+        "tab.inactiveBackground": "#28342a",
+        "tab.inactiveForeground": "#6e7c5e",
+    },
+    "tokenColors": [
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source",
+            ],
+            "settings": {
+                "foreground": "#80986a"
+            }
+        },
+        // =====================================================================
+        // Text
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.name",
+                "meta.use.rust",
+                "punctuation.accessor",
+                "punctuation.brackets",
+                "punctuation.comma",
+                "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
+                "punctuation.parenthesis",
+                "punctuation.squarebracket",
+                "punctuation.section",
+                "punctuation.semi",
+                "punctuation.separator",
+                "punctuation.terminator",
+                "source",
+            ],
+            "settings": {
+                "foreground": "#b4c4a8"
+            }
+        },
+        // =====================================================================
+        // Code
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "comment",
+                "punctuation.definition.comment",
+            ],
+            "settings": {
+                "foreground": "#485840"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "string",
+                "punctuation.definition.string",
+            ],
+            "settings": {
+                "foreground": "#6e7a48"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "constant.character.escape",
+                "punctuation.definition.interpolation",
+            ],
+            "settings": {
+                "foreground": "#808840"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "meta.attribute",
+                "meta.attribute keyword",
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation",
+            ],
+            "settings": {
+                "foreground": "#7aaa60"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "keyword",
+                "constant.language",
+                "storage.modifier",
+                "variable.language",
+            ],
+            "settings": {
+                "foreground": "#88b870"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.name.type.class",
+                "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.name.type.struct",
+                "entity.other.inherited-class",
+                "storage.type",
+                "variable.other.object",
+            ],
+            "settings": {
+                "foreground": "#b0c498"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.name.type.interface",
+            ],
+            "settings": {
+                "foreground": "#9ab888"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum",
+            ],
+            "settings": {
+                "foreground": "#90aa78"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.name.variable.field",
+                "variable.other",
+                "source.powershell support.variable",
+            ],
+            "settings": {
+                "foreground": "#7a8850"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.name.function",
+                "entity.name.variable.property",
+                "variable.other.object.property",
+                "source.powershell support.function"
+            ],
+            "settings": {
+                "foreground": "#a8bc90"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "variable.parameter",
+                "entity.name.variable.parameter",
+                "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
+            ],
+            "settings": {
+                "foreground": "#7aaa60"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "constant.numeric",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "punctuation.definition.tag",
+                "keyword.other.documentation",
+                "entity.name.tag",
+            ],
+            "settings": {
+                "foreground": "#4a5842"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#607868",
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "comment.block.documentation",
+                "comment.block.javadoc",
+                "comment.line.documentation",
+            ],
+            "settings": {
+                "foreground": "#506248",
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "comment.block.documentation string.quoted.double",
+                "comment.block.documentation punctuation.definition.string",
+            ],
+            "settings": {
+                "foreground": "#7a8840"
+            }
+        },
+        // =====================================================================
+        // XML
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "text.xml punctuation.definition.tag",
+                "text.xml meta.tag",
+            ],
+            "settings": {
+                "foreground": "#808840"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "text.xml entity.name.tag",
+            ],
+            "settings": {
+                "foreground": "#7a8040"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "text.xml entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#9ab888"
+            }
+        },
+        // =====================================================================
+        // YAML/JSON
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.yaml punctuation.definition",
+                "source.json punctuation.definition",
+                "source.yaml punctuation.separator",
+                "source.json punctuation.separator",
+                "source.yaml entity.other",
+            ],
+            "settings": {
+                "foreground": "#b4c4a8"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.yaml entity.name.tag",
+                "source.json support.type",
+            ],
+            "settings": {
+                "foreground": "#6e7040"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.yaml constant.language",
+                "source.json constant.language",
+            ],
+            "settings": {
+                "foreground": "#90aa78"
+            }
+        },
+        // =====================================================================
+        // Markdown
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "heading.1 entity.name.section",
+                "punctuation.definition.heading",
+            ],
+            "settings": {
+                "foreground": "#88b870",
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "heading.2 entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#a8bc90"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "heading.3 entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#6a9058"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#90a878"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "constant.other.reference.link",
+            ],
+            "settings": {
+                "foreground": "#88b870"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "markup.underline.link",
+            ],
+            "settings": {
+                "foreground": "#6a9058"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "fenced_code.block.language",
+                "markup.inline",
+                "string.other.link",
+                "text.html.markdown punctuation.definition",
+                "text.html.markdown punctuation.definition.string",
+                "text.html.markdown meta.separator",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        // =====================================================================
+        // Properties
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.ini keyword",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.ini entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#6a9058"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.ini",
+            ],
+            "settings": {
+                "foreground": "#90aa78"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.ini punctuation",
+                "source.ini punctuation.separator",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        // =====================================================================
+        // TOML
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.toml keyword",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.toml entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#6a9058"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.toml",
+            ],
+            "settings": {
+                "foreground": "#90aa78"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.toml punctuation",
+                "source.toml punctuation.separator",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        // =====================================================================
+        // Regex Pipeline Obsidian
+        // =====================================================================
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+            ],
+            "settings": {
+                "foreground": "#88b870"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
+            ],
+            "settings": {
+                "foreground": "#a8c898"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+            ],
+            "settings": {
+                "foreground": "#5a5830"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#88b870"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp",
+            ],
+            "settings": {
+                "fontStyle": "bold",
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+            ],
+            "settings": {
+                "foreground": "#88b870"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#6e7a48"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#788038"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+            ],
+            "settings": {
+                "foreground": "#88b870"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+            ],
+            "settings": {
+                "foreground": "#a8c898"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+            ],
+            "settings": {
+                "foreground": "#90aa78"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#86a470"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+            ],
+            "settings": {
+                "foreground": "#80986a"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#7aaa60"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#607868"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+            ],
+            "settings": {
+                "foreground": "#506048"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+            ],
+            "settings": {
+                "foreground": "#485840"
+            }
+        },
+        {
+            "name": "Heavyarms",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8a6030"
+            }
+        },
+    ],
+    "semanticTokenColors": {
+        // Default Text
+        "local": "#b4c4a8",
+        "namespace": "#b4c4a8",
+        "operator": "#b4c4a8",
+        "punctuation": "#b4c4a8",
+        "variable": "#b4c4a8",
+        // Comment
+        "comment": "#485840",
+        "comment.documentation": "#506248",
+        // String
+        "string": "#6e7a48",
+        "regexp": "#788038",
+        // String Excapes
+        "stringEscapeCharacter": "#808840",
+        // Keywords
+        "keyword": "#88b870",
+        "controlKeyword": "#88b870",
+        "plainKeyword": "#88b870",
+        // Concrete types
+        "class": "#b0c498",
+        "enum": "#b0c498",
+        "struct": "#b0c498",
+        // Interface
+        "interface": "#9ab888",
+        "delegate": "#9ab888",
+        // Constant values
+        "constant": "#90aa78",
+        "enumMember": "#90aa78",
+        "variable.static.readonly": "#90aa78",
+        "property.static.readonly": "#90aa78",
+        "field.static": "#90aa78",
+        // Fields
+        "field": "#7a8850",
+        "property:java": "#7a8850",
+        // Methods
+        "method": "#a8bc90",
+        "property": "#a8bc90",
+        // Parameters and Arguments
+        "parameter": "#7aaa60",
+        "typeParameter": "#7aaa60",
+        // Numbers
+        "number": "#86a470",
+        // Doc Comment Attribute
+        "xmlDocCommentAttributeName": "#607868",
+        // Doc Comment Tokens
+        "xmlDocCommentName": "#607868",
+        "xmlDocCommentAttributeQuotes": "#4a5842",
+        "xmlDocCommentDelimiter": "#4a5842",
+        // Doc Comment Text
+        "xmlDocCommentText": "#506248",
+        // Deprecated values
+        "*.deprecated": {
+            "strikethrough": true
+        }
+    }
+}

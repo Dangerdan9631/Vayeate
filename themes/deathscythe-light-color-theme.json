@@ -1,0 +1,914 @@
+{
+    "name": "Deathscythe Light",
+    "type": "light",
+    "semanticHighlighting": true,
+    "colors": {
+        // =====================================================================
+        // Title Bar
+        "titleBar.activeBackground": "#b0ccb4",
+        "titleBar.activeForeground": "#182418",
+        "titleBar.border": "#b0ccb4",
+        "titleBar.inactiveBackground": "#c0d8c4",
+        "titleBar.inactiveForeground": "#608070",
+        "focusBorder": "#b0ccb4",
+        // =====================================================================
+        // Menu Bar
+        "menu.background": "#c0d8c4",
+        "menu.foreground": "#182418",
+        "menu.separatorBackground": "#608870",
+        "menu.selectionForeground": "#081008",
+        "menu.selectionBackground": "#c4d8c8",
+        "menubar.selectionForeground": "#081008",
+        "menubar.selectionBackground": "#c4d8c8",
+        // =====================================================================
+        // Activity Bar
+        "activityBar.foreground": "#246830",
+        "activityBar.background": "#e8f0e8",
+        "activityBar.activeBorder": "#246830",
+        "activityBar.dropBorder": "#182418",
+        "activityBar.inactiveForeground": "#608870",
+        // =====================================================================
+        // Breadcrumb
+        "breadcrumb.foreground": "#608070",
+        "breadcrumb.background": "#e8f0e8",
+        "breadcrumb.focusForeground": "#182418",
+        "breadcrumb.activeSelectionForeground": "#246830",
+        "breadcrumbPicker.background": "#e8f0e8",
+        // =====================================================================
+        // Side Bar
+        "sideBar.background": "#e4ede4",
+        "sideBar.foreground": "#142018",
+        "sideBarSectionHeader.background": "#dae6da",
+        "sideBarSectionHeader.foreground": "#246830",
+        "sideBarTitle.foreground": "#142018",
+        "sideBar.dropBackground": "#c4d8c8",
+        "sideBar.border": "#b0ccb4",
+        // =====================================================================
+        // Status Bar
+        "statusBar.background": "#c0d8c4",
+        "statusBar.foreground": "#182418",
+        "statusBar.debuggingBackground": "#b0ccb4",
+        "statusBar.debuggingForeground": "#182418",
+        "statusBarItem.remoteForeground": "#704820",
+        "statusBar.noFolderBackground": "#d0eedd",
+        "statusBar.noFolderForeground": "#eef2ee",
+        "statusBarItem.activeBackground": "#1824182e",
+        "statusBarItem.errorBackground": "#d0eedd",
+        "statusBarItem.errorForeground": "#eef2ee",
+        "statusBarItem.hoverBackground": "#eef2ee2e",
+        "progressBar.background": "#246830",
+        // =====================================================================
+        // Notifications
+        "notifications.foreground": "#182418",
+        "notifications.background": "#dae6da",
+        "notifications.border": "#b0ccb4",
+        "notificationToast.border": "#b0ccb4",
+        "notificationCenterHeader.foreground": "#182418",
+        "notificationCenterHeader.background": "#c0d8c4",
+        "notificationCenter.border": "#b0ccb4",
+        "notificationsInfoIcon.foreground": "#408060",
+        "notificationsWarningIcon.foreground": "#704820",
+        "notificationsErrorIcon.foreground": "#704820",
+        "notificationLink.foreground": "#246830",
+        // =====================================================================
+        // Extension Pane
+        "extensionButton.prominentBackground": "#c4d8c8",
+        "extensionButton.prominentForeground": "#081008",
+        "extensionButton.prominentHoverBackground": "#d0e4d4",
+        // =====================================================================
+        // Editor View
+        "editor.foreground": "#142018",
+        "editor.background": "#eef2ee",
+        "editorCursor.foreground": "#246830",
+        "editor.lineHighlightBackground": "#e8f0e8",
+        "editor.selectionBackground": "#c4d8c8",
+        "editorLineNumber.foreground": "#608070",
+        "editorLineNumber.activeForeground": "#608070",
+        "editorIndentGuide.background": "#bcd4c0",
+        "editorIndentGuide.activeBackground": "#608870",
+        "editorInlayHint.foreground": "#608070",
+        "editorInlayHint.background": "#dae6da",
+        // =====================================================================
+        // Gutter
+        "editorGutter.addedBackground": "#409858",
+        "editorGutter.background": "#eef2ee",
+        "editorGutter.deletedBackground": "#704820",
+        "editorGutter.modifiedBackground": "#50886866",
+        // =====================================================================
+        // Editor matching
+        "editor.findMatchBackground": "#c4d8c8",
+        "editor.findMatchHighlightBackground": "#c4d8c866",
+        "editor.findRangeHighlightBackground": "#50886811",
+        "editorLink.activeForeground": "#208858",
+        "editorCodeLens.foreground": "#50886866",
+        "editorBracketMatch.background": "#b8d0bc",
+        "editorBracketMatch.border": "#50886866",
+        "editorRuler.foreground": "#b0ccb4",
+        // =====================================================================
+        // Editor Group
+        "editorGroupHeader.tabsBackground": "#eef2ee",
+        "editorGroup.emptyBackground": "#eef2ee",
+        // =====================================================================
+        // Git and Diff Editor
+        "gitDecoration.conflictingResourceForeground": "#704820",
+        "gitDecoration.deletedResourceForeground": "#704820",
+        "gitDecoration.ignoredResourceForeground": "#608070",
+        "gitDecoration.modifiedResourceForeground": "#208858",
+        "gitDecoration.untrackedResourceForeground": "#286050",
+        "diffEditor.insertedTextBackground": "#c0e0d033",
+        "diffEditor.removedTextBackground": "#a0b87033",
+        // =====================================================================
+        // Terminal Colors
+        "terminal.ansiBlack": "#142018",
+        "terminal.ansiBlue": "#208858",
+        "terminal.ansiBrightBlack": "#608070",
+        "terminal.ansiBrightBlue": "#208858",
+        "terminal.ansiBrightCyan": "#309870",
+        "terminal.ansiBrightGreen": "#308860",
+        "terminal.ansiBrightMagenta": "#60a870",
+        "terminal.ansiBrightRed": "#608020",
+        "terminal.ansiBrightWhite": "#040c08",
+        "terminal.ansiBrightYellow": "#408040",
+        "terminal.ansiCyan": "#308860",
+        "terminal.ansiGreen": "#308050",
+        "terminal.ansiMagenta": "#408870",
+        "terminal.ansiRed": "#704820",
+        "terminal.ansiWhite": "#182418",
+        "terminal.ansiYellow": "#307040",
+        "terminal.border": "#b0ccb4",
+        "terminal.foreground": "#0c1810",
+        "terminal.background": "#eef2ee",
+        "textPreformat.foreground": "#142018",
+        // =====================================================================
+        // Widgets
+        "editorWidget.foreground": "#182418",
+        "editorWidget.background": "#dae6da",
+        "editorWidget.border": "#b0ccb4",
+        "widget.shadow": "#90b898",
+        // =====================================================================
+        // Badges
+        "activityBarBadge.foreground": "#081008",
+        "activityBarBadge.background": "#1e6028",
+        "badge.foreground": "#081008",
+        "badge.background": "#1e6028",
+        "extensionBadge.remoteForeground": "#081008",
+        "extensionBadge.remoteBackground": "#1e6028",
+        // =====================================================================
+        // Panels
+        "panel.border": "#b0ccb4",
+        "panelTitle.activeForeground": "#182418",
+        "panelTitle.activeBorder": "#246830",
+        "panelTitle.inactiveForeground": "#608070",
+        "panel.background": "#dae6da",
+        "panel.dropBorder": "#b0ccb4",
+        "panelSection.border": "#b0ccb4",
+        "panelSection.dropBackground": "#dae6da",
+        "panelSectionHeader.background": "#c0d8c4",
+        // =====================================================================
+        // Lists
+        "list.activeSelectionBackground": "#c4d8c8cc",
+        "list.activeSelectionForeground": "#040c08",
+        "list.focusBackground": "#c4d8c8cc",
+        "list.focusForeground": "#0c1810",
+        "list.highlightForeground": "#408060",
+        "list.hoverBackground": "#c8d8cccc",
+        "list.hoverForeground": "#0c1810",
+        "list.inactiveSelectionBackground": "#c0d8c4cc",
+        "list.inactiveSelectionForeground": "#608070",
+        "list.invalidItemForeground": "#704820",
+        // =====================================================================
+        // Buttons
+        "button.background": "#c4d8c8",
+        "button.foreground": "#081008",
+        "button.hoverBackground": "#d0e4d4",
+        "button.secondaryBackground": "#c0d8c4",
+        "button.secondaryForeground": "#182418",
+        "button.secondaryHoverBackground": "#b0ccb4",
+        // =====================================================================
+        // Dropdowns
+        "dropdown.background": "#eef2ee",
+        "dropdown.border": "#b0ccb4",
+        "dropdown.foreground": "#142018",
+        "dropdown.listBackground": "#dae6da",
+        // =====================================================================
+        // Scroll Bar
+        "scrollbar.shadow": "#90b898",
+        "scrollbarSlider.activeBackground": "#50886866",
+        "scrollbarSlider.background": "#b0ccb466",
+        "scrollbarSlider.hoverBackground": "#d0e4d466",
+        // =====================================================================
+        // Input Boxes
+        "input.background": "#eef2ee",
+        "input.border": "#b0ccb4",
+        "input.foreground": "#142018",
+        "input.placeholderForeground": "#608870",
+        "inputOption.activeForeground": "#0c1810",
+        "inputOption.activeBorder": "#246830",
+        "inputValidation.errorBackground": "#d0eedd",
+        "inputValidation.errorForeground": "#eef2ee",
+        "inputValidation.infoBackground": "#1e6028",
+        "inputValidation.infoForeground": "#040c08",
+        "inputValidation.warningBackground": "#704820",
+        "inputValidation.warningForeground": "#eef2ee",
+        // =====================================================================
+        // Tabs
+        "tab.activeBackground": "#dae6da",
+        "tab.activeForeground": "#0c1810",
+        "tab.border": "#b0ccb4",
+        "tab.inactiveBackground": "#c0d8c4",
+        "tab.inactiveForeground": "#608070",
+    },
+    "tokenColors": [
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source",
+            ],
+            "settings": {
+                "foreground": "#206040"
+            }
+        },
+        // =====================================================================
+        // Text
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.name",
+                "meta.use.rust",
+                "punctuation.accessor",
+                "punctuation.brackets",
+                "punctuation.comma",
+                "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
+                "punctuation.parenthesis",
+                "punctuation.squarebracket",
+                "punctuation.section",
+                "punctuation.semi",
+                "punctuation.separator",
+                "punctuation.terminator",
+                "source",
+            ],
+            "settings": {
+                "foreground": "#142018"
+            }
+        },
+        // =====================================================================
+        // Code
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "comment",
+                "punctuation.definition.comment",
+            ],
+            "settings": {
+                "foreground": "#608870"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "string",
+                "punctuation.definition.string",
+            ],
+            "settings": {
+                "foreground": "#2a5030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "constant.character.escape",
+                "punctuation.definition.interpolation",
+            ],
+            "settings": {
+                "foreground": "#2a5030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "meta.attribute",
+                "meta.attribute keyword",
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation",
+            ],
+            "settings": {
+                "foreground": "#2a6040"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "keyword",
+                "constant.language",
+                "storage.modifier",
+                "variable.language",
+            ],
+            "settings": {
+                "foreground": "#1a4828"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.name.type.class",
+                "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.name.type.struct",
+                "entity.other.inherited-class",
+                "storage.type",
+                "variable.other.object",
+            ],
+            "settings": {
+                "foreground": "#143820"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.name.type.interface",
+            ],
+            "settings": {
+                "foreground": "#286040"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum",
+            ],
+            "settings": {
+                "foreground": "#204838"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.name.variable.field",
+                "variable.other",
+                "source.powershell support.variable",
+            ],
+            "settings": {
+                "foreground": "#345838"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.name.function",
+                "entity.name.variable.property",
+                "variable.other.object.property",
+                "source.powershell support.function"
+            ],
+            "settings": {
+                "foreground": "#0c2010"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "variable.parameter",
+                "entity.name.variable.parameter",
+                "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
+            ],
+            "settings": {
+                "foreground": "#2a6040"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "constant.numeric",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "punctuation.definition.tag",
+                "keyword.other.documentation",
+                "entity.name.tag",
+            ],
+            "settings": {
+                "foreground": "#789888"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#508868",
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "comment.block.documentation",
+                "comment.block.javadoc",
+                "comment.line.documentation",
+            ],
+            "settings": {
+                "foreground": "#608870",
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "comment.block.documentation string.quoted.double",
+                "comment.block.documentation punctuation.definition.string",
+            ],
+            "settings": {
+                "foreground": "#307040"
+            }
+        },
+        // =====================================================================
+        // XML
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "text.xml punctuation.definition.tag",
+                "text.xml meta.tag",
+            ],
+            "settings": {
+                "foreground": "#2a5030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "text.xml entity.name.tag",
+            ],
+            "settings": {
+                "foreground": "#285030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "text.xml entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#286040"
+            }
+        },
+        // =====================================================================
+        // YAML/JSON
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.yaml punctuation.definition",
+                "source.json punctuation.definition",
+                "source.yaml punctuation.separator",
+                "source.json punctuation.separator",
+                "source.yaml entity.other",
+            ],
+            "settings": {
+                "foreground": "#142018"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.yaml entity.name.tag",
+                "source.json support.type",
+            ],
+            "settings": {
+                "foreground": "#2a5030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.yaml constant.language",
+                "source.json constant.language",
+            ],
+            "settings": {
+                "foreground": "#204838"
+            }
+        },
+        // =====================================================================
+        // Markdown
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "heading.1 entity.name.section",
+                "punctuation.definition.heading",
+            ],
+            "settings": {
+                "foreground": "#1a4828",
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "heading.2 entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#0c2010"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "heading.3 entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#246830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#307050"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "constant.other.reference.link",
+            ],
+            "settings": {
+                "foreground": "#1a4828"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "markup.underline.link",
+            ],
+            "settings": {
+                "foreground": "#246830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "fenced_code.block.language",
+                "markup.inline",
+                "string.other.link",
+                "text.html.markdown punctuation.definition",
+                "text.html.markdown punctuation.definition.string",
+                "text.html.markdown meta.separator",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        // =====================================================================
+        // Properties
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.ini keyword",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.ini entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#246830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.ini",
+            ],
+            "settings": {
+                "foreground": "#204838"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.ini punctuation",
+                "source.ini punctuation.separator",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        // =====================================================================
+        // TOML
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.toml keyword",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.toml entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#246830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.toml",
+            ],
+            "settings": {
+                "foreground": "#204838"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.toml punctuation",
+                "source.toml punctuation.separator",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        // =====================================================================
+        // Regex Pipeline Obsidian
+        // =====================================================================
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+            ],
+            "settings": {
+                "foreground": "#1a4828"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
+            ],
+            "settings": {
+                "foreground": "#386848"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+            ],
+            "settings": {
+                "foreground": "#407840"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#1a4828"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp",
+            ],
+            "settings": {
+                "fontStyle": "bold",
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+            ],
+            "settings": {
+                "foreground": "#1a4828"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#2a5030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#285030"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+            ],
+            "settings": {
+                "foreground": "#1a4828"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+            ],
+            "settings": {
+                "foreground": "#386848"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+            ],
+            "settings": {
+                "foreground": "#204838"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#185830"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+            ],
+            "settings": {
+                "foreground": "#206040"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#2a6040"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#508868"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+            ],
+            "settings": {
+                "foreground": "#608870"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+            ],
+            "settings": {
+                "foreground": "#608870"
+            }
+        },
+        {
+            "name": "Deathscythe Light",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian",
+            ],
+            "settings": {
+                "foreground": "#704820"
+            }
+        },
+    ],
+    "semanticTokenColors": {
+        // Default Text
+        "local": "#142018",
+        "namespace": "#142018",
+        "operator": "#142018",
+        "punctuation": "#142018",
+        "variable": "#142018",
+        // Comment
+        "comment": "#608870",
+        "comment.documentation": "#608870",
+        // String
+        "string": "#2a5030",
+        "regexp": "#285030",
+        // String Excapes
+        "stringEscapeCharacter": "#2a5030",
+        // Keywords
+        "keyword": "#1a4828",
+        "controlKeyword": "#1a4828",
+        "plainKeyword": "#1a4828",
+        // Concrete types
+        "class": "#143820",
+        "enum": "#143820",
+        "struct": "#143820",
+        // Interface
+        "interface": "#286040",
+        "delegate": "#286040",
+        // Constant values
+        "constant": "#204838",
+        "enumMember": "#204838",
+        "variable.static.readonly": "#204838",
+        "property.static.readonly": "#204838",
+        "field.static": "#204838",
+        // Fields
+        "field": "#345838",
+        "property:java": "#345838",
+        // Methods
+        "method": "#0c2010",
+        "property": "#0c2010",
+        // Parameters and Arguments
+        "parameter": "#2a6040",
+        "typeParameter": "#2a6040",
+        // Numbers
+        "number": "#185830",
+        // Doc Comment Attribute
+        "xmlDocCommentAttributeName": "#508868",
+        // Doc Comment Tokens
+        "xmlDocCommentName": "#508868",
+        "xmlDocCommentAttributeQuotes": "#789888",
+        "xmlDocCommentDelimiter": "#789888",
+        // Doc Comment Text
+        "xmlDocCommentText": "#608870",
+        // Deprecated values
+        "*.deprecated": {
+            "strikethrough": true
+        }
+    }
+}

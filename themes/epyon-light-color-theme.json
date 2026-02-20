@@ -1,0 +1,914 @@
+{
+    "name": "Epyon Light",
+    "type": "light",
+    "semanticHighlighting": true,
+    "colors": {
+        // =====================================================================
+        // Title Bar
+        "titleBar.activeBackground": "#d4a8a8",
+        "titleBar.activeForeground": "#301010",
+        "titleBar.border": "#d4a8a8",
+        "titleBar.inactiveBackground": "#dcc0c0",
+        "titleBar.inactiveForeground": "#9a7070",
+        "focusBorder": "#d4a8a8",
+        // =====================================================================
+        // Menu Bar
+        "menu.background": "#dcc0c0",
+        "menu.foreground": "#301010",
+        "menu.separatorBackground": "#886060",
+        "menu.selectionForeground": "#180808",
+        "menu.selectionBackground": "#ddbcbc",
+        "menubar.selectionForeground": "#180808",
+        "menubar.selectionBackground": "#ddbcbc",
+        // =====================================================================
+        // Activity Bar
+        "activityBar.foreground": "#a01818",
+        "activityBar.background": "#f4eaea",
+        "activityBar.activeBorder": "#a01818",
+        "activityBar.dropBorder": "#301010",
+        "activityBar.inactiveForeground": "#886060",
+        // =====================================================================
+        // Breadcrumb
+        "breadcrumb.foreground": "#9a7070",
+        "breadcrumb.background": "#f4eaea",
+        "breadcrumb.focusForeground": "#301010",
+        "breadcrumb.activeSelectionForeground": "#a01818",
+        "breadcrumbPicker.background": "#f4eaea",
+        // =====================================================================
+        // Side Bar
+        "sideBar.background": "#f0e4e4",
+        "sideBar.foreground": "#280e0e",
+        "sideBarSectionHeader.background": "#e8d8d8",
+        "sideBarSectionHeader.foreground": "#a01818",
+        "sideBarTitle.foreground": "#280e0e",
+        "sideBar.dropBackground": "#ddbcbc",
+        "sideBar.border": "#d4a8a8",
+        // =====================================================================
+        // Status Bar
+        "statusBar.background": "#dcc0c0",
+        "statusBar.foreground": "#301010",
+        "statusBar.debuggingBackground": "#d4a8a8",
+        "statusBar.debuggingForeground": "#301010",
+        "statusBarItem.remoteForeground": "#c00000",
+        "statusBar.noFolderBackground": "#f0c0c0",
+        "statusBar.noFolderForeground": "#f8f0f0",
+        "statusBarItem.activeBackground": "#3010102e",
+        "statusBarItem.errorBackground": "#f0c0c0",
+        "statusBarItem.errorForeground": "#f8f0f0",
+        "statusBarItem.hoverBackground": "#f8f0f02e",
+        "progressBar.background": "#a01818",
+        // =====================================================================
+        // Notifications
+        "notifications.foreground": "#301010",
+        "notifications.background": "#e8d8d8",
+        "notifications.border": "#d4a8a8",
+        "notificationToast.border": "#d4a8a8",
+        "notificationCenterHeader.foreground": "#301010",
+        "notificationCenterHeader.background": "#dcc0c0",
+        "notificationCenter.border": "#d4a8a8",
+        "notificationsInfoIcon.foreground": "#7a4040",
+        "notificationsWarningIcon.foreground": "#c00000",
+        "notificationsErrorIcon.foreground": "#c00000",
+        "notificationLink.foreground": "#a01818",
+        // =====================================================================
+        // Extension Pane
+        "extensionButton.prominentBackground": "#ddbcbc",
+        "extensionButton.prominentForeground": "#180808",
+        "extensionButton.prominentHoverBackground": "#e8cccc",
+        // =====================================================================
+        // Editor View
+        "editor.foreground": "#280e0e",
+        "editor.background": "#f8f0f0",
+        "editorCursor.foreground": "#a01818",
+        "editor.lineHighlightBackground": "#f4eaea",
+        "editor.selectionBackground": "#ddbcbc",
+        "editorLineNumber.foreground": "#9a7070",
+        "editorLineNumber.activeForeground": "#9a7070",
+        "editorIndentGuide.background": "#dcc0c0",
+        "editorIndentGuide.activeBackground": "#886060",
+        "editorInlayHint.foreground": "#9a7070",
+        "editorInlayHint.background": "#e8d8d8",
+        // =====================================================================
+        // Gutter
+        "editorGutter.addedBackground": "#905050",
+        "editorGutter.background": "#f8f0f0",
+        "editorGutter.deletedBackground": "#c00000",
+        "editorGutter.modifiedBackground": "#80686866",
+        // =====================================================================
+        // Editor matching
+        "editor.findMatchBackground": "#ddbcbc",
+        "editor.findMatchHighlightBackground": "#ddbcbc66",
+        "editor.findRangeHighlightBackground": "#80686811",
+        "editorLink.activeForeground": "#a04040",
+        "editorCodeLens.foreground": "#80686866",
+        "editorBracketMatch.background": "#d4b8b8",
+        "editorBracketMatch.border": "#80686866",
+        "editorRuler.foreground": "#d4a8a8",
+        // =====================================================================
+        // Editor Group
+        "editorGroupHeader.tabsBackground": "#f8f0f0",
+        "editorGroup.emptyBackground": "#f8f0f0",
+        // =====================================================================
+        // Git and Diff Editor
+        "gitDecoration.conflictingResourceForeground": "#c00000",
+        "gitDecoration.deletedResourceForeground": "#c00000",
+        "gitDecoration.ignoredResourceForeground": "#9a7070",
+        "gitDecoration.modifiedResourceForeground": "#983838",
+        "gitDecoration.untrackedResourceForeground": "#803030",
+        "diffEditor.insertedTextBackground": "#e0d0d833",
+        "diffEditor.removedTextBackground": "#c0706033",
+        // =====================================================================
+        // Terminal Colors
+        "terminal.ansiBlack": "#280e0e",
+        "terminal.ansiBlue": "#983838",
+        "terminal.ansiBrightBlack": "#9a7070",
+        "terminal.ansiBrightBlue": "#a04040",
+        "terminal.ansiBrightCyan": "#904848",
+        "terminal.ansiBrightGreen": "#8a3838",
+        "terminal.ansiBrightMagenta": "#a07080",
+        "terminal.ansiBrightRed": "#d00000",
+        "terminal.ansiBrightWhite": "#100404",
+        "terminal.ansiBrightYellow": "#905828",
+        "terminal.ansiCyan": "#804040",
+        "terminal.ansiGreen": "#7a3838",
+        "terminal.ansiMagenta": "#905888",
+        "terminal.ansiRed": "#c00000",
+        "terminal.ansiWhite": "#301010",
+        "terminal.ansiYellow": "#803828",
+        "terminal.border": "#d4a8a8",
+        "terminal.foreground": "#200808",
+        "terminal.background": "#f8f0f0",
+        "textPreformat.foreground": "#280e0e",
+        // =====================================================================
+        // Widgets
+        "editorWidget.foreground": "#301010",
+        "editorWidget.background": "#e8d8d8",
+        "editorWidget.border": "#d4a8a8",
+        "widget.shadow": "#c09090",
+        // =====================================================================
+        // Badges
+        "activityBarBadge.foreground": "#180808",
+        "activityBarBadge.background": "#8a1818",
+        "badge.foreground": "#180808",
+        "badge.background": "#8a1818",
+        "extensionBadge.remoteForeground": "#180808",
+        "extensionBadge.remoteBackground": "#8a1818",
+        // =====================================================================
+        // Panels
+        "panel.border": "#d4a8a8",
+        "panelTitle.activeForeground": "#301010",
+        "panelTitle.activeBorder": "#a01818",
+        "panelTitle.inactiveForeground": "#9a7070",
+        "panel.background": "#e8d8d8",
+        "panel.dropBorder": "#d4a8a8",
+        "panelSection.border": "#d4a8a8",
+        "panelSection.dropBackground": "#e8d8d8",
+        "panelSectionHeader.background": "#dcc0c0",
+        // =====================================================================
+        // Lists
+        "list.activeSelectionBackground": "#ddbcbccc",
+        "list.activeSelectionForeground": "#100404",
+        "list.focusBackground": "#ddbcbccc",
+        "list.focusForeground": "#200808",
+        "list.highlightForeground": "#7a4040",
+        "list.hoverBackground": "#e0cccccc",
+        "list.hoverForeground": "#200808",
+        "list.inactiveSelectionBackground": "#dcc0c0cc",
+        "list.inactiveSelectionForeground": "#9a7070",
+        "list.invalidItemForeground": "#c00000",
+        // =====================================================================
+        // Buttons
+        "button.background": "#ddbcbc",
+        "button.foreground": "#180808",
+        "button.hoverBackground": "#e8cccc",
+        "button.secondaryBackground": "#dcc0c0",
+        "button.secondaryForeground": "#301010",
+        "button.secondaryHoverBackground": "#d4a8a8",
+        // =====================================================================
+        // Dropdowns
+        "dropdown.background": "#f8f0f0",
+        "dropdown.border": "#d4a8a8",
+        "dropdown.foreground": "#280e0e",
+        "dropdown.listBackground": "#e8d8d8",
+        // =====================================================================
+        // Scroll Bar
+        "scrollbar.shadow": "#c09090",
+        "scrollbarSlider.activeBackground": "#80686866",
+        "scrollbarSlider.background": "#d4a8a866",
+        "scrollbarSlider.hoverBackground": "#e8cccc66",
+        // =====================================================================
+        // Input Boxes
+        "input.background": "#f8f0f0",
+        "input.border": "#d4a8a8",
+        "input.foreground": "#280e0e",
+        "input.placeholderForeground": "#886060",
+        "inputOption.activeForeground": "#200808",
+        "inputOption.activeBorder": "#a01818",
+        "inputValidation.errorBackground": "#f0c0c0",
+        "inputValidation.errorForeground": "#f8f0f0",
+        "inputValidation.infoBackground": "#8a1818",
+        "inputValidation.infoForeground": "#100404",
+        "inputValidation.warningBackground": "#c00000",
+        "inputValidation.warningForeground": "#f8f0f0",
+        // =====================================================================
+        // Tabs
+        "tab.activeBackground": "#e8d8d8",
+        "tab.activeForeground": "#200808",
+        "tab.border": "#d4a8a8",
+        "tab.inactiveBackground": "#dcc0c0",
+        "tab.inactiveForeground": "#9a7070",
+    },
+    "tokenColors": [
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source",
+            ],
+            "settings": {
+                "foreground": "#6a3030"
+            }
+        },
+        // =====================================================================
+        // Text
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.name",
+                "meta.use.rust",
+                "punctuation.accessor",
+                "punctuation.brackets",
+                "punctuation.comma",
+                "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
+                "punctuation.parenthesis",
+                "punctuation.squarebracket",
+                "punctuation.section",
+                "punctuation.semi",
+                "punctuation.separator",
+                "punctuation.terminator",
+                "source",
+            ],
+            "settings": {
+                "foreground": "#280e0e"
+            }
+        },
+        // =====================================================================
+        // Code
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "comment",
+                "punctuation.definition.comment",
+            ],
+            "settings": {
+                "foreground": "#886060"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "string",
+                "punctuation.definition.string",
+            ],
+            "settings": {
+                "foreground": "#7a1818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "constant.character.escape",
+                "punctuation.definition.interpolation",
+            ],
+            "settings": {
+                "foreground": "#8a2020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "meta.attribute",
+                "meta.attribute keyword",
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation",
+            ],
+            "settings": {
+                "foreground": "#8a3030"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "keyword",
+                "constant.language",
+                "storage.modifier",
+                "variable.language",
+            ],
+            "settings": {
+                "foreground": "#901820"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.name.type.class",
+                "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.name.type.struct",
+                "entity.other.inherited-class",
+                "storage.type",
+                "variable.other.object",
+            ],
+            "settings": {
+                "foreground": "#6a1818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.name.type.interface",
+            ],
+            "settings": {
+                "foreground": "#7a3030"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum",
+            ],
+            "settings": {
+                "foreground": "#6a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.name.variable.field",
+                "variable.other",
+                "source.powershell support.variable",
+            ],
+            "settings": {
+                "foreground": "#7a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.name.function",
+                "entity.name.variable.property",
+                "variable.other.object.property",
+                "source.powershell support.function"
+            ],
+            "settings": {
+                "foreground": "#4a1010"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "variable.parameter",
+                "entity.name.variable.parameter",
+                "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
+            ],
+            "settings": {
+                "foreground": "#8a3030"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "constant.numeric",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "punctuation.definition.tag",
+                "keyword.other.documentation",
+                "entity.name.tag",
+            ],
+            "settings": {
+                "foreground": "#a08080"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#806868",
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "comment.block.documentation",
+                "comment.block.javadoc",
+                "comment.line.documentation",
+            ],
+            "settings": {
+                "foreground": "#886060",
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "comment.block.documentation string.quoted.double",
+                "comment.block.documentation punctuation.definition.string",
+            ],
+            "settings": {
+                "foreground": "#8a2020"
+            }
+        },
+        // =====================================================================
+        // XML
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "text.xml punctuation.definition.tag",
+                "text.xml meta.tag",
+            ],
+            "settings": {
+                "foreground": "#8a2020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "text.xml entity.name.tag",
+            ],
+            "settings": {
+                "foreground": "#8a2020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "text.xml entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#7a3030"
+            }
+        },
+        // =====================================================================
+        // YAML/JSON
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.yaml punctuation.definition",
+                "source.json punctuation.definition",
+                "source.yaml punctuation.separator",
+                "source.json punctuation.separator",
+                "source.yaml entity.other",
+            ],
+            "settings": {
+                "foreground": "#280e0e"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.yaml entity.name.tag",
+                "source.json support.type",
+            ],
+            "settings": {
+                "foreground": "#7a1818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.yaml constant.language",
+                "source.json constant.language",
+            ],
+            "settings": {
+                "foreground": "#6a2828"
+            }
+        },
+        // =====================================================================
+        // Markdown
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "heading.1 entity.name.section",
+                "punctuation.definition.heading",
+            ],
+            "settings": {
+                "foreground": "#901820",
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "heading.2 entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#4a1010"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "heading.3 entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#a01818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#6a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "constant.other.reference.link",
+            ],
+            "settings": {
+                "foreground": "#901820"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "markup.underline.link",
+            ],
+            "settings": {
+                "foreground": "#a01818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "fenced_code.block.language",
+                "markup.inline",
+                "string.other.link",
+                "text.html.markdown punctuation.definition",
+                "text.html.markdown punctuation.definition.string",
+                "text.html.markdown meta.separator",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        // =====================================================================
+        // Properties
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.ini keyword",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.ini entity.name.section",
+            ],
+            "settings": {
+                "foreground": "#a01818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.ini",
+            ],
+            "settings": {
+                "foreground": "#6a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.ini punctuation",
+                "source.ini punctuation.separator",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        // =====================================================================
+        // TOML
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.toml keyword",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.toml entity.other.attribute-name",
+            ],
+            "settings": {
+                "foreground": "#a01818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.toml",
+            ],
+            "settings": {
+                "foreground": "#6a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.toml punctuation",
+                "source.toml punctuation.separator",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        // =====================================================================
+        // Regex Pipeline Obsidian
+        // =====================================================================
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+            ],
+            "settings": {
+                "foreground": "#901820"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
+            ],
+            "settings": {
+                "foreground": "#8a4040"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#901820"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp",
+            ],
+            "settings": {
+                "fontStyle": "bold",
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+            ],
+            "settings": {
+                "foreground": "#901820"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+            ],
+            "settings": {
+                "foreground": "#7a1818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8a1818"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+            ],
+            "settings": {
+                "foreground": "#901820"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8a4040"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+            ],
+            "settings": {
+                "foreground": "#6a2828"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+            ],
+            "settings": {
+                "foreground": "#802020"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+            ],
+            "settings": {
+                "foreground": "#6a3030"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#8a3030"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+            ],
+            "settings": {
+                "foreground": "#806868"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+            ],
+            "settings": {
+                "foreground": "#886060"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+            ],
+            "settings": {
+                "foreground": "#886060"
+            }
+        },
+        {
+            "name": "Epyon Light",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian",
+            ],
+            "settings": {
+                "foreground": "#c00000"
+            }
+        },
+    ],
+    "semanticTokenColors": {
+        // Default Text
+        "local": "#280e0e",
+        "namespace": "#280e0e",
+        "operator": "#280e0e",
+        "punctuation": "#280e0e",
+        "variable": "#280e0e",
+        // Comment
+        "comment": "#886060",
+        "comment.documentation": "#886060",
+        // String
+        "string": "#7a1818",
+        "regexp": "#8a1818",
+        // String Excapes
+        "stringEscapeCharacter": "#8a2020",
+        // Keywords
+        "keyword": "#901820",
+        "controlKeyword": "#901820",
+        "plainKeyword": "#901820",
+        // Concrete types
+        "class": "#6a1818",
+        "enum": "#6a1818",
+        "struct": "#6a1818",
+        // Interface
+        "interface": "#7a3030",
+        "delegate": "#7a3030",
+        // Constant values
+        "constant": "#6a2828",
+        "enumMember": "#6a2828",
+        "variable.static.readonly": "#6a2828",
+        "property.static.readonly": "#6a2828",
+        "field.static": "#6a2828",
+        // Fields
+        "field": "#7a2828",
+        "property:java": "#7a2828",
+        // Methods
+        "method": "#4a1010",
+        "property": "#4a1010",
+        // Parameters and Arguments
+        "parameter": "#8a3030",
+        "typeParameter": "#8a3030",
+        // Numbers
+        "number": "#802020",
+        // Doc Comment Attribute
+        "xmlDocCommentAttributeName": "#806868",
+        // Doc Comment Tokens
+        "xmlDocCommentName": "#806868",
+        "xmlDocCommentAttributeQuotes": "#a08080",
+        "xmlDocCommentDelimiter": "#a08080",
+        // Doc Comment Text
+        "xmlDocCommentText": "#886060",
+        // Deprecated values
+        "*.deprecated": {
+            "strikethrough": true
+        }
+    }
+}
