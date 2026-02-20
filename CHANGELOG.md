@@ -9,6 +9,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 - Added omnisharp settings. 
 - Added psi-header settings.
+- Added Leo color theme.
+- Added Mercurius color theme.
+- Added Aries color theme.
+- Added Virgo color theme.
 
 ## [1.0.0] - 2021-01-22
 - Initial release

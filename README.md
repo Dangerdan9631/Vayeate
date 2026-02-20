@@ -8,7 +8,14 @@
 A custom extension and settings for Visual Studio Code.
 ![Vayeate](/images/vayeate-theme.png)
 ![Mercurius](/images/mercurius-theme.png)
-![Vayeate Light](/images/vayeate-light-theme.png)
+
+## Included themes
+
+* Vayeate
+* Leo
+* Mercurius
+* Aries
+* Virgo
 
 ## What's in the repo?
 
