@@ -141,3 +141,44 @@ export interface GeneratedOutputSummary {
 export interface ThemeTemplateWithPreview extends ThemeTemplate {
   preview: PreviewSession;
 }
+
+export interface CatalogPin {
+  schemaVersion: 1;
+  pinnedVersion: string;
+  updatePolicy: "manual" | "scheduled";
+  sources: {
+    themeColorRegistryUrl: string;
+    semanticTokenRegistryUrl: string;
+    scopeGuidanceUrl: string;
+  };
+}
+
+export interface CatalogSnapshot {
+  schemaVersion: 1;
+  pinnedVersion: string;
+  generatedAt: string;
+  colorKeys: string[];
+  semanticTokenKeys: string[];
+  textMateScopes: string[];
+}
+
+export interface CatalogValidationIssue {
+  code: string;
+  severity: "warning" | "error";
+  message: string;
+}
+
+export interface CatalogValidationReport {
+  valid: boolean;
+  issues: CatalogValidationIssue[];
+  stats: {
+    colorKeyCount: number;
+    semanticTokenKeyCount: number;
+    textMateScopeCount: number;
+  };
+}
+
+export interface CatalogSyncResult {
+  snapshot: CatalogSnapshot;
+  report: CatalogValidationReport;
+}

@@ -44,3 +44,11 @@ Phase 2 implementation has started:
 - Pre-write output summary panel to inspect existing vs generated files before writing.
 - Custom side-by-side dark/light preview.
 - Preview sample ingestion from repository `examples` for TypeScript, JSON, Markdown, PowerShell, and Rust.
+
+Phase 3 kickoff is implemented:
+
+- Pinned catalog source metadata in `catalog/pin.json`.
+- Catalog snapshot/report generation from repository `themes/*.json`.
+- Catalog validation checks (required keys, duplicates, formatting).
+- Local dev API endpoints for catalog status and sync.
+- UI panel to run sync and inspect snapshot/report health.

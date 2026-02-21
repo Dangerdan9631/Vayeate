@@ -1,12 +1,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { generateThemePair } from "../core/generator";
-import type { ElementBinding, GeneratedOutputSummary, PreviewSample, ThemeTemplate } from "../domain/types";
+import type {
+  CatalogPin,
+  CatalogSnapshot,
+  CatalogValidationReport,
+  ElementBinding,
+  GeneratedOutputSummary,
+  PreviewSample,
+  ThemeTemplate,
+} from "../domain/types";
 import {
   generateToThemes,
+  getCatalogStatus,
   listWorkspaceTemplates,
   loadWorkspaceTemplate,
   previewGenerateSummary,
   saveWorkspaceTemplate,
+  syncCatalog,
 } from "./api/themeStudioApi";
 import { previewSamples } from "./preview/samples";
 import { PreviewPane } from "./preview/PreviewPane";
@@ -73,6 +83,11 @@ export function App(): JSX.Element {
   const [showDark, setShowDark] = useState(initialPreviewState.showDark);
   const [showLight, setShowLight] = useState(initialPreviewState.showLight);
   const [outputSummary, setOutputSummary] = useState<GeneratedOutputSummary | null>(null);
+  const [catalogPin, setCatalogPin] = useState<CatalogPin | null>(null);
+  const [catalogSnapshot, setCatalogSnapshot] = useState<CatalogSnapshot | null>(null);
+  const [catalogReport, setCatalogReport] = useState<CatalogValidationReport | null>(null);
+  const [catalogBusy, setCatalogBusy] = useState(false);
+  const [catalogError, setCatalogError] = useState("");
   const [templateError, setTemplateError] = useState<string>("");
   const [apiMessage, setApiMessage] = useState<string>("");
   const [apiError, setApiError] = useState<string>("");
@@ -89,6 +104,7 @@ export function App(): JSX.Element {
 
   useEffect(() => {
     void refreshWorkspaceTemplates();
+    void refreshCatalogStatus();
   }, []);
 
   function updateTemplateMeta(field: "name" | "description", value: string): void {
@@ -103,6 +119,35 @@ export function App(): JSX.Element {
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to list workspace templates.";
       setApiError(message);
+    }
+  }
+
+  async function refreshCatalogStatus(): Promise<void> {
+    try {
+      const status = await getCatalogStatus();
+      setCatalogPin(status.pin);
+      setCatalogSnapshot(status.snapshot);
+      setCatalogReport(status.report);
+      setCatalogError("");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to load catalog status.";
+      setCatalogError(message);
+    }
+  }
+
+  async function handleSyncCatalog(): Promise<void> {
+    setCatalogBusy(true);
+    setCatalogError("");
+    try {
+      const result = await syncCatalog();
+      setCatalogSnapshot(result.snapshot);
+      setCatalogReport(result.report);
+      await refreshCatalogStatus();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Catalog sync failed.";
+      setCatalogError(message);
+    } finally {
+      setCatalogBusy(false);
     }
   }
 
@@ -414,6 +459,55 @@ export function App(): JSX.Element {
                 Run <strong>Refresh Output Summary</strong> to inspect existing vs generated output before writing files.
               </p>
             )}
+          </article>
+
+          <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>
+            <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>Catalog sync</h2>
+            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+              <button type="button" onClick={() => void refreshCatalogStatus()} disabled={catalogBusy}>
+                Refresh Status
+              </button>
+              <button type="button" onClick={() => void handleSyncCatalog()} disabled={catalogBusy}>
+                Sync Snapshot
+              </button>
+            </div>
+            {catalogPin ? (
+              <div style={{ fontSize: 12, marginBottom: 8 }}>
+                <div>Pinned version: {catalogPin.pinnedVersion}</div>
+                <div>Policy: {catalogPin.updatePolicy}</div>
+              </div>
+            ) : null}
+            {catalogSnapshot ? (
+              <div style={{ fontSize: 12, marginBottom: 8 }}>
+                <div>Generated: {catalogSnapshot.generatedAt}</div>
+                <div>Color keys: {catalogSnapshot.colorKeys.length}</div>
+                <div>Semantic tokens: {catalogSnapshot.semanticTokenKeys.length}</div>
+                <div>TextMate scopes: {catalogSnapshot.textMateScopes.length}</div>
+              </div>
+            ) : (
+              <p style={{ margin: "0 0 8px", fontSize: 12, color: "#666" }}>
+                No snapshot yet. Run <strong>Sync Snapshot</strong> to create `catalog/snapshot.json` and `catalog/report.json`.
+              </p>
+            )}
+            {catalogReport ? (
+              <div style={{ fontSize: 12 }}>
+                <div style={{ color: catalogReport.valid ? "#0b5f2a" : "#b00020", marginBottom: 4 }}>
+                  Validation: {catalogReport.valid ? "valid" : "has errors"}
+                </div>
+                {catalogReport.issues.length > 0 ? (
+                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                    {catalogReport.issues.map((issue, index) => (
+                      <li key={`${issue.code}-${index}`} style={{ color: issue.severity === "error" ? "#b00020" : "#9a4f00" }}>
+                        [{issue.severity}] {issue.code}: {issue.message}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div>No validation issues.</div>
+                )}
+              </div>
+            ) : null}
+            {catalogError ? <p style={{ margin: "8px 0 0", fontSize: 12, color: "#b00020" }}>{catalogError}</p> : null}
           </article>
 
           <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>

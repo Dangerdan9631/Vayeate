@@ -1,4 +1,11 @@
-import type { GeneratedOutputSummary, ThemeTemplate } from "../../domain/types";
+import type {
+  CatalogPin,
+  CatalogSnapshot,
+  CatalogSyncResult,
+  CatalogValidationReport,
+  GeneratedOutputSummary,
+  ThemeTemplate,
+} from "../../domain/types";
 
 interface TemplatesResponse {
   templates: string[];
@@ -17,6 +24,12 @@ interface GenerateResponse {
 
 interface GeneratePreviewResponse {
   summary: GeneratedOutputSummary;
+}
+
+interface CatalogStatusResponse {
+  pin: CatalogPin;
+  snapshot: CatalogSnapshot | null;
+  report: CatalogValidationReport | null;
 }
 
 async function parseResponse<T>(response: Response): Promise<T> {
@@ -72,4 +85,16 @@ export async function previewGenerateSummary(template: ThemeTemplate): Promise<G
   });
   const data = await parseResponse<GeneratePreviewResponse>(response);
   return data.summary;
+}
+
+export async function getCatalogStatus(): Promise<CatalogStatusResponse> {
+  const response = await fetch("/api/catalog/status");
+  return parseResponse<CatalogStatusResponse>(response);
+}
+
+export async function syncCatalog(): Promise<CatalogSyncResult> {
+  const response = await fetch("/api/catalog/sync", {
+    method: "POST",
+  });
+  return parseResponse<CatalogSyncResult>(response);
 }
