@@ -1,6 +1,12 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { generateThemePair } from "../core/generator";
 import type { ElementBinding, ThemeTemplate } from "../domain/types";
+import {
+  generateToThemes,
+  listWorkspaceTemplates,
+  loadWorkspaceTemplate,
+  saveWorkspaceTemplate,
+} from "./api/themeStudioApi";
 import { previewSamples } from "./preview/samples";
 import { PreviewPane } from "./preview/PreviewPane";
 import { createDefaultTemplate } from "./state/defaultTemplate";
@@ -19,12 +25,23 @@ function downloadTemplate(template: ThemeTemplate): void {
   URL.revokeObjectURL(url);
 }
 
+function toTemplateFileName(template: ThemeTemplate): string {
+  const normalized = template.id.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
+  const fallback = normalized || "theme-template";
+  return `${fallback}.template.json`;
+}
+
 export function App(): JSX.Element {
   const [template, setTemplate] = useState<ThemeTemplate>(() => createDefaultTemplate());
+  const [templateFileName, setTemplateFileName] = useState<string>(() => toTemplateFileName(createDefaultTemplate()));
+  const [workspaceTemplates, setWorkspaceTemplates] = useState<string[]>([]);
   const [selectedSampleIds, setSelectedSampleIds] = useState<string[]>(previewSamples.map((sample) => sample.id));
   const [showDark, setShowDark] = useState(true);
   const [showLight, setShowLight] = useState(true);
   const [templateError, setTemplateError] = useState<string>("");
+  const [apiMessage, setApiMessage] = useState<string>("");
+  const [apiError, setApiError] = useState<string>("");
+  const [apiBusy, setApiBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const generated = useMemo(() => generateThemePair(template), [template]);
@@ -35,8 +52,23 @@ export function App(): JSX.Element {
 
   const variableEntries = useMemo(() => Object.entries(template.variables), [template.variables]);
 
+  useEffect(() => {
+    void refreshWorkspaceTemplates();
+  }, []);
+
   function updateTemplateMeta(field: "name" | "description", value: string): void {
     setTemplate((prev) => ({ ...prev, [field]: value }));
+  }
+
+  async function refreshWorkspaceTemplates(): Promise<void> {
+    try {
+      const files = await listWorkspaceTemplates();
+      setWorkspaceTemplates(files);
+      setApiError("");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to list workspace templates.";
+      setApiError(message);
+    }
   }
 
   function updateVariable(variableId: string, field: "label" | "value", value: string): void {
@@ -122,6 +154,54 @@ export function App(): JSX.Element {
     reader.readAsText(file);
   }
 
+  async function handleSaveWorkspaceTemplate(): Promise<void> {
+    setApiBusy(true);
+    setApiError("");
+    setApiMessage("");
+    try {
+      await saveWorkspaceTemplate(templateFileName, template);
+      await refreshWorkspaceTemplates();
+      setApiMessage(`Saved ${templateFileName} to color-theme-editor/templates.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Template save failed.";
+      setApiError(message);
+    } finally {
+      setApiBusy(false);
+    }
+  }
+
+  async function handleLoadWorkspaceTemplate(): Promise<void> {
+    if (!templateFileName) return;
+    setApiBusy(true);
+    setApiError("");
+    setApiMessage("");
+    try {
+      const loaded = await loadWorkspaceTemplate(templateFileName);
+      setTemplate(loaded);
+      setApiMessage(`Loaded ${templateFileName} from workspace templates.`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Template load failed.";
+      setApiError(message);
+    } finally {
+      setApiBusy(false);
+    }
+  }
+
+  async function handleGenerateToThemes(): Promise<void> {
+    setApiBusy(true);
+    setApiError("");
+    setApiMessage("");
+    try {
+      const result = await generateToThemes(template);
+      setApiMessage(`Generated themes:\n${result.darkPath}\n${result.lightPath}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Theme generation failed.";
+      setApiError(message);
+    } finally {
+      setApiBusy(false);
+    }
+  }
+
   return (
     <main style={{ fontFamily: "Segoe UI, sans-serif", padding: 20, lineHeight: 1.35, color: "#1f1f1f" }}>
       <header style={{ marginBottom: 14 }}>
@@ -163,6 +243,43 @@ export function App(): JSX.Element {
                   Reset Default
                 </button>
               </div>
+              <label>
+                Workspace file
+                <input
+                  value={templateFileName}
+                  onChange={(event) => setTemplateFileName(event.target.value)}
+                  style={{ width: "100%" }}
+                />
+              </label>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <button type="button" onClick={() => void handleSaveWorkspaceTemplate()} disabled={apiBusy}>
+                  Save to Workspace
+                </button>
+                <button type="button" onClick={() => void refreshWorkspaceTemplates()} disabled={apiBusy}>
+                  Refresh Workspace List
+                </button>
+                <button type="button" onClick={() => void handleLoadWorkspaceTemplate()} disabled={apiBusy}>
+                  Load Selected
+                </button>
+                <button type="button" onClick={() => void handleGenerateToThemes()} disabled={apiBusy}>
+                  Generate to themes
+                </button>
+              </div>
+              <label>
+                Workspace templates
+                <select
+                  value={templateFileName}
+                  onChange={(event) => setTemplateFileName(event.target.value)}
+                  style={{ width: "100%" }}
+                >
+                  <option value="">-- select --</option>
+                  {workspaceTemplates.map((fileName) => (
+                    <option key={fileName} value={fileName}>
+                      {fileName}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -175,6 +292,8 @@ export function App(): JSX.Element {
                 }}
               />
               {templateError ? <p style={{ margin: 0, color: "#b00020" }}>{templateError}</p> : null}
+              {apiError ? <p style={{ margin: 0, color: "#b00020", whiteSpace: "pre-wrap" }}>{apiError}</p> : null}
+              {apiMessage ? <p style={{ margin: 0, color: "#0b5f2a", whiteSpace: "pre-wrap" }}>{apiMessage}</p> : null}
               <p style={{ margin: 0, fontSize: 12, color: "#444" }}>
                 Workspace template files belong in <strong>color-theme-editor/templates</strong>.
               </p>

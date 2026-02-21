@@ -11,8 +11,19 @@ export function assertValidThemeFileName(fileName: string): void {
   }
 }
 
+function isPathInside(parentPath: string, candidatePath: string): boolean {
+  const relative = path.relative(parentPath, candidatePath);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
 export function resolveOutputDirectory(projectRoot: string, outputDir: string): string {
   const resolved = path.resolve(projectRoot, outputDir);
+  const allowedRoot = path.resolve(projectRoot, "../themes");
+
+  if (!isPathInside(allowedRoot, resolved)) {
+    throw new Error(`Output path must stay within themes directory: ${allowedRoot}`);
+  }
+
   return resolved;
 }
 

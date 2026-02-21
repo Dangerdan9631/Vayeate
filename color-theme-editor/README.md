@@ -38,5 +38,7 @@ Phase 2 implementation has started:
 - Template metadata and variable editor.
 - Binding management controls.
 - Template JSON import/export from the UI.
+- Workspace template save/load through local dev API endpoints under `templates/`.
+- One-click generation to `../themes` with output path boundary checks.
 - Custom side-by-side dark/light preview.
 - Preview sample ingestion from repository `examples` for TypeScript, JSON, Markdown, PowerShell, and Rust.
