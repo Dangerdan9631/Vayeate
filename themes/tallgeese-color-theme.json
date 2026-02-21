@@ -9,7 +9,7 @@
         "titleBar.activeForeground": "#c8ced4",
         "titleBar.border": "#343d46",
         "titleBar.inactiveBackground": "#2a333c",
-        "titleBar.inactiveForeground": "#8a929c",
+        "titleBar.inactiveForeground": "#929aa3",
         "focusBorder": "#343d46",
         // =====================================================================
         // Menu Bar
@@ -26,7 +26,7 @@
         "activityBar.background": "#202530",
         "activityBar.activeBorder": "#c8a854",
         "activityBar.dropBorder": "#c8ced4",
-        "activityBar.inactiveForeground": "#606a74",
+        "activityBar.inactiveForeground": "#828d97",
         // =====================================================================
         // Breadcrumb
         "breadcrumb.foreground": "#8a929c",
@@ -49,12 +49,12 @@
         "statusBar.foreground": "#c8ced4",
         "statusBar.debuggingBackground": "#343d46",
         "statusBar.debuggingForeground": "#c8ced4",
-        "statusBarItem.remoteForeground": "#b06040",
+        "statusBarItem.remoteForeground": "#cb8a6f",
         "statusBar.noFolderBackground": "#8a4830",
-        "statusBar.noFolderForeground": "#d4d0ce",
+        "statusBar.noFolderForeground": "#d4d1cf",
         "statusBarItem.activeBackground": "#c8ced42e",
         "statusBarItem.errorBackground": "#8a4830",
-        "statusBarItem.errorForeground": "#d4d0ce",
+        "statusBarItem.errorForeground": "#d4d1cf",
         "statusBarItem.hoverBackground": "#d4d0ce2e",
         "progressBar.background": "#c8a854",
         // =====================================================================
@@ -67,8 +67,8 @@
         "notificationCenterHeader.background": "#2a333c",
         "notificationCenter.border": "#343d46",
         "notificationsInfoIcon.foreground": "#9cb0c0",
-        "notificationsWarningIcon.foreground": "#b06040",
-        "notificationsErrorIcon.foreground": "#b06040",
+        "notificationsWarningIcon.foreground": "#c57c5e",
+        "notificationsErrorIcon.foreground": "#c57c5e",
         "notificationLink.foreground": "#c8a854",
         // =====================================================================
         // Extension Pane
@@ -82,11 +82,11 @@
         "editorCursor.foreground": "#c8a854",
         "editor.lineHighlightBackground": "#202530",
         "editor.selectionBackground": "#3a4550",
-        "editorLineNumber.foreground": "#6a7480",
+        "editorLineNumber.foreground": "#798490",
         "editorLineNumber.activeForeground": "#8a929c",
         "editorIndentGuide.background": "#323942",
         "editorIndentGuide.activeBackground": "#606a74",
-        "editorInlayHint.foreground": "#788490",
+        "editorInlayHint.foreground": "#858f9a",
         "editorInlayHint.background": "#232830",
         // =====================================================================
         // Gutter
@@ -103,16 +103,16 @@
         "editorCodeLens.foreground": "#78869866",
         "editorBracketMatch.background": "#2e3c48",
         "editorBracketMatch.border": "#78869866",
-        "editorRuler.foreground": "#343d46",
+        "editorRuler.foreground": "#728597",
         // =====================================================================
         // Editor Group
         "editorGroupHeader.tabsBackground": "#181b1e",
         "editorGroup.emptyBackground": "#181b1e",
         // =====================================================================
         // Git and Diff Editor
-        "gitDecoration.conflictingResourceForeground": "#b06040",
-        "gitDecoration.deletedResourceForeground": "#b06040",
-        "gitDecoration.ignoredResourceForeground": "#6a7480",
+        "gitDecoration.conflictingResourceForeground": "#c17353",
+        "gitDecoration.deletedResourceForeground": "#c17353",
+        "gitDecoration.ignoredResourceForeground": "#7e8895",
         "gitDecoration.modifiedResourceForeground": "#8ab0c8",
         "gitDecoration.untrackedResourceForeground": "#8aacbc",
         "diffEditor.insertedTextBackground": "#36485833",
@@ -147,11 +147,11 @@
         "widget.shadow": "#0e1114",
         // =====================================================================
         // Badges
-        "activityBarBadge.foreground": "#d0d6dc",
+        "activityBarBadge.foreground": "#fafafb",
         "activityBarBadge.background": "#8a7040",
-        "badge.foreground": "#d0d6dc",
+        "badge.foreground": "#fafafb",
         "badge.background": "#8a7040",
-        "extensionBadge.remoteForeground": "#d0d6dc",
+        "extensionBadge.remoteForeground": "#fafafb",
         "extensionBadge.remoteBackground": "#8a7040",
         // =====================================================================
         // Panels
@@ -174,8 +174,8 @@
         "list.hoverBackground": "#2e3c48cc",
         "list.hoverForeground": "#ccd2d8",
         "list.inactiveSelectionBackground": "#2a333ccc",
-        "list.inactiveSelectionForeground": "#8a929c",
-        "list.invalidItemForeground": "#b06040",
+        "list.inactiveSelectionForeground": "#929aa3",
+        "list.invalidItemForeground": "#c17353",
         // =====================================================================
         // Buttons
         "button.background": "#3a4550",
@@ -201,22 +201,22 @@
         "input.background": "#181b1e",
         "input.border": "#343d46",
         "input.foreground": "#c4cad0",
-        "input.placeholderForeground": "#606a74",
+        "input.placeholderForeground": "#78848f",
         "inputOption.activeForeground": "#ccd2d8",
         "inputOption.activeBorder": "#c8a854",
         "inputValidation.errorBackground": "#8a4830",
-        "inputValidation.errorForeground": "#d4d0ce",
+        "inputValidation.errorForeground": "#d4d1cf",
         "inputValidation.infoBackground": "#8a7040",
-        "inputValidation.infoForeground": "#d8dde3",
+        "inputValidation.infoForeground": "#fafafb",
         "inputValidation.warningBackground": "#b06040",
-        "inputValidation.warningForeground": "#d4d0ce",
+        "inputValidation.warningForeground": "#fefdfd",
         // =====================================================================
         // Tabs
         "tab.activeBackground": "#232830",
         "tab.activeForeground": "#ccd2d8",
         "tab.border": "#343d46",
         "tab.inactiveBackground": "#2a333c",
-        "tab.inactiveForeground": "#8a929c",
+        "tab.inactiveForeground": "#929aa3",
     },
     "tokenColors": [
         {
@@ -264,7 +264,7 @@
                 "punctuation.definition.comment",
             ],
             "settings": {
-                "foreground": "#4e5a68"
+                "foreground": "#5a6778"
             }
         },
         {
@@ -274,7 +274,7 @@
                 "punctuation.definition.string",
             ],
             "settings": {
-                "foreground": "#9a7848"
+                "foreground": "#a07c4b"
             }
         },
         {
@@ -355,7 +355,7 @@
                 "source.powershell support.variable",
             ],
             "settings": {
-                "foreground": "#9a7848"
+                "foreground": "#a07c4b"
             }
         },
         {
@@ -400,7 +400,7 @@
                 "entity.name.tag",
             ],
             "settings": {
-                "foreground": "#546270"
+                "foreground": "#8c9aa8"
             }
         },
         {
@@ -684,7 +684,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
             ],
             "settings": {
-                "foreground": "#7a6030"
+                "foreground": "#b9934b"
             }
         },
         {
@@ -748,7 +748,7 @@
                 "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
             ],
             "settings": {
-                "foreground": "#9a7848"
+                "foreground": "#a07c4b"
             }
         },
         {
@@ -757,7 +757,7 @@
                 "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
             ],
             "settings": {
-                "foreground": "#a07840"
+                "foreground": "#a37b41"
             }
         },
         {
@@ -824,7 +824,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
             ],
             "settings": {
-                "foreground": "#788698"
+                "foreground": "#8e9aa9"
             }
         },
         {
@@ -833,7 +833,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
             ],
             "settings": {
-                "foreground": "#6a7480"
+                "foreground": "#909aa3"
             }
         },
         {
@@ -842,7 +842,7 @@
                 "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
             ],
             "settings": {
-                "foreground": "#4e5a68"
+                "foreground": "#738496"
             }
         },
         {
@@ -851,7 +851,7 @@
                 "source.regex-pipeline.obsidian comment.line.text.obsidian",
             ],
             "settings": {
-                "foreground": "#b06040"
+                "foreground": "#be6d4c"
             }
         },
     ],
@@ -863,11 +863,11 @@
         "punctuation": "#c4cad0",
         "variable": "#c4cad0",
         // Comment
-        "comment": "#4e5a68",
+        "comment": "#5a6778",
         "comment.documentation": "#607480",
         // String
-        "string": "#9a7848",
-        "regexp": "#a07840",
+        "string": "#a07c4b",
+        "regexp": "#a37b41",
         // String Excapes
         "stringEscapeCharacter": "#a88040",
         // Keywords
@@ -888,8 +888,8 @@
         "property.static.readonly": "#a0b0c4",
         "field.static": "#a0b0c4",
         // Fields
-        "field": "#9a7848",
-        "property:java": "#9a7848",
+        "field": "#a07c4b",
+        "property:java": "#a07c4b",
         // Methods
         "method": "#b0bcca",
         "property": "#b0bcca",
@@ -902,10 +902,10 @@
         "xmlDocCommentAttributeName": "#788698",
         // Doc Comment Tokens
         "xmlDocCommentName": "#788698",
-        "xmlDocCommentAttributeQuotes": "#546270",
-        "xmlDocCommentDelimiter": "#546270",
+        "xmlDocCommentAttributeQuotes": "#738496",
+        "xmlDocCommentDelimiter": "#738496",
         // Doc Comment Text
-        "xmlDocCommentText": "#607480",
+        "xmlDocCommentText": "#6f8693",
         // Deprecated values
         "*.deprecated": {
             "strikethrough": true
