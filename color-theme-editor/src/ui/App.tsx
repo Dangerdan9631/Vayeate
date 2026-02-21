@@ -90,6 +90,8 @@ export function App(): JSX.Element {
   const [catalogSnapshot, setCatalogSnapshot] = useState<CatalogSnapshot | null>(null);
   const [catalogRemoteSnapshot, setCatalogRemoteSnapshot] = useState<CatalogRemoteSnapshot | null>(null);
   const [catalogReport, setCatalogReport] = useState<CatalogValidationReport | null>(null);
+  const [catalogBindingTarget, setCatalogBindingTarget] = useState<ElementBinding["target"]>("colors");
+  const [catalogBindingKey, setCatalogBindingKey] = useState("");
   const [catalogBusy, setCatalogBusy] = useState(false);
   const [catalogError, setCatalogError] = useState("");
   const [templateError, setTemplateError] = useState<string>("");
@@ -103,6 +105,13 @@ export function App(): JSX.Element {
     () => previewSamples.filter((sample) => selectedSampleIds.includes(sample.id)),
     [selectedSampleIds],
   );
+
+  const catalogKeyOptions = useMemo(() => {
+    if (!catalogSnapshot) return [];
+    if (catalogBindingTarget === "colors") return catalogSnapshot.colorKeys;
+    if (catalogBindingTarget === "semanticTokenColors") return catalogSnapshot.semanticTokenKeys;
+    return catalogSnapshot.textMateScopes;
+  }, [catalogBindingTarget, catalogSnapshot]);
 
   const variableEntries = useMemo(() => Object.entries(template.variables), [template.variables]);
 
@@ -234,6 +243,59 @@ export function App(): JSX.Element {
       nextBindings[index] = binding;
       return { ...prev, bindings: nextBindings };
     });
+  }
+
+  function addCatalogBinding(key: string): void {
+    const normalizedKey = key.trim();
+    if (!normalizedKey) return;
+
+    const firstVariable = Object.keys(template.variables)[0] ?? "";
+    const exists = template.bindings.some(
+      (binding) => binding.target === catalogBindingTarget && binding.key === normalizedKey,
+    );
+    if (exists) return;
+
+    setTemplate((prev) => ({
+      ...prev,
+      bindings: [
+        ...prev.bindings,
+        {
+          target: catalogBindingTarget,
+          key: normalizedKey,
+          variableId: firstVariable,
+          strategy: "deriveContrast",
+          category: "default",
+        },
+      ],
+    }));
+  }
+
+  function addAllMissingCatalogBindings(): void {
+    const firstVariable = Object.keys(template.variables)[0] ?? "";
+    if (!firstVariable) return;
+
+    const existingByTarget = new Set(
+      template.bindings
+        .filter((binding) => binding.target === catalogBindingTarget)
+        .map((binding) => binding.key),
+    );
+
+    const missing = catalogKeyOptions.filter((key) => !existingByTarget.has(key));
+    if (missing.length === 0) return;
+
+    setTemplate((prev) => ({
+      ...prev,
+      bindings: [
+        ...prev.bindings,
+        ...missing.map((key) => ({
+          target: catalogBindingTarget,
+          key,
+          variableId: firstVariable,
+          strategy: "deriveContrast" as const,
+          category: "default" as const,
+        })),
+      ],
+    }));
   }
 
   function addBinding(): void {
@@ -628,6 +690,57 @@ export function App(): JSX.Element {
               </div>
             ) : null}
             {catalogError ? <p style={{ margin: "8px 0 0", fontSize: 12, color: "#b00020" }}>{catalogError}</p> : null}
+
+            <div style={{ marginTop: 12, borderTop: "1px solid #e1e1e1", paddingTop: 10 }}>
+              <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>Catalog bindings</h3>
+              <div style={{ display: "grid", gap: 6, fontSize: 12 }}>
+                <label>
+                  Target type
+                  <select
+                    value={catalogBindingTarget}
+                    onChange={(event) => {
+                      setCatalogBindingTarget(event.target.value as ElementBinding["target"]);
+                      setCatalogBindingKey("");
+                    }}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="colors">colors</option>
+                    <option value="semanticTokenColors">semanticTokenColors</option>
+                    <option value="tokenColors">tokenColors (TextMate scopes)</option>
+                  </select>
+                </label>
+                <label>
+                  Key
+                  <select
+                    value={catalogBindingKey}
+                    onChange={(event) => setCatalogBindingKey(event.target.value)}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="">-- select catalog key --</option>
+                    {catalogKeyOptions.map((key) => (
+                      <option key={key} value={key}>
+                        {key}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => addCatalogBinding(catalogBindingKey)}
+                    disabled={!catalogBindingKey}
+                  >
+                    Add selected key
+                  </button>
+                  <button type="button" onClick={addAllMissingCatalogBindings} disabled={catalogKeyOptions.length === 0}>
+                    Add all missing keys
+                  </button>
+                </div>
+                <div style={{ color: "#555" }}>
+                  Available keys: {catalogKeyOptions.length}
+                </div>
+              </div>
+            </div>
           </article>
 
           <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>

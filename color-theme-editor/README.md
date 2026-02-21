@@ -44,6 +44,7 @@ Phase 2 implementation has started:
 - Pre-write output summary panel to inspect existing vs generated files before writing.
 - Custom side-by-side dark/light preview.
 - Preview sample ingestion from repository `examples` for TypeScript, JSON, Markdown, PowerShell, and Rust.
+- Catalog-driven binding controls for adding snapshot color/semantic/scope keys into template bindings.
 
 Phase 3 kickoff is implemented:
 
@@ -53,6 +54,7 @@ Phase 3 kickoff is implemented:
 - Merged local + remote snapshot output with cached remote snapshot artifact.
 - Drift warnings for remote-only and local-only catalog entries.
 - Catalog pin editor in UI for pinned version and source URL updates.
+- Generator strategy parity improvements for `raw`, `deriveContrast`, and `copyFromDark` in dark/light output paths.
 - Catalog validation checks (required keys, duplicates, formatting).
 - Local dev API endpoints for catalog status and sync.
 - UI panel to run sync and inspect snapshot/report health.
