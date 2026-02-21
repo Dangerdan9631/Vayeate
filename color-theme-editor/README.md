@@ -31,4 +31,12 @@ Phase 1 foundations are implemented:
 - Contrast policy model (dark/light split).
 - Deterministic JSON export helper.
 - Palette utilities with perceptual (OKLab) distance checks.
-- Baseline app shell and tests.
+- Baseline tests.
+
+Phase 2 implementation has started:
+
+- Template metadata and variable editor.
+- Binding management controls.
+- Template JSON import/export from the UI.
+- Custom side-by-side dark/light preview.
+- Preview sample ingestion from repository `examples` for TypeScript, JSON, Markdown, PowerShell, and Rust.
