@@ -3,236 +3,187 @@
     "type": "light",
     "semanticHighlighting": true,
     "colors": {
-        // =====================================================================
-        // Title Bar
-        "titleBar.activeBackground": "#b8c4d4",
-        "titleBar.activeForeground": "#303844",
-        "titleBar.border": "#b8c4d4",
-        "titleBar.inactiveBackground": "#c8d4e0",
-        "titleBar.inactiveForeground": "#6a7888",
-        "focusBorder": "#b8c4d4",
-        // =====================================================================
-        // Menu Bar
-        "menu.background": "#c8d4e0",
-        "menu.foreground": "#303844",
-        "menu.separatorBackground": "#7a8898",
-        "menu.selectionForeground": "#182028",
-        "menu.selectionBackground": "#cdd8e4",
-        "menubar.selectionForeground": "#182028",
-        "menubar.selectionBackground": "#cdd8e4",
-        // =====================================================================
-        // Activity Bar
-        "activityBar.foreground": "#8a6820",
-        "activityBar.background": "#eaeef4",
-        "activityBar.activeBorder": "#8a6820",
-        "activityBar.dropBorder": "#303844",
-        "activityBar.inactiveForeground": "#7a8898",
-        // =====================================================================
-        // Breadcrumb
-        "breadcrumb.foreground": "#6a7888",
-        "breadcrumb.background": "#eaeef4",
-        "breadcrumb.focusForeground": "#303844",
-        "breadcrumb.activeSelectionForeground": "#8a6820",
-        "breadcrumbPicker.background": "#eaeef4",
-        // =====================================================================
-        // Side Bar
-        "sideBar.background": "#e4e8ee",
-        "sideBar.foreground": "#2c3440",
-        "sideBarSectionHeader.background": "#dce2ea",
-        "sideBarSectionHeader.foreground": "#8a6820",
-        "sideBarTitle.foreground": "#2c3440",
-        "sideBar.dropBackground": "#cdd8e4",
-        "sideBar.border": "#b8c4d4",
-        // =====================================================================
-        // Status Bar
-        "statusBar.background": "#c8d4e0",
-        "statusBar.foreground": "#303844",
-        "statusBar.debuggingBackground": "#b8c4d4",
-        "statusBar.debuggingForeground": "#303844",
-        "statusBarItem.remoteForeground": "#a03818",
-        "statusBar.noFolderBackground": "#e8b898",
-        "statusBar.noFolderForeground": "#f0ece8",
-        "statusBarItem.activeBackground": "#3038442e",
-        "statusBarItem.errorBackground": "#e8b898",
-        "statusBarItem.errorForeground": "#f0ece8",
-        "statusBarItem.hoverBackground": "#f0ece82e",
-        "progressBar.background": "#8a6820",
-        // =====================================================================
-        // Notifications
-        "notifications.foreground": "#303844",
-        "notifications.background": "#dce2ea",
-        "notifications.border": "#b8c4d4",
-        "notificationToast.border": "#b8c4d4",
-        "notificationCenterHeader.foreground": "#303844",
-        "notificationCenterHeader.background": "#c8d4e0",
-        "notificationCenter.border": "#b8c4d4",
-        "notificationsInfoIcon.foreground": "#3a5068",
-        "notificationsWarningIcon.foreground": "#a03818",
-        "notificationsErrorIcon.foreground": "#a03818",
-        "notificationLink.foreground": "#8a6820",
-        // =====================================================================
-        // Extension Pane
-        "extensionButton.prominentBackground": "#cdd8e4",
-        "extensionButton.prominentForeground": "#182028",
-        "extensionButton.prominentHoverBackground": "#d8e2ec",
-        // =====================================================================
-        // Editor View
-        "editor.foreground": "#2c3440",
-        "editor.background": "#f0f2f5",
-        "editorCursor.foreground": "#8a6820",
-        "editor.lineHighlightBackground": "#eaeef4",
-        "editor.selectionBackground": "#cdd8e4",
-        "editorLineNumber.foreground": "#6a7888",
-        "editorLineNumber.activeForeground": "#6a7888",
-        "editorIndentGuide.background": "#c8d0da",
-        "editorIndentGuide.activeBackground": "#7a8898",
-        "editorInlayHint.foreground": "#6a7888",
-        "editorInlayHint.background": "#dce2ea",
-        // =====================================================================
-        // Gutter
-        "editorGutter.addedBackground": "#5080a0",
-        "editorGutter.background": "#f0f2f5",
-        "editorGutter.deletedBackground": "#a03818",
-        "editorGutter.modifiedBackground": "#5a789866",
-        // =====================================================================
-        // Editor matching
-        "editor.findMatchBackground": "#cdd8e4",
-        "editor.findMatchHighlightBackground": "#cdd8e466",
-        "editor.findRangeHighlightBackground": "#5a789811",
-        "editorLink.activeForeground": "#4880b0",
-        "editorCodeLens.foreground": "#5a789866",
-        "editorBracketMatch.background": "#c0ccd8",
-        "editorBracketMatch.border": "#5a789866",
-        "editorRuler.foreground": "#b8c4d4",
-        // =====================================================================
-        // Editor Group
-        "editorGroupHeader.tabsBackground": "#f0f2f5",
-        "editorGroup.emptyBackground": "#f0f2f5",
-        // =====================================================================
-        // Git and Diff Editor
-        "gitDecoration.conflictingResourceForeground": "#a03818",
-        "gitDecoration.deletedResourceForeground": "#a03818",
-        "gitDecoration.ignoredResourceForeground": "#6a7888",
-        "gitDecoration.modifiedResourceForeground": "#3a6898",
-        "gitDecoration.untrackedResourceForeground": "#3a5870",
-        "diffEditor.insertedTextBackground": "#c0ddd033",
-        "diffEditor.removedTextBackground": "#c0806033",
-        // =====================================================================
-        // Terminal Colors
-        "terminal.ansiBlack": "#2c3440",
-        "terminal.ansiBlue": "#3a6898",
-        "terminal.ansiBrightBlack": "#6a7888",
-        "terminal.ansiBrightBlue": "#4880b0",
-        "terminal.ansiBrightCyan": "#3a98a8",
-        "terminal.ansiBrightGreen": "#3a8850",
-        "terminal.ansiBrightMagenta": "#7870b0",
-        "terminal.ansiBrightRed": "#c02818",
-        "terminal.ansiBrightWhite": "#141e28",
-        "terminal.ansiBrightYellow": "#6a5818",
-        "terminal.ansiCyan": "#3a7880",
-        "terminal.ansiGreen": "#3a6840",
-        "terminal.ansiMagenta": "#6858a0",
-        "terminal.ansiRed": "#a03818",
-        "terminal.ansiWhite": "#303844",
-        "terminal.ansiYellow": "#7a5018",
-        "terminal.border": "#b8c4d4",
-        "terminal.foreground": "#20303e",
-        "terminal.background": "#f0f2f5",
-        "textPreformat.foreground": "#2c3440",
-        // =====================================================================
-        // Widgets
-        "editorWidget.foreground": "#303844",
-        "editorWidget.background": "#dce2ea",
-        "editorWidget.border": "#b8c4d4",
-        "widget.shadow": "#8090a0",
-        // =====================================================================
-        // Badges
-        "activityBarBadge.foreground": "#182028",
-        "activityBarBadge.background": "#6a5018",
-        "badge.foreground": "#182028",
-        "badge.background": "#6a5018",
-        "extensionBadge.remoteForeground": "#182028",
-        "extensionBadge.remoteBackground": "#6a5018",
-        // =====================================================================
-        // Panels
-        "panel.border": "#b8c4d4",
-        "panelTitle.activeForeground": "#303844",
-        "panelTitle.activeBorder": "#8a6820",
-        "panelTitle.inactiveForeground": "#6a7888",
-        "panel.background": "#dce2ea",
-        "panel.dropBorder": "#b8c4d4",
-        "panelSection.border": "#b8c4d4",
-        "panelSection.dropBackground": "#dce2ea",
-        "panelSectionHeader.background": "#c8d4e0",
-        // =====================================================================
-        // Lists
-        "list.activeSelectionBackground": "#cdd8e4cc",
-        "list.activeSelectionForeground": "#141e28",
-        "list.focusBackground": "#cdd8e4cc",
-        "list.focusForeground": "#20303e",
-        "list.highlightForeground": "#3a5068",
-        "list.hoverBackground": "#d0dce8cc",
-        "list.hoverForeground": "#20303e",
-        "list.inactiveSelectionBackground": "#c8d4e0cc",
-        "list.inactiveSelectionForeground": "#6a7888",
-        "list.invalidItemForeground": "#a03818",
-        // =====================================================================
-        // Buttons
-        "button.background": "#cdd8e4",
-        "button.foreground": "#182028",
-        "button.hoverBackground": "#d8e2ec",
-        "button.secondaryBackground": "#c8d4e0",
-        "button.secondaryForeground": "#303844",
-        "button.secondaryHoverBackground": "#b8c4d4",
-        // =====================================================================
-        // Dropdowns
-        "dropdown.background": "#f0f2f5",
-        "dropdown.border": "#b8c4d4",
-        "dropdown.foreground": "#2c3440",
-        "dropdown.listBackground": "#dce2ea",
-        // =====================================================================
-        // Scroll Bar
-        "scrollbar.shadow": "#8090a0",
-        "scrollbarSlider.activeBackground": "#5a789866",
-        "scrollbarSlider.background": "#b8c4d466",
-        "scrollbarSlider.hoverBackground": "#d8e2ec66",
-        // =====================================================================
-        // Input Boxes
-        "input.background": "#f0f2f5",
-        "input.border": "#b8c4d4",
-        "input.foreground": "#2c3440",
-        "input.placeholderForeground": "#7a8898",
-        "inputOption.activeForeground": "#20303e",
-        "inputOption.activeBorder": "#8a6820",
-        "inputValidation.errorBackground": "#e8b898",
-        "inputValidation.errorForeground": "#f0ece8",
-        "inputValidation.infoBackground": "#6a5018",
-        "inputValidation.infoForeground": "#141e28",
-        "inputValidation.warningBackground": "#a03818",
-        "inputValidation.warningForeground": "#f0ece8",
-        // =====================================================================
-        // Tabs
-        "tab.activeBackground": "#dce2ea",
-        "tab.activeForeground": "#20303e",
-        "tab.border": "#b8c4d4",
-        "tab.inactiveBackground": "#c8d4e0",
-        "tab.inactiveForeground": "#6a7888",
+        "titleBar.activeBackground": "#343d46",
+        "titleBar.activeForeground": "#c8ced4",
+        "titleBar.border": "#343d46",
+        "titleBar.inactiveBackground": "#2a333c",
+        "titleBar.inactiveForeground": "#929aa3",
+        "focusBorder": "#343d46",
+        "menu.background": "#2a333c",
+        "menu.foreground": "#c8ced4",
+        "menu.separatorBackground": "#606a74",
+        "menu.selectionForeground": "#d0d6dc",
+        "menu.selectionBackground": "#3a4550",
+        "menubar.selectionForeground": "#d0d6dc",
+        "menubar.selectionBackground": "#3a4550",
+        "activityBar.foreground": "#c8a854",
+        "activityBar.background": "#202530",
+        "activityBar.activeBorder": "#c8a854",
+        "activityBar.dropBorder": "#c8ced4",
+        "activityBar.inactiveForeground": "#828d97",
+        "statusBar.background": "#2a333c",
+        "statusBar.foreground": "#c8ced4",
+        "statusBar.debuggingBackground": "#343d46",
+        "statusBar.debuggingForeground": "#c8ced4",
+        "statusBarItem.remoteForeground": "#cb8a6f",
+        "statusBar.noFolderBackground": "#743c28",
+        "statusBar.noFolderForeground": "#d4d1cf",
+        "statusBarItem.activeBackground": "#c8ced42e",
+        "statusBarItem.errorBackground": "#743c28",
+        "statusBarItem.errorForeground": "#d4d1cf",
+        "statusBarItem.hoverBackground": "#d4d0ce2e",
+        "progressBar.background": "#c8a854",
+        "notifications.foreground": "#c8ced4",
+        "notifications.background": "#232830",
+        "notifications.border": "#343d46",
+        "notificationToast.border": "#343d46",
+        "notificationCenterHeader.foreground": "#c8ced4",
+        "notificationCenterHeader.background": "#2a333c",
+        "notificationCenter.border": "#343d46",
+        "notificationsInfoIcon.foreground": "#9cb0c0",
+        "notificationsWarningIcon.foreground": "#c57c5e",
+        "notificationsErrorIcon.foreground": "#c57c5e",
+        "notificationLink.foreground": "#c8a854",
+        "extensionButton.prominentBackground": "#3a4550",
+        "extensionButton.prominentForeground": "#d0d6dc",
+        "extensionButton.prominentHoverBackground": "#445060",
+        "activityBarBadge.foreground": "#fafafb",
+        "activityBarBadge.background": "#5a492a",
+        "badge.foreground": "#fafafb",
+        "badge.background": "#5a492a",
+        "extensionBadge.remoteForeground": "#fafafb",
+        "extensionBadge.remoteBackground": "#5a492a",
+        "breadcrumb.foreground": "#636b76",
+        "breadcrumb.background": "#ecebea",
+        "breadcrumb.focusForeground": "#5f6c7a",
+        "breadcrumb.activeSelectionForeground": "#7f6829",
+        "breadcrumbPicker.background": "#ecebea",
+        "sideBar.background": "#ecebea",
+        "sideBar.foreground": "#606c79",
+        "sideBarSectionHeader.background": "#e2e1df",
+        "sideBarSectionHeader.foreground": "#786127",
+        "sideBarTitle.foreground": "#606c79",
+        "sideBar.dropBackground": "#dfdacd99",
+        "sideBar.border": "#cbc9c3",
+        "editor.foreground": "#66737f",
+        "editor.background": "#f7f6f6",
+        "editorCursor.foreground": "#c8a854",
+        "editor.lineHighlightBackground": "#f0f0ef",
+        "editor.selectionBackground": "#dfdacd99",
+        "editorLineNumber.foreground": "#798490",
+        "editorLineNumber.activeForeground": "#6a727d",
+        "editorIndentGuide.background": "#d9d7d4",
+        "editorIndentGuide.activeBackground": "#b4b0a7",
+        "editorInlayHint.foreground": "#626b76",
+        "editorInlayHint.background": "#ecebea",
+        "editorGutter.addedBackground": "#687888",
+        "editorGutter.background": "#f7f6f6",
+        "editorGutter.deletedBackground": "#b06040",
+        "editorGutter.modifiedBackground": "#78869866",
+        "editor.findMatchBackground": "#dfdacd",
+        "editor.findMatchHighlightBackground": "#dfdacd66",
+        "editor.findRangeHighlightBackground": "#dfdacd22",
+        "editorLink.activeForeground": "#48759a",
+        "editorCodeLens.foreground": "#78869866",
+        "editorBracketMatch.background": "#dfdacd55",
+        "editorBracketMatch.border": "#cbc9c366",
+        "editorRuler.foreground": "#cbc9c3",
+        "editorGroupHeader.tabsBackground": "#f7f6f6",
+        "editorGroup.emptyBackground": "#f7f6f6",
+        "gitDecoration.conflictingResourceForeground": "#a0573a",
+        "gitDecoration.deletedResourceForeground": "#a0573a",
+        "gitDecoration.ignoredResourceForeground": "#626b78",
+        "gitDecoration.modifiedResourceForeground": "#426f8c",
+        "gitDecoration.untrackedResourceForeground": "#4a6f81",
+        "diffEditor.insertedTextBackground": "#36485833",
+        "diffEditor.removedTextBackground": "#7a503033",
+        "terminal.ansiBlack": "#141720",
+        "terminal.ansiBlue": "#77a3bf",
+        "terminal.ansiBrightBlack": "#788490",
+        "terminal.ansiBrightBlue": "#7ba2c1",
+        "terminal.ansiBrightCyan": "#7ea3ad",
+        "terminal.ansiBrightGreen": "#87a1b3",
+        "terminal.ansiBrightMagenta": "#a69c89",
+        "terminal.ansiBrightRed": "#c87050",
+        "terminal.ansiBrightWhite": "#909fb0",
+        "terminal.ansiBrightYellow": "#c3963f",
+        "terminal.ansiCyan": "#80a0a8",
+        "terminal.ansiGreen": "#7c9aaa",
+        "terminal.ansiMagenta": "#9e9e96",
+        "terminal.ansiRed": "#b06040",
+        "terminal.ansiWhite": "#939faa",
+        "terminal.ansiYellow": "#b08040",
+        "terminal.border": "#cbc9c3",
+        "terminal.foreground": "#647383",
+        "terminal.background": "#f7f6f6",
+        "textPreformat.foreground": "#66737f",
+        "editorWidget.foreground": "#5f6c7a",
+        "editorWidget.background": "#ecebea",
+        "editorWidget.border": "#cbc9c3",
+        "widget.shadow": "#9f9c9366",
+        "panel.border": "#cbc9c3",
+        "panelTitle.activeForeground": "#5f6c7a",
+        "panelTitle.activeBorder": "#c8a854",
+        "panelTitle.inactiveForeground": "#747d89",
+        "panel.background": "#ecebea",
+        "panel.dropBorder": "#cbc9c3",
+        "panelSection.border": "#cbc9c3",
+        "panelSection.dropBackground": "#ecebea",
+        "panelSectionHeader.background": "#e2e1df",
+        "list.activeSelectionBackground": "#dfdacdcc",
+        "list.activeSelectionForeground": "#536173",
+        "list.focusBackground": "#dfdacdcc",
+        "list.focusForeground": "#55616f",
+        "list.highlightForeground": "#536d83",
+        "list.hoverBackground": "#dfdacdcc",
+        "list.hoverForeground": "#55616f",
+        "list.inactiveSelectionBackground": "#dfdacdaa",
+        "list.inactiveSelectionForeground": "#59616a",
+        "list.invalidItemForeground": "#a0573a",
+        "button.background": "#e2e1df",
+        "button.foreground": "#576676",
+        "button.hoverBackground": "#dcdbd8",
+        "button.secondaryBackground": "#ecebea",
+        "button.secondaryForeground": "#5f6c7a",
+        "button.secondaryHoverBackground": "#e7e6e4",
+        "dropdown.background": "#f7f6f6",
+        "dropdown.border": "#cbc9c3",
+        "dropdown.foreground": "#66737f",
+        "dropdown.listBackground": "#ecebea",
+        "scrollbar.shadow": "#87837866",
+        "scrollbarSlider.activeBackground": "#aba8a066",
+        "scrollbarSlider.background": "#aba8a033",
+        "scrollbarSlider.hoverBackground": "#aba8a055",
+        "input.background": "#f7f6f6",
+        "input.border": "#cbc9c3",
+        "input.foreground": "#66737f",
+        "input.placeholderForeground": "#78848f",
+        "inputOption.activeForeground": "#647383",
+        "inputOption.activeBorder": "#c8a854",
+        "inputValidation.errorBackground": "#8a4830",
+        "inputValidation.errorForeground": "#d4d1cf",
+        "inputValidation.infoBackground": "#8a7040",
+        "inputValidation.infoForeground": "#fafafb",
+        "inputValidation.warningBackground": "#b06040",
+        "inputValidation.warningForeground": "#fefdfd",
+        "tab.activeBackground": "#f7f6f6",
+        "tab.activeForeground": "#647383",
+        "tab.border": "#cbc9c3",
+        "tab.inactiveBackground": "#e2e1df",
+        "tab.inactiveForeground": "#6d7681"
     },
     "tokenColors": [
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source",
+                "source"
             ],
             "settings": {
-                "foreground": "#3a5070"
+                "foreground": "#5b738f"
             }
         },
-        // =====================================================================
-        // Text
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "entity.name",
                 "meta.use.rust",
@@ -248,72 +199,69 @@
                 "punctuation.semi",
                 "punctuation.separator",
                 "punctuation.terminator",
-                "source",
+                "source"
             ],
             "settings": {
-                "foreground": "#2c3440"
+                "foreground": "#66737f"
             }
         },
-        // =====================================================================
-        // Code
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "comment",
-                "punctuation.definition.comment",
+                "punctuation.definition.comment"
             ],
             "settings": {
-                "foreground": "#7a8898"
+                "foreground": "#5a6778"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "string",
-                "punctuation.definition.string",
+                "punctuation.definition.string"
             ],
             "settings": {
-                "foreground": "#7a5020"
+                "foreground": "#957446"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "constant.character.escape",
-                "punctuation.definition.interpolation",
+                "punctuation.definition.interpolation"
             ],
             "settings": {
-                "foreground": "#7a4820"
+                "foreground": "#8d6b36"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "meta.attribute",
                 "meta.attribute keyword",
                 "meta.attribute punctuation.brackets",
                 "punctuation.definition.annotation",
-                "storage.type.annotation",
+                "storage.type.annotation"
             ],
             "settings": {
-                "foreground": "#3a6090"
+                "foreground": "#3d6279"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "keyword",
                 "constant.language",
                 "storage.modifier",
-                "variable.language",
+                "variable.language"
             ],
             "settings": {
-                "foreground": "#2c4870"
+                "foreground": "#44607d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "entity.name.type.class",
                 "entity.name.type.kotlin",
@@ -321,45 +269,45 @@
                 "entity.name.type.struct",
                 "entity.other.inherited-class",
                 "storage.type",
-                "variable.other.object",
+                "variable.other.object"
             ],
             "settings": {
-                "foreground": "#1e3050"
+                "foreground": "#585f63"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "entity.name.type.interface",
+                "entity.name.type.interface"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#5f738d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "variable.other.constant",
                 "source.powershell support.constant.variable",
-                "constant.other.enum",
+                "constant.other.enum"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#5b7392"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "entity.name.variable.field",
                 "variable.other",
-                "source.powershell support.variable",
+                "source.powershell support.variable"
             ],
             "settings": {
-                "foreground": "#6a5020"
+                "foreground": "#8b6c41"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "entity.name.function",
                 "entity.name.variable.property",
@@ -367,11 +315,11 @@
                 "source.powershell support.function"
             ],
             "settings": {
-                "foreground": "#2a3c50"
+                "foreground": "#5e738c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "variable.parameter",
                 "entity.name.variable.parameter",
@@ -380,533 +328,499 @@
                 "source.java punctuation.bracket.angle"
             ],
             "settings": {
-                "foreground": "#3a6090"
+                "foreground": "#3d6279"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "constant.numeric",
+                "constant.numeric"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#557491"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "punctuation.definition.tag",
                 "keyword.other.documentation",
-                "entity.name.tag",
+                "entity.name.tag"
             ],
             "settings": {
-                "foreground": "#8090a0"
+                "foreground": "#525f6d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "entity.other.attribute-name",
+                "entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#5a7898",
+                "foreground": "#657284"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "comment.block.documentation",
                 "comment.block.javadoc",
-                "comment.line.documentation",
+                "comment.line.documentation"
             ],
             "settings": {
-                "foreground": "#7a8898",
+                "foreground": "#607480"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "comment.block.documentation string.quoted.double",
-                "comment.block.documentation punctuation.definition.string",
+                "comment.block.documentation punctuation.definition.string"
             ],
             "settings": {
-                "foreground": "#8a4818"
+                "foreground": "#a07838"
             }
         },
-        // =====================================================================
-        // XML
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "text.xml punctuation.definition.tag",
-                "text.xml meta.tag",
+                "text.xml meta.tag"
             ],
             "settings": {
-                "foreground": "#7a4820"
+                "foreground": "#8d6b36"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "text.xml entity.name.tag",
+                "text.xml entity.name.tag"
             ],
             "settings": {
-                "foreground": "#7a4020"
+                "foreground": "#8d6b36"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "text.xml entity.other.attribute-name",
+                "text.xml entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#5f738d"
             }
         },
-        // =====================================================================
-        // YAML/JSON
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.yaml punctuation.definition",
                 "source.json punctuation.definition",
                 "source.yaml punctuation.separator",
                 "source.json punctuation.separator",
-                "source.yaml entity.other",
+                "source.yaml entity.other"
             ],
             "settings": {
-                "foreground": "#2c3440"
+                "foreground": "#66737f"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.yaml entity.name.tag",
-                "source.json support.type",
+                "source.json support.type"
             ],
             "settings": {
-                "foreground": "#7a4820"
+                "foreground": "#8c6d1b"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.yaml constant.language",
-                "source.json constant.language",
+                "source.json constant.language"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#5b7392"
             }
         },
-        // =====================================================================
-        // Markdown
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "heading.1 entity.name.section",
-                "punctuation.definition.heading",
+                "punctuation.definition.heading"
             ],
             "settings": {
-                "foreground": "#2c4870",
+                "foreground": "#527497"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "heading.2 entity.name.section",
+                "heading.2 entity.name.section"
             ],
             "settings": {
-                "foreground": "#2a3c50"
+                "foreground": "#5e738c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "heading.3 entity.name.section",
+                "heading.3 entity.name.section"
             ],
             "settings": {
-                "foreground": "#8a6820"
+                "foreground": "#886e2c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "entity.name.section",
+                "entity.name.section"
             ],
             "settings": {
-                "foreground": "#384e68"
+                "foreground": "#647383"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "constant.other.reference.link",
+                "constant.other.reference.link"
             ],
             "settings": {
-                "foreground": "#2c4870"
+                "foreground": "#527497"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "markup.underline.link",
+                "markup.underline.link"
             ],
             "settings": {
-                "foreground": "#8a6820"
+                "foreground": "#886e2c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "fenced_code.block.language",
                 "markup.inline",
                 "string.other.link",
                 "text.html.markdown punctuation.definition",
                 "text.html.markdown punctuation.definition.string",
-                "text.html.markdown meta.separator",
+                "text.html.markdown meta.separator"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#5b7d9c"
             }
         },
-        // =====================================================================
-        // Properties
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.ini keyword",
+                "source.ini keyword"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#466178"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.ini entity.name.section",
+                "source.ini entity.name.section"
             ],
             "settings": {
-                "foreground": "#8a6820"
+                "foreground": "#886e2c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.ini",
+                "source.ini"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#5b7392"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.ini punctuation",
-                "source.ini punctuation.separator",
+                "source.ini punctuation.separator"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#557491"
             }
         },
-        // =====================================================================
-        // TOML
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.toml keyword",
+                "source.toml keyword"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#466178"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.toml entity.other.attribute-name",
+                "source.toml entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#8a6820"
+                "foreground": "#886e2c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.toml",
+                "source.toml"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#5b7392"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.toml punctuation",
-                "source.toml punctuation.separator",
+                "source.toml punctuation.separator"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#557491"
             }
         },
-        // =====================================================================
-        // Regex Pipeline Obsidian
-        // =====================================================================
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
-                "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian"
             ],
             "settings": {
-                "foreground": "#2c4870"
+                "foreground": "#44607d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
             ],
             "settings": {
-                "foreground": "#2c4460"
+                "foreground": "#476177"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian"
             ],
             "settings": {
-                "foreground": "#8a5020"
+                "foreground": "#735a2d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.regex-pipeline.obsidian entity.name.rule.obsidian",
-                "source.regex-pipeline.obsidian entity.name.include.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#557491"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian"
             ],
             "settings": {
-                "foreground": "#2c4870"
+                "foreground": "#527497"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian string.regexp",
+                "source.regex-pipeline.obsidian string.regexp"
             ],
             "settings": {
-                "fontStyle": "bold",
+                "fontStyle": "bold"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#5b7d9c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian"
             ],
             "settings": {
-                "foreground": "#2c4870"
+                "foreground": "#577da2"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#5b7d9c"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian"
             ],
             "settings": {
-                "foreground": "#7a5020"
+                "foreground": "#957446"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian"
             ],
             "settings": {
-                "foreground": "#7a4020"
+                "foreground": "#98733d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
-                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian"
             ],
             "settings": {
-                "foreground": "#2c4870"
+                "foreground": "#44607d"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
-                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
             ],
             "settings": {
-                "foreground": "#2c4460"
+                "foreground": "#476177"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
             ],
             "settings": {
-                "foreground": "#3a5878"
+                "foreground": "#4b5f79"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
-                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian"
             ],
             "settings": {
-                "foreground": "#2e5088"
+                "foreground": "#466178"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
             ],
             "settings": {
-                "foreground": "#3a5070"
+                "foreground": "#4c6076"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian"
             ],
             "settings": {
-                "foreground": "#3a6090"
+                "foreground": "#3d6279"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian"
             ],
             "settings": {
-                "foreground": "#5a7898"
+                "foreground": "#545f6e"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian"
             ],
             "settings": {
-                "foreground": "#7a8898"
+                "foreground": "#565f68"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian"
             ],
             "settings": {
-                "foreground": "#7a8898"
+                "foreground": "#637385"
             }
         },
         {
-            "name": "Tallgeese Light",
+            "name": "Tallgeese",
             "scope": [
-                "source.regex-pipeline.obsidian comment.line.text.obsidian",
+                "source.regex-pipeline.obsidian comment.line.text.obsidian"
             ],
             "settings": {
-                "foreground": "#a03818"
+                "foreground": "#a95d3e"
             }
-        },
+        }
     ],
     "semanticTokenColors": {
-        // Default Text
-        "local": "#2c3440",
-        "namespace": "#2c3440",
-        "operator": "#2c3440",
-        "punctuation": "#2c3440",
-        "variable": "#2c3440",
-        // Comment
-        "comment": "#7a8898",
-        "comment.documentation": "#7a8898",
-        // String
-        "string": "#7a5020",
-        "regexp": "#7a4020",
-        // String Excapes
-        "stringEscapeCharacter": "#7a4820",
-        // Keywords
-        "keyword": "#2c4870",
-        "controlKeyword": "#2c4870",
-        "plainKeyword": "#2c4870",
-        // Concrete types
-        "class": "#1e3050",
-        "enum": "#1e3050",
-        "struct": "#1e3050",
-        // Interface
-        "interface": "#3a5878",
-        "delegate": "#3a5878",
-        // Constant values
-        "constant": "#3a5878",
-        "enumMember": "#3a5878",
-        "variable.static.readonly": "#3a5878",
-        "property.static.readonly": "#3a5878",
-        "field.static": "#3a5878",
-        // Fields
-        "field": "#6a5020",
-        "property:java": "#6a5020",
-        // Methods
-        "method": "#2a3c50",
-        "property": "#2a3c50",
-        // Parameters and Arguments
-        "parameter": "#3a6090",
-        "typeParameter": "#3a6090",
-        // Numbers
-        "number": "#2e5088",
-        // Doc Comment Attribute
-        "xmlDocCommentAttributeName": "#5a7898",
-        // Doc Comment Tokens
-        "xmlDocCommentName": "#5a7898",
-        "xmlDocCommentAttributeQuotes": "#8090a0",
-        "xmlDocCommentDelimiter": "#8090a0",
-        // Doc Comment Text
-        "xmlDocCommentText": "#7a8898",
-        // Deprecated values
+        "local": "#66737f",
+        "namespace": "#66737f",
+        "operator": "#66737f",
+        "punctuation": "#66737f",
+        "variable": "#66737f",
+        "comment": "#5a6778",
+        "comment.documentation": "#607480",
+        "string": "#957446",
+        "regexp": "#98733d",
+        "stringEscapeCharacter": "#98733a",
+        "keyword": "#44607d",
+        "controlKeyword": "#44607d",
+        "plainKeyword": "#44607d",
+        "class": "#6a7277",
+        "enum": "#6a7277",
+        "struct": "#6a7277",
+        "interface": "#5f738d",
+        "delegate": "#5f738d",
+        "constant": "#5b7392",
+        "enumMember": "#5b7392",
+        "variable.static.readonly": "#5b7392",
+        "property.static.readonly": "#5b7392",
+        "field.static": "#5b7392",
+        "field": "#8b6c41",
+        "property:java": "#8b6c41",
+        "method": "#5e738c",
+        "property": "#5e738c",
+        "parameter": "#4a7692",
+        "typeParameter": "#4a7692",
+        "number": "#557491",
+        "xmlDocCommentAttributeName": "#657284",
+        "xmlDocCommentName": "#657284",
+        "xmlDocCommentAttributeQuotes": "#637385",
+        "xmlDocCommentDelimiter": "#637385",
+        "xmlDocCommentText": "#607480",
         "*.deprecated": {
             "strikethrough": true
         }

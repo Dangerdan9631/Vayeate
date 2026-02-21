@@ -1,0 +1,828 @@
+{
+    "name": "Virgo Light",
+    "type": "light",
+    "semanticHighlighting": true,
+    "colors": {
+        "titleBar.activeBackground": "#353c44",
+        "titleBar.activeForeground": "#bcc3cd",
+        "titleBar.border": "#353c44",
+        "titleBar.inactiveBackground": "#2b3036",
+        "titleBar.inactiveForeground": "#9097a0",
+        "focusBorder": "#353c44",
+        "menu.background": "#2b3036",
+        "menu.foreground": "#bcc3cd",
+        "menu.separatorBackground": "#5f6771",
+        "menu.selectionForeground": "#d0d5dc",
+        "menu.selectionBackground": "#39434e",
+        "menubar.selectionForeground": "#d0d5dc",
+        "menubar.selectionBackground": "#39434e",
+        "activityBar.foreground": "#8fa0b3",
+        "activityBar.background": "#1f2328",
+        "activityBar.activeBorder": "#8fa0b3",
+        "activityBar.dropBorder": "#bcc3cd",
+        "activityBar.inactiveForeground": "#818a95",
+        "statusBar.background": "#2b3036",
+        "statusBar.foreground": "#bcc3cd",
+        "statusBar.debuggingBackground": "#353c44",
+        "statusBar.debuggingForeground": "#bcc3cd",
+        "statusBarItem.remoteForeground": "#c48783",
+        "statusBar.noFolderBackground": "#723936",
+        "statusBar.noFolderForeground": "#d7d2d1",
+        "statusBarItem.activeBackground": "#bcc3cd2e",
+        "statusBarItem.errorBackground": "#723936",
+        "statusBarItem.errorForeground": "#d7d2d1",
+        "statusBarItem.hoverBackground": "#d7d2d12e",
+        "progressBar.background": "#8fa0b3",
+        "notifications.foreground": "#bcc3cd",
+        "notifications.background": "#23272c",
+        "notifications.border": "#353c44",
+        "notificationToast.border": "#353c44",
+        "notificationCenterHeader.foreground": "#bcc3cd",
+        "notificationCenterHeader.background": "#2b3036",
+        "notificationCenter.border": "#353c44",
+        "notificationsInfoIcon.foreground": "#9ca9b8",
+        "notificationsWarningIcon.foreground": "#be7c77",
+        "notificationsErrorIcon.foreground": "#be7c77",
+        "notificationLink.foreground": "#8fa0b3",
+        "extensionButton.prominentBackground": "#39434e",
+        "extensionButton.prominentForeground": "#d0d5dc",
+        "extensionButton.prominentHoverBackground": "#45515e",
+        "activityBarBadge.foreground": "#d6dbe1",
+        "activityBarBadge.background": "#3e4b59",
+        "badge.foreground": "#d6dbe1",
+        "badge.background": "#3e4b59",
+        "extensionBadge.remoteForeground": "#d6dbe1",
+        "extensionBadge.remoteBackground": "#3e4b59",
+        "breadcrumb.foreground": "#646b76",
+        "breadcrumb.background": "#eaebec",
+        "breadcrumb.focusForeground": "#5e6b7e",
+        "breadcrumb.activeSelectionForeground": "#596c83",
+        "breadcrumbPicker.background": "#eaebec",
+        "sideBar.background": "#eaebec",
+        "sideBar.foreground": "#5f6b7d",
+        "sideBarSectionHeader.background": "#dfe0e2",
+        "sideBarSectionHeader.foreground": "#53657a",
+        "sideBarTitle.foreground": "#5f6b7d",
+        "sideBar.dropBackground": "#cdd6df99",
+        "sideBar.border": "#c3c7cb",
+        "editor.foreground": "#667285",
+        "editor.background": "#f6f6f7",
+        "editorCursor.foreground": "#c1ccd8",
+        "editor.lineHighlightBackground": "#eff0f0",
+        "editor.selectionBackground": "#cdd6df99",
+        "editorLineNumber.foreground": "#78818c",
+        "editorLineNumber.activeForeground": "#6a727d",
+        "editorIndentGuide.background": "#d4d6d9",
+        "editorIndentGuide.activeBackground": "#a7adb4",
+        "editorInlayHint.foreground": "#646b75",
+        "editorInlayHint.background": "#eaebec",
+        "editorGutter.addedBackground": "#667181",
+        "editorGutter.background": "#f6f6f7",
+        "editorGutter.deletedBackground": "#a4534e",
+        "editorGutter.modifiedBackground": "#6f829766",
+        "editor.findMatchBackground": "#cdd6df",
+        "editor.findMatchHighlightBackground": "#cdd6df66",
+        "editor.findRangeHighlightBackground": "#cdd6df22",
+        "editorLink.activeForeground": "#567394",
+        "editorCodeLens.foreground": "#6f829766",
+        "editorBracketMatch.background": "#cdd6df55",
+        "editorBracketMatch.border": "#c3c7cb66",
+        "editorRuler.foreground": "#c3c7cb",
+        "editorGroupHeader.tabsBackground": "#f6f6f7",
+        "editorGroup.emptyBackground": "#f6f6f7",
+        "gitDecoration.conflictingResourceForeground": "#a4524e",
+        "gitDecoration.deletedResourceForeground": "#a4524e",
+        "gitDecoration.ignoredResourceForeground": "#646b76",
+        "gitDecoration.modifiedResourceForeground": "#5b6c81",
+        "gitDecoration.untrackedResourceForeground": "#5b6c81",
+        "diffEditor.insertedTextBackground": "#33415033",
+        "diffEditor.removedTextBackground": "#7a433f33",
+        "terminal.ansiBlack": "#15171a",
+        "terminal.ansiBlue": "#73869d",
+        "terminal.ansiBrightBlack": "#7f8792",
+        "terminal.ansiBrightBlue": "#87a0ba",
+        "terminal.ansiBrightCyan": "#7ea0aa",
+        "terminal.ansiBrightGreen": "#7f92a8",
+        "terminal.ansiBrightMagenta": "#919eb0",
+        "terminal.ansiBrightRed": "#bd6661",
+        "terminal.ansiBrightWhite": "#949eaf",
+        "terminal.ansiBrightYellow": "#b77a74",
+        "terminal.ansiCyan": "#6f8f9a",
+        "terminal.ansiGreen": "#6c7d92",
+        "terminal.ansiMagenta": "#8d97a7",
+        "terminal.ansiRed": "#a4534e",
+        "terminal.ansiWhite": "#939eaf",
+        "terminal.ansiYellow": "#9f726d",
+        "terminal.border": "#c3c7cb",
+        "terminal.foreground": "#647285",
+        "terminal.background": "#f6f6f7",
+        "textPreformat.foreground": "#667285",
+        "editorWidget.foreground": "#5e6b7e",
+        "editorWidget.background": "#eaebec",
+        "editorWidget.border": "#c3c7cb",
+        "widget.shadow": "#93999f66",
+        "panel.border": "#c3c7cb",
+        "panelTitle.activeForeground": "#5e6b7e",
+        "panelTitle.activeBorder": "#c1ccd8",
+        "panelTitle.inactiveForeground": "#747c88",
+        "panel.background": "#eaebec",
+        "panel.dropBorder": "#c3c7cb",
+        "panelSection.border": "#c3c7cb",
+        "panelSection.dropBackground": "#eaebec",
+        "panelSectionHeader.background": "#dfe0e2",
+        "list.activeSelectionBackground": "#cdd6dfcc",
+        "list.activeSelectionForeground": "#535d6e",
+        "list.focusBackground": "#cdd6dfcc",
+        "list.focusForeground": "#525d6d",
+        "list.highlightForeground": "#5b6c80",
+        "list.hoverBackground": "#cdd6dfcc",
+        "list.hoverForeground": "#525d6d",
+        "list.inactiveSelectionBackground": "#cdd6dfaa",
+        "list.inactiveSelectionForeground": "#575d66",
+        "list.invalidItemForeground": "#a4524e",
+        "button.background": "#dfe0e2",
+        "button.foreground": "#586476",
+        "button.hoverBackground": "#d8dadc",
+        "button.secondaryBackground": "#eaebec",
+        "button.secondaryForeground": "#5e6b7e",
+        "button.secondaryHoverBackground": "#e4e5e7",
+        "dropdown.background": "#f6f6f7",
+        "dropdown.border": "#c3c7cb",
+        "dropdown.foreground": "#667285",
+        "dropdown.listBackground": "#eaebec",
+        "scrollbar.shadow": "#787f8766",
+        "scrollbarSlider.activeBackground": "#a0a6ab66",
+        "scrollbarSlider.background": "#a0a6ab33",
+        "scrollbarSlider.hoverBackground": "#a0a6ab55",
+        "input.background": "#f6f6f7",
+        "input.border": "#c3c7cb",
+        "input.foreground": "#667285",
+        "input.placeholderForeground": "#78818d",
+        "inputOption.activeForeground": "#647285",
+        "inputOption.activeBorder": "#c1ccd8",
+        "inputValidation.errorBackground": "#8d4743",
+        "inputValidation.errorForeground": "#d7d2d1",
+        "inputValidation.infoBackground": "#506274",
+        "inputValidation.infoForeground": "#d7dbe1",
+        "inputValidation.warningBackground": "#a4534e",
+        "inputValidation.warningForeground": "#edebea",
+        "tab.activeBackground": "#f6f6f7",
+        "tab.activeForeground": "#647285",
+        "tab.border": "#c3c7cb",
+        "tab.inactiveBackground": "#dfe0e2",
+        "tab.inactiveForeground": "#6d7580"
+    },
+    "tokenColors": [
+        {
+            "name": "Virgo",
+            "scope": [
+                "source"
+            ],
+            "settings": {
+                "foreground": "#5f7389"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.name",
+                "meta.use.rust",
+                "punctuation.accessor",
+                "punctuation.brackets",
+                "punctuation.comma",
+                "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
+                "punctuation.parenthesis",
+                "punctuation.squarebracket",
+                "punctuation.section",
+                "punctuation.semi",
+                "punctuation.separator",
+                "punctuation.terminator",
+                "source"
+            ],
+            "settings": {
+                "foreground": "#667285"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "comment",
+                "punctuation.definition.comment"
+            ],
+            "settings": {
+                "foreground": "#5b6572"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "string",
+                "punctuation.definition.string"
+            ],
+            "settings": {
+                "foreground": "#a56a67"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "constant.character.escape",
+                "punctuation.definition.interpolation"
+            ],
+            "settings": {
+                "foreground": "#986360"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "meta.attribute",
+                "meta.attribute keyword",
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation"
+            ],
+            "settings": {
+                "foreground": "#496079"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "keyword",
+                "constant.language",
+                "storage.modifier",
+                "variable.language"
+            ],
+            "settings": {
+                "foreground": "#46607a"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.name.type.class",
+                "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.name.type.struct",
+                "entity.other.inherited-class",
+                "storage.type",
+                "variable.other.object"
+            ],
+            "settings": {
+                "foreground": "#545f6d"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.name.type.interface"
+            ],
+            "settings": {
+                "foreground": "#667282"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum"
+            ],
+            "settings": {
+                "foreground": "#5d7390"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.name.variable.field",
+                "variable.other",
+                "source.powershell support.variable"
+            ],
+            "settings": {
+                "foreground": "#986360"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.name.function",
+                "entity.name.variable.property",
+                "variable.other.object.property",
+                "source.powershell support.function"
+            ],
+            "settings": {
+                "foreground": "#5d738b"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "variable.parameter",
+                "entity.name.variable.parameter",
+                "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
+            ],
+            "settings": {
+                "foreground": "#496079"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "constant.numeric"
+            ],
+            "settings": {
+                "foreground": "#597396"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "punctuation.definition.tag",
+                "keyword.other.documentation",
+                "entity.name.tag"
+            ],
+            "settings": {
+                "foreground": "#565f69"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#617387"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "comment.block.documentation",
+                "comment.block.javadoc",
+                "comment.line.documentation"
+            ],
+            "settings": {
+                "foreground": "#606a76"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "comment.block.documentation string.quoted.double",
+                "comment.block.documentation punctuation.definition.string"
+            ],
+            "settings": {
+                "foreground": "#8b5654"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "text.xml punctuation.definition.tag",
+                "text.xml meta.tag"
+            ],
+            "settings": {
+                "foreground": "#986360"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "text.xml entity.name.tag"
+            ],
+            "settings": {
+                "foreground": "#986361"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "text.xml entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#667282"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.yaml punctuation.definition",
+                "source.json punctuation.definition",
+                "source.yaml punctuation.separator",
+                "source.json punctuation.separator",
+                "source.yaml entity.other"
+            ],
+            "settings": {
+                "foreground": "#667285"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.yaml entity.name.tag",
+                "source.json support.type"
+            ],
+            "settings": {
+                "foreground": "#667280"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.yaml constant.language",
+                "source.json constant.language"
+            ],
+            "settings": {
+                "foreground": "#5d7390"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "heading.1 entity.name.section",
+                "punctuation.definition.heading"
+            ],
+            "settings": {
+                "foreground": "#547493"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "heading.2 entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#5d738b"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "heading.3 entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#5e738b"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#637384"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "constant.other.reference.link"
+            ],
+            "settings": {
+                "foreground": "#547493"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "markup.underline.link"
+            ],
+            "settings": {
+                "foreground": "#5e738b"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "fenced_code.block.language",
+                "markup.inline",
+                "string.other.link",
+                "text.html.markdown punctuation.definition",
+                "text.html.markdown punctuation.definition.string",
+                "text.html.markdown meta.separator"
+            ],
+            "settings": {
+                "foreground": "#5f7ba0"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.ini keyword"
+            ],
+            "settings": {
+                "foreground": "#4a5f7c"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.ini entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#5e738b"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.ini"
+            ],
+            "settings": {
+                "foreground": "#5d7390"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.ini punctuation",
+                "source.ini punctuation.separator"
+            ],
+            "settings": {
+                "foreground": "#597396"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.toml keyword"
+            ],
+            "settings": {
+                "foreground": "#4a5f7c"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.toml entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#5e738b"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.toml"
+            ],
+            "settings": {
+                "foreground": "#5d7390"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.toml punctuation",
+                "source.toml punctuation.separator"
+            ],
+            "settings": {
+                "foreground": "#597396"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian"
+            ],
+            "settings": {
+                "foreground": "#46607a"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4c5f77"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian"
+            ],
+            "settings": {
+                "foreground": "#805250"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian"
+            ],
+            "settings": {
+                "foreground": "#597396"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian"
+            ],
+            "settings": {
+                "foreground": "#547493"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp"
+            ],
+            "settings": {
+                "fontStyle": "bold"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
+            ],
+            "settings": {
+                "foreground": "#5f7ba0"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian"
+            ],
+            "settings": {
+                "foreground": "#5a7d9d"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
+            ],
+            "settings": {
+                "foreground": "#5f7ba0"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian"
+            ],
+            "settings": {
+                "foreground": "#a56a67"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian"
+            ],
+            "settings": {
+                "foreground": "#a46a67"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian"
+            ],
+            "settings": {
+                "foreground": "#46607a"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4c5f77"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4d5f77"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4a5f7c"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4f5f71"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian"
+            ],
+            "settings": {
+                "foreground": "#496079"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian"
+            ],
+            "settings": {
+                "foreground": "#535f6e"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian"
+            ],
+            "settings": {
+                "foreground": "#555f69"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian"
+            ],
+            "settings": {
+                "foreground": "#667280"
+            }
+        },
+        {
+            "name": "Virgo",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian"
+            ],
+            "settings": {
+                "foreground": "#ad5853"
+            }
+        }
+    ],
+    "semanticTokenColors": {
+        "local": "#667285",
+        "namespace": "#667285",
+        "operator": "#667285",
+        "punctuation": "#667285",
+        "variable": "#667285",
+        "comment": "#5b6572",
+        "comment.documentation": "#606a76",
+        "string": "#a56a67",
+        "regexp": "#a46a67",
+        "stringEscapeCharacter": "#a06c69",
+        "keyword": "#46607a",
+        "controlKeyword": "#46607a",
+        "plainKeyword": "#46607a",
+        "class": "#667283",
+        "enum": "#667283",
+        "struct": "#667283",
+        "interface": "#667282",
+        "delegate": "#667282",
+        "constant": "#5d7390",
+        "enumMember": "#5d7390",
+        "variable.static.readonly": "#5d7390",
+        "property.static.readonly": "#5d7390",
+        "field.static": "#5d7390",
+        "field": "#986360",
+        "property:java": "#986360",
+        "method": "#5d738b",
+        "property": "#5d738b",
+        "parameter": "#577491",
+        "typeParameter": "#577491",
+        "number": "#597396",
+        "xmlDocCommentAttributeName": "#617387",
+        "xmlDocCommentName": "#647284",
+        "xmlDocCommentAttributeQuotes": "#67727f",
+        "xmlDocCommentDelimiter": "#67727f",
+        "xmlDocCommentText": "#67727f",
+        "*.deprecated": {
+            "strikethrough": true
+        }
+    }
+}

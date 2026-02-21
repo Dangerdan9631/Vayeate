@@ -1,189 +1,189 @@
 {
-    "name": "Heavyarms Light",
+    "name": "Aries Light",
     "type": "light",
     "semanticHighlighting": true,
     "colors": {
-        "titleBar.activeBackground": "#7a1e10",
-        "titleBar.activeForeground": "#e8c8b8",
-        "titleBar.border": "#5a1608",
-        "titleBar.inactiveBackground": "#5a1a0c",
-        "titleBar.inactiveForeground": "#b88d7e",
-        "focusBorder": "#7a1e10",
-        "menu.background": "#5a1a0c",
-        "menu.foreground": "#e0c0b0",
-        "menu.separatorBackground": "#903020",
-        "menu.selectionForeground": "#f0d0c0",
-        "menu.selectionBackground": "#832416",
-        "menubar.selectionForeground": "#f0d0c0",
-        "menubar.selectionBackground": "#832416",
-        "activityBar.foreground": "#df4f2e",
-        "activityBar.background": "#2a1008",
-        "activityBar.activeBorder": "#d04020",
-        "activityBar.dropBorder": "#e8c8b8",
-        "activityBar.inactiveForeground": "#e14d2f",
-        "statusBar.background": "#7a1e10",
-        "statusBar.foreground": "#e8c8b8",
-        "statusBar.debuggingBackground": "#5a1a0c",
-        "statusBar.debuggingForeground": "#e8c8b8",
-        "statusBarItem.remoteForeground": "#da9e7d",
-        "statusBar.noFolderBackground": "#773018",
-        "statusBar.noFolderForeground": "#f0d2c2",
-        "statusBarItem.activeBackground": "#e8c8b82e",
-        "statusBarItem.errorBackground": "#891b0e",
-        "statusBarItem.errorForeground": "#f0d8d0",
-        "statusBarItem.hoverBackground": "#f0d8d02e",
-        "progressBar.background": "#d04020",
-        "notifications.foreground": "#e8c8b8",
-        "notifications.background": "#2e1610",
-        "notifications.border": "#7a1e10",
-        "notificationToast.border": "#7a1e10",
-        "notificationCenterHeader.foreground": "#e8c8b8",
-        "notificationCenterHeader.background": "#5a1a0c",
-        "notificationCenter.border": "#7a1e10",
-        "notificationsInfoIcon.foreground": "#6898c0",
-        "notificationsWarningIcon.foreground": "#c87040",
-        "notificationsErrorIcon.foreground": "#e55143",
-        "notificationLink.foreground": "#e05738",
-        "extensionButton.prominentBackground": "#5a1a0c",
-        "extensionButton.prominentForeground": "#f0d0c0",
-        "extensionButton.prominentHoverBackground": "#702010",
-        "activityBarBadge.foreground": "#f0d0c0",
-        "activityBarBadge.background": "#862010",
-        "badge.foreground": "#f0d0c0",
-        "badge.background": "#862010",
-        "extensionBadge.remoteForeground": "#f0d0c0",
-        "extensionBadge.remoteBackground": "#862010",
-        "breadcrumb.foreground": "#8f5e4f",
-        "breadcrumb.background": "#eceaea",
-        "breadcrumb.focusForeground": "#9f5734",
-        "breadcrumb.activeSelectionForeground": "#bf3c1d",
-        "breadcrumbPicker.background": "#eceaea",
-        "sideBar.background": "#eceaea",
-        "sideBar.foreground": "#8b6145",
-        "sideBarSectionHeader.background": "#e2dfdf",
-        "sideBarSectionHeader.foreground": "#b4381c",
-        "sideBarTitle.foreground": "#8b6145",
-        "sideBar.dropBackground": "#dfd0cd99",
-        "sideBar.border": "#cbc4c3",
-        "editor.foreground": "#8b6b4c",
+        "titleBar.activeBackground": "#4b5669",
+        "titleBar.activeForeground": "#cbd0da",
+        "titleBar.border": "#4e5a6e",
+        "titleBar.inactiveBackground": "#51555d",
+        "titleBar.inactiveForeground": "#dee0e4",
+        "focusBorder": "#4e5a6e",
+        "menu.background": "#4b5669",
+        "menu.foreground": "#cbd0da",
+        "menu.separatorBackground": "#b0b8c8",
+        "menu.selectionForeground": "#c9cfd9",
+        "menu.selectionBackground": "#4e565f",
+        "menubar.selectionForeground": "#c9cfd9",
+        "menubar.selectionBackground": "#4e565f",
+        "activityBar.foreground": "#929eaa",
+        "activityBar.background": "#2e3542",
+        "activityBar.activeBorder": "#8794a2",
+        "activityBar.dropBorder": "#c9cfd9",
+        "activityBar.inactiveForeground": "#929db1",
+        "statusBar.background": "#4b5669",
+        "statusBar.foreground": "#cbd0da",
+        "statusBar.debuggingBackground": "#454b57",
+        "statusBar.debuggingForeground": "#b0c7c8",
+        "statusBarItem.remoteForeground": "#9fdadf",
+        "statusBar.noFolderBackground": "#2d5c62",
+        "statusBar.noFolderForeground": "#b9cdce",
+        "statusBarItem.activeBackground": "#b0c7c82e",
+        "statusBarItem.errorBackground": "#68521c",
+        "statusBarItem.errorForeground": "#d9d7c9",
+        "statusBarItem.hoverBackground": "#d9d7c92e",
+        "progressBar.background": "#b0b8c8",
+        "notifications.foreground": "#b0b8c8",
+        "notifications.background": "#2e3542",
+        "notifications.border": "#2e3542",
+        "notificationToast.border": "#2e3542",
+        "notificationCenterHeader.foreground": "#cbd0da",
+        "notificationCenterHeader.background": "#4b5669",
+        "notificationCenter.border": "#4e5a6e",
+        "notificationsInfoIcon.foreground": "#b0b8c8",
+        "notificationsWarningIcon.foreground": "#cb9234",
+        "notificationsErrorIcon.foreground": "#c89339",
+        "notificationLink.foreground": "#929eaa",
+        "extensionButton.prominentBackground": "#4b5669",
+        "extensionButton.prominentForeground": "#cbd0da",
+        "extensionButton.prominentHoverBackground": "#47505f",
+        "activityBarBadge.foreground": "#c3cad6",
+        "activityBarBadge.background": "#4c5662",
+        "badge.foreground": "#c3cad6",
+        "badge.background": "#4c5662",
+        "extensionBadge.remoteForeground": "#c3cad6",
+        "extensionBadge.remoteBackground": "#4c5662",
+        "breadcrumb.foreground": "#5f6c7a",
+        "breadcrumb.background": "#ecebea",
+        "breadcrumb.focusForeground": "#5d6b86",
+        "breadcrumb.activeSelectionForeground": "#5f6c7a",
+        "breadcrumbPicker.background": "#ecebea",
+        "sideBar.background": "#ecebea",
+        "sideBar.foreground": "#4f7072",
+        "sideBarSectionHeader.background": "#e2e1df",
+        "sideBarSectionHeader.foreground": "#596672",
+        "sideBarTitle.foreground": "#4f7072",
+        "sideBar.dropBackground": "#dfd8cd99",
+        "sideBar.border": "#cbc8c3",
+        "editor.foreground": "#68727f",
         "editor.background": "#f7f6f6",
-        "editorCursor.foreground": "#e04020",
-        "editor.lineHighlightBackground": "#f0efef",
-        "editor.selectionBackground": "#dfd0cd99",
-        "editorLineNumber.foreground": "#b3694b",
-        "editorLineNumber.activeForeground": "#a75d4b",
-        "editorIndentGuide.background": "#d9d5d4",
-        "editorIndentGuide.activeBackground": "#b4a9a7",
-        "editorInlayHint.foreground": "#88614e",
-        "editorInlayHint.background": "#eceaea",
-        "editorGutter.addedBackground": "#806040",
+        "editorCursor.foreground": "#b8842f",
+        "editor.lineHighlightBackground": "#f0f0ef",
+        "editor.selectionBackground": "#dfd8cd99",
+        "editorLineNumber.foreground": "#798491",
+        "editorLineNumber.activeForeground": "#68727e",
+        "editorIndentGuide.background": "#d9d7d4",
+        "editorIndentGuide.activeBackground": "#b4afa7",
+        "editorInlayHint.foreground": "#666b73",
+        "editorInlayHint.background": "#ecebea",
+        "editorGutter.addedBackground": "#757f90",
         "editorGutter.background": "#f7f6f6",
-        "editorGutter.deletedBackground": "#c03020",
-        "editorGutter.modifiedBackground": "#80503066",
-        "editor.findMatchBackground": "#dfd0cd",
-        "editor.findMatchHighlightBackground": "#dfd0cd66",
-        "editor.findRangeHighlightBackground": "#dfd0cd22",
-        "editorLink.activeForeground": "#9f6335",
-        "editorCodeLens.foreground": "#ae6c4166",
-        "editorBracketMatch.background": "#dfd0cd55",
-        "editorBracketMatch.border": "#cbc4c366",
-        "editorRuler.foreground": "#cbc4c3",
+        "editorGutter.deletedBackground": "#5ca8b7",
+        "editorGutter.modifiedBackground": "#7887a166",
+        "editor.findMatchBackground": "#dfd8cd",
+        "editor.findMatchHighlightBackground": "#dfd8cd66",
+        "editor.findRangeHighlightBackground": "#dfd8cd22",
+        "editorLink.activeForeground": "#62728d",
+        "editorCodeLens.foreground": "#808fa766",
+        "editorBracketMatch.background": "#dfd8cd55",
+        "editorBracketMatch.border": "#cbc8c366",
+        "editorRuler.foreground": "#cbc8c3",
         "editorGroupHeader.tabsBackground": "#f7f6f6",
         "editorGroup.emptyBackground": "#f7f6f6",
-        "gitDecoration.conflictingResourceForeground": "#a0562e",
-        "gitDecoration.deletedResourceForeground": "#ca2b1c",
-        "gitDecoration.ignoredResourceForeground": "#9a5940",
-        "gitDecoration.modifiedResourceForeground": "#985b2e",
-        "gitDecoration.untrackedResourceForeground": "#935e35",
-        "diffEditor.insertedTextBackground": "#40280833",
-        "diffEditor.removedTextBackground": "#70181033",
-        "terminal.ansiBlack": "#120c0a",
-        "terminal.ansiBlue": "#5a88b0",
-        "terminal.ansiBrightBlack": "#705040",
-        "terminal.ansiBrightBlue": "#7098c0",
-        "terminal.ansiBrightCyan": "#6888a8",
-        "terminal.ansiBrightGreen": "#a07040",
-        "terminal.ansiBrightMagenta": "#cf8e6e",
-        "terminal.ansiBrightRed": "#e04020",
-        "terminal.ansiBrightWhite": "#d38d5f",
-        "terminal.ansiBrightYellow": "#ca941f",
-        "terminal.ansiCyan": "#507890",
-        "terminal.ansiGreen": "#906030",
-        "terminal.ansiMagenta": "#b07050",
-        "terminal.ansiRed": "#c03020",
-        "terminal.ansiWhite": "#be957b",
-        "terminal.ansiYellow": "#b88020",
-        "terminal.border": "#cbc4c3",
-        "terminal.foreground": "#996543",
+        "gitDecoration.conflictingResourceForeground": "#8a6323",
+        "gitDecoration.deletedResourceForeground": "#8b6324",
+        "gitDecoration.ignoredResourceForeground": "#7b683a",
+        "gitDecoration.modifiedResourceForeground": "#646b77",
+        "gitDecoration.untrackedResourceForeground": "#646b77",
+        "diffEditor.insertedTextBackground": "#30384533",
+        "diffEditor.removedTextBackground": "#3b6b7033",
+        "terminal.ansiBlack": "#1d282a",
+        "terminal.ansiBlue": "#707d92",
+        "terminal.ansiBrightBlack": "#8a909a",
+        "terminal.ansiBrightBlue": "#707d92",
+        "terminal.ansiBrightCyan": "#5a6881",
+        "terminal.ansiBrightGreen": "#6c798f",
+        "terminal.ansiBrightMagenta": "#8694ab",
+        "terminal.ansiBrightRed": "#3aacb9",
+        "terminal.ansiBrightWhite": "#a39e7d",
+        "terminal.ansiBrightYellow": "#b89b39",
+        "terminal.ansiCyan": "#5a6881",
+        "terminal.ansiGreen": "#6c798f",
+        "terminal.ansiMagenta": "#8694ab",
+        "terminal.ansiRed": "#3aacb9",
+        "terminal.ansiWhite": "#a39e7d",
+        "terminal.ansiYellow": "#b89b39",
+        "terminal.border": "#cbc8c3",
+        "terminal.foreground": "#6c717c",
         "terminal.background": "#f7f6f6",
-        "textPreformat.foreground": "#8b6b4c",
-        "editorWidget.foreground": "#9f5734",
-        "editorWidget.background": "#eceaea",
-        "editorWidget.border": "#cbc4c3",
-        "widget.shadow": "#9f959366",
-        "panel.border": "#cbc4c3",
-        "panelTitle.activeForeground": "#9f5734",
-        "panelTitle.activeBorder": "#e04020",
-        "panelTitle.inactiveForeground": "#a46e5c",
-        "panel.background": "#eceaea",
-        "panel.dropBorder": "#cbc4c3",
-        "panelSection.border": "#cbc4c3",
-        "panelSection.dropBackground": "#eceaea",
-        "panelSectionHeader.background": "#e2dfdf",
-        "list.activeSelectionBackground": "#dfd0cdcc",
-        "list.activeSelectionForeground": "#904722",
-        "list.focusBackground": "#dfd0cdcc",
-        "list.focusForeground": "#834e34",
-        "list.highlightForeground": "#a75317",
-        "list.hoverBackground": "#dfd0cdcc",
-        "list.hoverForeground": "#834e34",
-        "list.inactiveSelectionBackground": "#dfd0cdaa",
-        "list.inactiveSelectionForeground": "#7a5244",
-        "list.invalidItemForeground": "#ca2b1c",
-        "button.background": "#e2dfdf",
-        "button.foreground": "#9d4d25",
-        "button.hoverBackground": "#dcd9d8",
-        "button.secondaryBackground": "#eceaea",
-        "button.secondaryForeground": "#9f5734",
-        "button.secondaryHoverBackground": "#e7e5e4",
+        "textPreformat.foreground": "#68727f",
+        "editorWidget.foreground": "#5d6b86",
+        "editorWidget.background": "#ecebea",
+        "editorWidget.border": "#cbc8c3",
+        "widget.shadow": "#9f9a9366",
+        "panel.border": "#cbc8c3",
+        "panelTitle.activeForeground": "#5d6b86",
+        "panelTitle.activeBorder": "#b8842f",
+        "panelTitle.inactiveForeground": "#727c8e",
+        "panel.background": "#ecebea",
+        "panel.dropBorder": "#cbc8c3",
+        "panelSection.border": "#cbc8c3",
+        "panelSection.dropBackground": "#ecebea",
+        "panelSectionHeader.background": "#e2e1df",
+        "list.activeSelectionBackground": "#dfd8cdcc",
+        "list.activeSelectionForeground": "#636046",
+        "list.focusBackground": "#dfd8cdcc",
+        "list.focusForeground": "#566069",
+        "list.highlightForeground": "#706b4f",
+        "list.hoverBackground": "#dfd8cdcc",
+        "list.hoverForeground": "#57606a",
+        "list.inactiveSelectionBackground": "#dfd8cdaa",
+        "list.inactiveSelectionForeground": "#595f6d",
+        "list.invalidItemForeground": "#8a6323",
+        "button.background": "#e2e1df",
+        "button.foreground": "#59647c",
+        "button.hoverBackground": "#dcdbd8",
+        "button.secondaryBackground": "#ecebea",
+        "button.secondaryForeground": "#5e6b85",
+        "button.secondaryHoverBackground": "#e7e6e4",
         "dropdown.background": "#f7f6f6",
-        "dropdown.border": "#cbc4c3",
-        "dropdown.foreground": "#8b6b4c",
-        "dropdown.listBackground": "#eceaea",
-        "scrollbar.shadow": "#877a7866",
-        "scrollbarSlider.activeBackground": "#aba2a066",
-        "scrollbarSlider.background": "#aba2a033",
-        "scrollbarSlider.hoverBackground": "#aba2a055",
+        "dropdown.border": "#cbc8c3",
+        "dropdown.foreground": "#68727f",
+        "dropdown.listBackground": "#ecebea",
+        "scrollbar.shadow": "#87817866",
+        "scrollbarSlider.activeBackground": "#aba7a066",
+        "scrollbarSlider.background": "#aba7a033",
+        "scrollbarSlider.hoverBackground": "#aba7a055",
         "input.background": "#f7f6f6",
-        "input.border": "#cbc4c3",
-        "input.foreground": "#8b6b4c",
-        "input.placeholderForeground": "#c85b3f",
-        "inputOption.activeForeground": "#a26140",
-        "inputOption.activeBorder": "#e04020",
-        "inputValidation.errorBackground": "#881008",
-        "inputValidation.errorForeground": "#f0d8d0",
-        "inputValidation.infoBackground": "#305878",
-        "inputValidation.infoForeground": "#d0e0f0",
-        "inputValidation.warningBackground": "#804010",
-        "inputValidation.warningForeground": "#f0d8c8",
+        "input.border": "#cbc8c3",
+        "input.foreground": "#68727f",
+        "input.placeholderForeground": "#768595",
+        "inputOption.activeForeground": "#68727f",
+        "inputOption.activeBorder": "#b8842f",
+        "inputValidation.errorBackground": "#b88633",
+        "inputValidation.errorForeground": "#d9d7c9",
+        "inputValidation.infoBackground": "#707d92",
+        "inputValidation.infoForeground": "#d9d7c9",
+        "inputValidation.warningBackground": "#b8842f",
+        "inputValidation.warningForeground": "#d9d7c9",
         "tab.activeBackground": "#f7f6f6",
-        "tab.activeForeground": "#a26140",
-        "tab.border": "#cbc4c3",
-        "tab.inactiveBackground": "#e2dfdf",
-        "tab.inactiveForeground": "#9c6856"
+        "tab.activeForeground": "#68727f",
+        "tab.border": "#cbc8c3",
+        "tab.inactiveBackground": "#e2e1df",
+        "tab.inactiveForeground": "#6d7686"
     },
     "tokenColors": [
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source"
             ],
             "settings": {
-                "foreground": "#a26141"
+                "foreground": "#62728c"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.name",
                 "meta.use.rust",
@@ -202,41 +202,41 @@
                 "source"
             ],
             "settings": {
-                "foreground": "#8b6b4c"
+                "foreground": "#68727f"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "comment",
                 "punctuation.definition.comment"
             ],
             "settings": {
-                "foreground": "#735c47"
+                "foreground": "#69717d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "string",
                 "punctuation.definition.string"
             ],
             "settings": {
-                "foreground": "#9b7313"
+                "foreground": "#707a8b"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "constant.character.escape",
                 "punctuation.definition.interpolation"
             ],
             "settings": {
-                "foreground": "#8e6c16"
+                "foreground": "#697281"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "meta.attribute",
                 "meta.attribute keyword",
@@ -245,11 +245,11 @@
                 "storage.type.annotation"
             ],
             "settings": {
-                "foreground": "#895028"
+                "foreground": "#515f74"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "keyword",
                 "constant.language",
@@ -257,11 +257,11 @@
                 "variable.language"
             ],
             "settings": {
-                "foreground": "#b32914"
+                "foreground": "#545e71"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.name.type.class",
                 "entity.name.type.kotlin",
@@ -272,42 +272,42 @@
                 "variable.other.object"
             ],
             "settings": {
-                "foreground": "#914b17"
+                "foreground": "#515f75"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.name.type.interface"
             ],
             "settings": {
-                "foreground": "#4a759b"
+                "foreground": "#62728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "variable.other.constant",
                 "source.powershell support.constant.variable",
                 "constant.other.enum"
             ],
             "settings": {
-                "foreground": "#9b6623"
+                "foreground": "#62728e"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.name.variable.field",
                 "variable.other",
                 "source.powershell support.variable"
             ],
             "settings": {
-                "foreground": "#ac5c27"
+                "foreground": "#2e7b83"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.name.function",
                 "entity.name.variable.property",
@@ -315,11 +315,11 @@
                 "source.powershell support.function"
             ],
             "settings": {
-                "foreground": "#af5a19"
+                "foreground": "#3b7a87"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "variable.parameter",
                 "entity.name.variable.parameter",
@@ -328,89 +328,89 @@
                 "source.java punctuation.bracket.angle"
             ],
             "settings": {
-                "foreground": "#765a11"
+                "foreground": "#515f74"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "constant.numeric"
             ],
             "settings": {
-                "foreground": "#a85f17"
+                "foreground": "#827035"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "punctuation.definition.tag",
                 "keyword.other.documentation",
                 "entity.name.tag"
             ],
             "settings": {
-                "foreground": "#74593f"
+                "foreground": "#5b5e67"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#8d6a52"
+                "foreground": "#687283"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "comment.block.documentation",
                 "comment.block.javadoc",
                 "comment.line.documentation"
             ],
             "settings": {
-                "foreground": "#7a594d"
+                "foreground": "#6c717b"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "comment.block.documentation string.quoted.double",
                 "comment.block.documentation punctuation.definition.string"
             ],
             "settings": {
-                "foreground": "#7c5a29"
+                "foreground": "#63718a"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "text.xml punctuation.definition.tag",
                 "text.xml meta.tag"
             ],
             "settings": {
-                "foreground": "#8e6c16"
+                "foreground": "#697281"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "text.xml entity.name.tag"
             ],
             "settings": {
-                "foreground": "#ac5c27"
+                "foreground": "#3b7a87"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "text.xml entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#ae5b1c"
+                "foreground": "#63728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.yaml punctuation.definition",
                 "source.json punctuation.definition",
@@ -419,86 +419,86 @@
                 "source.yaml entity.other"
             ],
             "settings": {
-                "foreground": "#8b6b4c"
+                "foreground": "#68727f"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.yaml entity.name.tag",
                 "source.json support.type"
             ],
             "settings": {
-                "foreground": "#a16314"
+                "foreground": "#63728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.yaml constant.language",
                 "source.json constant.language"
             ],
             "settings": {
-                "foreground": "#9b6623"
+                "foreground": "#62728e"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "heading.1 entity.name.section",
                 "punctuation.definition.heading"
             ],
             "settings": {
-                "foreground": "#d63118"
+                "foreground": "#63728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "heading.2 entity.name.section"
             ],
             "settings": {
-                "foreground": "#af5a19"
+                "foreground": "#62728e"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "heading.3 entity.name.section"
             ],
             "settings": {
-                "foreground": "#ae5b1c"
+                "foreground": "#62728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "entity.name.section"
             ],
             "settings": {
-                "foreground": "#a16238"
+                "foreground": "#677284"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "constant.other.reference.link"
             ],
             "settings": {
-                "foreground": "#d63118"
+                "foreground": "#657289"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "markup.underline.link"
             ],
             "settings": {
-                "foreground": "#ae5b1c"
+                "foreground": "#62728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "fenced_code.block.language",
                 "markup.inline",
@@ -508,85 +508,85 @@
                 "text.html.markdown meta.separator"
             ],
             "settings": {
-                "foreground": "#997416"
+                "foreground": "#707a8b"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.ini keyword"
             ],
             "settings": {
-                "foreground": "#78590f"
+                "foreground": "#515f75"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.ini entity.name.section"
             ],
             "settings": {
-                "foreground": "#ae5b1c"
+                "foreground": "#62728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.ini"
             ],
             "settings": {
-                "foreground": "#9b6623"
+                "foreground": "#62728e"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.ini punctuation",
                 "source.ini punctuation.separator"
             ],
             "settings": {
-                "foreground": "#8e6c14"
+                "foreground": "#697281"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.toml keyword"
             ],
             "settings": {
-                "foreground": "#78590f"
+                "foreground": "#515f75"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.toml entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#ae5b1c"
+                "foreground": "#62728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.toml"
             ],
             "settings": {
-                "foreground": "#9b6623"
+                "foreground": "#62728e"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.toml punctuation",
                 "source.toml punctuation.separator"
             ],
             "settings": {
-                "foreground": "#8e6c14"
+                "foreground": "#697281"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
@@ -594,50 +594,50 @@
                 "source.regex-pipeline.obsidian keyword.control.include.obsidian"
             ],
             "settings": {
-                "foreground": "#b32914"
+                "foreground": "#545e71"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
             ],
             "settings": {
-                "foreground": "#924b15"
+                "foreground": "#31656f"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.template.obsidian"
             ],
             "settings": {
-                "foreground": "#795828"
+                "foreground": "#26676d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian entity.name.rule.obsidian",
                 "source.regex-pipeline.obsidian entity.name.include.obsidian"
             ],
             "settings": {
-                "foreground": "#916b12"
+                "foreground": "#63728d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian entity.name.pattern.obsidian"
             ],
             "settings": {
-                "foreground": "#ac5c27"
+                "foreground": "#3b7a87"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp"
             ],
@@ -646,181 +646,181 @@
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
             ],
             "settings": {
-                "foreground": "#9b7313"
+                "foreground": "#707a8b"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.control.obsidian"
             ],
             "settings": {
-                "foreground": "#e5351c"
+                "foreground": "#6d7a93"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
             ],
             "settings": {
-                "foreground": "#9b7313"
+                "foreground": "#6a7a97"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.pattern.obsidian"
             ],
             "settings": {
-                "foreground": "#a66d26"
+                "foreground": "#707a8b"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian string.regexp.replace.obsidian"
             ],
             "settings": {
-                "foreground": "#b1672c"
+                "foreground": "#6a7a97"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian"
             ],
             "settings": {
-                "foreground": "#b32914"
+                "foreground": "#545e71"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
             ],
             "settings": {
-                "foreground": "#924b15"
+                "foreground": "#31656f"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
             ],
             "settings": {
-                "foreground": "#80551d"
+                "foreground": "#525e75"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
                 "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian"
             ],
             "settings": {
-                "foreground": "#78590f"
+                "foreground": "#515f75"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
             ],
             "settings": {
-                "foreground": "#765a11"
+                "foreground": "#26676d"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian"
             ],
             "settings": {
-                "foreground": "#895028"
+                "foreground": "#515f74"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian"
             ],
             "settings": {
-                "foreground": "#7e5538"
+                "foreground": "#4a6265"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian"
             ],
             "settings": {
-                "foreground": "#7d5539"
+                "foreground": "#5a5e68"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian comment.line.double-colon.obsidian"
             ],
             "settings": {
-                "foreground": "#876c54"
+                "foreground": "#6a727e"
             }
         },
         {
-            "name": "Heavyarms",
+            "name": "Aries",
             "scope": [
                 "source.regex-pipeline.obsidian comment.line.text.obsidian"
             ],
             "settings": {
-                "foreground": "#d33624"
+                "foreground": "#467980"
             }
         }
     ],
     "semanticTokenColors": {
-        "local": "#8b6b4c",
-        "namespace": "#8b6b4c",
-        "operator": "#8b6b4c",
-        "punctuation": "#8b6b4c",
-        "variable": "#8b6b4c",
-        "comment": "#735c47",
-        "comment.documentation": "#7a594d",
-        "string": "#9b7313",
-        "regexp": "#587ab5",
-        "stringEscapeCharacter": "#987418",
-        "keyword": "#b32914",
-        "controlKeyword": "#b32914",
-        "plainKeyword": "#b32914",
-        "class": "#ae5b1c",
-        "enum": "#ae5b1c",
-        "struct": "#ae5b1c",
-        "interface": "#4a759b",
-        "delegate": "#4a759b",
-        "constant": "#9b6623",
-        "enumMember": "#9b6623",
-        "variable.static.readonly": "#9b6623",
-        "property.static.readonly": "#9b6623",
-        "field.static": "#9b6623",
-        "field": "#ac5c27",
-        "property:java": "#ac5c27",
-        "method": "#af5a19",
-        "property": "#af5a19",
-        "parameter": "#8e6c14",
-        "typeParameter": "#8e6c14",
-        "number": "#a85f17",
-        "xmlDocCommentAttributeName": "#8d6a52",
-        "xmlDocCommentName": "#8d6a52",
-        "xmlDocCommentAttributeQuotes": "#8c6b4c",
-        "xmlDocCommentDelimiter": "#8c6b4c",
-        "xmlDocCommentText": "#90685b",
+        "local": "#68727f",
+        "namespace": "#68727f",
+        "operator": "#68727f",
+        "punctuation": "#68727f",
+        "variable": "#68727f",
+        "comment": "#69717d",
+        "comment.documentation": "#6b717d",
+        "string": "#707a8b",
+        "regexp": "#6a7a97",
+        "stringEscapeCharacter": "#707a8b",
+        "keyword": "#545e71",
+        "controlKeyword": "#545e71",
+        "plainKeyword": "#545e71",
+        "class": "#63728d",
+        "enum": "#63728d",
+        "struct": "#63728d",
+        "interface": "#62728d",
+        "delegate": "#62728d",
+        "constant": "#62728e",
+        "enumMember": "#62728e",
+        "variable.static.readonly": "#62728e",
+        "property.static.readonly": "#62728e",
+        "field.static": "#62728e",
+        "field": "#2e7b83",
+        "property:java": "#2e7b83",
+        "method": "#3b7a87",
+        "property": "#3b7a87",
+        "parameter": "#62728c",
+        "typeParameter": "#62728c",
+        "number": "#827035",
+        "xmlDocCommentAttributeName": "#677284",
+        "xmlDocCommentName": "#597679",
+        "xmlDocCommentAttributeQuotes": "#6c717c",
+        "xmlDocCommentDelimiter": "#6c717c",
+        "xmlDocCommentText": "#6c717d",
         "*.deprecated": {
             "strikethrough": true
         }

@@ -23,9 +23,19 @@
                 "path": "./themes/vayeate-color-theme.json"
             },
             {
+                "label": "Vayeate Light",
+                "uiTheme": "vs",
+                "path": "./themes/vayeate-light-color-theme.json"
+            },
+            {
                 "label": "Leo",
                 "uiTheme": "vs-dark",
                 "path": "./themes/leo-color-theme.json"
+            },
+            {
+                "label": "Leo Light",
+                "uiTheme": "vs",
+                "path": "./themes/leo-light-color-theme.json"
             },
             {
                 "label": "Mercurius",
@@ -33,14 +43,29 @@
                 "path": "./themes/mercurius-color-theme.json"
             },
             {
+                "label": "Mercurius Light",
+                "uiTheme": "vs",
+                "path": "./themes/mercurius-light-color-theme.json"
+            },
+            {
                 "label": "Aries",
                 "uiTheme": "vs-dark",
                 "path": "./themes/aries-color-theme.json"
             },
             {
+                "label": "Aries Light",
+                "uiTheme": "vs",
+                "path": "./themes/aries-light-color-theme.json"
+            },
+            {
                 "label": "Virgo",
                 "uiTheme": "vs-dark",
                 "path": "./themes/virgo-color-theme.json"
+            },
+            {
+                "label": "Virgo Light",
+                "uiTheme": "vs",
+                "path": "./themes/virgo-light-color-theme.json"
             },
             {
                 "label": "Tallgeese",
