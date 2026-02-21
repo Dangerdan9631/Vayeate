@@ -22,6 +22,7 @@ import {
 } from "./api/themeStudioApi";
 import { previewSamples } from "./preview/samples";
 import { PreviewPane } from "./preview/PreviewPane";
+import { createMissingCoverageBindings } from "./state/bindingCoverage";
 import { createDefaultTemplate } from "./state/defaultTemplate";
 
 const CATEGORY_OPTIONS: Array<ElementBinding["category"]> = ["default", "keyword", "string", "comment"];
@@ -296,6 +297,29 @@ export function App(): JSX.Element {
         })),
       ],
     }));
+  }
+
+  function handleApplyFullCoverage(): void {
+    if (!catalogSnapshot) {
+      setApiError("Catalog snapshot is required before applying full coverage.");
+      return;
+    }
+
+    const result = createMissingCoverageBindings(template, catalogSnapshot);
+    if (result.bindings.length === 0) {
+      setApiMessage("Full coverage already satisfied for current snapshot.");
+      setApiError("");
+      return;
+    }
+
+    setTemplate((prev) => ({
+      ...prev,
+      bindings: [...prev.bindings, ...result.bindings],
+    }));
+    setApiError("");
+    setApiMessage(
+      `Added ${result.bindings.length} bindings (colors=${result.counts.colors}, semantic=${result.counts.semantic}, token=${result.counts.token}).`,
+    );
   }
 
   function addBinding(): void {
@@ -734,6 +758,9 @@ export function App(): JSX.Element {
                   </button>
                   <button type="button" onClick={addAllMissingCatalogBindings} disabled={catalogKeyOptions.length === 0}>
                     Add all missing keys
+                  </button>
+                  <button type="button" onClick={handleApplyFullCoverage} disabled={!catalogSnapshot}>
+                    Apply full coverage
                   </button>
                 </div>
                 <div style={{ color: "#555" }}>

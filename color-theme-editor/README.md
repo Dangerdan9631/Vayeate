@@ -45,6 +45,7 @@ Phase 2 implementation has started:
 - Custom side-by-side dark/light preview.
 - Preview sample ingestion from repository `examples` for TypeScript, JSON, Markdown, PowerShell, and Rust.
 - Catalog-driven binding controls for adding snapshot color/semantic/scope keys into template bindings.
+- One-click `Apply full coverage` action that auto-generates deterministic missing bindings for all catalog keys.
 
 Phase 3 kickoff is implemented:
 
@@ -58,3 +59,4 @@ Phase 3 kickoff is implemented:
 - Catalog validation checks (required keys, duplicates, formatting).
 - Local dev API endpoints for catalog status and sync.
 - UI panel to run sync and inspect snapshot/report health.
+- Heuristic mapping for full-coverage bindings (category, variable, strategy) with deterministic ordering.
