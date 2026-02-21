@@ -6,14 +6,16 @@
 //   - Toolbar & menu colors (title bar, menu bar, activity bar, status bar,
 //     notifications, extension buttons, badges) are IDENTICAL to the dark variant.
 //   - Editor + panel backgrounds are a very light grey slightly shifted toward the
-//     primary hue (derived from editorCursor.foreground).
+//     primary hue (derived from editorCursor.foreground), capped so that the
+//     contrast between the light background and the adjacent dark chrome never
+//     exceeds 10:1.
 //   - Code-syntax token colors keep the same hue/saturation as the dark variant but
 //     their lightness is adjusted so that each token meets its required contrast ratio
 //     against the light editor background:
 //       comments        → 1.5:1
-//       keywords        → 4:1
-//       strings         → 2.5:1
-//       everything else → 2:1
+//       keywords        → 5:1
+//       strings         → 4:1
+//       everything else → 3:1
 //
 // Run from the workspace root: node scripts/generate-light-themes.js
 
@@ -188,6 +190,35 @@ function adjustBrightness(hexFg, hexBg, target, mode = 'min') {
     return best + alpha;
 }
 
+// ─── Background Contrast Cap ────────────────────────────────────────────────
+
+/**
+ * Darken hexBg until its contrast ratio vs hexRef drops to at or below maxRatio.
+ * Used to prevent light backgrounds from being so bright they clash with the
+ * adjacent dark chrome (tab bar, gutter, panel).
+ */
+function capBgBrightness(hexBg, hexRef, maxRatio) {
+    if (!hexBg || !hexRef || hexBg.length < 7 || hexRef.length < 7) return hexBg;
+    if (contrastRatio(hexBg.slice(0, 7), hexRef.slice(0, 7)) <= maxRatio) return hexBg;
+
+    const [r, g, b] = hexToRgb(hexBg.slice(0, 7));
+    const [h, s, l] = rgbToHsl(r, g, b);
+
+    // Binary search: find the highest lightness where contrast ≤ maxRatio.
+    let lo = 0, hi = l, best = fromHsl(h, s, 0);
+    for (let i = 0; i < 64; i++) {
+        const mid = (lo + hi) / 2;
+        const candidate = fromHsl(h, s, mid);
+        if (contrastRatio(candidate, hexRef.slice(0, 7)) <= maxRatio) {
+            best = candidate;
+            lo = mid; // achieved — try lighter
+        } else {
+            hi = mid; // still too bright — go darker
+        }
+    }
+    return best;
+}
+
 // ─── Scope / Token Target Detection ─────────────────────────────────────────
 
 function isCommentScope(s) {
@@ -212,17 +243,17 @@ function isStringScope(s) {
 function tokenTarget(entry) {
     const scopes = Array.isArray(entry.scope) ? entry.scope : [entry.scope || ''];
     if (scopes.some(isCommentScope)) return 1.5;
-    if (scopes.some(isKeywordScope)) return 4.0;
-    if (scopes.some(isStringScope))  return 2.5;
-    return 2.0;
+    if (scopes.some(isKeywordScope)) return 5.0;
+    if (scopes.some(isStringScope))  return 4.0;
+    return 3.0;
 }
 
 function semanticTarget(key) {
     const base = key.split('.')[0];
     if (base === 'comment')                                          return 1.5;
-    if (['keyword','controlKeyword','plainKeyword','modifier','storageType'].includes(base)) return 4.0;
-    if (['string','stringEscapeCharacter','regexp'].includes(base))  return 2.5;
-    return 2.0;
+    if (['keyword','controlKeyword','plainKeyword','modifier','storageType'].includes(base)) return 5.0;
+    if (['string','stringEscapeCharacter','regexp'].includes(base))  return 4.0;
+    return 3.0;
 }
 
 // ─── JSONC Parser ─────────────────────────────────────────────────────────────
@@ -300,6 +331,32 @@ const COPY_FROM_DARK = new Set([
     'activityBarBadge.foreground', 'activityBarBadge.background',
     'badge.foreground', 'badge.background',
     'extensionBadge.remoteForeground', 'extensionBadge.remoteBackground',
+    // Gutter (matches ribbon chrome)
+    'editorGutter.background', 'editorGutter.addedBackground',
+    'editorGutter.deletedBackground', 'editorGutter.modifiedBackground',
+    // Editor tab bar (matches ribbon chrome)
+    'editorGroupHeader.tabsBackground',
+    // Tabs (match ribbon chrome)
+    'tab.activeBackground', 'tab.activeForeground', 'tab.border',
+    'tab.inactiveBackground', 'tab.inactiveForeground',
+    // Bottom Panel (matches ribbon chrome)
+    'panel.border', 'panelTitle.activeForeground', 'panelTitle.activeBorder',
+    'panelTitle.inactiveForeground', 'panel.background', 'panel.dropBorder',
+    'panelSection.border', 'panelSection.dropBackground', 'panelSectionHeader.background',
+    // Side bar section headers (match ribbon chrome; applies to left and right sidebars)
+    'sideBarSectionHeader.background', 'sideBarSectionHeader.foreground',
+    // Gutter line numbers (gutter background is dark, so numbers must be light)
+    'editorLineNumber.foreground', 'editorLineNumber.activeForeground',
+    // Breadcrumb (matches tab bar / ribbon chrome)
+    'breadcrumb.foreground', 'breadcrumb.background', 'breadcrumb.focusForeground',
+    'breadcrumb.activeSelectionForeground', 'breadcrumbPicker.background',
+    // Terminal (identical to dark theme)
+    'terminal.ansiBlack', 'terminal.ansiBlue', 'terminal.ansiBrightBlack',
+    'terminal.ansiBrightBlue', 'terminal.ansiBrightCyan', 'terminal.ansiBrightGreen',
+    'terminal.ansiBrightMagenta', 'terminal.ansiBrightRed', 'terminal.ansiBrightWhite',
+    'terminal.ansiBrightYellow', 'terminal.ansiCyan', 'terminal.ansiGreen',
+    'terminal.ansiMagenta', 'terminal.ansiRed', 'terminal.ansiWhite', 'terminal.ansiYellow',
+    'terminal.border', 'terminal.foreground', 'terminal.background',
 ]);
 
 // ─── Light Theme Generator ───────────────────────────────────────────────────
@@ -319,13 +376,28 @@ function generateLightTheme(dark) {
     }
 
     // ── Light background palette ──────────────────────────────────────────────
-    const editorBg    = fromHsl(pH, 0.06, 0.965); // very light, barely tinted
-    const lineHlBg    = fromHsl(pH, 0.05, 0.940); // editor line highlight
+    // Dark chrome reference: the adjacent tab bar / gutter / panel background
+    // from the dark theme, used to cap the contrast between light and dark areas.
+    const darkChromeRef = dc['editorGroupHeader.tabsBackground'] || dc['panel.background'] || '#1e1e1e';
+    const MAX_BG_CONTRAST = 10.0;
+
+    const editorBg    = capBgBrightness(fromHsl(pH, 0.06, 0.965), darkChromeRef, MAX_BG_CONTRAST);
+    // Line highlight uses a semi-transparent mid-tone so it reads as a visible
+    // shift on both the dark gutter and the light editor without clashing with either.
+    const lineHlBg    = fromHsl(pH, 0.08, 0.62) + '44';
     const selBg       = fromHsl(pH, 0.22, 0.840); // selection
-    const panelBg     = fromHsl(pH, 0.05, 0.920); // sidebar / panel
+    const panelBg     = capBgBrightness(fromHsl(pH, 0.05, 0.920), darkChromeRef, MAX_BG_CONTRAST);
     const sectionBg   = fromHsl(pH, 0.06, 0.880); // section headers / inactive tabs
     const borderColor = fromHsl(pH, 0.07, 0.780); // borders / rulers
     const scrollBase  = fromHsl(pH, 0.06, 0.650); // scrollbar base
+
+    // Input background: midpoint lightness between the light sidebar and the dark chrome,
+    // so inputs look neutral in both contexts.
+    const [plr, plg, plb] = hexToRgb(panelBg);
+    const [,,  panelL] = rgbToHsl(plr, plg, plb);
+    const [dcr, dcg, dcb] = hexToRgb(darkChromeRef.slice(0, 7));
+    const [,,  darkL ] = rgbToHsl(dcr, dcg, dcb);
+    const inputBg = fromHsl(pH, 0.06, (panelL + darkL) / 2);
 
     // ── Foreground helpers ───────────────────────────────────────────────────
     // adj(hex, bg, ratio): darken hex until it reaches the target contrast vs bg.
@@ -342,18 +414,21 @@ function generateLightTheme(dark) {
         if (dc[key] !== undefined) lc[key] = dc[key];
     }
 
-    // ── Breadcrumb ────────────────────────────────────────────────────────────
-    lc['breadcrumb.foreground']                = adj(dc['breadcrumb.foreground'],                panelBg, 4.5);
-    lc['breadcrumb.background']                = panelBg;
-    lc['breadcrumb.focusForeground']           = adj(dc['breadcrumb.focusForeground'],            panelBg, 4.5);
-    lc['breadcrumb.activeSelectionForeground'] = adj(dc['breadcrumb.activeSelectionForeground'],  panelBg, 4.5);
-    lc['breadcrumbPicker.background']          = panelBg;
+    // Global foreground: used as fallback in unthemed areas, notably the dark panel
+    // content (Problems, Output, etc.). Computed from the dark chrome so text is
+    // readable on the dark panel background. Light areas (editor, sidebar) override
+    // this with their own explicit foreground keys.
+    lc['foreground'] = adjustBrightness(
+        dc['editor.foreground'] || dc['panelTitle.activeForeground'] || '#cccccc',
+        darkChromeRef, 4.5, 'min'
+    );
+
+    // ── Breadcrumb ──────── (copied verbatim from dark via COPY_FROM_DARK) ──────────────
 
     // ── Side Bar ──────────────────────────────────────────────────────────────
     lc['sideBar.background']                   = panelBg;
     lc['sideBar.foreground']                   = adj(dc['sideBar.foreground'],                    panelBg, 4.5);
-    lc['sideBarSectionHeader.background']      = sectionBg;
-    lc['sideBarSectionHeader.foreground']      = adj(dc['sideBarSectionHeader.foreground'],       sectionBg, 4.5);
+    // sideBarSectionHeader copied verbatim from dark via COPY_FROM_DARK
     lc['sideBarTitle.foreground']              = adj(dc['sideBarTitle.foreground'],               panelBg, 4.5);
     lc['sideBar.dropBackground']               = selBg + '99';
     lc['sideBar.border']                       = borderColor;
@@ -364,20 +439,13 @@ function generateLightTheme(dark) {
     lc['editorCursor.foreground']              = dc['editorCursor.foreground'];
     lc['editor.lineHighlightBackground']       = lineHlBg;
     lc['editor.selectionBackground']           = selBg + '99';
-    lc['editorLineNumber.foreground']          = adj(dc['editorLineNumber.foreground'],           editorBg, 3.5);
-    lc['editorLineNumber.activeForeground']    = adj(dc['editorLineNumber.activeForeground'],     editorBg, 4.5);
+    // editorLineNumber keys copied verbatim from dark via COPY_FROM_DARK (gutter bg is dark)
     lc['editorIndentGuide.background']         = fromHsl(pH, 0.06, 0.840);
     lc['editorIndentGuide.activeBackground']   = fromHsl(pH, 0.08, 0.680);
     lc['editorInlayHint.foreground']           = adj(dc['editorInlayHint.foreground'],           panelBg, 4.5);
     lc['editorInlayHint.background']           = panelBg;
 
-    // ── Gutter ────────────────────────────────────────────────────────────────
-    lc['editorGutter.addedBackground']         = adj(dc['editorGutter.addedBackground'],         editorBg, 2.5);
-    lc['editorGutter.background']              = panelBg;
-    lc['editorGutter.deletedBackground']       = adj(dc['editorGutter.deletedBackground'],       editorBg, 2.5);
-    lc['editorGutter.modifiedBackground']      = adj(dc['editorGutter.modifiedBackground']
-        ? dc['editorGutter.modifiedBackground'].slice(0, 7)
-        : fromHsl(pH, 0.08, 0.60), editorBg, 2.5) + '66';
+    // ── Gutter ──────────── (copied verbatim from dark via COPY_FROM_DARK) ───────────────
 
     // ── Editor matching ───────────────────────────────────────────────────────
     lc['editor.findMatchBackground']           = selBg;
@@ -391,8 +459,7 @@ function generateLightTheme(dark) {
     lc['editorBracketMatch.border']            = borderColor + '66';
     lc['editorRuler.foreground']               = borderColor;
 
-    // ── Editor Group ──────────────────────────────────────────────────────────
-    lc['editorGroupHeader.tabsBackground']     = panelBg;
+    // ── Editor Group ──────── (tabsBackground copied from dark via COPY_FROM_DARK) ────────
     lc['editorGroup.emptyBackground']          = editorBg;
 
     // ── Git Decorations ───────────────────────────────────────────────────────
@@ -408,21 +475,7 @@ function generateLightTheme(dark) {
         ? dc['diffEditor.removedTextBackground'].slice(0, 7)
         : fromHsl(pH, 0.15, 0.50), editorBg, 1.5) + '33';
 
-    // ── Terminal ──────────────────────────────────────────────────────────────
-    // Keep terminal ANSI palette from dark theme but set bg to editor bg.
-    const terminalKeys = [
-        'terminal.ansiBlack', 'terminal.ansiBlue', 'terminal.ansiBrightBlack',
-        'terminal.ansiBrightBlue', 'terminal.ansiBrightCyan', 'terminal.ansiBrightGreen',
-        'terminal.ansiBrightMagenta', 'terminal.ansiBrightRed', 'terminal.ansiBrightWhite',
-        'terminal.ansiBrightYellow', 'terminal.ansiCyan', 'terminal.ansiGreen',
-        'terminal.ansiMagenta', 'terminal.ansiRed', 'terminal.ansiWhite', 'terminal.ansiYellow',
-    ];
-    for (const k of terminalKeys) {
-        if (dc[k]) lc[k] = adj(dc[k], editorBg, 2.5); // darken for light bg readability
-    }
-    lc['terminal.border']      = borderColor;
-    lc['terminal.foreground']  = adj(dc['terminal.foreground'] || dc['editor.foreground'], editorBg, 4.5);
-    lc['terminal.background']  = editorBg;
+    // ── Terminal ──────────── (copied verbatim from dark via COPY_FROM_DARK) ─────────────
 
     // textPreformat
     lc['textPreformat.foreground'] = adj(dc['textPreformat.foreground'] || dc['editor.foreground'], editorBg, 4.5);
@@ -433,16 +486,10 @@ function generateLightTheme(dark) {
     lc['editorWidget.border']     = borderColor;
     lc['widget.shadow']           = fromHsl(pH, 0.06, 0.60) + '66';
 
-    // ── Panels ────────────────────────────────────────────────────────────────
-    lc['panel.border']                   = borderColor;
-    lc['panelTitle.activeForeground']    = adj(dc['panelTitle.activeForeground'],   panelBg, 4.5);
-    lc['panelTitle.activeBorder']        = dc['editorCursor.foreground'] || borderColor;
-    lc['panelTitle.inactiveForeground']  = adj(dc['panelTitle.inactiveForeground'], panelBg, 3.5);
-    lc['panel.background']               = panelBg;
-    lc['panel.dropBorder']               = borderColor;
-    lc['panelSection.border']            = borderColor;
-    lc['panelSection.dropBackground']    = panelBg;
-    lc['panelSectionHeader.background']  = sectionBg;
+    // ── Panels ──────────── (copied verbatim from dark via COPY_FROM_DARK) ──────────────
+    // panelSectionHeader.background is dark (from dark theme) but has no dark-theme
+    // foreground — set one explicitly so it doesn't fall back to the light editor.foreground.
+    lc['panelSectionHeader.foreground'] = dc['panelTitle.activeForeground'] || dc['panel.foreground'];
 
     // ── Lists ──────────────────────────────────────────────────────────────────
     lc['list.activeSelectionBackground']  = selBg + 'cc';
@@ -477,11 +524,16 @@ function generateLightTheme(dark) {
     lc['scrollbarSlider.hoverBackground']    = scrollBase + '55';
 
     // ── Input Boxes ────────────────────────────────────────────────────────────
-    lc['input.background']              = editorBg;
+    lc['input.background']              = inputBg;
     lc['input.border']                  = borderColor;
-    lc['input.foreground']              = adj(dc['input.foreground'],             editorBg, 4.5);
-    lc['input.placeholderForeground']   = adj(dc['input.placeholderForeground'],  editorBg, 3.5);
-    lc['inputOption.activeForeground']  = adj(dc['inputOption.activeForeground'], editorBg, 4.5);
+    // inputBg is a medium-grey midpoint — the maximum achievable contrast from the light
+    // direction is ~3.5:1, so forcing 4.5 would always fall back to dark text.
+    // Instead explicitly derive a light foreground from the near-white end: this guarantees
+    // a light colour that is as readable as the background allows while matching each
+    // theme's primary hue.
+    lc['input.foreground']              = fromHsl(pH, 0.05, 0.93);
+    lc['input.placeholderForeground']   = fromHsl(pH, 0.04, 0.68);
+    lc['inputOption.activeForeground']  = fromHsl(pH, 0.05, 0.93);
     lc['inputOption.activeBorder']      = dc['editorCursor.foreground'] || borderColor;
     // Keep validation backgrounds/foregrounds from dark (they carry semantic meaning).
     lc['inputValidation.errorBackground']   = dc['inputValidation.errorBackground'];
@@ -491,12 +543,7 @@ function generateLightTheme(dark) {
     lc['inputValidation.warningBackground'] = dc['inputValidation.warningBackground'];
     lc['inputValidation.warningForeground'] = dc['inputValidation.warningForeground'];
 
-    // ── Tabs ───────────────────────────────────────────────────────────────────
-    lc['tab.activeBackground']    = panelBg;
-    lc['tab.activeForeground']    = adj(dc['tab.activeForeground'],   panelBg, 4.5);
-    lc['tab.border']              = borderColor;
-    lc['tab.inactiveBackground']  = panelBg;
-    lc['tab.inactiveForeground']  = adj(dc['tab.inactiveForeground'], panelBg, 3.5);
+    // ── Tabs ────────────── (copied verbatim from dark via COPY_FROM_DARK) ─────────────
 
     // ── Token Colors ──────────────────────────────────────────────────────────
     const tokenColors = (dark.tokenColors || []).map(entry => {
