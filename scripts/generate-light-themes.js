@@ -10,10 +10,10 @@
 //   - Code-syntax token colors keep the same hue/saturation as the dark variant but
 //     their lightness is adjusted so that each token meets its required contrast ratio
 //     against the light editor background:
-//       comments   → 3:1
-//       keywords   → 6:1
-//       strings    → 4:1
-//       everything else → 4.5:1
+//       comments        → 1.5:1
+//       keywords        → 4:1
+//       strings         → 2.5:1
+//       everything else → 2:1
 //
 // Run from the workspace root: node scripts/generate-light-themes.js
 
@@ -211,18 +211,18 @@ function isStringScope(s) {
 
 function tokenTarget(entry) {
     const scopes = Array.isArray(entry.scope) ? entry.scope : [entry.scope || ''];
-    if (scopes.some(isCommentScope)) return 3.0;
-    if (scopes.some(isKeywordScope)) return 6.0;
-    if (scopes.some(isStringScope))  return 4.0;
-    return 4.5;
+    if (scopes.some(isCommentScope)) return 1.5;
+    if (scopes.some(isKeywordScope)) return 4.0;
+    if (scopes.some(isStringScope))  return 2.5;
+    return 2.0;
 }
 
 function semanticTarget(key) {
     const base = key.split('.')[0];
-    if (base === 'comment')                                          return 3.0;
-    if (['keyword','controlKeyword','plainKeyword','modifier','storageType'].includes(base)) return 6.0;
-    if (['string','stringEscapeCharacter','regexp'].includes(base))  return 4.0;
-    return 4.5;
+    if (base === 'comment')                                          return 1.5;
+    if (['keyword','controlKeyword','plainKeyword','modifier','storageType'].includes(base)) return 4.0;
+    if (['string','stringEscapeCharacter','regexp'].includes(base))  return 2.5;
+    return 2.0;
 }
 
 // ─── JSONC Parser ─────────────────────────────────────────────────────────────
@@ -373,7 +373,7 @@ function generateLightTheme(dark) {
 
     // ── Gutter ────────────────────────────────────────────────────────────────
     lc['editorGutter.addedBackground']         = adj(dc['editorGutter.addedBackground'],         editorBg, 2.5);
-    lc['editorGutter.background']              = editorBg;
+    lc['editorGutter.background']              = panelBg;
     lc['editorGutter.deletedBackground']       = adj(dc['editorGutter.deletedBackground'],       editorBg, 2.5);
     lc['editorGutter.modifiedBackground']      = adj(dc['editorGutter.modifiedBackground']
         ? dc['editorGutter.modifiedBackground'].slice(0, 7)
@@ -392,7 +392,7 @@ function generateLightTheme(dark) {
     lc['editorRuler.foreground']               = borderColor;
 
     // ── Editor Group ──────────────────────────────────────────────────────────
-    lc['editorGroupHeader.tabsBackground']     = editorBg;
+    lc['editorGroupHeader.tabsBackground']     = panelBg;
     lc['editorGroup.emptyBackground']          = editorBg;
 
     // ── Git Decorations ───────────────────────────────────────────────────────
@@ -492,11 +492,11 @@ function generateLightTheme(dark) {
     lc['inputValidation.warningForeground'] = dc['inputValidation.warningForeground'];
 
     // ── Tabs ───────────────────────────────────────────────────────────────────
-    lc['tab.activeBackground']    = editorBg;
-    lc['tab.activeForeground']    = adj(dc['tab.activeForeground'],   editorBg, 4.5);
+    lc['tab.activeBackground']    = panelBg;
+    lc['tab.activeForeground']    = adj(dc['tab.activeForeground'],   panelBg, 4.5);
     lc['tab.border']              = borderColor;
-    lc['tab.inactiveBackground']  = sectionBg;
-    lc['tab.inactiveForeground']  = adj(dc['tab.inactiveForeground'], sectionBg, 3.5);
+    lc['tab.inactiveBackground']  = panelBg;
+    lc['tab.inactiveForeground']  = adj(dc['tab.inactiveForeground'], panelBg, 3.5);
 
     // ── Token Colors ──────────────────────────────────────────────────────────
     const tokenColors = (dark.tokenColors || []).map(entry => {
