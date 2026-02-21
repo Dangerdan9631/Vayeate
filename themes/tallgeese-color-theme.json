@@ -50,10 +50,10 @@
         "statusBar.debuggingBackground": "#343d46",
         "statusBar.debuggingForeground": "#c8ced4",
         "statusBarItem.remoteForeground": "#cb8a6f",
-        "statusBar.noFolderBackground": "#8a4830",
+        "statusBar.noFolderBackground": "#743c28",
         "statusBar.noFolderForeground": "#d4d1cf",
         "statusBarItem.activeBackground": "#c8ced42e",
-        "statusBarItem.errorBackground": "#8a4830",
+        "statusBarItem.errorBackground": "#743c28",
         "statusBarItem.errorForeground": "#d4d1cf",
         "statusBarItem.hoverBackground": "#d4d0ce2e",
         "progressBar.background": "#c8a854",
@@ -148,11 +148,11 @@
         // =====================================================================
         // Badges
         "activityBarBadge.foreground": "#fafafb",
-        "activityBarBadge.background": "#8a7040",
+        "activityBarBadge.background": "#5a492a",
         "badge.foreground": "#fafafb",
-        "badge.background": "#8a7040",
+        "badge.background": "#5a492a",
         "extensionBadge.remoteForeground": "#fafafb",
-        "extensionBadge.remoteBackground": "#8a7040",
+        "extensionBadge.remoteBackground": "#5a492a",
         // =====================================================================
         // Panels
         "panel.border": "#343d46",

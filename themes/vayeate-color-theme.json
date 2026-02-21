@@ -5,21 +5,21 @@
     "colors": {
         // =====================================================================
         // Title Bar
-        "titleBar.activeBackground": "#336699",
+        "titleBar.activeBackground": "#2f5d8b",
         "titleBar.activeForeground": "#c6e3ff",
         "titleBar.border": "#336699",
-        "titleBar.inactiveBackground": "#5f6f7e",
+        "titleBar.inactiveBackground": "#4f5c68",
         "titleBar.inactiveForeground": "#ebf0f4",
         "focusBorder": "#336699",
         // =====================================================================
         // Menu Bar
-        "menu.background": "#336699",
+        "menu.background": "#2f5d8b",
         "menu.foreground": "#c6e3ff",
         "menu.separatorBackground": "#99ccff",
         "menu.selectionForeground": "#ccffff",
-        "menu.selectionBackground": "#6699cc",
+        "menu.selectionBackground": "#2f5d8b",
         "menubar.selectionForeground": "#ccffff",
-        "menubar.selectionBackground": "#6699cc",
+        "menubar.selectionBackground": "#2f5d8b",
         // =====================================================================
         // Activity Bar
         "activityBar.foreground": "#52a9ff",
@@ -45,15 +45,15 @@
         "sideBar.border": "#1b3d5f",
         // =====================================================================
         // Status Bar
-        "statusBar.background": "#336699",
+        "statusBar.background": "#2f5d8b",
         "statusBar.foreground": "#c6e3ff",
-        "statusBar.debuggingBackground": "#3b6e4c",
+        "statusBar.debuggingBackground": "#356445",
         "statusBar.debuggingForeground": "#e0e0e0",
         "statusBarItem.remoteForeground": "#ffd6d6",
-        "statusBar.noFolderBackground": "#a79560",
-        "statusBar.noFolderForeground": "#cccccc",
+        "statusBar.noFolderBackground": "#655938",
+        "statusBar.noFolderForeground": "#d1d1d1",
         "statusBarItem.activeBackground": "#cccccc2e",
-        "statusBarItem.errorBackground": "#c72e0f",
+        "statusBarItem.errorBackground": "#ac280d",
         "statusBarItem.errorForeground": "#ffffff",
         "statusBarItem.hoverBackground": "#ffffff2e",
         "progressBar.background": "#99ccff",
@@ -64,7 +64,7 @@
         "notifications.border": "#1b3d5f",
         "notificationToast.border": "#1b3d5f",
         "notificationCenterHeader.foreground": "#c6e3ff",
-        "notificationCenterHeader.background": "#336699",
+        "notificationCenterHeader.background": "#2f5d8b",
         "notificationCenter.border": "#336699",
         "notificationsInfoIcon.foreground": "#99ccff",
         "notificationsWarningIcon.foreground": "#d19c00",
@@ -72,7 +72,7 @@
         "notificationLink.foreground": "#52a9ff",
         // =====================================================================
         // Extension Pane
-        "extensionButton.prominentBackground": "#336699",
+        "extensionButton.prominentBackground": "#2f5d8b",
         "extensionButton.prominentForeground": "#c6e3ff",
         "extensionButton.prominentHoverBackground": "#345a80",
         // =====================================================================
@@ -147,12 +147,12 @@
         "widget.shadow": "#15181b",
         // =====================================================================
         // Badges
-        "activityBarBadge.foreground": "#99ccff",
-        "activityBarBadge.background": "#3399ff",
-        "badge.foreground": "#99ccff",
-        "badge.background": "#3399ff",
-        "extensionBadge.remoteForeground": "#99ccff",
-        "extensionBadge.remoteBackground": "#3399ff",
+        "activityBarBadge.foreground": "#acd6ff",
+        "activityBarBadge.background": "#0059b1",
+        "badge.foreground": "#acd6ff",
+        "badge.background": "#0059b1",
+        "extensionBadge.remoteForeground": "#acd6ff",
+        "extensionBadge.remoteBackground": "#0059b1",
         // =====================================================================
         // Panels
         "panel.border": "#336699",
@@ -163,25 +163,25 @@
         "panel.dropBorder": "#336699",
         "panelSection.border": "#336699",
         "panelSection.dropBackground": "#1b3d5f",
-        "panelSectionHeader.background": "#336699",
+        "panelSectionHeader.background": "#2f5d8b",
         // =====================================================================
         // Lists
-        "list.activeSelectionBackground": "#336699cc",
+        "list.activeSelectionBackground": "#2f5d8bcc",
         "list.activeSelectionForeground": "#ffffff",
-        "list.focusBackground": "#336699cc",
+        "list.focusBackground": "#2f5d8bcc",
         "list.focusForeground": "#dbe0e4",
         "list.highlightForeground": "#ffffff",
         "list.hoverBackground": "#34516dcc",
         "list.hoverForeground": "#b8c1c9",
-        "list.inactiveSelectionBackground": "#5f6f7ecc",
+        "list.inactiveSelectionBackground": "#4f5c68cc",
         "list.inactiveSelectionForeground": "#ebf0f4",
         "list.invalidItemForeground": "#cc9900",
         // =====================================================================
         // Buttons
-        "button.background": "#336699",
+        "button.background": "#2f5d8b",
         "button.foreground": "#c6e3ff",
         "button.hoverBackground": "#345a80",
-        "button.secondaryBackground": "#336699",
+        "button.secondaryBackground": "#2f5d8b",
         "button.secondaryForeground": "#c6e3ff",
         "button.secondaryHoverBackground": "#345a80",
         // =====================================================================
@@ -215,7 +215,7 @@
         "tab.activeBackground": "#1b3d5f",
         "tab.activeForeground": "#9faab6",
         "tab.border": "#336699",
-        "tab.inactiveBackground": "#5f6f7e",
+        "tab.inactiveBackground": "#4f5c68",
         "tab.inactiveForeground": "#ebf0f4",
     },
     "tokenColors": [

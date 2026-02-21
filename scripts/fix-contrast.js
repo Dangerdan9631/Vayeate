@@ -145,6 +145,54 @@ function adjustBrightness(hexFg, hexBg, target, mode = 'min') {
     return best + alpha;
 }
 
+/**
+ * Moves hexColor's lightness toward hexRef's lightness until
+ * contrastRatio(hexColor, hexRef) <= maxRatio.
+ * Only adjusts if the current ratio exceeds maxRatio.
+ * Preserves hue, saturation, and any alpha suffix.
+ */
+function adjustBrightnessMax(hexColor, hexRef, maxRatio) {
+    if (!hexColor || hexColor.length < 7 || !hexRef || hexRef.length < 7) return hexColor;
+
+    const alpha     = hexColor.length === 9 ? hexColor.slice(7) : '';
+    const colorBase = hexColor.slice(0, 7);
+    const refBase   = hexRef.slice(0, 7);
+
+    if (contrastRatio(colorBase, refBase) <= maxRatio) return hexColor;
+
+    const [r,  g,  b]  = hexToRgb(colorBase);
+    const [hr, hg, hb] = hexToRgb(refBase);
+    const [hc, sc, lc] = rgbToHsl(r,  g,  b);
+    const [,  ,   lr]  = rgbToHsl(hr, hg, hb);
+
+    // Move lc toward lr to reduce contrast.
+    // colorLighter=true : lc > lr → darken (decrease L from lc down toward lr)
+    // colorLighter=false: lc < lr → lighten (increase L from lc up toward lr)
+    const colorLighter = lc > lr;
+    let lo   = colorLighter ? lr : lc;
+    let hi   = colorLighter ? lc : lr;
+    let best = colorBase;
+
+    for (let i = 0; i < 64; i++) {
+        const mid = (lo + hi) / 2;
+        const [nr, ng, nb] = hslToRgb(hc, sc, mid);
+        const candidate = rgbToHex(nr, ng, nb);
+        const ratio     = contrastRatio(candidate, refBase);
+
+        if (colorLighter) {
+            // Darkening reduces contrast; find the lightest value that satisfies ≤ maxRatio
+            if (ratio > maxRatio) { hi = mid; }                   // still too high → go darker
+            else                  { best = candidate; lo = mid; } // satisfies → keep, try lighter
+        } else {
+            // Lightening reduces contrast; find the darkest value that satisfies ≤ maxRatio
+            if (ratio > maxRatio) { lo = mid; }                   // still too high → go lighter
+            else                  { best = candidate; hi = mid; } // satisfies → keep, try darker
+        }
+    }
+
+    return best + alpha;
+}
+
 // ─── JSONC Parser ─────────────────────────────────────────────────────────────
 // Strips // and /* */ comments that appear outside of string literals.
 
@@ -187,6 +235,62 @@ function parseJsonc(src) {
     const clean = stripped.replace(/,(\s*[}\]])/g, '$1');
     return JSON.parse(clean);
 }
+
+// ─── Toolbar Background Keys ─────────────────────────────────────────────────
+// These backgrounds are checked against editor.background and capped at 2:1.
+// If a toolbar background exceeds 2:1 vs the editor, its lightness is moved
+// toward editor.background until the ratio is ≤ 2:1.
+
+const TOOLBAR_BG_KEYS = [
+    // Title Bar
+    'titleBar.activeBackground',
+    'titleBar.inactiveBackground',
+    // Menu
+    'menu.background',
+    'menu.selectionBackground',
+    'menubar.selectionBackground',
+    // Activity Bar
+    'activityBar.background',
+    // Breadcrumb
+    'breadcrumb.background',
+    'breadcrumbPicker.background',
+    // Side Bar
+    'sideBar.background',
+    'sideBarSectionHeader.background',
+    // Status Bar
+    'statusBar.background',
+    'statusBar.debuggingBackground',
+    'statusBar.noFolderBackground',
+    'statusBarItem.errorBackground',
+    // Notifications / Widgets
+    'notifications.background',
+    'notificationCenterHeader.background',
+    'editorWidget.background',
+    // Extension
+    'extensionButton.prominentBackground',
+    // Badges
+    'activityBarBadge.background',
+    'badge.background',
+    'extensionBadge.remoteBackground',
+    // Panels
+    'panel.background',
+    'panelSectionHeader.background',
+    // Lists
+    'list.activeSelectionBackground',
+    'list.focusBackground',
+    'list.hoverBackground',
+    'list.inactiveSelectionBackground',
+    // Buttons
+    'button.background',
+    'button.secondaryBackground',
+    // Dropdowns / Inputs
+    'dropdown.background',
+    'input.background',
+    // Tabs
+    'tab.activeBackground',
+    'tab.inactiveBackground',
+    'editorGroupHeader.tabsBackground',
+];
 
 // ─── UI Colors Pairing Map ────────────────────────────────────────────────────
 // Maps foreground key → background key. Both must exist in colors{}.
@@ -404,7 +508,26 @@ for (const file of themeFiles) {
     let fileChanges = 0;
 
     const c = theme.colors;
+    // ── 0. Toolbar Backgrounds (ceil at 2:1 vs editor.background) ─────────────────
+    const editorBgBase = (c['editor.background'] || '#000000').slice(0, 7);
 
+    for (const bgKey of TOOLBAR_BG_KEYS) {
+        const bgHex = c[bgKey];
+        if (!bgHex || bgHex.length < 7) continue;
+
+        const bgBase   = bgHex.slice(0, 7);
+        const oldRatio = contrastRatio(bgBase, editorBgBase);
+        const newBg    = adjustBrightnessMax(bgHex, editorBgBase, 2.0);
+
+        if (newBg.toLowerCase() !== bgHex.toLowerCase()) {
+            const newRatio = contrastRatio(newBg.slice(0, 7), editorBgBase);
+            console.log(`  [BG]  ${bgKey}: ${bgHex} → ${newBg}  (${oldRatio.toFixed(2)} → ${newRatio.toFixed(2)})`);
+            raw = replaceColorValue(raw, bgKey, bgHex, newBg);
+            c[bgKey] = newBg; // update in-memory so foreground pass uses new BG
+            fileChanges++;
+            totalChanges++;
+        }
+    }
     // ── 1. UI Colors ──────────────────────────────────────────────────────────
     for (const pair of UI_PAIRS) {
         const [fgKey, bgKey, bgFallbackKey] = pair;

@@ -17,9 +17,9 @@
         "menu.foreground": "#e0c0b0",
         "menu.separatorBackground": "#903020",
         "menu.selectionForeground": "#f0d0c0",
-        "menu.selectionBackground": "#902818",
+        "menu.selectionBackground": "#832416",
         "menubar.selectionForeground": "#f0d0c0",
-        "menubar.selectionBackground": "#902818",
+        "menubar.selectionBackground": "#832416",
         // =====================================================================
         // Activity Bar
         "activityBar.foreground": "#df4f2e",
@@ -50,10 +50,10 @@
         "statusBar.debuggingBackground": "#5a1a0c",
         "statusBar.debuggingForeground": "#e8c8b8",
         "statusBarItem.remoteForeground": "#da9e7d",
-        "statusBar.noFolderBackground": "#a04020",
+        "statusBar.noFolderBackground": "#773018",
         "statusBar.noFolderForeground": "#f0d2c2",
         "statusBarItem.activeBackground": "#e8c8b82e",
-        "statusBarItem.errorBackground": "#a02010",
+        "statusBarItem.errorBackground": "#891b0e",
         "statusBarItem.errorForeground": "#f0d8d0",
         "statusBarItem.hoverBackground": "#f0d8d02e",
         "progressBar.background": "#d04020",
@@ -148,11 +148,11 @@
         // =====================================================================
         // Badges
         "activityBarBadge.foreground": "#f0d0c0",
-        "activityBarBadge.background": "#882010",
+        "activityBarBadge.background": "#862010",
         "badge.foreground": "#f0d0c0",
-        "badge.background": "#882010",
+        "badge.background": "#862010",
         "extensionBadge.remoteForeground": "#f0d0c0",
-        "extensionBadge.remoteBackground": "#882010",
+        "extensionBadge.remoteBackground": "#862010",
         // =====================================================================
         // Panels
         "panel.border": "#7a1e10",

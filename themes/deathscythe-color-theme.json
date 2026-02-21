@@ -148,11 +148,11 @@
         // =====================================================================
         // Badges
         "activityBarBadge.foreground": "#cccccc",
-        "activityBarBadge.background": "#555555",
+        "activityBarBadge.background": "#444444",
         "badge.foreground": "#cccccc",
-        "badge.background": "#555555",
+        "badge.background": "#444444",
         "extensionBadge.remoteForeground": "#cccccc",
-        "extensionBadge.remoteBackground": "#555555",
+        "extensionBadge.remoteBackground": "#444444",
         // =====================================================================
         // Panels
         "panel.border": "#111111",
