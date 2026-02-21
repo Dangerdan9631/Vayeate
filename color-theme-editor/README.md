@@ -49,6 +49,9 @@ Phase 3 kickoff is implemented:
 
 - Pinned catalog source metadata in `catalog/pin.json`.
 - Catalog snapshot/report generation from repository `themes/*.json`.
+- Upstream registry ingestion from pinned source URLs with normalized key extraction.
+- Merged local + remote snapshot output with cached remote snapshot artifact.
+- Drift warnings for remote-only and local-only catalog entries.
 - Catalog validation checks (required keys, duplicates, formatting).
 - Local dev API endpoints for catalog status and sync.
 - UI panel to run sync and inspect snapshot/report health.

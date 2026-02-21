@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { generateThemePair } from "../core/generator";
 import type {
   CatalogPin,
+  CatalogRemoteSnapshot,
   CatalogSnapshot,
   CatalogValidationReport,
   ElementBinding,
@@ -85,6 +86,7 @@ export function App(): JSX.Element {
   const [outputSummary, setOutputSummary] = useState<GeneratedOutputSummary | null>(null);
   const [catalogPin, setCatalogPin] = useState<CatalogPin | null>(null);
   const [catalogSnapshot, setCatalogSnapshot] = useState<CatalogSnapshot | null>(null);
+  const [catalogRemoteSnapshot, setCatalogRemoteSnapshot] = useState<CatalogRemoteSnapshot | null>(null);
   const [catalogReport, setCatalogReport] = useState<CatalogValidationReport | null>(null);
   const [catalogBusy, setCatalogBusy] = useState(false);
   const [catalogError, setCatalogError] = useState("");
@@ -127,6 +129,7 @@ export function App(): JSX.Element {
       const status = await getCatalogStatus();
       setCatalogPin(status.pin);
       setCatalogSnapshot(status.snapshot);
+      setCatalogRemoteSnapshot(status.remoteSnapshot);
       setCatalogReport(status.report);
       setCatalogError("");
     } catch (error) {
@@ -141,6 +144,7 @@ export function App(): JSX.Element {
     try {
       const result = await syncCatalog();
       setCatalogSnapshot(result.snapshot);
+      setCatalogRemoteSnapshot(result.remoteSnapshot);
       setCatalogReport(result.report);
       await refreshCatalogStatus();
     } catch (error) {
@@ -480,6 +484,7 @@ export function App(): JSX.Element {
             {catalogSnapshot ? (
               <div style={{ fontSize: 12, marginBottom: 8 }}>
                 <div>Generated: {catalogSnapshot.generatedAt}</div>
+                <div>Source mode: {catalogSnapshot.source}</div>
                 <div>Color keys: {catalogSnapshot.colorKeys.length}</div>
                 <div>Semantic tokens: {catalogSnapshot.semanticTokenKeys.length}</div>
                 <div>TextMate scopes: {catalogSnapshot.textMateScopes.length}</div>
@@ -489,10 +494,28 @@ export function App(): JSX.Element {
                 No snapshot yet. Run <strong>Sync Snapshot</strong> to create `catalog/snapshot.json` and `catalog/report.json`.
               </p>
             )}
+            {catalogRemoteSnapshot ? (
+              <div style={{ fontSize: 12, marginBottom: 8 }}>
+                <div>Remote fetched: {catalogRemoteSnapshot.fetchedAt}</div>
+                <div>Remote color keys: {catalogRemoteSnapshot.colorKeys.length}</div>
+                <div>Remote semantic tokens: {catalogRemoteSnapshot.semanticTokenKeys.length}</div>
+                <div>Remote TextMate scopes: {catalogRemoteSnapshot.textMateScopes.length}</div>
+              </div>
+            ) : (
+              <div style={{ fontSize: 12, color: "#666", marginBottom: 8 }}>
+                Remote snapshot is not available yet.
+              </div>
+            )}
             {catalogReport ? (
               <div style={{ fontSize: 12 }}>
                 <div style={{ color: catalogReport.valid ? "#0b5f2a" : "#b00020", marginBottom: 4 }}>
                   Validation: {catalogReport.valid ? "valid" : "has errors"}
+                </div>
+                <div style={{ marginBottom: 4 }}>
+                  Drift (remote-only): colors={catalogReport.stats.remoteOnlyColorKeys}, semantic={catalogReport.stats.remoteOnlySemanticTokenKeys}, scopes={catalogReport.stats.remoteOnlyTextMateScopes}
+                </div>
+                <div style={{ marginBottom: 4 }}>
+                  Drift (local-only): colors={catalogReport.stats.localOnlyColorKeys}, semantic={catalogReport.stats.localOnlySemanticTokenKeys}, scopes={catalogReport.stats.localOnlyTextMateScopes}
                 </div>
                 {catalogReport.issues.length > 0 ? (
                   <ul style={{ margin: 0, paddingLeft: 18 }}>

@@ -1,5 +1,6 @@
 import type {
   CatalogPin,
+  CatalogRemoteSnapshot,
   CatalogSnapshot,
   CatalogSyncResult,
   CatalogValidationReport,
@@ -29,6 +30,7 @@ interface GeneratePreviewResponse {
 interface CatalogStatusResponse {
   pin: CatalogPin;
   snapshot: CatalogSnapshot | null;
+  remoteSnapshot: CatalogRemoteSnapshot | null;
   report: CatalogValidationReport | null;
 }
 

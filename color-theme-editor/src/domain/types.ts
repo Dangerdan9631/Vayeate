@@ -157,6 +157,17 @@ export interface CatalogSnapshot {
   schemaVersion: 1;
   pinnedVersion: string;
   generatedAt: string;
+  source: "local" | "remote" | "merged";
+  colorKeys: string[];
+  semanticTokenKeys: string[];
+  textMateScopes: string[];
+}
+
+export interface CatalogRemoteSnapshot {
+  schemaVersion: 1;
+  pinnedVersion: string;
+  fetchedAt: string;
+  sourceUrls: CatalogPin["sources"];
   colorKeys: string[];
   semanticTokenKeys: string[];
   textMateScopes: string[];
@@ -175,10 +186,20 @@ export interface CatalogValidationReport {
     colorKeyCount: number;
     semanticTokenKeyCount: number;
     textMateScopeCount: number;
+    remoteColorKeyCount: number;
+    remoteSemanticTokenKeyCount: number;
+    remoteTextMateScopeCount: number;
+    localOnlyColorKeys: number;
+    localOnlySemanticTokenKeys: number;
+    localOnlyTextMateScopes: number;
+    remoteOnlyColorKeys: number;
+    remoteOnlySemanticTokenKeys: number;
+    remoteOnlyTextMateScopes: number;
   };
 }
 
 export interface CatalogSyncResult {
   snapshot: CatalogSnapshot;
+  remoteSnapshot: CatalogRemoteSnapshot | null;
   report: CatalogValidationReport;
 }
