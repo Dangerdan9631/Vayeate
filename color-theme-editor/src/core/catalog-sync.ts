@@ -443,3 +443,44 @@ export async function getCatalogStatus(projectRoot: string): Promise<{
 
   return { pin, snapshot, remoteSnapshot, report };
 }
+
+function isHttpUrl(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+export function validateCatalogPin(pin: CatalogPin): void {
+  if (pin.schemaVersion !== 1) {
+    throw new Error("Catalog pin schemaVersion must be 1.");
+  }
+
+  if (!pin.pinnedVersion || pin.pinnedVersion.trim().length < 3) {
+    throw new Error("Catalog pin pinnedVersion is required.");
+  }
+
+  if (pin.updatePolicy !== "manual" && pin.updatePolicy !== "scheduled") {
+    throw new Error("Catalog pin updatePolicy must be manual or scheduled.");
+  }
+
+  if (!isHttpUrl(pin.sources.themeColorRegistryUrl)) {
+    throw new Error("Catalog pin themeColorRegistryUrl must be a valid http/https URL.");
+  }
+  if (!isHttpUrl(pin.sources.semanticTokenRegistryUrl)) {
+    throw new Error("Catalog pin semanticTokenRegistryUrl must be a valid http/https URL.");
+  }
+  if (!isHttpUrl(pin.sources.scopeGuidanceUrl)) {
+    throw new Error("Catalog pin scopeGuidanceUrl must be a valid http/https URL.");
+  }
+}
+
+export async function saveCatalogPin(projectRoot: string, pin: CatalogPin): Promise<CatalogPin> {
+  validateCatalogPin(pin);
+  const catalogDir = await ensureCatalogDirectory(projectRoot);
+  const pinPath = path.join(catalogDir, PIN_FILE);
+  await writeJsonAtomic(pinPath, pin);
+  return pin;
+}

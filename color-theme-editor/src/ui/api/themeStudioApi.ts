@@ -100,3 +100,15 @@ export async function syncCatalog(): Promise<CatalogSyncResult> {
   });
   return parseResponse<CatalogSyncResult>(response);
 }
+
+export async function saveCatalogPin(pin: CatalogPin): Promise<CatalogPin> {
+  const response = await fetch("/api/catalog/pin", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ pin }),
+  });
+  const data = await parseResponse<{ pin: CatalogPin }>(response);
+  return data.pin;
+}

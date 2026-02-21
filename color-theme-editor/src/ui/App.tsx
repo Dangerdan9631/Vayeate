@@ -16,6 +16,7 @@ import {
   listWorkspaceTemplates,
   loadWorkspaceTemplate,
   previewGenerateSummary,
+  saveCatalogPin,
   saveWorkspaceTemplate,
   syncCatalog,
 } from "./api/themeStudioApi";
@@ -85,6 +86,7 @@ export function App(): JSX.Element {
   const [showLight, setShowLight] = useState(initialPreviewState.showLight);
   const [outputSummary, setOutputSummary] = useState<GeneratedOutputSummary | null>(null);
   const [catalogPin, setCatalogPin] = useState<CatalogPin | null>(null);
+  const [catalogPinDraft, setCatalogPinDraft] = useState<CatalogPin | null>(null);
   const [catalogSnapshot, setCatalogSnapshot] = useState<CatalogSnapshot | null>(null);
   const [catalogRemoteSnapshot, setCatalogRemoteSnapshot] = useState<CatalogRemoteSnapshot | null>(null);
   const [catalogReport, setCatalogReport] = useState<CatalogValidationReport | null>(null);
@@ -128,6 +130,7 @@ export function App(): JSX.Element {
     try {
       const status = await getCatalogStatus();
       setCatalogPin(status.pin);
+      setCatalogPinDraft(status.pin);
       setCatalogSnapshot(status.snapshot);
       setCatalogRemoteSnapshot(status.remoteSnapshot);
       setCatalogReport(status.report);
@@ -149,6 +152,49 @@ export function App(): JSX.Element {
       await refreshCatalogStatus();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Catalog sync failed.";
+      setCatalogError(message);
+    } finally {
+      setCatalogBusy(false);
+    }
+  }
+
+  function updateCatalogPinField(field: "pinnedVersion" | "updatePolicy", value: string): void {
+    setCatalogPinDraft((prev) => {
+      if (!prev) return prev;
+      if (field === "updatePolicy") {
+        return { ...prev, updatePolicy: value as CatalogPin["updatePolicy"] };
+      }
+      return { ...prev, [field]: value };
+    });
+  }
+
+  function updateCatalogPinSource(
+    field: "themeColorRegistryUrl" | "semanticTokenRegistryUrl" | "scopeGuidanceUrl",
+    value: string,
+  ): void {
+    setCatalogPinDraft((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        sources: {
+          ...prev.sources,
+          [field]: value,
+        },
+      };
+    });
+  }
+
+  async function handleSaveCatalogPin(): Promise<void> {
+    if (!catalogPinDraft) return;
+    setCatalogBusy(true);
+    setCatalogError("");
+    try {
+      const saved = await saveCatalogPin(catalogPinDraft);
+      setCatalogPin(saved);
+      setCatalogPinDraft(saved);
+      await refreshCatalogStatus();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Catalog pin save failed.";
       setCatalogError(message);
     } finally {
       setCatalogBusy(false);
@@ -471,14 +517,65 @@ export function App(): JSX.Element {
               <button type="button" onClick={() => void refreshCatalogStatus()} disabled={catalogBusy}>
                 Refresh Status
               </button>
+              <button type="button" onClick={() => void handleSaveCatalogPin()} disabled={catalogBusy || !catalogPinDraft}>
+                Save Pin
+              </button>
+              <button
+                type="button"
+                onClick={() => setCatalogPinDraft(catalogPin)}
+                disabled={catalogBusy || !catalogPin}
+              >
+                Reset Pin Draft
+              </button>
               <button type="button" onClick={() => void handleSyncCatalog()} disabled={catalogBusy}>
                 Sync Snapshot
               </button>
             </div>
-            {catalogPin ? (
-              <div style={{ fontSize: 12, marginBottom: 8 }}>
-                <div>Pinned version: {catalogPin.pinnedVersion}</div>
-                <div>Policy: {catalogPin.updatePolicy}</div>
+            {catalogPinDraft ? (
+              <div style={{ fontSize: 12, marginBottom: 8, display: "grid", gap: 6 }}>
+                <label>
+                  Pinned version
+                  <input
+                    value={catalogPinDraft.pinnedVersion}
+                    onChange={(event) => updateCatalogPinField("pinnedVersion", event.target.value)}
+                    style={{ width: "100%" }}
+                  />
+                </label>
+                <label>
+                  Update policy
+                  <select
+                    value={catalogPinDraft.updatePolicy}
+                    onChange={(event) => updateCatalogPinField("updatePolicy", event.target.value)}
+                    style={{ width: "100%" }}
+                  >
+                    <option value="manual">manual</option>
+                    <option value="scheduled">scheduled</option>
+                  </select>
+                </label>
+                <label>
+                  Theme Color Registry URL
+                  <input
+                    value={catalogPinDraft.sources.themeColorRegistryUrl}
+                    onChange={(event) => updateCatalogPinSource("themeColorRegistryUrl", event.target.value)}
+                    style={{ width: "100%" }}
+                  />
+                </label>
+                <label>
+                  Semantic Token Registry URL
+                  <input
+                    value={catalogPinDraft.sources.semanticTokenRegistryUrl}
+                    onChange={(event) => updateCatalogPinSource("semanticTokenRegistryUrl", event.target.value)}
+                    style={{ width: "100%" }}
+                  />
+                </label>
+                <label>
+                  Scope Guidance URL
+                  <input
+                    value={catalogPinDraft.sources.scopeGuidanceUrl}
+                    onChange={(event) => updateCatalogPinSource("scopeGuidanceUrl", event.target.value)}
+                    style={{ width: "100%" }}
+                  />
+                </label>
               </div>
             ) : null}
             {catalogSnapshot ? (

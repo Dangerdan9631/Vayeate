@@ -7,8 +7,8 @@ import { generateThemePair } from "./src/core/generator";
 import { exportThemePair } from "./src/core/exporter";
 import { resolveOutputDirectory } from "./src/core/exporter";
 import { stableStringify } from "./src/core/json";
-import type { GeneratedOutputSummary, ThemeTemplate, ThemeKind } from "./src/domain/types";
-import { getCatalogStatus, syncCatalogSnapshot } from "./src/core/catalog-sync";
+import type { CatalogPin, GeneratedOutputSummary, ThemeTemplate, ThemeKind } from "./src/domain/types";
+import { getCatalogStatus, saveCatalogPin, syncCatalogSnapshot } from "./src/core/catalog-sync";
 
 const TEMPLATE_FILE_PATTERN = /^[a-z0-9-]+\.template\.json$/;
 
@@ -207,6 +207,19 @@ function themeStudioApiPlugin() {
           } catch (error) {
             const message = error instanceof Error ? error.message : "Catalog sync failed";
             sendJson(res, 500, { error: message });
+          }
+          return;
+        }
+
+        if (req.method === "POST" && url === "/api/catalog/pin") {
+          try {
+            const rawBody = await readBody(req);
+            const payload = JSON.parse(rawBody) as { pin: CatalogPin };
+            const saved = await saveCatalogPin(studioRoot, payload.pin);
+            sendJson(res, 200, { pin: saved });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "Catalog pin save failed";
+            sendJson(res, 400, { error: message });
           }
           return;
         }
