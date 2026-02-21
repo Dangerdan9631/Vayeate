@@ -5,8 +5,9 @@ import type {
   ThemeTemplate,
   TokenColorRule,
 } from "../domain/types";
-import { adjustBrightness, normalizeHex } from "./color";
+import { adjustBrightness, adjustBrightnessMax, normalizeHex } from "./color";
 import { getPolicyForThemeKind, semanticTarget, tokenTarget } from "./contrast-policy";
+import { TOOLBAR_BG_KEYS } from "./parity-rules";
 
 function createThemeSkeleton(name: string, type: ThemeKind): GeneratedTheme {
   return {
@@ -163,6 +164,16 @@ export function generateTheme(
         }
       }
       applySemanticBinding(theme, kind, binding.key, variableHex, background, binding.strategy, binding.category);
+    }
+  }
+
+  if (kind === "dark") {
+    const editorBackground = theme.colors["editor.background"] ?? background;
+    const policy = getPolicyForThemeKind("dark");
+    for (const key of TOOLBAR_BG_KEYS) {
+      const existing = theme.colors[key];
+      if (!existing) continue;
+      theme.colors[key] = adjustBrightnessMax(existing, editorBackground, policy.toolbarMaxContrast);
     }
   }
 

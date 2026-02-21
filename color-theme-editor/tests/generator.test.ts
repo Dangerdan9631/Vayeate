@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { generateThemePair } from "../src/core/generator";
 import { DARK_POLICY_DEFAULTS, LIGHT_POLICY_DEFAULTS } from "../src/core/contrast-policy";
+import { contrastRatio } from "../src/core/color";
+import { stableStringify } from "../src/core/json";
 import type { ThemeTemplate } from "../src/domain/types";
 
 function createTemplate(): ThemeTemplate {
@@ -16,6 +18,13 @@ function createTemplate(): ThemeTemplate {
     },
     bindings: [
       { target: "colors", key: "editor.background", variableId: "background", strategy: "raw", category: "default" },
+      {
+        target: "colors",
+        key: "activityBar.background",
+        variableId: "foreground",
+        strategy: "raw",
+        category: "default",
+      },
       { target: "colors", key: "editor.foreground", variableId: "foreground", strategy: "copyFromDark", category: "default" },
       { target: "tokenColors", key: "keyword", variableId: "keyword", strategy: "copyFromDark", category: "keyword" },
       {
@@ -61,5 +70,23 @@ describe("generateThemePair", () => {
   it("keeps raw background binding unchanged", () => {
     const generated = generateThemePair(createTemplate());
     expect(generated.dark.colors["editor.background"]).toBe("#1e1e1e");
+  });
+
+  it("is byte-stable for same template inputs", () => {
+    const template = createTemplate();
+    const first = generateThemePair(template);
+    const second = generateThemePair(template);
+
+    expect(stableStringify(first.dark)).toBe(stableStringify(second.dark));
+    expect(stableStringify(first.light)).toBe(stableStringify(second.light));
+  });
+
+  it("caps dark toolbar backgrounds to max contrast vs editor background", () => {
+    const generated = generateThemePair(createTemplate());
+    const ratio = contrastRatio(
+      generated.dark.colors["activityBar.background"],
+      generated.dark.colors["editor.background"],
+    );
+    expect(ratio).toBeLessThanOrEqual(DARK_POLICY_DEFAULTS.toolbarMaxContrast + 0.05);
   });
 });

@@ -181,6 +181,45 @@ export function adjustBrightness(
   return best;
 }
 
+export function adjustBrightnessMax(color: string, reference: string, maxRatio: number): string {
+  const c = normalizeHex(color);
+  const r = normalizeHex(reference);
+
+  if (contrastRatio(c, r) <= maxRatio) {
+    return c;
+  }
+
+  const colorHsl = rgbToHsl(hexToRgb(c));
+  const refHsl = rgbToHsl(hexToRgb(r));
+  const colorLighter = colorHsl.l > refHsl.l;
+
+  let lo = colorLighter ? refHsl.l : colorHsl.l;
+  let hi = colorLighter ? colorHsl.l : refHsl.l;
+  let best = c;
+
+  for (let i = 0; i < 64; i += 1) {
+    const mid = (lo + hi) / 2;
+    const candidate = rgbToHex(hslToRgb({ ...colorHsl, l: mid }));
+    const ratio = contrastRatio(candidate, r);
+
+    if (colorLighter) {
+      if (ratio > maxRatio) {
+        hi = mid;
+      } else {
+        best = candidate;
+        lo = mid;
+      }
+    } else if (ratio > maxRatio) {
+      lo = mid;
+    } else {
+      best = candidate;
+      hi = mid;
+    }
+  }
+
+  return best;
+}
+
 function srgbToLinear(c: number): number {
   return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
 }

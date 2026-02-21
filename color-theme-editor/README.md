@@ -56,7 +56,9 @@ Phase 3 kickoff is implemented:
 - Drift warnings for remote-only and local-only catalog entries.
 - Catalog pin editor in UI for pinned version and source URL updates.
 - Generator strategy parity improvements for `raw`, `deriveContrast`, and `copyFromDark` in dark/light output paths.
+- Script-parity toolbar background contrast capping in dark generation flow.
 - Catalog validation checks (required keys, duplicates, formatting).
 - Local dev API endpoints for catalog status and sync.
 - UI panel to run sync and inspect snapshot/report health.
 - Heuristic mapping for full-coverage bindings (category, variable, strategy) with deterministic ordering.
+- Golden-style determinism regression tests for repeated generation output stability.

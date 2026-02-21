@@ -1,20 +1,5 @@
 import type { CatalogSnapshot, ElementBinding, ThemeTemplate } from "../../domain/types";
-
-const COPY_FROM_DARK_COLOR_PREFIXES = [
-  "titleBar.",
-  "menu.",
-  "menubar.",
-  "activityBar",
-  "statusBar",
-  "notifications",
-  "notification",
-  "extensionButton",
-  "badge",
-  "breadcrumb",
-  "tab.",
-  "panel.",
-  "terminal.",
-];
+import { shouldCopyFromDarkColorKey } from "../../core/parity-rules";
 
 function containsAny(value: string, needles: string[]): boolean {
   return needles.some((needle) => value.includes(needle));
@@ -52,7 +37,7 @@ function inferVariableId(key: string, template: ThemeTemplate): string {
 function inferColorStrategy(key: string): ElementBinding["strategy"] {
   const normalized = key.toLowerCase();
   if (normalized.includes("background")) return "raw";
-  if (COPY_FROM_DARK_COLOR_PREFIXES.some((prefix) => key.startsWith(prefix))) return "copyFromDark";
+  if (shouldCopyFromDarkColorKey(key)) return "copyFromDark";
   return "deriveContrast";
 }
 
