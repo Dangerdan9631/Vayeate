@@ -5,7 +5,9 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { generateThemePair } from "./src/core/generator";
 import { exportThemePair } from "./src/core/exporter";
-import type { ThemeTemplate } from "./src/domain/types";
+import { resolveOutputDirectory } from "./src/core/exporter";
+import { stableStringify } from "./src/core/json";
+import type { GeneratedOutputSummary, ThemeTemplate, ThemeKind } from "./src/domain/types";
 
 const TEMPLATE_FILE_PATTERN = /^[a-z0-9-]+\.template\.json$/;
 
@@ -38,6 +40,63 @@ async function ensureTemplateSchema(template: ThemeTemplate): Promise<void> {
   if (!template.id || !template.name || !template.variables || !Array.isArray(template.bindings)) {
     throw new Error("Invalid template payload");
   }
+}
+
+async function readExistingFile(targetPath: string): Promise<{ exists: boolean; content: string }> {
+  try {
+    const content = await fs.readFile(targetPath, "utf8");
+    return { exists: true, content };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (message.includes("ENOENT")) {
+      return { exists: false, content: "" };
+    }
+    throw error;
+  }
+}
+
+function toSummaryItem(
+  kind: ThemeKind,
+  fileName: string,
+  targetPath: string,
+  before: { exists: boolean; content: string },
+  afterContent: string,
+): GeneratedOutputSummary["dark"] {
+  return {
+    fileName,
+    targetPath,
+    exists: before.exists,
+    beforeBytes: before.content.length,
+    afterBytes: afterContent.length,
+    changed: !before.exists || before.content !== afterContent,
+    themeType: kind,
+  };
+}
+
+async function buildGenerateSummary(studioRoot: string, template: ThemeTemplate): Promise<GeneratedOutputSummary> {
+  const generated = generateThemePair(template);
+  const outputDir = resolveOutputDirectory(studioRoot, template.output.outputDir);
+  const darkPath = path.join(outputDir, template.output.darkFileName);
+  const lightPath = path.join(outputDir, template.output.lightFileName);
+
+  const darkAfter = stableStringify(generated.dark);
+  const lightAfter = stableStringify(generated.light);
+
+  const darkBefore = await readExistingFile(darkPath);
+  const lightBefore = await readExistingFile(lightPath);
+
+  return {
+    dark: toSummaryItem("dark", template.output.darkFileName, darkPath, darkBefore, darkAfter),
+    light: toSummaryItem("light", template.output.lightFileName, lightPath, lightBefore, lightAfter),
+    tokenCount: {
+      dark: generated.dark.tokenColors.length,
+      light: generated.light.tokenColors.length,
+    },
+    colorCount: {
+      dark: Object.keys(generated.dark.colors).length,
+      light: Object.keys(generated.light.colors).length,
+    },
+  };
 }
 
 function themeStudioApiPlugin() {
@@ -109,6 +168,21 @@ function themeStudioApiPlugin() {
             });
           } catch (error) {
             const message = error instanceof Error ? error.message : "Generation failed";
+            sendJson(res, 400, { error: message });
+          }
+          return;
+        }
+
+        if (req.method === "POST" && url === "/api/generate-preview") {
+          try {
+            const rawBody = await readBody(req);
+            const payload = JSON.parse(rawBody) as { template: ThemeTemplate };
+            await ensureTemplateSchema(payload.template);
+
+            const summary = await buildGenerateSummary(studioRoot, payload.template);
+            sendJson(res, 200, { summary });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "Generation preview failed";
             sendJson(res, 400, { error: message });
           }
           return;

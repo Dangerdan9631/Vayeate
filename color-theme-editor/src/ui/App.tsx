@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { generateThemePair } from "../core/generator";
-import type { ElementBinding, ThemeTemplate } from "../domain/types";
+import type { ElementBinding, GeneratedOutputSummary, PreviewSample, ThemeTemplate } from "../domain/types";
 import {
   generateToThemes,
   listWorkspaceTemplates,
   loadWorkspaceTemplate,
+  previewGenerateSummary,
   saveWorkspaceTemplate,
 } from "./api/themeStudioApi";
 import { previewSamples } from "./preview/samples";
@@ -31,13 +32,47 @@ function toTemplateFileName(template: ThemeTemplate): string {
   return `${fallback}.template.json`;
 }
 
+function toPreviewSessionSamples(sampleIds: string[]): PreviewSample[] {
+  return previewSamples
+    .filter((sample) => sampleIds.includes(sample.id))
+    .map((sample) => ({
+      id: sample.id,
+      label: sample.label,
+      relativePath: sample.relativePath,
+      language: sample.language,
+    }));
+}
+
+function withPreviewState(template: ThemeTemplate, selectedSampleIds: string[], showDark: boolean, showLight: boolean): ThemeTemplate {
+  return {
+    ...template,
+    preview: {
+      id: template.preview?.id ?? `${template.id}-preview`,
+      samples: toPreviewSessionSamples(selectedSampleIds),
+      showDark,
+      showLight,
+    },
+  };
+}
+
+function hydratePreviewState(template: ThemeTemplate): { sampleIds: string[]; showDark: boolean; showLight: boolean } {
+  const sampleIds = template.preview?.samples?.map((sample) => sample.id) ?? previewSamples.map((sample) => sample.id);
+  return {
+    sampleIds,
+    showDark: template.preview?.showDark ?? true,
+    showLight: template.preview?.showLight ?? true,
+  };
+}
+
 export function App(): JSX.Element {
   const [template, setTemplate] = useState<ThemeTemplate>(() => createDefaultTemplate());
   const [templateFileName, setTemplateFileName] = useState<string>(() => toTemplateFileName(createDefaultTemplate()));
   const [workspaceTemplates, setWorkspaceTemplates] = useState<string[]>([]);
-  const [selectedSampleIds, setSelectedSampleIds] = useState<string[]>(previewSamples.map((sample) => sample.id));
-  const [showDark, setShowDark] = useState(true);
-  const [showLight, setShowLight] = useState(true);
+  const initialPreviewState = hydratePreviewState(createDefaultTemplate());
+  const [selectedSampleIds, setSelectedSampleIds] = useState<string[]>(initialPreviewState.sampleIds);
+  const [showDark, setShowDark] = useState(initialPreviewState.showDark);
+  const [showLight, setShowLight] = useState(initialPreviewState.showLight);
+  const [outputSummary, setOutputSummary] = useState<GeneratedOutputSummary | null>(null);
   const [templateError, setTemplateError] = useState<string>("");
   const [apiMessage, setApiMessage] = useState<string>("");
   const [apiError, setApiError] = useState<string>("");
@@ -145,6 +180,11 @@ export function App(): JSX.Element {
           throw new Error("Invalid template schema.");
         }
         setTemplate(parsed);
+        const previewState = hydratePreviewState(parsed);
+        setSelectedSampleIds(previewState.sampleIds);
+        setShowDark(previewState.showDark);
+        setShowLight(previewState.showLight);
+        setOutputSummary(null);
         setTemplateError("");
       } catch (error) {
         const message = error instanceof Error ? error.message : "Template import failed.";
@@ -159,7 +199,9 @@ export function App(): JSX.Element {
     setApiError("");
     setApiMessage("");
     try {
-      await saveWorkspaceTemplate(templateFileName, template);
+      const templateWithPreview = withPreviewState(template, selectedSampleIds, showDark, showLight);
+      await saveWorkspaceTemplate(templateFileName, templateWithPreview);
+      setTemplate(templateWithPreview);
       await refreshWorkspaceTemplates();
       setApiMessage(`Saved ${templateFileName} to color-theme-editor/templates.`);
     } catch (error) {
@@ -178,6 +220,11 @@ export function App(): JSX.Element {
     try {
       const loaded = await loadWorkspaceTemplate(templateFileName);
       setTemplate(loaded);
+      const previewState = hydratePreviewState(loaded);
+      setSelectedSampleIds(previewState.sampleIds);
+      setShowDark(previewState.showDark);
+      setShowLight(previewState.showLight);
+      setOutputSummary(null);
       setApiMessage(`Loaded ${templateFileName} from workspace templates.`);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Template load failed.";
@@ -192,10 +239,44 @@ export function App(): JSX.Element {
     setApiError("");
     setApiMessage("");
     try {
-      const result = await generateToThemes(template);
+      const templateWithPreview = withPreviewState(template, selectedSampleIds, showDark, showLight);
+      const result = await generateToThemes(templateWithPreview);
+      setTemplate(templateWithPreview);
       setApiMessage(`Generated themes:\n${result.darkPath}\n${result.lightPath}`);
+      setOutputSummary(null);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Theme generation failed.";
+      setApiError(message);
+    } finally {
+      setApiBusy(false);
+    }
+  }
+
+  function handleResetDefault(): void {
+    const nextTemplate = createDefaultTemplate();
+    const previewState = hydratePreviewState(nextTemplate);
+    setTemplate(nextTemplate);
+    setTemplateFileName(toTemplateFileName(nextTemplate));
+    setSelectedSampleIds(previewState.sampleIds);
+    setShowDark(previewState.showDark);
+    setShowLight(previewState.showLight);
+    setOutputSummary(null);
+    setApiError("");
+    setApiMessage("");
+  }
+
+  async function handlePreviewGenerateSummary(): Promise<void> {
+    setApiBusy(true);
+    setApiError("");
+    setApiMessage("");
+    try {
+      const templateWithPreview = withPreviewState(template, selectedSampleIds, showDark, showLight);
+      const summary = await previewGenerateSummary(templateWithPreview);
+      setTemplate(templateWithPreview);
+      setOutputSummary(summary);
+      setApiMessage("Generation summary refreshed.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Generation summary failed.";
       setApiError(message);
     } finally {
       setApiBusy(false);
@@ -233,13 +314,16 @@ export function App(): JSX.Element {
                 />
               </label>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                <button type="button" onClick={() => downloadTemplate(template)}>
+                <button
+                  type="button"
+                  onClick={() => downloadTemplate(withPreviewState(template, selectedSampleIds, showDark, showLight))}
+                >
                   Export Template JSON
                 </button>
                 <button type="button" onClick={() => fileInputRef.current?.click()}>
                   Import Template JSON
                 </button>
-                <button type="button" onClick={() => setTemplate(createDefaultTemplate())}>
+                <button type="button" onClick={handleResetDefault}>
                   Reset Default
                 </button>
               </div>
@@ -260,6 +344,9 @@ export function App(): JSX.Element {
                 </button>
                 <button type="button" onClick={() => void handleLoadWorkspaceTemplate()} disabled={apiBusy}>
                   Load Selected
+                </button>
+                <button type="button" onClick={() => void handlePreviewGenerateSummary()} disabled={apiBusy}>
+                  Refresh Output Summary
                 </button>
                 <button type="button" onClick={() => void handleGenerateToThemes()} disabled={apiBusy}>
                   Generate to themes
@@ -298,6 +385,35 @@ export function App(): JSX.Element {
                 Workspace template files belong in <strong>color-theme-editor/templates</strong>.
               </p>
             </div>
+          </article>
+
+          <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>
+            <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>Output summary</h2>
+            {outputSummary ? (
+              <div style={{ display: "grid", gap: 8 }}>
+                {[outputSummary.dark, outputSummary.light].map((item) => (
+                  <div key={item.fileName} style={{ border: "1px solid #e1e1e1", borderRadius: 6, padding: 8 }}>
+                    <div style={{ fontWeight: 600 }}>{item.fileName}</div>
+                    <div style={{ fontSize: 12 }}>Path: {item.targetPath}</div>
+                    <div style={{ fontSize: 12 }}>Exists: {item.exists ? "yes" : "no"}</div>
+                    <div style={{ fontSize: 12 }}>Bytes: {item.beforeBytes} → {item.afterBytes}</div>
+                    <div style={{ fontSize: 12, color: item.changed ? "#9a4f00" : "#0b5f2a" }}>
+                      {item.changed ? "Will update file" : "No byte-level change"}
+                    </div>
+                  </div>
+                ))}
+                <div style={{ fontSize: 12 }}>
+                  Colors (dark/light): {outputSummary.colorCount.dark}/{outputSummary.colorCount.light}
+                </div>
+                <div style={{ fontSize: 12 }}>
+                  Token rules (dark/light): {outputSummary.tokenCount.dark}/{outputSummary.tokenCount.light}
+                </div>
+              </div>
+            ) : (
+              <p style={{ margin: 0, fontSize: 12, color: "#666" }}>
+                Run <strong>Refresh Output Summary</strong> to inspect existing vs generated output before writing files.
+              </p>
+            )}
           </article>
 
           <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>

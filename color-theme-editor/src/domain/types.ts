@@ -65,6 +65,7 @@ export interface ThemeTemplate {
   contrastPolicies: ContrastPolicySet;
   palette: PaletteConfig;
   output: OutputConfig;
+  preview?: PreviewSession;
 }
 
 export interface TokenColorRule {
@@ -101,6 +102,7 @@ export interface GeneratedThemePair {
 }
 
 export interface PreviewSample {
+  id: string;
   label: string;
   relativePath: string;
   language: string;
@@ -108,8 +110,34 @@ export interface PreviewSample {
 
 export interface PreviewSession {
   id: string;
-  selectedTemplateId: string;
   samples: PreviewSample[];
   showLight: boolean;
   showDark: boolean;
+}
+
+export interface GeneratedOutputSummaryItem {
+  fileName: string;
+  targetPath: string;
+  exists: boolean;
+  beforeBytes: number;
+  afterBytes: number;
+  changed: boolean;
+  themeType: ThemeKind;
+}
+
+export interface GeneratedOutputSummary {
+  dark: GeneratedOutputSummaryItem;
+  light: GeneratedOutputSummaryItem;
+  tokenCount: {
+    dark: number;
+    light: number;
+  };
+  colorCount: {
+    dark: number;
+    light: number;
+  };
+}
+
+export interface ThemeTemplateWithPreview extends ThemeTemplate {
+  preview: PreviewSession;
 }

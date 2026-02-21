@@ -1,4 +1,4 @@
-import type { ThemeTemplate } from "../../domain/types";
+import type { GeneratedOutputSummary, ThemeTemplate } from "../../domain/types";
 
 interface TemplatesResponse {
   templates: string[];
@@ -13,6 +13,10 @@ interface GenerateResponse {
   generated: boolean;
   darkPath: string;
   lightPath: string;
+}
+
+interface GeneratePreviewResponse {
+  summary: GeneratedOutputSummary;
 }
 
 async function parseResponse<T>(response: Response): Promise<T> {
@@ -56,4 +60,16 @@ export async function generateToThemes(template: ThemeTemplate): Promise<Generat
     body: JSON.stringify({ template }),
   });
   return parseResponse<GenerateResponse>(response);
+}
+
+export async function previewGenerateSummary(template: ThemeTemplate): Promise<GeneratedOutputSummary> {
+  const response = await fetch("/api/generate-preview", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({ template }),
+  });
+  const data = await parseResponse<GeneratePreviewResponse>(response);
+  return data.summary;
 }

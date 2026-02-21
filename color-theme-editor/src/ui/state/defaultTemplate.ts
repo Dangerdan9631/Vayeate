@@ -38,5 +38,17 @@ export function createDefaultTemplate(): ThemeTemplate {
       lightFileName: "vayeate-light-color-theme.json",
       outputDir: "../themes",
     },
+    preview: {
+      id: "preview-default",
+      showDark: true,
+      showLight: true,
+      samples: [
+        { id: "ts", label: "TypeScript", relativePath: "examples/example.ts", language: "ts" },
+        { id: "json", label: "JSON", relativePath: "examples/example.json", language: "json" },
+        { id: "md", label: "Markdown", relativePath: "examples/example.md", language: "md" },
+        { id: "ps1", label: "PowerShell", relativePath: "examples/example.ps1", language: "ps1" },
+        { id: "rust", label: "Rust", relativePath: "examples/lib.rs", language: "rust" },
+      ],
+    },
   };
 }
