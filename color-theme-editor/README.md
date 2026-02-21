@@ -23,6 +23,16 @@ npm run test
 npm run build
 ```
 
+## AI Agent navigation
+
+- Agent guide: [color-theme-editor/docs/ai-agent-guide.md](color-theme-editor/docs/ai-agent-guide.md)
+- Includes:
+	- relevant agent/prompt files,
+	- VS Code workspace rule files,
+	- project module map,
+	- repeatable agent skills/playbooks,
+	- validation and safety boundaries.
+
 ## Status
 
 Phase 1 foundations are implemented:
