@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "name": "macromates_scope_selectors",
+  "version": "1.0.2",
+  "source": "remote",
+  "keys": {
+    "colors": [],
+    "semanticTokens": [],
+    "textMateScopes": [
+      "constant.character.escape",
+      "constant.character.escape.untitled",
+      "entity.name.function",
+      "entity.name.section",
+      "keyword.control",
+      "keyword.control.untitled",
+      "markup.raw",
+      "markup.underline",
+      "markup.underline.link",
+      "meta.function",
+      "source.php",
+      "source.php.embedded.html",
+      "storage.modifier",
+      "storage.type",
+      "storage.type.objc",
+      "string.quoted",
+      "string.quoted.double.c",
+      "support.function",
+      "support.other",
+      "text.html",
+      "text.html.basic",
+      "text.html.markdown",
+      "text.html.rails",
+      "variable.parameter"
+    ]
+  },
+  "sources": {
+    "themeColorRegistryUrl": "",
+    "semanticTokenRegistryUrl": "",
+    "scopeGuidanceUrl": "https://macromates.com/manual/en/language_grammars"
+  }
+}

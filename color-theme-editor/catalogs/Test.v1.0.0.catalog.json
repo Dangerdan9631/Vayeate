@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "name": "Test",
+  "version": "1.0.0",
+  "source": "manual",
+  "locked": false,
+  "keys": {
+    "colors": [
+      "asdfasd",
+      "dfasdf"
+    ],
+    "semanticTokens": [],
+    "textMateScopes": []
+  }
+}
