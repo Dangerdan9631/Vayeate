@@ -148,10 +148,14 @@ export async function listCatalogs(studioRoot: string): Promise<Catalog[]> {
 export async function loadCatalogsByName(studioRoot: string, catalogNames: string[]): Promise<Map<string, Catalog>> {
   const catalogs = new Map<string, Catalog>();
   
-  for (const name of catalogNames) {
-    const catalog = await loadCatalog(studioRoot, name);
+  for (const catalogRef of catalogNames) {
+    const separatorIndex = catalogRef.lastIndexOf("@");
+    const hasVersion = separatorIndex > 0 && separatorIndex < catalogRef.length - 1;
+    const catalogName = hasVersion ? catalogRef.slice(0, separatorIndex) : catalogRef;
+    const version = hasVersion ? catalogRef.slice(separatorIndex + 1) : undefined;
+    const catalog = await loadCatalog(studioRoot, catalogName, version);
     if (catalog) {
-      catalogs.set(name, catalog);
+      catalogs.set(catalog.name, catalog);
     }
   }
   

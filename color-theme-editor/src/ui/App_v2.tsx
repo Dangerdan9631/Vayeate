@@ -36,6 +36,47 @@ export function App(): JSX.Element {
     }
     return 0;
   };
+  const incrementSemverPatch = (version: string): string => {
+    const parts = version.split(".");
+    const patch = Number.parseInt(parts[2] || "0", 10) || 0;
+    return `${parts[0] || "1"}.${parts[1] || "0"}.${patch + 1}`;
+  };
+  const toTemplateRef = (template: Pick<Template_v2, "id" | "version">): string => `${template.id}@${template.version}`;
+  const resolveCatalogFromRef = (catalogRef: string, allCatalogs: Catalog[]): Catalog | null => {
+    const parsed = parseCatalogRef(catalogRef);
+    if (parsed) {
+      return allCatalogs.find((catalog) => catalog.name === parsed.name && catalog.version === parsed.version) ?? null;
+    }
+
+    const byName = allCatalogs
+      .filter((catalog) => catalog.name === catalogRef)
+      .sort((a, b) => compareSemverDesc(a.version, b.version));
+    return byName[0] ?? null;
+  };
+  const hasUnsetMappingsForTemplate = (tmpl: Template_v2, allCatalogs: Catalog[]): boolean => {
+    const mappingKeys = new Set(
+      tmpl.mappings.map((mapping) => `${mapping.target}::${mapping.editorKey}`)
+    );
+
+    for (const catalogRef of tmpl.catalogRefs) {
+      const catalog = resolveCatalogFromRef(catalogRef, allCatalogs);
+      if (!catalog) {
+        continue;
+      }
+
+      const targets: CatalogTarget[] = ["colors", "semanticTokens", "textMateScopes"];
+      for (const target of targets) {
+        for (const key of catalog.keys[target]) {
+          const mappingKey = `${target}::${key}`;
+          if (!mappingKeys.has(mappingKey)) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  };
   const toLatestCatalogs = (allCatalogs: Catalog[]): Catalog[] => {
     const grouped = new Map<string, Catalog[]>();
     for (const catalog of allCatalogs) {
@@ -64,6 +105,7 @@ export function App(): JSX.Element {
   const [template, setTemplate] = useState<Template_v2 | null>(null);
   const [templateBusy, setTemplateBusy] = useState(false);
   const [templateError, setTemplateError] = useState("");
+  const templateSaveRequestRef = useRef(0);
   
   // Theme state
   const [themes, setThemes] = useState<string[]>([]);
@@ -338,6 +380,11 @@ export function App(): JSX.Element {
     try {
       const templateList = await apiV2.listTemplates();
       setTemplates(templateList);
+
+      if (selectedTemplateId && !templateList.includes(selectedTemplateId)) {
+        setSelectedTemplateId(templateList[0] ?? null);
+      }
+
       setTemplateError("");
     } catch (error) {
       setTemplateError(error instanceof Error ? error.message : "Failed to load templates");
@@ -354,7 +401,7 @@ export function App(): JSX.Element {
     }
   }
   
-  async function handleCreateTemplate(name: string, catalogRefs: string[]): Promise<void> {
+  async function handleCreateTemplate(name: string): Promise<void> {
     setTemplateBusy(true);
     setTemplateError("");
     try {
@@ -362,13 +409,16 @@ export function App(): JSX.Element {
         schemaVersion: 2,
         id: name.toLowerCase().replace(/\s+/g, "-"),
         name,
-        catalogRefs,
+        version: "1.0.0",
+        locked: false,
+        catalogRefs: [],
         variables: { color: [], contrast: [] },
         mappings: [],
       };
-      await apiV2.saveTemplate(newTemplate);
+      const savedTemplate = await apiV2.saveTemplate(newTemplate);
       await loadTemplates();
-      setSelectedTemplateId(newTemplate.id);
+      setSelectedTemplateId(toTemplateRef(savedTemplate));
+      setTemplate(savedTemplate);
     } catch (error) {
       setTemplateError(error instanceof Error ? error.message : "Failed to create template");
     } finally {
@@ -376,129 +426,165 @@ export function App(): JSX.Element {
     }
   }
   
-  async function handleSaveTemplate(tmpl: Template_v2): Promise<void> {
+  async function handleLockTemplateVersion(tmpl: Template_v2): Promise<void> {
+    if (hasUnsetMappingsForTemplate(tmpl, catalogs)) {
+      setTemplateError("All included catalog elements must have a mapping before locking");
+      return;
+    }
+
     setTemplateBusy(true);
     setTemplateError("");
     try {
-      await apiV2.saveTemplate(tmpl);
-      await loadTemplate(tmpl.id);
+      const lockedTemplate = await apiV2.lockTemplateVersion(tmpl.id, tmpl.version);
+      setTemplate(lockedTemplate);
+      setSelectedTemplateId(toTemplateRef(lockedTemplate));
+      await loadTemplates();
     } catch (error) {
-      setTemplateError(error instanceof Error ? error.message : "Failed to save template");
+      setTemplateError(error instanceof Error ? error.message : "Failed to lock template version");
     } finally {
       setTemplateBusy(false);
     }
   }
+
+  async function persistTemplateChanges(nextTemplate: Template_v2): Promise<void> {
+    const requestId = ++templateSaveRequestRef.current;
+    setTemplateBusy(true);
+    setTemplateError("");
+    try {
+      const savedTemplate = await apiV2.saveTemplate(nextTemplate);
+      if (requestId !== templateSaveRequestRef.current) {
+        return;
+      }
+
+      const savedTemplateRef = toTemplateRef(savedTemplate);
+      setTemplate(savedTemplate);
+      setSelectedTemplateId(savedTemplateRef);
+      setTemplates((prev) => (prev.includes(savedTemplateRef) ? prev : [...prev, savedTemplateRef]));
+    } catch (error) {
+      if (requestId === templateSaveRequestRef.current) {
+        setTemplateError(error instanceof Error ? error.message : "Failed to save template");
+      }
+    } finally {
+      if (requestId === templateSaveRequestRef.current) {
+        setTemplateBusy(false);
+      }
+    }
+  }
+
+  function applyTemplateMutation(mutator: (current: Template_v2) => Template_v2): void {
+    if (!template) return;
+
+    const editableTemplate = template.locked
+      ? { ...template, version: incrementSemverPatch(template.version), locked: false }
+      : template;
+    const nextTemplate = mutator(editableTemplate);
+    setTemplate(nextTemplate);
+
+    if (template.locked) {
+      setSelectedTemplateId(toTemplateRef(nextTemplate));
+    }
+
+    void persistTemplateChanges(nextTemplate);
+  }
   
   function handleUpdateTemplateName(name: string): void {
-    if (!template) return;
-    setTemplate({ ...template, name });
+    applyTemplateMutation((current) => ({ ...current, name }));
   }
-  
-  function handleAddCatalogRef(catalogName: string): void {
-    if (!template) return;
-    if (template.catalogRefs.includes(catalogName)) return;
-    const catalog = latestCatalogs.find((entry) => entry.name === catalogName);
-    if (!catalog) return;
-    if (catalog.source === "manual" && !catalog.locked) return;
-    setTemplate({
-      ...template,
-      catalogRefs: [...template.catalogRefs, catalogName],
-    });
+
+  function handleUpdateCatalogRefs(catalogRefs: string[]): void {
+    applyTemplateMutation((current) => ({ ...current, catalogRefs }));
   }
-  
-  function handleRemoveCatalogRef(catalogName: string): void {
-    if (!template) return;
-    setTemplate({
-      ...template,
-      catalogRefs: template.catalogRefs.filter((name) => name !== catalogName),
+
+  function handleSetMappingVariable(
+    editorKey: string,
+    target: CatalogTarget,
+    variableType: VariableType,
+    variableId: string | null
+  ): void {
+    applyTemplateMutation((current) => {
+      const remainingMappings = current.mappings.filter(
+        (mapping) => !(
+          mapping.editorKey === editorKey
+          && mapping.target === target
+          && mapping.variableType === variableType
+        )
+      );
+
+      if (!variableId) {
+        return {
+          ...current,
+          mappings: remainingMappings,
+        };
+      }
+
+      return {
+        ...current,
+        mappings: [
+          ...remainingMappings,
+          {
+            editorKey,
+            target,
+            variableId,
+            variableType,
+          },
+        ],
+      };
     });
   }
   
   function handleAddColorVariable(name: string): void {
-    if (!template) return;
-    const id = name.toLowerCase().replace(/\s+/g, "-");
-    const exists = template.variables.color.some((v) => v.id === id);
-    if (exists) return;
-    
-    setTemplate({
-      ...template,
-      variables: {
-        ...template.variables,
-        color: [...template.variables.color, { id, name }],
-      },
+    applyTemplateMutation((current) => {
+      const id = name.toLowerCase().replace(/\s+/g, "-");
+      const exists = current.variables.color.some((v) => v.id === id);
+      if (exists) return current;
+
+      return {
+        ...current,
+        variables: {
+          ...current.variables,
+          color: [...current.variables.color, { id, name }],
+        },
+      };
     });
   }
   
   function handleAddContrastVariable(name: string, targetRatio: number): void {
-    if (!template) return;
-    const id = name.toLowerCase().replace(/\s+/g, "-");
-    const exists = template.variables.contrast.some((v) => v.id === id);
-    if (exists) return;
-    
-    setTemplate({
-      ...template,
-      variables: {
-        ...template.variables,
-        contrast: [...template.variables.contrast, { id, name, targetRatio }],
-      },
+    applyTemplateMutation((current) => {
+      const id = name.toLowerCase().replace(/\s+/g, "-");
+      const exists = current.variables.contrast.some((v) => v.id === id);
+      if (exists) return current;
+
+      return {
+        ...current,
+        variables: {
+          ...current.variables,
+          contrast: [...current.variables.contrast, { id, name, targetRatio }],
+        },
+      };
     });
   }
   
   function handleRemoveVariable(variableId: string, variableType: VariableType): void {
-    if (!template) return;
-    
-    if (variableType === "color") {
-      setTemplate({
-        ...template,
+    applyTemplateMutation((current) => {
+      if (variableType === "color") {
+        return {
+          ...current,
+          variables: {
+            ...current.variables,
+            color: current.variables.color.filter((v) => v.id !== variableId),
+          },
+          mappings: current.mappings.filter((m) => m.variableId !== variableId || m.variableType !== "color"),
+        };
+      }
+
+      return {
+        ...current,
         variables: {
-          ...template.variables,
-          color: template.variables.color.filter((v) => v.id !== variableId),
+          ...current.variables,
+          contrast: current.variables.contrast.filter((v) => v.id !== variableId),
         },
-        mappings: template.mappings.filter((m) => m.variableId !== variableId || m.variableType !== "color"),
-      });
-    } else {
-      setTemplate({
-        ...template,
-        variables: {
-          ...template.variables,
-          contrast: template.variables.contrast.filter((v) => v.id !== variableId),
-        },
-        mappings: template.mappings.filter((m) => m.variableId !== variableId || m.variableType !== "contrast"),
-      });
-    }
-  }
-  
-  function handleAddMapping(
-    catalogName: string,
-    catalogKey: string,
-    catalogTarget: CatalogTarget,
-    variableId: string,
-    variableType: VariableType
-  ): void {
-    if (!template) return;
-    
-    const exists = template.mappings.some(
-      (m) => m.catalogName === catalogName && m.catalogKey === catalogKey && m.catalogTarget === catalogTarget
-    );
-    if (exists) return;
-    
-    setTemplate({
-      ...template,
-      mappings: [
-        ...template.mappings,
-        { catalogName, catalogKey, catalogTarget, variableId, variableType },
-      ],
-    });
-  }
-  
-  function handleRemoveMapping(catalogName: string, catalogKey: string, catalogTarget: CatalogTarget): void {
-    if (!template) return;
-    
-    setTemplate({
-      ...template,
-      mappings: template.mappings.filter(
-        (m) => !(m.catalogName === catalogName && m.catalogKey === catalogKey && m.catalogTarget === catalogTarget)
-      ),
+        mappings: current.mappings.filter((m) => m.variableId !== variableId || m.variableType !== "contrast"),
+      };
     });
   }
   
@@ -706,18 +792,17 @@ export function App(): JSX.Element {
                 templates={templates}
                 selectedTemplateId={selectedTemplateId}
                 template={template}
-                catalogs={latestCatalogs}
+                catalogs={catalogs}
                 onSelectTemplate={setSelectedTemplateId}
                 onCreateTemplate={handleCreateTemplate}
-                onSaveTemplate={handleSaveTemplate}
+                onLockTemplateVersion={handleLockTemplateVersion}
+                canLockTemplate={template ? !hasUnsetMappingsForTemplate(template, catalogs) : false}
                 onUpdateTemplateName={handleUpdateTemplateName}
-                onAddCatalogRef={handleAddCatalogRef}
-                onRemoveCatalogRef={handleRemoveCatalogRef}
+                onUpdateCatalogRefs={handleUpdateCatalogRefs}
                 onAddColorVariable={handleAddColorVariable}
                 onAddContrastVariable={handleAddContrastVariable}
                 onRemoveVariable={handleRemoveVariable}
-                onAddMapping={handleAddMapping}
-                onRemoveMapping={handleRemoveMapping}
+                onSetMappingVariable={handleSetMappingVariable}
                 busy={templateBusy}
                 error={templateError}
               />

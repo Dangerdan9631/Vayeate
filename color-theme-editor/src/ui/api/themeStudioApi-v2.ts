@@ -115,13 +115,21 @@ export async function loadTemplate(templateId: string): Promise<Template_v2> {
   return parseResponse<Template_v2>(response);
 }
 
-export async function saveTemplate(template: Template_v2): Promise<void> {
+export async function saveTemplate(template: Template_v2): Promise<Template_v2> {
   const response = await fetch(`/api/v2/templates/${encodeURIComponent(template.id)}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(template),
   });
-  await parseResponse<{ saved: boolean }>(response);
+  const data = await parseResponse<{ saved: boolean; template: Template_v2 }>(response);
+  return data.template;
+}
+
+export async function lockTemplateVersion(templateId: string, version: string): Promise<Template_v2> {
+  const response = await fetch(`/api/v2/templates/${encodeURIComponent(templateId)}/versions/${encodeURIComponent(version)}/lock`, {
+    method: "POST",
+  });
+  return parseResponse<Template_v2>(response);
 }
 
 export async function deleteTemplate(templateId: string): Promise<void> {

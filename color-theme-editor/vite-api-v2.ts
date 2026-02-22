@@ -157,10 +157,16 @@ export function createV2ApiMiddleware(studioRoot: string) {
       }
 
       if (method === "GET" && url.startsWith("/api/v2/templates/")) {
-        const templateId = decodeURIComponent(url.slice("/api/v2/templates/".length).split("/")[0]);
+        const rest = url.slice("/api/v2/templates/".length);
+        const parts = rest.split("/");
+        const templateId = decodeURIComponent(parts[0]);
+        const version = parts.length > 2 && parts[1] === "versions"
+          ? decodeURIComponent(parts[2])
+          : undefined;
+        const templateRef = version ? `${templateId}@${version}` : templateId;
         
         if (url.endsWith("/coverage")) {
-          const template = await templateV2.loadTemplate(studioRoot, templateId);
+          const template = await templateV2.loadTemplate(studioRoot, templateRef);
           if (!template) {
             sendJson(res, 404, { error: "Template not found" });
             return;
@@ -181,7 +187,7 @@ export function createV2ApiMiddleware(studioRoot: string) {
         }
 
         if (url.endsWith("/variable-usage")) {
-          const template = await templateV2.loadTemplate(studioRoot, templateId);
+          const template = await templateV2.loadTemplate(studioRoot, templateRef);
           if (!template) {
             sendJson(res, 404, { error: "Template not found" });
             return;
@@ -196,7 +202,7 @@ export function createV2ApiMiddleware(studioRoot: string) {
           return;
         }
 
-        const template = await templateV2.loadTemplate(studioRoot, templateId);
+        const template = await templateV2.loadTemplate(studioRoot, templateRef);
         if (!template) {
           sendJson(res, 404, { error: "Template not found" });
           return;
@@ -206,11 +212,55 @@ export function createV2ApiMiddleware(studioRoot: string) {
       }
 
       if (method === "POST" && url.startsWith("/api/v2/templates/")) {
-        const templateId = decodeURIComponent(url.slice("/api/v2/templates/".length));
+        const rest = url.slice("/api/v2/templates/".length);
+        const parts = rest.split("/");
+        const templateId = decodeURIComponent(parts[0]);
+
+        if (parts.length > 2 && parts[1] === "versions" && parts[3] === "lock") {
+          const version = decodeURIComponent(parts[2]);
+          const template = await templateV2.loadTemplate(studioRoot, `${templateId}@${version}`);
+          if (!template) {
+            sendJson(res, 404, { error: "Template version not found" });
+            return;
+          }
+
+          const catalogs = await catalogV2.loadCatalogsByName(studioRoot, template.catalogRefs);
+          const mappedKeys = new Set(
+            template.mappings.map((mapping) => `${mapping.target}::${mapping.editorKey}`)
+          );
+          let hasUnsetMappings = false;
+          for (const catalog of catalogs.values()) {
+            const targets: Array<"colors" | "semanticTokens" | "textMateScopes"> = ["colors", "semanticTokens", "textMateScopes"];
+            for (const target of targets) {
+              for (const key of catalog.keys[target]) {
+                const mappingKey = `${target}::${key}`;
+                if (!mappedKeys.has(mappingKey)) {
+                  hasUnsetMappings = true;
+                  break;
+                }
+              }
+              if (hasUnsetMappings) break;
+            }
+            if (hasUnsetMappings) break;
+          }
+
+          if (hasUnsetMappings) {
+            sendJson(res, 400, { error: "Cannot lock template with unset mappings" });
+            return;
+          }
+
+          const lockedTemplate = templateV2.withTemplateLock(template);
+          await templateV2.saveTemplate(studioRoot, lockedTemplate);
+          sendJson(res, 200, lockedTemplate);
+          return;
+        }
+
         const body = await readBody(req);
         const template = JSON.parse(body) as Template_v2;
-        await templateV2.saveTemplate(studioRoot, template);
-        sendJson(res, 200, { saved: true });
+        const existing = await templateV2.loadTemplate(studioRoot, `${templateId}@${template.version}`);
+        const saveTarget = templateV2.applyTemplateLockedVersioning(existing, template);
+        await templateV2.saveTemplate(studioRoot, saveTarget);
+        sendJson(res, 200, { saved: true, template: saveTarget });
         return;
       }
 

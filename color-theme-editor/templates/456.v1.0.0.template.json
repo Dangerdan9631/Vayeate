@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "id": "456",
+  "name": "456",
+  "version": "1.0.0",
+  "locked": false,
+  "catalogRefs": [
+    "macromates_scope_selectors",
+    "semantic_token_registry",
+    "vs_theme_colors"
+  ],
+  "variables": {
+    "color": [
+      {
+        "id": "ijijiji",
+        "name": "ijijiji"
+      }
+    ],
+    "contrast": [
+      {
+        "id": "5555",
+        "name": "5555",
+        "targetRatio": 4.5
+      },
+      {
+        "id": "kjkjk",
+        "name": "kjkjk",
+        "targetRatio": 4.5
+      }
+    ]
+  },
+  "mappings": [
+    {
+      "editorKey": "debugView.stateLabelBackground",
+      "target": "colors",
+      "variableId": "5555",
+      "variableType": "contrast"
+    },
+    {
+      "editorKey": "activityBar.activeBackground",
+      "target": "colors",
+      "variableId": "ijijiji",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.activeBackground",
+      "target": "colors",
+      "variableId": "5555",
+      "variableType": "contrast"
+    }
+  ]
+}

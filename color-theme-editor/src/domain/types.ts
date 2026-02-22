@@ -244,9 +244,8 @@ export interface ContrastVariable {
 export type CatalogTarget = "colors" | "semanticTokens" | "textMateScopes";
 
 export interface VariableMapping {
-  catalogName: string;
-  catalogKey: string;
-  catalogTarget: CatalogTarget;
+  editorKey: string;
+  target: CatalogTarget;
   variableId: string;
   variableType: VariableType;
 }
@@ -255,6 +254,8 @@ export interface Template_v2 {
   schemaVersion: 2;
   id: string;
   name: string;
+  version: string;
+  locked: boolean;
   description?: string;
   catalogRefs: string[];
   variables: {

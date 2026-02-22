@@ -29,14 +29,14 @@ export function generateThemeFromContext(ctx: GenerationContext, kind: ThemeKind
       continue; // Skip if variable value not set
     }
 
-    if (mapping.catalogTarget === "colors") {
-      colors[mapping.catalogKey] = value;
-    } else if (mapping.catalogTarget === "semanticTokens") {
-      semanticTokenColors[mapping.catalogKey] = value;
-    } else if (mapping.catalogTarget === "textMateScopes") {
+    if (mapping.target === "colors") {
+      colors[mapping.editorKey] = value;
+    } else if (mapping.target === "semanticTokens") {
+      semanticTokenColors[mapping.editorKey] = value;
+    } else if (mapping.target === "textMateScopes") {
       // TextMate scopes go into tokenColors array
       tokenColors.push({
-        scope: mapping.catalogKey,
+        scope: mapping.editorKey,
         settings: {
           foreground: value,
         },
@@ -119,22 +119,27 @@ export interface CoverageSummary {
 
 export function getCatalogCoverage(ctx: GenerationContext, target: CatalogTarget): CoverageSummary {
   const allKeys: Array<{ catalogName: string; key: string }> = [];
+  const uniqueKeySet = new Set<string>();
   
   // Collect all keys from all catalogs
   for (const [catalogName, catalog] of ctx.catalogs) {
     const keys = getCatalogKeys(catalog, target);
     for (const key of keys) {
+      if (uniqueKeySet.has(key)) {
+        continue;
+      }
+      uniqueKeySet.add(key);
       allKeys.push({ catalogName, key });
     }
   }
   
   const mappedKeySet = new Set(
     ctx.template.mappings
-      .filter((m) => m.catalogTarget === target)
-      .map((m) => `${m.catalogName}:${m.catalogKey}`)
+      .filter((m) => m.target === target)
+      .map((m) => m.editorKey)
   );
 
-  const unmappedKeys = allKeys.filter((item) => !mappedKeySet.has(`${item.catalogName}:${item.key}`));
+  const unmappedKeys = allKeys.filter((item) => !mappedKeySet.has(item.key));
 
   return {
     totalCatalogKeys: allKeys.length,
@@ -195,7 +200,7 @@ export function getVariableUsage(ctx: GenerationContext): VariableUsage[] {
     const varUsage = usage.get(mapping.variableId);
     if (varUsage) {
       varUsage.mappingCount++;
-      varUsage.mappedKeys.push(mapping.catalogKey);
+      varUsage.mappedKeys.push(mapping.editorKey);
     }
   }
 
