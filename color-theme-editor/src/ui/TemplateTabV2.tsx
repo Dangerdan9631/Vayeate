@@ -49,6 +49,7 @@ export function TemplateTabV2({
   const [mappingTarget, setMappingTarget] = useState<CatalogTarget>("colors");
   const [mappingKey, setMappingKey] = useState("");
   const [mappingVariable, setMappingVariable] = useState("");
+  const templateEligibleCatalogs = catalogs.filter((catalog) => catalog.source === "remote" || Boolean(catalog.locked));
 
   const handleCreateTemplate = () => {
     if (newTemplateName.trim() && selectedCatalogs.length > 0) {
@@ -97,7 +98,7 @@ export function TemplateTabV2({
     : [];
 
   const availableKeys = template && mappingCatalog
-    ? catalogs.find((c) => c.name === mappingCatalog)?.keys[mappingTarget] || []
+    ? templateEligibleCatalogs.find((c) => c.name === mappingCatalog)?.keys[mappingTarget] || []
     : [];
 
   return (
@@ -134,16 +135,21 @@ export function TemplateTabV2({
               />
               <div style={{ maxHeight: 100, overflow: "auto", border: "1px solid #e1e1e1", borderRadius: 4, padding: 8 }}>
                 <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 4 }}>Select Catalogs:</div>
-                {catalogs.map((catalog) => (
+                {templateEligibleCatalogs.map((catalog) => (
                   <label key={catalog.name} style={{ display: "block", fontSize: 12 }}>
                     <input
                       type="checkbox"
                       checked={selectedCatalogs.includes(catalog.name)}
                       onChange={() => toggleCatalogSelection(catalog.name)}
                     />{" "}
-                    {catalog.name} ({catalog.source})
+                    {catalog.name} ({catalog.source}{catalog.source === "manual" ? `, v${catalog.version}` : ""})
                   </label>
                 ))}
+                {templateEligibleCatalogs.length === 0 && (
+                  <div style={{ fontSize: 12, color: "#666" }}>
+                    No eligible catalogs. Manual catalogs must be locked before template use.
+                  </div>
+                )}
               </div>
               <button
                 type="button"
@@ -287,7 +293,9 @@ export function TemplateTabV2({
                     onChange={(e) => setMappingCatalog(e.target.value)}
                   >
                     <option value="">Select Catalog</option>
-                    {template.catalogRefs.map((name) => (
+                    {template.catalogRefs
+                      .filter((name) => templateEligibleCatalogs.some((catalog) => catalog.name === name))
+                      .map((name) => (
                       <option key={name} value={name}>
                         {name}
                       </option>

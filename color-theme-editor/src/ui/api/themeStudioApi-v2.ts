@@ -22,14 +22,18 @@ async function parseResponse<T>(response: Response): Promise<T> {
 // Catalog API
 // ============================================================================
 
-export async function listCatalogs(): Promise<string[]> {
+export async function listCatalogs(): Promise<Catalog[]> {
   const response = await fetch("/api/v2/catalogs");
-  const data = await parseResponse<{ catalogs: string[] }>(response);
+  const data = await parseResponse<{ catalogs: Catalog[] }>(response);
   return data.catalogs;
 }
 
-export async function loadCatalog(catalogName?: string): Promise<Catalog | null> {
-  const url = catalogName ? `/api/v2/catalogs/${encodeURIComponent(catalogName)}` : "/api/v2/catalog";
+export async function loadCatalog(catalogName?: string, version?: string): Promise<Catalog | null> {
+  const url = catalogName
+    ? version
+      ? `/api/v2/catalogs/${encodeURIComponent(catalogName)}/versions/${encodeURIComponent(version)}`
+      : `/api/v2/catalogs/${encodeURIComponent(catalogName)}`
+    : "/api/v2/catalog";
   const response = await fetch(url);
   if (response.status === 404) {
     return null;
@@ -37,38 +41,61 @@ export async function loadCatalog(catalogName?: string): Promise<Catalog | null>
   return parseResponse<Catalog>(response);
 }
 
-export async function saveCatalog(catalog: Catalog): Promise<void> {
+export async function saveCatalog(catalog: Catalog): Promise<Catalog> {
   const response = await fetch(`/api/v2/catalogs/${encodeURIComponent(catalog.name)}`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(catalog),
   });
-  await parseResponse<{ saved: boolean }>(response);
+  const data = await parseResponse<{ saved: boolean; catalog: Catalog }>(response);
+  return data.catalog;
 }
 
-export async function syncCatalog(catalogName: string, updateVersion: boolean): Promise<Catalog> {
+export async function syncCatalog(catalogName: string, version: string, updateVersion: boolean): Promise<Catalog> {
   const response = await fetch(`/api/v2/catalogs/${encodeURIComponent(catalogName)}/sync`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ updateVersion }),
+    body: JSON.stringify({ updateVersion, version }),
   });
   return parseResponse<Catalog>(response);
 }
 
-export async function addCatalogKey(catalogName: string, request: Omit<CatalogAddKeyRequest, "catalogName">): Promise<Catalog> {
+export async function addCatalogKey(
+  catalogName: string,
+  request: Omit<CatalogAddKeyRequest, "catalogName">,
+  version?: string
+): Promise<Catalog> {
   const response = await fetch(`/api/v2/catalogs/${encodeURIComponent(catalogName)}/keys`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(request),
+    body: JSON.stringify({ ...request, version }),
   });
   return parseResponse<Catalog>(response);
 }
 
-export async function removeCatalogKey(catalogName: string, request: Omit<CatalogRemoveKeyRequest, "catalogName">): Promise<Catalog> {
+export async function removeCatalogKey(
+  catalogName: string,
+  request: Omit<CatalogRemoveKeyRequest, "catalogName">,
+  version?: string
+): Promise<Catalog> {
   const response = await fetch(`/api/v2/catalogs/${encodeURIComponent(catalogName)}/keys`, {
     method: "DELETE",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(request),
+    body: JSON.stringify({ ...request, version }),
+  });
+  return parseResponse<Catalog>(response);
+}
+
+export async function deleteCatalogVersion(catalogName: string, version: string): Promise<void> {
+  const response = await fetch(`/api/v2/catalogs/${encodeURIComponent(catalogName)}/versions/${encodeURIComponent(version)}`, {
+    method: "DELETE",
+  });
+  await parseResponse<{ deleted: boolean }>(response);
+}
+
+export async function lockCatalogVersion(catalogName: string, version: string): Promise<Catalog> {
+  const response = await fetch(`/api/v2/catalogs/${encodeURIComponent(catalogName)}/versions/${encodeURIComponent(version)}/lock`, {
+    method: "POST",
   });
   return parseResponse<Catalog>(response);
 }
@@ -155,6 +182,15 @@ export async function generateTheme(themeId: string): Promise<{
     method: "POST",
   });
   return parseResponse(response);
+}
+
+export async function cloneTheme(themeId: string, newName: string): Promise<Theme> {
+  const response = await fetch(`/api/v2/themes/${encodeURIComponent(themeId)}/clone`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ newName }),
+  });
+  return parseResponse<Theme>(response);
 }
 
 export async function previewThemeGeneration(themeId: string): Promise<ExportPreview> {

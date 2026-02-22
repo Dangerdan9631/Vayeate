@@ -215,6 +215,7 @@ export interface Catalog {
   name: string;
   version: string;
   source: CatalogSource;
+  locked?: boolean;
   sources?: {
     themeColorRegistryUrl?: string;
     semanticTokenRegistryUrl?: string;

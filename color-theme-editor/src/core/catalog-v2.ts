@@ -1,10 +1,65 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { Catalog, CatalogKey, CatalogTarget, CatalogAddKeyRequest, CatalogRemoveKeyRequest } from "../domain/types";
+import type { Catalog, CatalogTarget, CatalogAddKeyRequest, CatalogRemoveKeyRequest } from "../domain/types";
 
 const CATALOGS_DIR = "catalogs";
 
-export async function loadCatalog(studioRoot: string, catalogName?: string): Promise<Catalog | null> {
+function toCatalogRef(catalog: Pick<Catalog, "name" | "version">): string {
+  return `${catalog.name}@${catalog.version}`;
+}
+
+function compareSemverDesc(left: string, right: string): number {
+  const leftParts = left.split(".").map((part) => Number.parseInt(part, 10) || 0);
+  const rightParts = right.split(".").map((part) => Number.parseInt(part, 10) || 0);
+
+  for (let index = 0; index < 3; index += 1) {
+    if (leftParts[index] > rightParts[index]) {
+      return -1;
+    }
+    if (leftParts[index] < rightParts[index]) {
+      return 1;
+    }
+  }
+
+  return 0;
+}
+
+function compareCatalogAsc(left: Catalog, right: Catalog): number {
+  const nameCompare = left.name.localeCompare(right.name);
+  if (nameCompare !== 0) {
+    return nameCompare;
+  }
+
+  return compareSemverDesc(left.version, right.version);
+}
+
+function getVersionedCatalogFileName(catalogName: string, version: string): string {
+  return `${catalogName}.v${version}.catalog.json`;
+}
+
+function areSortedArraysEqual(left: string[], right: string[]): boolean {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  for (let index = 0; index < left.length; index += 1) {
+    if (left[index] !== right[index]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function haveCatalogKeysChanged(previous: Catalog, next: Catalog): boolean {
+  return (
+    !areSortedArraysEqual(previous.keys.colors, next.keys.colors) ||
+    !areSortedArraysEqual(previous.keys.semanticTokens, next.keys.semanticTokens) ||
+    !areSortedArraysEqual(previous.keys.textMateScopes, next.keys.textMateScopes)
+  );
+}
+
+export async function loadCatalog(studioRoot: string, catalogName?: string, version?: string): Promise<Catalog | null> {
   const catalogsDir = path.join(studioRoot, CATALOGS_DIR);
   
   // If no name specified, try to load default catalog
@@ -22,8 +77,10 @@ export async function loadCatalog(studioRoot: string, catalogName?: string): Pro
     }
   }
   
-  // Load by name
-  const fileName = `${catalogName}.catalog.json`;
+  // Load by explicit name+version first
+  const fileName = version
+    ? getVersionedCatalogFileName(catalogName, version)
+    : `${catalogName}.catalog.json`;
   const catalogPath = path.join(catalogsDir, fileName);
   try {
     const content = await fs.readFile(catalogPath, "utf8");
@@ -31,6 +88,17 @@ export async function loadCatalog(studioRoot: string, catalogName?: string): Pro
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (message.includes("ENOENT")) {
+      const catalogs = await listCatalogs(studioRoot);
+      const byName = catalogs
+        .filter((catalog) => catalog.name === catalogName)
+        .sort(compareCatalogAsc);
+      const byVersion = version
+        ? byName.find((catalog) => catalog.version === version)
+        : byName[0];
+      if (byVersion) {
+        return byVersion;
+      }
+
       return null;
     }
     throw error;
@@ -39,20 +107,35 @@ export async function loadCatalog(studioRoot: string, catalogName?: string): Pro
 
 export async function saveCatalog(studioRoot: string, catalog: Catalog): Promise<void> {
   const catalogsDir = path.join(studioRoot, CATALOGS_DIR);
-  const fileName = `${catalog.name}.catalog.json`;
+  const fileName = getVersionedCatalogFileName(catalog.name, catalog.version);
   const catalogPath = path.join(catalogsDir, fileName);
   
   await fs.mkdir(catalogsDir, { recursive: true });
   await fs.writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
 }
 
-export async function listCatalogs(studioRoot: string): Promise<string[]> {
+export async function listCatalogs(studioRoot: string): Promise<Catalog[]> {
   const catalogsDir = path.join(studioRoot, CATALOGS_DIR);
   try {
     const files = await fs.readdir(catalogsDir);
-    return files
-      .filter((file) => file.endsWith(".catalog.json"))
-      .map((file) => file.replace(".catalog.json", ""));
+    const catalogFiles = files.filter((file) => file.endsWith(".catalog.json"));
+    const allCatalogs = await Promise.all(
+      catalogFiles.map(async (file) => {
+        const catalogPath = path.join(catalogsDir, file);
+        const content = await fs.readFile(catalogPath, "utf8");
+        return JSON.parse(content) as Catalog;
+      })
+    );
+
+    const deduped = new Map<string, Catalog>();
+    for (const catalog of allCatalogs) {
+      const key = toCatalogRef(catalog);
+      if (!deduped.has(key)) {
+        deduped.set(key, catalog);
+      }
+    }
+
+    return Array.from(deduped.values()).sort(compareCatalogAsc);
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (message.includes("ENOENT")) {
@@ -81,12 +164,94 @@ export async function createDefaultCatalog(): Promise<Catalog> {
     name: "Default Catalog",
     version: "1.0.0",
     source: "manual",
+    locked: false,
     keys: {
       colors: [],
       semanticTokens: [],
       textMateScopes: [],
     },
   };
+}
+
+export function withManualLock(catalog: Catalog): Catalog {
+  if (catalog.source !== "manual") {
+    throw new Error("Only manual catalogs can be locked");
+  }
+
+  if (catalog.locked) {
+    return catalog;
+  }
+
+  return {
+    ...catalog,
+    locked: true,
+  };
+}
+
+export function applyManualLockedVersioning(previous: Catalog | null, next: Catalog): Catalog {
+  if (!previous || previous.source !== "manual") {
+    return next;
+  }
+
+  if (!previous.locked) {
+    return {
+      ...next,
+      locked: next.locked ?? false,
+    };
+  }
+
+  const keysChanged = haveCatalogKeysChanged(previous, next);
+  if (!keysChanged) {
+    return {
+      ...next,
+      locked: true,
+      version: previous.version,
+    };
+  }
+
+  return {
+    ...next,
+    version: incrementVersion(previous.version),
+    locked: false,
+  };
+}
+
+export async function deleteCatalogVersion(studioRoot: string, catalogName: string, version: string): Promise<boolean> {
+  const catalogsDir = path.join(studioRoot, CATALOGS_DIR);
+  const versionedPath = path.join(catalogsDir, getVersionedCatalogFileName(catalogName, version));
+
+  try {
+    await fs.unlink(versionedPath);
+    return true;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (!message.includes("ENOENT")) {
+      throw error;
+    }
+  }
+
+  const catalogs = await listCatalogs(studioRoot);
+  const match = catalogs.find((catalog) => catalog.name === catalogName && catalog.version === version);
+  if (!match) {
+    return false;
+  }
+
+  const files = await fs.readdir(catalogsDir);
+  for (const file of files) {
+    const fullPath = path.join(catalogsDir, file);
+    try {
+      const content = await fs.readFile(fullPath, "utf8");
+      const parsed = JSON.parse(content) as Catalog;
+      if (parsed.name === catalogName && parsed.version === version) {
+        await fs.unlink(fullPath);
+        return true;
+      }
+    } catch {
+      continue;
+    }
+  }
+
+  return false;
 }
 
 export function addCatalogKey(catalog: Catalog, request: CatalogAddKeyRequest): Catalog {
@@ -146,8 +311,13 @@ export async function syncCatalogFromRemote(
     semanticTokens: uniqueSorted([...catalog.keys.semanticTokens, ...fetchedKeys.semanticTokens]),
     textMateScopes: uniqueSorted([...catalog.keys.textMateScopes, ...fetchedKeys.textMateScopes]),
   };
-  
-  const newVersion = updateVersion
+
+  const hasChanged =
+    !areSortedArraysEqual(catalog.keys.colors, mergedKeys.colors) ||
+    !areSortedArraysEqual(catalog.keys.semanticTokens, mergedKeys.semanticTokens) ||
+    !areSortedArraysEqual(catalog.keys.textMateScopes, mergedKeys.textMateScopes);
+
+  const newVersion = hasChanged
     ? incrementVersion(catalog.version)
     : catalog.version;
   
@@ -157,8 +327,10 @@ export async function syncCatalogFromRemote(
     keys: mergedKeys,
   };
   
-  // Save the updated catalog
-  await saveCatalog(studioRoot, updatedCatalog);
+  // Save only when changed; unchanged keeps current version file as-is
+  if (hasChanged || updateVersion) {
+    await saveCatalog(studioRoot, updatedCatalog);
+  }
   
   return updatedCatalog;
 }
@@ -238,6 +410,32 @@ function extractBacktickValues(raw: string): string[] {
   return matches;
 }
 
+function extractCodeTagValues(raw: string): string[] {
+  const pattern = /<code[^>]*>([\s\S]*?)<\/code>/gi;
+  const matches: string[] = [];
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(raw)) !== null) {
+    const inner = match[1]
+      .replace(/<[^>]+>/g, "")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .trim();
+    if (inner) {
+      matches.push(inner);
+    }
+  }
+
+  return matches;
+}
+
+function extractCodeLikeValues(raw: string): string[] {
+  return [...extractBacktickValues(raw), ...extractCodeTagValues(raw)];
+}
+
 function normalizeKey(key: string): string {
   return key.trim();
 }
@@ -251,20 +449,20 @@ function matchesScope(candidate: string): boolean {
 }
 
 function normalizeRemoteThemeColorKeys(raw: string): string[] {
-  const candidates = extractBacktickValues(raw).map(normalizeKey);
+  const candidates = extractCodeLikeValues(raw).map(normalizeKey);
   const keys = candidates.filter(matchesColorKey);
   return uniqueSorted(keys);
 }
 
 function normalizeRemoteSemanticTokenKeys(raw: string): string[] {
-  const fromBackticks = extractBacktickValues(raw).map(normalizeKey);
-  const semantic = fromBackticks.filter((value) => /^[a-z][a-zA-Z]*(\.[a-zA-Z]+)?$/.test(value));
+  const candidates = extractCodeLikeValues(raw).map(normalizeKey);
+  const semantic = candidates.filter((value) => /^[a-z][a-zA-Z]*(\.[a-zA-Z]+)?$/.test(value));
   return uniqueSorted(semantic);
 }
 
 function normalizeRemoteScopes(raw: string): string[] {
-  const fromBackticks = extractBacktickValues(raw).map(normalizeKey);
-  const scopes = fromBackticks.filter(matchesScope);
+  const candidates = extractCodeLikeValues(raw).map(normalizeKey);
+  const scopes = candidates.filter(matchesScope);
   return uniqueSorted(scopes);
 }
 

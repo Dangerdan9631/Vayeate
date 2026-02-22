@@ -3,24 +3,28 @@ import type { Catalog, CatalogTarget } from "../domain/types";
 
 export interface CatalogTabV2Props {
   catalogs: Catalog[];
-  selectedCatalogName: string | null;
-  onSelectCatalog: (name: string) => void;
+  selectedCatalogRef: string | null;
+  onSelectCatalog: (catalogRef: string) => void;
   onCreateCatalog: (name: string, source: "remote" | "manual") => void;
-  onSyncCatalog: (name: string, updateVersion: boolean) => Promise<void>;
-  onAddKey: (catalogName: string, target: CatalogTarget, key: string) => Promise<void>;
-  onRemoveKey: (catalogName: string, target: CatalogTarget, key: string) => Promise<void>;
+  onSyncCatalog: (catalog: Catalog) => Promise<void>;
+  onDeleteCatalogVersion: (catalog: Catalog) => Promise<void>;
+  onLockCatalogVersion: (catalog: Catalog) => Promise<void>;
+  onAddKey: (catalog: Catalog, target: CatalogTarget, key: string) => Promise<void>;
+  onRemoveKey: (catalog: Catalog, target: CatalogTarget, key: string) => Promise<void>;
   onSaveCatalog: (catalog: Catalog) => Promise<void>;
-  onUpdateSource: (catalogName: string, field: "themeColorRegistryUrl" | "semanticTokenRegistryUrl" | "scopeGuidanceUrl", value: string) => void;
+  onUpdateSource: (catalog: Catalog, field: "themeColorRegistryUrl" | "semanticTokenRegistryUrl" | "scopeGuidanceUrl", value: string) => void;
   busy: boolean;
   error: string;
 }
 
 export function CatalogTabV2({
   catalogs,
-  selectedCatalogName,
+  selectedCatalogRef,
   onSelectCatalog,
   onCreateCatalog,
   onSyncCatalog,
+  onDeleteCatalogVersion,
+  onLockCatalogVersion,
   onAddKey,
   onRemoveKey,
   onSaveCatalog,
@@ -32,10 +36,13 @@ export function CatalogTabV2({
   const [newCatalogSource, setNewCatalogSource] = useState<"remote" | "manual">("manual");
   const [newKeyTarget, setNewKeyTarget] = useState<CatalogTarget>("colors");
   const [newKeyValue, setNewKeyValue] = useState("");
+
+  const toCatalogRef = (catalog: Catalog): string => `${catalog.name}@${catalog.version}`;
   
-  const selectedCatalog = catalogs.find((c) => c.name === selectedCatalogName) || null;
+  const selectedCatalog = catalogs.find((c) => toCatalogRef(c) === selectedCatalogRef) || null;
   const isRemote = selectedCatalog?.source === "remote";
   const isManual = selectedCatalog?.source === "manual";
+  const isLocked = Boolean(selectedCatalog?.locked);
 
   const handleCreateCatalog = () => {
     if (newCatalogName.trim()) {
@@ -45,21 +52,21 @@ export function CatalogTabV2({
   };
 
   const handleAddKey = () => {
-    if (selectedCatalogName && newKeyValue.trim()) {
-      void onAddKey(selectedCatalogName, newKeyTarget, newKeyValue.trim());
+    if (selectedCatalog && newKeyValue.trim()) {
+      void onAddKey(selectedCatalog, newKeyTarget, newKeyValue.trim());
       setNewKeyValue("");
     }
   };
 
   const handleRemoveKey = (target: CatalogTarget, key: string) => {
-    if (selectedCatalogName) {
-      void onRemoveKey(selectedCatalogName, target, key);
+    if (selectedCatalog) {
+      void onRemoveKey(selectedCatalog, target, key);
     }
   };
 
-  const handleSyncCatalog = (updateVersion: boolean) => {
-    if (selectedCatalogName) {
-      void onSyncCatalog(selectedCatalogName, updateVersion);
+  const handleSyncCatalog = () => {
+    if (selectedCatalog) {
+      void onSyncCatalog(selectedCatalog);
     }
   };
 
@@ -72,13 +79,13 @@ export function CatalogTabV2({
           <label>
             Select Catalog
             <select
-              value={selectedCatalogName || ""}
+              value={selectedCatalogRef || ""}
               onChange={(e) => onSelectCatalog(e.target.value)}
               style={{ width: "100%" }}
             >
               <option value="">-- Select Catalog --</option>
               {catalogs.map((catalog) => (
-                <option key={catalog.name} value={catalog.name}>
+                <option key={toCatalogRef(catalog)} value={toCatalogRef(catalog)}>
                   {catalog.name} ({catalog.source}) - v{catalog.version}
                 </option>
               ))}
@@ -138,6 +145,11 @@ export function CatalogTabV2({
               <div>
                 <strong>Source:</strong> {selectedCatalog.source}
               </div>
+              {isManual && (
+                <div>
+                  <strong>Locked:</strong> {isLocked ? "Yes" : "No"}
+                </div>
+              )}
               <div>
                 <strong>Colors:</strong> {selectedCatalog.keys.colors.length}
               </div>
@@ -158,7 +170,7 @@ export function CatalogTabV2({
                     <input
                       type="text"
                       value={selectedCatalog.sources?.themeColorRegistryUrl || ""}
-                      onChange={(e) => onUpdateSource(selectedCatalogName, "themeColorRegistryUrl", e.target.value)}
+                      onChange={(e) => onUpdateSource(selectedCatalog, "themeColorRegistryUrl", e.target.value)}
                       placeholder="https://..."
                       style={{ width: "100%", fontSize: 12 }}
                     />
@@ -168,7 +180,7 @@ export function CatalogTabV2({
                     <input
                       type="text"
                       value={selectedCatalog.sources?.semanticTokenRegistryUrl || ""}
-                      onChange={(e) => onUpdateSource(selectedCatalogName, "semanticTokenRegistryUrl", e.target.value)}
+                      onChange={(e) => onUpdateSource(selectedCatalog, "semanticTokenRegistryUrl", e.target.value)}
                       placeholder="https://..."
                       style={{ width: "100%", fontSize: 12 }}
                     />
@@ -178,7 +190,7 @@ export function CatalogTabV2({
                     <input
                       type="text"
                       value={selectedCatalog.sources?.scopeGuidanceUrl || ""}
-                      onChange={(e) => onUpdateSource(selectedCatalogName, "scopeGuidanceUrl", e.target.value)}
+                      onChange={(e) => onUpdateSource(selectedCatalog, "scopeGuidanceUrl", e.target.value)}
                       placeholder="https://..."
                       style={{ width: "100%", fontSize: 12 }}
                     />
@@ -197,14 +209,22 @@ export function CatalogTabV2({
 
             {isRemote && (
               <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
-                <button type="button" onClick={() => handleSyncCatalog(false)} disabled={busy}>
-                  Sync (Keep Version)
-                </button>
-                <button type="button" onClick={() => handleSyncCatalog(true)} disabled={busy}>
-                  Sync (Update Version)
+                <button type="button" onClick={handleSyncCatalog} disabled={busy}>
+                  Sync
                 </button>
               </div>
             )}
+
+            <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
+              {isManual && !isLocked && (
+                <button type="button" onClick={() => void onLockCatalogVersion(selectedCatalog)} disabled={busy}>
+                  Lock Version
+                </button>
+              )}
+              <button type="button" onClick={() => void onDeleteCatalogVersion(selectedCatalog)} disabled={busy}>
+                Delete Version
+              </button>
+            </div>
           </article>
 
           {/* Add/Remove Keys (Manual only) */}

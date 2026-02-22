@@ -37,8 +37,14 @@ export function createV2ApiMiddleware(studioRoot: string) {
       }
 
       if (method === "GET" && url.startsWith("/api/v2/catalogs/")) {
-        const catalogName = decodeURIComponent(url.slice("/api/v2/catalogs/".length).split("/")[0]);
-        const catalog = await catalogV2.loadCatalog(studioRoot, catalogName);
+        const rest = url.slice("/api/v2/catalogs/".length);
+        const parts = rest.split("/");
+        const catalogName = decodeURIComponent(parts[0]);
+        const version = parts.length > 2 && parts[1] === "versions"
+          ? decodeURIComponent(parts[2])
+          : undefined;
+
+        const catalog = await catalogV2.loadCatalog(studioRoot, catalogName, version);
         if (!catalog) {
           sendJson(res, 404, { error: "Catalog not found" });
           return;
@@ -51,38 +57,57 @@ export function createV2ApiMiddleware(studioRoot: string) {
         const rest = url.slice("/api/v2/catalogs/".length);
         const parts = rest.split("/");
         const catalogName = decodeURIComponent(parts[0]);
+
+        if (parts.length > 2 && parts[1] === "versions" && parts[3] === "lock") {
+          const version = decodeURIComponent(parts[2]);
+          const catalog = await catalogV2.loadCatalog(studioRoot, catalogName, version);
+          if (!catalog) {
+            sendJson(res, 404, { error: "Catalog version not found" });
+            return;
+          }
+          const lockedCatalog = catalogV2.withManualLock(catalog);
+          await catalogV2.saveCatalog(studioRoot, lockedCatalog);
+          sendJson(res, 200, lockedCatalog);
+          return;
+        }
         
         if (parts.length > 1 && parts[1] === "sync") {
           const body = await readBody(req);
-          const { updateVersion } = JSON.parse(body) as { updateVersion: boolean };
-          let catalog = await catalogV2.loadCatalog(studioRoot, catalogName);
+          const { updateVersion, version } = JSON.parse(body) as { updateVersion: boolean; version?: string };
+          let catalog = await catalogV2.loadCatalog(studioRoot, catalogName, version);
           if (!catalog) {
             catalog = await catalogV2.createDefaultCatalog();
             catalog.name = catalogName;
           }
           const updated = await catalogV2.syncCatalogFromRemote(studioRoot, catalog, updateVersion);
-          await catalogV2.saveCatalog(studioRoot, updated);
           sendJson(res, 200, updated);
           return;
         }
         
         if (parts.length > 1 && parts[1] === "keys") {
           const body = await readBody(req);
-          const request = JSON.parse(body) as Omit<CatalogAddKeyRequest, "catalogName">;
-          let catalog = await catalogV2.loadCatalog(studioRoot, catalogName);
+          const payload = JSON.parse(body) as Omit<CatalogAddKeyRequest, "catalogName"> & { version?: string };
+          const request: Omit<CatalogAddKeyRequest, "catalogName"> = {
+            target: payload.target,
+            key: payload.key,
+          };
+          let catalog = await catalogV2.loadCatalog(studioRoot, catalogName, payload.version);
           if (!catalog) {
             throw new Error("Catalog not found");
           }
-          catalog = catalogV2.addCatalogKey(catalog, request);
-          await catalogV2.saveCatalog(studioRoot, catalog);
-          sendJson(res, 200, catalog);
+          const updatedCatalog = catalogV2.addCatalogKey(catalog, request);
+          const saveTarget = catalogV2.applyManualLockedVersioning(catalog, updatedCatalog);
+          await catalogV2.saveCatalog(studioRoot, saveTarget);
+          sendJson(res, 200, saveTarget);
           return;
         }
         
         const body = await readBody(req);
         const catalog = JSON.parse(body) as Catalog;
-        await catalogV2.saveCatalog(studioRoot, catalog);
-        sendJson(res, 200, { saved: true });
+        const existing = await catalogV2.loadCatalog(studioRoot, catalogName, catalog.version);
+        const saveTarget = catalogV2.applyManualLockedVersioning(existing, catalog);
+        await catalogV2.saveCatalog(studioRoot, saveTarget);
+        sendJson(res, 200, { saved: true, catalog: saveTarget });
         return;
       }
 
@@ -90,17 +115,33 @@ export function createV2ApiMiddleware(studioRoot: string) {
         const rest = url.slice("/api/v2/catalogs/".length);
         const parts = rest.split("/");
         const catalogName = decodeURIComponent(parts[0]);
+
+        if (parts.length > 2 && parts[1] === "versions") {
+          const version = decodeURIComponent(parts[2]);
+          const deleted = await catalogV2.deleteCatalogVersion(studioRoot, catalogName, version);
+          if (!deleted) {
+            sendJson(res, 404, { error: "Catalog version not found" });
+            return;
+          }
+          sendJson(res, 200, { deleted: true });
+          return;
+        }
         
         if (parts.length > 1 && parts[1] === "keys") {
           const body = await readBody(req);
-          const request = JSON.parse(body) as Omit<CatalogRemoveKeyRequest, "catalogName">;
-          let catalog = await catalogV2.loadCatalog(studioRoot, catalogName);
+          const payload = JSON.parse(body) as Omit<CatalogRemoveKeyRequest, "catalogName"> & { version?: string };
+          const request: Omit<CatalogRemoveKeyRequest, "catalogName"> = {
+            target: payload.target,
+            key: payload.key,
+          };
+          let catalog = await catalogV2.loadCatalog(studioRoot, catalogName, payload.version);
           if (!catalog) {
             throw new Error("Catalog not found");
           }
-          catalog = catalogV2.removeCatalogKey(catalog, request);
-          await catalogV2.saveCatalog(studioRoot, catalog);
-          sendJson(res, 200, catalog);
+          const updatedCatalog = catalogV2.removeCatalogKey(catalog, request);
+          const saveTarget = catalogV2.applyManualLockedVersioning(catalog, updatedCatalog);
+          await catalogV2.saveCatalog(studioRoot, saveTarget);
+          sendJson(res, 200, saveTarget);
           return;
         }
       }
@@ -204,7 +245,7 @@ export function createV2ApiMiddleware(studioRoot: string) {
             sendJson(res, 404, { error: "Template not found" });
             return;
           }
-          const catalogs = await loadCatalogsByName(studioRoot, template.catalogRefs);
+          const catalogs = await catalogV2.loadCatalogsByName(studioRoot, template.catalogRefs);
           if (catalogs.size === 0) {
             sendJson(res, 404, { error: "No catalogs found" });
             return;
@@ -229,6 +270,20 @@ export function createV2ApiMiddleware(studioRoot: string) {
         const rest = url.slice("/api/v2/themes/".length);
         const parts = rest.split("/");
         const themeId = decodeURIComponent(parts[0]);
+
+        if (parts.length > 1 && parts[1] === "clone") {
+          const body = await readBody(req);
+          const { newName } = JSON.parse(body) as { newName: string };
+          const theme = await themeV2.loadTheme(studioRoot, themeId);
+          if (!theme) {
+            sendJson(res, 404, { error: "Theme not found" });
+            return;
+          }
+          const cloned = themeV2.cloneTheme(theme, newName);
+          await themeV2.saveTheme(studioRoot, cloned);
+          sendJson(res, 200, cloned);
+          return;
+        }
         
         if (parts.length > 1 && parts[1] === "generate") {
           const theme = await themeV2.loadTheme(studioRoot, themeId);
@@ -241,7 +296,7 @@ export function createV2ApiMiddleware(studioRoot: string) {
             sendJson(res, 404, { error: "Template not found" });
             return;
           }
-          const catalogs = await loadCatalogsByName(studioRoot, template.catalogRefs);
+          const catalogs = await catalogV2.loadCatalogsByName(studioRoot, template.catalogRefs);
           if (catalogs.size === 0) {
             sendJson(res, 404, { error: "No catalogs found" });
             return;

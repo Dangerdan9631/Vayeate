@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   Catalog,
   CatalogTarget,
   Template_v2,
   Theme,
+  ThemeVariableAssignment,
+  ThemeVariableValue,
   VariableType,
 } from "../domain/types";
 import * as apiV2 from "./api/themeStudioApi-v2";
@@ -14,12 +16,47 @@ import { ThemeTabV2 } from "./ThemeTabV2";
 
 export function App(): JSX.Element {
   const [activeTab, setActiveTab] = useState<string>("catalog");
+  const toCatalogRef = (catalog: Pick<Catalog, "name" | "version">): string => `${catalog.name}@${catalog.version}`;
+  const parseCatalogRef = (catalogRef: string): { name: string; version: string } | null => {
+    const separatorIndex = catalogRef.lastIndexOf("@");
+    if (separatorIndex <= 0 || separatorIndex >= catalogRef.length - 1) {
+      return null;
+    }
+    return {
+      name: catalogRef.slice(0, separatorIndex),
+      version: catalogRef.slice(separatorIndex + 1),
+    };
+  };
+  const compareSemverDesc = (left: string, right: string): number => {
+    const leftParts = left.split(".").map((part) => Number.parseInt(part, 10) || 0);
+    const rightParts = right.split(".").map((part) => Number.parseInt(part, 10) || 0);
+    for (let index = 0; index < 3; index += 1) {
+      if (leftParts[index] > rightParts[index]) return -1;
+      if (leftParts[index] < rightParts[index]) return 1;
+    }
+    return 0;
+  };
+  const toLatestCatalogs = (allCatalogs: Catalog[]): Catalog[] => {
+    const grouped = new Map<string, Catalog[]>();
+    for (const catalog of allCatalogs) {
+      const existing = grouped.get(catalog.name) ?? [];
+      existing.push(catalog);
+      grouped.set(catalog.name, existing);
+    }
+
+    return Array.from(grouped.values())
+      .map((versions) => versions.sort((a, b) => compareSemverDesc(a.version, b.version))[0])
+      .sort((a, b) => a.name.localeCompare(b.name));
+  };
   
   // Catalog state
   const [catalogs, setCatalogs] = useState<Catalog[]>([]);
-  const [selectedCatalogName, setSelectedCatalogName] = useState<string | null>(null);
+  const [selectedCatalogRef, setSelectedCatalogRef] = useState<string | null>(null);
   const [catalogBusy, setCatalogBusy] = useState(false);
   const [catalogError, setCatalogError] = useState("");
+  const catalogSyncRequestRef = useRef(0);
+  const catalogSyncInFlightRef = useRef(false);
+  const catalogLoadRequestRef = useRef(0);
   
   // Template state
   const [templates, setTemplates] = useState<string[]>([]);
@@ -44,10 +81,13 @@ export function App(): JSX.Element {
   
   // Load selected catalog
   useEffect(() => {
-    if (selectedCatalogName) {
-      void loadCatalog(selectedCatalogName);
+    if (selectedCatalogRef) {
+      const parsed = parseCatalogRef(selectedCatalogRef);
+      if (parsed) {
+        void loadCatalog(parsed.name, parsed.version);
+      }
     }
-  }, [selectedCatalogName]);
+  }, [selectedCatalogRef]);
   
   // Load selected template
   useEffect(() => {
@@ -64,29 +104,51 @@ export function App(): JSX.Element {
   }, [selectedThemeId]);
   
   // ===== Catalog Operations =====
+
+  const latestCatalogs = toLatestCatalogs(catalogs);
+
+  function upsertCatalogState(nextCatalog: Catalog): void {
+    setCatalogs((prev) => {
+      const nextRef = toCatalogRef(nextCatalog);
+      const index = prev.findIndex((c) => toCatalogRef(c) === nextRef);
+      if (index >= 0) {
+        const next = [...prev];
+        next[index] = nextCatalog;
+        return next;
+      }
+      return [...prev, nextCatalog];
+    });
+  }
   
   async function loadCatalogs(): Promise<void> {
     try {
       const catalogList = await apiV2.listCatalogs();
       setCatalogs(catalogList);
+
+      if (selectedCatalogRef && !catalogList.some((catalog) => toCatalogRef(catalog) === selectedCatalogRef)) {
+        const fallback = catalogList[0];
+        setSelectedCatalogRef(fallback ? toCatalogRef(fallback) : null);
+      }
+
       setCatalogError("");
     } catch (error) {
       setCatalogError(error instanceof Error ? error.message : "Failed to load catalogs");
     }
   }
   
-  async function loadCatalog(name: string): Promise<void> {
+  async function loadCatalog(name: string, version?: string): Promise<void> {
+    const loadRequestId = ++catalogLoadRequestRef.current;
     try {
-      const catalog = await apiV2.loadCatalog(name);
-      setCatalogs((prev) => {
-        const index = prev.findIndex((c) => c.name === name);
-        if (index >= 0) {
-          const next = [...prev];
-          next[index] = catalog;
-          return next;
-        }
-        return [...prev, catalog];
-      });
+      const catalog = await apiV2.loadCatalog(name, version);
+      if (!catalog) {
+        return;
+      }
+
+      if (loadRequestId !== catalogLoadRequestRef.current) {
+        return;
+      }
+
+      upsertCatalogState(catalog);
       setCatalogError("");
     } catch (error) {
       setCatalogError(error instanceof Error ? error.message : "Failed to load catalog");
@@ -102,6 +164,7 @@ export function App(): JSX.Element {
         name,
         version: "1.0.0",
         source,
+        locked: source === "manual" ? false : undefined,
         keys: { colors: [], semanticTokens: [], textMateScopes: [] },
         sources: source === "remote" ? {
           themeColorRegistryUrl: "",
@@ -111,7 +174,7 @@ export function App(): JSX.Element {
       };
       await apiV2.saveCatalog(newCatalog);
       await loadCatalogs();
-      setSelectedCatalogName(name);
+      setSelectedCatalogRef(toCatalogRef(newCatalog));
     } catch (error) {
       setCatalogError(error instanceof Error ? error.message : "Failed to create catalog");
     } finally {
@@ -119,22 +182,70 @@ export function App(): JSX.Element {
     }
   }
   
-  async function handleSyncCatalog(catalogName: string, updateVersion: boolean): Promise<void> {
+  async function handleSyncCatalog(catalog: Catalog): Promise<void> {
+    if (catalogSyncInFlightRef.current) {
+      return;
+    }
+
+    const requestId = ++catalogSyncRequestRef.current;
+    catalogSyncInFlightRef.current = true;
+    setCatalogBusy(true);
+    setCatalogError("");
+
+    try {
+      const savedCatalog = await apiV2.saveCatalog(catalog);
+      upsertCatalogState(savedCatalog);
+      setSelectedCatalogRef(toCatalogRef(savedCatalog));
+      const syncedCatalog = await apiV2.syncCatalog(savedCatalog.name, savedCatalog.version, true);
+
+      if (requestId !== catalogSyncRequestRef.current) {
+        return;
+      }
+
+      upsertCatalogState(syncedCatalog);
+      setSelectedCatalogRef(toCatalogRef(syncedCatalog));
+      await loadCatalogs();
+    } catch (error) {
+      if (requestId === catalogSyncRequestRef.current) {
+        setCatalogError(error instanceof Error ? error.message : "Failed to sync catalog");
+      }
+    } finally {
+      if (requestId === catalogSyncRequestRef.current) {
+        setCatalogBusy(false);
+      }
+      catalogSyncInFlightRef.current = false;
+    }
+  }
+
+  async function handleDeleteCatalogVersion(catalog: Catalog): Promise<void> {
     setCatalogBusy(true);
     setCatalogError("");
     try {
-      await apiV2.syncCatalog(catalogName, updateVersion);
-      await loadCatalog(catalogName);
+      await apiV2.deleteCatalogVersion(catalog.name, catalog.version);
+      await loadCatalogs();
     } catch (error) {
-      setCatalogError(error instanceof Error ? error.message : "Failed to sync catalog");
+      setCatalogError(error instanceof Error ? error.message : "Failed to delete catalog version");
+    } finally {
+      setCatalogBusy(false);
+    }
+  }
+
+  async function handleLockCatalogVersion(catalog: Catalog): Promise<void> {
+    setCatalogBusy(true);
+    setCatalogError("");
+    try {
+      const lockedCatalog = await apiV2.lockCatalogVersion(catalog.name, catalog.version);
+      upsertCatalogState(lockedCatalog);
+      setSelectedCatalogRef(toCatalogRef(lockedCatalog));
+      await loadCatalogs();
+    } catch (error) {
+      setCatalogError(error instanceof Error ? error.message : "Failed to lock catalog version");
     } finally {
       setCatalogBusy(false);
     }
   }
   
-  async function handleAddKey(catalogName: string, target: CatalogTarget, key: string): Promise<void> {
-    const catalog = catalogs.find((c) => c.name === catalogName);
-    if (!catalog) return;
+  async function handleAddKey(catalog: Catalog, target: CatalogTarget, key: string): Promise<void> {
     
     setCatalogBusy(true);
     setCatalogError("");
@@ -146,8 +257,11 @@ export function App(): JSX.Element {
           [target]: [...catalog.keys[target], key],
         },
       };
-      await apiV2.saveCatalog(updatedCatalog);
-      await loadCatalog(catalogName);
+      const savedCatalog = await apiV2.saveCatalog(updatedCatalog);
+      upsertCatalogState(savedCatalog);
+      setSelectedCatalogRef(toCatalogRef(savedCatalog));
+      await loadCatalog(savedCatalog.name, savedCatalog.version);
+      await loadCatalogs();
     } catch (error) {
       setCatalogError(error instanceof Error ? error.message : "Failed to add key");
     } finally {
@@ -155,9 +269,7 @@ export function App(): JSX.Element {
     }
   }
   
-  async function handleRemoveKey(catalogName: string, target: CatalogTarget, key: string): Promise<void> {
-    const catalog = catalogs.find((c) => c.name === catalogName);
-    if (!catalog) return;
+  async function handleRemoveKey(catalog: Catalog, target: CatalogTarget, key: string): Promise<void> {
     
     setCatalogBusy(true);
     setCatalogError("");
@@ -169,8 +281,11 @@ export function App(): JSX.Element {
           [target]: catalog.keys[target].filter((k) => k !== key),
         },
       };
-      await apiV2.saveCatalog(updatedCatalog);
-      await loadCatalog(catalogName);
+      const savedCatalog = await apiV2.saveCatalog(updatedCatalog);
+      upsertCatalogState(savedCatalog);
+      setSelectedCatalogRef(toCatalogRef(savedCatalog));
+      await loadCatalog(savedCatalog.name, savedCatalog.version);
+      await loadCatalogs();
     } catch (error) {
       setCatalogError(error instanceof Error ? error.message : "Failed to remove key");
     } finally {
@@ -182,8 +297,11 @@ export function App(): JSX.Element {
     setCatalogBusy(true);
     setCatalogError("");
     try {
-      await apiV2.saveCatalog(catalog);
-      await loadCatalog(catalog.name);
+      const savedCatalog = await apiV2.saveCatalog(catalog);
+      upsertCatalogState(savedCatalog);
+      setSelectedCatalogRef(toCatalogRef(savedCatalog));
+      await loadCatalog(savedCatalog.name, savedCatalog.version);
+      await loadCatalogs();
     } catch (error) {
       setCatalogError(error instanceof Error ? error.message : "Failed to save catalog");
     } finally {
@@ -192,15 +310,14 @@ export function App(): JSX.Element {
   }
   
   function handleUpdateSource(
-    catalogName: string,
+    catalog: Catalog,
     field: "themeColorRegistryUrl" | "semanticTokenRegistryUrl" | "scopeGuidanceUrl",
     value: string
   ): void {
-    const catalog = catalogs.find((c) => c.name === catalogName);
-    if (!catalog) return;
+    const catalogRef = toCatalogRef(catalog);
     
     setCatalogs((prev) => {
-      const index = prev.findIndex((c) => c.name === catalogName);
+      const index = prev.findIndex((c) => toCatalogRef(c) === catalogRef);
       if (index < 0) return prev;
       
       const updated = [...prev];
@@ -280,6 +397,9 @@ export function App(): JSX.Element {
   function handleAddCatalogRef(catalogName: string): void {
     if (!template) return;
     if (template.catalogRefs.includes(catalogName)) return;
+    const catalog = latestCatalogs.find((entry) => entry.name === catalogName);
+    if (!catalog) return;
+    if (catalog.source === "manual" && !catalog.locked) return;
     setTemplate({
       ...template,
       catalogRefs: [...template.catalogRefs, catalogName],
@@ -466,13 +586,17 @@ export function App(): JSX.Element {
     
     const targetArray = variant === "dark" ? theme.values.dark : theme.values.light;
     const existingIndex = targetArray.findIndex((v) => v.variableId === variableId);
+    const normalizedValue = value.trim();
+    const nextValue = normalizedValue as ThemeVariableValue;
     
-    let updatedArray;
-    if (existingIndex >= 0) {
+    let updatedArray: ThemeVariableAssignment[];
+    if (!normalizedValue) {
+      updatedArray = targetArray.filter((v) => v.variableId !== variableId);
+    } else if (existingIndex >= 0) {
       updatedArray = [...targetArray];
-      updatedArray[existingIndex] = { variableId, value };
+      updatedArray[existingIndex] = { variableId, value: nextValue };
     } else {
-      updatedArray = [...targetArray, { variableId, value }];
+      updatedArray = [...targetArray, { variableId, value: nextValue }];
     }
     
     setTheme({
@@ -490,12 +614,15 @@ export function App(): JSX.Element {
     const lightArray = theme.values.light;
     const existingIndex = lightArray.findIndex((v) => v.variableId === variableId);
     
-    let updatedArray;
+    let updatedArray: ThemeVariableAssignment[];
     if (existingIndex >= 0) {
       const currentValue = lightArray[existingIndex].value;
-      const newValue = currentValue === "useDark" ? "" : "useDark";
-      updatedArray = [...lightArray];
-      updatedArray[existingIndex] = { variableId, value: newValue };
+      if (currentValue === "useDark") {
+        updatedArray = lightArray.filter((v) => v.variableId !== variableId);
+      } else {
+        updatedArray = [...lightArray];
+        updatedArray[existingIndex] = { variableId, value: "useDark" };
+      }
     } else {
       updatedArray = [...lightArray, { variableId, value: "useDark" }];
     }
@@ -556,10 +683,12 @@ export function App(): JSX.Element {
             content: (
               <CatalogTabV2
                 catalogs={catalogs}
-                selectedCatalogName={selectedCatalogName}
-                onSelectCatalog={setSelectedCatalogName}
+                selectedCatalogRef={selectedCatalogRef}
+                onSelectCatalog={setSelectedCatalogRef}
                 onCreateCatalog={handleCreateCatalog}
                 onSyncCatalog={handleSyncCatalog}
+                onDeleteCatalogVersion={handleDeleteCatalogVersion}
+                onLockCatalogVersion={handleLockCatalogVersion}
                 onAddKey={handleAddKey}
                 onRemoveKey={handleRemoveKey}
                 onSaveCatalog={handleSaveCatalog}
@@ -577,7 +706,7 @@ export function App(): JSX.Element {
                 templates={templates}
                 selectedTemplateId={selectedTemplateId}
                 template={template}
-                catalogs={catalogs}
+                catalogs={latestCatalogs}
                 onSelectTemplate={setSelectedTemplateId}
                 onCreateTemplate={handleCreateTemplate}
                 onSaveTemplate={handleSaveTemplate}

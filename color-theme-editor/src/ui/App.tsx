@@ -7,6 +7,7 @@ import type {
   CatalogValidationReport,
   ElementBinding,
   GeneratedOutputSummary,
+  PreviewSample,
   ThemeTemplate,
 } from "../domain/types";
 import {
