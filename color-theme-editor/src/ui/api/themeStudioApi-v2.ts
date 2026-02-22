@@ -5,6 +5,8 @@ import type {
   CatalogAddKeyRequest,
   CatalogRemoveKeyRequest,
   CatalogTarget,
+  PreviewSourceLanguage,
+  PreviewTokenizedLanguageBatch,
 } from "../../domain/types";
 import type { ExportPreview } from "../../core/exporter-v2";
 import type { CoverageSummary, VariableUsage } from "../../core/generator-v2";
@@ -16,6 +18,36 @@ async function parseResponse<T>(response: Response): Promise<T> {
     throw new Error(message);
   }
   return data as T;
+}
+
+async function tryParseJsonResponse<T>(response: Response): Promise<{ ok: true; data: T } | { ok: false; nonJson: true }> {
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+  if (!contentType.includes("application/json")) {
+    return { ok: false, nonJson: true };
+  }
+
+  const data = (await response.json()) as T | { error: string };
+  if (!response.ok) {
+    const message = (data as { error?: string }).error ?? "Request failed";
+    throw new Error(message);
+  }
+
+  return { ok: true, data: data as T };
+}
+
+async function fetchJsonWithPathFallback<T>(absolutePath: string, init?: RequestInit): Promise<T> {
+  const relativePath = absolutePath.startsWith("/") ? absolutePath.slice(1) : absolutePath;
+  const candidates = [absolutePath, relativePath];
+
+  for (const candidate of candidates) {
+    const response = await fetch(candidate, init);
+    const parsed = await tryParseJsonResponse<T>(response);
+    if (parsed.ok) {
+      return parsed.data;
+    }
+  }
+
+  throw new Error("Preview API returned non-JSON response. Ensure Theme Studio is running with the local API server.");
 }
 
 // ============================================================================
@@ -209,4 +241,25 @@ export async function previewThemeGeneration(themeId: string): Promise<ExportPre
 export async function getVariableUsage(templateId: string): Promise<VariableUsage[]> {
   const response = await fetch(`/api/v2/templates/${encodeURIComponent(templateId)}/variable-usage`);
   return parseResponse<VariableUsage[]>(response);
+}
+
+// ============================================================================
+// Preview API
+// ============================================================================
+
+export async function listPreviewSources(): Promise<PreviewSourceLanguage[]> {
+  const data = await fetchJsonWithPathFallback<{ languages: PreviewSourceLanguage[] }>("/api/v2/previews/sources");
+  return data.languages;
+}
+
+export async function fetchPreviewTokens(request: {
+  languageIds?: string[];
+  sampleIdsByLanguage?: Record<string, string[]>;
+} = {}): Promise<PreviewTokenizedLanguageBatch[]> {
+  const data = await fetchJsonWithPathFallback<{ batches: PreviewTokenizedLanguageBatch[] }>("/api/v2/previews/tokens", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  return data.batches;
 }

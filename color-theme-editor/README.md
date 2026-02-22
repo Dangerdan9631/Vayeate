@@ -23,6 +23,27 @@ npm run test
 npm run build
 ```
 
+## Preview sources contract (v2)
+
+Theme preview content is filesystem-driven from `color-theme-editor/previews/`.
+
+- Directory shape: `previews/<language>/`
+- Each language directory must contain exactly one TextMate grammar file:
+	- `*.tmLanguage`
+	- `*.tmLanguage.json`
+	- `*.plist`
+- Every other non-hidden file in the same directory is treated as a preview sample.
+- Language folders and sample files are discovered and rendered in deterministic sorted order.
+
+## Preview rendering behavior (v2)
+
+- Tokenization runs server-side through the v2 API using `vscode-textmate` + `vscode-oniguruma`.
+- The UI always renders both dark and light preview panes.
+- All discovered preview samples are always included (no sample/language toggles).
+- `theme.preview.borderVariableId` persists one selector for preview frame border color.
+- The border selector affects only the outer frame border (IDE chrome accent).
+- Editor content colors continue to come from generated theme values and token/semantic mappings.
+
 ## AI Agent navigation
 
 - Agent guide: [color-theme-editor/docs/ai-agent-guide.md](color-theme-editor/docs/ai-agent-guide.md)

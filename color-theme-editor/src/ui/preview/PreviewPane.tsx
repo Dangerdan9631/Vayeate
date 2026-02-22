@@ -1,97 +1,107 @@
-import type { GeneratedTheme } from "../../domain/types";
-import type { PreviewSampleContent } from "./samples";
+import type { GeneratedTheme, PreviewTokenizedSample, SemanticTokenValue } from "../../domain/types";
 
 interface PreviewPaneProps {
   title: string;
   theme: GeneratedTheme;
-  samples: PreviewSampleContent[];
+  samples: Array<
+    PreviewTokenizedSample
+    | {
+        id: string;
+        relativePath: string;
+        content: string;
+      }
+  >;
 }
 
-type TokenKind = "plain" | "keyword" | "string" | "comment";
+function normalizeSampleLines(sample: PreviewPaneProps["samples"][number]): {
+  id: string;
+  relativePath: string;
+  lines: Array<{ lineNumber: number; spans: Array<{ text: string; scopes: string[] }> }>;
+} {
+  if ("sampleId" in sample) {
+    return {
+      id: sample.sampleId,
+      relativePath: sample.relativePath,
+      lines: sample.lines.map((line) => ({
+        lineNumber: line.lineNumber,
+        spans: line.spans.map((span) => ({
+          text: span.text,
+          scopes: span.scopes,
+        })),
+      })),
+    };
+  }
 
-interface Token {
-  text: string;
-  kind: TokenKind;
+  return {
+    id: sample.id,
+    relativePath: sample.relativePath,
+    lines: sample.content.split("\n").map((line, index) => ({
+      lineNumber: index + 1,
+      spans: [{ text: line, scopes: [] }],
+    })),
+  };
 }
 
-const KEYWORD_BY_LANGUAGE: Record<PreviewSampleContent["language"], Set<string>> = {
-  ts: new Set(["const", "let", "function", "return", "if", "else", "class", "import", "export", "new"]),
-  json: new Set([]),
-  md: new Set(["#", "##", "###", "-", "*", "```"]),
-  ps1: new Set(["function", "param", "if", "else", "foreach", "return"]),
-  rust: new Set(["fn", "let", "mut", "impl", "struct", "pub", "match", "return"]),
-};
+function asScopeList(scope: string | string[] | undefined): string[] {
+  if (!scope) return [];
+  return Array.isArray(scope) ? scope : [scope];
+}
 
-function tokenForeground(theme: GeneratedTheme, kind: TokenKind): string {
+function semanticForeground(value: SemanticTokenValue | undefined): string | null {
+  if (!value) return null;
+  if (typeof value === "string") return value;
+  return value.foreground ?? null;
+}
+
+function scopeMatches(entryScope: string, tokenScope: string): boolean {
+  return (
+    tokenScope === entryScope
+    || tokenScope.startsWith(`${entryScope}.`)
+    || entryScope.startsWith(`${tokenScope}.`)
+  );
+}
+
+function resolveSemanticByScopes(theme: GeneratedTheme, scopes: string[]): string | null {
+  const lowered = scopes.map((scope) => scope.toLowerCase());
+
+  if (lowered.some((scope) => scope.includes("comment"))) {
+    return semanticForeground(theme.semanticTokenColors.comment);
+  }
+
+  if (lowered.some((scope) => scope.includes("string") || scope.includes("punctuation.definition.string"))) {
+    return semanticForeground(theme.semanticTokenColors.string);
+  }
+
+  if (lowered.some((scope) => scope.includes("keyword") || scope.includes("storage") || scope.includes("control"))) {
+    return semanticForeground(theme.semanticTokenColors.keyword);
+  }
+
+  return null;
+}
+
+export function resolveScopeForeground(theme: GeneratedTheme, scopes: string[]): string {
   const fallback = theme.colors["editor.foreground"] ?? (theme.type === "dark" ? "#d4d4d4" : "#202020");
-  if (kind === "plain") return fallback;
-
-  const byName = theme.tokenColors.find((entry) => (entry.name ?? "").toLowerCase().includes(kind));
-  if (byName?.settings.foreground) return byName.settings.foreground;
-
-  if (kind === "keyword") {
-    const semantic = theme.semanticTokenColors.keyword;
-    return typeof semantic === "string" ? semantic : semantic?.foreground ?? fallback;
+  if (scopes.length === 0) {
+    return fallback;
   }
-  if (kind === "string") {
-    const semantic = theme.semanticTokenColors.string;
-    return typeof semantic === "string" ? semantic : semantic?.foreground ?? fallback;
+
+  const normalizedScopes = scopes.map((scope) => scope.toLowerCase());
+
+  for (const tokenScope of normalizedScopes.slice().reverse()) {
+    for (const entry of theme.tokenColors) {
+      const entryScopes = asScopeList(entry.scope).map((scope) => scope.toLowerCase());
+      if (entry.settings.foreground && entryScopes.some((entryScope) => scopeMatches(entryScope, tokenScope))) {
+        return entry.settings.foreground;
+      }
+    }
   }
-  if (kind === "comment") {
-    const semantic = theme.semanticTokenColors.comment;
-    return typeof semantic === "string" ? semantic : semantic?.foreground ?? fallback;
+
+  const semantic = resolveSemanticByScopes(theme, normalizedScopes);
+  if (semantic) {
+    return semantic;
   }
 
   return fallback;
-}
-
-function tokenizeLine(line: string, language: PreviewSampleContent["language"]): Token[] {
-  const trimmed = line.trimStart();
-  if (!trimmed) return [{ text: line, kind: "plain" }];
-
-  if (language === "md") {
-    if (trimmed.startsWith("#") || trimmed.startsWith("- ") || trimmed.startsWith("```")) {
-      return [{ text: line, kind: "keyword" }];
-    }
-  }
-
-  if (language === "ts" || language === "rust" || language === "ps1") {
-    if (trimmed.startsWith("//") || trimmed.startsWith("#")) {
-      return [{ text: line, kind: "comment" }];
-    }
-  }
-
-  if (language === "json" && trimmed.startsWith("//")) {
-    return [{ text: line, kind: "comment" }];
-  }
-
-  const regex = /("([^"\\]|\\.)*"|'([^'\\]|\\.)*')|([A-Za-z_][A-Za-z0-9_]*)/g;
-  const tokens: Token[] = [];
-  let cursor = 0;
-
-  for (const match of line.matchAll(regex)) {
-    const index = match.index ?? 0;
-    if (index > cursor) {
-      tokens.push({ text: line.slice(cursor, index), kind: "plain" });
-    }
-
-    const value = match[0];
-    const isString = value.startsWith("\"") || value.startsWith("'");
-    if (isString) {
-      tokens.push({ text: value, kind: "string" });
-    } else {
-      const isKeyword = KEYWORD_BY_LANGUAGE[language].has(value);
-      tokens.push({ text: value, kind: isKeyword ? "keyword" : "plain" });
-    }
-
-    cursor = index + value.length;
-  }
-
-  if (cursor < line.length) {
-    tokens.push({ text: line.slice(cursor), kind: "plain" });
-  }
-
-  return tokens.length > 0 ? tokens : [{ text: line, kind: "plain" }];
 }
 
 export function PreviewPane({ title, theme, samples }: PreviewPaneProps): JSX.Element {
@@ -105,8 +115,10 @@ export function PreviewPane({ title, theme, samples }: PreviewPaneProps): JSX.El
         {title}
       </header>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12, padding: 12, maxHeight: 620, overflow: "auto" }}>
-        {samples.map((sample) => (
-          <article key={sample.id} style={{ border: `1px solid ${border}`, borderRadius: 6, overflow: "hidden" }}>
+        {samples.map((sample) => {
+          const normalized = normalizeSampleLines(sample);
+          return (
+          <article key={normalized.id} style={{ border: `1px solid ${border}`, borderRadius: 6, overflow: "hidden" }}>
             <div
               style={{
                 padding: "6px 10px",
@@ -116,7 +128,7 @@ export function PreviewPane({ title, theme, samples }: PreviewPaneProps): JSX.El
                 fontFamily: "Consolas, monospace",
               }}
             >
-              {sample.relativePath}
+              {normalized.relativePath}
             </div>
             <pre
               style={{
@@ -130,18 +142,22 @@ export function PreviewPane({ title, theme, samples }: PreviewPaneProps): JSX.El
                 overflow: "auto",
               }}
             >
-              {sample.content.split("\n").slice(0, 38).map((line, lineIndex) => (
-                <div key={`${sample.id}-line-${lineIndex}`}>
-                  {tokenizeLine(line, sample.language).map((token, tokenIndex) => (
-                    <span key={`${sample.id}-${lineIndex}-${tokenIndex}`} style={{ color: tokenForeground(theme, token.kind) }}>
-                      {token.text}
+              {normalized.lines.slice(0, 38).map((line) => (
+                <div key={`${normalized.id}-line-${line.lineNumber}`}>
+                  {line.spans.map((span, spanIndex) => (
+                    <span
+                      key={`${normalized.id}-${line.lineNumber}-${spanIndex}`}
+                      style={{ color: resolveScopeForeground(theme, span.scopes) }}
+                    >
+                      {span.text}
                     </span>
                   ))}
                 </div>
               ))}
             </pre>
           </article>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

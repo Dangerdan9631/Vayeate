@@ -5,6 +5,8 @@ import * as templateV2 from "./src/core/template-v2";
 import * as themeV2 from "./src/core/theme-v2";
 import { generateThemeOutput, getCatalogCoverage, getOverallCoverage, getVariableUsage } from "./src/core/generator-v2";
 import { exportThemePair, previewExport } from "./src/core/exporter-v2";
+import { discoverPreviewSources } from "./src/core/preview-source-v2";
+import { tokenizePreviewSources, type TokenizePreviewRequest } from "./src/core/textmate-tokenizer-v2";
 
 function sendJson(response: ServerResponse, statusCode: number, payload: unknown): void {
   response.statusCode = statusCode;
@@ -26,6 +28,27 @@ export function createV2ApiMiddleware(studioRoot: string) {
     const method = req.method ?? "GET";
 
     try {
+      // ====================================================================
+      // Preview APIs
+      // ====================================================================
+
+      if (method === "GET" && url === "/api/v2/previews/sources") {
+        const languages = await discoverPreviewSources(studioRoot);
+        sendJson(res, 200, { languages });
+        return;
+      }
+
+      if (method === "POST" && url === "/api/v2/previews/tokens") {
+        const body = await readBody(req);
+        const payload = body.trim().length > 0
+          ? (JSON.parse(body) as TokenizePreviewRequest)
+          : {};
+        const languages = await discoverPreviewSources(studioRoot);
+        const batches = await tokenizePreviewSources(studioRoot, languages, payload);
+        sendJson(res, 200, { batches });
+        return;
+      }
+
       // ====================================================================
       // Catalog APIs
       // ====================================================================

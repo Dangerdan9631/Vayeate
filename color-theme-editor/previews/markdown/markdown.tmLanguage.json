@@ -1,0 +1,63 @@
+{
+  "scopeName": "source.markdown",
+  "name": "markdown (Theme Studio Preview)",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#numbers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.markdown",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.line.double-slash.markdown",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.markdown",
+          "match": "\\\\b(if|else|for|while|return|class|function|import|export|const|let|var|public|private|static)\\\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.markdown",
+          "match": "\\\\b\\\\d+(?:\\\\.\\\\d+)?\\\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "end": "'",
+          "name": "string.quoted.single.markdown",
+          "begin": "'"
+        },
+        {
+          "end": "\"",
+          "name": "string.quoted.double.markdown",
+          "begin": "\""
+        }
+      ]
+    }
+  }
+}
+

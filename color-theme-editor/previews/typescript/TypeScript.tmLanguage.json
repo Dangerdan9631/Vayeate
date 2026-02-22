@@ -1,0 +1,64 @@
+{
+  "scopeName": "source.ts",
+  "name": "TypeScript (Theme Studio Preview)",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#keywords" },
+    { "include": "#numbers" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.ts",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.ts",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.single.ts",
+          "begin": "'",
+          "end": "'",
+          "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.ts" }]
+        },
+        {
+          "name": "string.quoted.double.ts",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.ts" }]
+        },
+        {
+          "name": "string.quoted.template.ts",
+          "begin": "`",
+          "end": "`",
+          "patterns": [{ "match": "\\\\.", "name": "constant.character.escape.ts" }]
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.ts",
+          "match": "\\b(const|let|function|return|if|else|class|interface|type|extends|implements|import|export|new|for|while|switch|case|throw|try|catch)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.ts",
+          "match": "\\b\\d+(?:\\.\\d+)?\\b"
+        }
+      ]
+    }
+  },
+  "uuid": "3f8c2f4a-f453-49b6-b314-c0050e66a45d"
+}

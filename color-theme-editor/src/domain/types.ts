@@ -286,6 +286,51 @@ export interface Theme {
     lightFileName: string;
     outputDir: string;
   };
+  preview?: {
+    borderVariableId?: string;
+  };
+}
+
+export interface PreviewSourceSample {
+  id: string;
+  fileName: string;
+  label: string;
+  languageId: string;
+  relativePath: string;
+}
+
+export interface PreviewSourceLanguage {
+  id: string;
+  label: string;
+  relativePath: string;
+  grammarFileName: string;
+  grammarRelativePath: string;
+  samples: PreviewSourceSample[];
+}
+
+export interface PreviewTokenSpan {
+  startIndex: number;
+  endIndex: number;
+  text: string;
+  scopes: string[];
+}
+
+export interface PreviewTokenizedLine {
+  lineNumber: number;
+  text: string;
+  spans: PreviewTokenSpan[];
+}
+
+export interface PreviewTokenizedSample {
+  sampleId: string;
+  languageId: string;
+  relativePath: string;
+  lines: PreviewTokenizedLine[];
+}
+
+export interface PreviewTokenizedLanguageBatch {
+  languageId: string;
+  samples: PreviewTokenizedSample[];
 }
 
 export interface CatalogSyncOptions {

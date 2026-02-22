@@ -1,0 +1,63 @@
+{
+  "scopeName": "source.powershell",
+  "name": "powershell (Theme Studio Preview)",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#numbers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.powershell",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.line.double-slash.powershell",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.powershell",
+          "match": "\\\\b(if|else|for|while|return|class|function|import|export|const|let|var|public|private|static)\\\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.powershell",
+          "match": "\\\\b\\\\d+(?:\\\\.\\\\d+)?\\\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "end": "'",
+          "name": "string.quoted.single.powershell",
+          "begin": "'"
+        },
+        {
+          "end": "\"",
+          "name": "string.quoted.double.powershell",
+          "begin": "\""
+        }
+      ]
+    }
+  }
+}
+

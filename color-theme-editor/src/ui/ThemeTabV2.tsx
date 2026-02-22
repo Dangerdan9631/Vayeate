@@ -1,7 +1,29 @@
 import { useEffect, useMemo, useState } from "react";
-import type { GeneratedTheme, Theme, Template_v2, ThemeKind, VariableType } from "../domain/types";
+import type { GeneratedTheme, PreviewSourceLanguage, PreviewTokenizedLanguageBatch, PreviewTokenizedSample, Theme, Template_v2, ThemeKind, VariableType } from "../domain/types";
 import { PreviewPane } from "./preview/PreviewPane";
-import { previewSamples } from "./preview/samples";
+import { fetchPreviewTokens, listPreviewSources } from "./api/themeStudioApi-v2";
+
+export function getAlwaysOnPreviewVariants(): ThemeKind[] {
+  return ["dark", "light"];
+}
+
+export function flattenTokenizedPreviewSamples(
+  languages: PreviewSourceLanguage[],
+  batches: PreviewTokenizedLanguageBatch[],
+): PreviewTokenizedSample[] {
+  const byLanguage = new Map(batches.map((batch) => [batch.languageId, batch.samples]));
+  const samples: PreviewTokenizedSample[] = [];
+  for (const language of languages) {
+    const languageSamples = byLanguage.get(language.id) ?? [];
+    for (const sample of language.samples) {
+      const tokenized = languageSamples.find((entry) => entry.sampleId === sample.id);
+      if (tokenized) {
+        samples.push(tokenized);
+      }
+    }
+  }
+  return samples;
+}
 
 export interface ThemeTabV2Props {
   themes: string[];
@@ -42,11 +64,11 @@ export function ThemeTabV2({
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const [cloneName, setCloneName] = useState("");
   const [showCloneDialog, setShowCloneDialog] = useState(false);
-  const [selectedSampleIds, setSelectedSampleIds] = useState<string[]>(() => previewSamples.map((sample) => sample.id));
-  const [showDark, setShowDark] = useState(true);
-  const [showLight, setShowLight] = useState(true);
-  const [previewBackgroundVariableId, setPreviewBackgroundVariableId] = useState("");
-  const [previewContrastVariableId, setPreviewContrastVariableId] = useState("");
+  const [previewBorderVariableId, setPreviewBorderVariableId] = useState("");
+  const [previewLanguages, setPreviewLanguages] = useState<PreviewSourceLanguage[]>([]);
+  const [previewBatches, setPreviewBatches] = useState<PreviewTokenizedLanguageBatch[]>([]);
+  const [previewBusy, setPreviewBusy] = useState(false);
+  const [previewError, setPreviewError] = useState("");
 
   const handleCreateTheme = () => {
     if (newThemeName.trim() && selectedTemplateId) {
@@ -79,20 +101,57 @@ export function ThemeTabV2({
 
   useEffect(() => {
     const colorIds = template?.variables.color.map((variable) => variable.id) ?? [];
-    const contrastIds = template?.variables.contrast.map((variable) => variable.id) ?? [];
+    const persisted = theme?.preview?.borderVariableId ?? "";
 
     if (colorIds.length === 0) {
-      setPreviewBackgroundVariableId("");
-    } else if (!colorIds.includes(previewBackgroundVariableId)) {
-      setPreviewBackgroundVariableId(colorIds[0]);
+      setPreviewBorderVariableId("");
+      return;
     }
 
-    if (contrastIds.length === 0) {
-      setPreviewContrastVariableId("");
-    } else if (!contrastIds.includes(previewContrastVariableId)) {
-      setPreviewContrastVariableId(contrastIds[0]);
+    if (persisted && colorIds.includes(persisted)) {
+      setPreviewBorderVariableId(persisted);
+      return;
     }
-  }, [template, previewBackgroundVariableId, previewContrastVariableId]);
+
+    setPreviewBorderVariableId((current) => (colorIds.includes(current) ? current : colorIds[0]));
+  }, [template, theme?.id, theme?.preview?.borderVariableId]);
+
+  useEffect(() => {
+    let active = true;
+
+    async function hydratePreviewSources(): Promise<void> {
+      setPreviewBusy(true);
+      setPreviewError("");
+      try {
+        const languages = await listPreviewSources();
+        if (!active) return;
+        setPreviewLanguages(languages);
+
+        const sampleIdsByLanguage = Object.fromEntries(
+          languages.map((language) => [language.id, language.samples.map((sample) => sample.id)]),
+        ) as Record<string, string[]>;
+
+        const batches = await fetchPreviewTokens({
+          languageIds: languages.map((language) => language.id),
+          sampleIdsByLanguage,
+        });
+        if (!active) return;
+        setPreviewBatches(batches);
+      } catch (error) {
+        if (!active) return;
+        const message = error instanceof Error ? error.message : "Failed to load preview samples";
+        setPreviewError(message);
+      } finally {
+        if (!active) return;
+        setPreviewBusy(false);
+      }
+    }
+
+    void hydratePreviewSources();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const isLightUsingDark = (variableId: string, variableType: VariableType): boolean => {
     if (!theme) return false;
@@ -146,6 +205,30 @@ export function ThemeTabV2({
   const generatedThemes = useMemo(() => {
     if (!theme || !template) return null;
 
+    const resolveFirstColorValue = (kind: ThemeKind, candidateIds: string[]): string => {
+      for (const candidateId of candidateIds) {
+        const resolved = resolveVariableValue(candidateId, kind);
+        if (/^#[0-9a-fA-F]{6}$/.test(resolved)) {
+          return resolved;
+        }
+      }
+      return "";
+    };
+
+    const resolveByPrefix = (kind: ThemeKind, prefixes: string[]): string => {
+      for (const variable of template.variables.color) {
+        const lowered = variable.id.toLowerCase();
+        if (!prefixes.some((prefix) => lowered.startsWith(prefix))) {
+          continue;
+        }
+        const resolved = resolveVariableValue(variable.id, kind);
+        if (/^#[0-9a-fA-F]{6}$/.test(resolved)) {
+          return resolved;
+        }
+      }
+      return "";
+    };
+
     const buildTheme = (kind: ThemeKind): GeneratedTheme => {
       const colors: Record<string, string> = {};
       const tokenColors: GeneratedTheme["tokenColors"] = [];
@@ -153,7 +236,7 @@ export function ThemeTabV2({
 
       for (const mapping of template.mappings) {
         const resolved = resolveVariableValue(mapping.variableId, kind);
-        if (!resolved) {
+        if (!/^#[0-9a-fA-F]{6}$/.test(resolved)) {
           continue;
         }
 
@@ -167,6 +250,55 @@ export function ThemeTabV2({
             settings: { foreground: resolved },
           });
         }
+      }
+
+      const fallbackEditorBackground =
+        resolveFirstColorValue(kind, ["editor-background", "panel-background", "ide-primary"]) ||
+        (kind === "dark" ? "#1e1e1e" : "#f6f6f6");
+      const fallbackEditorForeground =
+        resolveFirstColorValue(kind, ["editor-foreground", "editor-ui", "list-foreground"]) ||
+        (kind === "dark" ? "#d4d4d4" : "#202020");
+
+      colors["editor.background"] = colors["editor.background"] ?? fallbackEditorBackground;
+      colors["editor.foreground"] = colors["editor.foreground"] ?? fallbackEditorForeground;
+
+      const keywordColor =
+        resolveFirstColorValue(kind, ["keywords", "operators", "constants"]) ||
+        resolveByPrefix(kind, ["keyword", "operator", "constant"]);
+      const commentColor =
+        resolveFirstColorValue(kind, ["comments", "doc-comments"]) ||
+        resolveByPrefix(kind, ["comment", "doc-comment"]);
+      const stringColor =
+        resolveFirstColorValue(kind, ["strings", "config-syntax"]) ||
+        resolveByPrefix(kind, ["string"]);
+
+      if (keywordColor && !semanticTokenColors.keyword) {
+        semanticTokenColors.keyword = keywordColor;
+      }
+      if (commentColor && !semanticTokenColors.comment) {
+        semanticTokenColors.comment = commentColor;
+      }
+      if (stringColor && !semanticTokenColors.string) {
+        semanticTokenColors.string = stringColor;
+      }
+
+      if (keywordColor) {
+        tokenColors.push({
+          scope: ["keyword", "storage", "support.function"],
+          settings: { foreground: keywordColor },
+        });
+      }
+      if (commentColor) {
+        tokenColors.push({
+          scope: ["comment", "punctuation.definition.comment"],
+          settings: { foreground: commentColor },
+        });
+      }
+      if (stringColor) {
+        tokenColors.push({
+          scope: ["string", "punctuation.definition.string"],
+          settings: { foreground: stringColor },
+        });
       }
 
       return {
@@ -186,31 +318,28 @@ export function ThemeTabV2({
   }, [template, theme]);
 
   const selectedSamples = useMemo(
-    () => previewSamples.filter((sample) => selectedSampleIds.includes(sample.id)),
-    [selectedSampleIds],
+    () => flattenTokenizedPreviewSamples(previewLanguages, previewBatches),
+    [previewBatches, previewLanguages],
   );
 
+  const themeWithPreview = useMemo(() => {
+    if (!theme) return null;
+    return {
+      ...theme,
+      preview: previewBorderVariableId ? { borderVariableId: previewBorderVariableId } : undefined,
+    } satisfies Theme;
+  }, [previewBorderVariableId, theme]);
+
   const getPreviewFrameStyle = (variant: "dark" | "light") => {
-    const frameBackground =
-      (previewBackgroundVariableId ? resolveVariableValue(previewBackgroundVariableId, variant) : "")
-      || (variant === "dark" ? "#1e1e1e" : "#f6f6f6");
-    const frameContrast =
-      (previewContrastVariableId ? resolveVariableValue(previewContrastVariableId, variant) : "")
-      || (variant === "dark" ? "#d4d4d4" : "#202020");
+    const frameBorder =
+      (previewBorderVariableId ? resolveVariableValue(previewBorderVariableId, variant) : "")
+      || (variant === "dark" ? "#4f4f4f" : "#c5c5c5");
 
     return {
-      border: "1px solid #d0d0d0",
+      border: `1px solid ${frameBorder}`,
       borderRadius: 8,
       padding: 8,
-      background: frameBackground,
-      color: frameContrast,
     };
-  };
-
-  const toggleSample = (sampleId: string): void => {
-    setSelectedSampleIds((prev) =>
-      prev.includes(sampleId) ? prev.filter((id) => id !== sampleId) : [...prev, sampleId],
-    );
   };
 
   return (
@@ -271,7 +400,7 @@ export function ThemeTabV2({
 
               {theme && (
                 <div style={{ display: "flex", gap: 8 }}>
-                  <button type="button" onClick={() => void onSaveTheme(theme)} disabled={busy}>
+                  <button type="button" onClick={() => themeWithPreview && void onSaveTheme(themeWithPreview)} disabled={busy || !themeWithPreview}>
                     Save Theme
                   </button>
                   <button type="button" onClick={handleGenerate} disabled={busy}>
@@ -503,12 +632,12 @@ export function ThemeTabV2({
           {theme && template ? (
             <>
               <div style={{ display: "grid", gap: 10, marginBottom: 10 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                   <label style={{ display: "grid", gap: 4 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600 }}>Preview card background variable</span>
+                    <span style={{ fontSize: 12, fontWeight: 600 }}>Preview frame border variable</span>
                     <select
-                      value={previewBackgroundVariableId}
-                      onChange={(e) => setPreviewBackgroundVariableId(e.target.value)}
+                      value={previewBorderVariableId}
+                      onChange={(e) => setPreviewBorderVariableId(e.target.value)}
                     >
                       <option value="">-- None --</option>
                       {(template?.variables.color ?? []).map((variable) => (
@@ -518,57 +647,24 @@ export function ThemeTabV2({
                       ))}
                     </select>
                   </label>
-
-                  <label style={{ display: "grid", gap: 4 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600 }}>Preview card contrast variable</span>
-                    <select
-                      value={previewContrastVariableId}
-                      onChange={(e) => setPreviewContrastVariableId(e.target.value)}
-                    >
-                      <option value="">-- None --</option>
-                      {(template?.variables.contrast ?? []).map((variable) => (
-                        <option key={variable.id} value={variable.id}>
-                          {variable.name} ({variable.id})
-                        </option>
-                      ))}
-                    </select>
-                  </label>
                 </div>
-
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                  <label>
-                    <input type="checkbox" checked={showDark} onChange={(event) => setShowDark(event.target.checked)} /> Dark
-                  </label>
-                  <label>
-                    <input type="checkbox" checked={showLight} onChange={(event) => setShowLight(event.target.checked)} /> Light
-                  </label>
-                </div>
-
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  {previewSamples.map((sample) => (
-                    <label key={sample.id}>
-                      <input
-                        type="checkbox"
-                        checked={selectedSampleIds.includes(sample.id)}
-                        onChange={() => toggleSample(sample.id)}
-                      />{" "}
-                      {sample.label}
-                    </label>
-                  ))}
-                </div>
+                {previewBusy ? <p style={{ margin: 0, fontSize: 12 }}>Loading preview sources…</p> : null}
+                {previewError ? <p style={{ margin: 0, fontSize: 12, color: "#b00020" }}>{previewError}</p> : null}
               </div>
 
               <div style={{ flex: 1, minHeight: 0, overflow: "auto" }}>
-                {!showDark && !showLight ? (
-                  <p style={{ margin: 0, fontSize: 12 }}>Select at least one variant to render previews.</p>
+                {previewError ? (
+                  <p style={{ margin: 0, fontSize: 12 }}>Preview samples are unavailable until the preview API endpoint responds.</p>
+                ) : selectedSamples.length === 0 ? (
+                  <p style={{ margin: 0, fontSize: 12 }}>No preview samples discovered under previews/&lt;language&gt;/.</p>
                 ) : (
-                  <section style={{ display: "grid", gap: 10, gridTemplateColumns: showDark && showLight ? "1fr 1fr" : "1fr" }}>
-                    {showDark && generatedThemes ? (
+                  <section style={{ display: "grid", gap: 10, gridTemplateColumns: "1fr 1fr" }}>
+                    {generatedThemes ? (
                       <div style={getPreviewFrameStyle("dark")}>
                         <PreviewPane title="Dark Preview" theme={generatedThemes.dark} samples={selectedSamples} />
                       </div>
                     ) : null}
-                    {showLight && generatedThemes ? (
+                    {generatedThemes ? (
                       <div style={getPreviewFrameStyle("light")}>
                         <PreviewPane title="Light Preview" theme={generatedThemes.light} samples={selectedSamples} />
                       </div>

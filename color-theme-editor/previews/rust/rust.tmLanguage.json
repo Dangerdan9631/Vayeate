@@ -1,0 +1,63 @@
+{
+  "scopeName": "source.rust",
+  "name": "rust (Theme Studio Preview)",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#numbers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.rust",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.line.double-slash.rust",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.rust",
+          "match": "\\\\b(if|else|for|while|return|class|function|import|export|const|let|var|public|private|static)\\\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.rust",
+          "match": "\\\\b\\\\d+(?:\\\\.\\\\d+)?\\\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "end": "'",
+          "name": "string.quoted.single.rust",
+          "begin": "'"
+        },
+        {
+          "end": "\"",
+          "name": "string.quoted.double.rust",
+          "begin": "\""
+        }
+      ]
+    }
+  }
+}
+

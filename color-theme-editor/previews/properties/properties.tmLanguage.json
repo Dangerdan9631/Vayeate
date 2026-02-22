@@ -1,0 +1,63 @@
+{
+  "scopeName": "source.properties",
+  "name": "properties (Theme Studio Preview)",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#numbers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.properties",
+          "match": "#.*$"
+        },
+        {
+          "name": "comment.line.double-slash.properties",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.properties",
+          "match": "\\\\b(if|else|for|while|return|class|function|import|export|const|let|var|public|private|static)\\\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.properties",
+          "match": "\\\\b\\\\d+(?:\\\\.\\\\d+)?\\\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "end": "'",
+          "name": "string.quoted.single.properties",
+          "begin": "'"
+        },
+        {
+          "end": "\"",
+          "name": "string.quoted.double.properties",
+          "begin": "\""
+        }
+      ]
+    }
+  }
+}
+
