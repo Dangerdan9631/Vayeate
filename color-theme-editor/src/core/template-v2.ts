@@ -46,6 +46,170 @@ function getVersionedTemplateFileName(templateId: string, version: string): stri
   return `${templateId}.v${version}.template.json`;
 }
 
+const VAYEATE_SEMANTIC_MERGED_TEMPLATE_ID = "vayeate-semantic-merged";
+
+const VAYEATE_SEMANTIC_MERGED_CONTRAST_VARIABLES: ContrastVariable[] = [
+  { id: "contrast-ui-foreground", name: "ContrastUiForeground", targetRatio: 4.5 },
+  { id: "contrast-comment", name: "ContrastComment", targetRatio: 3 },
+  { id: "contrast-keyword", name: "ContrastKeyword", targetRatio: 5 },
+  { id: "contrast-string", name: "ContrastString", targetRatio: 4.5 },
+  { id: "contrast-default", name: "ContrastDefault", targetRatio: 4.5 },
+];
+
+const UI_FOREGROUND_KEYS = new Set<string>([
+  "titleBar.activeForeground",
+  "titleBar.inactiveForeground",
+  "menu.foreground",
+  "menu.selectionForeground",
+  "menubar.selectionForeground",
+  "activityBar.foreground",
+  "activityBar.inactiveForeground",
+  "breadcrumb.foreground",
+  "breadcrumb.focusForeground",
+  "breadcrumb.activeSelectionForeground",
+  "sideBar.foreground",
+  "sideBarSectionHeader.foreground",
+  "sideBarTitle.foreground",
+  "statusBar.foreground",
+  "statusBar.debuggingForeground",
+  "statusBarItem.remoteForeground",
+  "statusBar.noFolderForeground",
+  "statusBarItem.errorForeground",
+  "notifications.foreground",
+  "notificationCenterHeader.foreground",
+  "notificationLink.foreground",
+  "notificationsInfoIcon.foreground",
+  "notificationsWarningIcon.foreground",
+  "notificationsErrorIcon.foreground",
+  "extensionButton.prominentForeground",
+  "extensionBadge.remoteForeground",
+  "editor.foreground",
+  "editorInlayHint.foreground",
+  "editorCodeLens.foreground",
+  "editorLink.activeForeground",
+  "editorLineNumber.foreground",
+  "editorLineNumber.activeForeground",
+  "editorRuler.foreground",
+  "terminal.foreground",
+  "textPreformat.foreground",
+  "editorWidget.foreground",
+  "activityBarBadge.foreground",
+  "badge.foreground",
+  "panelTitle.activeForeground",
+  "panelTitle.inactiveForeground",
+  "list.activeSelectionForeground",
+  "list.focusForeground",
+  "list.highlightForeground",
+  "list.hoverForeground",
+  "list.inactiveSelectionForeground",
+  "list.invalidItemForeground",
+  "button.foreground",
+  "button.secondaryForeground",
+  "dropdown.foreground",
+  "input.foreground",
+  "input.placeholderForeground",
+  "inputOption.activeForeground",
+  "inputValidation.errorForeground",
+  "inputValidation.infoForeground",
+  "inputValidation.warningForeground",
+  "tab.activeForeground",
+  "tab.inactiveForeground",
+  "gitDecoration.conflictingResourceForeground",
+  "gitDecoration.deletedResourceForeground",
+  "gitDecoration.ignoredResourceForeground",
+  "gitDecoration.modifiedResourceForeground",
+  "gitDecoration.untrackedResourceForeground",
+]);
+
+function scopeSegments(scope: string): string[] {
+  return scope.split(/\s+/).filter(Boolean);
+}
+
+function isCommentScope(scope: string): boolean {
+  return (
+    scope === "comment"
+    || scope.startsWith("comment.")
+    || scope === "punctuation.definition.comment"
+    || scope.startsWith("punctuation.definition.comment.")
+  );
+}
+
+function isKeywordScope(scope: string): boolean {
+  return scopeSegments(scope).some((segment) =>
+    segment === "keyword"
+    || segment.startsWith("keyword.")
+    || segment === "storage"
+    || segment.startsWith("storage."),
+  );
+}
+
+function isStringScope(scope: string): boolean {
+  return scopeSegments(scope).some((segment) =>
+    segment === "string"
+    || segment.startsWith("string.")
+    || segment === "punctuation.definition.string"
+    || segment.startsWith("punctuation.definition.string."),
+  );
+}
+
+function toContrastVariableId(target: CatalogTarget, editorKey: string): string | null {
+  if (target === "colors") {
+    return UI_FOREGROUND_KEYS.has(editorKey) ? "contrast-ui-foreground" : null;
+  }
+
+  if (target === "semanticTokens") {
+    const base = editorKey.split(".")[0];
+    if (base === "comment") return "contrast-comment";
+    if (["keyword", "controlKeyword", "plainKeyword", "modifier", "storageType"].includes(base)) {
+      return "contrast-keyword";
+    }
+    if (["string", "stringEscapeCharacter", "regexp"].includes(base)) {
+      return "contrast-string";
+    }
+    return "contrast-default";
+  }
+
+  if (isCommentScope(editorKey)) return "contrast-comment";
+  if (isKeywordScope(editorKey)) return "contrast-keyword";
+  if (isStringScope(editorKey)) return "contrast-string";
+  return "contrast-default";
+}
+
+function ensureVayeateSemanticMergedContrast(template: Template_v2): Template_v2 {
+  if (template.id !== VAYEATE_SEMANTIC_MERGED_TEMPLATE_ID) {
+    return template;
+  }
+
+  const existingContrast = new Map(template.variables.contrast.map((variable) => [variable.id, variable]));
+  for (const variable of VAYEATE_SEMANTIC_MERGED_CONTRAST_VARIABLES) {
+    if (!existingContrast.has(variable.id)) {
+      existingContrast.set(variable.id, variable);
+    }
+  }
+
+  const normalizedMappings = template.mappings.map((mapping) => {
+    const contrastVariableId = toContrastVariableId(mapping.target, mapping.editorKey);
+    if (!contrastVariableId) {
+      return mapping;
+    }
+
+    return {
+      ...mapping,
+      variableId: contrastVariableId,
+      variableType: "contrast" as const,
+    };
+  });
+
+  return {
+    ...template,
+    variables: {
+      ...template.variables,
+      contrast: Array.from(existingContrast.values()),
+    },
+    mappings: normalizedMappings,
+  };
+}
+
 function normalizeTemplate(template: Template_v2): Template_v2 {
   const mappings = (template.mappings ?? []).map((mapping) => {
     const asRecord = mapping as unknown as {
@@ -65,12 +229,12 @@ function normalizeTemplate(template: Template_v2): Template_v2 {
     };
   }).filter((mapping) => mapping.editorKey);
 
-  return {
+  return ensureVayeateSemanticMergedContrast({
     ...template,
     version: template.version || "1.0.0",
     locked: template.locked ?? false,
     mappings,
-  };
+  });
 }
 
 function templateContentSignature(template: Template_v2): string {

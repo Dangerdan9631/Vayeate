@@ -54,6 +54,12 @@ export function App(): JSX.Element {
     return byName[0] ?? null;
   };
   const hasUnsetMappingsForTemplate = (tmpl: Template_v2, allCatalogs: Catalog[]): boolean => {
+    const hasContrastVariables = tmpl.variables.contrast.length > 0;
+    const hasContrastMappings = tmpl.mappings.some((mapping) => mapping.variableType === "contrast");
+    if (!hasContrastVariables || !hasContrastMappings) {
+      return true;
+    }
+
     const mappingKeys = new Set(
       tmpl.mappings.map((mapping) => `${mapping.target}::${mapping.editorKey}`)
     );

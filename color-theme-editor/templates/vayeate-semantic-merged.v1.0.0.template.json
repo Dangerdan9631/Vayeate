@@ -751,2012 +751,2038 @@
         "name": "WidgetShadow"
       }
     ],
-    "contrast": []
+    "contrast": [
+      {
+        "id": "contrast-ui-foreground",
+        "name": "ContrastUiForeground",
+        "targetRatio": 4.5
+      },
+      {
+        "id": "contrast-comment",
+        "name": "ContrastComment",
+        "targetRatio": 3
+      },
+      {
+        "id": "contrast-keyword",
+        "name": "ContrastKeyword",
+        "targetRatio": 5
+      },
+      {
+        "id": "contrast-string",
+        "name": "ContrastString",
+        "targetRatio": 4.5
+      },
+      {
+        "id": "contrast-default",
+        "name": "ContrastDefault",
+        "targetRatio": 4.5
+      }
+    ]
   },
   "mappings": [
     {
       "editorKey": "activityBar.activeBorder",
       "target": "colors",
-      "variableId": "ui-border",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "activityBar.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "activityBar.dropBorder",
       "target": "colors",
-      "variableId": "ui-border-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "activityBar.foreground",
       "target": "colors",
-      "variableId": "ui-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "activityBar.inactiveForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "activityBarBadge.background",
       "target": "colors",
-      "variableId": "ui-background-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "activityBarBadge.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "badge.background",
       "target": "colors",
-      "variableId": "ui-background-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "badge.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "breadcrumb.activeSelectionForeground",
       "target": "colors",
-      "variableId": "ui-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "breadcrumb.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "breadcrumb.focusForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "breadcrumb.foreground",
       "target": "colors",
-      "variableId": "ui-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "breadcrumbPicker.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "button.background",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "button.foreground",
       "target": "colors",
-      "variableId": "ide-primary-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "button.hoverBackground",
       "target": "colors",
-      "variableId": "ide-primary-hover",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "button.secondaryBackground",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "button.secondaryForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "button.secondaryHoverBackground",
       "target": "colors",
-      "variableId": "ide-primary-hover",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "diffEditor.insertedTextBackground",
       "target": "colors",
-      "variableId": "ui-background-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "diffEditor.removedTextBackground",
       "target": "colors",
-      "variableId": "ui-background-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "dropdown.background",
       "target": "colors",
-      "variableId": "ui-background-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "dropdown.border",
       "target": "colors",
-      "variableId": "ui-border-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "dropdown.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "dropdown.listBackground",
       "target": "colors",
-      "variableId": "ui-background-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.background",
       "target": "colors",
-      "variableId": "editor-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.findMatchBackground",
       "target": "colors",
-      "variableId": "editor-ui",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.findMatchHighlightBackground",
       "target": "colors",
-      "variableId": "editor-ui-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.findRangeHighlightBackground",
       "target": "colors",
-      "variableId": "editor-ui-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.foreground",
       "target": "colors",
-      "variableId": "editor-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.lineHighlightBackground",
       "target": "colors",
-      "variableId": "editor-ui-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editor.selectionBackground",
       "target": "colors",
-      "variableId": "editor-selection",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorBracketMatch.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorBracketMatch.border",
       "target": "colors",
-      "variableId": "ui-border-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorCodeLens.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt5",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorCursor.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorGroup.emptyBackground",
       "target": "colors",
-      "variableId": "ui-background-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorGroupHeader.tabsBackground",
       "target": "colors",
-      "variableId": "ui-background-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorGutter.addedBackground",
       "target": "colors",
-      "variableId": "ui-background-alt7",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorGutter.background",
       "target": "colors",
-      "variableId": "ui-background-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorGutter.deletedBackground",
       "target": "colors",
-      "variableId": "ui-background-alt8",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorGutter.modifiedBackground",
       "target": "colors",
-      "variableId": "ui-background-alt9",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorIndentGuide.activeBackground",
       "target": "colors",
-      "variableId": "ui-background-alt10",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorIndentGuide.background",
       "target": "colors",
-      "variableId": "ui-background-alt11",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorInlayHint.background",
       "target": "colors",
-      "variableId": "ui-background-alt12",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorInlayHint.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorLineNumber.activeForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt7",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorLineNumber.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt7",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorLink.activeForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt7",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorRuler.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt8",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorWidget.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorWidget.border",
       "target": "colors",
-      "variableId": "ui-border-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "editorWidget.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "extensionBadge.remoteBackground",
       "target": "colors",
-      "variableId": "ui-background-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "extensionBadge.remoteForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "extensionButton.prominentBackground",
       "target": "colors",
-      "variableId": "ui-background-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "extensionButton.prominentForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt9",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "extensionButton.prominentHoverBackground",
       "target": "colors",
-      "variableId": "ui-background-alt11",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "focusBorder",
       "target": "colors",
-      "variableId": "ui-border-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "gitDecoration.conflictingResourceForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt6",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "gitDecoration.deletedResourceForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt10",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "gitDecoration.ignoredResourceForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt11",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "gitDecoration.modifiedResourceForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt8",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "gitDecoration.untrackedResourceForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt12",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "input.background",
       "target": "colors",
-      "variableId": "ui-background-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "input.border",
       "target": "colors",
-      "variableId": "ui-border-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "input.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "input.placeholderForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt7",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputOption.activeBorder",
       "target": "colors",
-      "variableId": "ui-border",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputOption.activeForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputValidation.errorBackground",
       "target": "colors",
-      "variableId": "error-state",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputValidation.errorForeground",
       "target": "colors",
-      "variableId": "error-state-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputValidation.infoBackground",
       "target": "colors",
-      "variableId": "info-state",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputValidation.infoForeground",
       "target": "colors",
-      "variableId": "info-state-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputValidation.warningBackground",
       "target": "colors",
-      "variableId": "warning-state",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "inputValidation.warningForeground",
       "target": "colors",
-      "variableId": "warning-state-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.activeSelectionBackground",
       "target": "colors",
-      "variableId": "list-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.activeSelectionForeground",
       "target": "colors",
-      "variableId": "list-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.focusBackground",
       "target": "colors",
-      "variableId": "list-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.focusForeground",
       "target": "colors",
-      "variableId": "list-foreground-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.highlightForeground",
       "target": "colors",
-      "variableId": "list-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.hoverBackground",
       "target": "colors",
-      "variableId": "list-background-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.hoverForeground",
       "target": "colors",
-      "variableId": "list-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.inactiveSelectionBackground",
       "target": "colors",
-      "variableId": "list-background-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.inactiveSelectionForeground",
       "target": "colors",
-      "variableId": "list-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "list.invalidItemForeground",
       "target": "colors",
-      "variableId": "list-foreground-alt5",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menu.background",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menu.foreground",
       "target": "colors",
-      "variableId": "ide-primary-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menu.selectionBackground",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menu.selectionForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menu.separatorBackground",
       "target": "colors",
-      "variableId": "ide-primary-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menubar.selectionBackground",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "menubar.selectionForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt2",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationCenter.border",
       "target": "colors",
-      "variableId": "ui-border-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationCenterHeader.background",
       "target": "colors",
-      "variableId": "ui-background-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationCenterHeader.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt9",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationLink.foreground",
       "target": "colors",
-      "variableId": "ui-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationToast.border",
       "target": "colors",
-      "variableId": "ui-border-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notifications.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notifications.border",
       "target": "colors",
-      "variableId": "ui-border-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notifications.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationsErrorIcon.foreground",
       "target": "colors",
-      "variableId": "error-state-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationsInfoIcon.foreground",
       "target": "colors",
-      "variableId": "info-state-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "notificationsWarningIcon.foreground",
       "target": "colors",
-      "variableId": "warning-state",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panel.background",
       "target": "colors",
-      "variableId": "panel-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panel.border",
       "target": "colors",
-      "variableId": "panel-border",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panel.dropBorder",
       "target": "colors",
-      "variableId": "panel-border",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panelSection.border",
       "target": "colors",
-      "variableId": "ui-border-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panelSection.dropBackground",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panelSectionHeader.background",
       "target": "colors",
-      "variableId": "ui-background-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panelTitle.activeBorder",
       "target": "colors",
-      "variableId": "ui-border-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panelTitle.activeForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "panelTitle.inactiveForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt13",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "progressBar.background",
       "target": "colors",
-      "variableId": "ui-background-alt13",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "scrollbar.shadow",
       "target": "colors",
-      "variableId": "scrollbar-shadow",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "scrollbarSlider.activeBackground",
       "target": "colors",
-      "variableId": "ui-background-alt9",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "scrollbarSlider.background",
       "target": "colors",
-      "variableId": "ui-background-alt14",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "scrollbarSlider.hoverBackground",
       "target": "colors",
-      "variableId": "ui-background-alt15",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBar.background",
       "target": "colors",
-      "variableId": "side-bar-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBar.border",
       "target": "colors",
-      "variableId": "side-bar-background-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBar.dropBackground",
       "target": "colors",
-      "variableId": "side-bar-background-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBar.foreground",
       "target": "colors",
-      "variableId": "side-bar-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBarSectionHeader.background",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBarSectionHeader.foreground",
       "target": "colors",
-      "variableId": "ui-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "sideBarTitle.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt14",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBar.background",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBar.debuggingBackground",
       "target": "colors",
-      "variableId": "ide-primary-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBar.debuggingForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt3",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBar.foreground",
       "target": "colors",
-      "variableId": "ide-primary-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBar.noFolderBackground",
       "target": "colors",
-      "variableId": "ide-primary-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBar.noFolderForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBarItem.activeBackground",
       "target": "colors",
-      "variableId": "ide-primary-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBarItem.errorBackground",
       "target": "colors",
-      "variableId": "ide-primary-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBarItem.errorForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt5",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBarItem.hoverBackground",
       "target": "colors",
-      "variableId": "ide-primary-hover-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "statusBarItem.remoteForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt6",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "tab.activeBackground",
       "target": "colors",
-      "variableId": "ui-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "tab.activeForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "tab.border",
       "target": "colors",
-      "variableId": "ui-border-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "tab.inactiveBackground",
       "target": "colors",
-      "variableId": "ui-background-alt16",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "tab.inactiveForeground",
       "target": "colors",
-      "variableId": "ui-foreground-alt15",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBlack",
       "target": "colors",
-      "variableId": "terminal-black",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBlue",
       "target": "colors",
-      "variableId": "terminal-blue",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightBlack",
       "target": "colors",
-      "variableId": "terminal-bright-black",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightBlue",
       "target": "colors",
-      "variableId": "terminal-bright-blue",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightCyan",
       "target": "colors",
-      "variableId": "terminal-bright-cyan",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightGreen",
       "target": "colors",
-      "variableId": "terminal-bright-green",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightMagenta",
       "target": "colors",
-      "variableId": "terminal-bright-magenta",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightRed",
       "target": "colors",
-      "variableId": "terminal-bright-red",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightWhite",
       "target": "colors",
-      "variableId": "terminal-bright-white",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiBrightYellow",
       "target": "colors",
-      "variableId": "terminal-bright-yellow",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiCyan",
       "target": "colors",
-      "variableId": "terminal-cyan",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiGreen",
       "target": "colors",
-      "variableId": "terminal-green",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiMagenta",
       "target": "colors",
-      "variableId": "terminal-magenta",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiRed",
       "target": "colors",
-      "variableId": "terminal-red",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiWhite",
       "target": "colors",
-      "variableId": "terminal-white",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.ansiYellow",
       "target": "colors",
-      "variableId": "terminal-yellow",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.background",
       "target": "colors",
-      "variableId": "terminal-background",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.border",
       "target": "colors",
-      "variableId": "terminal-background-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "terminal.foreground",
       "target": "colors",
-      "variableId": "terminal-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "textPreformat.foreground",
       "target": "colors",
-      "variableId": "ui-foreground-alt4",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "titleBar.activeBackground",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "titleBar.activeForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "titleBar.border",
       "target": "colors",
-      "variableId": "ide-primary",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "titleBar.inactiveBackground",
       "target": "colors",
-      "variableId": "ide-primary-alt7",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "titleBar.inactiveForeground",
       "target": "colors",
-      "variableId": "ide-primary-foreground-alt7",
-      "variableType": "color"
+      "variableId": "contrast-ui-foreground",
+      "variableType": "contrast"
     },
     {
       "editorKey": "widget.shadow",
       "target": "colors",
-      "variableId": "widget-shadow",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "*.deprecated",
       "target": "semanticTokens",
-      "variableId": "deprecated-symbols",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "class",
       "target": "semanticTokens",
-      "variableId": "types",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment",
       "target": "semanticTokens",
-      "variableId": "comments",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment.documentation",
       "target": "semanticTokens",
-      "variableId": "doc-comments",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "constant",
       "target": "semanticTokens",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "controlKeyword",
       "target": "semanticTokens",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "delegate",
       "target": "semanticTokens",
-      "variableId": "interfaces",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "enum",
       "target": "semanticTokens",
-      "variableId": "types",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "enumMember",
       "target": "semanticTokens",
-      "variableId": "types-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "field",
       "target": "semanticTokens",
-      "variableId": "fields",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "field.static",
       "target": "semanticTokens",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "interface",
       "target": "semanticTokens",
-      "variableId": "interfaces",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "keyword",
       "target": "semanticTokens",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "local",
       "target": "semanticTokens",
-      "variableId": "semantic-local",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "method",
       "target": "semanticTokens",
-      "variableId": "methods",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "namespace",
       "target": "semanticTokens",
-      "variableId": "semantic-namespace",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "number",
       "target": "semanticTokens",
-      "variableId": "numbers",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "operator",
       "target": "semanticTokens",
-      "variableId": "operators",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "parameter",
       "target": "semanticTokens",
-      "variableId": "parameters",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "plainKeyword",
       "target": "semanticTokens",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "property",
       "target": "semanticTokens",
-      "variableId": "fields-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "property.static.readonly",
       "target": "semanticTokens",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "property:java",
       "target": "semanticTokens",
-      "variableId": "fields",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation",
       "target": "semanticTokens",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "regexp",
       "target": "semanticTokens",
-      "variableId": "regex",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "string",
       "target": "semanticTokens",
-      "variableId": "strings",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "stringEscapeCharacter",
       "target": "semanticTokens",
-      "variableId": "strings-alt2",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "struct",
       "target": "semanticTokens",
-      "variableId": "types",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "typeParameter",
       "target": "semanticTokens",
-      "variableId": "types-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable",
       "target": "semanticTokens",
-      "variableId": "semantic-variable",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.static.readonly",
       "target": "semanticTokens",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "xmlDocCommentAttributeName",
       "target": "semanticTokens",
-      "variableId": "comments-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "xmlDocCommentAttributeQuotes",
       "target": "semanticTokens",
-      "variableId": "comments-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "xmlDocCommentDelimiter",
       "target": "semanticTokens",
-      "variableId": "comments-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "xmlDocCommentName",
       "target": "semanticTokens",
-      "variableId": "comments-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "xmlDocCommentText",
       "target": "semanticTokens",
-      "variableId": "comments-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment",
       "target": "textMateScopes",
-      "variableId": "comments",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment.block.documentation",
       "target": "textMateScopes",
-      "variableId": "doc-comments",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment.block.documentation punctuation.definition.string",
       "target": "textMateScopes",
-      "variableId": "doc-comments-alt2",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment.block.documentation string.quoted.double",
       "target": "textMateScopes",
-      "variableId": "doc-comments-alt2",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment.block.javadoc",
       "target": "textMateScopes",
-      "variableId": "doc-comments",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "comment.line.documentation",
       "target": "textMateScopes",
-      "variableId": "doc-comments",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "constant.character.escape",
       "target": "textMateScopes",
-      "variableId": "constants-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "constant.language",
       "target": "textMateScopes",
-      "variableId": "constants-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "constant.numeric",
       "target": "textMateScopes",
-      "variableId": "numbers",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "constant.other.enum",
       "target": "textMateScopes",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "constant.other.reference.link",
       "target": "textMateScopes",
-      "variableId": "constants-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name",
       "target": "textMateScopes",
-      "variableId": "scope-entity-name",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.function",
       "target": "textMateScopes",
-      "variableId": "methods",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.section",
       "target": "textMateScopes",
-      "variableId": "scope-entity-name-section",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.tag",
       "target": "textMateScopes",
-      "variableId": "scope-entity-name-tag",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.type.class",
       "target": "textMateScopes",
-      "variableId": "types-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.type.enum",
       "target": "textMateScopes",
-      "variableId": "types-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.type.interface",
       "target": "textMateScopes",
-      "variableId": "types-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.type.kotlin",
       "target": "textMateScopes",
-      "variableId": "types-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.type.struct",
       "target": "textMateScopes",
-      "variableId": "types-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.type.type-parameter",
       "target": "textMateScopes",
-      "variableId": "types-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.variable.field",
       "target": "textMateScopes",
-      "variableId": "scope-entity-name-variable-field",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.variable.parameter",
       "target": "textMateScopes",
-      "variableId": "parameters",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.name.variable.property",
       "target": "textMateScopes",
-      "variableId": "scope-entity-name-variable-property",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.other.attribute-name",
       "target": "textMateScopes",
-      "variableId": "attributes",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "entity.other.inherited-class",
       "target": "textMateScopes",
-      "variableId": "scope-entity-other-inherited-class",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "fenced_code.block.language",
       "target": "textMateScopes",
-      "variableId": "scope-fenced-code-block-language",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "heading.1 entity.name.section",
       "target": "textMateScopes",
-      "variableId": "scope-heading1-entity-name-section",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "heading.2 entity.name.section",
       "target": "textMateScopes",
-      "variableId": "scope-heading2-entity-name-section",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "heading.3 entity.name.section",
       "target": "textMateScopes",
-      "variableId": "scope-heading3-entity-name-section",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "keyword",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "keyword.other.documentation",
       "target": "textMateScopes",
-      "variableId": "doc-comments-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "markup.inline",
       "target": "textMateScopes",
-      "variableId": "scope-markup-inline",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "markup.underline.link",
       "target": "textMateScopes",
-      "variableId": "links",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "meta.attribute",
       "target": "textMateScopes",
-      "variableId": "scope-meta-attribute",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "meta.attribute keyword",
       "target": "textMateScopes",
-      "variableId": "keywords-alt2",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "meta.attribute punctuation.brackets",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "meta.use.rust",
       "target": "textMateScopes",
-      "variableId": "scope-meta-use-rust",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.accessor",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.brackets",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.comma",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.curlybrace",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.annotation",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.comment",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt3",
-      "variableType": "color"
+      "variableId": "contrast-comment",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.heading",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.interpolation",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.parameters",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.string",
       "target": "textMateScopes",
-      "variableId": "strings",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.tag",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt6",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.definition.typeparameters",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.parenthesis",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.section",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.semi",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.separator",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.squarebracket",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "punctuation.terminator",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source",
       "target": "textMateScopes",
-      "variableId": "scope-source",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.ini",
       "target": "textMateScopes",
-      "variableId": "config-syntax",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.ini entity.name.section",
       "target": "textMateScopes",
-      "variableId": "config-syntax-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.ini keyword",
       "target": "textMateScopes",
-      "variableId": "keywords-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.ini punctuation",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.ini punctuation.separator",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.java punctuation.bracket.angle",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.json constant.language",
       "target": "textMateScopes",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.json punctuation.definition",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.json punctuation.separator",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.json support.type",
       "target": "textMateScopes",
-      "variableId": "config-syntax-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.powershell support.constant.variable",
       "target": "textMateScopes",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.powershell support.function",
       "target": "textMateScopes",
-      "variableId": "methods",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.powershell support.variable",
       "target": "textMateScopes",
-      "variableId": "scope-source-powershell-support-variable",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
       "target": "textMateScopes",
-      "variableId": "comments-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian comment.line.text.obsidian",
       "target": "textMateScopes",
-      "variableId": "comments-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian entity.name.include.obsidian",
       "target": "textMateScopes",
-      "variableId": "scope-source-regex-pipeline-obsidian-entity-name-include-obsidian",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
       "target": "textMateScopes",
-      "variableId": "scope-source-regex-pipeline-obsidian-entity-name-pattern-obsidian",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
       "target": "textMateScopes",
-      "variableId": "scope-source-regex-pipeline-obsidian-entity-name-rule-obsidian",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt4",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt4",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt4",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt4",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt4",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt5",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt6",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt7",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt2",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt7",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords-alt6",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
       "target": "textMateScopes",
-      "variableId": "keywords",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian string.regexp",
       "target": "textMateScopes",
-      "variableId": "regex-alt2",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
       "target": "textMateScopes",
-      "variableId": "regex-alt3",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
       "target": "textMateScopes",
-      "variableId": "regex-alt4",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
       "target": "textMateScopes",
-      "variableId": "regex-alt5",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
       "target": "textMateScopes",
-      "variableId": "regex-alt6",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
       "target": "textMateScopes",
-      "variableId": "regex",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.toml",
       "target": "textMateScopes",
-      "variableId": "config-syntax",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.toml entity.other.attribute-name",
       "target": "textMateScopes",
-      "variableId": "attributes-alt2",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.toml keyword",
       "target": "textMateScopes",
-      "variableId": "keywords-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.toml punctuation",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.toml punctuation.separator",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.yaml constant.language",
       "target": "textMateScopes",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.yaml entity.name.tag",
       "target": "textMateScopes",
-      "variableId": "config-syntax-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.yaml entity.other",
       "target": "textMateScopes",
-      "variableId": "config-syntax-alt4",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.yaml punctuation.definition",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "source.yaml punctuation.separator",
       "target": "textMateScopes",
-      "variableId": "punctuation",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "storage.modifier",
       "target": "textMateScopes",
-      "variableId": "scope-storage-modifier",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "storage.type",
       "target": "textMateScopes",
-      "variableId": "types-alt4",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "storage.type.annotation",
       "target": "textMateScopes",
-      "variableId": "types-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "storage.type.generic",
       "target": "textMateScopes",
-      "variableId": "types-alt3",
-      "variableType": "color"
+      "variableId": "contrast-keyword",
+      "variableType": "contrast"
     },
     {
       "editorKey": "string",
       "target": "textMateScopes",
-      "variableId": "strings",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "string.other.link",
       "target": "textMateScopes",
-      "variableId": "strings-alt2",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.html.markdown meta.separator",
       "target": "textMateScopes",
-      "variableId": "scope-text-html-markdown-meta-separator",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.html.markdown punctuation.definition",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.html.markdown punctuation.definition.string",
       "target": "textMateScopes",
-      "variableId": "strings-alt2",
-      "variableType": "color"
+      "variableId": "contrast-string",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.xml entity.name.tag",
       "target": "textMateScopes",
-      "variableId": "scope-text-xml-entity-name-tag",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.xml entity.other.attribute-name",
       "target": "textMateScopes",
-      "variableId": "attributes-alt3",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.xml meta.tag",
       "target": "textMateScopes",
-      "variableId": "scope-text-xml-meta-tag",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "text.xml punctuation.definition.tag",
       "target": "textMateScopes",
-      "variableId": "punctuation-alt5",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.language",
       "target": "textMateScopes",
-      "variableId": "scope-variable-language",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.other",
       "target": "textMateScopes",
-      "variableId": "scope-variable-other",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.other.constant",
       "target": "textMateScopes",
-      "variableId": "constants",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.other.object",
       "target": "textMateScopes",
-      "variableId": "scope-variable-other-object",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.other.object.property",
       "target": "textMateScopes",
-      "variableId": "scope-variable-other-object-property",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     },
     {
       "editorKey": "variable.parameter",
       "target": "textMateScopes",
-      "variableId": "parameters",
-      "variableType": "color"
+      "variableId": "contrast-default",
+      "variableType": "contrast"
     }
   ]
 }

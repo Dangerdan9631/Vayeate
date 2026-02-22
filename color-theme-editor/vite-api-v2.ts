@@ -224,6 +224,16 @@ export function createV2ApiMiddleware(studioRoot: string) {
             return;
           }
 
+          if (template.variables.contrast.length === 0) {
+            sendJson(res, 400, { error: "Cannot lock template without contrast variables" });
+            return;
+          }
+
+          if (!template.mappings.some((mapping) => mapping.variableType === "contrast")) {
+            sendJson(res, 400, { error: "Cannot lock template without contrast mappings" });
+            return;
+          }
+
           const catalogs = await catalogV2.loadCatalogsByName(studioRoot, template.catalogRefs);
           const mappedKeys = new Set(
             template.mappings.map((mapping) => `${mapping.target}::${mapping.editorKey}`)
