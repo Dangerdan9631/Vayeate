@@ -5,9 +5,7 @@
   "version": "1.0.0",
   "locked": false,
   "catalogRefs": [
-    "macromates_scope_selectors",
-    "semantic_token_registry",
-    "vs_theme_colors"
+    "vayeate_theme_keys@1.0.0"
   ],
   "variables": {
     "color": [
@@ -29,24 +27,5 @@
       }
     ]
   },
-  "mappings": [
-    {
-      "editorKey": "debugView.stateLabelBackground",
-      "target": "colors",
-      "variableId": "5555",
-      "variableType": "contrast"
-    },
-    {
-      "editorKey": "activityBar.activeBackground",
-      "target": "colors",
-      "variableId": "ijijiji",
-      "variableType": "color"
-    },
-    {
-      "editorKey": "activityBar.activeBackground",
-      "target": "colors",
-      "variableId": "5555",
-      "variableType": "contrast"
-    }
-  ]
+  "mappings": []
 }

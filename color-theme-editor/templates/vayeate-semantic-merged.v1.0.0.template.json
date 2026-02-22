@@ -1,0 +1,2762 @@
+{
+  "schemaVersion": 2,
+  "id": "vayeate-semantic-merged",
+  "name": "Vayeate Semantic Merged",
+  "version": "1.0.0",
+  "locked": true,
+  "description": "Semantic variable template with merged near-indistinguishable colors for similar roles",
+  "catalogRefs": [
+    "vayeate_theme_keys@1.0.0"
+  ],
+  "variables": {
+    "color": [
+      {
+        "id": "attributes",
+        "name": "Attributes"
+      },
+      {
+        "id": "attributes-alt2",
+        "name": "AttributesAlt2"
+      },
+      {
+        "id": "attributes-alt3",
+        "name": "AttributesAlt3"
+      },
+      {
+        "id": "comments",
+        "name": "Comments"
+      },
+      {
+        "id": "comments-alt2",
+        "name": "CommentsAlt2"
+      },
+      {
+        "id": "comments-alt3",
+        "name": "CommentsAlt3"
+      },
+      {
+        "id": "comments-alt4",
+        "name": "CommentsAlt4"
+      },
+      {
+        "id": "comments-alt5",
+        "name": "CommentsAlt5"
+      },
+      {
+        "id": "config-syntax",
+        "name": "ConfigSyntax"
+      },
+      {
+        "id": "config-syntax-alt2",
+        "name": "ConfigSyntaxAlt2"
+      },
+      {
+        "id": "config-syntax-alt3",
+        "name": "ConfigSyntaxAlt3"
+      },
+      {
+        "id": "config-syntax-alt4",
+        "name": "ConfigSyntaxAlt4"
+      },
+      {
+        "id": "constants",
+        "name": "Constants"
+      },
+      {
+        "id": "constants-alt2",
+        "name": "ConstantsAlt2"
+      },
+      {
+        "id": "constants-alt3",
+        "name": "ConstantsAlt3"
+      },
+      {
+        "id": "deprecated-symbols",
+        "name": "DeprecatedSymbols"
+      },
+      {
+        "id": "doc-comments",
+        "name": "DocComments"
+      },
+      {
+        "id": "doc-comments-alt2",
+        "name": "DocCommentsAlt2"
+      },
+      {
+        "id": "doc-comments-alt3",
+        "name": "DocCommentsAlt3"
+      },
+      {
+        "id": "editor-background",
+        "name": "EditorBackground"
+      },
+      {
+        "id": "editor-foreground",
+        "name": "EditorForeground"
+      },
+      {
+        "id": "editor-selection",
+        "name": "EditorSelection"
+      },
+      {
+        "id": "editor-ui",
+        "name": "EditorUi"
+      },
+      {
+        "id": "editor-ui-alt2",
+        "name": "EditorUiAlt2"
+      },
+      {
+        "id": "editor-ui-alt3",
+        "name": "EditorUiAlt3"
+      },
+      {
+        "id": "editor-ui-alt4",
+        "name": "EditorUiAlt4"
+      },
+      {
+        "id": "error-state",
+        "name": "ErrorState"
+      },
+      {
+        "id": "error-state-alt2",
+        "name": "ErrorStateAlt2"
+      },
+      {
+        "id": "error-state-alt3",
+        "name": "ErrorStateAlt3"
+      },
+      {
+        "id": "fields",
+        "name": "Fields"
+      },
+      {
+        "id": "fields-alt2",
+        "name": "FieldsAlt2"
+      },
+      {
+        "id": "ide-primary",
+        "name": "IdePrimary"
+      },
+      {
+        "id": "ide-primary-alt2",
+        "name": "IdePrimaryAlt2"
+      },
+      {
+        "id": "ide-primary-alt3",
+        "name": "IdePrimaryAlt3"
+      },
+      {
+        "id": "ide-primary-alt4",
+        "name": "IdePrimaryAlt4"
+      },
+      {
+        "id": "ide-primary-alt5",
+        "name": "IdePrimaryAlt5"
+      },
+      {
+        "id": "ide-primary-alt6",
+        "name": "IdePrimaryAlt6"
+      },
+      {
+        "id": "ide-primary-alt7",
+        "name": "IdePrimaryAlt7"
+      },
+      {
+        "id": "ide-primary-foreground",
+        "name": "IdePrimaryForeground"
+      },
+      {
+        "id": "ide-primary-foreground-alt2",
+        "name": "IdePrimaryForegroundAlt2"
+      },
+      {
+        "id": "ide-primary-foreground-alt3",
+        "name": "IdePrimaryForegroundAlt3"
+      },
+      {
+        "id": "ide-primary-foreground-alt4",
+        "name": "IdePrimaryForegroundAlt4"
+      },
+      {
+        "id": "ide-primary-foreground-alt5",
+        "name": "IdePrimaryForegroundAlt5"
+      },
+      {
+        "id": "ide-primary-foreground-alt6",
+        "name": "IdePrimaryForegroundAlt6"
+      },
+      {
+        "id": "ide-primary-foreground-alt7",
+        "name": "IdePrimaryForegroundAlt7"
+      },
+      {
+        "id": "ide-primary-hover",
+        "name": "IdePrimaryHover"
+      },
+      {
+        "id": "ide-primary-hover-alt2",
+        "name": "IdePrimaryHoverAlt2"
+      },
+      {
+        "id": "info-state",
+        "name": "InfoState"
+      },
+      {
+        "id": "info-state-alt2",
+        "name": "InfoStateAlt2"
+      },
+      {
+        "id": "info-state-alt3",
+        "name": "InfoStateAlt3"
+      },
+      {
+        "id": "interfaces",
+        "name": "Interfaces"
+      },
+      {
+        "id": "keywords",
+        "name": "Keywords"
+      },
+      {
+        "id": "keywords-alt2",
+        "name": "KeywordsAlt2"
+      },
+      {
+        "id": "keywords-alt3",
+        "name": "KeywordsAlt3"
+      },
+      {
+        "id": "keywords-alt4",
+        "name": "KeywordsAlt4"
+      },
+      {
+        "id": "keywords-alt5",
+        "name": "KeywordsAlt5"
+      },
+      {
+        "id": "keywords-alt6",
+        "name": "KeywordsAlt6"
+      },
+      {
+        "id": "keywords-alt7",
+        "name": "KeywordsAlt7"
+      },
+      {
+        "id": "links",
+        "name": "Links"
+      },
+      {
+        "id": "list-background",
+        "name": "ListBackground"
+      },
+      {
+        "id": "list-background-alt2",
+        "name": "ListBackgroundAlt2"
+      },
+      {
+        "id": "list-background-alt3",
+        "name": "ListBackgroundAlt3"
+      },
+      {
+        "id": "list-foreground",
+        "name": "ListForeground"
+      },
+      {
+        "id": "list-foreground-alt2",
+        "name": "ListForegroundAlt2"
+      },
+      {
+        "id": "list-foreground-alt3",
+        "name": "ListForegroundAlt3"
+      },
+      {
+        "id": "list-foreground-alt4",
+        "name": "ListForegroundAlt4"
+      },
+      {
+        "id": "list-foreground-alt5",
+        "name": "ListForegroundAlt5"
+      },
+      {
+        "id": "methods",
+        "name": "Methods"
+      },
+      {
+        "id": "numbers",
+        "name": "Numbers"
+      },
+      {
+        "id": "operators",
+        "name": "Operators"
+      },
+      {
+        "id": "panel-background",
+        "name": "PanelBackground"
+      },
+      {
+        "id": "panel-border",
+        "name": "PanelBorder"
+      },
+      {
+        "id": "parameters",
+        "name": "Parameters"
+      },
+      {
+        "id": "punctuation",
+        "name": "Punctuation"
+      },
+      {
+        "id": "punctuation-alt2",
+        "name": "PunctuationAlt2"
+      },
+      {
+        "id": "punctuation-alt3",
+        "name": "PunctuationAlt3"
+      },
+      {
+        "id": "punctuation-alt4",
+        "name": "PunctuationAlt4"
+      },
+      {
+        "id": "punctuation-alt5",
+        "name": "PunctuationAlt5"
+      },
+      {
+        "id": "punctuation-alt6",
+        "name": "PunctuationAlt6"
+      },
+      {
+        "id": "regex",
+        "name": "Regex"
+      },
+      {
+        "id": "regex-alt2",
+        "name": "RegexAlt2"
+      },
+      {
+        "id": "regex-alt3",
+        "name": "RegexAlt3"
+      },
+      {
+        "id": "regex-alt4",
+        "name": "RegexAlt4"
+      },
+      {
+        "id": "regex-alt5",
+        "name": "RegexAlt5"
+      },
+      {
+        "id": "regex-alt6",
+        "name": "RegexAlt6"
+      },
+      {
+        "id": "scope-entity-name",
+        "name": "ScopeEntityName"
+      },
+      {
+        "id": "scope-entity-name-section",
+        "name": "ScopeEntityNameSection"
+      },
+      {
+        "id": "scope-entity-name-tag",
+        "name": "ScopeEntityNameTag"
+      },
+      {
+        "id": "scope-entity-name-variable-field",
+        "name": "ScopeEntityNameVariableField"
+      },
+      {
+        "id": "scope-entity-name-variable-property",
+        "name": "ScopeEntityNameVariableProperty"
+      },
+      {
+        "id": "scope-entity-other-inherited-class",
+        "name": "ScopeEntityOtherInheritedClass"
+      },
+      {
+        "id": "scope-fenced-code-block-language",
+        "name": "ScopeFencedCodeBlockLanguage"
+      },
+      {
+        "id": "scope-heading1-entity-name-section",
+        "name": "ScopeHeading1EntityNameSection"
+      },
+      {
+        "id": "scope-heading2-entity-name-section",
+        "name": "ScopeHeading2EntityNameSection"
+      },
+      {
+        "id": "scope-heading3-entity-name-section",
+        "name": "ScopeHeading3EntityNameSection"
+      },
+      {
+        "id": "scope-markup-inline",
+        "name": "ScopeMarkupInline"
+      },
+      {
+        "id": "scope-meta-attribute",
+        "name": "ScopeMetaAttribute"
+      },
+      {
+        "id": "scope-meta-use-rust",
+        "name": "ScopeMetaUseRust"
+      },
+      {
+        "id": "scope-source",
+        "name": "ScopeSource"
+      },
+      {
+        "id": "scope-source-powershell-support-variable",
+        "name": "ScopeSourcePowershellSupportVariable"
+      },
+      {
+        "id": "scope-source-regex-pipeline-obsidian-entity-name-include-obsidian",
+        "name": "ScopeSourceRegexPipelineObsidianEntityNameIncludeObsidian"
+      },
+      {
+        "id": "scope-source-regex-pipeline-obsidian-entity-name-pattern-obsidian",
+        "name": "ScopeSourceRegexPipelineObsidianEntityNamePatternObsidian"
+      },
+      {
+        "id": "scope-source-regex-pipeline-obsidian-entity-name-rule-obsidian",
+        "name": "ScopeSourceRegexPipelineObsidianEntityNameRuleObsidian"
+      },
+      {
+        "id": "scope-storage-modifier",
+        "name": "ScopeStorageModifier"
+      },
+      {
+        "id": "scope-text-html-markdown-meta-separator",
+        "name": "ScopeTextHtmlMarkdownMetaSeparator"
+      },
+      {
+        "id": "scope-text-xml-entity-name-tag",
+        "name": "ScopeTextXmlEntityNameTag"
+      },
+      {
+        "id": "scope-text-xml-meta-tag",
+        "name": "ScopeTextXmlMetaTag"
+      },
+      {
+        "id": "scope-variable-language",
+        "name": "ScopeVariableLanguage"
+      },
+      {
+        "id": "scope-variable-other",
+        "name": "ScopeVariableOther"
+      },
+      {
+        "id": "scope-variable-other-object",
+        "name": "ScopeVariableOtherObject"
+      },
+      {
+        "id": "scope-variable-other-object-property",
+        "name": "ScopeVariableOtherObjectProperty"
+      },
+      {
+        "id": "scrollbar-shadow",
+        "name": "ScrollbarShadow"
+      },
+      {
+        "id": "semantic-local",
+        "name": "SemanticLocal"
+      },
+      {
+        "id": "semantic-namespace",
+        "name": "SemanticNamespace"
+      },
+      {
+        "id": "semantic-variable",
+        "name": "SemanticVariable"
+      },
+      {
+        "id": "side-bar-background",
+        "name": "SideBarBackground"
+      },
+      {
+        "id": "side-bar-background-alt2",
+        "name": "SideBarBackgroundAlt2"
+      },
+      {
+        "id": "side-bar-background-alt3",
+        "name": "SideBarBackgroundAlt3"
+      },
+      {
+        "id": "side-bar-foreground",
+        "name": "SideBarForeground"
+      },
+      {
+        "id": "strings",
+        "name": "Strings"
+      },
+      {
+        "id": "strings-alt2",
+        "name": "StringsAlt2"
+      },
+      {
+        "id": "terminal-background",
+        "name": "TerminalBackground"
+      },
+      {
+        "id": "terminal-background-alt2",
+        "name": "TerminalBackgroundAlt2"
+      },
+      {
+        "id": "terminal-black",
+        "name": "TerminalBlack"
+      },
+      {
+        "id": "terminal-blue",
+        "name": "TerminalBlue"
+      },
+      {
+        "id": "terminal-bright-black",
+        "name": "TerminalBrightBlack"
+      },
+      {
+        "id": "terminal-bright-blue",
+        "name": "TerminalBrightBlue"
+      },
+      {
+        "id": "terminal-bright-cyan",
+        "name": "TerminalBrightCyan"
+      },
+      {
+        "id": "terminal-bright-green",
+        "name": "TerminalBrightGreen"
+      },
+      {
+        "id": "terminal-bright-magenta",
+        "name": "TerminalBrightMagenta"
+      },
+      {
+        "id": "terminal-bright-red",
+        "name": "TerminalBrightRed"
+      },
+      {
+        "id": "terminal-bright-white",
+        "name": "TerminalBrightWhite"
+      },
+      {
+        "id": "terminal-bright-yellow",
+        "name": "TerminalBrightYellow"
+      },
+      {
+        "id": "terminal-cyan",
+        "name": "TerminalCyan"
+      },
+      {
+        "id": "terminal-foreground",
+        "name": "TerminalForeground"
+      },
+      {
+        "id": "terminal-green",
+        "name": "TerminalGreen"
+      },
+      {
+        "id": "terminal-magenta",
+        "name": "TerminalMagenta"
+      },
+      {
+        "id": "terminal-red",
+        "name": "TerminalRed"
+      },
+      {
+        "id": "terminal-white",
+        "name": "TerminalWhite"
+      },
+      {
+        "id": "terminal-yellow",
+        "name": "TerminalYellow"
+      },
+      {
+        "id": "types",
+        "name": "Types"
+      },
+      {
+        "id": "types-alt2",
+        "name": "TypesAlt2"
+      },
+      {
+        "id": "types-alt3",
+        "name": "TypesAlt3"
+      },
+      {
+        "id": "types-alt4",
+        "name": "TypesAlt4"
+      },
+      {
+        "id": "types-alt5",
+        "name": "TypesAlt5"
+      },
+      {
+        "id": "ui-background",
+        "name": "UiBackground"
+      },
+      {
+        "id": "ui-background-alt10",
+        "name": "UiBackgroundAlt10"
+      },
+      {
+        "id": "ui-background-alt11",
+        "name": "UiBackgroundAlt11"
+      },
+      {
+        "id": "ui-background-alt12",
+        "name": "UiBackgroundAlt12"
+      },
+      {
+        "id": "ui-background-alt13",
+        "name": "UiBackgroundAlt13"
+      },
+      {
+        "id": "ui-background-alt14",
+        "name": "UiBackgroundAlt14"
+      },
+      {
+        "id": "ui-background-alt15",
+        "name": "UiBackgroundAlt15"
+      },
+      {
+        "id": "ui-background-alt16",
+        "name": "UiBackgroundAlt16"
+      },
+      {
+        "id": "ui-background-alt2",
+        "name": "UiBackgroundAlt2"
+      },
+      {
+        "id": "ui-background-alt3",
+        "name": "UiBackgroundAlt3"
+      },
+      {
+        "id": "ui-background-alt4",
+        "name": "UiBackgroundAlt4"
+      },
+      {
+        "id": "ui-background-alt5",
+        "name": "UiBackgroundAlt5"
+      },
+      {
+        "id": "ui-background-alt6",
+        "name": "UiBackgroundAlt6"
+      },
+      {
+        "id": "ui-background-alt7",
+        "name": "UiBackgroundAlt7"
+      },
+      {
+        "id": "ui-background-alt8",
+        "name": "UiBackgroundAlt8"
+      },
+      {
+        "id": "ui-background-alt9",
+        "name": "UiBackgroundAlt9"
+      },
+      {
+        "id": "ui-border",
+        "name": "UiBorder"
+      },
+      {
+        "id": "ui-border-alt2",
+        "name": "UiBorderAlt2"
+      },
+      {
+        "id": "ui-border-alt3",
+        "name": "UiBorderAlt3"
+      },
+      {
+        "id": "ui-border-alt4",
+        "name": "UiBorderAlt4"
+      },
+      {
+        "id": "ui-border-alt5",
+        "name": "UiBorderAlt5"
+      },
+      {
+        "id": "ui-border-alt6",
+        "name": "UiBorderAlt6"
+      },
+      {
+        "id": "ui-foreground",
+        "name": "UiForeground"
+      },
+      {
+        "id": "ui-foreground-alt10",
+        "name": "UiForegroundAlt10"
+      },
+      {
+        "id": "ui-foreground-alt11",
+        "name": "UiForegroundAlt11"
+      },
+      {
+        "id": "ui-foreground-alt12",
+        "name": "UiForegroundAlt12"
+      },
+      {
+        "id": "ui-foreground-alt13",
+        "name": "UiForegroundAlt13"
+      },
+      {
+        "id": "ui-foreground-alt14",
+        "name": "UiForegroundAlt14"
+      },
+      {
+        "id": "ui-foreground-alt15",
+        "name": "UiForegroundAlt15"
+      },
+      {
+        "id": "ui-foreground-alt2",
+        "name": "UiForegroundAlt2"
+      },
+      {
+        "id": "ui-foreground-alt3",
+        "name": "UiForegroundAlt3"
+      },
+      {
+        "id": "ui-foreground-alt4",
+        "name": "UiForegroundAlt4"
+      },
+      {
+        "id": "ui-foreground-alt5",
+        "name": "UiForegroundAlt5"
+      },
+      {
+        "id": "ui-foreground-alt6",
+        "name": "UiForegroundAlt6"
+      },
+      {
+        "id": "ui-foreground-alt7",
+        "name": "UiForegroundAlt7"
+      },
+      {
+        "id": "ui-foreground-alt8",
+        "name": "UiForegroundAlt8"
+      },
+      {
+        "id": "ui-foreground-alt9",
+        "name": "UiForegroundAlt9"
+      },
+      {
+        "id": "warning-state",
+        "name": "WarningState"
+      },
+      {
+        "id": "warning-state-alt2",
+        "name": "WarningStateAlt2"
+      },
+      {
+        "id": "widget-shadow",
+        "name": "WidgetShadow"
+      }
+    ],
+    "contrast": []
+  },
+  "mappings": [
+    {
+      "editorKey": "activityBar.activeBorder",
+      "target": "colors",
+      "variableId": "ui-border",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.dropBorder",
+      "target": "colors",
+      "variableId": "ui-border-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.inactiveForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBarBadge.background",
+      "target": "colors",
+      "variableId": "ui-background-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBarBadge.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "badge.background",
+      "target": "colors",
+      "variableId": "ui-background-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "badge.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.activeSelectionForeground",
+      "target": "colors",
+      "variableId": "ui-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.focusForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumbPicker.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.background",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.foreground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.hoverBackground",
+      "target": "colors",
+      "variableId": "ide-primary-hover",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.secondaryBackground",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.secondaryForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.secondaryHoverBackground",
+      "target": "colors",
+      "variableId": "ide-primary-hover",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "diffEditor.insertedTextBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "diffEditor.removedTextBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.background",
+      "target": "colors",
+      "variableId": "ui-background-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.border",
+      "target": "colors",
+      "variableId": "ui-border-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.listBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.background",
+      "target": "colors",
+      "variableId": "editor-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.findMatchBackground",
+      "target": "colors",
+      "variableId": "editor-ui",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.findMatchHighlightBackground",
+      "target": "colors",
+      "variableId": "editor-ui-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.findRangeHighlightBackground",
+      "target": "colors",
+      "variableId": "editor-ui-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.foreground",
+      "target": "colors",
+      "variableId": "editor-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.lineHighlightBackground",
+      "target": "colors",
+      "variableId": "editor-ui-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.selectionBackground",
+      "target": "colors",
+      "variableId": "editor-selection",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorBracketMatch.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorBracketMatch.border",
+      "target": "colors",
+      "variableId": "ui-border-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorCodeLens.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorCursor.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGroup.emptyBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGroupHeader.tabsBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.addedBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.background",
+      "target": "colors",
+      "variableId": "ui-background-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.deletedBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt8",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.modifiedBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt9",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorIndentGuide.activeBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt10",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorIndentGuide.background",
+      "target": "colors",
+      "variableId": "ui-background-alt11",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorInlayHint.background",
+      "target": "colors",
+      "variableId": "ui-background-alt12",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorInlayHint.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorLineNumber.activeForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorLineNumber.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorLink.activeForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorRuler.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt8",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorWidget.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorWidget.border",
+      "target": "colors",
+      "variableId": "ui-border-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorWidget.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionBadge.remoteBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionBadge.remoteForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionButton.prominentBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionButton.prominentForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt9",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionButton.prominentHoverBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt11",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "focusBorder",
+      "target": "colors",
+      "variableId": "ui-border-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.conflictingResourceForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.deletedResourceForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt10",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.ignoredResourceForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt11",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.modifiedResourceForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt8",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.untrackedResourceForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt12",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.background",
+      "target": "colors",
+      "variableId": "ui-background-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.border",
+      "target": "colors",
+      "variableId": "ui-border-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.placeholderForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputOption.activeBorder",
+      "target": "colors",
+      "variableId": "ui-border",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputOption.activeForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.errorBackground",
+      "target": "colors",
+      "variableId": "error-state",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.errorForeground",
+      "target": "colors",
+      "variableId": "error-state-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.infoBackground",
+      "target": "colors",
+      "variableId": "info-state",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.infoForeground",
+      "target": "colors",
+      "variableId": "info-state-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.warningBackground",
+      "target": "colors",
+      "variableId": "warning-state",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.warningForeground",
+      "target": "colors",
+      "variableId": "warning-state-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.activeSelectionBackground",
+      "target": "colors",
+      "variableId": "list-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.activeSelectionForeground",
+      "target": "colors",
+      "variableId": "list-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.focusBackground",
+      "target": "colors",
+      "variableId": "list-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.focusForeground",
+      "target": "colors",
+      "variableId": "list-foreground-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.highlightForeground",
+      "target": "colors",
+      "variableId": "list-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.hoverBackground",
+      "target": "colors",
+      "variableId": "list-background-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.hoverForeground",
+      "target": "colors",
+      "variableId": "list-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.inactiveSelectionBackground",
+      "target": "colors",
+      "variableId": "list-background-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.inactiveSelectionForeground",
+      "target": "colors",
+      "variableId": "list-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.invalidItemForeground",
+      "target": "colors",
+      "variableId": "list-foreground-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.background",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.foreground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.selectionBackground",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.selectionForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.separatorBackground",
+      "target": "colors",
+      "variableId": "ide-primary-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menubar.selectionBackground",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menubar.selectionForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationCenter.border",
+      "target": "colors",
+      "variableId": "ui-border-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationCenterHeader.background",
+      "target": "colors",
+      "variableId": "ui-background-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationCenterHeader.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt9",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationLink.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationToast.border",
+      "target": "colors",
+      "variableId": "ui-border-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notifications.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notifications.border",
+      "target": "colors",
+      "variableId": "ui-border-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notifications.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationsErrorIcon.foreground",
+      "target": "colors",
+      "variableId": "error-state-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationsInfoIcon.foreground",
+      "target": "colors",
+      "variableId": "info-state-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationsWarningIcon.foreground",
+      "target": "colors",
+      "variableId": "warning-state",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panel.background",
+      "target": "colors",
+      "variableId": "panel-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panel.border",
+      "target": "colors",
+      "variableId": "panel-border",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panel.dropBorder",
+      "target": "colors",
+      "variableId": "panel-border",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelSection.border",
+      "target": "colors",
+      "variableId": "ui-border-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelSection.dropBackground",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelSectionHeader.background",
+      "target": "colors",
+      "variableId": "ui-background-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelTitle.activeBorder",
+      "target": "colors",
+      "variableId": "ui-border-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelTitle.activeForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelTitle.inactiveForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt13",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "progressBar.background",
+      "target": "colors",
+      "variableId": "ui-background-alt13",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbar.shadow",
+      "target": "colors",
+      "variableId": "scrollbar-shadow",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbarSlider.activeBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt9",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbarSlider.background",
+      "target": "colors",
+      "variableId": "ui-background-alt14",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbarSlider.hoverBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt15",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.background",
+      "target": "colors",
+      "variableId": "side-bar-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.border",
+      "target": "colors",
+      "variableId": "side-bar-background-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.dropBackground",
+      "target": "colors",
+      "variableId": "side-bar-background-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.foreground",
+      "target": "colors",
+      "variableId": "side-bar-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBarSectionHeader.background",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBarSectionHeader.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBarTitle.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt14",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.background",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.debuggingBackground",
+      "target": "colors",
+      "variableId": "ide-primary-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.debuggingForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.foreground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.noFolderBackground",
+      "target": "colors",
+      "variableId": "ide-primary-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.noFolderForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.activeBackground",
+      "target": "colors",
+      "variableId": "ide-primary-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.errorBackground",
+      "target": "colors",
+      "variableId": "ide-primary-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.errorForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.hoverBackground",
+      "target": "colors",
+      "variableId": "ide-primary-hover-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.remoteForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.activeBackground",
+      "target": "colors",
+      "variableId": "ui-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.activeForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.border",
+      "target": "colors",
+      "variableId": "ui-border-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.inactiveBackground",
+      "target": "colors",
+      "variableId": "ui-background-alt16",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.inactiveForeground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt15",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBlack",
+      "target": "colors",
+      "variableId": "terminal-black",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBlue",
+      "target": "colors",
+      "variableId": "terminal-blue",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightBlack",
+      "target": "colors",
+      "variableId": "terminal-bright-black",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightBlue",
+      "target": "colors",
+      "variableId": "terminal-bright-blue",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightCyan",
+      "target": "colors",
+      "variableId": "terminal-bright-cyan",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightGreen",
+      "target": "colors",
+      "variableId": "terminal-bright-green",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightMagenta",
+      "target": "colors",
+      "variableId": "terminal-bright-magenta",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightRed",
+      "target": "colors",
+      "variableId": "terminal-bright-red",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightWhite",
+      "target": "colors",
+      "variableId": "terminal-bright-white",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightYellow",
+      "target": "colors",
+      "variableId": "terminal-bright-yellow",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiCyan",
+      "target": "colors",
+      "variableId": "terminal-cyan",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiGreen",
+      "target": "colors",
+      "variableId": "terminal-green",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiMagenta",
+      "target": "colors",
+      "variableId": "terminal-magenta",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiRed",
+      "target": "colors",
+      "variableId": "terminal-red",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiWhite",
+      "target": "colors",
+      "variableId": "terminal-white",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiYellow",
+      "target": "colors",
+      "variableId": "terminal-yellow",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.background",
+      "target": "colors",
+      "variableId": "terminal-background",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.border",
+      "target": "colors",
+      "variableId": "terminal-background-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.foreground",
+      "target": "colors",
+      "variableId": "terminal-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "textPreformat.foreground",
+      "target": "colors",
+      "variableId": "ui-foreground-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.activeBackground",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.activeForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.border",
+      "target": "colors",
+      "variableId": "ide-primary",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.inactiveBackground",
+      "target": "colors",
+      "variableId": "ide-primary-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.inactiveForeground",
+      "target": "colors",
+      "variableId": "ide-primary-foreground-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "widget.shadow",
+      "target": "colors",
+      "variableId": "widget-shadow",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "*.deprecated",
+      "target": "semanticTokens",
+      "variableId": "deprecated-symbols",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "class",
+      "target": "semanticTokens",
+      "variableId": "types",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment",
+      "target": "semanticTokens",
+      "variableId": "comments",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.documentation",
+      "target": "semanticTokens",
+      "variableId": "doc-comments",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant",
+      "target": "semanticTokens",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "controlKeyword",
+      "target": "semanticTokens",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "delegate",
+      "target": "semanticTokens",
+      "variableId": "interfaces",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "enum",
+      "target": "semanticTokens",
+      "variableId": "types",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "enumMember",
+      "target": "semanticTokens",
+      "variableId": "types-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "field",
+      "target": "semanticTokens",
+      "variableId": "fields",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "field.static",
+      "target": "semanticTokens",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "interface",
+      "target": "semanticTokens",
+      "variableId": "interfaces",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "keyword",
+      "target": "semanticTokens",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "local",
+      "target": "semanticTokens",
+      "variableId": "semantic-local",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "method",
+      "target": "semanticTokens",
+      "variableId": "methods",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "namespace",
+      "target": "semanticTokens",
+      "variableId": "semantic-namespace",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "number",
+      "target": "semanticTokens",
+      "variableId": "numbers",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "operator",
+      "target": "semanticTokens",
+      "variableId": "operators",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "parameter",
+      "target": "semanticTokens",
+      "variableId": "parameters",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "plainKeyword",
+      "target": "semanticTokens",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "property",
+      "target": "semanticTokens",
+      "variableId": "fields-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "property.static.readonly",
+      "target": "semanticTokens",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "property:java",
+      "target": "semanticTokens",
+      "variableId": "fields",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation",
+      "target": "semanticTokens",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "regexp",
+      "target": "semanticTokens",
+      "variableId": "regex",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "string",
+      "target": "semanticTokens",
+      "variableId": "strings",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "stringEscapeCharacter",
+      "target": "semanticTokens",
+      "variableId": "strings-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "struct",
+      "target": "semanticTokens",
+      "variableId": "types",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "typeParameter",
+      "target": "semanticTokens",
+      "variableId": "types-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable",
+      "target": "semanticTokens",
+      "variableId": "semantic-variable",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.static.readonly",
+      "target": "semanticTokens",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentAttributeName",
+      "target": "semanticTokens",
+      "variableId": "comments-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentAttributeQuotes",
+      "target": "semanticTokens",
+      "variableId": "comments-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentDelimiter",
+      "target": "semanticTokens",
+      "variableId": "comments-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentName",
+      "target": "semanticTokens",
+      "variableId": "comments-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentText",
+      "target": "semanticTokens",
+      "variableId": "comments-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment",
+      "target": "textMateScopes",
+      "variableId": "comments",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.documentation",
+      "target": "textMateScopes",
+      "variableId": "doc-comments",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.documentation punctuation.definition.string",
+      "target": "textMateScopes",
+      "variableId": "doc-comments-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.documentation string.quoted.double",
+      "target": "textMateScopes",
+      "variableId": "doc-comments-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.javadoc",
+      "target": "textMateScopes",
+      "variableId": "doc-comments",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.line.documentation",
+      "target": "textMateScopes",
+      "variableId": "doc-comments",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.character.escape",
+      "target": "textMateScopes",
+      "variableId": "constants-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.language",
+      "target": "textMateScopes",
+      "variableId": "constants-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.numeric",
+      "target": "textMateScopes",
+      "variableId": "numbers",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.other.enum",
+      "target": "textMateScopes",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.other.reference.link",
+      "target": "textMateScopes",
+      "variableId": "constants-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name",
+      "target": "textMateScopes",
+      "variableId": "scope-entity-name",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.function",
+      "target": "textMateScopes",
+      "variableId": "methods",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "scope-entity-name-section",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.tag",
+      "target": "textMateScopes",
+      "variableId": "scope-entity-name-tag",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.class",
+      "target": "textMateScopes",
+      "variableId": "types-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.enum",
+      "target": "textMateScopes",
+      "variableId": "types-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.interface",
+      "target": "textMateScopes",
+      "variableId": "types-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.kotlin",
+      "target": "textMateScopes",
+      "variableId": "types-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.struct",
+      "target": "textMateScopes",
+      "variableId": "types-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.type-parameter",
+      "target": "textMateScopes",
+      "variableId": "types-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.variable.field",
+      "target": "textMateScopes",
+      "variableId": "scope-entity-name-variable-field",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.variable.parameter",
+      "target": "textMateScopes",
+      "variableId": "parameters",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.variable.property",
+      "target": "textMateScopes",
+      "variableId": "scope-entity-name-variable-property",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.other.attribute-name",
+      "target": "textMateScopes",
+      "variableId": "attributes",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.other.inherited-class",
+      "target": "textMateScopes",
+      "variableId": "scope-entity-other-inherited-class",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "fenced_code.block.language",
+      "target": "textMateScopes",
+      "variableId": "scope-fenced-code-block-language",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "heading.1 entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "scope-heading1-entity-name-section",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "heading.2 entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "scope-heading2-entity-name-section",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "heading.3 entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "scope-heading3-entity-name-section",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "keyword",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "keyword.other.documentation",
+      "target": "textMateScopes",
+      "variableId": "doc-comments-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "markup.inline",
+      "target": "textMateScopes",
+      "variableId": "scope-markup-inline",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "markup.underline.link",
+      "target": "textMateScopes",
+      "variableId": "links",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.attribute",
+      "target": "textMateScopes",
+      "variableId": "scope-meta-attribute",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.attribute keyword",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.attribute punctuation.brackets",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.use.rust",
+      "target": "textMateScopes",
+      "variableId": "scope-meta-use-rust",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.accessor",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.brackets",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.comma",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.curlybrace",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.annotation",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.comment",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.heading",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.interpolation",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.parameters",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.string",
+      "target": "textMateScopes",
+      "variableId": "strings",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.tag",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.typeparameters",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.parenthesis",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.section",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.semi",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.squarebracket",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.terminator",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source",
+      "target": "textMateScopes",
+      "variableId": "scope-source",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini",
+      "target": "textMateScopes",
+      "variableId": "config-syntax",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "config-syntax-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini keyword",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini punctuation",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.java punctuation.bracket.angle",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json constant.language",
+      "target": "textMateScopes",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json punctuation.definition",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json support.type",
+      "target": "textMateScopes",
+      "variableId": "config-syntax-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.powershell support.constant.variable",
+      "target": "textMateScopes",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.powershell support.function",
+      "target": "textMateScopes",
+      "variableId": "methods",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.powershell support.variable",
+      "target": "textMateScopes",
+      "variableId": "scope-source-powershell-support-variable",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+      "target": "textMateScopes",
+      "variableId": "comments-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian comment.line.text.obsidian",
+      "target": "textMateScopes",
+      "variableId": "comments-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian entity.name.include.obsidian",
+      "target": "textMateScopes",
+      "variableId": "scope-source-regex-pipeline-obsidian-entity-name-include-obsidian",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "scope-source-regex-pipeline-obsidian-entity-name-pattern-obsidian",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+      "target": "textMateScopes",
+      "variableId": "scope-source-regex-pipeline-obsidian-entity-name-rule-obsidian",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+      "target": "textMateScopes",
+      "variableId": "keywords",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp",
+      "target": "textMateScopes",
+      "variableId": "regex-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+      "target": "textMateScopes",
+      "variableId": "regex-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+      "target": "textMateScopes",
+      "variableId": "regex-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+      "target": "textMateScopes",
+      "variableId": "regex-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "regex-alt6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+      "target": "textMateScopes",
+      "variableId": "regex",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml",
+      "target": "textMateScopes",
+      "variableId": "config-syntax",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml entity.other.attribute-name",
+      "target": "textMateScopes",
+      "variableId": "attributes-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml keyword",
+      "target": "textMateScopes",
+      "variableId": "keywords-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml punctuation",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml constant.language",
+      "target": "textMateScopes",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml entity.name.tag",
+      "target": "textMateScopes",
+      "variableId": "config-syntax-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml entity.other",
+      "target": "textMateScopes",
+      "variableId": "config-syntax-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml punctuation.definition",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "punctuation",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.modifier",
+      "target": "textMateScopes",
+      "variableId": "scope-storage-modifier",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.type",
+      "target": "textMateScopes",
+      "variableId": "types-alt4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.type.annotation",
+      "target": "textMateScopes",
+      "variableId": "types-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.type.generic",
+      "target": "textMateScopes",
+      "variableId": "types-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "string",
+      "target": "textMateScopes",
+      "variableId": "strings",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "string.other.link",
+      "target": "textMateScopes",
+      "variableId": "strings-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.html.markdown meta.separator",
+      "target": "textMateScopes",
+      "variableId": "scope-text-html-markdown-meta-separator",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.html.markdown punctuation.definition",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.html.markdown punctuation.definition.string",
+      "target": "textMateScopes",
+      "variableId": "strings-alt2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml entity.name.tag",
+      "target": "textMateScopes",
+      "variableId": "scope-text-xml-entity-name-tag",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml entity.other.attribute-name",
+      "target": "textMateScopes",
+      "variableId": "attributes-alt3",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml meta.tag",
+      "target": "textMateScopes",
+      "variableId": "scope-text-xml-meta-tag",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml punctuation.definition.tag",
+      "target": "textMateScopes",
+      "variableId": "punctuation-alt5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.language",
+      "target": "textMateScopes",
+      "variableId": "scope-variable-language",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other",
+      "target": "textMateScopes",
+      "variableId": "scope-variable-other",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other.constant",
+      "target": "textMateScopes",
+      "variableId": "constants",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other.object",
+      "target": "textMateScopes",
+      "variableId": "scope-variable-other-object",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other.object.property",
+      "target": "textMateScopes",
+      "variableId": "scope-variable-other-object-property",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.parameter",
+      "target": "textMateScopes",
+      "variableId": "parameters",
+      "variableType": "color"
+    }
+  ]
+}

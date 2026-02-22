@@ -1,0 +1,2430 @@
+{
+  "schemaVersion": 2,
+  "id": "vayeate",
+  "name": "Vayeate",
+  "version": "1.0.0",
+  "locked": false,
+  "description": "Template generated from vayeate-color-theme.json and vayeate_theme_keys@1.0.0",
+  "catalogRefs": [
+    "vayeate_theme_keys@1.0.0"
+  ],
+  "variables": {
+    "color": [
+      {
+        "id": "c-3399ff",
+        "name": "Color #3399FF"
+      },
+      {
+        "id": "c-1b3d5f",
+        "name": "Color #1B3D5F"
+      },
+      {
+        "id": "c-ccffff",
+        "name": "Color #CCFFFF"
+      },
+      {
+        "id": "c-52a9ff",
+        "name": "Color #52A9FF"
+      },
+      {
+        "id": "c-7da9d4",
+        "name": "Color #7DA9D4"
+      },
+      {
+        "id": "c-0059b1",
+        "name": "Color #0059B1"
+      },
+      {
+        "id": "c-acd6ff",
+        "name": "Color #ACD6FF"
+      },
+      {
+        "id": "c-99ccff",
+        "name": "Color #99CCFF"
+      },
+      {
+        "id": "c-2f5d8b",
+        "name": "Color #2F5D8B"
+      },
+      {
+        "id": "c-c6e3ff",
+        "name": "Color #C6E3FF"
+      },
+      {
+        "id": "c-345a80",
+        "name": "Color #345A80"
+      },
+      {
+        "id": "c-07792733",
+        "name": "Color #07792733"
+      },
+      {
+        "id": "c-793d3d33",
+        "name": "Color #793D3D33"
+      },
+      {
+        "id": "c-282e35",
+        "name": "Color #282E35"
+      },
+      {
+        "id": "c-336699",
+        "name": "Color #336699"
+      },
+      {
+        "id": "c-9faab6",
+        "name": "Color #9FAAB6"
+      },
+      {
+        "id": "c-176431",
+        "name": "Color #176431"
+      },
+      {
+        "id": "c-174e64",
+        "name": "Color #174E64"
+      },
+      {
+        "id": "c-3399ff11",
+        "name": "Color #3399FF11"
+      },
+      {
+        "id": "c-2f363f",
+        "name": "Color #2F363F"
+      },
+      {
+        "id": "c-34516d",
+        "name": "Color #34516D"
+      },
+      {
+        "id": "c-174470",
+        "name": "Color #174470"
+      },
+      {
+        "id": "c-3399ff66",
+        "name": "Color #3399FF66"
+      },
+      {
+        "id": "c-cc9900",
+        "name": "Color #CC9900"
+      },
+      {
+        "id": "c-6fad6e",
+        "name": "Color #6FAD6E"
+      },
+      {
+        "id": "c-1b3046",
+        "name": "Color #1B3046"
+      },
+      {
+        "id": "c-fc7676",
+        "name": "Color #FC7676"
+      },
+      {
+        "id": "c-6699cc",
+        "name": "Color #6699CC"
+      },
+      {
+        "id": "c-3b4046",
+        "name": "Color #3B4046"
+      },
+      {
+        "id": "c-a2abb6",
+        "name": "Color #A2ABB6"
+      },
+      {
+        "id": "c-679acc",
+        "name": "Color #679ACC"
+      },
+      {
+        "id": "c-579ad1",
+        "name": "Color #579AD1"
+      },
+      {
+        "id": "c-7b97b2",
+        "name": "Color #7B97B2"
+      },
+      {
+        "id": "c-f57676",
+        "name": "Color #F57676"
+      },
+      {
+        "id": "c-c09292",
+        "name": "Color #C09292"
+      },
+      {
+        "id": "c-85a1af",
+        "name": "Color #85A1AF"
+      },
+      {
+        "id": "c-a0a070",
+        "name": "Color #A0A070"
+      },
+      {
+        "id": "c-7298bc",
+        "name": "Color #7298BC"
+      },
+      {
+        "id": "c-996633",
+        "name": "Color #996633"
+      },
+      {
+        "id": "c-ffffff",
+        "name": "Color #FFFFFF"
+      },
+      {
+        "id": "c-6182b8",
+        "name": "Color #6182B8"
+      },
+      {
+        "id": "c-2f5d8bcc",
+        "name": "Color #2F5D8BCC"
+      },
+      {
+        "id": "c-dbe0e4",
+        "name": "Color #DBE0E4"
+      },
+      {
+        "id": "c-34516dcc",
+        "name": "Color #34516DCC"
+      },
+      {
+        "id": "c-b8c1c9",
+        "name": "Color #B8C1C9"
+      },
+      {
+        "id": "c-4f5c68cc",
+        "name": "Color #4F5C68CC"
+      },
+      {
+        "id": "c-ebf0f4",
+        "name": "Color #EBF0F4"
+      },
+      {
+        "id": "c-cd9b68",
+        "name": "Color #CD9B68"
+      },
+      {
+        "id": "c-d19c00",
+        "name": "Color #D19C00"
+      },
+      {
+        "id": "c-a2b7cc",
+        "name": "Color #A2B7CC"
+      },
+      {
+        "id": "c-15181b",
+        "name": "Color #15181B"
+      },
+      {
+        "id": "c-33669966",
+        "name": "Color #33669966"
+      },
+      {
+        "id": "c-345a8066",
+        "name": "Color #345A8066"
+      },
+      {
+        "id": "c-2e363e",
+        "name": "Color #2E363E"
+      },
+      {
+        "id": "c-cccccc",
+        "name": "Color #CCCCCC"
+      },
+      {
+        "id": "c-356445",
+        "name": "Color #356445"
+      },
+      {
+        "id": "c-e0e0e0",
+        "name": "Color #E0E0E0"
+      },
+      {
+        "id": "c-655938",
+        "name": "Color #655938"
+      },
+      {
+        "id": "c-d1d1d1",
+        "name": "Color #D1D1D1"
+      },
+      {
+        "id": "c-cccccc2e",
+        "name": "Color #CCCCCC2E"
+      },
+      {
+        "id": "c-ac280d",
+        "name": "Color #AC280D"
+      },
+      {
+        "id": "c-ffffff2e",
+        "name": "Color #FFFFFF2E"
+      },
+      {
+        "id": "c-ffd6d6",
+        "name": "Color #FFD6D6"
+      },
+      {
+        "id": "c-4f5c68",
+        "name": "Color #4F5C68"
+      },
+      {
+        "id": "c-000000",
+        "name": "Color #000000"
+      },
+      {
+        "id": "c-90a4ae",
+        "name": "Color #90A4AE"
+      },
+      {
+        "id": "c-39adb5",
+        "name": "Color #39ADB5"
+      },
+      {
+        "id": "c-91b859",
+        "name": "Color #91B859"
+      },
+      {
+        "id": "c-7c4dff",
+        "name": "Color #7C4DFF"
+      },
+      {
+        "id": "c-e53935",
+        "name": "Color #E53935"
+      },
+      {
+        "id": "c-ffb62c",
+        "name": "Color #FFB62C"
+      },
+      {
+        "id": "c-4f384a",
+        "name": "Color #4F384A"
+      },
+      {
+        "id": "c-f6f6f4",
+        "name": "Color #F6F6F4"
+      },
+      {
+        "id": "c-35a2fa",
+        "name": "Color #35A2FA"
+      },
+      {
+        "id": "c-548057",
+        "name": "Color #548057"
+      },
+      {
+        "id": "c-6c796e",
+        "name": "Color #6C796E"
+      },
+      {
+        "id": "c-c589e7",
+        "name": "Color #C589E7"
+      },
+      {
+        "id": "c-a4a8db",
+        "name": "Color #A4A8DB"
+      },
+      {
+        "id": "c-26b995",
+        "name": "Color #26B995"
+      },
+      {
+        "id": "c-db9052",
+        "name": "Color #DB9052"
+      },
+      {
+        "id": "c-fa8484",
+        "name": "Color #FA8484"
+      },
+      {
+        "id": "c-bea73c",
+        "name": "Color #BEA73C"
+      },
+      {
+        "id": "c-79d6c7",
+        "name": "Color #79D6C7"
+      },
+      {
+        "id": "c-aca374",
+        "name": "Color #ACA374"
+      },
+      {
+        "id": "c-7498b6",
+        "name": "Color #7498B6"
+      },
+      {
+        "id": "c-7f9b82",
+        "name": "Color #7F9B82"
+      },
+      {
+        "id": "c-a59082",
+        "name": "Color #A59082"
+      },
+      {
+        "id": "c-8b978d",
+        "name": "Color #8B978D"
+      },
+      {
+        "id": "c-6e7970",
+        "name": "Color #6E7970"
+      },
+      {
+        "id": "c-86752e",
+        "name": "Color #86752E"
+      },
+      {
+        "id": "c-979bd6",
+        "name": "Color #979BD6"
+      },
+      {
+        "id": "c-9cb19e",
+        "name": "Color #9CB19E"
+      },
+      {
+        "id": "c-59b3fb",
+        "name": "Color #59B3FB"
+      },
+      {
+        "id": "c-c3ab3f",
+        "name": "Color #C3AB3F"
+      },
+      {
+        "id": "c-57a18f",
+        "name": "Color #57A18F"
+      },
+      {
+        "id": "c-6da071",
+        "name": "Color #6DA071"
+      },
+      {
+        "id": "c-ba8787",
+        "name": "Color #BA8787"
+      },
+      {
+        "id": "c-fc8b8b",
+        "name": "Color #FC8B8B"
+      },
+      {
+        "id": "c-cc98ea",
+        "name": "Color #CC98EA"
+      },
+      {
+        "id": "c-df9e67",
+        "name": "Color #DF9E67"
+      },
+      {
+        "id": "c-a5aea6",
+        "name": "Color #A5AEA6"
+      },
+      {
+        "id": "c-b9a99e",
+        "name": "Color #B9A99E"
+      }
+    ],
+    "contrast": []
+  },
+  "mappings": [
+    {
+      "editorKey": "activityBar.activeBorder",
+      "target": "colors",
+      "variableId": "c-3399ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.dropBorder",
+      "target": "colors",
+      "variableId": "c-ccffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.foreground",
+      "target": "colors",
+      "variableId": "c-52a9ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBar.inactiveForeground",
+      "target": "colors",
+      "variableId": "c-7da9d4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBarBadge.background",
+      "target": "colors",
+      "variableId": "c-0059b1",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "activityBarBadge.foreground",
+      "target": "colors",
+      "variableId": "c-acd6ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "badge.background",
+      "target": "colors",
+      "variableId": "c-0059b1",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "badge.foreground",
+      "target": "colors",
+      "variableId": "c-acd6ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.activeSelectionForeground",
+      "target": "colors",
+      "variableId": "c-52a9ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.focusForeground",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumb.foreground",
+      "target": "colors",
+      "variableId": "c-52a9ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "breadcrumbPicker.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.background",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.foreground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.hoverBackground",
+      "target": "colors",
+      "variableId": "c-345a80",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.secondaryBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.secondaryForeground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "button.secondaryHoverBackground",
+      "target": "colors",
+      "variableId": "c-345a80",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "diffEditor.insertedTextBackground",
+      "target": "colors",
+      "variableId": "c-07792733",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "diffEditor.removedTextBackground",
+      "target": "colors",
+      "variableId": "c-793d3d33",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.background",
+      "target": "colors",
+      "variableId": "c-282e35",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.foreground",
+      "target": "colors",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "dropdown.listBackground",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.background",
+      "target": "colors",
+      "variableId": "c-282e35",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.findMatchBackground",
+      "target": "colors",
+      "variableId": "c-176431",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.findMatchHighlightBackground",
+      "target": "colors",
+      "variableId": "c-174e64",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.findRangeHighlightBackground",
+      "target": "colors",
+      "variableId": "c-3399ff11",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.foreground",
+      "target": "colors",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.lineHighlightBackground",
+      "target": "colors",
+      "variableId": "c-2f363f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editor.selectionBackground",
+      "target": "colors",
+      "variableId": "c-34516d",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorBracketMatch.background",
+      "target": "colors",
+      "variableId": "c-174470",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorBracketMatch.border",
+      "target": "colors",
+      "variableId": "c-3399ff66",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorCodeLens.foreground",
+      "target": "colors",
+      "variableId": "c-3399ff66",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorCursor.foreground",
+      "target": "colors",
+      "variableId": "c-cc9900",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGroup.emptyBackground",
+      "target": "colors",
+      "variableId": "c-282e35",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGroupHeader.tabsBackground",
+      "target": "colors",
+      "variableId": "c-282e35",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.addedBackground",
+      "target": "colors",
+      "variableId": "c-6fad6e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.background",
+      "target": "colors",
+      "variableId": "c-1b3046",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.deletedBackground",
+      "target": "colors",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorGutter.modifiedBackground",
+      "target": "colors",
+      "variableId": "c-3399ff66",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorIndentGuide.activeBackground",
+      "target": "colors",
+      "variableId": "c-6699cc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorIndentGuide.background",
+      "target": "colors",
+      "variableId": "c-34516d",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorInlayHint.background",
+      "target": "colors",
+      "variableId": "c-3b4046",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorInlayHint.foreground",
+      "target": "colors",
+      "variableId": "c-a2abb6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorLineNumber.activeForeground",
+      "target": "colors",
+      "variableId": "c-679acc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorLineNumber.foreground",
+      "target": "colors",
+      "variableId": "c-679acc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorLink.activeForeground",
+      "target": "colors",
+      "variableId": "c-579ad1",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorRuler.foreground",
+      "target": "colors",
+      "variableId": "c-7b97b2",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorWidget.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorWidget.border",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "editorWidget.foreground",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionBadge.remoteBackground",
+      "target": "colors",
+      "variableId": "c-0059b1",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionBadge.remoteForeground",
+      "target": "colors",
+      "variableId": "c-acd6ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionButton.prominentBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionButton.prominentForeground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "extensionButton.prominentHoverBackground",
+      "target": "colors",
+      "variableId": "c-345a80",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "focusBorder",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.conflictingResourceForeground",
+      "target": "colors",
+      "variableId": "c-cc9900",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.deletedResourceForeground",
+      "target": "colors",
+      "variableId": "c-f57676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.ignoredResourceForeground",
+      "target": "colors",
+      "variableId": "c-c09292",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.modifiedResourceForeground",
+      "target": "colors",
+      "variableId": "c-85a1af",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "gitDecoration.untrackedResourceForeground",
+      "target": "colors",
+      "variableId": "c-a0a070",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.background",
+      "target": "colors",
+      "variableId": "c-282e35",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.foreground",
+      "target": "colors",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "input.placeholderForeground",
+      "target": "colors",
+      "variableId": "c-7298bc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputOption.activeBorder",
+      "target": "colors",
+      "variableId": "c-3399ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputOption.activeForeground",
+      "target": "colors",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.errorBackground",
+      "target": "colors",
+      "variableId": "c-996633",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.errorForeground",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.infoBackground",
+      "target": "colors",
+      "variableId": "c-6182b8",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.infoForeground",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.warningBackground",
+      "target": "colors",
+      "variableId": "c-cc9900",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "inputValidation.warningForeground",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.activeSelectionBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8bcc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.activeSelectionForeground",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.focusBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8bcc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.focusForeground",
+      "target": "colors",
+      "variableId": "c-dbe0e4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.highlightForeground",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.hoverBackground",
+      "target": "colors",
+      "variableId": "c-34516dcc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.hoverForeground",
+      "target": "colors",
+      "variableId": "c-b8c1c9",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.inactiveSelectionBackground",
+      "target": "colors",
+      "variableId": "c-4f5c68cc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.inactiveSelectionForeground",
+      "target": "colors",
+      "variableId": "c-ebf0f4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "list.invalidItemForeground",
+      "target": "colors",
+      "variableId": "c-cc9900",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.background",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.foreground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.selectionBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.selectionForeground",
+      "target": "colors",
+      "variableId": "c-ccffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menu.separatorBackground",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menubar.selectionBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "menubar.selectionForeground",
+      "target": "colors",
+      "variableId": "c-ccffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationCenter.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationCenterHeader.background",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationCenterHeader.foreground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationLink.foreground",
+      "target": "colors",
+      "variableId": "c-52a9ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationToast.border",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notifications.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notifications.border",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notifications.foreground",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationsErrorIcon.foreground",
+      "target": "colors",
+      "variableId": "c-cd9b68",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationsInfoIcon.foreground",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "notificationsWarningIcon.foreground",
+      "target": "colors",
+      "variableId": "c-d19c00",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panel.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panel.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panel.dropBorder",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelSection.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelSection.dropBackground",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelSectionHeader.background",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelTitle.activeBorder",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelTitle.activeForeground",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "panelTitle.inactiveForeground",
+      "target": "colors",
+      "variableId": "c-a2b7cc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "progressBar.background",
+      "target": "colors",
+      "variableId": "c-99ccff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbar.shadow",
+      "target": "colors",
+      "variableId": "c-15181b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbarSlider.activeBackground",
+      "target": "colors",
+      "variableId": "c-3399ff66",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbarSlider.background",
+      "target": "colors",
+      "variableId": "c-33669966",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "scrollbarSlider.hoverBackground",
+      "target": "colors",
+      "variableId": "c-345a8066",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.background",
+      "target": "colors",
+      "variableId": "c-2e363e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.border",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.dropBackground",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBar.foreground",
+      "target": "colors",
+      "variableId": "c-cccccc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBarSectionHeader.background",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBarSectionHeader.foreground",
+      "target": "colors",
+      "variableId": "c-52a9ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "sideBarTitle.foreground",
+      "target": "colors",
+      "variableId": "c-cccccc",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.background",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.debuggingBackground",
+      "target": "colors",
+      "variableId": "c-356445",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.debuggingForeground",
+      "target": "colors",
+      "variableId": "c-e0e0e0",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.foreground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.noFolderBackground",
+      "target": "colors",
+      "variableId": "c-655938",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBar.noFolderForeground",
+      "target": "colors",
+      "variableId": "c-d1d1d1",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.activeBackground",
+      "target": "colors",
+      "variableId": "c-cccccc2e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.errorBackground",
+      "target": "colors",
+      "variableId": "c-ac280d",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.errorForeground",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.hoverBackground",
+      "target": "colors",
+      "variableId": "c-ffffff2e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "statusBarItem.remoteForeground",
+      "target": "colors",
+      "variableId": "c-ffd6d6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.activeBackground",
+      "target": "colors",
+      "variableId": "c-1b3d5f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.activeForeground",
+      "target": "colors",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.inactiveBackground",
+      "target": "colors",
+      "variableId": "c-4f5c68",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "tab.inactiveForeground",
+      "target": "colors",
+      "variableId": "c-ebf0f4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBlack",
+      "target": "colors",
+      "variableId": "c-000000",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBlue",
+      "target": "colors",
+      "variableId": "c-6182b8",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightBlack",
+      "target": "colors",
+      "variableId": "c-90a4ae",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightBlue",
+      "target": "colors",
+      "variableId": "c-6182b8",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightCyan",
+      "target": "colors",
+      "variableId": "c-39adb5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightGreen",
+      "target": "colors",
+      "variableId": "c-91b859",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightMagenta",
+      "target": "colors",
+      "variableId": "c-7c4dff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightRed",
+      "target": "colors",
+      "variableId": "c-e53935",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightWhite",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiBrightYellow",
+      "target": "colors",
+      "variableId": "c-ffb62c",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiCyan",
+      "target": "colors",
+      "variableId": "c-39adb5",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiGreen",
+      "target": "colors",
+      "variableId": "c-91b859",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiMagenta",
+      "target": "colors",
+      "variableId": "c-7c4dff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiRed",
+      "target": "colors",
+      "variableId": "c-e53935",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiWhite",
+      "target": "colors",
+      "variableId": "c-ffffff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.ansiYellow",
+      "target": "colors",
+      "variableId": "c-ffb62c",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.background",
+      "target": "colors",
+      "variableId": "c-282e35",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.border",
+      "target": "colors",
+      "variableId": "c-4f384a",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "terminal.foreground",
+      "target": "colors",
+      "variableId": "c-f6f6f4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "textPreformat.foreground",
+      "target": "colors",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.activeBackground",
+      "target": "colors",
+      "variableId": "c-2f5d8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.activeForeground",
+      "target": "colors",
+      "variableId": "c-c6e3ff",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.border",
+      "target": "colors",
+      "variableId": "c-336699",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.inactiveBackground",
+      "target": "colors",
+      "variableId": "c-4f5c68",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "titleBar.inactiveForeground",
+      "target": "colors",
+      "variableId": "c-ebf0f4",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "widget.shadow",
+      "target": "colors",
+      "variableId": "c-15181b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "*.deprecated",
+      "target": "semanticTokens",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "class",
+      "target": "semanticTokens",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment",
+      "target": "semanticTokens",
+      "variableId": "c-548057",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.documentation",
+      "target": "semanticTokens",
+      "variableId": "c-6c796e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant",
+      "target": "semanticTokens",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "controlKeyword",
+      "target": "semanticTokens",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "delegate",
+      "target": "semanticTokens",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "enum",
+      "target": "semanticTokens",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "enumMember",
+      "target": "semanticTokens",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "field",
+      "target": "semanticTokens",
+      "variableId": "c-db9052",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "field.static",
+      "target": "semanticTokens",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "interface",
+      "target": "semanticTokens",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "keyword",
+      "target": "semanticTokens",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "local",
+      "target": "semanticTokens",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "method",
+      "target": "semanticTokens",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "namespace",
+      "target": "semanticTokens",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "number",
+      "target": "semanticTokens",
+      "variableId": "c-fa8484",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "operator",
+      "target": "semanticTokens",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "parameter",
+      "target": "semanticTokens",
+      "variableId": "c-bea73c",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "plainKeyword",
+      "target": "semanticTokens",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "property",
+      "target": "semanticTokens",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "property.static.readonly",
+      "target": "semanticTokens",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "property:java",
+      "target": "semanticTokens",
+      "variableId": "c-db9052",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation",
+      "target": "semanticTokens",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "regexp",
+      "target": "semanticTokens",
+      "variableId": "c-79d6c7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "string",
+      "target": "semanticTokens",
+      "variableId": "c-6fad6e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "stringEscapeCharacter",
+      "target": "semanticTokens",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "struct",
+      "target": "semanticTokens",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "typeParameter",
+      "target": "semanticTokens",
+      "variableId": "c-bea73c",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable",
+      "target": "semanticTokens",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.static.readonly",
+      "target": "semanticTokens",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentAttributeName",
+      "target": "semanticTokens",
+      "variableId": "c-7498b6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentAttributeQuotes",
+      "target": "semanticTokens",
+      "variableId": "c-7f9b82",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentDelimiter",
+      "target": "semanticTokens",
+      "variableId": "c-7f9b82",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentName",
+      "target": "semanticTokens",
+      "variableId": "c-a59082",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "xmlDocCommentText",
+      "target": "semanticTokens",
+      "variableId": "c-8b978d",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment",
+      "target": "textMateScopes",
+      "variableId": "c-548057",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.documentation",
+      "target": "textMateScopes",
+      "variableId": "c-6e7970",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.documentation punctuation.definition.string",
+      "target": "textMateScopes",
+      "variableId": "c-86752e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.documentation string.quoted.double",
+      "target": "textMateScopes",
+      "variableId": "c-86752e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.block.javadoc",
+      "target": "textMateScopes",
+      "variableId": "c-6e7970",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "comment.line.documentation",
+      "target": "textMateScopes",
+      "variableId": "c-6e7970",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.character.escape",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.language",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.numeric",
+      "target": "textMateScopes",
+      "variableId": "c-fa8484",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.other.enum",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "constant.other.reference.link",
+      "target": "textMateScopes",
+      "variableId": "c-979bd6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.function",
+      "target": "textMateScopes",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "c-7498b6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.tag",
+      "target": "textMateScopes",
+      "variableId": "c-9cb19e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.class",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.enum",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.interface",
+      "target": "textMateScopes",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.kotlin",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.struct",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.type.type-parameter",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.variable.field",
+      "target": "textMateScopes",
+      "variableId": "c-db9052",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.variable.parameter",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.name.variable.property",
+      "target": "textMateScopes",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.other.attribute-name",
+      "target": "textMateScopes",
+      "variableId": "c-57a18f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "entity.other.inherited-class",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "fenced_code.block.language",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "heading.1 entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "heading.2 entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "heading.3 entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "keyword",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "keyword.other.documentation",
+      "target": "textMateScopes",
+      "variableId": "c-9cb19e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "markup.inline",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "markup.underline.link",
+      "target": "textMateScopes",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.attribute",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.attribute keyword",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.attribute punctuation.brackets",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "meta.use.rust",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.accessor",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.brackets",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.comma",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.curlybrace",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.annotation",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.comment",
+      "target": "textMateScopes",
+      "variableId": "c-548057",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.heading",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.interpolation",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.parameters",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.string",
+      "target": "textMateScopes",
+      "variableId": "c-6fad6e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.tag",
+      "target": "textMateScopes",
+      "variableId": "c-9cb19e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.definition.typeparameters",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.parenthesis",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.section",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.semi",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.squarebracket",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "punctuation.terminator",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini entity.name.section",
+      "target": "textMateScopes",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini keyword",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini punctuation",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.ini punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.java punctuation.bracket.angle",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json constant.language",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json punctuation.definition",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.json support.type",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.powershell support.constant.variable",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.powershell support.function",
+      "target": "textMateScopes",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.powershell support.variable",
+      "target": "textMateScopes",
+      "variableId": "c-db9052",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-6da071",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian comment.line.text.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-ba8787",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian entity.name.include.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-fc8b8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-fc8b8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-fc8b8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-fc8b8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-fc8b8b",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-cc98ea",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-df9e67",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a5aea6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-b9a99e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-df9e67",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-979bd6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-6fad6e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+      "target": "textMateScopes",
+      "variableId": "c-79d6c7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml entity.other.attribute-name",
+      "target": "textMateScopes",
+      "variableId": "c-26b995",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml keyword",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml punctuation",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.toml punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml constant.language",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml entity.name.tag",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml entity.other",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml punctuation.definition",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "source.yaml punctuation.separator",
+      "target": "textMateScopes",
+      "variableId": "c-9faab6",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.modifier",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.type",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.type.annotation",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "storage.type.generic",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "string",
+      "target": "textMateScopes",
+      "variableId": "c-6fad6e",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "string.other.link",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.html.markdown meta.separator",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.html.markdown punctuation.definition",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.html.markdown punctuation.definition.string",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml entity.name.tag",
+      "target": "textMateScopes",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml entity.other.attribute-name",
+      "target": "textMateScopes",
+      "variableId": "c-35a2fa",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml meta.tag",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "text.xml punctuation.definition.tag",
+      "target": "textMateScopes",
+      "variableId": "c-aca374",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.language",
+      "target": "textMateScopes",
+      "variableId": "c-a4a8db",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other",
+      "target": "textMateScopes",
+      "variableId": "c-db9052",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other.constant",
+      "target": "textMateScopes",
+      "variableId": "c-c589e7",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other.object",
+      "target": "textMateScopes",
+      "variableId": "c-59b3fb",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.other.object.property",
+      "target": "textMateScopes",
+      "variableId": "c-fc7676",
+      "variableType": "color"
+    },
+    {
+      "editorKey": "variable.parameter",
+      "target": "textMateScopes",
+      "variableId": "c-c3ab3f",
+      "variableType": "color"
+    }
+  ]
+}
