@@ -1,0 +1,995 @@
+{
+  "colors": {
+    "activityBar.activeBorder": "3",
+    "activityBar.background": "3",
+    "activityBar.dropBorder": "3",
+    "activityBar.foreground": "3",
+    "activityBar.inactiveForeground": "3",
+    "activityBarBadge.background": "3",
+    "activityBarBadge.foreground": "3",
+    "badge.background": "3",
+    "badge.foreground": "3",
+    "breadcrumb.activeSelectionForeground": "3",
+    "breadcrumb.background": "3",
+    "breadcrumb.focusForeground": "3",
+    "breadcrumb.foreground": "3",
+    "breadcrumbPicker.background": "3",
+    "button.background": "3",
+    "button.foreground": "3",
+    "button.hoverBackground": "3",
+    "button.secondaryBackground": "3",
+    "button.secondaryForeground": "3",
+    "button.secondaryHoverBackground": "3",
+    "diffEditor.insertedTextBackground": "3",
+    "diffEditor.removedTextBackground": "3",
+    "dropdown.background": "3",
+    "dropdown.border": "3",
+    "dropdown.foreground": "3",
+    "dropdown.listBackground": "3",
+    "editor.background": "3",
+    "editor.findMatchBackground": "3",
+    "editor.findMatchHighlightBackground": "3",
+    "editor.findRangeHighlightBackground": "3",
+    "editor.foreground": "3",
+    "editor.lineHighlightBackground": "3",
+    "editor.selectionBackground": "3",
+    "editorBracketMatch.background": "3",
+    "editorBracketMatch.border": "3",
+    "editorCodeLens.foreground": "3",
+    "editorCursor.foreground": "3",
+    "editorGroup.emptyBackground": "3",
+    "editorGroupHeader.tabsBackground": "3",
+    "editorGutter.addedBackground": "3",
+    "editorGutter.background": "3",
+    "editorGutter.deletedBackground": "3",
+    "editorGutter.modifiedBackground": "3",
+    "editorIndentGuide.activeBackground": "3",
+    "editorIndentGuide.background": "3",
+    "editorInlayHint.background": "3",
+    "editorInlayHint.foreground": "3",
+    "editorLineNumber.activeForeground": "3",
+    "editorLineNumber.foreground": "3",
+    "editorLink.activeForeground": "3",
+    "editorRuler.foreground": "3",
+    "editorWidget.background": "3",
+    "editorWidget.border": "3",
+    "editorWidget.foreground": "3",
+    "extensionBadge.remoteBackground": "3",
+    "extensionBadge.remoteForeground": "3",
+    "extensionButton.prominentBackground": "3",
+    "extensionButton.prominentForeground": "3",
+    "extensionButton.prominentHoverBackground": "3",
+    "focusBorder": "3",
+    "gitDecoration.conflictingResourceForeground": "3",
+    "gitDecoration.deletedResourceForeground": "3",
+    "gitDecoration.ignoredResourceForeground": "3",
+    "gitDecoration.modifiedResourceForeground": "3",
+    "gitDecoration.untrackedResourceForeground": "3",
+    "input.background": "3",
+    "input.border": "3",
+    "input.foreground": "3",
+    "input.placeholderForeground": "3",
+    "inputOption.activeBorder": "3",
+    "inputOption.activeForeground": "3",
+    "inputValidation.errorBackground": "3",
+    "inputValidation.errorForeground": "3",
+    "inputValidation.infoBackground": "3",
+    "inputValidation.infoForeground": "3",
+    "inputValidation.warningBackground": "3",
+    "inputValidation.warningForeground": "3",
+    "list.activeSelectionBackground": "3",
+    "list.activeSelectionForeground": "3",
+    "list.focusBackground": "3",
+    "list.focusForeground": "3",
+    "list.highlightForeground": "3",
+    "list.hoverBackground": "3",
+    "list.hoverForeground": "3",
+    "list.inactiveSelectionBackground": "3",
+    "list.inactiveSelectionForeground": "3",
+    "list.invalidItemForeground": "3",
+    "menu.background": "3",
+    "menu.foreground": "3",
+    "menu.selectionBackground": "3",
+    "menu.selectionForeground": "3",
+    "menu.separatorBackground": "3",
+    "menubar.selectionBackground": "3",
+    "menubar.selectionForeground": "3",
+    "notificationCenter.border": "3",
+    "notificationCenterHeader.background": "3",
+    "notificationCenterHeader.foreground": "3",
+    "notificationLink.foreground": "3",
+    "notifications.background": "3",
+    "notifications.border": "3",
+    "notifications.foreground": "3",
+    "notificationsErrorIcon.foreground": "3",
+    "notificationsInfoIcon.foreground": "3",
+    "notificationsWarningIcon.foreground": "3",
+    "notificationToast.border": "3",
+    "panel.background": "3",
+    "panel.border": "3",
+    "panel.dropBorder": "3",
+    "panelSection.border": "3",
+    "panelSection.dropBackground": "3",
+    "panelSectionHeader.background": "3",
+    "panelTitle.activeBorder": "3",
+    "panelTitle.activeForeground": "3",
+    "panelTitle.inactiveForeground": "3",
+    "progressBar.background": "3",
+    "scrollbar.shadow": "3",
+    "scrollbarSlider.activeBackground": "3",
+    "scrollbarSlider.background": "3",
+    "scrollbarSlider.hoverBackground": "3",
+    "sideBar.background": "3",
+    "sideBar.border": "3",
+    "sideBar.dropBackground": "3",
+    "sideBar.foreground": "3",
+    "sideBarSectionHeader.background": "3",
+    "sideBarSectionHeader.foreground": "3",
+    "sideBarTitle.foreground": "3",
+    "statusBar.background": "3",
+    "statusBar.debuggingBackground": "3",
+    "statusBar.debuggingForeground": "3",
+    "statusBar.foreground": "3",
+    "statusBar.noFolderBackground": "3",
+    "statusBar.noFolderForeground": "3",
+    "statusBarItem.activeBackground": "3",
+    "statusBarItem.errorBackground": "3",
+    "statusBarItem.errorForeground": "3",
+    "statusBarItem.hoverBackground": "3",
+    "statusBarItem.remoteForeground": "3",
+    "tab.activeBackground": "3",
+    "tab.activeForeground": "3",
+    "tab.border": "3",
+    "tab.inactiveBackground": "3",
+    "tab.inactiveForeground": "3",
+    "terminal.ansiBlack": "3",
+    "terminal.ansiBlue": "3",
+    "terminal.ansiBrightBlack": "3",
+    "terminal.ansiBrightBlue": "3",
+    "terminal.ansiBrightCyan": "3",
+    "terminal.ansiBrightGreen": "3",
+    "terminal.ansiBrightMagenta": "3",
+    "terminal.ansiBrightRed": "3",
+    "terminal.ansiBrightWhite": "3",
+    "terminal.ansiBrightYellow": "3",
+    "terminal.ansiCyan": "3",
+    "terminal.ansiGreen": "3",
+    "terminal.ansiMagenta": "3",
+    "terminal.ansiRed": "3",
+    "terminal.ansiWhite": "3",
+    "terminal.ansiYellow": "3",
+    "terminal.background": "3",
+    "terminal.border": "3",
+    "terminal.foreground": "3",
+    "textPreformat.foreground": "3",
+    "titleBar.activeBackground": "3",
+    "titleBar.activeForeground": "3",
+    "titleBar.border": "3",
+    "titleBar.inactiveBackground": "3",
+    "titleBar.inactiveForeground": "3",
+    "widget.shadow": "3"
+  },
+  "name": "Vayeate Semantic Merged (Vayeate) (light)",
+  "semanticHighlighting": true,
+  "semanticTokenColors": {
+    "*.deprecated": "3",
+    "class": "3",
+    "comment": "1.5",
+    "comment.documentation": "1.5",
+    "constant": "3",
+    "controlKeyword": "5",
+    "delegate": "3",
+    "enum": "3",
+    "enumMember": "3",
+    "field": "3",
+    "field.static": "3",
+    "interface": "3",
+    "keyword": "5",
+    "local": "3",
+    "method": "3",
+    "namespace": "3",
+    "number": "3",
+    "operator": "3",
+    "parameter": "3",
+    "plainKeyword": "5",
+    "property": "3",
+    "property:java": "3",
+    "property.static.readonly": "3",
+    "punctuation": "3",
+    "regexp": "4",
+    "string": "4",
+    "stringEscapeCharacter": "4",
+    "struct": "3",
+    "typeParameter": "3",
+    "variable": "3",
+    "variable.static.readonly": "3",
+    "xmlDocCommentAttributeName": "3",
+    "xmlDocCommentAttributeQuotes": "3",
+    "xmlDocCommentDelimiter": "3",
+    "xmlDocCommentName": "3",
+    "xmlDocCommentText": "3"
+  },
+  "tokenColors": [
+    {
+      "scope": "comment",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "comment.block.documentation",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "comment.block.documentation punctuation.definition.string",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "comment.block.documentation string.quoted.double",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "comment.block.javadoc",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "comment.line.documentation",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "constant.character.escape",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "constant.language",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "constant.numeric",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "constant.other.enum",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "constant.other.reference.link",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.function",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.section",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.tag",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.type.class",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.type.enum",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.type.interface",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.type.kotlin",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.type.struct",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.type.type-parameter",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.variable.field",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.variable.parameter",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.name.variable.property",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.other.attribute-name",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "entity.other.inherited-class",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "fenced_code.block.language",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "heading.1 entity.name.section",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "heading.2 entity.name.section",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "heading.3 entity.name.section",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "keyword",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "keyword.other.documentation",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "markup.inline",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "markup.underline.link",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "meta.attribute",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "meta.attribute keyword",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "meta.attribute punctuation.brackets",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "meta.use.rust",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.accessor",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.brackets",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.comma",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.curlybrace",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.definition.annotation",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.definition.comment",
+      "settings": {
+        "foreground": "1.5"
+      }
+    },
+    {
+      "scope": "punctuation.definition.heading",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.definition.interpolation",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.definition.parameters",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.definition.string",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "punctuation.definition.tag",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.definition.typeparameters",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.parenthesis",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.section",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.semi",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.separator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.squarebracket",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "punctuation.terminator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.ini",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.ini entity.name.section",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.ini keyword",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.ini punctuation",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.ini punctuation.separator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.java punctuation.bracket.angle",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.json constant.language",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.json punctuation.definition",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.json punctuation.separator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.json support.type",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.powershell support.constant.variable",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.powershell support.function",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.powershell support.variable",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian comment.line.text.obsidian",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian entity.name.include.obsidian",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian string.regexp",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "source.toml",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.toml entity.other.attribute-name",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.toml keyword",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "source.toml punctuation",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.toml punctuation.separator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.yaml constant.language",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.yaml entity.name.tag",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.yaml entity.other",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.yaml punctuation.definition",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "source.yaml punctuation.separator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "storage.modifier",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "storage.type",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "storage.type.annotation",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "storage.type.generic",
+      "settings": {
+        "foreground": "5"
+      }
+    },
+    {
+      "scope": "string",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "string.other.link",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "text.html.markdown meta.separator",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "text.html.markdown punctuation.definition",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "text.html.markdown punctuation.definition.string",
+      "settings": {
+        "foreground": "4"
+      }
+    },
+    {
+      "scope": "text.xml entity.name.tag",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "text.xml entity.other.attribute-name",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "text.xml meta.tag",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "text.xml punctuation.definition.tag",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "variable.language",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "variable.other",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "variable.other.constant",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "variable.other.object",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "variable.other.object.property",
+      "settings": {
+        "foreground": "3"
+      }
+    },
+    {
+      "scope": "variable.parameter",
+      "settings": {
+        "foreground": "3"
+      }
+    }
+  ],
+  "type": "light"
+}
