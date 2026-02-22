@@ -9,6 +9,7 @@ import { resolveOutputDirectory } from "./src/core/exporter";
 import { stableStringify } from "./src/core/json";
 import type { CatalogPin, GeneratedOutputSummary, ThemeTemplate, ThemeKind } from "./src/domain/types";
 import { getCatalogStatus, saveCatalogPin, syncCatalogSnapshot } from "./src/core/catalog-sync";
+import { createV2ApiMiddleware } from "./vite-api-v2";
 
 const TEMPLATE_FILE_PATTERN = /^[a-z0-9-]+\.template\.json$/;
 
@@ -103,10 +104,15 @@ async function buildGenerateSummary(studioRoot: string, template: ThemeTemplate)
 function themeStudioApiPlugin() {
   const studioRoot = __dirname;
   const templatesDir = path.resolve(studioRoot, "templates");
+  const v2Middleware = createV2ApiMiddleware(studioRoot);
 
   return {
     name: "theme-studio-api",
     configureServer(server: { middlewares: { use: (handler: (req: IncomingMessage, res: ServerResponse, next: () => void) => void) => void } }) {
+      // Add V2 API middleware first
+      server.middlewares.use(v2Middleware);
+      
+      // Then add V1 API middleware
       server.middlewares.use(async (req, res, next) => {
         const url = req.url ?? "";
 

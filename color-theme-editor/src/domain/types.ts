@@ -203,3 +203,100 @@ export interface CatalogSyncResult {
   remoteSnapshot: CatalogRemoteSnapshot | null;
   report: CatalogValidationReport;
 }
+
+// ============================================================================
+// NEW DATA MODEL (v2)
+// ============================================================================
+
+export type CatalogSource = "remote" | "manual";
+
+export interface Catalog {
+  schemaVersion: 2;
+  name: string;
+  version: string;
+  source: CatalogSource;
+  sources?: {
+    themeColorRegistryUrl?: string;
+    semanticTokenRegistryUrl?: string;
+    scopeGuidanceUrl?: string;
+  };
+  keys: {
+    colors: string[];
+    semanticTokens: string[];
+    textMateScopes: string[];
+  };
+}
+
+export type VariableType = "color" | "contrast";
+
+export interface ColorVariable_v2 {
+  id: string;
+  name: string;
+}
+
+export interface ContrastVariable {
+  id: string;
+  name: string;
+  targetRatio: number;
+}
+
+export type CatalogTarget = "colors" | "semanticTokens" | "textMateScopes";
+
+export interface VariableMapping {
+  catalogName: string;
+  catalogKey: string;
+  catalogTarget: CatalogTarget;
+  variableId: string;
+  variableType: VariableType;
+}
+
+export interface Template_v2 {
+  schemaVersion: 2;
+  id: string;
+  name: string;
+  description?: string;
+  catalogRefs: string[];
+  variables: {
+    color: ColorVariable_v2[];
+    contrast: ContrastVariable[];
+  };
+  mappings: VariableMapping[];
+}
+
+export type ThemeVariableValue = ColorHex | "useDark";
+
+export interface ThemeVariableAssignment {
+  variableId: string;
+  value: ThemeVariableValue;
+}
+
+export interface Theme {
+  schemaVersion: 2;
+  id: string;
+  name: string;
+  templateRef: string;
+  values: {
+    dark: ThemeVariableAssignment[];
+    light: ThemeVariableAssignment[];
+  };
+  output: {
+    darkFileName: string;
+    lightFileName: string;
+    outputDir: string;
+  };
+}
+
+export interface CatalogSyncOptions {
+  syncRemote: boolean;
+  updateVersion: boolean;
+}
+
+export interface CatalogAddKeyRequest {
+  target: CatalogTarget;
+  key: string;
+}
+
+export interface CatalogRemoveKeyRequest {
+  target: CatalogTarget;
+  key: string;
+}

@@ -1,0 +1,24 @@
+{
+  "issues": [
+    {
+      "code": "LOCAL_EXTENSIONS_PRESENT",
+      "message": "Local-only entries detected (colors=170, semantic=36, scopes=130).",
+      "severity": "warning"
+    }
+  ],
+  "stats": {
+    "colorKeyCount": 170,
+    "localOnlyColorKeys": 170,
+    "localOnlySemanticTokenKeys": 36,
+    "localOnlyTextMateScopes": 130,
+    "remoteColorKeyCount": 0,
+    "remoteOnlyColorKeys": 0,
+    "remoteOnlySemanticTokenKeys": 0,
+    "remoteOnlyTextMateScopes": 0,
+    "remoteSemanticTokenKeyCount": 0,
+    "remoteTextMateScopeCount": 0,
+    "semanticTokenKeyCount": 36,
+    "textMateScopeCount": 130
+  },
+  "valid": true
+}
