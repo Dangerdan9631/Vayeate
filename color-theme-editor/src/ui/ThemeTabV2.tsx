@@ -115,6 +115,15 @@ export function ThemeTabV2({
     return assignment.value;
   };
 
+  const normalizeContrastInput = (value: string): string => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    const parsed = Number.parseFloat(trimmed);
+    if (!Number.isFinite(parsed)) return "";
+    const bounded = Math.min(10, Math.max(1, parsed));
+    return Number.parseFloat(bounded.toFixed(2)).toString();
+  };
+
   const resolveVariableValue = (variableId: string, variant: "dark" | "light"): string => {
     if (!theme) return "";
 
@@ -414,40 +423,34 @@ export function ThemeTabV2({
                                 <div style={{ fontWeight: 600, marginBottom: 6 }}>
                                   {variable.name} <span style={{ fontSize: 11, color: "#666" }}>({variable.id}, ratio: {variable.targetRatio})</span>
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 8, alignItems: "center" }}>
+                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 8, alignItems: "center" }}>
                                   <label style={{ fontSize: 13 }}>Dark:</label>
                                   <input
-                                    type="text"
+                                    type="number"
+                                    min={1}
+                                    max={10}
+                                    step={0.1}
                                     value={darkValue}
-                                    onChange={(e) => onSetVariableValue(variable.id, "contrast", "dark", e.target.value)}
-                                    placeholder="#rrggbb"
+                                    onChange={(e) => onSetVariableValue(variable.id, "contrast", "dark", normalizeContrastInput(e.target.value))}
+                                    placeholder="4.5"
                                     style={{ width: "100%" }}
                                   />
-                                  <input
-                                    type="color"
-                                    value={darkValue.startsWith("#") && darkValue.length === 7 ? darkValue : "#000000"}
-                                    onChange={(e) => onSetVariableValue(variable.id, "contrast", "dark", e.target.value)}
-                                    style={{ width: 40, height: 30, cursor: "pointer" }}
-                                  />
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 8, alignItems: "center", marginTop: 6 }}>
+                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 8, alignItems: "center", marginTop: 6 }}>
                                   <label style={{ fontSize: 13 }}>Light:</label>
                                   {useDark ? (
                                     <div style={{ fontStyle: "italic", color: "#666" }}>Using dark value</div>
                                   ) : (
                                     <>
                                       <input
-                                        type="text"
+                                        type="number"
+                                        min={1}
+                                        max={10}
+                                        step={0.1}
                                         value={lightValue}
-                                        onChange={(e) => onSetVariableValue(variable.id, "contrast", "light", e.target.value)}
-                                        placeholder="#rrggbb"
+                                        onChange={(e) => onSetVariableValue(variable.id, "contrast", "light", normalizeContrastInput(e.target.value))}
+                                        placeholder="4.5"
                                         style={{ width: "100%" }}
-                                      />
-                                      <input
-                                        type="color"
-                                        value={lightValue.startsWith("#") && lightValue.length === 7 ? lightValue : "#ffffff"}
-                                        onChange={(e) => onSetVariableValue(variable.id, "contrast", "light", e.target.value)}
-                                        style={{ width: 40, height: 30, cursor: "pointer" }}
                                       />
                                     </>
                                   )}

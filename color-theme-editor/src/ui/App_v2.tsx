@@ -679,7 +679,18 @@ export function App(): JSX.Element {
     const targetArray = variant === "dark" ? theme.values.dark : theme.values.light;
     const existingIndex = targetArray.findIndex((v) => v.variableId === variableId);
     const normalizedValue = value.trim();
-    const nextValue = normalizedValue as ThemeVariableValue;
+    let nextValue: ThemeVariableValue;
+
+    if (variableType === "contrast" && normalizedValue) {
+      const parsed = Number.parseFloat(normalizedValue);
+      if (!Number.isFinite(parsed)) {
+        return;
+      }
+      const bounded = Math.min(10, Math.max(1, parsed));
+      nextValue = Number.parseFloat(bounded.toFixed(2)).toString() as ThemeVariableValue;
+    } else {
+      nextValue = normalizedValue as ThemeVariableValue;
+    }
     
     let updatedArray: ThemeVariableAssignment[];
     if (!normalizedValue) {
