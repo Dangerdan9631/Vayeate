@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 2,
+  "name": "vs_theme_colors",
+  "version": "1.0.0",
+  "source": "remote",
+  "keys": {
+    "colors": [],
+    "semanticTokens": [],
+    "textMateScopes": []
+  },
+  "sources": {
+    "themeColorRegistryUrl": "https://code.visualstudio.com/api/references/theme-color",
+    "semanticTokenRegistryUrl": "",
+    "scopeGuidanceUrl": ""
+  }
+}
