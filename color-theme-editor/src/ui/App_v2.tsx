@@ -119,6 +119,7 @@ export function App(): JSX.Element {
   const [theme, setTheme] = useState<Theme | null>(null);
   const [themeBusy, setThemeBusy] = useState(false);
   const [themeError, setThemeError] = useState("");
+  const themeSaveRequestRef = useRef(0);
   
   // Load initial data
   useEffect(() => {
@@ -651,15 +652,25 @@ export function App(): JSX.Element {
   }
   
   async function handleSaveTheme(thm: Theme): Promise<void> {
+    const saveRequestId = ++themeSaveRequestRef.current;
     setThemeBusy(true);
-    setThemeError("");
+    if (saveRequestId === themeSaveRequestRef.current) {
+      setThemeError("");
+    }
+
     try {
       await apiV2.saveTheme(thm);
-      await loadTheme(thm.id);
+      if (saveRequestId !== themeSaveRequestRef.current) {
+        return;
+      }
     } catch (error) {
-      setThemeError(error instanceof Error ? error.message : "Failed to save theme");
+      if (saveRequestId === themeSaveRequestRef.current) {
+        setThemeError(error instanceof Error ? error.message : "Failed to save theme");
+      }
     } finally {
-      setThemeBusy(false);
+      if (saveRequestId === themeSaveRequestRef.current) {
+        setThemeBusy(false);
+      }
     }
   }
   

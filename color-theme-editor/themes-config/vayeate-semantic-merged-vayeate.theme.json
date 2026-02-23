@@ -797,7 +797,7 @@
       },
       {
         "variableId": "comments-alt5",
-        "value": "#566271"
+        "value": "#73aef7"
       },
       {
         "variableId": "config-syntax",
@@ -1533,5 +1533,8 @@
     "darkFileName": "vayeate-semantic-merged-dark.json",
     "lightFileName": "vayeate-semantic-merged-light.json",
     "outputDir": "../themes"
+  },
+  "preview": {
+    "borderVariableId": "ide-primary"
   }
 }

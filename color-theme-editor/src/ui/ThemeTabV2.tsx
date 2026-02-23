@@ -65,6 +65,7 @@ export function ThemeTabV2({
   const [cloneName, setCloneName] = useState("");
   const [showCloneDialog, setShowCloneDialog] = useState(false);
   const [previewBorderVariableId, setPreviewBorderVariableId] = useState("");
+  const [variableSearch, setVariableSearch] = useState("");
   const [previewLanguages, setPreviewLanguages] = useState<PreviewSourceLanguage[]>([]);
   const [previewBatches, setPreviewBatches] = useState<PreviewTokenizedLanguageBatch[]>([]);
   const [previewBusy, setPreviewBusy] = useState(false);
@@ -330,6 +331,39 @@ export function ThemeTabV2({
     } satisfies Theme;
   }, [previewBorderVariableId, theme]);
 
+  const autosaveTheme = (nextPreviewVariableId: string | null = null): void => {
+    if (!theme) return;
+
+    const previewVariableId = nextPreviewVariableId === null
+      ? previewBorderVariableId
+      : nextPreviewVariableId;
+
+    const nextTheme: Theme = {
+      ...theme,
+      preview: previewVariableId ? { borderVariableId: previewVariableId } : undefined,
+    };
+
+    void onSaveTheme(nextTheme);
+  };
+
+  const filteredColorVariables = useMemo(() => {
+    const query = variableSearch.trim().toLowerCase();
+    if (!query) return template?.variables.color ?? [];
+    return (template?.variables.color ?? []).filter((variable) =>
+      variable.name.toLowerCase().includes(query)
+      || variable.id.toLowerCase().includes(query),
+    );
+  }, [template?.variables.color, variableSearch]);
+
+  const filteredContrastVariables = useMemo(() => {
+    const query = variableSearch.trim().toLowerCase();
+    if (!query) return template?.variables.contrast ?? [];
+    return (template?.variables.contrast ?? []).filter((variable) =>
+      variable.name.toLowerCase().includes(query)
+      || variable.id.toLowerCase().includes(query),
+    );
+  }, [template?.variables.contrast, variableSearch]);
+
   const getPreviewFrameStyle = (variant: "dark" | "light") => {
     const frameBorder =
       (previewBorderVariableId ? resolveVariableValue(previewBorderVariableId, variant) : "")
@@ -337,6 +371,7 @@ export function ThemeTabV2({
 
     return {
       border: `1px solid ${frameBorder}`,
+      backgroundColor: frameBorder,
       borderRadius: 8,
       padding: 8,
     };
@@ -344,8 +379,8 @@ export function ThemeTabV2({
 
   return (
     <div style={{ display: "grid", gap: 12 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12, alignItems: "start" }}>
-        <div style={{ display: "grid", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12, alignItems: "start", maxHeight: "calc(100dvh - 160px)" }}>
+        <div style={{ display: "grid", gap: 12, overflow: "auto", minHeight: 0 }}>
           {/* Theme Selection */}
           <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>
             <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>Themes</h2>
@@ -460,75 +495,93 @@ export function ThemeTabV2({
               </article>
 
               {/* Variable Values */}
-              <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>
-                <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>Variable Values</h2>
+              <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 8 }}>
+                <h2 style={{ margin: "0 0 4px", fontSize: 14, lineHeight: 1.1 }}>Variable Values</h2>
+                <div style={{ marginBottom: 4 }}>
+                  <input
+                    type="search"
+                    value={variableSearch}
+                    onChange={(e) => setVariableSearch(e.target.value)}
+                    placeholder="Search variables"
+                    style={{ width: "100%", fontSize: 10, padding: "2px 4px", lineHeight: 1.1 }}
+                  />
+                </div>
 
                 {allVariables.length === 0 ? (
                   <p style={{ margin: 0, color: "#666" }}>No variables defined in template.</p>
                 ) : (
-                  <div style={{ display: "grid", gap: 12 }}>
+                  <div style={{ display: "grid", gap: 4 }}>
                     {/* Color Variables */}
-                    {template.variables.color.length > 0 && (
+                    {filteredColorVariables.length > 0 && (
                       <div>
-                        <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>Color Variables</h3>
-                        <div style={{ display: "grid", gap: 6 }}>
-                          {template.variables.color.map((variable) => {
+                        <h3 style={{ margin: "0 0 2px", fontSize: 11, lineHeight: 1.1 }}>Color Variables</h3>
+                        <div style={{ display: "grid", gap: 2 }}>
+                          {filteredColorVariables.map((variable) => {
                             const useDark = isLightUsingDark(variable.id, "color");
                             const darkValue = getVariableValue(variable.id, "color", "dark");
                             const lightValue = useDark ? darkValue : getVariableValue(variable.id, "color", "light");
 
                             return (
-                              <div key={variable.id} style={{ border: "1px solid #e1e1e1", borderRadius: 4, padding: 10 }}>
-                                <div style={{ fontWeight: 600, marginBottom: 6 }}>
-                                  {variable.name} <span style={{ fontSize: 11, color: "#666" }}>({variable.id})</span>
+                              <div key={variable.id} style={{ border: "1px solid #e1e1e1", borderRadius: 3, padding: 4, width: "100%", boxSizing: "border-box" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 2 }}>
+                                  <div style={{ fontWeight: 600, fontSize: 11, minWidth: 0, overflowWrap: "anywhere", lineHeight: 1.1 }}>
+                                    {variable.name} <span style={{ fontSize: 9, color: "#666" }}>({variable.id})</span>
+                                  </div>
+                                  <label style={{ fontSize: 10, lineHeight: 1.1, flexShrink: 1 }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={useDark}
+                                      onChange={() => {
+                                        onSetLightToUseDark(variable.id, "color");
+                                        autosaveTheme();
+                                      }}
+                                    />{" "}
+                                    Light uses dark value
+                                  </label>
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 8, alignItems: "center" }}>
-                                  <label style={{ fontSize: 13 }}>Dark:</label>
-                                  <input
-                                    type="text"
-                                    value={darkValue}
-                                    onChange={(e) => onSetVariableValue(variable.id, "color", "dark", e.target.value)}
-                                    placeholder="#rrggbb"
-                                    style={{ width: "100%" }}
-                                  />
-                                  <input
-                                    type="color"
-                                    value={darkValue.startsWith("#") && darkValue.length === 7 ? darkValue : "#000000"}
-                                    onChange={(e) => onSetVariableValue(variable.id, "color", "dark", e.target.value)}
-                                    style={{ width: 40, height: 30, cursor: "pointer" }}
-                                  />
-                                </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 8, alignItems: "center", marginTop: 6 }}>
-                                  <label style={{ fontSize: 13 }}>Light:</label>
-                                  {useDark ? (
-                                    <div style={{ fontStyle: "italic", color: "#666" }}>Using dark value</div>
-                                  ) : (
-                                    <>
+                                <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 4 }}>
+                                  <div style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr) auto", gap: 4, alignItems: "center", minWidth: 0 }}>
+                                    <label style={{ fontSize: 10, lineHeight: 1.1 }}>Dark:</label>
+                                    <input
+                                      type="text"
+                                      value={darkValue}
+                                      onChange={(e) => onSetVariableValue(variable.id, "color", "dark", e.target.value)}
+                                      onBlur={() => autosaveTheme()}
+                                      placeholder="#rrggbb"
+                                      style={{ width: "100%", minWidth: 0, fontSize: 10, padding: "1px 3px", lineHeight: 1.1 }}
+                                    />
+                                    <input
+                                      type="color"
+                                      value={darkValue.startsWith("#") && darkValue.length === 7 ? darkValue : "#000000"}
+                                      onChange={(e) => onSetVariableValue(variable.id, "color", "dark", e.target.value)}
+                                      onBlur={() => autosaveTheme()}
+                                      style={{ width: 24, height: 18, cursor: "pointer", padding: 0 }}
+                                    />
+                                  </div>
+                                  <div style={{ display: "grid", gridTemplateColumns: "auto minmax(0, 1fr) auto", gap: 4, alignItems: "center", minWidth: 0 }}>
+                                    <label style={{ fontSize: 10, lineHeight: 1.1 }}>Light:</label>
+                                    {useDark ? (
+                                      <div style={{ gridColumn: "2 / span 2", fontStyle: "italic", fontSize: 10, color: "#666", lineHeight: 1.1 }}>Using dark value</div>
+                                    ) : (
+                                      <>
                                       <input
                                         type="text"
                                         value={lightValue}
                                         onChange={(e) => onSetVariableValue(variable.id, "color", "light", e.target.value)}
+                                        onBlur={() => autosaveTheme()}
                                         placeholder="#rrggbb"
-                                        style={{ width: "100%" }}
+                                        style={{ width: "100%", minWidth: 0, fontSize: 10, padding: "1px 3px", lineHeight: 1.1 }}
                                       />
                                       <input
                                         type="color"
                                         value={lightValue.startsWith("#") && lightValue.length === 7 ? lightValue : "#ffffff"}
                                         onChange={(e) => onSetVariableValue(variable.id, "color", "light", e.target.value)}
-                                        style={{ width: 40, height: 30, cursor: "pointer" }}
+                                        onBlur={() => autosaveTheme()}
+                                        style={{ width: 24, height: 18, cursor: "pointer", padding: 0 }}
                                       />
                                     </>
                                   )}
-                                </div>
-                                <div style={{ marginTop: 6 }}>
-                                  <label style={{ fontSize: 12 }}>
-                                    <input
-                                      type="checkbox"
-                                      checked={useDark}
-                                      onChange={() => onSetLightToUseDark(variable.id, "color")}
-                                    />{" "}
-                                    Light uses dark value
-                                  </label>
+                                  </div>
                                 </div>
                               </div>
                             );
@@ -538,39 +591,54 @@ export function ThemeTabV2({
                     )}
 
                     {/* Contrast Variables */}
-                    {template.variables.contrast.length > 0 && (
+                    {filteredContrastVariables.length > 0 && (
                       <div>
-                        <h3 style={{ margin: "0 0 8px", fontSize: 14 }}>Contrast Variables</h3>
-                        <div style={{ display: "grid", gap: 6 }}>
-                          {template.variables.contrast.map((variable) => {
+                        <h3 style={{ margin: "0 0 2px", fontSize: 11, lineHeight: 1.1 }}>Contrast Variables</h3>
+                        <div style={{ display: "grid", gap: 2 }}>
+                          {filteredContrastVariables.map((variable) => {
                             const useDark = isLightUsingDark(variable.id, "contrast");
                             const darkValue = getVariableValue(variable.id, "contrast", "dark");
                             const lightValue = useDark ? darkValue : getVariableValue(variable.id, "contrast", "light");
 
                             return (
-                              <div key={variable.id} style={{ border: "1px solid #e1e1e1", borderRadius: 4, padding: 10 }}>
-                                <div style={{ fontWeight: 600, marginBottom: 6 }}>
-                                  {variable.name} <span style={{ fontSize: 11, color: "#666" }}>({variable.id}, ratio: {variable.targetRatio})</span>
+                              <div key={variable.id} style={{ border: "1px solid #e1e1e1", borderRadius: 3, padding: 4, width: "100%", boxSizing: "border-box" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 2 }}>
+                                  <div style={{ fontWeight: 600, fontSize: 11, minWidth: 0, overflowWrap: "anywhere", lineHeight: 1.1 }}>
+                                    {variable.name} <span style={{ fontSize: 9, color: "#666" }}>({variable.id}, ratio: {variable.targetRatio})</span>
+                                  </div>
+                                  <label style={{ fontSize: 10, lineHeight: 1.1, flexShrink: 1 }}>
+                                    <input
+                                      type="checkbox"
+                                      checked={useDark}
+                                      onChange={() => {
+                                        onSetLightToUseDark(variable.id, "contrast");
+                                        autosaveTheme();
+                                      }}
+                                    />{" "}
+                                    Light uses dark value
+                                  </label>
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 8, alignItems: "center" }}>
-                                  <label style={{ fontSize: 13 }}>Dark:</label>
-                                  <input
-                                    type="number"
-                                    min={1}
-                                    max={10}
-                                    step={0.1}
-                                    value={darkValue}
-                                    onChange={(e) => onSetVariableValue(variable.id, "contrast", "dark", normalizeContrastInput(e.target.value))}
-                                    placeholder="4.5"
-                                    style={{ width: "100%" }}
-                                  />
-                                </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: 8, alignItems: "center", marginTop: 6 }}>
-                                  <label style={{ fontSize: 13 }}>Light:</label>
-                                  {useDark ? (
-                                    <div style={{ fontStyle: "italic", color: "#666" }}>Using dark value</div>
-                                  ) : (
-                                    <>
+                                <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 4 }}>
+                                  <div style={{ display: "grid", gridTemplateColumns: "auto auto", gap: 4, alignItems: "center", justifyContent: "start", minWidth: 0 }}>
+                                    <label style={{ fontSize: 10, lineHeight: 1.1 }}>Dark:</label>
+                                    <input
+                                      type="number"
+                                      min={1}
+                                      max={10}
+                                      step={0.1}
+                                      value={darkValue}
+                                      onChange={(e) => onSetVariableValue(variable.id, "contrast", "dark", normalizeContrastInput(e.target.value))}
+                                      onBlur={() => autosaveTheme()}
+                                      placeholder="4.5"
+                                      style={{ width: 56, minWidth: 0, fontSize: 10, padding: "1px 3px", lineHeight: 1.1 }}
+                                    />
+                                  </div>
+                                  <div style={{ display: "grid", gridTemplateColumns: "auto auto", gap: 4, alignItems: "center", justifyContent: "start", minWidth: 0 }}>
+                                    <label style={{ fontSize: 10, lineHeight: 1.1 }}>Light:</label>
+                                    {useDark ? (
+                                      <div style={{ fontStyle: "italic", fontSize: 10, color: "#666", lineHeight: 1.1 }}>Using dark value</div>
+                                    ) : (
+                                      <>
                                       <input
                                         type="number"
                                         min={1}
@@ -578,21 +646,13 @@ export function ThemeTabV2({
                                         step={0.1}
                                         value={lightValue}
                                         onChange={(e) => onSetVariableValue(variable.id, "contrast", "light", normalizeContrastInput(e.target.value))}
+                                        onBlur={() => autosaveTheme()}
                                         placeholder="4.5"
-                                        style={{ width: "100%" }}
+                                        style={{ width: 56, minWidth: 0, fontSize: 10, padding: "1px 3px", lineHeight: 1.1 }}
                                       />
                                     </>
                                   )}
-                                </div>
-                                <div style={{ marginTop: 6 }}>
-                                  <label style={{ fontSize: 12 }}>
-                                    <input
-                                      type="checkbox"
-                                      checked={useDark}
-                                      onChange={() => onSetLightToUseDark(variable.id, "contrast")}
-                                    />{" "}
-                                    Light uses dark value
-                                  </label>
+                                  </div>
                                 </div>
                               </div>
                             );
@@ -600,6 +660,10 @@ export function ThemeTabV2({
                         </div>
                       </div>
                     )}
+
+                    {filteredColorVariables.length === 0 && filteredContrastVariables.length === 0 ? (
+                      <p style={{ margin: 0, color: "#666" }}>No variables match your search.</p>
+                    ) : null}
                   </div>
                 )}
               </article>
@@ -624,7 +688,8 @@ export function ThemeTabV2({
             padding: 12,
             display: "flex",
             flexDirection: "column",
-            maxHeight: "calc(100dvh - 220px)",
+            overflow: "auto",
+            minHeight: 0,
           }}
         >
           <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>Editor Previews</h2>
@@ -634,10 +699,15 @@ export function ThemeTabV2({
               <div style={{ display: "grid", gap: 10, marginBottom: 10 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                   <label style={{ display: "grid", gap: 4 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600 }}>Preview frame border variable</span>
+                    <span style={{ fontSize: 12, fontWeight: 600 }}>IDE primary color</span>
                     <select
                       value={previewBorderVariableId}
-                      onChange={(e) => setPreviewBorderVariableId(e.target.value)}
+                      onChange={(e) => {
+                        const nextValue = e.target.value;
+                        setPreviewBorderVariableId(nextValue);
+                        autosaveTheme(nextValue);
+                      }}
+                      onBlur={() => autosaveTheme()}
                     >
                       <option value="">-- None --</option>
                       {(template?.variables.color ?? []).map((variable) => (
