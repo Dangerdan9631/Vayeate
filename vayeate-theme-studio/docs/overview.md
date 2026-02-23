@@ -1,6 +1,6 @@
 ## Overview
 
-Vayeate Theme Studio is a standalone local application for authoring, previewing, and exporting VS Code color themes with deterministic output. Its primary goal is to give theme authors a reliable end-to-end workflow to define reusable templates that can be used to define a minimal set of parameters to output production-ready dark and light theme JSON files, while keeping generation behavior reproducible and explainable and maintaining consistent visiblity and readability quality.
+Vayeate Theme Studio is a standalone local application for authoring, previewing, and exporting VS Code color themes with deterministic output. Its primary goal is to give theme authors a reliable end-to-end workflow to define reusable templates that can be used to define a minimal set of parameters to output production-ready dark and light theme JSON files, while keeping generation behavior reproducible and explainable and maintaining consistent visibility and readability quality.
 
 The application is designed to solve three core problems:
 
