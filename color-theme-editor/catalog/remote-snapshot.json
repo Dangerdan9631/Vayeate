@@ -1,0 +1,13 @@
+{
+  "colorKeys": [],
+  "fetchedAt": "2026-02-21T22:13:32.263Z",
+  "pinnedVersion": "vscode-catalog-2026-02-21",
+  "schemaVersion": 1,
+  "semanticTokenKeys": [],
+  "sourceUrls": {
+    "scopeGuidanceUrl": "https://macromates.com/manual/en/scope_selectors",
+    "semanticTokenRegistryUrl": "https://code.visualstudio.com/api/language-extensions/semantic-highlight-guide#standard-token-types-and-modifiers",
+    "themeColorRegistryUrl": "https://code.visualstudio.com/api/references/theme-color"
+  },
+  "textMateScopes": []
+}
