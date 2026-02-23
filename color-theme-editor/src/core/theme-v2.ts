@@ -5,8 +5,10 @@ import type {
   ThemeVariableAssignment,
   ColorHex,
   ThemeVariableValue,
+  ContrastRatioValue,
   ThemeKind,
 } from "../domain/types";
+import { normalizeHex } from "./color";
 
 const THEMES_DIR = "themes-config";
 
@@ -99,18 +101,81 @@ export function getVariableValue(theme: Theme, kind: ThemeKind, variableId: stri
 }
 
 export function resolveVariableValue(theme: Theme, kind: ThemeKind, variableId: string): ColorHex | null {
+  return resolveColorVariableValue(theme, kind, variableId);
+}
+
+export function resolveColorVariableValue(theme: Theme, kind: ThemeKind, variableId: string): ColorHex | null {
   if (kind === "dark") {
     const darkValue = getVariableValue(theme, "dark", variableId);
-    return darkValue === "useDark" ? null : (darkValue as ColorHex | null);
+    if (!darkValue || darkValue === "useDark") {
+      return null;
+    }
+
+    if (!darkValue.startsWith("#")) {
+      return null;
+    }
+
+    try {
+      return normalizeHex(darkValue) as ColorHex;
+    } catch {
+      return null;
+    }
   }
   
   const lightValue = getVariableValue(theme, "light", variableId);
   if (lightValue === "useDark") {
     const darkValue = getVariableValue(theme, "dark", variableId);
-    return darkValue === "useDark" ? null : (darkValue as ColorHex | null);
+    if (!darkValue || darkValue === "useDark") {
+      return null;
+    }
+
+    if (!darkValue.startsWith("#")) {
+      return null;
+    }
+
+    try {
+      return normalizeHex(darkValue) as ColorHex;
+    } catch {
+      return null;
+    }
   }
-  
-  return lightValue as ColorHex | null;
+
+  if (!lightValue || !lightValue.startsWith("#")) {
+    return null;
+  }
+
+  try {
+    return normalizeHex(lightValue) as ColorHex;
+  } catch {
+    return null;
+  }
+}
+
+export function resolveContrastVariableValue(theme: Theme, kind: ThemeKind, variableId: string): number | null {
+  const resolve = (variant: ThemeKind): number | null => {
+    const value = getVariableValue(theme, variant, variableId);
+    if (!value || value === "useDark") {
+      return null;
+    }
+
+    const parsed = Number.parseFloat(value as ContrastRatioValue);
+    if (!Number.isFinite(parsed)) {
+      return null;
+    }
+
+    return parsed;
+  };
+
+  if (kind === "dark") {
+    return resolve("dark");
+  }
+
+  const lightValue = getVariableValue(theme, "light", variableId);
+  if (lightValue === "useDark") {
+    return resolve("dark");
+  }
+
+  return resolve("light");
 }
 
 export function setLightToUseDark(theme: Theme, variableId: string): Theme {

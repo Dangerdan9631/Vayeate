@@ -265,7 +265,9 @@ export interface Template_v2 {
   mappings: VariableMapping[];
 }
 
-export type ThemeVariableValue = ColorHex | "useDark";
+export type ContrastRatioValue = `${number}`;
+
+export type ThemeVariableValue = ColorHex | ContrastRatioValue | "useDark";
 
 export interface ThemeVariableAssignment {
   variableId: string;

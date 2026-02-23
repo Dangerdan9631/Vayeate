@@ -4,10 +4,13 @@ import type {
   Theme,
   GeneratedTheme,
   ThemeKind,
-  ColorHex,
   CatalogTarget,
 } from "../domain/types";
-import { resolveVariableValue } from "./theme-v2";
+import { adjustBrightness } from "./color";
+import {
+  resolveColorVariableValue,
+  resolveContrastVariableValue,
+} from "./theme-v2";
 import { getCatalogKeys } from "./catalog-v2";
 
 export interface GenerationContext {
@@ -16,32 +19,227 @@ export interface GenerationContext {
   theme: Theme;
 }
 
+type MappingGroup = {
+  target: CatalogTarget;
+  editorKey: string;
+  colorVariableId?: string;
+  contrastVariableId?: string;
+};
+
+const DEFAULT_BACKGROUND: Record<ThemeKind, string> = {
+  dark: "#1e1e1e",
+  light: "#f6f6f6",
+};
+
+const UI_COLOR_BACKGROUND_KEYS = new Map<string, [string, string?]>([
+  ["titleBar.activeForeground", ["titleBar.activeBackground"]],
+  ["titleBar.inactiveForeground", ["titleBar.inactiveBackground"]],
+  ["menu.foreground", ["menu.background"]],
+  ["menu.selectionForeground", ["menu.selectionBackground"]],
+  ["menubar.selectionForeground", ["menubar.selectionBackground"]],
+  ["activityBar.foreground", ["activityBar.background"]],
+  ["activityBar.inactiveForeground", ["activityBar.background"]],
+  ["breadcrumb.foreground", ["breadcrumb.background"]],
+  ["breadcrumb.focusForeground", ["breadcrumb.background"]],
+  ["breadcrumb.activeSelectionForeground", ["breadcrumb.background"]],
+  ["sideBar.foreground", ["sideBar.background"]],
+  ["sideBarSectionHeader.foreground", ["sideBarSectionHeader.background"]],
+  ["sideBarTitle.foreground", ["sideBar.background"]],
+  ["statusBar.foreground", ["statusBar.background"]],
+  ["statusBar.debuggingForeground", ["statusBar.debuggingBackground"]],
+  ["statusBarItem.remoteForeground", ["statusBar.background"]],
+  ["statusBar.noFolderForeground", ["statusBar.noFolderBackground"]],
+  ["statusBarItem.errorForeground", ["statusBarItem.errorBackground"]],
+  ["notifications.foreground", ["notifications.background"]],
+  ["notificationCenterHeader.foreground", ["notificationCenterHeader.background"]],
+  ["notificationLink.foreground", ["notifications.background"]],
+  ["notificationsInfoIcon.foreground", ["notifications.background"]],
+  ["notificationsWarningIcon.foreground", ["notifications.background"]],
+  ["notificationsErrorIcon.foreground", ["notifications.background"]],
+  ["extensionButton.prominentForeground", ["extensionButton.prominentBackground"]],
+  ["extensionBadge.remoteForeground", ["extensionBadge.remoteBackground"]],
+  ["editor.foreground", ["editor.background"]],
+  ["editorInlayHint.foreground", ["editorInlayHint.background"]],
+  ["editorCodeLens.foreground", ["editor.background"]],
+  ["editorLink.activeForeground", ["editor.background"]],
+  ["editorLineNumber.foreground", ["editorGutter.background", "editor.background"]],
+  ["editorLineNumber.activeForeground", ["editorGutter.background", "editor.background"]],
+  ["editorRuler.foreground", ["editor.background"]],
+  ["terminal.foreground", ["terminal.background"]],
+  ["textPreformat.foreground", ["editor.background"]],
+  ["editorWidget.foreground", ["editorWidget.background"]],
+  ["activityBarBadge.foreground", ["activityBarBadge.background"]],
+  ["badge.foreground", ["badge.background"]],
+  ["panelTitle.activeForeground", ["panel.background"]],
+  ["panelTitle.inactiveForeground", ["panel.background"]],
+  ["list.activeSelectionForeground", ["list.activeSelectionBackground"]],
+  ["list.focusForeground", ["list.focusBackground"]],
+  ["list.highlightForeground", ["list.hoverBackground"]],
+  ["list.hoverForeground", ["list.hoverBackground"]],
+  ["list.inactiveSelectionForeground", ["list.inactiveSelectionBackground"]],
+  ["list.invalidItemForeground", ["sideBar.background"]],
+  ["button.foreground", ["button.background"]],
+  ["button.secondaryForeground", ["button.secondaryBackground"]],
+  ["dropdown.foreground", ["dropdown.background"]],
+  ["input.foreground", ["input.background"]],
+  ["input.placeholderForeground", ["input.background"]],
+  ["inputOption.activeForeground", ["input.background"]],
+  ["inputValidation.errorForeground", ["inputValidation.errorBackground"]],
+  ["inputValidation.infoForeground", ["inputValidation.infoBackground"]],
+  ["inputValidation.warningForeground", ["inputValidation.warningBackground"]],
+  ["tab.activeForeground", ["tab.activeBackground"]],
+  ["tab.inactiveForeground", ["tab.inactiveBackground"]],
+  ["gitDecoration.conflictingResourceForeground", ["sideBar.background"]],
+  ["gitDecoration.deletedResourceForeground", ["sideBar.background"]],
+  ["gitDecoration.ignoredResourceForeground", ["sideBar.background"]],
+  ["gitDecoration.modifiedResourceForeground", ["sideBar.background"]],
+  ["gitDecoration.untrackedResourceForeground", ["sideBar.background"]],
+]);
+
+function mappingGroupId(target: CatalogTarget, editorKey: string): string {
+  return `${target}::${editorKey}`;
+}
+
+function buildMappingGroups(template: Template_v2): MappingGroup[] {
+  const groups = new Map<string, MappingGroup>();
+
+  for (const mapping of template.mappings) {
+    const id = mappingGroupId(mapping.target, mapping.editorKey);
+    const existing = groups.get(id) ?? {
+      target: mapping.target,
+      editorKey: mapping.editorKey,
+    };
+
+    if (mapping.variableType === "color") {
+      existing.colorVariableId = mapping.variableId;
+    } else {
+      existing.contrastVariableId = mapping.variableId;
+    }
+
+    groups.set(id, existing);
+  }
+
+  return Array.from(groups.values());
+}
+
+function resolveEditorBackground(
+  kind: ThemeKind,
+  baseColorsByKey: ReadonlyMap<string, string>,
+  generatedColors: Readonly<Record<string, string>>,
+): string {
+  return generatedColors["editor.background"]
+    ?? baseColorsByKey.get("editor.background")
+    ?? DEFAULT_BACKGROUND[kind];
+}
+
+function resolveColorBackground(
+  editorKey: string,
+  baseColorsByKey: ReadonlyMap<string, string>,
+  generatedColors: Readonly<Record<string, string>>,
+): string | null {
+  const pair = UI_COLOR_BACKGROUND_KEYS.get(editorKey);
+  if (!pair) {
+    return null;
+  }
+
+  const [backgroundKey, fallbackBackgroundKey] = pair;
+  const resolvedPrimary = generatedColors[backgroundKey] ?? baseColorsByKey.get(backgroundKey);
+  if (resolvedPrimary) {
+    return resolvedPrimary;
+  }
+
+  if (!fallbackBackgroundKey) {
+    return null;
+  }
+
+  return generatedColors[fallbackBackgroundKey] ?? baseColorsByKey.get(fallbackBackgroundKey) ?? null;
+}
+
+function applyContrastIfAvailable(
+  sourceColor: string,
+  backgroundColor: string | null,
+  contrastValue: number | null,
+): string {
+  if (contrastValue == null || backgroundColor == null) {
+    return sourceColor;
+  }
+
+  return adjustBrightness(sourceColor, backgroundColor, contrastValue, "min");
+}
+
+function buildThemeGenerationIssues(kind: ThemeKind, missingSourceKeys: MappingGroup[]): string {
+  const details = missingSourceKeys
+    .map((group) => `${group.target}:${group.editorKey} (contrast variable: ${group.contrastVariableId})`)
+    .join(", ");
+
+  return `Theme generation failed for ${kind}: contrast mappings require a paired color mapping source. Missing source for ${details}.`;
+}
+
 export function generateThemeFromContext(ctx: GenerationContext, kind: ThemeKind): GeneratedTheme {
   const colors: Record<string, string> = {};
   const tokenColors: GeneratedTheme["tokenColors"] = [];
   const semanticTokenColors: Record<string, string> = {};
 
-  // Process all mappings
-  for (const mapping of ctx.template.mappings) {
-    const value = resolveVariableValue(ctx.theme, kind, mapping.variableId);
-    
-    if (!value) {
-      continue; // Skip if variable value not set
+  const groups = buildMappingGroups(ctx.template);
+  const baseColorsByKey = new Map<string, string>();
+  for (const group of groups) {
+    if (group.target !== "colors" || !group.colorVariableId) {
+      continue;
     }
 
-    if (mapping.target === "colors") {
-      colors[mapping.editorKey] = value;
-    } else if (mapping.target === "semanticTokens") {
-      semanticTokenColors[mapping.editorKey] = value;
-    } else if (mapping.target === "textMateScopes") {
-      // TextMate scopes go into tokenColors array
+    const sourceColor = resolveColorVariableValue(ctx.theme, kind, group.colorVariableId);
+    if (!sourceColor) {
+      continue;
+    }
+
+    baseColorsByKey.set(group.editorKey, sourceColor);
+  }
+
+  const missingSourceForContrast: MappingGroup[] = [];
+
+  for (const group of groups) {
+    const sourceColor = group.colorVariableId
+      ? resolveColorVariableValue(ctx.theme, kind, group.colorVariableId)
+      : null;
+
+    if (group.contrastVariableId && !sourceColor) {
+      missingSourceForContrast.push(group);
+      continue;
+    }
+
+    if (!sourceColor) {
+      continue;
+    }
+
+    const contrastValue = group.contrastVariableId
+      ? resolveContrastVariableValue(ctx.theme, kind, group.contrastVariableId)
+      : null;
+
+    if (group.target === "colors") {
+      const backgroundColor = resolveColorBackground(group.editorKey, baseColorsByKey, colors);
+      colors[group.editorKey] = applyContrastIfAvailable(sourceColor, backgroundColor, contrastValue);
+      continue;
+    }
+
+    if (group.target === "semanticTokens") {
+      const editorBackground = resolveEditorBackground(kind, baseColorsByKey, colors);
+      semanticTokenColors[group.editorKey] = applyContrastIfAvailable(sourceColor, editorBackground, contrastValue);
+      continue;
+    }
+
+    if (group.target === "textMateScopes") {
+      const editorBackground = resolveEditorBackground(kind, baseColorsByKey, colors);
       tokenColors.push({
-        scope: mapping.editorKey,
+        scope: group.editorKey,
         settings: {
-          foreground: value,
+          foreground: applyContrastIfAvailable(sourceColor, editorBackground, contrastValue),
         },
       });
     }
+  }
+
+  if (missingSourceForContrast.length > 0) {
+    throw new Error(buildThemeGenerationIssues(kind, missingSourceForContrast));
   }
 
   return {
@@ -71,7 +269,7 @@ export function validateThemeComplete(ctx: GenerationContext): Array<{ variableI
 
   // Check all color variables have dark values
   for (const colorVar of ctx.template.variables.color) {
-    const darkValue = resolveVariableValue(ctx.theme, "dark", colorVar.id);
+    const darkValue = resolveColorVariableValue(ctx.theme, "dark", colorVar.id);
     if (!darkValue) {
       issues.push({
         variableId: colorVar.id,
@@ -79,7 +277,7 @@ export function validateThemeComplete(ctx: GenerationContext): Array<{ variableI
       });
     }
 
-    const lightValue = resolveVariableValue(ctx.theme, "light", colorVar.id);
+    const lightValue = resolveColorVariableValue(ctx.theme, "light", colorVar.id);
     if (!lightValue) {
       issues.push({
         variableId: colorVar.id,
@@ -90,7 +288,7 @@ export function validateThemeComplete(ctx: GenerationContext): Array<{ variableI
 
   // Check all contrast variables have values
   for (const contrastVar of ctx.template.variables.contrast) {
-    const darkValue = resolveVariableValue(ctx.theme, "dark", contrastVar.id);
+    const darkValue = resolveContrastVariableValue(ctx.theme, "dark", contrastVar.id);
     if (!darkValue) {
       issues.push({
         variableId: contrastVar.id,
@@ -98,7 +296,7 @@ export function validateThemeComplete(ctx: GenerationContext): Array<{ variableI
       });
     }
 
-    const lightValue = resolveVariableValue(ctx.theme, "light", contrastVar.id);
+    const lightValue = resolveContrastVariableValue(ctx.theme, "light", contrastVar.id);
     if (!lightValue) {
       issues.push({
         variableId: contrastVar.id,

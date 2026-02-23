@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type {
   Catalog,
   CatalogTarget,
+  ContrastRatioValue,
   Template_v2,
   Theme,
   ThemeVariableAssignment,
@@ -698,7 +699,7 @@ export function App(): JSX.Element {
         return;
       }
       const bounded = Math.min(10, Math.max(1, parsed));
-      nextValue = Number.parseFloat(bounded.toFixed(2)).toString() as ThemeVariableValue;
+      nextValue = Number.parseFloat(bounded.toFixed(2)).toString() as ContrastRatioValue;
     } else {
       nextValue = normalizedValue as ThemeVariableValue;
     }
