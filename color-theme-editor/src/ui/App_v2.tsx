@@ -779,7 +779,7 @@ export function App(): JSX.Element {
   }
   
   return (
-    <main style={{ fontFamily: "Segoe UI, sans-serif", padding: 20, lineHeight: 1.35, color: "#1f1f1f" }}>
+    <main style={{ fontFamily: "Segoe UI, sans-serif", padding: 20, lineHeight: 1.35, color: "#1f1f1f", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <header style={{ marginBottom: 14 }}>
         <h1 style={{ margin: "0 0 8px" }}>Vayeate Theme Studio v2</h1>
         <p style={{ margin: 0 }}>

@@ -378,9 +378,9 @@ export function ThemeTabV2({
   };
 
   return (
-    <div style={{ display: "grid", gap: 12 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12, alignItems: "start", maxHeight: "calc(100dvh - 160px)" }}>
-        <div style={{ display: "grid", gap: 12, overflow: "auto", minHeight: 0 }}>
+    <div style={{ display: "grid", gap: 12, height: "100%", minHeight: 0, overflow: "hidden" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12, alignItems: "start", height: "100%", minHeight: 0, overflow: "hidden" }}>
+        <div style={{ display: "grid", gap: 12, minHeight: 0, maxHeight: "100%", overflowY: "auto", overflowX: "hidden", paddingRight: 4 }}>
           {/* Theme Selection */}
           <article style={{ border: "1px solid #d0d0d0", borderRadius: 8, padding: 12 }}>
             <h2 style={{ margin: "0 0 10px", fontSize: 16 }}>Themes</h2>
@@ -688,7 +688,7 @@ export function ThemeTabV2({
             padding: 12,
             display: "flex",
             flexDirection: "column",
-            overflow: "auto",
+            overflow: "hidden",
             minHeight: 0,
           }}
         >

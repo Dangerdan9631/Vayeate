@@ -14,7 +14,7 @@ export interface TabContainerProps {
 
 export function TabContainer({ tabs, activeTabId, onTabChange }: TabContainerProps): JSX.Element {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1, minHeight: 0, overflow: "hidden" }}>
       <nav style={{ display: "flex", gap: 4, borderBottom: "2px solid #d0d0d0" }}>
         {tabs.map((tab) => (
           <button
@@ -37,7 +37,7 @@ export function TabContainer({ tabs, activeTabId, onTabChange }: TabContainerPro
           </button>
         ))}
       </nav>
-      <div>{tabs.find((tab) => tab.id === activeTabId)?.content}</div>
+      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>{tabs.find((tab) => tab.id === activeTabId)?.content}</div>
     </div>
   );
 }
