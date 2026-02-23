@@ -56,6 +56,20 @@ const VAYEATE_SEMANTIC_MERGED_CONTRAST_VARIABLES: ContrastVariable[] = [
   { id: "contrast-default", name: "ContrastDefault", targetRatio: 4.5 },
 ];
 
+const MERGED_DEFAULT_COLOR_VARIABLES = {
+  editorBackground: "editor-background",
+  listBackground: "list-background",
+  chromeBackground: "ide-primary",
+  chromeForeground: "ide-primary-foreground",
+  editorForeground: "editor-foreground",
+  uiForeground: "ui-foreground",
+  selection: "editor-selection",
+  comment: "comments",
+  keyword: "keywords",
+  string: "strings",
+  syntax: "syntax-highlight",
+};
+
 const UI_FOREGROUND_KEYS = new Set<string>([
   "titleBar.activeForeground",
   "titleBar.inactiveForeground",
@@ -175,7 +189,144 @@ function toContrastVariableId(target: CatalogTarget, editorKey: string): string 
   return "contrast-default";
 }
 
-function ensureVayeateSemanticMergedContrast(template: Template_v2): Template_v2 {
+function pickExistingColorVariableId(
+  template: Template_v2,
+  candidates: string[],
+): string | null {
+  const available = new Set(template.variables.color.map((variable) => variable.id));
+  for (const candidate of candidates) {
+    if (available.has(candidate)) {
+      return candidate;
+    }
+  }
+
+  return template.variables.color[0]?.id ?? null;
+}
+
+function toMergedColorVariableId(template: Template_v2, target: CatalogTarget, editorKey: string): string | null {
+  const lowerKey = editorKey.toLowerCase();
+
+  if (target === "semanticTokens") {
+    const base = editorKey.split(".")[0];
+    if (base === "comment") {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.comment,
+        MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+      ]);
+    }
+    if (["keyword", "controlKeyword", "plainKeyword", "modifier", "storageType"].includes(base)) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.keyword,
+        MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      ]);
+    }
+    if (["string", "stringEscapeCharacter", "regexp"].includes(base)) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.string,
+        MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      ]);
+    }
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+    ]);
+  }
+
+  if (target === "textMateScopes") {
+    if (isCommentScope(editorKey)) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.comment,
+        MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+      ]);
+    }
+    if (isKeywordScope(editorKey)) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.keyword,
+        MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      ]);
+    }
+    if (isStringScope(editorKey)) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.string,
+        MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      ]);
+    }
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+    ]);
+  }
+
+  if (lowerKey.includes("selection")) {
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.selection,
+      MERGED_DEFAULT_COLOR_VARIABLES.chromeBackground,
+    ]);
+  }
+
+  if (lowerKey.includes("background")) {
+    if (lowerKey.startsWith("editor") || lowerKey.includes("editor.")) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.editorBackground,
+        MERGED_DEFAULT_COLOR_VARIABLES.listBackground,
+      ]);
+    }
+
+    if (lowerKey.includes("list") || lowerKey.includes("sidebar") || lowerKey.includes("panel")) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.listBackground,
+        MERGED_DEFAULT_COLOR_VARIABLES.chromeBackground,
+      ]);
+    }
+
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.chromeBackground,
+      MERGED_DEFAULT_COLOR_VARIABLES.editorBackground,
+    ]);
+  }
+
+  if (lowerKey.includes("foreground")) {
+    if (lowerKey.includes("button") || lowerKey.includes("badge")) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.chromeForeground,
+        MERGED_DEFAULT_COLOR_VARIABLES.uiForeground,
+      ]);
+    }
+
+    if (lowerKey.startsWith("editor") || lowerKey.includes("editor.")) {
+      return pickExistingColorVariableId(template, [
+        MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+        MERGED_DEFAULT_COLOR_VARIABLES.uiForeground,
+      ]);
+    }
+
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.uiForeground,
+      MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+    ]);
+  }
+
+  if (lowerKey.includes("cursor") || lowerKey.includes("link") || lowerKey.includes("highlight")) {
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+      MERGED_DEFAULT_COLOR_VARIABLES.uiForeground,
+    ]);
+  }
+
+  if (lowerKey.includes("border") || lowerKey.includes("ruler") || lowerKey.includes("shadow")) {
+    return pickExistingColorVariableId(template, [
+      MERGED_DEFAULT_COLOR_VARIABLES.uiForeground,
+      MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+    ]);
+  }
+
+  return pickExistingColorVariableId(template, [
+    MERGED_DEFAULT_COLOR_VARIABLES.syntax,
+    MERGED_DEFAULT_COLOR_VARIABLES.editorForeground,
+  ]);
+}
+
+function ensureVayeateSemanticMergedMappings(template: Template_v2): Template_v2 {
   if (template.id !== VAYEATE_SEMANTIC_MERGED_TEMPLATE_ID) {
     return template;
   }
@@ -187,18 +338,61 @@ function ensureVayeateSemanticMergedContrast(template: Template_v2): Template_v2
     }
   }
 
-  const normalizedMappings = template.mappings.map((mapping) => {
-    const contrastVariableId = toContrastVariableId(mapping.target, mapping.editorKey);
-    if (!contrastVariableId) {
-      return mapping;
+  const byKey = new Map<string, {
+    target: CatalogTarget;
+    editorKey: string;
+    colorVariableId: string | null;
+    contrastVariableId: string | null;
+  }>();
+
+  for (const mapping of template.mappings) {
+    const id = `${mapping.target}::${mapping.editorKey}`;
+    const group = byKey.get(id) ?? {
+      target: mapping.target,
+      editorKey: mapping.editorKey,
+      colorVariableId: null,
+      contrastVariableId: null,
+    };
+
+    if (mapping.variableType === "color") {
+      group.colorVariableId = mapping.variableId;
+    } else if (mapping.variableType === "contrast") {
+      group.contrastVariableId = mapping.variableId;
     }
 
-    return {
-      ...mapping,
-      variableId: contrastVariableId,
-      variableType: "contrast" as const,
-    };
-  });
+    byKey.set(id, group);
+  }
+
+  for (const group of byKey.values()) {
+    if (!group.contrastVariableId) {
+      group.contrastVariableId = toContrastVariableId(group.target, group.editorKey);
+    }
+
+    if (!group.colorVariableId) {
+      group.colorVariableId = toMergedColorVariableId(template, group.target, group.editorKey);
+    }
+  }
+
+  const normalizedMappings: VariableMapping[] = [];
+  for (const group of byKey.values()) {
+    if (group.colorVariableId) {
+      normalizedMappings.push({
+        editorKey: group.editorKey,
+        target: group.target,
+        variableId: group.colorVariableId,
+        variableType: "color",
+      });
+    }
+
+    if (group.contrastVariableId) {
+      normalizedMappings.push({
+        editorKey: group.editorKey,
+        target: group.target,
+        variableId: group.contrastVariableId,
+        variableType: "contrast",
+      });
+    }
+  }
 
   return {
     ...template,
@@ -229,7 +423,7 @@ function normalizeTemplate(template: Template_v2): Template_v2 {
     };
   }).filter((mapping) => mapping.editorKey);
 
-  return ensureVayeateSemanticMergedContrast({
+  return ensureVayeateSemanticMergedMappings({
     ...template,
     version: template.version || "1.0.0",
     locked: template.locked ?? false,

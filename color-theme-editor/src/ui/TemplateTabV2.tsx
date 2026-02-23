@@ -9,6 +9,7 @@ export interface TemplateTabV2Props {
   onSelectTemplate: (id: string) => void;
   onCreateTemplate: (name: string) => void;
   onLockTemplateVersion: (template: Template_v2) => Promise<void>;
+  onMigrateTemplateMappings: (template: Template_v2) => Promise<void>;
   canLockTemplate: boolean;
   onUpdateTemplateName: (name: string) => void;
   onUpdateCatalogRefs: (catalogRefs: string[]) => void;
@@ -33,6 +34,7 @@ export function TemplateTabV2({
   onSelectTemplate,
   onCreateTemplate,
   onLockTemplateVersion,
+  onMigrateTemplateMappings,
   canLockTemplate,
   onUpdateTemplateName,
   onUpdateCatalogRefs,
@@ -333,11 +335,20 @@ export function TemplateTabV2({
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                     <span><strong>Version:</strong> {template.version}</span>
-                    {!template.locked && (
-                      <button type="button" onClick={() => void onLockTemplateVersion(template)} disabled={busy || !canLockTemplate}>
-                        Lock Version
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <button
+                        type="button"
+                        onClick={() => void onMigrateTemplateMappings(template)}
+                        disabled={busy}
+                      >
+                        Persist Mapping Migration
                       </button>
-                    )}
+                      {!template.locked && (
+                        <button type="button" onClick={() => void onLockTemplateVersion(template)} disabled={busy || !canLockTemplate}>
+                          Lock Version
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {!canLockTemplate && !template.locked && (
                     <div style={{ fontSize: 12, color: "#b00020" }}>

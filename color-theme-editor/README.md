@@ -44,6 +44,15 @@ Theme preview content is filesystem-driven from `color-theme-editor/previews/`.
 - The border selector affects only the outer frame border (IDE chrome accent).
 - Editor content colors continue to come from generated theme values and token/semantic mappings.
 
+## Persist mapping migration (v2)
+
+Template mappings are normalized to the current v2 structure (including legacy mapping field migration and template-specific mapping backfills such as `vayeate-semantic-merged`) when a template is loaded/saved. The new migration action persists that normalized mapping shape to disk for the selected template version.
+
+Use this when you want to permanently rewrite an existing template version file to the current mapping structure before further edits, reviews, or lock operations.
+
+- In the UI, open **Template Definition**, select a template version, and click **Persist Mapping Migration** in the Template info card.
+- Optional direct API call: `POST /api/v2/templates/:templateId/versions/:version/migrate-mappings`
+
 ## AI Agent navigation
 
 - Agent guide: [color-theme-editor/docs/ai-agent-guide.md](color-theme-editor/docs/ai-agent-guide.md)

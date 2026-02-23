@@ -239,6 +239,25 @@ export function createV2ApiMiddleware(studioRoot: string) {
         const parts = rest.split("/");
         const templateId = decodeURIComponent(parts[0]);
 
+        if (parts.length > 4 && parts[1] === "versions" && parts[3] === "migrate-mappings") {
+          const version = decodeURIComponent(parts[2]);
+          const template = await templateV2.loadTemplate(studioRoot, `${templateId}@${version}`);
+          if (!template || template.version !== version) {
+            sendJson(res, 404, { error: "Template not found" });
+            return;
+          }
+
+          await templateV2.saveTemplate(studioRoot, template);
+          const migratedTemplate = await templateV2.loadTemplate(studioRoot, `${templateId}@${version}`);
+          if (!migratedTemplate || migratedTemplate.version !== version) {
+            sendJson(res, 404, { error: "Template not found" });
+            return;
+          }
+
+          sendJson(res, 200, migratedTemplate);
+          return;
+        }
+
         if (parts.length > 2 && parts[1] === "versions" && parts[3] === "lock") {
           const version = decodeURIComponent(parts[2]);
           const template = await templateV2.loadTemplate(studioRoot, `${templateId}@${version}`);

@@ -454,6 +454,23 @@ export function App(): JSX.Element {
     }
   }
 
+  async function handleMigrateTemplateMappings(tmpl: Template_v2): Promise<void> {
+    setTemplateBusy(true);
+    setTemplateError("");
+    try {
+      const migratedTemplate = await apiV2.migrateTemplateMappings(tmpl.id, tmpl.version);
+      const migratedTemplateRef = toTemplateRef(migratedTemplate);
+      setTemplate(migratedTemplate);
+      setSelectedTemplateId(migratedTemplateRef);
+      setTemplates((prev) => (prev.includes(migratedTemplateRef) ? prev : [...prev, migratedTemplateRef]));
+      await loadTemplates();
+    } catch (error) {
+      setTemplateError(error instanceof Error ? error.message : "Failed to migrate template mappings");
+    } finally {
+      setTemplateBusy(false);
+    }
+  }
+
   async function persistTemplateChanges(nextTemplate: Template_v2): Promise<void> {
     const requestId = ++templateSaveRequestRef.current;
     setTemplateBusy(true);
@@ -825,6 +842,7 @@ export function App(): JSX.Element {
                 onSelectTemplate={setSelectedTemplateId}
                 onCreateTemplate={handleCreateTemplate}
                 onLockTemplateVersion={handleLockTemplateVersion}
+                onMigrateTemplateMappings={handleMigrateTemplateMappings}
                 canLockTemplate={template ? !hasUnsetMappingsForTemplate(template, catalogs) : false}
                 onUpdateTemplateName={handleUpdateTemplateName}
                 onUpdateCatalogRefs={handleUpdateCatalogRefs}

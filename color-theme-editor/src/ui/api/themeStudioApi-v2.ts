@@ -164,6 +164,13 @@ export async function lockTemplateVersion(templateId: string, version: string): 
   return parseResponse<Template_v2>(response);
 }
 
+export async function migrateTemplateMappings(templateId: string, version: string): Promise<Template_v2> {
+  const response = await fetch(`/api/v2/templates/${encodeURIComponent(templateId)}/versions/${encodeURIComponent(version)}/migrate-mappings`, {
+    method: "POST",
+  });
+  return parseResponse<Template_v2>(response);
+}
+
 export async function deleteTemplate(templateId: string): Promise<void> {
   const response = await fetch(`/api/v2/templates/${encodeURIComponent(templateId)}`, {
     method: "DELETE",
