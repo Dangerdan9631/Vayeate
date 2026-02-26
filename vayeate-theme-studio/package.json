@@ -8,6 +8,9 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "dependencies": {
+    "zod": "^4.0.0"
+  },
   "devDependencies": {
     "typescript": "^5.6.3",
     "vite": "^5.4.10"

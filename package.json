@@ -120,6 +120,7 @@
         ]
     },
     "scripts": {
-        "install-extension": "vsce package && code --install-extension vayeate-1.3.0.vsix"
+        "install-extension": "vsce package && code --install-extension vayeate-1.3.0.vsix",
+        "install-extension:cursor": "vsce package && cursor --install-extension vayeate-1.3.0.vsix"
     }
 }
