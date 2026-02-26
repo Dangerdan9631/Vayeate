@@ -1,7 +1,7 @@
-import './style.css';
+import { mountApp } from './ui/app';
 
 const app = document.querySelector<HTMLDivElement>('#app');
 
 if (app) {
-  app.innerHTML = '<h1>hello world</h1>';
+  mountApp(app);
 }
