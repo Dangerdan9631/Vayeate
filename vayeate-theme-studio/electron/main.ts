@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { createCatalogRepository } from '../src/data/catalog-repository';
-import { createCatalog } from '../src/controllers/catalog-controller';
+import { createCatalogWithParams } from '../src/controllers/catalog-controller';
 import type { Catalog } from '../src/model/schemas';
 
 let mainWindow: BrowserWindow | null = null;
@@ -39,8 +39,8 @@ function createWindow(): void {
 app.whenReady().then(() => {
   const repo = getCatalogRepository();
 
-  ipcMain.handle('catalog:create', async () => {
-    const catalog = createCatalog();
+  ipcMain.handle('catalog:create', async (_event, params: { name: string; type: 'manual' | 'remote' }) => {
+    const catalog = createCatalogWithParams(params);
     await repo.saveCatalog(catalog);
     return catalog;
   });
@@ -55,6 +55,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('catalog:list', async () => {
     return await repo.listCatalogs();
+  });
+
+  ipcMain.handle('catalog:delete', async (_event, name: string, version: string) => {
+    await repo.deleteCatalog(name, version);
   });
 
   createWindow();

@@ -3,6 +3,7 @@ import { AppProvider, useAppState } from './context/AppContext';
 import { ContentArea } from './components/ContentArea';
 import { MenuBar } from './components/MenuBar';
 import { Ribbon } from './components/Ribbon';
+import { StatusBar } from './components/StatusBar';
 
 function AppShell() {
   const { state, dispatch } = useAppState();
@@ -16,6 +17,7 @@ function AppShell() {
           <ContentArea activeTab={state.activeTab} />
         </main>
       </div>
+      <StatusBar />
     </div>
   );
 }

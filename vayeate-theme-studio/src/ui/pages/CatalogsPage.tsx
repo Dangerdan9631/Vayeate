@@ -1,30 +1,64 @@
-import { useAppState } from '../context/AppContext';
 import { useCatalogViewModel } from '../../viewmodel/use-catalog-viewmodel';
+import { CatalogDetailsCard } from '../components/CatalogDetailsCard';
+import { CatalogsCard } from '../components/CatalogsCard';
+import { CreateCatalogDialog } from '../components/CreateCatalogDialog';
+import { TokensCard } from '../components/TokensCard';
 
 export function CatalogsPage() {
-  const { dispatch } = useAppState();
-  const { hasCatalog, catalogJson, isCreating } = useCatalogViewModel();
+  const vm = useCatalogViewModel();
 
   return (
-    <section className="placeholder">
-      <h1>Catalogs</h1>
-      {!hasCatalog ? (
-        <button
-          type="button"
-          className="create-catalog-btn"
-          disabled={isCreating}
-          onClick={() => dispatch({ type: 'CREATE_CATALOG' })}
-        >
-          {isCreating ? 'Creating...' : 'Create Catalog'}
-        </button>
-      ) : (
-        <textarea
-          className="catalog-json-view"
-          readOnly
-          value={catalogJson ?? ''}
-          rows={20}
+    <>
+      <div className="catalogs-page-grid">
+        <div className="catalogs-left-col">
+          <CatalogsCard
+            catalogNames={vm.catalogNames}
+            selectedName={vm.selectedName}
+            versionsForSelectedName={vm.versionsForSelectedName}
+            selectedRef={vm.selectedRef}
+            onSelectName={vm.selectName}
+            onSelectVersion={(version) => {
+              if (vm.selectedName) vm.selectCatalog(vm.selectedName, version);
+            }}
+            onCreateClick={vm.openCreateDialog}
+            isCreating={vm.isCreating}
+          />
+          {vm.catalog && (
+            <CatalogDetailsCard
+              catalog={vm.catalog}
+              tokenCounts={vm.tokenCountsByType}
+              isLatestVersion={vm.isLatestVersion}
+              onDeleteVersion={() => {
+                if (vm.selectedRef) vm.deleteVersion(vm.selectedRef.name, vm.selectedRef.version);
+              }}
+              onLock={vm.lockCatalog}
+              onSync={vm.syncCatalog}
+              onUpdateSources={vm.updateSources}
+              onRevert={() => {
+                if (vm.selectedRef) vm.revertToVersion(vm.selectedRef.name, vm.selectedRef.version);
+              }}
+            />
+          )}
+        </div>
+        <div className="catalogs-right-col">
+          {vm.catalog && (
+            <TokensCard
+              catalog={vm.catalog}
+              tokensByType={vm.tokensByType}
+              isLatestVersion={vm.isLatestVersion}
+              onAddToken={vm.addToken}
+              onRemoveToken={vm.removeToken}
+              onUpdateTokenKey={vm.updateTokenKey}
+            />
+          )}
+        </div>
+      </div>
+      {vm.createDialogOpen && (
+        <CreateCatalogDialog
+          onCancel={vm.closeCreateDialog}
+          onCreate={vm.createCatalog}
         />
       )}
-    </section>
+    </>
   );
 }

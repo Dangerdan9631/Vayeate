@@ -1,4 +1,4 @@
-import { readdir, readFile, mkdir, writeFile } from 'node:fs/promises';
+import { readdir, readFile, mkdir, writeFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { catalogReferenceSchema, catalogSchema } from '../model/schemas.js';
 import type { Catalog, CatalogName, CatalogReference, Version } from '../model/schemas.js';
@@ -73,6 +73,15 @@ export function createCatalogRepository(baseDir: string) {
      * Returns all catalog references by scanning the catalogs directory.
      * Skips files that do not match `<catalogName>-<version>.json` or fail validation.
      */
+    async deleteCatalog(name: CatalogName, version: Version): Promise<void> {
+      const path = filePath(baseDir, name, version);
+      try {
+        await unlink(path);
+      } catch {
+        // no-op if file missing
+      }
+    },
+
     async listCatalogs(): Promise<CatalogReference[]> {
       try {
         const entries = await readdir(dir, { withFileTypes: true });

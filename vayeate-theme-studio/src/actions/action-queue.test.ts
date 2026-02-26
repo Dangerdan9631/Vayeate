@@ -1,4 +1,4 @@
-import { ActionQueue, type ActionProcessor } from './action-queue';
+import { ActionQueue, type ActionProcessor, type QueueStatus } from './action-queue';
 import type { AppAction } from './action-types';
 import type { AppStateUpdate } from '../state/app-state';
 
@@ -52,6 +52,30 @@ describe('ActionQueue', () => {
     await new Promise((r) => setTimeout(r, 60));
 
     expect(order).toEqual(['start-catalogs', 'end-catalogs', 'start-templates', 'end-templates']);
+  });
+
+  it('calls onQueueStatus with processing state and queue length', async () => {
+    const statuses: QueueStatus[] = [];
+    const processor: ActionProcessor = async (action, setState) => {
+      await new Promise((r) => setTimeout(r, 10));
+      if (action.type === 'SET_ACTIVE_TAB') {
+        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
+      }
+    };
+
+    const queue = new ActionQueue(processor);
+    queue.onStateUpdate = () => {};
+    queue.onQueueStatus = (s) => statuses.push({ ...s });
+
+    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
+    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
+
+    await new Promise((r) => setTimeout(r, 80));
+
+    expect(statuses.length).toBeGreaterThan(0);
+    expect(statuses[statuses.length - 1]).toEqual({ isProcessing: false, queueLength: 0 });
+    const hadProcessing = statuses.some((s) => s.isProcessing);
+    expect(hadProcessing).toBe(true);
   });
 
   it('calls onStateUpdate when processor calls setState', async () => {

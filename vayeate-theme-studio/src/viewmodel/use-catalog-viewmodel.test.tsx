@@ -19,6 +19,7 @@ beforeEach(() => {
     saveCatalog: () => Promise.resolve(),
     loadCatalog: () => Promise.resolve(null),
     listCatalogs: () => Promise.resolve([]),
+    deleteCatalog: () => Promise.resolve(),
   };
 });
 
@@ -51,28 +52,37 @@ const HarnessInner = React.forwardRef<
 });
 
 describe('useCatalogViewModel', () => {
-  it('returns hasCatalog false and catalogJson null initially', () => {
+  it('returns no catalog and is not creating initially', () => {
     const { Wrapper } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
-    expect(result.current.hasCatalog).toBe(false);
-    expect(result.current.catalogJson).toBeNull();
+    expect(result.current.catalog).toBeNull();
     expect(result.current.isCreating).toBe(false);
+    expect(result.current.createDialogOpen).toBe(false);
+    expect(result.current.catalogNames).toEqual([]);
   });
 
-  it('returns catalogJson and hasCatalog true after CREATE_CATALOG succeeds', async () => {
+  it('loads catalog after CREATE_CATALOG succeeds', async () => {
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(mockCatalog),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(mockCatalog),
+      listCatalogs: () => Promise.resolve([{ name: 'test-catalog', version: '2.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+    };
+
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_CATALOG' });
+      getDispatch()?.({ type: 'CREATE_CATALOG', params: { name: 'test-catalog', type: 'manual' } });
     });
 
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 100));
     });
 
-    expect(result.current.hasCatalog).toBe(true);
-    expect(result.current.catalogJson).toContain('"name": "test-catalog"');
+    expect(result.current.catalog).not.toBeNull();
+    expect(result.current.catalog?.name).toBe('test-catalog');
     expect(result.current.isCreating).toBe(false);
   });
 
@@ -81,16 +91,19 @@ describe('useCatalogViewModel', () => {
     const createPromise = new Promise<Catalog>((r) => {
       resolveCreate = r;
     });
-    (window as unknown as { electronAPI?: { createCatalog: () => Promise<Catalog> } }).electronAPI = {
-      ...((window as unknown as { electronAPI?: object }).electronAPI as object),
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
       createCatalog: () => createPromise,
-    } as { createCatalog: () => Promise<Catalog> };
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+    };
 
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_CATALOG' });
+      getDispatch()?.({ type: 'CREATE_CATALOG', params: { name: 'foo', type: 'manual' } });
     });
 
     expect(result.current.isCreating).toBe(true);
@@ -101,7 +114,7 @@ describe('useCatalogViewModel', () => {
     });
 
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 30));
+      await new Promise((r) => setTimeout(r, 50));
     });
 
     expect(result.current.isCreating).toBe(false);

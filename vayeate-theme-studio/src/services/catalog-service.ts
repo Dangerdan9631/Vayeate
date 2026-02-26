@@ -9,8 +9,8 @@ function getAPI() {
 }
 
 export const catalogService = {
-  createCatalog: async (): Promise<Catalog> => {
-    return await getAPI().createCatalog();
+  createCatalog: async (params: { name: string; type: 'manual' | 'remote' }): Promise<Catalog> => {
+    return await getAPI().createCatalog(params);
   },
   saveCatalog: async (catalog: Catalog): Promise<void> => {
     await getAPI().saveCatalog(catalog);
@@ -20,5 +20,8 @@ export const catalogService = {
   },
   listCatalogs: async () => {
     return await getAPI().listCatalogs();
+  },
+  deleteCatalog: async (name: string, version: string): Promise<void> => {
+    await getAPI().deleteCatalog(name, version);
   },
 };

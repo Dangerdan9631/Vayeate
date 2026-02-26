@@ -1,18 +1,17 @@
-import type { Catalog } from '../model/schemas.js';
+import type { Catalog, CatalogType } from '../model/schemas.js';
 
-const PLACEHOLDER_CATALOG: Catalog = {
-  name: 'new-catalog',
-  version: '1.0.0',
-  type: 'manual',
-  locked: false,
-  sources: [],
-  tokens: [],
-};
+export interface CreateCatalogParams {
+  name: string;
+  type: CatalogType;
+}
 
-/**
- * Creates a catalog with placeholder values.
- * Does not persist - callers must save via CatalogRepository.
- */
-export function createCatalog(): Catalog {
-  return { ...PLACEHOLDER_CATALOG };
+export function createCatalogWithParams(params: CreateCatalogParams): Catalog {
+  return {
+    name: params.name,
+    version: '1.0.0',
+    type: params.type,
+    locked: false,
+    sources: [],
+    tokens: [],
+  };
 }

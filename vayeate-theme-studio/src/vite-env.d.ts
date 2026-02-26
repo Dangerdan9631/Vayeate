@@ -8,7 +8,8 @@ declare global {
       saveCatalog: (catalog: Catalog) => Promise<void>;
       loadCatalog: (name: string, version: string) => Promise<Catalog | null>;
       listCatalogs: () => Promise<CatalogReference[]>;
-      createCatalog: () => Promise<Catalog>;
+      createCatalog: (params: { name: string; type: 'manual' | 'remote' }) => Promise<Catalog>;
+      deleteCatalog: (name: string, version: string) => Promise<void>;
     };
   }
 }

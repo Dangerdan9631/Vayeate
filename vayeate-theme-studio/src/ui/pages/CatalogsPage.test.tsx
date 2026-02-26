@@ -19,6 +19,7 @@ beforeEach(() => {
     saveCatalog: () => Promise.resolve(),
     loadCatalog: () => Promise.resolve(null),
     listCatalogs: () => Promise.resolve([]),
+    deleteCatalog: () => Promise.resolve(),
   };
 });
 
@@ -27,43 +28,50 @@ afterEach(() => {
 });
 
 describe('CatalogsPage', () => {
-  it('shows Create Catalog button when no catalog exists', () => {
+  it('shows Create new catalog button', () => {
     render(
       <AppProvider>
         <CatalogsPage />
-      </AppProvider>
+      </AppProvider>,
     );
-    expect(screen.getByRole('button', { name: /create catalog/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /create new catalog/i })).toBeInTheDocument();
   });
 
-  it('shows catalog JSON in textarea after Create Catalog is clicked', async () => {
+  it('opens create dialog when Create new catalog is clicked', async () => {
     const user = userEvent.setup();
     render(
       <AppProvider>
         <CatalogsPage />
-      </AppProvider>
+      </AppProvider>,
     );
 
-    await user.click(screen.getByRole('button', { name: /create catalog/i }));
-
-    const textarea = await screen.findByRole('textbox');
-    expect(textarea).toHaveClass('catalog-json-view');
-    expect((textarea as HTMLTextAreaElement).value).toContain('mock-catalog');
+    await user.click(screen.getByRole('button', { name: /create new catalog/i }));
+    expect(screen.getByText('Create New Catalog')).toBeInTheDocument();
   });
 
-  it('replaces button with textarea after creation', async () => {
+  it('shows catalog details after creating a catalog through dialog', async () => {
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(mockCatalog),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(mockCatalog),
+      listCatalogs: () => Promise.resolve([{ name: 'mock-catalog', version: '1.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+    };
+
     const user = userEvent.setup();
     render(
       <AppProvider>
         <CatalogsPage />
-      </AppProvider>
+      </AppProvider>,
     );
 
-    expect(screen.getByRole('button', { name: /create catalog/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /create new catalog/i }));
 
-    await user.click(screen.getByRole('button', { name: /create catalog/i }));
+    const nameInput = screen.getByPlaceholderText('my-catalog');
+    await user.type(nameInput, 'mock-catalog');
+    await user.click(screen.getByRole('button', { name: 'OK' }));
 
-    await screen.findByRole('textbox');
-    expect(screen.queryByRole('button', { name: /create catalog/i })).not.toBeInTheDocument();
+    const detailsHeading = await screen.findByText('Catalog Details', {}, { timeout: 3000 });
+    expect(detailsHeading).toBeInTheDocument();
   });
 });

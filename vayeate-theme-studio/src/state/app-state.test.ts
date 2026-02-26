@@ -4,7 +4,7 @@ import {
   type AppState,
   type AppStateUpdate,
 } from './app-state';
-import type { Catalog } from '../model/schemas';
+import type { Catalog, CatalogReference } from '../model/schemas';
 
 const sampleCatalog: Catalog = {
   name: 'test-catalog',
@@ -15,14 +15,24 @@ const sampleCatalog: Catalog = {
   tokens: [],
 };
 
+const sampleRef: CatalogReference = { name: 'test-catalog', version: '1.0.0' };
+
 describe('initialAppState', () => {
   it('has catalogs as default tab', () => {
     expect(initialAppState.activeTab).toBe('catalogs');
   });
 
-  it('has no created catalog and is not creating', () => {
-    expect(initialAppState.catalogs.created).toBeNull();
+  it('has no selected catalog and is not creating', () => {
+    expect(initialAppState.catalogs.catalog).toBeNull();
+    expect(initialAppState.catalogs.selectedRef).toBeNull();
     expect(initialAppState.catalogs.isCreating).toBe(false);
+    expect(initialAppState.catalogs.createDialogOpen).toBe(false);
+    expect(initialAppState.catalogs.catalogRefs).toEqual([]);
+  });
+
+  it('has idle queue status', () => {
+    expect(initialAppState.queueStatus.isProcessing).toBe(false);
+    expect(initialAppState.queueStatus.queueLength).toBe(0);
   });
 });
 
@@ -32,24 +42,36 @@ describe('appStateReducer', () => {
     expect(state.activeTab).toBe('themes');
   });
 
-  it('handles CREATE_CATALOG_START', () => {
-    const state = appStateReducer(initialAppState, { type: 'CREATE_CATALOG_START' });
+  it('handles SET_CATALOG_REFS', () => {
+    const refs = [sampleRef];
+    const state = appStateReducer(initialAppState, { type: 'SET_CATALOG_REFS', refs });
+    expect(state.catalogs.catalogRefs).toEqual(refs);
+  });
+
+  it('handles SET_SELECTED_REF', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_SELECTED_REF', ref: sampleRef });
+    expect(state.catalogs.selectedRef).toEqual(sampleRef);
+  });
+
+  it('handles SET_CATALOG', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_CATALOG', catalog: sampleCatalog });
+    expect(state.catalogs.catalog).toEqual(sampleCatalog);
+  });
+
+  it('handles SET_IS_CREATING', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_IS_CREATING', value: true });
     expect(state.catalogs.isCreating).toBe(true);
-    expect(state.catalogs.created).toBeNull();
   });
 
-  it('handles CREATE_CATALOG_SUCCESS', () => {
-    const withStart = appStateReducer(initialAppState, { type: 'CREATE_CATALOG_START' });
-    const state = appStateReducer(withStart, { type: 'CREATE_CATALOG_SUCCESS', catalog: sampleCatalog });
-    expect(state.catalogs.created).toEqual(sampleCatalog);
-    expect(state.catalogs.isCreating).toBe(false);
+  it('handles SET_CREATE_DIALOG_OPEN', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_CREATE_DIALOG_OPEN', value: true });
+    expect(state.catalogs.createDialogOpen).toBe(true);
   });
 
-  it('handles CREATE_CATALOG_ERROR', () => {
-    const withStart = appStateReducer(initialAppState, { type: 'CREATE_CATALOG_START' });
-    const state = appStateReducer(withStart, { type: 'CREATE_CATALOG_ERROR' });
-    expect(state.catalogs.isCreating).toBe(false);
-    expect(state.catalogs.created).toBeNull();
+  it('handles SET_QUEUE_STATUS', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_QUEUE_STATUS', isProcessing: true, queueLength: 3 });
+    expect(state.queueStatus.isProcessing).toBe(true);
+    expect(state.queueStatus.queueLength).toBe(3);
   });
 
   it('returns state unchanged for unknown update type', () => {

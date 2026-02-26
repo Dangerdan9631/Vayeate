@@ -1,1 +1,0 @@
-"use strict";const e=require("electron"),t={saveCatalog:a=>e.ipcRenderer.invoke("catalog:save",a),loadCatalog:(a,o)=>e.ipcRenderer.invoke("catalog:load",a,o),listCatalogs:()=>e.ipcRenderer.invoke("catalog:list"),createCatalog:()=>e.ipcRenderer.invoke("catalog:create")};e.contextBridge.exposeInMainWorld("electronAPI",t);
