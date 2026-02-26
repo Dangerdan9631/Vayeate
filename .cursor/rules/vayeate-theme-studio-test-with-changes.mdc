@@ -1,0 +1,27 @@
+---
+description: Require relevant tests for all vayeate-theme-studio changes
+globs: vayeate-theme-studio/**/*
+alwaysApply: false
+---
+
+# Test with Changes
+
+When you change code in vayeate-theme-studio, add or update tests that cover the change.
+
+## Layer to Test File Mapping
+
+| Layer | Test location |
+|-------|----------------|
+| State | `src/state/*.test.ts` |
+| Actions | `src/actions/*.test.ts` |
+| Controllers | `src/controllers/*.test.ts` |
+| Data | `src/data/*.test.ts` |
+| Viewmodel | `src/viewmodel/*.test.tsx` |
+| UI (pages/components) | Colocated `*.test.tsx` next to the component |
+
+## Guidelines
+
+- Prefer testing public behavior and outcomes over implementation details
+- Mock `window.electronAPI` in tests that trigger IPC calls (e.g. CREATE_CATALOG)
+- Data layer tests use a temp dir; add `@vitest-environment node` when using Node fs APIs
+- Before finishing, run `npm run test` in vayeate-theme-studio and fix any failures

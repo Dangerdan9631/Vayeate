@@ -1,0 +1,43 @@
+---
+description: Layered architecture for vayeate-theme-studio (React + Electron)
+globs: vayeate-theme-studio/**/*
+alwaysApply: false
+---
+
+# Vayeate Theme Studio Architecture
+
+## Layer Overview
+
+| Layer | Location | Responsibility |
+|-------|----------|----------------|
+| **UI** | `src/ui/` | React components, pages, styles. No business logic. |
+| **ViewModels** | `src/viewmodel/` | Custom hooks that derive display data from state. |
+| **State** | `src/state/` | AppState type, reducer, initial state. |
+| **Actions** | `src/actions/` | Action types and ActionQueue. All mutations flow through here. |
+| **Controllers** | `src/controllers/` | Main-process business logic (catalog creation, etc.). |
+| **Data** | `src/data/` | Repository pattern (fs I/O). Called only from main process. |
+| **Services** | `src/services/` | IPC clients wrapping `window.electronAPI`. Used by action processor. |
+| **Model** | `src/model/` | Zod schemas and types. Shared across layers. |
+
+## Data Flow
+
+```
+UI dispatch(action) → ActionQueue.enqueue → Processor → Service (IPC) → Main IPC → Controller → Repository
+                                                                                    ↓
+UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
+```
+
+## File Structure
+
+- `electron/main.ts` - IPC handlers, BrowserWindow, delegates to controllers
+- `electron/preload.ts` - contextBridge exposes `electronAPI`
+- `src/ui/context/AppContext.tsx` - AppProvider, useAppState, wires ActionQueue to reducer
+- `src/actions/action-queue.ts` - FIFO queue, sequential async processing
+- `src/actions/action-types.ts` - Discriminated union `AppAction`
+
+## Conventions
+
+- **New actions**: Add to `AppAction` in action-types.ts, handle in AppContext processor, add reducer case in app-state.ts
+- **New ViewModels**: Create hook in viewmodel/, consume `useAppState()`, return derived data
+- **Renderer → Main**: Use services/*; never import from data/ or controllers/ in renderer code
+- **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir

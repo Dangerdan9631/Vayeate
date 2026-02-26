@@ -1,0 +1,44 @@
+---
+description: Action queue pattern for vayeate-theme-studio
+globs: vayeate-theme-studio/src/actions/**/*, vayeate-theme-studio/src/ui/context/**/*
+alwaysApply: false
+---
+
+# Action Queue Pattern
+
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing.
+
+## Flow
+
+1. Component calls `dispatch({ type: 'CREATE_CATALOG' })`
+2. ActionQueue.enqueue() pushes to FIFO queue
+3. Processor runs when idle; awaits each action before starting next
+4. Processor calls services (async IPC), then `setState(update)` for reducer
+5. State updates trigger re-renders; ViewModels derive display data
+
+## Adding a New Action
+
+```typescript
+// 1. action-types.ts
+export type AppAction =
+  | { type: 'SET_ACTIVE_TAB'; tabId: TabId }
+  | { type: 'CREATE_CATALOG' }
+  | { type: 'MY_NEW_ACTION'; payload: string };  // Add here
+
+// 2. app-state.ts - Add reducer case
+case 'MY_NEW_ACTION_RESULT':
+  return { ...state, myField: update.payload };
+
+// 3. AppContext.tsx - Add processor case
+case 'MY_NEW_ACTION': {
+  const result = await myService.doSomething(action.payload);
+  setState({ type: 'MY_NEW_ACTION_RESULT', payload: result });
+  break;
+}
+```
+
+## Rules
+
+- Actions are serializable; no functions or class instances
+- Processor must call `setState` with `AppStateUpdate`, not mutate state directly
+- Use `AppStateUpdate` for state changes (separate from `AppAction` - actions are user intent, updates are state mutations)
