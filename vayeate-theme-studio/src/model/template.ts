@@ -1,24 +1,30 @@
+import type { CatalogName, ColorVariableKey, ContrastVariableKey, TemplateName, Version } from './brands.js';
 import type { Token } from './token.js';
 
+export interface CatalogReference {
+  readonly name: CatalogName;
+  readonly version: Version;
+}
+
 export interface ColorVariable {
-  readonly key: string;
+  readonly key: ColorVariableKey;
 }
 
 export interface ContrastVariable {
-  readonly key: string;
-  readonly comparisonSourceKey: string | null;
+  readonly key: ContrastVariableKey;
+  readonly comparisonSourceRef: ColorVariableKey | null;
 }
 
 export interface Mapping {
   readonly token: Token;
-  readonly colorKey: string | null;
-  readonly contrastKey: string | null;
+  readonly colorVariableRef: ColorVariableKey | null;
+  readonly contrastVariableRef: ContrastVariableKey | null;
 }
 
 export interface Template {
-  readonly name: string;
-  readonly version: string;
-  readonly catalogRefKeys: readonly string[];
+  readonly name: TemplateName;
+  readonly version: Version;
+  readonly catalogRefs: readonly CatalogReference[];
   readonly mappings: readonly Mapping[];
   readonly colorVariables: readonly ColorVariable[];
   readonly contrastVariables: readonly ContrastVariable[];

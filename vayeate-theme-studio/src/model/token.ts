@@ -1,6 +1,8 @@
+import type { TokenKey } from './brands.js';
+
 export type TokenType = 'theme' | 'token' | 'semantic token';
 
 export interface Token {
-  readonly key: string;
+  readonly key: TokenKey;
   readonly type: TokenType;
 }
