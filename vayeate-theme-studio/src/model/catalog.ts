@@ -1,24 +1,19 @@
+import type { Token } from './token.js';
+
 export type CatalogType = 'manual' | 'remote';
 
 export type SourceType = 'default';
 
 export interface Source {
-  url: string;
-  type: SourceType;
-}
-
-export type TokenType = 'theme' | 'token' | 'semantic token';
-
-export interface Token {
-  key: string;
-  type: TokenType;
+  readonly url: string;
+  readonly type: SourceType;
 }
 
 export interface Catalog {
-  name: string;
-  version: number;
-  type: CatalogType;
-  locked: boolean;
-  sources: Source[];
-  tokens: Token[];
+  readonly name: string;
+  readonly version: string;
+  readonly type: CatalogType;
+  readonly locked: boolean;
+  readonly sources: readonly Source[];
+  readonly tokens: readonly Token[];
 }
