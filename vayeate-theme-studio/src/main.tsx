@@ -1,15 +1,13 @@
-/*
- * main.tsx
- * 
- * Copyright (c) 2026 DangerDan9631. All rights reserved.
- * Licensed under the MIT License.
- * See https://opensource.org/licenses/MIT for full license information.
- */
 import React from 'react';
-    import './style.css';
+import { createRoot } from 'react-dom/client';
+import { App } from './ui/App';
 
-    const app = document.querySelector<HTMLDivElement>('#app');
-
-    if (app) {
-      app.innerHTML = '<h1>hello world</h1>';
-    }
+const container = document.querySelector<HTMLDivElement>('#app');
+if (container) {
+  const root = createRoot(container);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

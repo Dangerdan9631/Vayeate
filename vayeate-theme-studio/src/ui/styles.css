@@ -103,3 +103,41 @@ body {
   margin: 0;
   font-size: 28px;
 }
+
+.create-catalog-btn {
+  margin-top: 16px;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: 1px solid #6366f1;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #312e81;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.create-catalog-btn:hover:not(:disabled) {
+  background: #6366f1;
+  color: #ffffff;
+}
+
+.create-catalog-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.catalog-json-view {
+  margin-top: 16px;
+  width: 100%;
+  min-height: 300px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  color: #1f2937;
+  resize: vertical;
+  box-sizing: border-box;
+}
