@@ -12,6 +12,7 @@ export function useCatalogViewModel() {
   const { catalogRefs, selectedRef, catalog, isCreating, createDialogOpen } = state.catalogs;
 
   useEffect(() => {
+    log.debug('initial mount → LOAD_CATALOG_REFS');
     dispatch({ type: 'LOAD_CATALOG_REFS' });
   }, [dispatch]);
 
@@ -71,6 +72,7 @@ export function useCatalogViewModel() {
 
   const selectCatalog = useCallback(
     (name: string, version: string) => {
+      log.debug('selectCatalog', name, `v${version}`);
       dispatch({ type: 'SELECT_CATALOG', name, version });
     },
     [dispatch],
@@ -80,22 +82,28 @@ export function useCatalogViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
+        log.debug('selectName', name, '→ highest version', `v${best.version}`);
         dispatch({ type: 'SELECT_CATALOG', name: best.name, version: best.version });
+      } else {
+        log.warn('selectName', name, '→ no versions found');
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
+    log.debug('openCreateDialog');
     dispatch({ type: 'OPEN_CREATE_DIALOG' });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
+    log.debug('closeCreateDialog');
     dispatch({ type: 'CLOSE_CREATE_DIALOG' });
   }, [dispatch]);
 
   const createCatalog = useCallback(
     (params: { name: string; type: 'manual' | 'remote' }) => {
+      log.debug('createCatalog', params.name, params.type);
       dispatch({ type: 'CREATE_CATALOG', params });
     },
     [dispatch],
@@ -103,6 +111,7 @@ export function useCatalogViewModel() {
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
+      log.debug('deleteVersion', name, `v${version}`);
       dispatch({ type: 'DELETE_VERSION', name, version });
     },
     [dispatch],
@@ -110,7 +119,11 @@ export function useCatalogViewModel() {
 
   const updateSources = useCallback(
     (sources: Source[]) => {
-      if (!catalog) return;
+      if (!catalog) {
+        log.warn('updateSources called with no catalog loaded');
+        return;
+      }
+      log.debug('updateSources', catalog.name, `${sources.length} source(s)`);
       const updated: Catalog = {
         ...catalog,
         sources,
@@ -123,7 +136,11 @@ export function useCatalogViewModel() {
   );
 
   const lockCatalog = useCallback(() => {
-    if (!catalog || catalog.type !== 'manual' || catalog.locked) return;
+    if (!catalog || catalog.type !== 'manual' || catalog.locked) {
+      log.warn('lockCatalog skipped:', !catalog ? 'no catalog' : catalog.locked ? 'already locked' : `type=${catalog.type}`);
+      return;
+    }
+    log.debug('lockCatalog', catalog.name, `v${catalog.version}`);
     const updated: Catalog = { ...catalog, locked: true };
     dispatch({ type: 'SAVE_CATALOG', catalog: updated });
   }, [dispatch, catalog]);
@@ -144,7 +161,11 @@ export function useCatalogViewModel() {
 
   const addToken = useCallback(
     (key: string, tokenType: TokenType) => {
-      if (!catalog) return;
+      if (!catalog) {
+        log.warn('addToken called with no catalog loaded');
+        return;
+      }
+      log.debug('addToken', key, tokenType, 'to', catalog.name);
       const newToken: Token = { key, type: tokenType };
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
@@ -160,7 +181,11 @@ export function useCatalogViewModel() {
 
   const removeToken = useCallback(
     (key: string, tokenType: TokenType) => {
-      if (!catalog) return;
+      if (!catalog) {
+        log.warn('removeToken called with no catalog loaded');
+        return;
+      }
+      log.debug('removeToken', key, tokenType, 'from', catalog.name);
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -175,7 +200,11 @@ export function useCatalogViewModel() {
 
   const updateTokenKey = useCallback(
     (oldKey: string, newKey: string, tokenType: TokenType) => {
-      if (!catalog) return;
+      if (!catalog) {
+        log.warn('updateTokenKey called with no catalog loaded');
+        return;
+      }
+      log.debug('updateTokenKey', oldKey, '→', newKey, tokenType, 'in', catalog.name);
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -192,6 +221,7 @@ export function useCatalogViewModel() {
 
   const revertToVersion = useCallback(
     (name: string, version: string) => {
+      log.debug('revertToVersion', name, `v${version}`);
       dispatch({ type: 'REVERT_TO_VERSION', name, version });
     },
     [dispatch],

@@ -56,6 +56,7 @@ function createActionProcessor() {
   return async (action: AppAction, setState: SetState): Promise<void> => {
     switch (action.type) {
       case 'SET_ACTIVE_TAB':
+        log.debug('SET_ACTIVE_TAB', action.tabId);
         setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
         break;
 
@@ -78,10 +79,12 @@ function createActionProcessor() {
       }
 
       case 'OPEN_CREATE_DIALOG':
+        log.debug('OPEN_CREATE_DIALOG');
         setState({ type: 'SET_CREATE_DIALOG_OPEN', value: true });
         break;
 
       case 'CLOSE_CREATE_DIALOG':
+        log.debug('CLOSE_CREATE_DIALOG');
         setState({ type: 'SET_CREATE_DIALOG_OPEN', value: false });
         break;
 
@@ -108,6 +111,7 @@ function createActionProcessor() {
       }
 
       case 'DELETE_VERSION': {
+        log.debug('DELETE_VERSION', action.name, `v${action.version}`);
         await catalogService.deleteCatalog(action.name, action.version);
         const refs = await catalogService.listCatalogs();
         setState({ type: 'SET_CATALOG_REFS', refs });
@@ -121,10 +125,12 @@ function createActionProcessor() {
         const next = lower.length > 0 ? lower[lower.length - 1] : higher.length > 0 ? higher[0] : null;
 
         if (next) {
+          log.debug('DELETE_VERSION fallback to', next.name, `v${next.version}`);
           setState({ type: 'SET_SELECTED_REF', ref: next });
           const loaded = await catalogService.loadCatalog(next.name, next.version);
           setState({ type: 'SET_CATALOG', catalog: loaded });
         } else {
+          log.debug('DELETE_VERSION no remaining versions, clearing selection');
           setState({ type: 'SET_SELECTED_REF', ref: null });
           setState({ type: 'SET_CATALOG', catalog: null });
         }
@@ -132,19 +138,15 @@ function createActionProcessor() {
       }
 
       case 'UPDATE_CATALOG_SOURCES': {
+        log.debug('UPDATE_CATALOG_SOURCES (no-op, handled via SAVE_CATALOG from viewmodel)');
         const currentAction = action;
         setState({ type: 'SET_CATALOG', catalog: null });
-        // Caller provides the current catalog via the action; 
-        // we need to read from state - but we can't from the processor.
-        // Instead, the viewmodel will compose the full catalog before dispatching SAVE_CATALOG.
-        // This action is handled by building the catalog with new sources in the viewmodel
-        // and dispatching SAVE_CATALOG. This case is a no-op fallback.
         void currentAction;
         break;
       }
 
       case 'LOCK_CATALOG':
-        // Handled via SAVE_CATALOG with locked=true from viewmodel
+        log.debug('LOCK_CATALOG (no-op, handled via SAVE_CATALOG from viewmodel)');
         break;
 
       case 'SYNC_CATALOG': {
@@ -167,13 +169,22 @@ function createActionProcessor() {
       }
 
       case 'ADD_TOKEN':
+        log.debug('ADD_TOKEN (no-op, handled via SAVE_CATALOG from viewmodel)');
+        break;
       case 'REMOVE_TOKEN':
+        log.debug('REMOVE_TOKEN (no-op, handled via SAVE_CATALOG from viewmodel)');
+        break;
       case 'UPDATE_TOKEN_KEY':
+        log.debug('UPDATE_TOKEN_KEY (no-op, handled via SAVE_CATALOG from viewmodel)');
         break;
 
       case 'REVERT_TO_VERSION': {
+        log.debug('REVERT_TO_VERSION', action.name, `v${action.version}`);
         const snapshot = await catalogService.loadCatalog(action.name, action.version);
-        if (!snapshot) break;
+        if (!snapshot) {
+          log.warn('REVERT_TO_VERSION snapshot not found for', action.name, `v${action.version}`);
+          break;
+        }
 
         const refs = await catalogService.listCatalogs();
         const sameNameRefs = refs
@@ -189,6 +200,7 @@ function createActionProcessor() {
         }
 
         const newVersion = highest ? nextPatchVersion(highest.version) : nextPatchVersion(action.version);
+        log.debug('REVERT_TO_VERSION creating reverted catalog at', `v${newVersion}`);
         const reverted: Catalog = {
           ...snapshot,
           version: newVersion,
@@ -214,6 +226,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const dispatch = useCallback((action: AppAction) => {
     if (!queueRef.current) {
+      log.info('initializing ActionQueue');
       const processor = createActionProcessor();
       const queue = new ActionQueue(processor);
       queue.onStateUpdate = (update) => setState(update);

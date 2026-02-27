@@ -1,5 +1,8 @@
 import type { Catalog, CatalogReference } from '../model/schemas';
 import type { TabId } from '../ui/tabs';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('AppState');
 
 export interface CatalogsState {
   catalogRefs: CatalogReference[];
@@ -45,6 +48,7 @@ export type AppStateUpdate =
   | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number };
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
+  log.debug('reduce', update.type, updatePayloadSummary(update));
   switch (update.type) {
     case 'SET_ACTIVE_TAB':
       return { ...state, activeTab: update.tabId };
@@ -62,5 +66,23 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } };
     default:
       return state;
+  }
+}
+
+function updatePayloadSummary(update: AppStateUpdate): string {
+  switch (update.type) {
+    case 'SET_ACTIVE_TAB':
+      return update.tabId;
+    case 'SET_CATALOG_REFS':
+      return `${update.refs.length} ref(s)`;
+    case 'SET_SELECTED_REF':
+      return update.ref ? `${update.ref.name} v${update.ref.version}` : '(none)';
+    case 'SET_CATALOG':
+      return update.catalog ? `${update.catalog.name} v${update.catalog.version} (${update.catalog.tokens.length} tokens)` : '(none)';
+    case 'SET_IS_CREATING':
+    case 'SET_CREATE_DIALOG_OPEN':
+      return String(update.value);
+    case 'SET_QUEUE_STATUS':
+      return `processing=${update.isProcessing} queue=${update.queueLength}`;
   }
 }
