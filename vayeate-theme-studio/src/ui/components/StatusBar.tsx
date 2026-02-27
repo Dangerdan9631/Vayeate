@@ -1,4 +1,4 @@
-import { useAppState } from '../context/AppContext';
+import { useAppState } from '../context/useAppState';
 
 export function StatusBar() {
   const { state } = useAppState();

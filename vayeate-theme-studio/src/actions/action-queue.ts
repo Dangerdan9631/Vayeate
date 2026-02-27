@@ -1,5 +1,8 @@
 import type { AppAction } from './action-types';
 import type { AppStateUpdate } from '../state/app-state';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('ActionQueue');
 
 export interface QueueStatus {
   isProcessing: boolean;
@@ -21,6 +24,7 @@ export class ActionQueue {
   }
 
   enqueue(action: AppAction): void {
+    log.debug('enqueue', action.type, `(queue depth: ${this.queue.length})`);
     this.queue.push(action);
     this.emitStatus();
     this.process();
@@ -38,13 +42,16 @@ export class ActionQueue {
         this.onStateUpdate(update);
       };
       try {
+        log.debug('processing', action.type);
         await this.processor(action, setState);
+        log.debug('completed', action.type);
       } catch (err) {
-        console.error('Action queue error:', err);
+        log.error('failed', action.type, err);
       }
     }
 
     this.processing = false;
+    log.debug('queue drained');
     this.emitStatus();
   }
 

@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppState } from '../ui/context/AppContext';
+import { useAppState } from '../ui/context/useAppState';
 import { compareVersions } from '../utils/version';
 import { nextPatchVersion } from '../utils/version';
+import { createLogger } from '../utils/logger';
 import type { Catalog, CatalogReference, Source, Token, TokenType } from '../model/schemas';
+
+const log = createLogger('CatalogVM');
 
 export function useCatalogViewModel() {
   const { state, dispatch } = useAppState();
@@ -126,7 +129,16 @@ export function useCatalogViewModel() {
   }, [dispatch, catalog]);
 
   const syncCatalog = useCallback(() => {
-    if (!catalog || catalog.type !== 'remote') return;
+    if (!catalog) {
+      log.warn('syncCatalog called with no catalog loaded');
+      return;
+    }
+    if (catalog.type !== 'remote') {
+      log.warn('syncCatalog called on non-remote catalog', catalog.type);
+      return;
+    }
+    log.debug('syncCatalog dispatching', catalog.name, `v${catalog.version}`,
+      `(${catalog.sources.length} source(s))`);
     dispatch({ type: 'SYNC_CATALOG', catalog });
   }, [dispatch, catalog]);
 

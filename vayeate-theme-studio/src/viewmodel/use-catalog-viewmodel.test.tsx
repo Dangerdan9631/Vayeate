@@ -1,6 +1,7 @@
 import React from 'react';
 import { renderHook, act } from '@testing-library/react';
-import { AppProvider, useAppState } from '../ui/context/AppContext';
+import { AppProvider } from '../ui/context/AppContext';
+import { useAppState } from '../ui/context/useAppState';
 import { useCatalogViewModel } from './use-catalog-viewmodel';
 import type { Catalog } from '../model/schemas';
 
@@ -20,6 +21,7 @@ beforeEach(() => {
     loadCatalog: () => Promise.resolve(null),
     listCatalogs: () => Promise.resolve([]),
     deleteCatalog: () => Promise.resolve(),
+    fetchUrl: () => Promise.resolve(''),
   };
 });
 
@@ -68,6 +70,7 @@ describe('useCatalogViewModel', () => {
       loadCatalog: () => Promise.resolve(mockCatalog),
       listCatalogs: () => Promise.resolve([{ name: 'test-catalog', version: '2.0.0' }]),
       deleteCatalog: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
     };
 
     const { Wrapper, getDispatch } = harness();
@@ -97,6 +100,7 @@ describe('useCatalogViewModel', () => {
       loadCatalog: () => Promise.resolve(null),
       listCatalogs: () => Promise.resolve([]),
       deleteCatalog: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
     };
 
     const { Wrapper, getDispatch } = harness();
@@ -136,6 +140,7 @@ describe('useCatalogViewModel', () => {
       loadCatalog: () => Promise.resolve(remoteCatalog),
       listCatalogs: () => Promise.resolve([{ name: 'remote-cat', version: '1.0.0' }]),
       deleteCatalog: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve('`editor.background`'),
     };
 
     const { Wrapper, getDispatch } = harness();

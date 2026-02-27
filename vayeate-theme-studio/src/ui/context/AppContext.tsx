@@ -1,7 +1,6 @@
 import {
   createContext,
   useCallback,
-  useContext,
   useReducer,
   useRef,
   type ReactNode,
@@ -12,12 +11,15 @@ import type { Catalog } from '../../model/schemas';
 import { catalogService } from '../../services/catalog-service';
 import { syncCatalogTokens } from '../../services/catalog-sync';
 import { compareVersions, nextPatchVersion } from '../../utils/version';
+import { createLogger } from '../../utils/logger';
 import {
   appStateReducer,
   initialAppState,
   type AppState,
   type AppStateUpdate,
 } from '../../state/app-state';
+
+const log = createLogger('AppContext');
 
 type SetState = (update: AppStateUpdate) => void;
 
@@ -26,21 +28,26 @@ async function refreshRefsAndSelect(
   selectName?: string,
   selectVersion?: string,
 ) {
+  log.debug('refreshRefsAndSelect', selectName, selectVersion);
   const refs = await catalogService.listCatalogs();
+  log.debug('loaded', refs.length, 'catalog ref(s)');
   setState({ type: 'SET_CATALOG_REFS', refs });
 
   if (selectName && selectVersion) {
     const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
     if (match) {
+      log.debug('selecting', match.name, match.version);
       setState({ type: 'SET_SELECTED_REF', ref: match });
       const loaded = await catalogService.loadCatalog(match.name, match.version);
       setState({ type: 'SET_CATALOG', catalog: loaded });
       return;
     }
+    log.debug('no matching ref for', selectName, selectVersion);
   }
 }
 
 async function saveCatalogAndRefresh(catalog: Catalog, setState: SetState) {
+  log.debug('saveCatalogAndRefresh', catalog.name, catalog.version);
   await catalogService.saveCatalog(catalog);
   await refreshRefsAndSelect(setState, catalog.name, catalog.version);
 }
@@ -53,15 +60,19 @@ function createActionProcessor() {
         break;
 
       case 'LOAD_CATALOG_REFS': {
+        log.debug('LOAD_CATALOG_REFS');
         const refs = await catalogService.listCatalogs();
+        log.debug('loaded', refs.length, 'catalog ref(s)');
         setState({ type: 'SET_CATALOG_REFS', refs });
         break;
       }
 
       case 'SELECT_CATALOG': {
+        log.debug('SELECT_CATALOG', action.name, `v${action.version}`);
         const ref = { name: action.name, version: action.version };
         setState({ type: 'SET_SELECTED_REF', ref });
         const loaded = await catalogService.loadCatalog(action.name, action.version);
+        log.debug('loaded catalog', loaded ? `${loaded.tokens.length} token(s)` : '(not found)');
         setState({ type: 'SET_CATALOG', catalog: loaded });
         break;
       }
@@ -75,10 +86,12 @@ function createActionProcessor() {
         break;
 
       case 'CREATE_CATALOG': {
+        log.debug('CREATE_CATALOG', action.params);
         setState({ type: 'SET_IS_CREATING', value: true });
         setState({ type: 'SET_CREATE_DIALOG_OPEN', value: false });
         try {
           const catalog = await catalogService.createCatalog(action.params);
+          log.debug('created catalog', catalog.name, `v${catalog.version}`);
           await refreshRefsAndSelect(setState, catalog.name, catalog.version);
           setState({ type: 'SET_CATALOG', catalog });
           setState({ type: 'SET_SELECTED_REF', ref: { name: catalog.name, version: catalog.version } });
@@ -89,6 +102,7 @@ function createActionProcessor() {
       }
 
       case 'SAVE_CATALOG': {
+        log.debug('SAVE_CATALOG', action.catalog.name, `v${action.catalog.version}`);
         await saveCatalogAndRefresh(action.catalog, setState);
         break;
       }
@@ -134,11 +148,18 @@ function createActionProcessor() {
         break;
 
       case 'SYNC_CATALOG': {
-        const tokens = await syncCatalogTokens(action.catalog.sources);
+        log.debug('SYNC_CATALOG', action.catalog.name, `v${action.catalog.version}`,
+          `(${action.catalog.sources.length} source(s))`);
+        const tokens = await syncCatalogTokens(
+          action.catalog.sources,
+          (url) => catalogService.fetchUrl(url),
+        );
+        const nextVersion = nextPatchVersion(action.catalog.version);
+        log.debug('sync produced', tokens.length, `token(s), bumping to v${nextVersion}`);
         const synced: Catalog = {
           ...action.catalog,
           tokens,
-          version: nextPatchVersion(action.catalog.version),
+          version: nextVersion,
           locked: true,
         };
         await saveCatalogAndRefresh(synced, setState);
@@ -180,12 +201,12 @@ function createActionProcessor() {
   };
 }
 
-interface AppContextValue {
+export interface AppContextValue {
   state: AppState;
   dispatch: (action: AppAction) => void;
 }
 
-const AppContext = createContext<AppContextValue | null>(null);
+export const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useReducer(appStateReducer, initialAppState);
@@ -206,12 +227,4 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const value: AppContextValue = { state, dispatch };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-}
-
-export function useAppState(): AppContextValue {
-  const ctx = useContext(AppContext);
-  if (!ctx) {
-    throw new Error('useAppState must be used within AppProvider');
-  }
-  return ctx;
 }

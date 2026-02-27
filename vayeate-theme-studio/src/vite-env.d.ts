@@ -10,6 +10,7 @@ declare global {
       listCatalogs: () => Promise<CatalogReference[]>;
       createCatalog: (params: { name: string; type: 'manual' | 'remote' }) => Promise<Catalog>;
       deleteCatalog: (name: string, version: string) => Promise<void>;
+      fetchUrl: (url: string) => Promise<string>;
     };
   }
 }

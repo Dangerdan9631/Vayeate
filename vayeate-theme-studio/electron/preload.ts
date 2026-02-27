@@ -9,6 +9,7 @@ const electronAPI = {
     ipcRenderer.invoke('catalog:create', params),
   deleteCatalog: (name: string, version: string) =>
     ipcRenderer.invoke('catalog:delete', name, version),
+  fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

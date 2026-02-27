@@ -20,6 +20,7 @@ beforeEach(() => {
     loadCatalog: () => Promise.resolve(null),
     listCatalogs: () => Promise.resolve([]),
     deleteCatalog: () => Promise.resolve(),
+    fetchUrl: () => Promise.resolve(''),
   };
 });
 
@@ -56,6 +57,7 @@ describe('CatalogsPage', () => {
       loadCatalog: () => Promise.resolve(mockCatalog),
       listCatalogs: () => Promise.resolve([{ name: 'mock-catalog', version: '1.0.0' }]),
       deleteCatalog: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
     };
 
     const user = userEvent.setup();

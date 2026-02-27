@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, net } from 'electron';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -59,6 +59,14 @@ app.whenReady().then(() => {
 
   ipcMain.handle('catalog:delete', async (_event, name: string, version: string) => {
     await repo.deleteCatalog(name, version);
+  });
+
+  ipcMain.handle('net:fetch', async (_event, url: string) => {
+    const response = await net.fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+    }
+    return await response.text();
   });
 
   createWindow();

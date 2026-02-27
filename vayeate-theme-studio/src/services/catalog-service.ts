@@ -24,4 +24,7 @@ export const catalogService = {
   deleteCatalog: async (name: string, version: string): Promise<void> => {
     await getAPI().deleteCatalog(name, version);
   },
+  fetchUrl: async (url: string): Promise<string> => {
+    return await getAPI().fetchUrl(url);
+  },
 };

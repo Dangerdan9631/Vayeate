@@ -198,4 +198,35 @@ describe('syncCatalogTokens', () => {
       { key: 'editor.background', type: 'theme' },
     ]);
   });
+
+  it('extracts tokens from HTML <code> tags', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetch('<li><code>editor.background</code>: Editor background color.</li>' +
+        '<li><code>editor.foreground</code>: Editor foreground color.</li>'),
+    );
+    const sources: Source[] = [
+      { url: 'https://example.com/docs', type: 'default', tokenType: 'theme' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result).toEqual([
+      { key: 'editor.background', type: 'theme' },
+      { key: 'editor.foreground', type: 'theme' },
+    ]);
+  });
+
+  it('deduplicates tokens found in both backticks and code tags', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetch('`editor.background` and <code>editor.background</code> and <code>editor.foreground</code>'),
+    );
+    const sources: Source[] = [
+      { url: 'https://example.com', type: 'default', tokenType: 'theme' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result).toEqual([
+      { key: 'editor.background', type: 'theme' },
+      { key: 'editor.foreground', type: 'theme' },
+    ]);
+  });
 });

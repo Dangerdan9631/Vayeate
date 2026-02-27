@@ -1,5 +1,6 @@
 import './styles.css';
-import { AppProvider, useAppState } from './context/AppContext';
+import { AppProvider } from './context/AppContext';
+import { useAppState } from './context/useAppState';
 import { ContentArea } from './components/ContentArea';
 import { MenuBar } from './components/MenuBar';
 import { Ribbon } from './components/Ribbon';
