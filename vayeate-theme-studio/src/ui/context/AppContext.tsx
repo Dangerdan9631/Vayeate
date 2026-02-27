@@ -7,8 +7,9 @@ import {
 } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
-import type { Catalog } from '../../model/schemas';
+import type { Catalog, Template } from '../../model/schemas';
 import { catalogService } from '../../services/catalog-service';
+import { templateService } from '../../services/template-service';
 import { syncCatalogTokens } from '../../services/catalog-sync';
 import { compareVersions, nextPatchVersion } from '../../utils/version';
 import { createLogger } from '../../utils/logger';
@@ -50,6 +51,35 @@ async function saveCatalogAndRefresh(catalog: Catalog, setState: SetState) {
   log.debug('saveCatalogAndRefresh', catalog.name, catalog.version);
   await catalogService.saveCatalog(catalog);
   await refreshRefsAndSelect(setState, catalog.name, catalog.version);
+}
+
+async function refreshTemplateRefsAndSelect(
+  setState: SetState,
+  selectName?: string,
+  selectVersion?: string,
+) {
+  log.debug('refreshTemplateRefsAndSelect', selectName, selectVersion);
+  const refs = await templateService.listTemplates();
+  log.debug('loaded', refs.length, 'template ref(s)');
+  setState({ type: 'SET_TEMPLATE_REFS', refs });
+
+  if (selectName && selectVersion) {
+    const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
+    if (match) {
+      log.debug('selecting template', match.name, match.version);
+      setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref: match });
+      const loaded = await templateService.loadTemplate(match.name, match.version);
+      setState({ type: 'SET_TEMPLATE', template: loaded });
+      return;
+    }
+    log.debug('no matching template ref for', selectName, selectVersion);
+  }
+}
+
+async function saveTemplateAndRefresh(template: Template, setState: SetState) {
+  log.debug('saveTemplateAndRefresh', template.name, template.version);
+  await templateService.saveTemplate(template);
+  await refreshTemplateRefsAndSelect(setState, template.name, template.version);
 }
 
 function createActionProcessor() {
@@ -210,6 +240,83 @@ function createActionProcessor() {
           locked: false,
         };
         await saveCatalogAndRefresh(reverted, setState);
+        break;
+      }
+
+      case 'LOAD_TEMPLATE_REFS': {
+        log.debug('LOAD_TEMPLATE_REFS');
+        const tRefs = await templateService.listTemplates();
+        log.debug('loaded', tRefs.length, 'template ref(s)');
+        setState({ type: 'SET_TEMPLATE_REFS', refs: tRefs });
+        break;
+      }
+
+      case 'SELECT_TEMPLATE': {
+        log.debug('SELECT_TEMPLATE', action.name, `v${action.version}`);
+        const tRef = { name: action.name, version: action.version };
+        setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref: tRef });
+        const loadedTemplate = await templateService.loadTemplate(action.name, action.version);
+        log.debug('loaded template', loadedTemplate ? `${loadedTemplate.mappings.length} mapping(s)` : '(not found)');
+        setState({ type: 'SET_TEMPLATE', template: loadedTemplate });
+        break;
+      }
+
+      case 'OPEN_TEMPLATE_CREATE_DIALOG':
+        log.debug('OPEN_TEMPLATE_CREATE_DIALOG');
+        setState({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: true });
+        break;
+
+      case 'CLOSE_TEMPLATE_CREATE_DIALOG':
+        log.debug('CLOSE_TEMPLATE_CREATE_DIALOG');
+        setState({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: false });
+        break;
+
+      case 'CREATE_TEMPLATE': {
+        log.debug('CREATE_TEMPLATE', action.params);
+        setState({ type: 'SET_TEMPLATE_IS_CREATING', value: true });
+        setState({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: false });
+        try {
+          const newTemplate = await templateService.createTemplate(action.params);
+          log.debug('created template', newTemplate.name, `v${newTemplate.version}`);
+          await refreshTemplateRefsAndSelect(setState, newTemplate.name, newTemplate.version);
+          setState({ type: 'SET_TEMPLATE', template: newTemplate });
+          setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref: { name: newTemplate.name, version: newTemplate.version } });
+        } finally {
+          setState({ type: 'SET_TEMPLATE_IS_CREATING', value: false });
+        }
+        break;
+      }
+
+      case 'SAVE_TEMPLATE': {
+        log.debug('SAVE_TEMPLATE', action.template.name, `v${action.template.version}`);
+        await saveTemplateAndRefresh(action.template, setState);
+        break;
+      }
+
+      case 'DELETE_TEMPLATE_VERSION': {
+        log.debug('DELETE_TEMPLATE_VERSION', action.name, `v${action.version}`);
+        await templateService.deleteTemplate(action.name, action.version);
+        const tRefs = await templateService.listTemplates();
+        setState({ type: 'SET_TEMPLATE_REFS', refs: tRefs });
+
+        const sameName = tRefs
+          .filter((r) => r.name === action.name)
+          .sort((a, b) => compareVersions(a.version, b.version));
+
+        const lowerT = sameName.filter((r) => compareVersions(r.version, action.version) < 0);
+        const higherT = sameName.filter((r) => compareVersions(r.version, action.version) > 0);
+        const nextT = lowerT.length > 0 ? lowerT[lowerT.length - 1] : higherT.length > 0 ? higherT[0] : null;
+
+        if (nextT) {
+          log.debug('DELETE_TEMPLATE_VERSION fallback to', nextT.name, `v${nextT.version}`);
+          setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref: nextT });
+          const loadedNext = await templateService.loadTemplate(nextT.name, nextT.version);
+          setState({ type: 'SET_TEMPLATE', template: loadedNext });
+        } else {
+          log.debug('DELETE_TEMPLATE_VERSION no remaining versions, clearing selection');
+          setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref: null });
+          setState({ type: 'SET_TEMPLATE', template: null });
+        }
         break;
       }
     }

@@ -4,7 +4,7 @@ import {
   type AppState,
   type AppStateUpdate,
 } from './app-state';
-import type { Catalog, CatalogReference } from '../model/schemas';
+import type { Catalog, CatalogReference, Template, TemplateReference } from '../model/schemas';
 
 const sampleCatalog: Catalog = {
   name: 'test-catalog',
@@ -17,6 +17,18 @@ const sampleCatalog: Catalog = {
 
 const sampleRef: CatalogReference = { name: 'test-catalog', version: '1.0.0' };
 
+const sampleTemplate: Template = {
+  name: 'test-template',
+  version: '1.0.0',
+  locked: false,
+  catalogRefs: [],
+  mappings: [],
+  colorVariables: [],
+  contrastVariables: [],
+};
+
+const sampleTemplateRef: TemplateReference = { name: 'test-template', version: '1.0.0' };
+
 describe('initialAppState', () => {
   it('has catalogs as default tab', () => {
     expect(initialAppState.activeTab).toBe('catalogs');
@@ -28,6 +40,14 @@ describe('initialAppState', () => {
     expect(initialAppState.catalogs.isCreating).toBe(false);
     expect(initialAppState.catalogs.createDialogOpen).toBe(false);
     expect(initialAppState.catalogs.catalogRefs).toEqual([]);
+  });
+
+  it('has no selected template and is not creating', () => {
+    expect(initialAppState.templates.template).toBeNull();
+    expect(initialAppState.templates.selectedRef).toBeNull();
+    expect(initialAppState.templates.isCreating).toBe(false);
+    expect(initialAppState.templates.createDialogOpen).toBe(false);
+    expect(initialAppState.templates.templateRefs).toEqual([]);
   });
 
   it('has idle queue status', () => {
@@ -72,6 +92,32 @@ describe('appStateReducer', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_QUEUE_STATUS', isProcessing: true, queueLength: 3 });
     expect(state.queueStatus.isProcessing).toBe(true);
     expect(state.queueStatus.queueLength).toBe(3);
+  });
+
+  it('handles SET_TEMPLATE_REFS', () => {
+    const refs = [sampleTemplateRef];
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_REFS', refs });
+    expect(state.templates.templateRefs).toEqual(refs);
+  });
+
+  it('handles SET_SELECTED_TEMPLATE_REF', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_SELECTED_TEMPLATE_REF', ref: sampleTemplateRef });
+    expect(state.templates.selectedRef).toEqual(sampleTemplateRef);
+  });
+
+  it('handles SET_TEMPLATE', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE', template: sampleTemplate });
+    expect(state.templates.template).toEqual(sampleTemplate);
+  });
+
+  it('handles SET_TEMPLATE_IS_CREATING', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_IS_CREATING', value: true });
+    expect(state.templates.isCreating).toBe(true);
+  });
+
+  it('handles SET_TEMPLATE_CREATE_DIALOG_OPEN', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: true });
+    expect(state.templates.createDialogOpen).toBe(true);
   });
 
   it('returns state unchanged for unknown update type', () => {

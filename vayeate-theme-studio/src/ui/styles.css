@@ -95,6 +95,7 @@ body {
 .content {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   min-height: 0;
   padding: 24px;
   overflow-y: auto;
@@ -532,6 +533,151 @@ body {
   font-size: 12px;
   color: #6b7280;
 }
+
+/* ── Templates page grid ───────────────────────────────────── */
+
+.templates-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 1fr;
+  gap: 24px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.templates-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.templates-center-col {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.templates-right-col {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ── Template catalogs card ────────────────────────────────── */
+
+.template-catalogs-card .empty-hint {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.template-catalog-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.template-catalog-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.template-catalog-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.template-catalog-version {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+/* ── Mapping rows ──────────────────────────────────────────── */
+
+.mapping-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.mapping-token-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.mapping-var-select {
+  width: 120px;
+  flex-shrink: 0;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+.mapping-orphan {
+  background: #fef3c7;
+  border-radius: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.mapping-warning-icon {
+  font-size: 16px;
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+.empty-hint {
+  font-size: 13px;
+  color: #9ca3af;
+  padding: 4px 0;
+}
+
+/* ── Variable rows ─────────────────────────────────────────── */
+
+.variable-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.variable-add-row {
+  margin-bottom: 4px;
+}
+
+.variable-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.variable-comparison-select {
+  width: 120px;
+  flex-shrink: 0;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+/* ── Status bar (continued) ────────────────────────────────── */
 
 .status-bar-left {
   flex: 1;

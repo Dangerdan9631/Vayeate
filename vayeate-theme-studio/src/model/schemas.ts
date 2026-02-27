@@ -127,6 +127,7 @@ export const templateSchema = z
   .object({
     name: templateNameSchema,
     version: versionSchema,
+    locked: z.boolean(),
     catalogRefs: z.array(catalogReferenceSchema).readonly(),
     mappings: z.array(mappingSchema).readonly(),
     colorVariables: z.array(colorVariableSchema).readonly(),

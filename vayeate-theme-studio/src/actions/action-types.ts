@@ -1,5 +1,5 @@
 import type { TabId } from '../ui/tabs';
-import type { Catalog, Source, TokenType } from '../model/schemas';
+import type { Catalog, Source, Template, TokenType } from '../model/schemas';
 
 export type AppAction =
   | { type: 'SET_ACTIVE_TAB'; tabId: TabId }
@@ -16,4 +16,11 @@ export type AppAction =
   | { type: 'ADD_TOKEN'; key: string; tokenType: TokenType }
   | { type: 'REMOVE_TOKEN'; key: string; tokenType: TokenType }
   | { type: 'UPDATE_TOKEN_KEY'; oldKey: string; newKey: string; tokenType: TokenType }
-  | { type: 'REVERT_TO_VERSION'; name: string; version: string };
+  | { type: 'REVERT_TO_VERSION'; name: string; version: string }
+  | { type: 'LOAD_TEMPLATE_REFS' }
+  | { type: 'SELECT_TEMPLATE'; name: string; version: string }
+  | { type: 'OPEN_TEMPLATE_CREATE_DIALOG' }
+  | { type: 'CLOSE_TEMPLATE_CREATE_DIALOG' }
+  | { type: 'CREATE_TEMPLATE'; params: { name: string } }
+  | { type: 'SAVE_TEMPLATE'; template: Template }
+  | { type: 'DELETE_TEMPLATE_VERSION'; name: string; version: string };

@@ -4,8 +4,10 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { createCatalogRepository } from '../src/data/catalog-repository';
+import { createTemplateRepository } from '../src/data/template-repository';
 import { createCatalogWithParams } from '../src/controllers/catalog-controller';
-import type { Catalog } from '../src/model/schemas';
+import { createTemplateWithParams } from '../src/controllers/template-controller';
+import type { Catalog, Template } from '../src/model/schemas';
 
 const TAG = '[Main]';
 
@@ -15,6 +17,12 @@ function getCatalogRepository() {
   const baseDir = app.getPath('userData');
   console.debug(TAG, 'catalog repository baseDir:', baseDir);
   return createCatalogRepository(baseDir);
+}
+
+function getTemplateRepository() {
+  const baseDir = app.getPath('userData');
+  console.debug(TAG, 'template repository baseDir:', baseDir);
+  return createTemplateRepository(baseDir);
 }
 
 function createWindow(): void {
@@ -47,6 +55,7 @@ function createWindow(): void {
 app.whenReady().then(() => {
   console.info(TAG, 'app ready');
   const repo = getCatalogRepository();
+  const templateRepo = getTemplateRepository();
 
   ipcMain.handle('catalog:create', async (_event, params: { name: string; type: 'manual' | 'remote' }) => {
     console.debug(TAG, 'IPC catalog:create', params.name, params.type);
@@ -80,6 +89,41 @@ app.whenReady().then(() => {
     console.debug(TAG, 'IPC catalog:delete', name, `v${version}`);
     await repo.deleteCatalog(name, version);
     console.debug(TAG, 'IPC catalog:delete complete');
+  });
+
+  ipcMain.handle('template:create', async (_event, params: { name: string }) => {
+    console.debug(TAG, 'IPC template:create', params.name);
+    const template = createTemplateWithParams(params);
+    await templateRepo.saveTemplate(template);
+    console.debug(TAG, 'IPC template:create →', template.name, `v${template.version}`);
+    return template;
+  });
+
+  ipcMain.handle('template:save', async (_event, template: Template) => {
+    console.debug(TAG, 'IPC template:save', template.name, `v${template.version}`,
+      `(${template.mappings.length} mappings)`);
+    await templateRepo.saveTemplate(template);
+    console.debug(TAG, 'IPC template:save complete');
+  });
+
+  ipcMain.handle('template:load', async (_event, name: string, version: string) => {
+    console.debug(TAG, 'IPC template:load', name, `v${version}`);
+    const result = await templateRepo.loadTemplate(name, version);
+    console.debug(TAG, 'IPC template:load →', result ? `${result.mappings.length} mapping(s)` : '(not found)');
+    return result;
+  });
+
+  ipcMain.handle('template:list', async () => {
+    console.debug(TAG, 'IPC template:list');
+    const refs = await templateRepo.listTemplates();
+    console.debug(TAG, 'IPC template:list →', refs.length, 'ref(s)');
+    return refs;
+  });
+
+  ipcMain.handle('template:delete', async (_event, name: string, version: string) => {
+    console.debug(TAG, 'IPC template:delete', name, `v${version}`);
+    await templateRepo.deleteTemplate(name, version);
+    console.debug(TAG, 'IPC template:delete complete');
   });
 
   ipcMain.handle('net:fetch', async (_event, url: string) => {
