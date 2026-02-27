@@ -297,23 +297,33 @@ body {
   color: #1f2937;
 }
 
-.sources-textarea {
-  width: 100%;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
-  font-size: 13px;
-  line-height: 1.5;
-  padding: 8px 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #f9fafb;
-  color: #1f2937;
-  resize: vertical;
+.sources-section {
+  margin-bottom: 12px;
 }
 
-.sources-textarea:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
-  outline: none;
+.sources-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.source-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.source-url-input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.source-select {
+  width: 130px;
+  flex-shrink: 0;
 }
 
 .details-actions {

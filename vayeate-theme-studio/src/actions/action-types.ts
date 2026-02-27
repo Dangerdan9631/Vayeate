@@ -12,7 +12,7 @@ export type AppAction =
   | { type: 'DELETE_VERSION'; name: string; version: string }
   | { type: 'UPDATE_CATALOG_SOURCES'; sources: Source[] }
   | { type: 'LOCK_CATALOG' }
-  | { type: 'SYNC_CATALOG' }
+  | { type: 'SYNC_CATALOG'; catalog: Catalog }
   | { type: 'ADD_TOKEN'; key: string; tokenType: TokenType }
   | { type: 'REMOVE_TOKEN'; key: string; tokenType: TokenType }
   | { type: 'UPDATE_TOKEN_KEY'; oldKey: string; newKey: string; tokenType: TokenType }

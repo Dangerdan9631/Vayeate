@@ -8,4 +8,5 @@ export {
   type CatalogName,
   type Url,
   type Version,
+  type TokenType,
 } from './schemas.js';

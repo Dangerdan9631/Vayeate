@@ -127,12 +127,7 @@ export function useCatalogViewModel() {
 
   const syncCatalog = useCallback(() => {
     if (!catalog || catalog.type !== 'remote') return;
-    const updated: Catalog = {
-      ...catalog,
-      version: nextPatchVersion(catalog.version),
-      locked: true,
-    };
-    dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+    dispatch({ type: 'SYNC_CATALOG', catalog });
   }, [dispatch, catalog]);
 
   const addToken = useCallback(

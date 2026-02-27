@@ -72,6 +72,7 @@ export const sourceSchema = z
   .object({
     url: urlSchema,
     type: sourceTypeSchema,
+    tokenType: tokenTypeSchema,
   })
   .readonly();
 export type Source = z.infer<typeof sourceSchema>;

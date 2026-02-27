@@ -10,6 +10,7 @@ import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
 import type { Catalog } from '../../model/schemas';
 import { catalogService } from '../../services/catalog-service';
+import { syncCatalogTokens } from '../../services/catalog-sync';
 import { compareVersions, nextPatchVersion } from '../../utils/version';
 import {
   appStateReducer,
@@ -132,9 +133,17 @@ function createActionProcessor() {
         // Handled via SAVE_CATALOG with locked=true from viewmodel
         break;
 
-      case 'SYNC_CATALOG':
-        // Stub: in future, run sync logic here
+      case 'SYNC_CATALOG': {
+        const tokens = await syncCatalogTokens(action.catalog.sources);
+        const synced: Catalog = {
+          ...action.catalog,
+          tokens,
+          version: nextPatchVersion(action.catalog.version),
+          locked: true,
+        };
+        await saveCatalogAndRefresh(synced, setState);
         break;
+      }
 
       case 'ADD_TOKEN':
       case 'REMOVE_TOKEN':

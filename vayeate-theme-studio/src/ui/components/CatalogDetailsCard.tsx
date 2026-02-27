@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import type { Catalog, Source, TokenType } from '../../model/schemas';
+import type { Catalog, Source, SourceType, TokenType } from '../../model/schemas';
+
+const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'token', 'semantic token'];
+const SOURCE_TYPE_OPTIONS: SourceType[] = ['default'];
 
 interface CatalogDetailsCardProps {
   catalog: Catalog;
@@ -22,17 +25,25 @@ export function CatalogDetailsCard({
   onUpdateSources,
   onRevert,
 }: CatalogDetailsCardProps) {
-  const [sourcesText, setSourcesText] = useState(
-    catalog.sources.map((s) => s.url).join('\n'),
-  );
+  const [newUrl, setNewUrl] = useState('');
+  const [newTokenType, setNewTokenType] = useState<TokenType>('theme');
+  const [newSourceType, setNewSourceType] = useState<SourceType>('default');
 
-  function handleSourcesBlur() {
-    const urls = sourcesText
-      .split('\n')
-      .map((l) => l.trim())
-      .filter(Boolean);
-    const sources: Source[] = urls.map((url) => ({ url, type: 'default' as const }));
-    onUpdateSources(sources);
+  function handleUpdateSource(index: number, updated: Source) {
+    const next = catalog.sources.map((s, i) => (i === index ? updated : s));
+    onUpdateSources(next);
+  }
+
+  function handleRemoveSource(index: number) {
+    onUpdateSources(catalog.sources.filter((_, i) => i !== index));
+  }
+
+  function handleAddSource() {
+    const trimmed = newUrl.trim();
+    if (!trimmed) return;
+    const source: Source = { url: trimmed, type: newSourceType, tokenType: newTokenType };
+    onUpdateSources([...catalog.sources, source]);
+    setNewUrl('');
   }
 
   return (
@@ -63,17 +74,101 @@ export function CatalogDetailsCard({
       </div>
 
       {catalog.type === 'remote' && (
-        <label className="field-row">
-          <span className="field-label">Sources (one URL per line)</span>
-          <textarea
-            className="sources-textarea"
-            value={sourcesText}
-            onChange={(e) => setSourcesText(e.target.value)}
-            onBlur={handleSourcesBlur}
-            rows={4}
-            disabled={!isLatestVersion}
-          />
-        </label>
+        <div className="sources-section">
+          <span className="field-label">Sources</span>
+          <div className="sources-table">
+            {catalog.sources.map((source, i) => (
+              <div className="source-row" key={i}>
+                <input
+                  className="field-input source-url-input"
+                  type="text"
+                  value={source.url}
+                  placeholder="https://..."
+                  disabled={!isLatestVersion}
+                  onChange={(e) =>
+                    handleUpdateSource(i, { ...source, url: e.target.value })
+                  }
+                />
+                <select
+                  className="field-select source-select"
+                  value={source.tokenType}
+                  disabled={!isLatestVersion}
+                  onChange={(e) =>
+                    handleUpdateSource(i, {
+                      ...source,
+                      tokenType: e.target.value as TokenType,
+                    })
+                  }
+                >
+                  {TOKEN_TYPE_OPTIONS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+                <select
+                  className="field-select source-select"
+                  value={source.type}
+                  disabled={!isLatestVersion}
+                  onChange={(e) =>
+                    handleUpdateSource(i, {
+                      ...source,
+                      type: e.target.value as SourceType,
+                    })
+                  }
+                >
+                  {SOURCE_TYPE_OPTIONS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn-icon btn-danger-icon"
+                  disabled={!isLatestVersion}
+                  onClick={() => handleRemoveSource(i)}
+                  aria-label="Remove source"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            ))}
+            {isLatestVersion && (
+              <div className="source-row source-add-row">
+                <input
+                  className="field-input source-url-input"
+                  type="text"
+                  value={newUrl}
+                  placeholder="https://..."
+                  onChange={(e) => setNewUrl(e.target.value)}
+                />
+                <select
+                  className="field-select source-select"
+                  value={newTokenType}
+                  onChange={(e) => setNewTokenType(e.target.value as TokenType)}
+                >
+                  {TOKEN_TYPE_OPTIONS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+                <select
+                  className="field-select source-select"
+                  value={newSourceType}
+                  onChange={(e) => setNewSourceType(e.target.value as SourceType)}
+                >
+                  {SOURCE_TYPE_OPTIONS.map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn-icon btn-add-icon"
+                  onClick={handleAddSource}
+                  aria-label="Add source"
+                >
+                  <span className="material-symbols-outlined">add</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       <div className="details-actions">
