@@ -219,6 +219,32 @@ export function useCatalogViewModel() {
     [dispatch, catalog],
   );
 
+  const bulkAddTokens = useCallback(
+    (newTokens: Token[]) => {
+      if (!catalog) {
+        log.warn('bulkAddTokens called with no catalog loaded');
+        return;
+      }
+      const existingKeys = new Set(catalog.tokens.map((t) => `${t.type}::${t.key}`));
+      const unique = newTokens.filter((t) => !existingKeys.has(`${t.type}::${t.key}`));
+      if (unique.length === 0) {
+        log.debug('bulkAddTokens: all tokens already exist, nothing to add');
+        return;
+      }
+      log.debug('bulkAddTokens', unique.length, 'new token(s) to', catalog.name,
+        `(${newTokens.length - unique.length} duplicate(s) skipped)`);
+      const base = catalog.locked
+        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+        : catalog;
+      const updated: Catalog = {
+        ...base,
+        tokens: [...base.tokens, ...unique],
+      };
+      dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+    },
+    [dispatch, catalog],
+  );
+
   const revertToVersion = useCallback(
     (name: string, version: string) => {
       log.debug('revertToVersion', name, `v${version}`);
@@ -250,6 +276,7 @@ export function useCatalogViewModel() {
     lockCatalog,
     syncCatalog,
     addToken,
+    bulkAddTokens,
     removeToken,
     updateTokenKey,
     revertToVersion,

@@ -1,4 +1,6 @@
+import { useMemo, useState } from 'react';
 import { useCatalogViewModel } from '../../viewmodel/use-catalog-viewmodel';
+import { BulkAddDialog } from '../components/BulkAddDialog';
 import { CatalogDetailsCard } from '../components/CatalogDetailsCard';
 import { CatalogsCard } from '../components/CatalogsCard';
 import { CreateCatalogDialog } from '../components/CreateCatalogDialog';
@@ -6,6 +8,12 @@ import { TokensCard } from '../components/TokensCard';
 
 export function CatalogsPage() {
   const vm = useCatalogViewModel();
+  const [bulkAddOpen, setBulkAddOpen] = useState(false);
+
+  const existingTokenKeys = useMemo(() => {
+    if (!vm.catalog) return new Set<string>();
+    return new Set(vm.catalog.tokens.map((t) => `${t.type}::${t.key}`));
+  }, [vm.catalog]);
 
   return (
     <>
@@ -49,6 +57,7 @@ export function CatalogsPage() {
               onAddToken={vm.addToken}
               onRemoveToken={vm.removeToken}
               onUpdateTokenKey={vm.updateTokenKey}
+              onBulkAdd={() => setBulkAddOpen(true)}
             />
           )}
         </div>
@@ -57,6 +66,16 @@ export function CatalogsPage() {
         <CreateCatalogDialog
           onCancel={vm.closeCreateDialog}
           onCreate={vm.createCatalog}
+        />
+      )}
+      {bulkAddOpen && (
+        <BulkAddDialog
+          existingTokenKeys={existingTokenKeys}
+          onCancel={() => setBulkAddOpen(false)}
+          onAdd={(tokens) => {
+            vm.bulkAddTokens(tokens);
+            setBulkAddOpen(false);
+          }}
         />
       )}
     </>

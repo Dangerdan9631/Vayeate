@@ -9,6 +9,7 @@ interface TokensCardProps {
   onAddToken: (key: string, tokenType: TokenType) => void;
   onRemoveToken: (key: string, tokenType: TokenType) => void;
   onUpdateTokenKey: (oldKey: string, newKey: string, tokenType: TokenType) => void;
+  onBulkAdd: () => void;
 }
 
 const TOKEN_TYPES: TokenType[] = ['theme', 'token', 'semantic token'];
@@ -125,12 +126,20 @@ export function TokensCard({
   onAddToken,
   onRemoveToken,
   onUpdateTokenKey,
+  onBulkAdd,
 }: TokensCardProps) {
   const canEdit = catalog.type === 'manual' && isLatestVersion;
 
   return (
     <div className="tokens-card placeholder">
-      <h2>Tokens</h2>
+      <div className="tokens-card-header">
+        <h2>Tokens</h2>
+        {canEdit && (
+          <button type="button" className="btn-secondary btn-sm" onClick={onBulkAdd}>
+            Bulk Add
+          </button>
+        )}
+      </div>
       {TOKEN_TYPES.map((tt) => (
         <TokenTypeSection
           key={tt}

@@ -5,7 +5,7 @@ import * as z from 'zod';
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 const SEMVER_REGEX = /^v?\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$/;
 const VARIABLE_KEY_REGEX = /^[a-zA-Z][a-zA-Z0-9]*$/;
-const TOKEN_KEY_REGEX = /^([a-zA-Z][a-zA-Z0-9_*-]*|\*)(\.([a-zA-Z][a-zA-Z0-9_*-]*|\*))*$/;
+const TOKEN_KEY_REGEX = /^([a-zA-Z*0-9][a-zA-Z0-9_*-]*)((\.| |:)([a-zA-Z*0-9][a-zA-Z0-9_*-]*))*$/;
 const HEX_COLOR_REGEX = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})([0-9A-Fa-f]{2})?$/;
 
 // --- Primitive schemas ---
