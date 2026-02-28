@@ -1,0 +1,3045 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "locked": false,
+  "catalogRefs": [
+    {
+      "name": "vayeate-tokens",
+      "version": "1.0.0"
+    }
+  ],
+  "mappings": [
+    {
+      "token": {
+        "key": "titleBar.activeBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "titleBar.activeForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "titleBar.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "titleBar.inactiveBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "titleBar.inactiveForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "focusBorder",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "menu.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "menu.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "menu.separatorBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "menu.selectionForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "menu.selectionBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "menubar.selectionForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "menubar.selectionBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBar.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBar.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBar.activeBorder",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBar.dropBorder",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBar.inactiveForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBar.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBar.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBar.debuggingBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBar.debuggingForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBarItem.remoteForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBar.noFolderBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBar.noFolderForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBarItem.activeBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBarItem.errorBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBarItem.errorForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "statusBarItem.hoverBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "progressBar.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notifications.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notifications.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notifications.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationToast.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationCenterHeader.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationCenterHeader.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationCenter.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationsInfoIcon.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationsWarningIcon.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationsErrorIcon.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "notificationLink.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "extensionButton.prominentBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "extensionButton.prominentForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "extensionButton.prominentHoverBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBarBadge.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "activityBarBadge.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "badge.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "badge.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "extensionBadge.remoteForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "extensionBadge.remoteBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorGutter.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorGutter.addedBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorGutter.deletedBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorGutter.modifiedBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorGroupHeader.tabsBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "tab.activeBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "tab.activeForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "tab.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "tab.inactiveBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "tab.inactiveForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panel.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelTitle.activeForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelTitle.activeBorder",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelTitle.inactiveForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panel.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panel.dropBorder",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelSection.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelSection.dropBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelSectionHeader.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "sideBarSectionHeader.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "sideBarSectionHeader.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorLineNumber.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorLineNumber.activeForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "breadcrumb.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "breadcrumb.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "breadcrumb.focusForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "breadcrumb.activeSelectionForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "breadcrumbPicker.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBlack",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBlue",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightBlack",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightBlue",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightCyan",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightGreen",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightMagenta",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightRed",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightWhite",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiBrightYellow",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiCyan",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiGreen",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiMagenta",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiRed",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiWhite",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.ansiYellow",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "terminal.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Terminal"
+    },
+    {
+      "token": {
+        "key": "foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "sideBar.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "sideBar.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "sideBarTitle.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "sideBar.dropBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "sideBar.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editor.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editor.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorCursor.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editor.lineHighlightBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editor.selectionBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorIndentGuide.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorIndentGuide.activeBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorInlayHint.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorInlayHint.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editor.findMatchBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editor.findMatchHighlightBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editor.findRangeHighlightBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorLink.activeForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorCodeLens.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorBracketMatch.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorBracketMatch.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorRuler.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorGroup.emptyBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "gitDecoration.conflictingResourceForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "gitDecoration.deletedResourceForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "gitDecoration.ignoredResourceForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "gitDecoration.modifiedResourceForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "gitDecoration.untrackedResourceForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "diffEditor.insertedTextBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Diff Editor"
+    },
+    {
+      "token": {
+        "key": "diffEditor.removedTextBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Diff Editor"
+    },
+    {
+      "token": {
+        "key": "textPreformat.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "editorWidget.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorWidget.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "editorWidget.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "widget.shadow",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "panelSectionHeader.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.activeSelectionBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.activeSelectionForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.focusBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.focusForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.highlightForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.hoverBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.hoverForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.inactiveSelectionBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.inactiveSelectionForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "list.invalidItemForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "button.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "button.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "button.hoverBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "button.secondaryBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "button.secondaryForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "button.secondaryHoverBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "dropdown.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "dropdown.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "dropdown.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "dropdown.listBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "scrollbar.shadow",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "scrollbarSlider.activeBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "scrollbarSlider.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "scrollbarSlider.hoverBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "input.background",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "input.border",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "input.foreground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "input.placeholderForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputOption.activeForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputOption.activeBorder",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputValidation.errorBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputValidation.errorForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputValidation.infoBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputValidation.infoForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputValidation.warningBackground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "inputValidation.warningForeground",
+        "type": "theme"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Chrome"
+    },
+    {
+      "token": {
+        "key": "source",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "meta.use.rust",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.accessor",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.brackets",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.comma",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.curlybrace",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.typeparameters",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.parameters",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.parenthesis",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.squarebracket",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.section",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.semi",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.separator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.terminator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.comment",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "string",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.string",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "constant.character.escape",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.interpolation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "meta.attribute",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "meta.attribute keyword",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "meta.attribute punctuation.brackets",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.annotation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "storage.type.annotation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "keyword",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "constant.language",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "storage.modifier",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.language",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.type.class",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.type.kotlin",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.type.enum",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.type.struct",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.other.inherited-class",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "storage.type",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.other.object",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.type.interface",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.other.constant",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.powershell support.constant.variable",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "constant.other.enum",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.variable.field",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.other",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.powershell support.variable",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.function",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.variable.property",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.other.object.property",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.powershell support.function",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.parameter",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.variable.parameter",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.type.type-parameter",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "storage.type.generic",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.java punctuation.bracket.angle",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "constant.numeric",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.tag",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "keyword.other.documentation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.tag",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.other.attribute-name",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment.block.documentation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment.block.javadoc",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment.line.documentation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment.block.documentation string.quoted.double",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment.block.documentation punctuation.definition.string",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.xml punctuation.definition.tag",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.xml meta.tag",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.xml entity.name.tag",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.xml entity.other.attribute-name",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.yaml punctuation.definition",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.json punctuation.definition",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.yaml punctuation.separator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.json punctuation.separator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.yaml entity.other",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.yaml entity.name.tag",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.json support.type",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.yaml constant.language",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.json constant.language",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "heading.1 entity.name.section",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation.definition.heading",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "heading.2 entity.name.section",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "heading.3 entity.name.section",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "entity.name.section",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "constant.other.reference.link",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "markup.underline.link",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "fenced_code.block.language",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "markup.inline",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "string.other.link",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.html.markdown punctuation.definition",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.html.markdown punctuation.definition.string",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "text.html.markdown meta.separator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.ini keyword",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.ini entity.name.section",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.ini",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.ini punctuation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.ini punctuation.separator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.toml keyword",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.toml entity.other.attribute-name",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.toml",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.toml punctuation",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.toml punctuation.separator",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian entity.name.include.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian string.regexp",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "source.regex-pipeline.obsidian comment.line.text.obsidian",
+        "type": "token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "local",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "namespace",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "operator",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "punctuation",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "comment.documentation",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "string",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "regexp",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "stringEscapeCharacter",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "keyword",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "controlKeyword",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "plainKeyword",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "class",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "enum",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "struct",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "interface",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "delegate",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "constant",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "enumMember",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "variable.static.readonly",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "property.static.readonly",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "field.static",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "field",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "property:java",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "method",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "property",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "parameter",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "typeParameter",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "number",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "xmlDocCommentAttributeName",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "xmlDocCommentName",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "xmlDocCommentAttributeQuotes",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "xmlDocCommentDelimiter",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "xmlDocCommentText",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    },
+    {
+      "token": {
+        "key": "*.deprecated",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "Editor Window"
+    }
+  ],
+  "colorVariables": [],
+  "contrastVariables": [],
+  "groups": [
+    "Editor Chrome",
+    "Diff Editor",
+    "Editor Window",
+    "Terminal"
+  ]
+}

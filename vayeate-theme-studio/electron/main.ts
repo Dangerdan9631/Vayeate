@@ -1,8 +1,12 @@
 import { app, BrowserWindow, ipcMain, net } from 'electron';
+import { mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+/** Repository-relative data directory: vayeate-theme-studio/data */
+const DATA_DIR = join(__dirname, '..', 'data');
 import { createCatalogRepository } from '../src/data/catalog-repository';
 import { createTemplateRepository } from '../src/data/template-repository';
 import { createThemeRepository } from '../src/data/theme-repository';
@@ -17,21 +21,18 @@ const TAG = '[Main]';
 let mainWindow: BrowserWindow | null = null;
 
 function getCatalogRepository() {
-  const baseDir = app.getPath('userData');
-  console.debug(TAG, 'catalog repository baseDir:', baseDir);
-  return createCatalogRepository(baseDir);
+  console.debug(TAG, 'catalog repository baseDir:', DATA_DIR);
+  return createCatalogRepository(DATA_DIR);
 }
 
 function getTemplateRepository() {
-  const baseDir = app.getPath('userData');
-  console.debug(TAG, 'template repository baseDir:', baseDir);
-  return createTemplateRepository(baseDir);
+  console.debug(TAG, 'template repository baseDir:', DATA_DIR);
+  return createTemplateRepository(DATA_DIR);
 }
 
 function getThemeRepository() {
-  const baseDir = app.getPath('userData');
-  console.debug(TAG, 'theme repository baseDir:', baseDir);
-  return createThemeRepository(baseDir);
+  console.debug(TAG, 'theme repository baseDir:', DATA_DIR);
+  return createThemeRepository(DATA_DIR);
 }
 
 function createWindow(): void {
@@ -61,8 +62,12 @@ function createWindow(): void {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   console.info(TAG, 'app ready');
+  await mkdir(join(DATA_DIR, 'catalogs'), { recursive: true });
+  await mkdir(join(DATA_DIR, 'templates'), { recursive: true });
+  await mkdir(join(DATA_DIR, 'themes'), { recursive: true });
+
   const repo = getCatalogRepository();
   const templateRepo = getTemplateRepository();
   const themeRepo = getThemeRepository();

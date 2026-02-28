@@ -1,0 +1,12 @@
+{
+  "name": "abc",
+  "version": "1.0.0",
+  "templateRef": {
+    "name": "test",
+    "version": "1.0.0"
+  },
+  "idePrimaryColorVariableRef": null,
+  "themeBackgroundColorVariableRef": null,
+  "colorAssignments": [],
+  "contrastAssignments": []
+}
