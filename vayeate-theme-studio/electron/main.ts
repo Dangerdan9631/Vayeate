@@ -5,9 +5,11 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 import { createCatalogRepository } from '../src/data/catalog-repository';
 import { createTemplateRepository } from '../src/data/template-repository';
+import { createThemeRepository } from '../src/data/theme-repository';
 import { createCatalogWithParams } from '../src/controllers/catalog-controller';
 import { createTemplateWithParams } from '../src/controllers/template-controller';
-import type { Catalog, Template } from '../src/model/schemas';
+import { createThemeWithParams } from '../src/controllers/theme-controller';
+import type { Catalog, Template, Theme } from '../src/model/schemas';
 
 const TAG = '[Main]';
 
@@ -23,6 +25,12 @@ function getTemplateRepository() {
   const baseDir = app.getPath('userData');
   console.debug(TAG, 'template repository baseDir:', baseDir);
   return createTemplateRepository(baseDir);
+}
+
+function getThemeRepository() {
+  const baseDir = app.getPath('userData');
+  console.debug(TAG, 'theme repository baseDir:', baseDir);
+  return createThemeRepository(baseDir);
 }
 
 function createWindow(): void {
@@ -56,6 +64,7 @@ app.whenReady().then(() => {
   console.info(TAG, 'app ready');
   const repo = getCatalogRepository();
   const templateRepo = getTemplateRepository();
+  const themeRepo = getThemeRepository();
 
   ipcMain.handle('catalog:create', async (_event, params: { name: string; type: 'manual' | 'remote' }) => {
     console.debug(TAG, 'IPC catalog:create', params.name, params.type);
@@ -124,6 +133,41 @@ app.whenReady().then(() => {
     console.debug(TAG, 'IPC template:delete', name, `v${version}`);
     await templateRepo.deleteTemplate(name, version);
     console.debug(TAG, 'IPC template:delete complete');
+  });
+
+  ipcMain.handle('theme:create', async (_event, params: { name: string }) => {
+    console.debug(TAG, 'IPC theme:create', params.name);
+    const theme = createThemeWithParams(params);
+    await themeRepo.saveTheme(theme);
+    console.debug(TAG, 'IPC theme:create →', theme.name, `v${theme.version}`);
+    return theme;
+  });
+
+  ipcMain.handle('theme:save', async (_event, theme: Theme) => {
+    console.debug(TAG, 'IPC theme:save', theme.name, `v${theme.version}`,
+      `(${theme.colorAssignments.length} color, ${theme.contrastAssignments.length} contrast)`);
+    await themeRepo.saveTheme(theme);
+    console.debug(TAG, 'IPC theme:save complete');
+  });
+
+  ipcMain.handle('theme:load', async (_event, name: string, version: string) => {
+    console.debug(TAG, 'IPC theme:load', name, `v${version}`);
+    const result = await themeRepo.loadTheme(name, version);
+    console.debug(TAG, 'IPC theme:load →', result ? `${result.colorAssignments.length} color assignment(s)` : '(not found)');
+    return result;
+  });
+
+  ipcMain.handle('theme:list', async () => {
+    console.debug(TAG, 'IPC theme:list');
+    const refs = await themeRepo.listThemes();
+    console.debug(TAG, 'IPC theme:list →', refs.length, 'ref(s)');
+    return refs;
+  });
+
+  ipcMain.handle('theme:delete', async (_event, name: string, version: string) => {
+    console.debug(TAG, 'IPC theme:delete', name, `v${version}`);
+    await themeRepo.deleteTheme(name, version);
+    console.debug(TAG, 'IPC theme:delete complete');
   });
 
   ipcMain.handle('net:fetch', async (_event, url: string) => {

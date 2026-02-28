@@ -4,7 +4,7 @@ import {
   type AppState,
   type AppStateUpdate,
 } from './app-state';
-import type { Catalog, CatalogReference, Template, TemplateReference } from '../model/schemas';
+import type { Catalog, CatalogReference, Template, TemplateReference, Theme, ThemeReference } from '../model/schemas';
 
 const sampleCatalog: Catalog = {
   name: 'test-catalog',
@@ -29,6 +29,17 @@ const sampleTemplate: Template = {
 
 const sampleTemplateRef: TemplateReference = { name: 'test-template', version: '1.0.0' };
 
+const sampleTheme: Theme = {
+  name: 'test-theme',
+  version: '1.0.0',
+  templateRef: null,
+  idePrimaryColorVariableRef: null,
+  colorAssignments: [],
+  contrastAssignments: [],
+};
+
+const sampleThemeRef: ThemeReference = { name: 'test-theme', version: '1.0.0' };
+
 describe('initialAppState', () => {
   it('has catalogs as default tab', () => {
     expect(initialAppState.activeTab).toBe('catalogs');
@@ -48,6 +59,14 @@ describe('initialAppState', () => {
     expect(initialAppState.templates.isCreating).toBe(false);
     expect(initialAppState.templates.createDialogOpen).toBe(false);
     expect(initialAppState.templates.templateRefs).toEqual([]);
+  });
+
+  it('has no selected theme and is not creating', () => {
+    expect(initialAppState.themes.theme).toBeNull();
+    expect(initialAppState.themes.selectedRef).toBeNull();
+    expect(initialAppState.themes.isCreating).toBe(false);
+    expect(initialAppState.themes.createDialogOpen).toBe(false);
+    expect(initialAppState.themes.themeRefs).toEqual([]);
   });
 
   it('has idle queue status', () => {
@@ -118,6 +137,32 @@ describe('appStateReducer', () => {
   it('handles SET_TEMPLATE_CREATE_DIALOG_OPEN', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: true });
     expect(state.templates.createDialogOpen).toBe(true);
+  });
+
+  it('handles SET_THEME_REFS', () => {
+    const refs = [sampleThemeRef];
+    const state = appStateReducer(initialAppState, { type: 'SET_THEME_REFS', refs });
+    expect(state.themes.themeRefs).toEqual(refs);
+  });
+
+  it('handles SET_SELECTED_THEME_REF', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_SELECTED_THEME_REF', ref: sampleThemeRef });
+    expect(state.themes.selectedRef).toEqual(sampleThemeRef);
+  });
+
+  it('handles SET_THEME', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_THEME', theme: sampleTheme });
+    expect(state.themes.theme).toEqual(sampleTheme);
+  });
+
+  it('handles SET_THEME_IS_CREATING', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_THEME_IS_CREATING', value: true });
+    expect(state.themes.isCreating).toBe(true);
+  });
+
+  it('handles SET_THEME_CREATE_DIALOG_OPEN', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_THEME_CREATE_DIALOG_OPEN', value: true });
+    expect(state.themes.createDialogOpen).toBe(true);
   });
 
   it('returns state unchanged for unknown update type', () => {

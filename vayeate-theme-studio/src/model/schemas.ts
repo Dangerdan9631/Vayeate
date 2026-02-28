@@ -146,6 +146,14 @@ export const templateReferenceSchema = z
   .readonly();
 export type TemplateReference = z.infer<typeof templateReferenceSchema>;
 
+export const themeReferenceSchema = z
+  .object({
+    name: themeNameSchema,
+    version: versionSchema,
+  })
+  .readonly();
+export type ThemeReference = z.infer<typeof themeReferenceSchema>;
+
 export const colorAssignmentValueSchema = z
   .object({
     value: hexColorSchema,
@@ -187,8 +195,8 @@ export const themeSchema = z
   .object({
     name: themeNameSchema,
     version: versionSchema,
-    templateRef: templateReferenceSchema,
-    idePrimaryColorVariableRef: colorVariableKeySchema,
+    templateRef: templateReferenceSchema.nullable(),
+    idePrimaryColorVariableRef: colorVariableKeySchema.nullable(),
     colorAssignments: z.array(colorAssignmentSchema).readonly(),
     contrastAssignments: z.array(contrastAssignmentSchema).readonly(),
   })

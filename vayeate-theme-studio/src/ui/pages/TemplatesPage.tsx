@@ -34,7 +34,7 @@ export function TemplatesPage() {
   }, [vm.template]);
 
   const canEdit = useMemo(() => {
-    return !!vm.template && vm.isLatestVersion && !vm.template.locked;
+    return !!vm.template && vm.isLatestVersion;
   }, [vm.template, vm.isLatestVersion]);
 
   return (

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { Catalog, CatalogReference, Template, TemplateReference } from './model/schemas';
+import type { Catalog, CatalogReference, Template, TemplateReference, Theme, ThemeReference } from './model/schemas';
 
 declare global {
   interface Window {
@@ -15,6 +15,11 @@ declare global {
       loadTemplate: (name: string, version: string) => Promise<Template | null>;
       listTemplates: () => Promise<TemplateReference[]>;
       deleteTemplate: (name: string, version: string) => Promise<void>;
+      createTheme: (params: { name: string }) => Promise<Theme>;
+      saveTheme: (theme: Theme) => Promise<void>;
+      loadTheme: (name: string, version: string) => Promise<Theme | null>;
+      listThemes: () => Promise<ThemeReference[]>;
+      deleteTheme: (name: string, version: string) => Promise<void>;
       fetchUrl: (url: string) => Promise<string>;
     };
   }

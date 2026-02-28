@@ -7,9 +7,10 @@ import {
 } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
-import type { Catalog, Template } from '../../model/schemas';
+import type { Catalog, Template, Theme } from '../../model/schemas';
 import { catalogService } from '../../services/catalog-service';
 import { templateService } from '../../services/template-service';
+import { themeService } from '../../services/theme-service';
 import { syncCatalogTokens } from '../../services/catalog-sync';
 import { compareVersions, nextPatchVersion } from '../../utils/version';
 import { createLogger } from '../../utils/logger';
@@ -80,6 +81,35 @@ async function saveTemplateAndRefresh(template: Template, setState: SetState) {
   log.debug('saveTemplateAndRefresh', template.name, template.version);
   await templateService.saveTemplate(template);
   await refreshTemplateRefsAndSelect(setState, template.name, template.version);
+}
+
+async function refreshThemeRefsAndSelect(
+  setState: SetState,
+  selectName?: string,
+  selectVersion?: string,
+) {
+  log.debug('refreshThemeRefsAndSelect', selectName, selectVersion);
+  const refs = await themeService.listThemes();
+  log.debug('loaded', refs.length, 'theme ref(s)');
+  setState({ type: 'SET_THEME_REFS', refs });
+
+  if (selectName && selectVersion) {
+    const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
+    if (match) {
+      log.debug('selecting theme', match.name, match.version);
+      setState({ type: 'SET_SELECTED_THEME_REF', ref: match });
+      const loaded = await themeService.loadTheme(match.name, match.version);
+      setState({ type: 'SET_THEME', theme: loaded });
+      return;
+    }
+    log.debug('no matching theme ref for', selectName, selectVersion);
+  }
+}
+
+async function saveThemeAndRefresh(theme: Theme, setState: SetState) {
+  log.debug('saveThemeAndRefresh', theme.name, theme.version);
+  await themeService.saveTheme(theme);
+  await refreshThemeRefsAndSelect(setState, theme.name, theme.version);
 }
 
 function createActionProcessor() {
@@ -316,6 +346,85 @@ function createActionProcessor() {
           log.debug('DELETE_TEMPLATE_VERSION no remaining versions, clearing selection');
           setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref: null });
           setState({ type: 'SET_TEMPLATE', template: null });
+        }
+        break;
+      }
+
+      case 'LOAD_THEME_REFS': {
+        log.debug('LOAD_THEME_REFS');
+        const thRefs = await themeService.listThemes();
+        log.debug('loaded', thRefs.length, 'theme ref(s)');
+        setState({ type: 'SET_THEME_REFS', refs: thRefs });
+        break;
+      }
+
+      case 'SELECT_THEME': {
+        log.debug('SELECT_THEME', action.name, `v${action.version}`);
+        const thRef = { name: action.name, version: action.version };
+        setState({ type: 'SET_SELECTED_THEME_REF', ref: thRef });
+        const loadedTheme = await themeService.loadTheme(action.name, action.version);
+        log.debug('loaded theme', loadedTheme
+          ? `${loadedTheme.colorAssignments.length} color, ${loadedTheme.contrastAssignments.length} contrast`
+          : '(not found)');
+        setState({ type: 'SET_THEME', theme: loadedTheme });
+        break;
+      }
+
+      case 'OPEN_THEME_CREATE_DIALOG':
+        log.debug('OPEN_THEME_CREATE_DIALOG');
+        setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: true });
+        break;
+
+      case 'CLOSE_THEME_CREATE_DIALOG':
+        log.debug('CLOSE_THEME_CREATE_DIALOG');
+        setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
+        break;
+
+      case 'CREATE_THEME': {
+        log.debug('CREATE_THEME', action.params);
+        setState({ type: 'SET_THEME_IS_CREATING', value: true });
+        setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
+        try {
+          const newTheme = await themeService.createTheme(action.params);
+          log.debug('created theme', newTheme.name, `v${newTheme.version}`);
+          await refreshThemeRefsAndSelect(setState, newTheme.name, newTheme.version);
+          setState({ type: 'SET_THEME', theme: newTheme });
+          setState({ type: 'SET_SELECTED_THEME_REF', ref: { name: newTheme.name, version: newTheme.version } });
+        } finally {
+          setState({ type: 'SET_THEME_IS_CREATING', value: false });
+        }
+        break;
+      }
+
+      case 'SAVE_THEME': {
+        log.debug('SAVE_THEME', action.theme.name, `v${action.theme.version}`);
+        await saveThemeAndRefresh(action.theme, setState);
+        break;
+      }
+
+      case 'DELETE_THEME_VERSION': {
+        log.debug('DELETE_THEME_VERSION', action.name, `v${action.version}`);
+        await themeService.deleteTheme(action.name, action.version);
+        const thRefs = await themeService.listThemes();
+        setState({ type: 'SET_THEME_REFS', refs: thRefs });
+
+        const sameThName = thRefs
+          .filter((r) => r.name === action.name)
+          .sort((a, b) => compareVersions(a.version, b.version));
+
+        const lowerTh = sameThName.filter((r) => compareVersions(r.version, action.version) < 0);
+        const higherTh = sameThName.filter((r) => compareVersions(r.version, action.version) > 0);
+        const nextTh = lowerTh.length > 0 ? lowerTh[lowerTh.length - 1] : higherTh.length > 0 ? higherTh[0] : null;
+
+        if (nextTh) {
+          log.debug('DELETE_THEME_VERSION fallback to', nextTh.name, `v${nextTh.version}`);
+          setState({ type: 'SET_SELECTED_THEME_REF', ref: nextTh });
+          const loadedNextTh = await themeService.loadTheme(nextTh.name, nextTh.version);
+          setState({ type: 'SET_THEME', theme: loadedNextTh });
+        } else {
+          log.debug('DELETE_THEME_VERSION no remaining versions, clearing selection');
+          setState({ type: 'SET_SELECTED_THEME_REF', ref: null });
+          setState({ type: 'SET_THEME', theme: null });
         }
         break;
       }

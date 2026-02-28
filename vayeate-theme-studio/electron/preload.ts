@@ -17,6 +17,14 @@ const electronAPI = {
   listTemplates: () => ipcRenderer.invoke('template:list'),
   deleteTemplate: (name: string, version: string) =>
     ipcRenderer.invoke('template:delete', name, version),
+  createTheme: (params: { name: string }) =>
+    ipcRenderer.invoke('theme:create', params),
+  saveTheme: (theme: unknown) => ipcRenderer.invoke('theme:save', theme),
+  loadTheme: (name: string, version: string) =>
+    ipcRenderer.invoke('theme:load', name, version),
+  listThemes: () => ipcRenderer.invoke('theme:list'),
+  deleteTheme: (name: string, version: string) =>
+    ipcRenderer.invoke('theme:delete', name, version),
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
 };
 

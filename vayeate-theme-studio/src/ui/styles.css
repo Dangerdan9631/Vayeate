@@ -538,7 +538,7 @@ body {
 
 .templates-page-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 2fr);
   grid-template-rows: 1fr;
   gap: 24px;
   flex: 1;
@@ -726,4 +726,270 @@ body {
   font-weight: 500;
   color: #374151;
   text-shadow: 0 0 3px #ffffff, 0 0 3px #ffffff;
+}
+
+/* ── Themes page grid ──────────────────────────────────────── */
+
+.themes-page-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-rows: 1fr;
+  gap: 24px;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.themes-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.themes-left-col .placeholder {
+  min-width: 0;
+}
+
+.themes-left-col .detail-grid {
+  min-width: 0;
+}
+
+.themes-right-col {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ── Theme details template row ────────────────────────────── */
+
+.theme-template-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.theme-template-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.theme-template-version {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+/* ── Theme color assignment rows ───────────────────────────── */
+
+.theme-color-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px minmax(0, 1fr) 32px auto;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+  min-width: 0;
+}
+
+.theme-var-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.theme-color-hex {
+  font-size: 12px;
+  padding: 4px 6px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.theme-color-picker {
+  width: 32px;
+  height: 28px;
+  padding: 1px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+.theme-color-picker:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.theme-use-dark-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.theme-use-dark-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.theme-row-orphan {
+  background: #fef3c7;
+  border-radius: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* ── Theme contrast assignment rows ────────────────────────── */
+
+.theme-contrast-block {
+  padding: 6px 0;
+  border-bottom: 1px solid #f3f4f6;
+  min-width: 0;
+}
+
+.theme-contrast-block:last-child {
+  border-bottom: none;
+}
+
+.theme-contrast-row1 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.theme-contrast-source-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.theme-contrast-source-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.theme-contrast-source {
+  font-size: 12px;
+  color: #6b7280;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.theme-contrast-row-labels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.theme-contrast-dark-label {
+  grid-column: span 2;
+}
+
+.theme-contrast-light-label {
+  grid-column: span 2;
+}
+
+.theme-contrast-row2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.theme-contrast-row3 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.theme-contrast-value {
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+.theme-contrast-method {
+  font-size: 12px;
+  padding: 4px 4px;
+}
+
+.theme-contrast-minmax {
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+/* ── Theme editor previews ─────────────────────────────────── */
+
+.theme-previews-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.theme-preview-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.theme-preview-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.theme-preview-heading {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.theme-preview-bg {
+  flex: 1;
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.theme-preview-editor {
+  flex: 1;
+  min-height: 120px;
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+  resize: none;
+  outline: none;
+}
+
+.theme-preview-editor::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }

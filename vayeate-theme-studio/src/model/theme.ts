@@ -1,5 +1,6 @@
 export {
   themeSchema,
+  themeReferenceSchema,
   templateReferenceSchema,
   colorAssignmentSchema,
   colorAssignmentValueSchema,
@@ -7,6 +8,7 @@ export {
   contrastAssignmentValueSchema,
   contrastComparisonMethodSchema,
   type Theme,
+  type ThemeReference,
   type TemplateReference,
   type ColorAssignment,
   type ColorAssignmentValue,
