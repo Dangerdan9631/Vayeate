@@ -94,9 +94,13 @@ function ColorAssignmentRow({
   const lightValue = assignment.light?.value ?? '';
   const [pendingDarkPicker, setPendingDarkPicker] = useState<string | null>(null);
   const [pendingLightPicker, setPendingLightPicker] = useState<string | null>(null);
+  const [pendingDarkHex, setPendingDarkHex] = useState<string | null>(null);
+  const [pendingLightHex, setPendingLightHex] = useState<string | null>(null);
 
   const displayDark = pendingDarkPicker ?? darkValue;
   const displayLight = assignment.useDarkForLight ? darkValue : (pendingLightPicker ?? lightValue);
+  const displayDarkHex = pendingDarkHex ?? darkValue;
+  const displayLightHex = assignment.useDarkForLight ? darkValue : (pendingLightHex ?? lightValue);
 
   return (
     <div className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''}`}>
@@ -112,10 +116,12 @@ function ColorAssignmentRow({
         className="field-input theme-color-hex"
         type="text"
         placeholder="#000000"
-        value={darkValue}
-        onChange={(e) => {
-          const v = e.target.value.trim();
-          onUpdateDark(assignment.colorRef, v || null);
+        value={displayDarkHex}
+        onChange={(e) => setPendingDarkHex(e.target.value)}
+        onBlur={(e) => {
+          const v = e.target.value.trim() || null;
+          onUpdateDark(assignment.colorRef, v);
+          setPendingDarkHex(null);
         }}
       />
       <input
@@ -133,11 +139,15 @@ function ColorAssignmentRow({
         className="field-input theme-color-hex"
         type="text"
         placeholder="#ffffff"
-        value={assignment.useDarkForLight ? darkValue : lightValue}
+        value={displayLightHex}
         disabled={assignment.useDarkForLight}
-        onChange={(e) => {
-          const v = e.target.value.trim();
-          onUpdateLight(assignment.colorRef, v || null);
+        onChange={(e) => setPendingLightHex(e.target.value)}
+        onBlur={(e) => {
+          if (!assignment.useDarkForLight) {
+            const v = e.target.value.trim() || null;
+            onUpdateLight(assignment.colorRef, v);
+          }
+          setPendingLightHex(null);
         }}
       />
       <input
@@ -146,9 +156,9 @@ function ColorAssignmentRow({
         value={displayLight || '#ffffff'}
         disabled={assignment.useDarkForLight}
         onChange={(e) => setPendingLightPicker(e.target.value)}
-        onBlur={(e) => {
+        onBlur={() => {
           if (!assignment.useDarkForLight) {
-            const v = e.target.value.trim() || null;
+            const v = (pendingLightPicker ?? lightValue) || null;
             onUpdateLight(assignment.colorRef, v);
           }
           setPendingLightPicker(null);
@@ -240,6 +250,13 @@ function ContrastAssignmentRow({
   const dark = assignment.dark;
   const light = assignment.light;
 
+  const [editValueDark, setEditValueDark] = useState<string | null>(null);
+  const [editValueLight, setEditValueLight] = useState<string | null>(null);
+  const [editMinDark, setEditMinDark] = useState<string | null>(null);
+  const [editMaxDark, setEditMaxDark] = useState<string | null>(null);
+  const [editMinLight, setEditMinLight] = useState<string | null>(null);
+  const [editMaxLight, setEditMaxLight] = useState<string | null>(null);
+
   return (
     <div className={`theme-contrast-block ${isOrphan ? 'theme-row-orphan' : ''}`}>
       <div className="theme-contrast-row1">
@@ -280,10 +297,12 @@ function ContrastAssignmentRow({
           min="1"
           max="10"
           placeholder="Value"
-          value={dark?.value ?? ''}
-          onChange={(e) => {
+          value={editValueDark ?? (dark?.value ?? '')}
+          onChange={(e) => setEditValueDark(e.target.value)}
+          onBlur={(e) => {
             const v = e.target.value ? parseFloat(e.target.value) : null;
             onUpdateDark(ref, 'value', v);
+            setEditValueDark(null);
           }}
         />
         <select
@@ -302,11 +321,15 @@ function ContrastAssignmentRow({
           min="1"
           max="10"
           placeholder="Value"
-          value={assignment.useDarkForLight ? (dark?.value ?? '') : (light?.value ?? '')}
+          value={assignment.useDarkForLight ? (dark?.value ?? '') : (editValueLight ?? (light?.value ?? ''))}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => {
-            const v = e.target.value ? parseFloat(e.target.value) : null;
-            onUpdateLight(ref, 'value', v);
+          onChange={(e) => setEditValueLight(e.target.value)}
+          onBlur={(e) => {
+            if (!assignment.useDarkForLight) {
+              const v = e.target.value ? parseFloat(e.target.value) : null;
+              onUpdateLight(ref, 'value', v);
+            }
+            setEditValueLight(null);
           }}
         />
         <select
@@ -329,10 +352,12 @@ function ContrastAssignmentRow({
           min="1"
           max="10"
           placeholder="Min"
-          value={dark?.min ?? ''}
-          onChange={(e) => {
+          value={editMinDark ?? (dark?.min ?? '')}
+          onChange={(e) => setEditMinDark(e.target.value)}
+          onBlur={(e) => {
             const v = e.target.value ? parseFloat(e.target.value) : null;
             onUpdateDark(ref, 'min', v);
+            setEditMinDark(null);
           }}
         />
         <input
@@ -342,10 +367,12 @@ function ContrastAssignmentRow({
           min="1"
           max="10"
           placeholder="Max"
-          value={dark?.max ?? ''}
-          onChange={(e) => {
+          value={editMaxDark ?? (dark?.max ?? '')}
+          onChange={(e) => setEditMaxDark(e.target.value)}
+          onBlur={(e) => {
             const v = e.target.value ? parseFloat(e.target.value) : null;
             onUpdateDark(ref, 'max', v);
+            setEditMaxDark(null);
           }}
         />
         <input
@@ -355,11 +382,15 @@ function ContrastAssignmentRow({
           min="1"
           max="10"
           placeholder="Min"
-          value={assignment.useDarkForLight ? (dark?.min ?? '') : (light?.min ?? '')}
+          value={assignment.useDarkForLight ? (dark?.min ?? '') : (editMinLight ?? (light?.min ?? ''))}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => {
-            const v = e.target.value ? parseFloat(e.target.value) : null;
-            onUpdateLight(ref, 'min', v);
+          onChange={(e) => setEditMinLight(e.target.value)}
+          onBlur={(e) => {
+            if (!assignment.useDarkForLight) {
+              const v = e.target.value ? parseFloat(e.target.value) : null;
+              onUpdateLight(ref, 'min', v);
+            }
+            setEditMinLight(null);
           }}
         />
         <input
@@ -369,16 +400,25 @@ function ContrastAssignmentRow({
           min="1"
           max="10"
           placeholder="Max"
-          value={assignment.useDarkForLight ? (dark?.max ?? '') : (light?.max ?? '')}
+          value={assignment.useDarkForLight ? (dark?.max ?? '') : (editMaxLight ?? (light?.max ?? ''))}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => {
-            const v = e.target.value ? parseFloat(e.target.value) : null;
-            onUpdateLight(ref, 'max', v);
+          onChange={(e) => setEditMaxLight(e.target.value)}
+          onBlur={(e) => {
+            if (!assignment.useDarkForLight) {
+              const v = e.target.value ? parseFloat(e.target.value) : null;
+              onUpdateLight(ref, 'max', v);
+            }
+            setEditMaxLight(null);
           }}
         />
       </div>
     </div>
   );
+}
+
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
 }
 
 export function ThemeVariablesCard({
@@ -394,18 +434,35 @@ export function ThemeVariablesCard({
   onUpdateContrastLight,
   onUpdateContrastUseDark,
 }: ThemeVariablesCardProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredColorAssignments = colorAssignments.filter((a) =>
+    matchesSearch(a.colorRef, searchQuery),
+  );
+  const filteredContrastAssignments = contrastAssignments.filter((a) =>
+    matchesSearch(a.contrastVariableRef, searchQuery),
+  );
+
   return (
     <div className="tokens-card placeholder">
       <h2>Variables</h2>
+      <input
+        type="text"
+        className="card-search-input"
+        placeholder="Search…"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        aria-label="Search variables"
+      />
       <ColorAssignmentsSection
-        assignments={colorAssignments}
+        assignments={filteredColorAssignments}
         orphanKeys={orphanColorKeys}
         onUpdateDark={onUpdateColorDark}
         onUpdateLight={onUpdateColorLight}
         onUpdateUseDark={onUpdateColorUseDark}
       />
       <ContrastAssignmentsSection
-        assignments={contrastAssignments}
+        assignments={filteredContrastAssignments}
         contrastVariables={contrastVariables}
         orphanKeys={orphanContrastKeys}
         onUpdateDark={onUpdateContrastDark}

@@ -199,6 +199,11 @@ function ContrastVariablesSection({
   );
 }
 
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
 export function VariablesCard({
   colorVariables,
   contrastVariables,
@@ -211,18 +216,31 @@ export function VariablesCard({
   onRemoveContrastVariable,
   onUpdateContrastComparisonSource,
 }: VariablesCardProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredColorVariables = colorVariables.filter((v) => matchesSearch(v.key, searchQuery));
+  const filteredContrastVariables = contrastVariables.filter((v) => matchesSearch(v.key, searchQuery));
+
   return (
     <div className="tokens-card placeholder">
       <h2>Variables</h2>
+      <input
+        type="text"
+        className="card-search-input"
+        placeholder="Search…"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        aria-label="Search variables"
+      />
       <ColorVariablesSection
-        colorVariables={colorVariables}
+        colorVariables={filteredColorVariables}
         referencedKeys={referencedColorVarKeys}
         canEdit={canEdit}
         onAdd={onAddColorVariable}
         onRemove={onRemoveColorVariable}
       />
       <ContrastVariablesSection
-        contrastVariables={contrastVariables}
+        contrastVariables={filteredContrastVariables}
         colorVariables={colorVariables}
         referencedKeys={referencedContrastVarKeys}
         canEdit={canEdit}

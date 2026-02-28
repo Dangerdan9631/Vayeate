@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type {
   ColorVariable,
   ColorVariableKey,
@@ -145,6 +145,30 @@ function MappingTypeSection({
   );
 }
 
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
+function filterMappings(
+  mappings: Mapping[],
+  searchQuery: string,
+  selectedColorKeys: string[],
+  selectedContrastKeys: string[],
+): Mapping[] {
+  return mappings.filter((m) => {
+    if (!matchesSearch(m.token.key, searchQuery)) return false;
+    if (selectedColorKeys.length > 0) {
+      if (!m.colorVariableRef || !selectedColorKeys.includes(m.colorVariableRef)) return false;
+    }
+    if (selectedContrastKeys.length > 0) {
+      if (!m.contrastVariableRef || !selectedContrastKeys.includes(m.contrastVariableRef))
+        return false;
+    }
+    return true;
+  });
+}
+
 export function MappingsCard({
   mappingsByType,
   colorVariables,
@@ -154,14 +178,151 @@ export function MappingsCard({
   onUpdateColorRef,
   onUpdateContrastRef,
 }: MappingsCardProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedColorKeys, setSelectedColorKeys] = useState<string[]>([]);
+  const [selectedContrastKeys, setSelectedContrastKeys] = useState<string[]>([]);
+
+  const filteredMappingsByType = Object.fromEntries(
+    TOKEN_TYPES.map((tt) => [
+      tt,
+      filterMappings(
+        mappingsByType[tt],
+        searchQuery,
+        selectedColorKeys,
+        selectedContrastKeys,
+      ),
+    ])
+  ) as Record<TokenType, Mapping[]>;
+
+  const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | null>(null);
+  const colorDropdownRef = useRef<HTMLDivElement>(null);
+  const contrastDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (openFilter === null) return;
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Node;
+      const colorEl = colorDropdownRef.current;
+      const contrastEl = contrastDropdownRef.current;
+      if (
+        openFilter === 'color' &&
+        colorEl &&
+        !colorEl.contains(target)
+      ) {
+        setOpenFilter(null);
+      }
+      if (
+        openFilter === 'contrast' &&
+        contrastEl &&
+        !contrastEl.contains(target)
+      ) {
+        setOpenFilter(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [openFilter]);
+
+  function toggleColorKey(key: string) {
+    setSelectedColorKeys((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
+    );
+  }
+
+  function toggleContrastKey(key: string) {
+    setSelectedContrastKeys((prev) =>
+      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
+    );
+  }
+
   return (
     <div className="tokens-card placeholder">
       <h2>Mappings</h2>
+      <div className="mappings-filter-row">
+        <input
+          type="text"
+          className="mappings-filter-search"
+          placeholder="Search…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Search mappings"
+        />
+        <div className="mappings-filter-dropdown-wrap" ref={colorDropdownRef}>
+          <button
+            type="button"
+            className={`mappings-filter-btn ${openFilter === 'color' ? 'mappings-filter-btn-open' : ''} ${selectedColorKeys.length > 0 ? 'mappings-filter-btn-active' : ''}`}
+            onClick={() => setOpenFilter((v) => (v === 'color' ? null : 'color'))}
+            aria-expanded={openFilter === 'color'}
+            aria-haspopup="true"
+            aria-label="Filter by color variable"
+          >
+            <span className="mappings-filter-btn-label">
+              Color{selectedColorKeys.length > 0 ? ` (${selectedColorKeys.length})` : ''}
+            </span>
+            <span className="material-symbols-outlined mappings-filter-chevron">
+              {openFilter === 'color' ? 'expand_less' : 'expand_more'}
+            </span>
+          </button>
+          {openFilter === 'color' && (
+            <div className="mappings-filter-dropdown">
+              {colorVariables.length === 0 ? (
+                <div className="mappings-filter-empty">No color variables</div>
+              ) : (
+                colorVariables.map((v) => (
+                  <label key={v.key} className="mappings-filter-check">
+                    <input
+                      type="checkbox"
+                      checked={selectedColorKeys.includes(v.key)}
+                      onChange={() => toggleColorKey(v.key)}
+                    />
+                    <span>{v.key}</span>
+                  </label>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+        <div className="mappings-filter-dropdown-wrap" ref={contrastDropdownRef}>
+          <button
+            type="button"
+            className={`mappings-filter-btn ${openFilter === 'contrast' ? 'mappings-filter-btn-open' : ''} ${selectedContrastKeys.length > 0 ? 'mappings-filter-btn-active' : ''}`}
+            onClick={() => setOpenFilter((v) => (v === 'contrast' ? null : 'contrast'))}
+            aria-expanded={openFilter === 'contrast'}
+            aria-haspopup="true"
+            aria-label="Filter by contrast variable"
+          >
+            <span className="mappings-filter-btn-label">
+              Contrast{selectedContrastKeys.length > 0 ? ` (${selectedContrastKeys.length})` : ''}
+            </span>
+            <span className="material-symbols-outlined mappings-filter-chevron">
+              {openFilter === 'contrast' ? 'expand_less' : 'expand_more'}
+            </span>
+          </button>
+          {openFilter === 'contrast' && (
+            <div className="mappings-filter-dropdown">
+              {contrastVariables.length === 0 ? (
+                <div className="mappings-filter-empty">No contrast variables</div>
+              ) : (
+                contrastVariables.map((v) => (
+                  <label key={v.key} className="mappings-filter-check">
+                    <input
+                      type="checkbox"
+                      checked={selectedContrastKeys.includes(v.key)}
+                      onChange={() => toggleContrastKey(v.key)}
+                    />
+                    <span>{v.key}</span>
+                  </label>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
       {TOKEN_TYPES.map((tt) => (
         <MappingTypeSection
           key={tt}
           tokenType={tt}
-          mappings={mappingsByType[tt]}
+          mappings={filteredMappingsByType[tt]}
           colorVariables={colorVariables}
           contrastVariables={contrastVariables}
           orphanKeys={orphanKeys}

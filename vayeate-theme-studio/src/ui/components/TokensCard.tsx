@@ -119,6 +119,11 @@ function TokenTypeSection({
   );
 }
 
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
 export function TokensCard({
   catalog,
   tokensByType,
@@ -129,6 +134,14 @@ export function TokensCard({
   onBulkAdd,
 }: TokensCardProps) {
   const canEdit = catalog.type === 'manual' && isLatestVersion;
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredTokensByType = Object.fromEntries(
+    TOKEN_TYPES.map((tt) => [
+      tt,
+      tokensByType[tt].filter((t) => matchesSearch(t.key, searchQuery)),
+    ])
+  ) as Record<TokenType, Token[]>;
 
   return (
     <div className="tokens-card placeholder">
@@ -140,11 +153,19 @@ export function TokensCard({
           </button>
         )}
       </div>
+      <input
+        type="text"
+        className="card-search-input"
+        placeholder="Search…"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        aria-label="Search tokens"
+      />
       {TOKEN_TYPES.map((tt) => (
         <TokenTypeSection
           key={tt}
           tokenType={tt}
-          tokens={tokensByType[tt]}
+          tokens={filteredTokensByType[tt]}
           isManual={canEdit}
           onAdd={(key) => onAddToken(key, tt)}
           onRemove={(key) => onRemoveToken(key, tt)}

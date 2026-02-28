@@ -28,6 +28,8 @@ export function CatalogDetailsCard({
   const [newUrl, setNewUrl] = useState('');
   const [newTokenType, setNewTokenType] = useState<TokenType>('theme');
   const [newSourceType, setNewSourceType] = useState<SourceType>('default');
+  const [editingSourceIndex, setEditingSourceIndex] = useState<number | null>(null);
+  const [editingSourceUrl, setEditingSourceUrl] = useState('');
 
   function handleUpdateSource(index: number, updated: Source) {
     const next = catalog.sources.map((s, i) => (i === index ? updated : s));
@@ -82,12 +84,19 @@ export function CatalogDetailsCard({
                 <input
                   className="field-input source-url-input"
                   type="text"
-                  value={source.url}
+                  value={editingSourceIndex === i ? editingSourceUrl : source.url}
                   placeholder="https://..."
                   disabled={!isLatestVersion}
-                  onChange={(e) =>
-                    handleUpdateSource(i, { ...source, url: e.target.value })
-                  }
+                  onFocus={() => {
+                    setEditingSourceIndex(i);
+                    setEditingSourceUrl(source.url);
+                  }}
+                  onChange={(e) => setEditingSourceUrl(e.target.value)}
+                  onBlur={(e) => {
+                    const v = e.target.value.trim();
+                    if (v !== source.url) handleUpdateSource(i, { ...source, url: v });
+                    setEditingSourceIndex(null);
+                  }}
                 />
                 <select
                   className="field-select source-select"

@@ -87,6 +87,39 @@ describe('CatalogDetailsCard sources UI', () => {
     ]);
   });
 
+  it('calls onUpdateSources only on blur when editing source URL', async () => {
+    const user = userEvent.setup();
+    const onUpdateSources = vi.fn();
+    const sources: Source[] = [
+      { url: 'https://example.com/a', type: 'default', tokenType: 'theme' },
+    ];
+    const props = makeProps({
+      onUpdateSources,
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+
+    const urlInputs = screen.getAllByPlaceholderText('https://...');
+    const existingSourceInput = urlInputs[0];
+    await user.clear(existingSourceInput);
+    expect(onUpdateSources).not.toHaveBeenCalled();
+    await user.type(existingSourceInput, 'https://example.com/updated');
+    expect(onUpdateSources).not.toHaveBeenCalled();
+    await user.tab();
+
+    expect(onUpdateSources).toHaveBeenCalledTimes(1);
+    expect(onUpdateSources).toHaveBeenCalledWith([
+      { url: 'https://example.com/updated', type: 'default', tokenType: 'theme' },
+    ]);
+  });
+
   it('calls onUpdateSources when remove button clicked', async () => {
     const user = userEvent.setup();
     const onUpdateSources = vi.fn();
