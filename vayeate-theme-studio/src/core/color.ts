@@ -273,11 +273,29 @@ function adjustBrightnessToRange(
   return best;
 }
 
+const BLACK = '#000000';
+
+/**
+ * Clamp color so that its contrast vs black is within [minContrast, maxContrast].
+ * Min and max in contrast variables represent the allowed range for the color's contrast compared to black.
+ */
+function clampContrastVsBlack(
+  color: string,
+  minContrast: number,
+  maxContrast: number,
+): string {
+  const c = normalizeHex(color);
+  const ratioVsBlack = contrastRatio(c, BLACK);
+  if (ratioVsBlack >= minContrast && ratioVsBlack <= maxContrast) return c;
+  return adjustBrightnessToRange(c, BLACK, minContrast, maxContrast);
+}
+
 /**
  * Adjust tokenColor so that contrast(tokenColor, sourceColor) meets the given constraint.
- * - greaterThan: ratio >= value; if min/max set, ratio in [max(value, min), max].
- * - lessThan: ratio <= value; if min/max set, ratio in [min, min(value, max)].
- * - equalTo: ratio as close as possible to value (or clamp(value, min, max) when min/max set).
+ * - greaterThan: ratio vs source >= value.
+ * - lessThan: ratio vs source <= value.
+ * - equalTo: ratio vs source as close as possible to value.
+ * If min/max are set, the result is then clamped so that contrast(result, black) is in [min, max].
  */
 export function adjustColorToMeetContrast(
   tokenColor: string,
@@ -288,27 +306,23 @@ export function adjustColorToMeetContrast(
   const token = normalizeHex(tokenColor);
   const source = normalizeHex(sourceColor);
 
+  let result: string;
+
   if (comparisonMethod === 'greaterThan') {
-    const targetMin = min != null ? Math.max(value, min) : value;
-    const targetMax = max ?? WCAG_RATIO_MAX;
-    let result = adjustBrightnessMin(token, source, targetMin);
-    const ratio = contrastRatio(result, source);
-    if (max != null && ratio > targetMax) {
-      result = adjustBrightnessMax(result, source, targetMax);
-    }
-    return result;
+    result = adjustBrightnessMin(token, source, value);
+  } else if (comparisonMethod === 'lessThan') {
+    result = adjustBrightnessToRange(token, source, 1, value);
+  } else {
+    result = adjustBrightnessExact(token, source, value);
   }
 
-  if (comparisonMethod === 'lessThan') {
-    const targetMax = max != null ? Math.min(value, max) : value;
-    const targetMin = min ?? 1;
-    return adjustBrightnessToRange(token, source, targetMin, targetMax);
+  if (min != null || max != null) {
+    result = clampContrastVsBlack(
+      result,
+      min ?? 1,
+      max ?? WCAG_RATIO_MAX,
+    );
   }
 
-  // equalTo
-  const target =
-    min != null || max != null
-      ? Math.max(min ?? 1, Math.min(value, max ?? WCAG_RATIO_MAX))
-      : value;
-  return adjustBrightnessExact(token, source, target);
+  return result;
 }

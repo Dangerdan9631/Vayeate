@@ -94,7 +94,7 @@ describe('adjustColorToMeetContrast', () => {
     expect(ratio).toBeLessThanOrEqual(5);
   });
 
-  it('greaterThan with min/max: clamps to range', () => {
+  it('greaterThan with min/max: clamps contrast vs black to [min, max]', () => {
     const token = '#333333';
     const result = adjustColorToMeetContrast(token, darkBg, {
       comparisonMethod: 'greaterThan',
@@ -102,12 +102,13 @@ describe('adjustColorToMeetContrast', () => {
       min: 3,
       max: 7,
     });
-    const ratio = contrastRatio(result, darkBg);
-    expect(ratio).toBeGreaterThanOrEqual(4.5);
-    expect(ratio).toBeLessThanOrEqual(7.5);
+    expect(contrastRatio(result, darkBg)).toBeGreaterThanOrEqual(4.5);
+    const ratioVsBlack = contrastRatio(result, '#000000');
+    expect(ratioVsBlack).toBeGreaterThanOrEqual(2.9);
+    expect(ratioVsBlack).toBeLessThanOrEqual(7.5);
   });
 
-  it('lessThan with min/max: keeps contrast in range', () => {
+  it('lessThan with min/max: clamps contrast vs black to [min, max]', () => {
     const token = '#000000';
     const result = adjustColorToMeetContrast(token, darkBg, {
       comparisonMethod: 'lessThan',
@@ -115,12 +116,13 @@ describe('adjustColorToMeetContrast', () => {
       min: 2,
       max: 4,
     });
-    const ratio = contrastRatio(result, darkBg);
-    expect(ratio).toBeGreaterThanOrEqual(1.5);
-    expect(ratio).toBeLessThanOrEqual(4.5);
+    expect(contrastRatio(result, darkBg)).toBeLessThanOrEqual(5.5);
+    const ratioVsBlack = contrastRatio(result, '#000000');
+    expect(ratioVsBlack).toBeGreaterThanOrEqual(1.9);
+    expect(ratioVsBlack).toBeLessThanOrEqual(4.5);
   });
 
-  it('equalTo with min/max: uses clamped target', () => {
+  it('equalTo with min/max: clamps contrast vs black to [min, max]', () => {
     const token = '#888888';
     const result = adjustColorToMeetContrast(token, lightBg, {
       comparisonMethod: 'equalTo',
@@ -128,8 +130,8 @@ describe('adjustColorToMeetContrast', () => {
       min: 3,
       max: 5,
     });
-    const ratio = contrastRatio(result, lightBg);
-    expect(ratio).toBeGreaterThanOrEqual(3);
-    expect(ratio).toBeLessThanOrEqual(6);
+    const ratioVsBlack = contrastRatio(result, '#000000');
+    expect(ratioVsBlack).toBeGreaterThanOrEqual(2.9);
+    expect(ratioVsBlack).toBeLessThanOrEqual(5.5);
   });
 });
