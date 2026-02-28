@@ -130,6 +130,7 @@ describe('mergeAssignmentsFromTemplate', () => {
     mappings: [],
     colorVariables: [{ key: 'primary' }, { key: 'secondary' }],
     contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary' }],
+    groups: [],
   };
 
   it('adds new color assignments for template variables', () => {

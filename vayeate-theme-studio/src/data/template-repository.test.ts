@@ -1,7 +1,7 @@
 /**
  * @vitest-environment node
  */
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createTemplateRepository } from './template-repository';
@@ -26,6 +26,7 @@ describe('createTemplateRepository', () => {
     mappings: [],
     colorVariables: [],
     contrastVariables: [],
+    groups: [],
   };
 
   it('saves and loads a template round-trip', async () => {
@@ -75,5 +76,31 @@ describe('createTemplateRepository', () => {
     expect(list).toHaveLength(2);
     expect(list).toContainEqual({ name: 'my-template', version: '1.0.0' });
     expect(list).toContainEqual({ name: 'my-template', version: '1.0.1' });
+  });
+
+  it('loadTemplate applies default groups and groupRef for legacy JSON', async () => {
+    const repo = createTemplateRepository(baseDir);
+    const templatesDir = join(baseDir, 'templates');
+    mkdirSync(templatesDir, { recursive: true });
+    const legacy = {
+      name: 'legacy-template',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [
+        { token: { key: 'editor.background', type: 'theme' }, colorVariableRef: null, contrastVariableRef: null },
+      ],
+      colorVariables: [],
+      contrastVariables: [],
+    };
+    writeFileSync(
+      join(templatesDir, 'legacy-template-1.0.0.template.json'),
+      JSON.stringify(legacy, null, 2),
+      'utf-8',
+    );
+    const loaded = await repo.loadTemplate('legacy-template', '1.0.0');
+    expect(loaded).not.toBeNull();
+    expect(loaded?.groups).toEqual([]);
+    expect(loaded?.mappings[0]?.groupRef).toBeNull();
   });
 });

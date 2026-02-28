@@ -21,6 +21,7 @@ function mapping(
     token: { key, type: 'token' },
     colorVariableRef: colorRef,
     contrastVariableRef: contrastRef,
+    groupRef: null,
   };
 }
 
@@ -88,7 +89,7 @@ describe('buildScopeColorMap', () => {
 
   it('ignores mappings without colorVariableRef', () => {
     const mappings: Mapping[] = [
-      { token: { key: 'keyword', type: 'token' }, colorVariableRef: null, contrastVariableRef: null },
+      { token: { key: 'keyword', type: 'token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
     ];
     const map = buildScopeColorMap(mappings, []);
     expect(map.entries).toHaveLength(0);

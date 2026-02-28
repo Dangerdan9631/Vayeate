@@ -146,6 +146,19 @@ export function useTemplateViewModel() {
     return s;
   }, [template]);
 
+  // --- Group helpers ---
+
+  const groups = useMemo(() => template?.groups ?? [], [template]);
+
+  const groupNamesInUse = useMemo(() => {
+    if (!template) return new Set<string>();
+    const s = new Set<string>();
+    for (const m of template.mappings) {
+      if (m.groupRef) s.add(m.groupRef);
+    }
+    return s;
+  }, [template]);
+
   const canLock = useMemo(() => {
     if (!template || template.locked || !isLatestVersion) return false;
     return template.mappings.every((m) => m.colorVariableRef !== null);
@@ -308,6 +321,21 @@ export function useTemplateViewModel() {
     [dispatch, template],
   );
 
+  const updateMappingGroupRef = useCallback(
+    (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
+      if (!template) return;
+      log.debug('updateMappingGroupRef', tokenKey, tokenType, groupRef);
+      const base = getBaseForEdit(template);
+      const newMappings = base.mappings.map((m) =>
+        m.token.key === tokenKey && m.token.type === tokenType
+          ? { ...m, groupRef }
+          : m,
+      );
+      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+    },
+    [dispatch, template],
+  );
+
   // --- Variable CRUD ---
 
   const addColorVariable = useCallback(
@@ -375,6 +403,44 @@ export function useTemplateViewModel() {
     [dispatch, template],
   );
 
+  // --- Group CRUD ---
+
+  const addGroup = useCallback(
+    (name: string) => {
+      if (!template) return;
+      const trimmed = name.trim();
+      if (!trimmed) {
+        log.warn('addGroup skipped: empty name');
+        return;
+      }
+      const existing = template.groups ?? [];
+      if (existing.includes(trimmed)) {
+        log.warn('addGroup skipped: duplicate name', trimmed);
+        return;
+      }
+      log.debug('addGroup', trimmed);
+      const base = getBaseForEdit(template);
+      const newGroups = [...(base.groups ?? []), trimmed];
+      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, groups: newGroups } });
+    },
+    [dispatch, template],
+  );
+
+  const removeGroup = useCallback(
+    (name: string) => {
+      if (!template) return;
+      if (groupNamesInUse.has(name)) {
+        log.warn('removeGroup blocked: group has mappings', name);
+        return;
+      }
+      log.debug('removeGroup', name);
+      const base = getBaseForEdit(template);
+      const newGroups = (base.groups ?? []).filter((g) => g !== name);
+      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, groups: newGroups } });
+    },
+    [dispatch, template, groupNamesInUse],
+  );
+
   return {
     templateRefs,
     selectedRef,
@@ -395,6 +461,8 @@ export function useTemplateViewModel() {
     contrastVariableKeys,
     referencedColorVarKeys,
     referencedContrastVarKeys,
+    groups,
+    groupNamesInUse,
     selectTemplate,
     selectName,
     openCreateDialog,
@@ -406,6 +474,9 @@ export function useTemplateViewModel() {
     changeCatalogVersion,
     updateMappingColorRef,
     updateMappingContrastRef,
+    updateMappingGroupRef,
+    addGroup,
+    removeGroup,
     addColorVariable,
     removeColorVariable,
     addContrastVariable,
@@ -449,7 +520,12 @@ async function mergeMappingsFromCatalogRefs(
   for (const token of allTokens) {
     const key = `${token.type}::${token.key}`;
     if (!existingKeys.has(key)) {
-      newMappings.push({ token, colorVariableRef: null, contrastVariableRef: null });
+      newMappings.push({
+        token,
+        colorVariableRef: null,
+        contrastVariableRef: null,
+        groupRef: null,
+      });
       existingKeys.add(key);
     }
   }

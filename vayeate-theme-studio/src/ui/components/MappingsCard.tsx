@@ -8,12 +8,16 @@ import type {
   TokenType,
 } from '../../model/schemas';
 
+const UNGROUPED_KEY = '__ungrouped__';
+
 interface MappingsCardProps {
   mappingsByType: Record<TokenType, Mapping[]>;
+  groups: readonly string[];
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
   orphanKeys: Set<string>;
   canEdit: boolean;
+  onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (
     tokenKey: string,
     tokenType: TokenType,
@@ -25,22 +29,34 @@ interface MappingsCardProps {
 
 const TOKEN_TYPES: TokenType[] = ['theme', 'token', 'semantic token'];
 
-function MappingTypeSection({
-  tokenType,
-  mappings,
+function tokenTypeLabel(tokenType: TokenType): string {
+  return tokenType === 'theme'
+    ? 'Theme Tokens'
+    : tokenType === 'token'
+      ? 'Tokens'
+      : 'Semantic Tokens';
+}
+
+function GroupSection({
+  groupLabel,
+  byType,
+  groups,
   colorVariables,
   contrastVariables,
   orphanKeys,
   canEdit,
+  onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
 }: {
-  tokenType: TokenType;
-  mappings: Mapping[];
+  groupLabel: string;
+  byType: Record<TokenType, Mapping[]>;
+  groups: readonly string[];
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
   orphanKeys: Set<string>;
   canEdit: boolean;
+  onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (
     tokenKey: string,
     tokenType: TokenType,
@@ -50,13 +66,77 @@ function MappingTypeSection({
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const totalInGroup = TOKEN_TYPES.reduce((sum, tt) => sum + byType[tt].length, 0);
 
-  const label =
-    tokenType === 'theme'
-      ? 'Theme Tokens'
-      : tokenType === 'token'
-        ? 'Tokens'
-        : 'Semantic Tokens';
+  return (
+    <div className="tree-section">
+      <button
+        type="button"
+        className="tree-header"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <span className="material-symbols-outlined tree-chevron">
+          {collapsed ? 'chevron_right' : 'expand_more'}
+        </span>
+        <span className="tree-label">{groupLabel}</span>
+        <span className="tree-count">({totalInGroup})</span>
+      </button>
+      {!collapsed && (
+        <div className="tree-children">
+          {TOKEN_TYPES.map(
+            (tt) =>
+              byType[tt].length > 0 && (
+                <MappingTypeSection
+                  key={tt}
+                  tokenType={tt}
+                  mappings={byType[tt]}
+                  groups={groups}
+                  colorVariables={colorVariables}
+                  contrastVariables={contrastVariables}
+                  orphanKeys={orphanKeys}
+                  canEdit={canEdit}
+                  onUpdateGroupRef={onUpdateGroupRef}
+                  onUpdateColorRef={onUpdateColorRef}
+                  onUpdateContrastRef={onUpdateContrastRef}
+                />
+              ),
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MappingTypeSection({
+  tokenType,
+  mappings,
+  groups,
+  colorVariables,
+  contrastVariables,
+  orphanKeys,
+  canEdit,
+  onUpdateGroupRef,
+  onUpdateColorRef,
+  onUpdateContrastRef,
+}: {
+  tokenType: TokenType;
+  mappings: Mapping[];
+  groups: readonly string[];
+  colorVariables: readonly ColorVariable[];
+  contrastVariables: readonly ContrastVariable[];
+  orphanKeys: Set<string>;
+  canEdit: boolean;
+  onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
+  onUpdateColorRef: (
+    tokenKey: string,
+    tokenType: TokenType,
+    ref: ColorVariableKey | null,
+    isOrphan?: boolean,
+  ) => void;
+  onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+  const label = tokenTypeLabel(tokenType);
 
   return (
     <div className="tree-section">
@@ -83,6 +163,26 @@ function MappingTypeSection({
                 key={mKey}
                 className={`mapping-row ${isOrphan ? 'mapping-orphan' : ''}`}
               >
+                <select
+                  className="field-select mapping-var-select"
+                  value={m.groupRef ?? ''}
+                  disabled={!canEdit}
+                  onChange={(e) =>
+                    onUpdateGroupRef(
+                      m.token.key,
+                      m.token.type,
+                      e.target.value || null,
+                    )
+                  }
+                  title="Group"
+                >
+                  <option value="">Ungrouped</option>
+                  {groups.map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+                </select>
                 <span className="mapping-token-name" title={m.token.key}>
                   {m.token.key}
                 </span>
@@ -169,12 +269,45 @@ function filterMappings(
   });
 }
 
+function buildByGroup(
+  filteredMappingsByType: Record<TokenType, Mapping[]>,
+): Map<string, Record<TokenType, Mapping[]>> {
+  const byGroup = new Map<string, Record<TokenType, Mapping[]>>();
+
+  function ensureGroup(key: string): Record<TokenType, Mapping[]> {
+    let rec = byGroup.get(key);
+    if (!rec) {
+      rec = { theme: [], token: [], 'semantic token': [] };
+      byGroup.set(key, rec);
+    }
+    return rec;
+  }
+
+  for (const tt of TOKEN_TYPES) {
+    for (const m of filteredMappingsByType[tt]) {
+      const groupKey = m.groupRef ?? UNGROUPED_KEY;
+      const rec = ensureGroup(groupKey);
+      rec[tt].push(m);
+    }
+  }
+
+  return byGroup;
+}
+
+function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): string[] {
+  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
+  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
+  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
+}
+
 export function MappingsCard({
   mappingsByType,
+  groups,
   colorVariables,
   contrastVariables,
   orphanKeys,
   canEdit,
+  onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
 }: MappingsCardProps) {
@@ -193,6 +326,9 @@ export function MappingsCard({
       ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
     ])
   ) as Record<TokenType, Mapping[]>;
+
+  const byGroup = buildByGroup(filteredMappingsByType);
+  const groupKeysInOrder = sortedGroupKeys(byGroup);
 
   const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | null>(null);
   const colorDropdownRef = useRef<HTMLDivElement>(null);
@@ -318,19 +454,25 @@ export function MappingsCard({
           )}
         </div>
       </div>
-      {TOKEN_TYPES.map((tt) => (
-        <MappingTypeSection
-          key={tt}
-          tokenType={tt}
-          mappings={filteredMappingsByType[tt]}
-          colorVariables={colorVariables}
-          contrastVariables={contrastVariables}
-          orphanKeys={orphanKeys}
-          canEdit={canEdit}
-          onUpdateColorRef={onUpdateColorRef}
-          onUpdateContrastRef={onUpdateContrastRef}
-        />
-      ))}
+      {groupKeysInOrder.map((groupKey) => {
+        const byType = byGroup.get(groupKey)!;
+        const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+        return (
+          <GroupSection
+            key={groupKey}
+            groupLabel={groupLabel}
+            byType={byType}
+            groups={groups}
+            colorVariables={colorVariables}
+            contrastVariables={contrastVariables}
+            orphanKeys={orphanKeys}
+            canEdit={canEdit}
+            onUpdateGroupRef={onUpdateGroupRef}
+            onUpdateColorRef={onUpdateColorRef}
+            onUpdateContrastRef={onUpdateContrastRef}
+          />
+        );
+      })}
     </div>
   );
 }

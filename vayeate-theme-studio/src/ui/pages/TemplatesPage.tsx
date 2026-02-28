@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTemplateViewModel, computeOrphanKeys } from '../../viewmodel/use-template-viewmodel';
 import { catalogService } from '../../services/catalog-service';
 import { CreateTemplateDialog } from '../components/CreateTemplateDialog';
+import { GroupsCard } from '../components/GroupsCard';
 import { MappingsCard } from '../components/MappingsCard';
 import { TemplateCatalogsCard } from '../components/TemplateCatalogsCard';
 import { TemplateDetailsCard } from '../components/TemplateDetailsCard';
@@ -78,16 +79,27 @@ export function TemplatesPage() {
           {vm.template && (
             <MappingsCard
               mappingsByType={vm.mappingsByType}
+              groups={vm.template.groups}
               colorVariables={vm.template.colorVariables}
               contrastVariables={vm.template.contrastVariables}
               orphanKeys={orphanKeys}
               canEdit={canEdit}
+              onUpdateGroupRef={vm.updateMappingGroupRef}
               onUpdateColorRef={vm.updateMappingColorRef}
               onUpdateContrastRef={vm.updateMappingContrastRef}
             />
           )}
         </div>
         <div className="templates-right-col">
+          {vm.template && (
+            <GroupsCard
+              groups={vm.template.groups}
+              groupNamesInUse={vm.groupNamesInUse}
+              canEdit={canEdit}
+              onAddGroup={vm.addGroup}
+              onRemoveGroup={vm.removeGroup}
+            />
+          )}
           {vm.template && (
             <VariablesCard
               colorVariables={vm.template.colorVariables}

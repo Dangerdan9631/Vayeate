@@ -198,7 +198,7 @@ function adjustBrightnessExact(foreground: string, background: string, target: n
 }
 
 /** Adjust color so contrast vs reference is at or below maxRatio. */
-function adjustBrightnessMax(color: string, reference: string, maxRatio: number): string {
+export function adjustBrightnessMax(color: string, reference: string, maxRatio: number): string {
   const c = normalizeHex(color);
   const r = normalizeHex(reference);
 

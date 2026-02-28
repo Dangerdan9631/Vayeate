@@ -119,6 +119,7 @@ export const mappingSchema = z
     token: tokenSchema,
     colorVariableRef: colorVariableKeySchema.nullable(),
     contrastVariableRef: contrastVariableKeySchema.nullable(),
+    groupRef: z.string().nullable().optional().default(null),
   })
   .readonly();
 export type Mapping = z.infer<typeof mappingSchema>;
@@ -132,6 +133,7 @@ export const templateSchema = z
     mappings: z.array(mappingSchema).readonly(),
     colorVariables: z.array(colorVariableSchema).readonly(),
     contrastVariables: z.array(contrastVariableSchema).readonly(),
+    groups: z.array(z.string()).readonly().default([]),
   })
   .readonly();
 export type Template = z.infer<typeof templateSchema>;

@@ -25,6 +25,7 @@ const sampleTemplate: Template = {
   mappings: [],
   colorVariables: [],
   contrastVariables: [],
+  groups: [],
 };
 
 const sampleTemplateRef: TemplateReference = { name: 'test-template', version: '1.0.0' };

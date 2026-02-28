@@ -16,5 +16,6 @@ export function createTemplateWithParams(params: CreateTemplateParams): Template
     mappings: [],
     colorVariables: [],
     contrastVariables: [],
+    groups: [],
   };
 }
