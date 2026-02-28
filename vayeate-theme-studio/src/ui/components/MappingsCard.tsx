@@ -190,7 +190,7 @@ export function MappingsCard({
         searchQuery,
         selectedColorKeys,
         selectedContrastKeys,
-      ),
+      ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
     ])
   ) as Record<TokenType, Mapping[]>;
 

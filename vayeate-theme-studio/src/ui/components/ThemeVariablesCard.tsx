@@ -436,12 +436,12 @@ export function ThemeVariablesCard({
 }: ThemeVariablesCardProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredColorAssignments = colorAssignments.filter((a) =>
-    matchesSearch(a.colorRef, searchQuery),
-  );
-  const filteredContrastAssignments = contrastAssignments.filter((a) =>
-    matchesSearch(a.contrastVariableRef, searchQuery),
-  );
+  const filteredColorAssignments = colorAssignments
+    .filter((a) => matchesSearch(a.colorRef, searchQuery))
+    .sort((a, b) => a.colorRef.localeCompare(b.colorRef));
+  const filteredContrastAssignments = contrastAssignments
+    .filter((a) => matchesSearch(a.contrastVariableRef, searchQuery))
+    .sort((a, b) => a.contrastVariableRef.localeCompare(b.contrastVariableRef));
 
   return (
     <div className="tokens-card placeholder">

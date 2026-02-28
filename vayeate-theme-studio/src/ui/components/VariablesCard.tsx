@@ -218,8 +218,13 @@ export function VariablesCard({
 }: VariablesCardProps) {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredColorVariables = colorVariables.filter((v) => matchesSearch(v.key, searchQuery));
-  const filteredContrastVariables = contrastVariables.filter((v) => matchesSearch(v.key, searchQuery));
+  const filteredColorVariables = colorVariables
+    .filter((v) => matchesSearch(v.key, searchQuery))
+    .sort((a, b) => a.key.localeCompare(b.key));
+  const filteredContrastVariables = contrastVariables
+    .filter((v) => matchesSearch(v.key, searchQuery))
+    .sort((a, b) => a.key.localeCompare(b.key));
+  const sortedColorVariables = [...colorVariables].sort((a, b) => a.key.localeCompare(b.key));
 
   return (
     <div className="tokens-card placeholder">
@@ -241,7 +246,7 @@ export function VariablesCard({
       />
       <ContrastVariablesSection
         contrastVariables={filteredContrastVariables}
-        colorVariables={colorVariables}
+        colorVariables={sortedColorVariables}
         referencedKeys={referencedContrastVarKeys}
         canEdit={canEdit}
         onAdd={onAddContrastVariable}

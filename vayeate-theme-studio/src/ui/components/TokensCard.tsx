@@ -139,7 +139,9 @@ export function TokensCard({
   const filteredTokensByType = Object.fromEntries(
     TOKEN_TYPES.map((tt) => [
       tt,
-      tokensByType[tt].filter((t) => matchesSearch(t.key, searchQuery)),
+      tokensByType[tt]
+        .filter((t) => matchesSearch(t.key, searchQuery))
+        .sort((a, b) => a.key.localeCompare(b.key)),
     ])
   ) as Record<TokenType, Token[]>;
 
