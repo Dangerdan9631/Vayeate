@@ -68,6 +68,7 @@ describe('initialAppState', () => {
     expect(initialAppState.themes.selectedRef).toBeNull();
     expect(initialAppState.themes.isCreating).toBe(false);
     expect(initialAppState.themes.createDialogOpen).toBe(false);
+    expect(initialAppState.themes.generateResult).toBeNull();
     expect(initialAppState.themes.themeRefs).toEqual([]);
   });
 
@@ -165,6 +166,14 @@ describe('appStateReducer', () => {
   it('handles SET_THEME_CREATE_DIALOG_OPEN', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_THEME_CREATE_DIALOG_OPEN', value: true });
     expect(state.themes.createDialogOpen).toBe(true);
+  });
+
+  it('handles SET_GENERATE_RESULT', () => {
+    const state = appStateReducer(initialAppState, {
+      type: 'SET_GENERATE_RESULT',
+      result: { success: true, message: 'Generated themes' },
+    });
+    expect(state.themes.generateResult).toEqual({ success: true, message: 'Generated themes' });
   });
 
   it('returns state unchanged for unknown update type', () => {

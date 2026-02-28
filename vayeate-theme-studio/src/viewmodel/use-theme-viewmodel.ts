@@ -20,7 +20,7 @@ const log = createLogger('ThemeVM');
 
 export function useThemeViewModel() {
   const { state, dispatch } = useAppState();
-  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen } = state.themes;
+  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult } = state.themes;
   const { templateRefs } = state.templates;
 
   useEffect(() => {
@@ -194,12 +194,19 @@ export function useThemeViewModel() {
   );
 
   const generateTheme = useCallback(() => {
-    if (!canGenerate) {
-      log.warn('generateTheme skipped: not all variables assigned');
+    if (!canGenerate || !theme?.templateRef) {
+      log.warn('generateTheme skipped: not all variables assigned or no template');
       return;
     }
-    log.debug('generateTheme (stubbed)');
-  }, [canGenerate]);
+    log.debug('generateTheme', theme.name, theme.templateRef.name);
+    dispatch({
+      type: 'GENERATE_THEME',
+      themeName: theme.name,
+      themeVersion: theme.version,
+      templateName: theme.templateRef.name,
+      templateVersion: theme.templateRef.version,
+    });
+  }, [canGenerate, dispatch, theme]);
 
   const bumpVersion = useCallback(() => {
     if (!theme) return;
@@ -388,6 +395,7 @@ export function useThemeViewModel() {
     orphanColorKeys,
     orphanContrastKeys,
     canGenerate,
+    generateResult,
     colorVariableKeys,
     templateMappings,
     selectTheme,

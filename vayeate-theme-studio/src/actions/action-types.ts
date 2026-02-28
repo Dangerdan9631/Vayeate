@@ -30,4 +30,5 @@ export type AppAction =
   | { type: 'CLOSE_THEME_CREATE_DIALOG' }
   | { type: 'CREATE_THEME'; params: { name: string } }
   | { type: 'SAVE_THEME'; theme: Theme }
-  | { type: 'DELETE_THEME_VERSION'; name: string; version: string };
+  | { type: 'DELETE_THEME_VERSION'; name: string; version: string }
+  | { type: 'GENERATE_THEME'; themeName: string; themeVersion: string; templateName: string; templateVersion: string };

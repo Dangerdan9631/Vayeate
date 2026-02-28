@@ -1,0 +1,41 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "templateRef": {
+    "name": "test",
+    "version": "1.0.0"
+  },
+  "idePrimaryColorVariableRef": "abc",
+  "themeBackgroundColorVariableRef": "def",
+  "colorAssignments": [
+    {
+      "colorRef": "abc",
+      "light": null,
+      "dark": {
+        "value": "#000000"
+      },
+      "useDarkForLight": true
+    },
+    {
+      "colorRef": "def",
+      "light": null,
+      "dark": {
+        "value": "#ff0000"
+      },
+      "useDarkForLight": true
+    }
+  ],
+  "contrastAssignments": [
+    {
+      "contrastVariableRef": "c1",
+      "light": null,
+      "dark": {
+        "value": 1,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": true
+    }
+  ]
+}

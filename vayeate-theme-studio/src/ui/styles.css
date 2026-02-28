@@ -1160,3 +1160,15 @@ body {
   font-size: 13px;
   margin: 8px 0 0;
 }
+
+.theme-generate-success {
+  color: #15803d;
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+.theme-generate-error {
+  color: #b91c1c;
+  font-size: 13px;
+  margin: 8px 0 0;
+}

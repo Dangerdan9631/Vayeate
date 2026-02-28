@@ -14,9 +14,14 @@ import { createCatalogWithParams } from '../src/controllers/catalog-controller';
 import { createTemplateWithParams } from '../src/controllers/template-controller';
 import { createThemeWithParams } from '../src/controllers/theme-controller';
 import { getPreviewsDir, loadAllPreviews } from './preview-controller';
+import { generateThemePair } from '../src/core/theme-generator';
+import { exportThemePair } from '../src/core/theme-exporter';
 import type { Catalog, Template, Theme } from '../src/model/schemas';
 
 const TAG = '[Main]';
+
+/** Project root themes directory (vayeate-theme-studio/../themes). */
+const THEMES_OUTPUT_DIR = join(__dirname, '..', '..', 'themes');
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -174,6 +179,33 @@ app.whenReady().then(async () => {
     console.debug(TAG, 'IPC theme:delete', name, `v${version}`);
     await themeRepo.deleteTheme(name, version);
     console.debug(TAG, 'IPC theme:delete complete');
+  });
+
+  ipcMain.handle('theme:generate', async (
+    _event,
+    themeName: string,
+    themeVersion: string,
+    templateName: string,
+    templateVersion: string,
+  ) => {
+    console.debug(TAG, 'IPC theme:generate', themeName, templateName);
+    const theme = await themeRepo.loadTheme(themeName, themeVersion);
+    if (!theme) {
+      throw new Error(`Theme not found: ${themeName} v${themeVersion}`);
+    }
+    const template = await templateRepo.loadTemplate(templateName, templateVersion);
+    if (!template) {
+      throw new Error(`Template not found: ${templateName} v${templateVersion}`);
+    }
+    const { dark, light } = generateThemePair(theme, template);
+    const { darkPath, lightPath } = await exportThemePair(
+      THEMES_OUTPUT_DIR,
+      theme.name,
+      dark,
+      light,
+    );
+    console.debug(TAG, 'IPC theme:generate →', darkPath, lightPath);
+    return { darkPath, lightPath };
   });
 
   ipcMain.handle('preview:loadAll', async () => {

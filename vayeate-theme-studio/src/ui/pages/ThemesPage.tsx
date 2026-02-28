@@ -32,6 +32,7 @@ export function ThemesPage() {
               selectedTemplateName={vm.selectedTemplateName}
               selectedTemplateVersion={vm.selectedTemplateVersion}
               canGenerate={vm.canGenerate}
+              generateResult={vm.generateResult}
               onDeleteVersion={() => {
                 if (vm.selectedRef) vm.deleteVersion(vm.selectedRef.name, vm.selectedRef.version);
               }}

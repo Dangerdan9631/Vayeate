@@ -1,7 +1,7 @@
 {
   "name": "test",
   "version": "1.0.0",
-  "locked": false,
+  "locked": true,
   "catalogRefs": [
     {
       "name": "vayeate-tokens",
@@ -14,7 +14,7 @@
         "key": "titleBar.activeBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -23,7 +23,7 @@
         "key": "titleBar.activeForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -32,7 +32,7 @@
         "key": "titleBar.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -41,7 +41,7 @@
         "key": "titleBar.inactiveBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -50,7 +50,7 @@
         "key": "titleBar.inactiveForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -59,7 +59,7 @@
         "key": "focusBorder",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -68,7 +68,7 @@
         "key": "menu.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -77,7 +77,7 @@
         "key": "menu.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -86,7 +86,7 @@
         "key": "menu.separatorBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -95,7 +95,7 @@
         "key": "menu.selectionForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -104,7 +104,7 @@
         "key": "menu.selectionBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -113,7 +113,7 @@
         "key": "menubar.selectionForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -122,7 +122,7 @@
         "key": "menubar.selectionBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -131,7 +131,7 @@
         "key": "activityBar.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -140,7 +140,7 @@
         "key": "activityBar.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -149,7 +149,7 @@
         "key": "activityBar.activeBorder",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -158,7 +158,7 @@
         "key": "activityBar.dropBorder",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -167,7 +167,7 @@
         "key": "activityBar.inactiveForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -176,7 +176,7 @@
         "key": "statusBar.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -185,7 +185,7 @@
         "key": "statusBar.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -194,7 +194,7 @@
         "key": "statusBar.debuggingBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -203,7 +203,7 @@
         "key": "statusBar.debuggingForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -212,7 +212,7 @@
         "key": "statusBarItem.remoteForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -221,7 +221,7 @@
         "key": "statusBar.noFolderBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -230,7 +230,7 @@
         "key": "statusBar.noFolderForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -239,7 +239,7 @@
         "key": "statusBarItem.activeBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -248,7 +248,7 @@
         "key": "statusBarItem.errorBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -257,7 +257,7 @@
         "key": "statusBarItem.errorForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -266,7 +266,7 @@
         "key": "statusBarItem.hoverBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -275,7 +275,7 @@
         "key": "progressBar.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -284,7 +284,7 @@
         "key": "notifications.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -293,7 +293,7 @@
         "key": "notifications.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -302,7 +302,7 @@
         "key": "notifications.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -311,7 +311,7 @@
         "key": "notificationToast.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -320,7 +320,7 @@
         "key": "notificationCenterHeader.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -329,7 +329,7 @@
         "key": "notificationCenterHeader.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -338,7 +338,7 @@
         "key": "notificationCenter.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -347,7 +347,7 @@
         "key": "notificationsInfoIcon.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -356,7 +356,7 @@
         "key": "notificationsWarningIcon.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -365,7 +365,7 @@
         "key": "notificationsErrorIcon.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -374,7 +374,7 @@
         "key": "notificationLink.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -383,7 +383,7 @@
         "key": "extensionButton.prominentBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -392,7 +392,7 @@
         "key": "extensionButton.prominentForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -401,7 +401,7 @@
         "key": "extensionButton.prominentHoverBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -410,7 +410,7 @@
         "key": "activityBarBadge.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -419,7 +419,7 @@
         "key": "activityBarBadge.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -428,7 +428,7 @@
         "key": "badge.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -437,7 +437,7 @@
         "key": "badge.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -446,7 +446,7 @@
         "key": "extensionBadge.remoteForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -455,7 +455,7 @@
         "key": "extensionBadge.remoteBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -464,7 +464,7 @@
         "key": "editorGutter.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -473,7 +473,7 @@
         "key": "editorGutter.addedBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -482,7 +482,7 @@
         "key": "editorGutter.deletedBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -491,7 +491,7 @@
         "key": "editorGutter.modifiedBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -500,7 +500,7 @@
         "key": "editorGroupHeader.tabsBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -509,7 +509,7 @@
         "key": "tab.activeBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -518,7 +518,7 @@
         "key": "tab.activeForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -527,7 +527,7 @@
         "key": "tab.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -536,7 +536,7 @@
         "key": "tab.inactiveBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -545,7 +545,7 @@
         "key": "tab.inactiveForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -554,7 +554,7 @@
         "key": "panel.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -563,7 +563,7 @@
         "key": "panelTitle.activeForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -572,7 +572,7 @@
         "key": "panelTitle.activeBorder",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -581,7 +581,7 @@
         "key": "panelTitle.inactiveForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -590,7 +590,7 @@
         "key": "panel.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -599,7 +599,7 @@
         "key": "panel.dropBorder",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -608,7 +608,7 @@
         "key": "panelSection.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -617,7 +617,7 @@
         "key": "panelSection.dropBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -626,7 +626,7 @@
         "key": "panelSectionHeader.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -635,7 +635,7 @@
         "key": "sideBarSectionHeader.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -644,7 +644,7 @@
         "key": "sideBarSectionHeader.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -653,7 +653,7 @@
         "key": "editorLineNumber.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -662,7 +662,7 @@
         "key": "editorLineNumber.activeForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -671,7 +671,7 @@
         "key": "breadcrumb.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -680,7 +680,7 @@
         "key": "breadcrumb.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -689,7 +689,7 @@
         "key": "breadcrumb.focusForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -698,7 +698,7 @@
         "key": "breadcrumb.activeSelectionForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -707,7 +707,7 @@
         "key": "breadcrumbPicker.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -716,7 +716,7 @@
         "key": "terminal.ansiBlack",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -725,7 +725,7 @@
         "key": "terminal.ansiBlue",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -734,7 +734,7 @@
         "key": "terminal.ansiBrightBlack",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -743,7 +743,7 @@
         "key": "terminal.ansiBrightBlue",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -752,7 +752,7 @@
         "key": "terminal.ansiBrightCyan",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -761,7 +761,7 @@
         "key": "terminal.ansiBrightGreen",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -770,7 +770,7 @@
         "key": "terminal.ansiBrightMagenta",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -779,7 +779,7 @@
         "key": "terminal.ansiBrightRed",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -788,7 +788,7 @@
         "key": "terminal.ansiBrightWhite",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -797,7 +797,7 @@
         "key": "terminal.ansiBrightYellow",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -806,7 +806,7 @@
         "key": "terminal.ansiCyan",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -815,7 +815,7 @@
         "key": "terminal.ansiGreen",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -824,7 +824,7 @@
         "key": "terminal.ansiMagenta",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -833,7 +833,7 @@
         "key": "terminal.ansiRed",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -842,7 +842,7 @@
         "key": "terminal.ansiWhite",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -851,7 +851,7 @@
         "key": "terminal.ansiYellow",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -860,7 +860,7 @@
         "key": "terminal.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -869,7 +869,7 @@
         "key": "terminal.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -878,7 +878,7 @@
         "key": "terminal.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Terminal"
     },
@@ -887,7 +887,7 @@
         "key": "foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -896,7 +896,7 @@
         "key": "sideBar.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -905,7 +905,7 @@
         "key": "sideBar.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -914,7 +914,7 @@
         "key": "sideBarTitle.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -923,7 +923,7 @@
         "key": "sideBar.dropBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -932,7 +932,7 @@
         "key": "sideBar.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -941,7 +941,7 @@
         "key": "editor.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -950,7 +950,7 @@
         "key": "editor.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -959,7 +959,7 @@
         "key": "editorCursor.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -968,7 +968,7 @@
         "key": "editor.lineHighlightBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -977,7 +977,7 @@
         "key": "editor.selectionBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -986,7 +986,7 @@
         "key": "editorIndentGuide.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -995,7 +995,7 @@
         "key": "editorIndentGuide.activeBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1004,7 +1004,7 @@
         "key": "editorInlayHint.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1013,7 +1013,7 @@
         "key": "editorInlayHint.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1022,7 +1022,7 @@
         "key": "editor.findMatchBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1031,7 +1031,7 @@
         "key": "editor.findMatchHighlightBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1040,7 +1040,7 @@
         "key": "editor.findRangeHighlightBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1049,7 +1049,7 @@
         "key": "editorLink.activeForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1058,7 +1058,7 @@
         "key": "editorCodeLens.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1067,7 +1067,7 @@
         "key": "editorBracketMatch.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1076,7 +1076,7 @@
         "key": "editorBracketMatch.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1085,7 +1085,7 @@
         "key": "editorRuler.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1094,7 +1094,7 @@
         "key": "editorGroup.emptyBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1103,7 +1103,7 @@
         "key": "gitDecoration.conflictingResourceForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1112,7 +1112,7 @@
         "key": "gitDecoration.deletedResourceForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1121,7 +1121,7 @@
         "key": "gitDecoration.ignoredResourceForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1130,7 +1130,7 @@
         "key": "gitDecoration.modifiedResourceForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1139,7 +1139,7 @@
         "key": "gitDecoration.untrackedResourceForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1148,7 +1148,7 @@
         "key": "diffEditor.insertedTextBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Diff Editor"
     },
@@ -1157,7 +1157,7 @@
         "key": "diffEditor.removedTextBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Diff Editor"
     },
@@ -1166,7 +1166,7 @@
         "key": "textPreformat.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1175,7 +1175,7 @@
         "key": "editorWidget.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1184,7 +1184,7 @@
         "key": "editorWidget.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1193,7 +1193,7 @@
         "key": "editorWidget.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1202,7 +1202,7 @@
         "key": "widget.shadow",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1211,7 +1211,7 @@
         "key": "panelSectionHeader.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1220,7 +1220,7 @@
         "key": "list.activeSelectionBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1229,7 +1229,7 @@
         "key": "list.activeSelectionForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1238,7 +1238,7 @@
         "key": "list.focusBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1247,7 +1247,7 @@
         "key": "list.focusForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1256,7 +1256,7 @@
         "key": "list.highlightForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1265,7 +1265,7 @@
         "key": "list.hoverBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1274,7 +1274,7 @@
         "key": "list.hoverForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1283,7 +1283,7 @@
         "key": "list.inactiveSelectionBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1292,7 +1292,7 @@
         "key": "list.inactiveSelectionForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1301,7 +1301,7 @@
         "key": "list.invalidItemForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1310,7 +1310,7 @@
         "key": "button.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1319,7 +1319,7 @@
         "key": "button.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1328,7 +1328,7 @@
         "key": "button.hoverBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1337,7 +1337,7 @@
         "key": "button.secondaryBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1346,7 +1346,7 @@
         "key": "button.secondaryForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1355,7 +1355,7 @@
         "key": "button.secondaryHoverBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1364,7 +1364,7 @@
         "key": "dropdown.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1373,7 +1373,7 @@
         "key": "dropdown.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1382,7 +1382,7 @@
         "key": "dropdown.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1391,7 +1391,7 @@
         "key": "dropdown.listBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1400,7 +1400,7 @@
         "key": "scrollbar.shadow",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1409,7 +1409,7 @@
         "key": "scrollbarSlider.activeBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1418,7 +1418,7 @@
         "key": "scrollbarSlider.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1427,7 +1427,7 @@
         "key": "scrollbarSlider.hoverBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1436,7 +1436,7 @@
         "key": "input.background",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1445,7 +1445,7 @@
         "key": "input.border",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1454,7 +1454,7 @@
         "key": "input.foreground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1463,7 +1463,7 @@
         "key": "input.placeholderForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1472,7 +1472,7 @@
         "key": "inputOption.activeForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1481,7 +1481,7 @@
         "key": "inputOption.activeBorder",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1490,7 +1490,7 @@
         "key": "inputValidation.errorBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1499,7 +1499,7 @@
         "key": "inputValidation.errorForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1508,7 +1508,7 @@
         "key": "inputValidation.infoBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1517,7 +1517,7 @@
         "key": "inputValidation.infoForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1526,7 +1526,7 @@
         "key": "inputValidation.warningBackground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "def",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1535,7 +1535,7 @@
         "key": "inputValidation.warningForeground",
         "type": "theme"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Chrome"
     },
@@ -1544,7 +1544,7 @@
         "key": "source",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1553,7 +1553,7 @@
         "key": "entity.name",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1562,7 +1562,7 @@
         "key": "meta.use.rust",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1571,7 +1571,7 @@
         "key": "punctuation.accessor",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1580,7 +1580,7 @@
         "key": "punctuation.brackets",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1589,7 +1589,7 @@
         "key": "punctuation.comma",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1598,7 +1598,7 @@
         "key": "punctuation.curlybrace",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1607,7 +1607,7 @@
         "key": "punctuation.definition.typeparameters",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1616,7 +1616,7 @@
         "key": "punctuation.definition.parameters",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1625,7 +1625,7 @@
         "key": "punctuation.parenthesis",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1634,7 +1634,7 @@
         "key": "punctuation.squarebracket",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1643,7 +1643,7 @@
         "key": "punctuation.section",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1652,7 +1652,7 @@
         "key": "punctuation.semi",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1661,7 +1661,7 @@
         "key": "punctuation.separator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1670,7 +1670,7 @@
         "key": "punctuation.terminator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1679,7 +1679,7 @@
         "key": "comment",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1688,7 +1688,7 @@
         "key": "punctuation.definition.comment",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1697,7 +1697,7 @@
         "key": "string",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1706,7 +1706,7 @@
         "key": "punctuation.definition.string",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1715,7 +1715,7 @@
         "key": "constant.character.escape",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1724,7 +1724,7 @@
         "key": "punctuation.definition.interpolation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1733,7 +1733,7 @@
         "key": "meta.attribute",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1742,7 +1742,7 @@
         "key": "meta.attribute keyword",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1751,7 +1751,7 @@
         "key": "meta.attribute punctuation.brackets",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1760,7 +1760,7 @@
         "key": "punctuation.definition.annotation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1769,7 +1769,7 @@
         "key": "storage.type.annotation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1778,7 +1778,7 @@
         "key": "keyword",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1787,7 +1787,7 @@
         "key": "constant.language",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1796,7 +1796,7 @@
         "key": "storage.modifier",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1805,7 +1805,7 @@
         "key": "variable.language",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1814,7 +1814,7 @@
         "key": "entity.name.type.class",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1823,7 +1823,7 @@
         "key": "entity.name.type.kotlin",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1832,7 +1832,7 @@
         "key": "entity.name.type.enum",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1841,7 +1841,7 @@
         "key": "entity.name.type.struct",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1850,7 +1850,7 @@
         "key": "entity.other.inherited-class",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1859,7 +1859,7 @@
         "key": "storage.type",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1868,7 +1868,7 @@
         "key": "variable.other.object",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1877,7 +1877,7 @@
         "key": "entity.name.type.interface",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1886,7 +1886,7 @@
         "key": "variable.other.constant",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1895,7 +1895,7 @@
         "key": "source.powershell support.constant.variable",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1904,7 +1904,7 @@
         "key": "constant.other.enum",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1913,7 +1913,7 @@
         "key": "entity.name.variable.field",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1922,7 +1922,7 @@
         "key": "variable.other",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1931,7 +1931,7 @@
         "key": "source.powershell support.variable",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1940,7 +1940,7 @@
         "key": "entity.name.function",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1949,7 +1949,7 @@
         "key": "entity.name.variable.property",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1958,7 +1958,7 @@
         "key": "variable.other.object.property",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1967,7 +1967,7 @@
         "key": "source.powershell support.function",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1976,7 +1976,7 @@
         "key": "variable.parameter",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1985,7 +1985,7 @@
         "key": "entity.name.variable.parameter",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -1994,7 +1994,7 @@
         "key": "entity.name.type.type-parameter",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2003,7 +2003,7 @@
         "key": "storage.type.generic",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2012,7 +2012,7 @@
         "key": "source.java punctuation.bracket.angle",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2021,7 +2021,7 @@
         "key": "constant.numeric",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2030,7 +2030,7 @@
         "key": "punctuation.definition.tag",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2039,7 +2039,7 @@
         "key": "keyword.other.documentation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2048,7 +2048,7 @@
         "key": "entity.name.tag",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2057,7 +2057,7 @@
         "key": "entity.other.attribute-name",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2066,7 +2066,7 @@
         "key": "comment.block.documentation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2075,7 +2075,7 @@
         "key": "comment.block.javadoc",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2084,7 +2084,7 @@
         "key": "comment.line.documentation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2093,7 +2093,7 @@
         "key": "comment.block.documentation string.quoted.double",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2102,7 +2102,7 @@
         "key": "comment.block.documentation punctuation.definition.string",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2111,7 +2111,7 @@
         "key": "text.xml punctuation.definition.tag",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2120,7 +2120,7 @@
         "key": "text.xml meta.tag",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2129,7 +2129,7 @@
         "key": "text.xml entity.name.tag",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2138,7 +2138,7 @@
         "key": "text.xml entity.other.attribute-name",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2147,7 +2147,7 @@
         "key": "source.yaml punctuation.definition",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2156,7 +2156,7 @@
         "key": "source.json punctuation.definition",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2165,7 +2165,7 @@
         "key": "source.yaml punctuation.separator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2174,7 +2174,7 @@
         "key": "source.json punctuation.separator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2183,7 +2183,7 @@
         "key": "source.yaml entity.other",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2192,7 +2192,7 @@
         "key": "source.yaml entity.name.tag",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2201,7 +2201,7 @@
         "key": "source.json support.type",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2210,7 +2210,7 @@
         "key": "source.yaml constant.language",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2219,7 +2219,7 @@
         "key": "source.json constant.language",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2228,7 +2228,7 @@
         "key": "heading.1 entity.name.section",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2237,7 +2237,7 @@
         "key": "punctuation.definition.heading",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2246,7 +2246,7 @@
         "key": "heading.2 entity.name.section",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2255,7 +2255,7 @@
         "key": "heading.3 entity.name.section",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2264,7 +2264,7 @@
         "key": "entity.name.section",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2273,7 +2273,7 @@
         "key": "constant.other.reference.link",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2282,7 +2282,7 @@
         "key": "markup.underline.link",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2291,7 +2291,7 @@
         "key": "fenced_code.block.language",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2300,7 +2300,7 @@
         "key": "markup.inline",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2309,7 +2309,7 @@
         "key": "string.other.link",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2318,7 +2318,7 @@
         "key": "text.html.markdown punctuation.definition",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2327,7 +2327,7 @@
         "key": "text.html.markdown punctuation.definition.string",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2336,7 +2336,7 @@
         "key": "text.html.markdown meta.separator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2345,7 +2345,7 @@
         "key": "source.ini keyword",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2354,7 +2354,7 @@
         "key": "source.ini entity.name.section",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2363,7 +2363,7 @@
         "key": "source.ini",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2372,7 +2372,7 @@
         "key": "source.ini punctuation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2381,7 +2381,7 @@
         "key": "source.ini punctuation.separator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2390,7 +2390,7 @@
         "key": "source.toml keyword",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2399,7 +2399,7 @@
         "key": "source.toml entity.other.attribute-name",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2408,7 +2408,7 @@
         "key": "source.toml",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2417,7 +2417,7 @@
         "key": "source.toml punctuation",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2426,7 +2426,7 @@
         "key": "source.toml punctuation.separator",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2435,7 +2435,7 @@
         "key": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2444,7 +2444,7 @@
         "key": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2453,7 +2453,7 @@
         "key": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2462,7 +2462,7 @@
         "key": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2471,7 +2471,7 @@
         "key": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2480,7 +2480,7 @@
         "key": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2489,7 +2489,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2498,7 +2498,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2507,7 +2507,7 @@
         "key": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2516,7 +2516,7 @@
         "key": "source.regex-pipeline.obsidian entity.name.include.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2525,7 +2525,7 @@
         "key": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2534,7 +2534,7 @@
         "key": "source.regex-pipeline.obsidian string.regexp",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2543,7 +2543,7 @@
         "key": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2552,7 +2552,7 @@
         "key": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2561,7 +2561,7 @@
         "key": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2570,7 +2570,7 @@
         "key": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2579,7 +2579,7 @@
         "key": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2588,7 +2588,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2597,7 +2597,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2606,7 +2606,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2615,7 +2615,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2624,7 +2624,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2633,7 +2633,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2642,7 +2642,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2651,7 +2651,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2660,7 +2660,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2669,7 +2669,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2678,7 +2678,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2687,7 +2687,7 @@
         "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2696,7 +2696,7 @@
         "key": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2705,7 +2705,7 @@
         "key": "source.regex-pipeline.obsidian comment.line.text.obsidian",
         "type": "token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2714,7 +2714,7 @@
         "key": "local",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2723,7 +2723,7 @@
         "key": "namespace",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2732,7 +2732,7 @@
         "key": "operator",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2741,7 +2741,7 @@
         "key": "punctuation",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2750,7 +2750,7 @@
         "key": "variable",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2759,7 +2759,7 @@
         "key": "comment",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2768,7 +2768,7 @@
         "key": "comment.documentation",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2777,7 +2777,7 @@
         "key": "string",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2786,7 +2786,7 @@
         "key": "regexp",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2795,7 +2795,7 @@
         "key": "stringEscapeCharacter",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2804,7 +2804,7 @@
         "key": "keyword",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2813,7 +2813,7 @@
         "key": "controlKeyword",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2822,7 +2822,7 @@
         "key": "plainKeyword",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2831,7 +2831,7 @@
         "key": "class",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2840,7 +2840,7 @@
         "key": "enum",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2849,7 +2849,7 @@
         "key": "struct",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2858,7 +2858,7 @@
         "key": "interface",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2867,7 +2867,7 @@
         "key": "delegate",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2876,7 +2876,7 @@
         "key": "constant",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2885,7 +2885,7 @@
         "key": "enumMember",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2894,7 +2894,7 @@
         "key": "variable.static.readonly",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2903,7 +2903,7 @@
         "key": "property.static.readonly",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2912,7 +2912,7 @@
         "key": "field.static",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2921,7 +2921,7 @@
         "key": "field",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2930,7 +2930,7 @@
         "key": "property:java",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2939,7 +2939,7 @@
         "key": "method",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2948,7 +2948,7 @@
         "key": "property",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2957,7 +2957,7 @@
         "key": "parameter",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2966,7 +2966,7 @@
         "key": "typeParameter",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2975,7 +2975,7 @@
         "key": "number",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2984,7 +2984,7 @@
         "key": "xmlDocCommentAttributeName",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -2993,7 +2993,7 @@
         "key": "xmlDocCommentName",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -3002,7 +3002,7 @@
         "key": "xmlDocCommentAttributeQuotes",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -3011,7 +3011,7 @@
         "key": "xmlDocCommentDelimiter",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -3020,7 +3020,7 @@
         "key": "xmlDocCommentText",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     },
@@ -3029,13 +3029,25 @@
         "key": "*.deprecated",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "abc",
       "contrastVariableRef": null,
       "groupRef": "Editor Window"
     }
   ],
-  "colorVariables": [],
-  "contrastVariables": [],
+  "colorVariables": [
+    {
+      "key": "abc"
+    },
+    {
+      "key": "def"
+    }
+  ],
+  "contrastVariables": [
+    {
+      "key": "c1",
+      "comparisonSourceRef": "def"
+    }
+  ],
   "groups": [
     "Editor Chrome",
     "Diff Editor",

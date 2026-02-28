@@ -428,6 +428,31 @@ function createActionProcessor() {
         }
         break;
       }
+
+      case 'GENERATE_THEME': {
+        log.debug('GENERATE_THEME', action.themeName, action.templateName);
+        setState({ type: 'SET_GENERATE_RESULT', result: null });
+        try {
+          const { darkPath, lightPath } = await themeService.generateTheme(
+            action.themeName,
+            action.themeVersion,
+            action.templateName,
+            action.templateVersion,
+          );
+          setState({
+            type: 'SET_GENERATE_RESULT',
+            result: { success: true, message: `Generated ${darkPath} and ${lightPath}` },
+          });
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          log.warn('GENERATE_THEME failed', message);
+          setState({
+            type: 'SET_GENERATE_RESULT',
+            result: { success: false, message },
+          });
+        }
+        break;
+      }
     }
   };
 }

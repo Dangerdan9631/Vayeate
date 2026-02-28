@@ -1,4 +1,5 @@
 import type { Theme, TemplateReference } from '../../model/schemas';
+import type { GenerateResult } from '../../state/app-state';
 
 interface ThemeDetailsCardProps {
   theme: Theme;
@@ -7,6 +8,7 @@ interface ThemeDetailsCardProps {
   selectedTemplateName: string | null;
   selectedTemplateVersion: string | null;
   canGenerate: boolean;
+  generateResult: GenerateResult | null;
   onDeleteVersion: () => void;
   onGenerate: () => void;
   onBumpVersion: () => void;
@@ -21,6 +23,7 @@ export function ThemeDetailsCard({
   selectedTemplateName,
   selectedTemplateVersion,
   canGenerate,
+  generateResult,
   onDeleteVersion,
   onGenerate,
   onBumpVersion,
@@ -87,6 +90,16 @@ export function ThemeDetailsCard({
           </label>
         )}
       </div>
+
+      {generateResult && (
+        <p
+          className={generateResult.success ? 'theme-generate-success' : 'theme-generate-error'}
+          role="status"
+          aria-live="polite"
+        >
+          {generateResult.message}
+        </p>
+      )}
 
       <div className="details-actions">
         <button type="button" className="btn-danger" onClick={onDeleteVersion}>

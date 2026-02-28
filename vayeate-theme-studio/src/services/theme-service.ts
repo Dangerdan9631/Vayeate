@@ -41,4 +41,21 @@ export const themeService = {
     await getAPI().deleteTheme(name, version);
     log.debug('IPC theme:delete complete');
   },
+
+  generateTheme: async (
+    themeName: string,
+    themeVersion: string,
+    templateName: string,
+    templateVersion: string,
+  ): Promise<{ darkPath: string; lightPath: string }> => {
+    log.debug('IPC theme:generate', themeName, templateName);
+    const result = await getAPI().generateTheme(
+      themeName,
+      themeVersion,
+      templateName,
+      templateVersion,
+    );
+    log.debug('IPC theme:generate →', result.darkPath, result.lightPath);
+    return result;
+  },
 };

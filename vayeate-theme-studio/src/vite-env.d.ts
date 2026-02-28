@@ -21,6 +21,12 @@ declare global {
       loadTheme: (name: string, version: string) => Promise<Theme | null>;
       listThemes: () => Promise<ThemeReference[]>;
       deleteTheme: (name: string, version: string) => Promise<void>;
+      generateTheme: (
+        themeName: string,
+        themeVersion: string,
+        templateName: string,
+        templateVersion: string,
+      ) => Promise<{ darkPath: string; lightPath: string }>;
       fetchUrl: (url: string) => Promise<string>;
       loadPreviews: () => Promise<TokenizedPreview[]>;
     };

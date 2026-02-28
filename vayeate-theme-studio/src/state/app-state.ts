@@ -20,12 +20,18 @@ export interface TemplatesState {
   createDialogOpen: boolean;
 }
 
+export interface GenerateResult {
+  success: boolean;
+  message: string;
+}
+
 export interface ThemesState {
   themeRefs: ThemeReference[];
   selectedRef: ThemeReference | null;
   theme: Theme | null;
   isCreating: boolean;
   createDialogOpen: boolean;
+  generateResult: GenerateResult | null;
 }
 
 export interface QueueStatusState {
@@ -63,6 +69,7 @@ export const initialAppState: AppState = {
     theme: null,
     isCreating: false,
     createDialogOpen: false,
+    generateResult: null,
   },
   queueStatus: {
     isProcessing: false,
@@ -87,6 +94,7 @@ export type AppStateUpdate =
   | { type: 'SET_THEME'; theme: Theme | null }
   | { type: 'SET_THEME_IS_CREATING'; value: boolean }
   | { type: 'SET_THEME_CREATE_DIALOG_OPEN'; value: boolean }
+  | { type: 'SET_GENERATE_RESULT'; result: GenerateResult | null }
   | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number };
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
@@ -124,6 +132,8 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, isCreating: update.value } };
     case 'SET_THEME_CREATE_DIALOG_OPEN':
       return { ...state, themes: { ...state.themes, createDialogOpen: update.value } };
+    case 'SET_GENERATE_RESULT':
+      return { ...state, themes: { ...state.themes, generateResult: update.result } };
     case 'SET_QUEUE_STATUS':
       return { ...state, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } };
     default:
@@ -162,6 +172,8 @@ function updatePayloadSummary(update: AppStateUpdate): string {
     case 'SET_THEME_IS_CREATING':
     case 'SET_THEME_CREATE_DIALOG_OPEN':
       return String(update.value);
+    case 'SET_GENERATE_RESULT':
+      return update.result ? `${update.result.success}: ${update.result.message}` : '(clear)';
     case 'SET_QUEUE_STATUS':
       return `processing=${update.isProcessing} queue=${update.queueLength}`;
   }
