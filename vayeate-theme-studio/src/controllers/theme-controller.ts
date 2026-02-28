@@ -13,6 +13,7 @@ export function createThemeWithParams(params: CreateThemeParams): Theme {
     version: '1.0.0',
     templateRef: null,
     idePrimaryColorVariableRef: null,
+    themeBackgroundColorVariableRef: null,
     colorAssignments: [],
     contrastAssignments: [],
   };

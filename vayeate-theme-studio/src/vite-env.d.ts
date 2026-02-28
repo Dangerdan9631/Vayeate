@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 import type { Catalog, CatalogReference, Template, TemplateReference, Theme, ThemeReference } from './model/schemas';
+import type { TokenizedPreview } from './core/tokenizer';
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ declare global {
       listThemes: () => Promise<ThemeReference[]>;
       deleteTheme: (name: string, version: string) => Promise<void>;
       fetchUrl: (url: string) => Promise<string>;
+      loadPreviews: () => Promise<TokenizedPreview[]>;
     };
   }
 }

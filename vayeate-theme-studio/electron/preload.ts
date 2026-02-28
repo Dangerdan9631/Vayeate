@@ -26,6 +26,7 @@ const electronAPI = {
   deleteTheme: (name: string, version: string) =>
     ipcRenderer.invoke('theme:delete', name, version),
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
+  loadPreviews: () => ipcRenderer.invoke('preview:loadAll'),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

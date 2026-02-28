@@ -256,6 +256,18 @@ export function useThemeViewModel() {
     [dispatch, theme],
   );
 
+  // --- Theme background color (no version bump) ---
+
+  const changeThemeBackgroundColorRef = useCallback(
+    (ref: ColorVariableKey | null) => {
+      if (!theme) return;
+      log.debug('changeThemeBackgroundColorRef', ref);
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, themeBackgroundColorVariableRef: ref } });
+    },
+    [dispatch, theme],
+  );
+
   // --- Color assignment updates (no version bump) ---
 
   const updateColorAssignmentDark = useCallback(
@@ -353,6 +365,11 @@ export function useThemeViewModel() {
     return theme.colorAssignments.map((a) => a.colorRef);
   }, [theme]);
 
+  const templateMappings = useMemo(
+    () => loadedTemplate?.mappings ?? [],
+    [loadedTemplate],
+  );
+
   return {
     themeRefs,
     selectedRef,
@@ -372,6 +389,7 @@ export function useThemeViewModel() {
     orphanContrastKeys,
     canGenerate,
     colorVariableKeys,
+    templateMappings,
     selectTheme,
     selectName,
     openCreateDialog,
@@ -383,6 +401,7 @@ export function useThemeViewModel() {
     changeTemplate,
     changeTemplateVersion,
     changeIdePrimaryColorRef,
+    changeThemeBackgroundColorRef,
     updateColorAssignmentDark,
     updateColorAssignmentLight,
     updateColorAssignmentUseDarkForLight,
@@ -422,10 +441,16 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     ? theme.idePrimaryColorVariableRef
     : null;
 
+  const themeBackgroundColorVariableRef = theme.themeBackgroundColorVariableRef &&
+    newColorAssignments.some((a) => a.colorRef === theme.themeBackgroundColorVariableRef)
+    ? theme.themeBackgroundColorVariableRef
+    : null;
+
   return {
     ...theme,
     templateRef,
     idePrimaryColorVariableRef,
+    themeBackgroundColorVariableRef,
     colorAssignments: newColorAssignments,
     contrastAssignments: newContrastAssignments,
   };

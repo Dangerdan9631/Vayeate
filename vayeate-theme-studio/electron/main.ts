@@ -9,6 +9,7 @@ import { createThemeRepository } from '../src/data/theme-repository';
 import { createCatalogWithParams } from '../src/controllers/catalog-controller';
 import { createTemplateWithParams } from '../src/controllers/template-controller';
 import { createThemeWithParams } from '../src/controllers/theme-controller';
+import { getPreviewsDir, loadAllPreviews } from './preview-controller';
 import type { Catalog, Template, Theme } from '../src/model/schemas';
 
 const TAG = '[Main]';
@@ -168,6 +169,11 @@ app.whenReady().then(() => {
     console.debug(TAG, 'IPC theme:delete', name, `v${version}`);
     await themeRepo.deleteTheme(name, version);
     console.debug(TAG, 'IPC theme:delete complete');
+  });
+
+  ipcMain.handle('preview:loadAll', async () => {
+    const previewsDir = getPreviewsDir(join(__dirname, '..'));
+    return await loadAllPreviews(previewsDir);
   });
 
   ipcMain.handle('net:fetch', async (_event, url: string) => {
