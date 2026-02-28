@@ -92,6 +92,11 @@ function ColorAssignmentRow({
 }) {
   const darkValue = assignment.dark?.value ?? '';
   const lightValue = assignment.light?.value ?? '';
+  const [pendingDarkPicker, setPendingDarkPicker] = useState<string | null>(null);
+  const [pendingLightPicker, setPendingLightPicker] = useState<string | null>(null);
+
+  const displayDark = pendingDarkPicker ?? darkValue;
+  const displayLight = assignment.useDarkForLight ? darkValue : (pendingLightPicker ?? lightValue);
 
   return (
     <div className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''}`}>
@@ -116,8 +121,13 @@ function ColorAssignmentRow({
       <input
         type="color"
         className="theme-color-picker"
-        value={darkValue || '#000000'}
-        onChange={(e) => onUpdateDark(assignment.colorRef, e.target.value)}
+        value={displayDark || '#000000'}
+        onChange={(e) => setPendingDarkPicker(e.target.value)}
+        onBlur={(e) => {
+          const v = e.target.value.trim() || null;
+          onUpdateDark(assignment.colorRef, v);
+          setPendingDarkPicker(null);
+        }}
       />
       <input
         className="field-input theme-color-hex"
@@ -133,9 +143,16 @@ function ColorAssignmentRow({
       <input
         type="color"
         className="theme-color-picker"
-        value={(assignment.useDarkForLight ? darkValue : lightValue) || '#ffffff'}
+        value={displayLight || '#ffffff'}
         disabled={assignment.useDarkForLight}
-        onChange={(e) => onUpdateLight(assignment.colorRef, e.target.value)}
+        onChange={(e) => setPendingLightPicker(e.target.value)}
+        onBlur={(e) => {
+          if (!assignment.useDarkForLight) {
+            const v = e.target.value.trim() || null;
+            onUpdateLight(assignment.colorRef, v);
+          }
+          setPendingLightPicker(null);
+        }}
       />
       <label className="theme-use-dark-check" title="Use dark value for light theme">
         <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
