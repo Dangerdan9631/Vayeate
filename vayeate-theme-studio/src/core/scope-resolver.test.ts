@@ -1,16 +1,26 @@
 import { describe, it, expect } from 'vitest';
+import { contrastRatio } from './color';
 import {
   buildScopeColorMap,
   resolveTokenColor,
   type ScopeColorMap,
 } from './scope-resolver';
-import type { ColorAssignment, Mapping } from '../model/schemas';
+import type {
+  ColorAssignment,
+  ContrastAssignment,
+  ContrastVariable,
+  Mapping,
+} from '../model/schemas';
 
-function mapping(key: string, colorRef: string): Mapping {
+function mapping(
+  key: string,
+  colorRef: string,
+  contrastRef: string | null = null,
+): Mapping {
   return {
     token: { key, type: 'token' },
     colorVariableRef: colorRef,
-    contrastVariableRef: null,
+    contrastVariableRef: contrastRef,
   };
 }
 
@@ -82,6 +92,72 @@ describe('buildScopeColorMap', () => {
     ];
     const map = buildScopeColorMap(mappings, []);
     expect(map.entries).toHaveLength(0);
+  });
+
+  it('applies contrast adjustment when contrast variable and source are set', () => {
+    const mappings: Mapping[] = [
+      mapping('keyword.control', 'keywordColor', 'textContrast'),
+    ];
+    const colorAssignments: ColorAssignment[] = [
+      colorAssignment('keywordColor', '#555555', '#888888'),
+      colorAssignment('editorBg', '#1e1e1e', '#ffffff'),
+    ];
+    const contrastVariables: ContrastVariable[] = [
+      { key: 'textContrast', comparisonSourceRef: 'editorBg' },
+    ];
+    const contrastAssignments: ContrastAssignment[] = [
+      {
+        contrastVariableRef: 'textContrast',
+        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
+        light: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
+        useDarkForLight: false,
+      },
+    ];
+    const map = buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables);
+    expect(map.entries).toHaveLength(1);
+    const entry = map.entries[0];
+    expect(entry.darkColor).not.toBe('#555555');
+    expect(entry.lightColor).not.toBe('#888888');
+    if (entry.darkColor) {
+      expect(contrastRatio(entry.darkColor, '#1e1e1e')).toBeGreaterThanOrEqual(4.4);
+    }
+    if (entry.lightColor) {
+      expect(contrastRatio(entry.lightColor, '#ffffff')).toBeGreaterThanOrEqual(4.4);
+    }
+  });
+
+  it('uses raw color when contrast variable has null comparisonSourceRef', () => {
+    const mappings: Mapping[] = [
+      mapping('keyword', 'keywordColor', 'noSource'),
+    ];
+    const colorAssignments: ColorAssignment[] = [
+      colorAssignment('keywordColor', '#569cd6', '#0000ff'),
+    ];
+    const contrastVariables: ContrastVariable[] = [
+      { key: 'noSource', comparisonSourceRef: null },
+    ];
+    const contrastAssignments: ContrastAssignment[] = [
+      {
+        contrastVariableRef: 'noSource',
+        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
+        light: null,
+        useDarkForLight: false,
+      },
+    ];
+    const map = buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables);
+    expect(map.entries).toHaveLength(1);
+    expect(map.entries[0].darkColor).toBe('#569cd6');
+    expect(map.entries[0].lightColor).toBe('#0000ff');
+  });
+
+  it('uses raw color when no contrast params passed (backward compatible)', () => {
+    const mappings: Mapping[] = [mapping('comment', 'commentColor')];
+    const assignments: ColorAssignment[] = [
+      colorAssignment('commentColor', '#6a9955', '#008000'),
+    ];
+    const map = buildScopeColorMap(mappings, assignments);
+    expect(map.entries[0].darkColor).toBe('#6a9955');
+    expect(map.entries[0].lightColor).toBe('#008000');
   });
 });
 

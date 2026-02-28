@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ColorAssignment, Mapping } from '../../model/schemas';
+import type {
+  ColorAssignment,
+  ContrastAssignment,
+  ContrastVariable,
+  Mapping,
+} from '../../model/schemas';
 import type { TokenizedPreview } from '../../core/tokenizer';
 import { buildScopeColorMap, resolveTokenColor } from '../../core/scope-resolver';
 import { previewService } from '../../services/preview-service';
@@ -28,6 +33,8 @@ function textColorForBackground(hex: string): string {
 
 interface EditorPreviewsCardProps {
   colorAssignments: readonly ColorAssignment[];
+  contrastAssignments: readonly ContrastAssignment[];
+  contrastVariables: readonly ContrastVariable[];
   colorVariableKeys: string[];
   idePrimaryColorRef: string | null;
   onChangeIdePrimaryColorRef: (ref: string | null) => void;
@@ -51,6 +58,8 @@ function colorForRef(
 
 export function EditorPreviewsCard({
   colorAssignments,
+  contrastAssignments,
+  contrastVariables,
   colorVariableKeys,
   idePrimaryColorRef,
   onChangeIdePrimaryColorRef,
@@ -75,8 +84,9 @@ export function EditorPreviewsCard({
   }, []);
 
   const scopeColorMap = useMemo(
-    () => buildScopeColorMap(mappings, colorAssignments),
-    [mappings, colorAssignments],
+    () =>
+      buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables),
+    [mappings, colorAssignments, contrastAssignments, contrastVariables],
   );
 
   const darkColumnBg = colorForRef(colorAssignments, idePrimaryColorRef, 'dark', '#1e1e1e');

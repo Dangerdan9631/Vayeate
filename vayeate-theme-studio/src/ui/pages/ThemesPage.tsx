@@ -61,6 +61,8 @@ export function ThemesPage() {
           {vm.theme && vm.theme.templateRef && (
             <EditorPreviewsCard
               colorAssignments={vm.theme.colorAssignments}
+              contrastAssignments={vm.theme.contrastAssignments}
+              contrastVariables={vm.contrastVariablesFromTemplate}
               colorVariableKeys={vm.colorVariableKeys}
               idePrimaryColorRef={vm.theme.idePrimaryColorVariableRef}
               onChangeIdePrimaryColorRef={vm.changeIdePrimaryColorRef}

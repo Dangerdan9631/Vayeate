@@ -1,7 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EditorPreviewsCard } from './EditorPreviewsCard';
-import type { ColorAssignment, Mapping } from '../../model/schemas';
+import type {
+  ColorAssignment,
+  ContrastAssignment,
+  ContrastVariable,
+  Mapping,
+} from '../../model/schemas';
 
 vi.mock('../../services/preview-service', () => ({
   previewService: {
@@ -13,12 +18,16 @@ const previewService = await import('../../services/preview-service').then((m) =
 
 function makeProps(overrides: Partial<{
   colorAssignments: readonly ColorAssignment[];
+  contrastAssignments: readonly ContrastAssignment[];
+  contrastVariables: readonly ContrastVariable[];
   mappings: readonly Mapping[];
 }> = {}) {
   return {
     colorAssignments: overrides.colorAssignments ?? [
       { colorRef: 'editorBg', dark: { value: '#1e1e1e' }, light: { value: '#ffffff' }, useDarkForLight: false },
     ],
+    contrastAssignments: overrides.contrastAssignments ?? [],
+    contrastVariables: overrides.contrastVariables ?? [],
     colorVariableKeys: ['editorBg'],
     idePrimaryColorRef: null as string | null,
     onChangeIdePrimaryColorRef: vi.fn(),
