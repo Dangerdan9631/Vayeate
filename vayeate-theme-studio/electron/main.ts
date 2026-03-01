@@ -45,12 +45,16 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    show: false,
     webPreferences: {
       preload: join(__dirname, 'preload.mjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
   });
+
+  mainWindow.maximize();
+  mainWindow.show();
 
   if (process.env.VITE_DEV_SERVER_URL) {
     console.info(TAG, 'loading dev server URL:', process.env.VITE_DEV_SERVER_URL);
