@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
-import type { Catalog, Template } from '../../model/schemas';
+import type { Catalog, Template, Theme } from '../../model/schemas';
 import { catalogService } from '../../services/catalog-service';
 import { templateService } from '../../services/template-service';
 import { themeService } from '../../services/theme-service';
@@ -22,6 +22,8 @@ import {
 } from '../../state/app-state';
 
 const log = createLogger('AppContext');
+
+const SAVE_THEME_DEBOUNCE_MS = 400;
 
 type SetState = (update: AppStateUpdate) => void;
 
@@ -92,6 +94,9 @@ async function refreshThemeRefsOnly(setState: SetState) {
 }
 
 function createActionProcessor() {
+  let saveThemeTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  let pendingThemeToSave: Theme | null = null;
+
   return async (action: AppAction, setState: SetState): Promise<void> => {
     switch (action.type) {
       case 'SET_ACTIVE_TAB':
@@ -378,11 +383,18 @@ function createActionProcessor() {
       case 'SAVE_THEME': {
         log.debug('SAVE_THEME', action.theme.name, `v${action.theme.version}`);
         setState({ type: 'SET_THEME', theme: action.theme });
-        try {
-          await themeService.saveTheme(action.theme);
-        } catch (err) {
-          log.error('SAVE_THEME persist failed', err);
-        }
+        pendingThemeToSave = action.theme;
+        if (saveThemeTimeoutId !== null) clearTimeout(saveThemeTimeoutId);
+        saveThemeTimeoutId = setTimeout(() => {
+          saveThemeTimeoutId = null;
+          const theme = pendingThemeToSave;
+          pendingThemeToSave = null;
+          if (theme) {
+            themeService.saveTheme(theme).catch((err) => {
+              log.error('SAVE_THEME persist failed', err);
+            });
+          }
+        }, SAVE_THEME_DEBOUNCE_MS);
         break;
       }
 

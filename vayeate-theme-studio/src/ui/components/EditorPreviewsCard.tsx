@@ -9,6 +9,17 @@ import type { TokenizedPreview } from '../../core/tokenizer';
 import { buildScopeColorMap, resolveTokenColor } from '../../core/scope-resolver';
 import { previewService } from '../../services/preview-service';
 
+/** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
+interface ResolvedToken {
+  text: string;
+  darkColor: string;
+  lightColor: string;
+  title: string;
+}
+
+type ResolvedLine = { tokens: ResolvedToken[] };
+type ResolvedPreview = { previewKey: string; lines: ResolvedLine[] };
+
 const DEFAULT_DARK_FG = '#d4d4d4';
 const DEFAULT_LIGHT_FG = '#1f1f1f';
 
@@ -88,6 +99,20 @@ export function EditorPreviewsCard({
       buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables),
     [mappings, colorAssignments, contrastAssignments, contrastVariables],
   );
+
+  const resolvedPreviews = useMemo((): ResolvedPreview[] => {
+    return previews.map((preview) => ({
+      previewKey: `${preview.language}/${preview.fileName}`,
+      lines: preview.lines.map((line) => ({
+        tokens: line.tokens.map((token) => ({
+          text: token.text,
+          darkColor: resolveTokenColor(token.scopes, scopeColorMap, 'dark') ?? DEFAULT_DARK_FG,
+          lightColor: resolveTokenColor(token.scopes, scopeColorMap, 'light') ?? DEFAULT_LIGHT_FG,
+          title: token.scopes.length > 0 ? token.scopes.join(' › ') : 'no scope',
+        })),
+      })),
+    }));
+  }, [previews, scopeColorMap]);
 
   const darkColumnBg = colorForRef(colorAssignments, idePrimaryColorRef, 'dark', '#1e1e1e');
   const lightColumnBg = colorForRef(colorAssignments, idePrimaryColorRef, 'light', '#ffffff');
@@ -179,7 +204,7 @@ export function EditorPreviewsCard({
                 </span>
               </div>
             ) : (
-              previews.map((preview) => (
+              previews.map((preview, idx) => (
                 <div key={`${preview.language}/${preview.fileName}`} className="theme-preview-block">
                   <div className="theme-preview-block-label">
                     {preview.language} / {preview.fileName}
@@ -189,11 +214,9 @@ export function EditorPreviewsCard({
                     style={{ backgroundColor: darkCodeBg }}
                   >
                     <code>
-                      <PreviewLines
-                        lines={preview.lines}
-                        scopeColorMap={scopeColorMap}
+                      <ResolvedPreviewLines
+                        lines={resolvedPreviews[idx]?.lines ?? []}
                         mode="dark"
-                        defaultColor={DEFAULT_DARK_FG}
                       />
                     </code>
                   </pre>
@@ -212,7 +235,7 @@ export function EditorPreviewsCard({
                 </span>
               </div>
             ) : (
-              previews.map((preview) => (
+              previews.map((preview, idx) => (
                 <div key={`${preview.language}/${preview.fileName}`} className="theme-preview-block">
                   <div className="theme-preview-block-label">
                     {preview.language} / {preview.fileName}
@@ -222,11 +245,9 @@ export function EditorPreviewsCard({
                     style={{ backgroundColor: lightCodeBg }}
                   >
                     <code>
-                      <PreviewLines
-                        lines={preview.lines}
-                        scopeColorMap={scopeColorMap}
+                      <ResolvedPreviewLines
+                        lines={resolvedPreviews[idx]?.lines ?? []}
                         mode="light"
-                        defaultColor={DEFAULT_LIGHT_FG}
                       />
                     </code>
                   </pre>
@@ -240,30 +261,26 @@ export function EditorPreviewsCard({
   );
 }
 
-type PreviewLinesProps = {
-  lines: readonly { tokens: readonly { text: string; scopes: string[] }[] }[];
-  scopeColorMap: ReturnType<typeof buildScopeColorMap>;
+function ResolvedPreviewLines({
+  lines,
+  mode,
+}: {
+  lines: ResolvedLine[];
   mode: 'dark' | 'light';
-  defaultColor: string;
-};
-
-function PreviewLines({ lines, scopeColorMap, mode, defaultColor }: PreviewLinesProps) {
+}) {
   return (
     <>
       {lines.map((line, lineIdx) => (
         <span key={lineIdx} className="theme-preview-line">
-          {line.tokens.map((token, tokenIdx) => {
-            const color = resolveTokenColor(token.scopes, scopeColorMap, mode) ?? defaultColor;
-            return (
-              <span
-                key={tokenIdx}
-                style={{ color }}
-                title={token.scopes.length > 0 ? token.scopes.join(' › ') : 'no scope'}
-              >
-                {token.text}
-              </span>
-            );
-          })}
+          {line.tokens.map((token, tokenIdx) => (
+            <span
+              key={tokenIdx}
+              style={{ color: mode === 'dark' ? token.darkColor : token.lightColor }}
+              title={token.title}
+            >
+              {token.text}
+            </span>
+          ))}
           {'\n'}
         </span>
       ))}
