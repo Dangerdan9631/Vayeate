@@ -2,7 +2,7 @@
 
 ## Role
 
-Primary implementation agent for `color-theme-editor/`.
+Primary implementation agent for `vayeate-theme-studio/`.
 
 ## Responsibilities
 
@@ -28,4 +28,4 @@ Primary implementation agent for `color-theme-editor/`.
 
 - `npm run test`
 - `npm run build`
-- Ensure no diagnostics errors in `color-theme-editor/`.
+- Ensure no diagnostics errors in `vayeate-theme-studio/`.

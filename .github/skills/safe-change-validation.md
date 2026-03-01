@@ -2,7 +2,7 @@
 
 ## When to use
 
-- Any code change in `color-theme-editor/`.
+- Any code change in `vayeate-theme-studio/`.
 
 ## Steps
 

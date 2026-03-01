@@ -2,7 +2,7 @@
 
 ## Change scope conventions
 
-- Implement new tool behavior under `color-theme-editor/`.
+- Implement new tool behavior under `vayeate-theme-studio/`.
 - Keep root extension packaging flow unchanged unless explicitly requested.
 - Make focused changes; avoid unrelated cleanup.
 

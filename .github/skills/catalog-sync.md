@@ -2,14 +2,14 @@
 
 ## When to use
 
-- Updating pin metadata, remote source ingestion, or drift validation behavior.
+- Updating catalog sync from remote sources, catalog version/load behavior, or token ingestion in the Theme Studio app (`vayeate-theme-studio/`).
 
 ## Steps
 
-1. Review `catalog/pin.json` and `src/core/catalog-sync.ts`.
-2. Apply changes to pin validation and sync logic.
-3. Confirm snapshot/report artifact behavior remains deterministic.
-4. Validate drift warning behavior in tests.
+1. Review `vayeate-theme-studio/data/catalogs/` and `vayeate-theme-studio/src/services/catalog-sync.ts`.
+2. Apply changes to sync logic and catalog version/load behavior.
+3. Confirm catalog load and token extraction remain deterministic.
+4. Validate remote-fetch and fallback behavior in tests.
 5. Run `npm run test` and `npm run build`.
 
 ## Watch-outs

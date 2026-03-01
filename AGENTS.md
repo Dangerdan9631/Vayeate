@@ -22,7 +22,7 @@ Use this file to route an AI coding agent to the right instruction files, archit
 ## Repository boundaries
 
 - Root extension/plugin files are the published product surface.
-- `color-theme-editor/` is a standalone tool workspace and should remain independently runnable/testable.
+- `vayeate-theme-studio/` is a standalone tool workspace and should remain independently runnable/testable.
 - Do not alter root packaging flow in `package.json` unless explicitly requested.
 - Generated theme output writes to `themes/` are allowed.
 
@@ -40,11 +40,11 @@ Use this file to route an AI coding agent to the right instruction files, archit
 
 | Task type | Read first | Then read |
 |---|---|---|
-| Theme generation or contrast logic changes | `.github/skills/theme-generation.md` | `color-theme-editor/src/core/generator.ts`, `color-theme-editor/src/core/color.ts`, `.github/agent-docs/edge-cases.md` |
-| Catalog pin/sync/drift changes | `.github/skills/catalog-sync.md` | `color-theme-editor/src/core/catalog-sync.ts`, `color-theme-editor/catalog/pin.json`, `.github/agent-docs/functionality.md` |
-| UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `color-theme-editor/src/ui/App.tsx`, `.github/agent-docs/architecture.md` |
-| Schema/model changes | `.github/agent-docs/architecture.md` | `color-theme-editor/src/domain/types.ts`, `.github/agent-docs/conventions.md` |
-| Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `color-theme-editor/src/core/exporter.ts`, `.github/skills/safe-change-validation.md` |
+| Theme generation or contrast logic changes | `.github/skills/theme-generation.md` | `vayeate-theme-studio/src/core/theme-generator.ts`, `vayeate-theme-studio/src/core/color.ts`, `.github/agent-docs/edge-cases.md` |
+| Catalog pin/sync/drift changes | `.github/skills/catalog-sync.md` | `vayeate-theme-studio/src/services/catalog-sync.ts`, `vayeate-theme-studio/data/catalogs/`, `.github/agent-docs/functionality.md` |
+| UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `vayeate-theme-studio/src/ui/App.tsx`, `.github/agent-docs/architecture.md` |
+| Schema/model changes | `.github/agent-docs/architecture.md` | `vayeate-theme-studio/src/model/schemas.ts`, `vayeate-theme-studio/src/model/`, `.github/agent-docs/conventions.md` |
+| Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `vayeate-theme-studio/src/core/theme-exporter.ts`, `.github/skills/safe-change-validation.md` |
 | Repo-level documentation or process updates | `.github/copilot-instructions.md` | `AGENTS.md`, `.github/agent-docs/conventions.md`, `.github/agents/task-completion-hook.md` |
 | Unknown / mixed task | `AGENTS.md` | `.github/copilot-instructions.md`, relevant `.github/skills/*.md`, then target module files |
 
@@ -61,14 +61,15 @@ Use this file to route an AI coding agent to the right instruction files, archit
   - `themes/`
   - `.vscode/launch.json`
 - Standalone Theme Studio app:
-  - `color-theme-editor/src/core/*`
-  - `color-theme-editor/src/ui/*`
-  - `color-theme-editor/src/domain/types.ts`
-  - `color-theme-editor/catalog/*`
+  - `vayeate-theme-studio/src/core/*`
+  - `vayeate-theme-studio/src/ui/*`
+  - `vayeate-theme-studio/src/model/*`
+  - `vayeate-theme-studio/data/*`
+  - `vayeate-theme-studio/src/services/catalog-sync.ts`
 
 ## Minimum validation before handoff
 
-From `color-theme-editor/`:
+From `vayeate-theme-studio/`:
 
 - `npm run test`
 - `npm run build`

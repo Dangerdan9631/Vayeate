@@ -3,11 +3,11 @@
 This repository contains two connected but distinct surfaces:
 
 1. Root VS Code extension theme package.
-2. Standalone Theme Studio app in `color-theme-editor/`.
+2. Standalone Theme Studio app in `vayeate-theme-studio/`.
 
 ## Scope and boundaries
 
-- Implementing new tooling features for the color theme editor in `color-theme-editor/`.
+- Implementing new tooling features for the color theme editor in `vayeate-theme-studio/`.
 - Treat root extension packaging and manifest flow as stable unless explicitly asked to modify.
 - Allowed cross-boundary write path from Theme Studio: `themes/*.json` outputs.
 
@@ -20,10 +20,10 @@ This repository contains two connected but distinct surfaces:
 
 ## Architecture pointers
 
-- Domain contracts: `color-theme-editor/src/domain/types.ts`
-- Core engine: `color-theme-editor/src/core/`
-- UI/editor: `color-theme-editor/src/ui/`
-- Catalog pin/snapshot/report: `color-theme-editor/catalog/`
+- Models/schemas: `vayeate-theme-studio/src/model/`
+- Core engine: `vayeate-theme-studio/src/core/`
+- UI/editor: `vayeate-theme-studio/src/ui/`
+- Catalogs and sync: `vayeate-theme-studio/data/catalogs/`, `vayeate-theme-studio/src/services/catalog-sync.ts`
 - Legacy parity references: `scripts/fix-contrast.js`, `scripts/generate-light-themes.js`
 
 ## Agent workflow
@@ -31,7 +31,7 @@ This repository contains two connected but distinct surfaces:
 1. Read relevant module + nearby tests.
 2. Implement minimal patch.
 3. Update docs when behavior changes.
-4. Run validation in `color-theme-editor/`:
+4. Run validation in `vayeate-theme-studio/`:
    - `npm run test`
    - `npm run build`
 5. Run task completion hook in `.github/agents/task-completion-hook.md`.
