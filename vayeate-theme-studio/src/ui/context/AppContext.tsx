@@ -398,7 +398,12 @@ function createActionProcessor() {
 
       case 'SAVE_THEME': {
         log.debug('SAVE_THEME', action.theme.name, `v${action.theme.version}`);
-        await saveThemeAndRefresh(action.theme, setState);
+        setState({ type: 'SET_THEME', theme: action.theme });
+        try {
+          await themeService.saveTheme(action.theme);
+        } catch (err) {
+          log.error('SAVE_THEME persist failed', err);
+        }
         break;
       }
 
