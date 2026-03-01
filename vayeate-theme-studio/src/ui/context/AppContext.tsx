@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
-import type { Catalog, Template, Theme } from '../../model/schemas';
+import type { Catalog, Template } from '../../model/schemas';
 import { catalogService } from '../../services/catalog-service';
 import { templateService } from '../../services/template-service';
 import { themeService } from '../../services/theme-service';
@@ -83,33 +83,12 @@ async function saveTemplateAndRefresh(template: Template, setState: SetState) {
   await refreshTemplateRefsAndSelect(setState, template.name, template.version);
 }
 
-async function refreshThemeRefsAndSelect(
-  setState: SetState,
-  selectName?: string,
-  selectVersion?: string,
-) {
-  log.debug('refreshThemeRefsAndSelect', selectName, selectVersion);
+async function refreshThemeRefsOnly(setState: SetState) {
+  log.debug('refreshThemeRefsOnly');
   const refs = await themeService.listThemes();
   log.debug('loaded', refs.length, 'theme ref(s)');
   setState({ type: 'SET_THEME_REFS', refs });
-
-  if (selectName && selectVersion) {
-    const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
-    if (match) {
-      log.debug('selecting theme', match.name, match.version);
-      setState({ type: 'SET_SELECTED_THEME_REF', ref: match });
-      const loaded = await themeService.loadTheme(match.name, match.version);
-      setState({ type: 'SET_THEME', theme: loaded });
-      return;
-    }
-    log.debug('no matching theme ref for', selectName, selectVersion);
-  }
-}
-
-async function saveThemeAndRefresh(theme: Theme, setState: SetState) {
-  log.debug('saveThemeAndRefresh', theme.name, theme.version);
-  await themeService.saveTheme(theme);
-  await refreshThemeRefsAndSelect(setState, theme.name, theme.version);
+  return refs;
 }
 
 function createActionProcessor() {
@@ -387,7 +366,7 @@ function createActionProcessor() {
         try {
           const newTheme = await themeService.createTheme(action.params);
           log.debug('created theme', newTheme.name, `v${newTheme.version}`);
-          await refreshThemeRefsAndSelect(setState, newTheme.name, newTheme.version);
+          await refreshThemeRefsOnly(setState);
           setState({ type: 'SET_THEME', theme: newTheme });
           setState({ type: 'SET_SELECTED_THEME_REF', ref: { name: newTheme.name, version: newTheme.version } });
         } finally {
