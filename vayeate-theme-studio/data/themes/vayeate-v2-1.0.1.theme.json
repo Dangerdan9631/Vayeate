@@ -134,7 +134,7 @@
       "dark": {
         "value": "#282e35"
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "colorRef": "editorFg",
@@ -644,7 +644,7 @@
       "colorRef": "diffEditorInsertedBg",
       "light": null,
       "dark": {
-        "value": "#07792733"
+        "value": "#000000"
       },
       "useDarkForLight": true
     },

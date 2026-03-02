@@ -383,6 +383,7 @@ function createActionProcessor() {
       case 'SAVE_THEME': {
         log.debug('SAVE_THEME', action.theme.name, `v${action.theme.version}`);
         setState({ type: 'SET_THEME', theme: action.theme });
+        setState({ type: 'SET_THEME_SAVE_ERROR', error: null });
         pendingThemeToSave = action.theme;
         if (saveThemeTimeoutId !== null) clearTimeout(saveThemeTimeoutId);
         saveThemeTimeoutId = setTimeout(() => {
@@ -391,7 +392,9 @@ function createActionProcessor() {
           pendingThemeToSave = null;
           if (theme) {
             themeService.saveTheme(theme).catch((err) => {
+              const message = err instanceof Error ? err.message : String(err);
               log.error('SAVE_THEME persist failed', err);
+              setState({ type: 'SET_THEME_SAVE_ERROR', error: message });
             });
           }
         }, SAVE_THEME_DEBOUNCE_MS);
@@ -422,6 +425,11 @@ function createActionProcessor() {
           setState({ type: 'SET_SELECTED_THEME_REF', ref: null });
           setState({ type: 'SET_THEME', theme: null });
         }
+        break;
+      }
+
+      case 'DISMISS_THEME_SAVE_ERROR': {
+        setState({ type: 'SET_THEME_SAVE_ERROR', error: null });
         break;
       }
 

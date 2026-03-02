@@ -54,6 +54,26 @@ describe('createThemeRepository', () => {
     await expect(repo.saveTheme(invalid)).rejects.toThrow(/Invalid theme/);
   });
 
+  it('normalizes bare hex in color assignments on save', async () => {
+    const repo = createThemeRepository(baseDir);
+    const themeWithBareHex: Theme = {
+      ...validTheme,
+      colorAssignments: [
+        {
+          colorRef: 'primary',
+          dark: { value: 'ff0000' },
+          light: { value: '00ff00' },
+          useDarkForLight: false,
+        },
+      ],
+    };
+    await repo.saveTheme(themeWithBareHex);
+    const loaded = await repo.loadTheme('my-theme', '1.0.0');
+    expect(loaded).not.toBeNull();
+    expect(loaded!.colorAssignments[0].dark?.value).toBe('#ff0000');
+    expect(loaded!.colorAssignments[0].light?.value).toBe('#00ff00');
+  });
+
   it('deleteTheme removes the file', async () => {
     const repo = createThemeRepository(baseDir);
     await repo.saveTheme(validTheme);

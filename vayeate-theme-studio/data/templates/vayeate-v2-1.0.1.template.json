@@ -3037,523 +3037,523 @@
   "colorVariables": [
     {
       "key": "chromePrimaryBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromePrimaryFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeBorder",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeInactiveBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeInactiveFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeAccentFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeDarkBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeSelectionFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeBrightFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeMutedFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "chromeAccent",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "menuSeparatorBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "buttonHoverBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "sideBarBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "sideBarFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "editorBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorLineHighlightBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorSelectionBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorLineNumberFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorIndentGuideBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorIndentGuideActiveBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorInlayHintFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorInlayHintBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorCursorFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorGutterBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorGutterAddedBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorGutterDeletedBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorGutterModifiedBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorFindMatchBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorFindMatchHighlightBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorFindRangeHighlightBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorLinkActiveFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorCodeLensFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorBracketMatchBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorBracketMatchBorder",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorRulerFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorGroupEmptyBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "listActiveSelectionFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "listFocusFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "listHighlightFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "listHoverBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "listHoverFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "listInvalidItemFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "statusBarDebuggingBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarDebuggingFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarRemoteFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarNoFolderBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarNoFolderFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarItemActiveBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarItemErrorBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarItemErrorFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "statusBarItemHoverBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "notificationsInfoIconFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "notificationsWarningIconFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "notificationsErrorIconFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "activityBarBadgeFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "activityBarBadgeBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "badgeFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "badgeBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "extensionBadgeRemoteFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "extensionBadgeRemoteBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "panelTitleInactiveFg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "editorWidgetFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorWidgetBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "editorWidgetBorder",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "widgetShadow",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputPlaceholderFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputValidationErrorBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputValidationErrorFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputValidationInfoBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputValidationInfoFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputValidationWarningBg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "inputValidationWarningFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "gitDecorationConflictingFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "gitDecorationDeletedFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "gitDecorationIgnoredFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "gitDecorationModifiedFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "gitDecorationUntrackedFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "diffEditorInsertedBg",
-      "groupRef": null
+      "groupRef": "Diff Editor"
     },
     {
       "key": "diffEditorRemovedBg",
-      "groupRef": null
+      "groupRef": "Diff Editor"
     },
     {
       "key": "textPreformatFg",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "dropdownBg",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     },
     {
       "key": "terminalAnsiBlack",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBlue",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightBlack",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightCyan",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightGreen",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightMagenta",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightRed",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightWhite",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiBrightYellow",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiCyan",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiGreen",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiMagenta",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiRed",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiWhite",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalAnsiYellow",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalBorder",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "terminalFg",
-      "groupRef": null
+      "groupRef": "Terminal"
     },
     {
       "key": "defaultText",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "comment",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "string",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "stringEscape",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "preprocessor",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "parameter",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "keyword",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "typeClass",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "typeInterface",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "constant",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "field",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "method",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "number",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "docTag",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "docAttr",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "docText",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "docTextAlt",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "docParam",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "xmlAttr",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "mdHeaderOther",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "mdRefLink",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexOperator",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexOperator2",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexReplace",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexLineComment",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexTextComment",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexOptions3",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexOptions7",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "regexOptions8",
-      "groupRef": null
+      "groupRef": "Editor Window"
     },
     {
       "key": "commentDocumentation",
-      "groupRef": null
+      "groupRef": "Editor Chrome"
     }
   ],
   "contrastVariables": [

@@ -69,6 +69,7 @@ describe('initialAppState', () => {
     expect(initialAppState.themes.isCreating).toBe(false);
     expect(initialAppState.themes.createDialogOpen).toBe(false);
     expect(initialAppState.themes.generateResult).toBeNull();
+    expect(initialAppState.themes.saveError).toBeNull();
     expect(initialAppState.themes.themeRefs).toEqual([]);
   });
 
@@ -174,6 +175,16 @@ describe('appStateReducer', () => {
       result: { success: true, message: 'Generated themes' },
     });
     expect(state.themes.generateResult).toEqual({ success: true, message: 'Generated themes' });
+  });
+
+  it('handles SET_THEME_SAVE_ERROR', () => {
+    const state = appStateReducer(initialAppState, {
+      type: 'SET_THEME_SAVE_ERROR',
+      error: 'Invalid theme: validation failed',
+    });
+    expect(state.themes.saveError).toBe('Invalid theme: validation failed');
+    const cleared = appStateReducer(state, { type: 'SET_THEME_SAVE_ERROR', error: null });
+    expect(cleared.themes.saveError).toBeNull();
   });
 
   it('returns state unchanged for unknown update type', () => {

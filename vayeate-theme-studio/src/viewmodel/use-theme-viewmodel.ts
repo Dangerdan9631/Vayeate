@@ -20,7 +20,7 @@ const log = createLogger('ThemeVM');
 
 export function useThemeViewModel() {
   const { state, dispatch } = useAppState();
-  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult } = state.themes;
+  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult, saveError } = state.themes;
   const { templateRefs } = state.templates;
 
   useEffect(() => {
@@ -428,6 +428,10 @@ export function useThemeViewModel() {
     updateContrastAssignmentDark,
     updateContrastAssignmentLight,
     updateContrastAssignmentUseDarkForLight,
+    saveError,
+    dismissSaveError: useCallback(() => {
+      dispatch({ type: 'DISMISS_THEME_SAVE_ERROR' });
+    }, [dispatch]),
   };
 }
 

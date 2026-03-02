@@ -10,6 +10,19 @@ export function ThemesPage() {
 
   return (
     <>
+      {vm.saveError && (
+        <div className="theme-save-error-banner" role="alert">
+          <span className="theme-save-error-message">{vm.saveError}</span>
+          <button
+            type="button"
+            className="theme-save-error-dismiss"
+            onClick={vm.dismissSaveError}
+            aria-label="Dismiss"
+          >
+            <span className="material-symbols-outlined" aria-hidden>close</span>
+          </button>
+        </div>
+      )}
       <div className="themes-page-grid">
         <div className="themes-left-col">
           <ThemesCard

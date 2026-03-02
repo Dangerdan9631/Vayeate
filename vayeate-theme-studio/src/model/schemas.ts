@@ -6,7 +6,21 @@ const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 const SEMVER_REGEX = /^v?\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$/;
 const VARIABLE_KEY_REGEX = /^[a-zA-Z][a-zA-Z0-9]*$/;
 const TOKEN_KEY_REGEX = /^([a-zA-Z*0-9][a-zA-Z0-9_*-]*)((\.| |:)([a-zA-Z*0-9][a-zA-Z0-9_*-]*))*$/;
-const HEX_COLOR_REGEX = /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})([0-9A-Fa-f]{2})?$/;
+/** Bare hex (no #): 3, 6, or 8 hex digits */
+const BARE_HEX_REGEX = /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})([0-9A-Fa-f]{2})?$/;
+
+/**
+ * Normalizes a hex color string to canonical form (# + hex). Accepts optional
+ * leading # and 3, 6, or 8 hex digits. Returns normalized string or throws.
+ */
+function normalizeHex(s: string): string {
+  const trimmed = s.trim();
+  const hexPart = trimmed.startsWith('#') ? trimmed.slice(1) : trimmed;
+  if (!BARE_HEX_REGEX.test(hexPart)) {
+    throw new Error('Invalid hex color');
+  }
+  return '#' + hexPart;
+}
 
 // --- Primitive schemas ---
 
@@ -34,7 +48,9 @@ export type ContrastVariableKey = z.infer<typeof contrastVariableKeySchema>;
 export const tokenKeySchema = z.string().regex(TOKEN_KEY_REGEX);
 export type TokenKey = z.infer<typeof tokenKeySchema>;
 
-export const hexColorSchema = z.string().regex(HEX_COLOR_REGEX);
+export const hexColorSchema = z
+  .string()
+  .transform((s) => normalizeHex(s));
 export type HexColor = z.infer<typeof hexColorSchema>;
 
 export const contrastValueSchema = z

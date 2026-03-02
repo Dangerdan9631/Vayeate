@@ -1161,6 +1161,43 @@ body {
   margin: 8px 0 0;
 }
 
+.theme-save-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.theme-save-error-message {
+  flex: 1;
+}
+
+.theme-save-error-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.theme-save-error-dismiss:hover {
+  background: #fee2e2;
+}
+
+.theme-save-error-dismiss .material-symbols-outlined {
+  font-size: 18px;
+}
+
 .theme-generate-success {
   color: #15803d;
   font-size: 13px;

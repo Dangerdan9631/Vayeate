@@ -161,8 +161,14 @@ app.whenReady().then(async () => {
   ipcMain.handle('theme:save', async (_event, theme: Theme) => {
     console.debug(TAG, 'IPC theme:save', theme.name, `v${theme.version}`,
       `(${theme.colorAssignments.length} color, ${theme.contrastAssignments.length} contrast)`);
-    await themeRepo.saveTheme(theme);
-    console.debug(TAG, 'IPC theme:save complete');
+    try {
+      await themeRepo.saveTheme(theme);
+      console.debug(TAG, 'IPC theme:save complete');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(TAG, 'theme:save failed', message);
+      throw err;
+    }
   });
 
   ipcMain.handle('theme:load', async (_event, name: string, version: string) => {

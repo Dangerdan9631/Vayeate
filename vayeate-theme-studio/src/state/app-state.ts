@@ -32,6 +32,7 @@ export interface ThemesState {
   isCreating: boolean;
   createDialogOpen: boolean;
   generateResult: GenerateResult | null;
+  saveError: string | null;
 }
 
 export interface QueueStatusState {
@@ -70,6 +71,7 @@ export const initialAppState: AppState = {
     isCreating: false,
     createDialogOpen: false,
     generateResult: null,
+    saveError: null,
   },
   queueStatus: {
     isProcessing: false,
@@ -95,6 +97,7 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_IS_CREATING'; value: boolean }
   | { type: 'SET_THEME_CREATE_DIALOG_OPEN'; value: boolean }
   | { type: 'SET_GENERATE_RESULT'; result: GenerateResult | null }
+  | { type: 'SET_THEME_SAVE_ERROR'; error: string | null }
   | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number };
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
@@ -134,6 +137,8 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, createDialogOpen: update.value } };
     case 'SET_GENERATE_RESULT':
       return { ...state, themes: { ...state.themes, generateResult: update.result } };
+    case 'SET_THEME_SAVE_ERROR':
+      return { ...state, themes: { ...state.themes, saveError: update.error } };
     case 'SET_QUEUE_STATUS':
       return { ...state, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } };
     default:
@@ -174,6 +179,8 @@ function updatePayloadSummary(update: AppStateUpdate): string {
       return String(update.value);
     case 'SET_GENERATE_RESULT':
       return update.result ? `${update.result.success}: ${update.result.message}` : '(clear)';
+    case 'SET_THEME_SAVE_ERROR':
+      return update.error ?? '(clear)';
     case 'SET_QUEUE_STATUS':
       return `processing=${update.isProcessing} queue=${update.queueLength}`;
   }
