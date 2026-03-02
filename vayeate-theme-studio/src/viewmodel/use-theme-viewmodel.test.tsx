@@ -171,6 +171,23 @@ describe('mergeAssignmentsFromTemplate', () => {
     expect(merged.contrastAssignments[0].contrastVariableRef).toBe('textContrast');
   });
 
+  it('preserves existing contrast assignment including invertComparison', () => {
+    const themeWithContrast: Theme = {
+      ...baseTheme,
+      contrastAssignments: [
+        {
+          contrastVariableRef: 'textContrast',
+          dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: true },
+          light: null,
+          useDarkForLight: false,
+        },
+      ],
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithContrast, template);
+    expect(merged.contrastAssignments).toHaveLength(1);
+    expect(merged.contrastAssignments[0].dark?.invertComparison).toBe(true);
+  });
+
   it('clears idePrimaryColorVariableRef if it no longer exists in template', () => {
     const themeWithPrimary: Theme = {
       ...baseTheme,

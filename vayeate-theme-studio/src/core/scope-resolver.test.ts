@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { contrastRatio } from './color';
+import { adjustColorToMeetContrast, contrastRatio } from './color';
 import {
   buildScopeColorMap,
   resolveTokenColor,
@@ -109,8 +109,8 @@ describe('buildScopeColorMap', () => {
     const contrastAssignments: ContrastAssignment[] = [
       {
         contrastVariableRef: 'textContrast',
-        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
-        light: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
+        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: false },
+        light: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: false },
         useDarkForLight: false,
       },
     ];
@@ -140,7 +140,7 @@ describe('buildScopeColorMap', () => {
     const contrastAssignments: ContrastAssignment[] = [
       {
         contrastVariableRef: 'noSource',
-        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
+        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: false },
         light: null,
         useDarkForLight: false,
       },
@@ -159,6 +159,45 @@ describe('buildScopeColorMap', () => {
     const map = buildScopeColorMap(mappings, assignments);
     expect(map.entries[0].darkColor).toBe('#6a9955');
     expect(map.entries[0].lightColor).toBe('#008000');
+  });
+
+  it('applies invertComparison by swapping comparison source and evaluated color', () => {
+    const tokenColor = '#ffffff';
+    const sourceColor = '#888888';
+    const mappings: Mapping[] = [
+      mapping('keyword.control', 'keywordColor', 'textContrast'),
+    ];
+    const colorAssignments: ColorAssignment[] = [
+      colorAssignment('keywordColor', tokenColor, '#888888'),
+      colorAssignment('editorBg', sourceColor, '#ffffff'),
+    ];
+    const contrastVariables: ContrastVariable[] = [
+      { key: 'textContrast', comparisonSourceRef: 'editorBg', groupRef: null },
+    ];
+    const contrastAssignments: ContrastAssignment[] = [
+      {
+        contrastVariableRef: 'textContrast',
+        dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: true },
+        light: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: false },
+        useDarkForLight: false,
+      },
+    ];
+    const map = buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables);
+    const entry = map.entries[0];
+    const expectedDarkInverted = adjustColorToMeetContrast(sourceColor, tokenColor, {
+      comparisonMethod: 'greaterThan',
+      value: 4.5,
+      min: null,
+      max: null,
+    });
+    expect(entry.darkColor).toBe(expectedDarkInverted);
+    const expectedLight = adjustColorToMeetContrast('#888888', '#ffffff', {
+      comparisonMethod: 'greaterThan',
+      value: 4.5,
+      min: null,
+      max: null,
+    });
+    expect(entry.lightColor).toBe(expectedLight);
   });
 });
 

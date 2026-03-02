@@ -1073,6 +1073,32 @@ body {
   padding: 4px 6px;
 }
 
+.theme-contrast-row4 {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.theme-contrast-invert-row .theme-contrast-invert-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  grid-column: span 2;
+}
+
+.theme-contrast-invert-row .theme-contrast-invert-check:last-of-type {
+  grid-column: span 2;
+}
+
+.theme-contrast-invert-label {
+  flex-shrink: 0;
+}
+
 /* ── Theme editor previews ─────────────────────────────────── */
 
 .theme-previews-card {

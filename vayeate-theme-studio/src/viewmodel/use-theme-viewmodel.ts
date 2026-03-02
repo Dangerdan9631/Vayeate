@@ -18,6 +18,12 @@ import type {
 
 const log = createLogger('ThemeVM');
 
+export type UpdateContrastAssignmentHandler = (
+  contrastRef: string,
+  field: keyof ContrastAssignmentValue,
+  value: number | ContrastComparisonMethod | boolean | null,
+) => void;
+
 export function useThemeViewModel() {
   const { state, dispatch } = useAppState();
   const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult, saveError } = state.themes;
@@ -332,14 +338,14 @@ export function useThemeViewModel() {
 
   // --- Contrast assignment updates (no version bump) ---
 
-  const updateContrastAssignmentDark = useCallback(
-    (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
+  const updateContrastAssignmentDark = useCallback<UpdateContrastAssignmentHandler>(
+    (contrastRef, field, value) => {
       if (!theme) return;
       log.debug('updateContrastAssignmentDark', contrastRef, field, value);
       const base = getBaseInPlace(theme);
       const newAssignments = base.contrastAssignments.map((a) => {
         if (a.contrastVariableRef !== contrastRef) return a;
-        const dark = a.dark ?? { value: 1, comparisonMethod: 'greaterThan' as const, min: null, max: null };
+        const dark = a.dark ?? { value: 1, comparisonMethod: 'greaterThan' as const, min: null, max: null, invertComparison: false };
         return { ...a, dark: { ...dark, [field]: value } };
       });
       dispatch({ type: 'SAVE_THEME', theme: { ...base, contrastAssignments: newAssignments } });
@@ -347,14 +353,14 @@ export function useThemeViewModel() {
     [dispatch, theme],
   );
 
-  const updateContrastAssignmentLight = useCallback(
-    (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
+  const updateContrastAssignmentLight = useCallback<UpdateContrastAssignmentHandler>(
+    (contrastRef, field, value) => {
       if (!theme) return;
       log.debug('updateContrastAssignmentLight', contrastRef, field, value);
       const base = getBaseInPlace(theme);
       const newAssignments = base.contrastAssignments.map((a) => {
         if (a.contrastVariableRef !== contrastRef) return a;
-        const light = a.light ?? { value: 1, comparisonMethod: 'greaterThan' as const, min: null, max: null };
+        const light = a.light ?? { value: 1, comparisonMethod: 'greaterThan' as const, min: null, max: null, invertComparison: false };
         return { ...a, light: { ...light, [field]: value } };
       });
       dispatch({ type: 'SAVE_THEME', theme: { ...base, contrastAssignments: newAssignments } });

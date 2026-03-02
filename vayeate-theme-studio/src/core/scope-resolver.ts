@@ -64,7 +64,7 @@ function contrastValueForRef(
   contrastAssignments: readonly ContrastAssignment[],
   contrastVariableRef: string,
   mode: 'dark' | 'light',
-): { value: number; comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan'; min: number | null; max: number | null } | null {
+): { value: number; comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan'; min: number | null; max: number | null; invertComparison: boolean } | null {
   const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastVariableRef);
   if (!a) return null;
   const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
@@ -74,6 +74,7 @@ function contrastValueForRef(
     comparisonMethod: val.comparisonMethod,
     min: val.min ?? null,
     max: val.max ?? null,
+    invertComparison: val.invertComparison ?? false,
   };
 }
 
@@ -122,20 +123,26 @@ export function buildScopeColorMap(
         const lightContrast = contrastValueForRef(contrastAssignments!, m.contrastVariableRef, 'light');
 
         if (darkColor && darkSource && darkContrast) {
-          darkColor = adjustColorToMeetContrast(darkColor, darkSource, {
+          const opts = {
             comparisonMethod: darkContrast.comparisonMethod,
             value: darkContrast.value,
             min: darkContrast.min,
             max: darkContrast.max,
-          });
+          };
+          darkColor = darkContrast.invertComparison
+            ? adjustColorToMeetContrast(darkSource, darkColor, opts)
+            : adjustColorToMeetContrast(darkColor, darkSource, opts);
         }
         if (lightColor && lightSource && lightContrast) {
-          lightColor = adjustColorToMeetContrast(lightColor, lightSource, {
+          const opts = {
             comparisonMethod: lightContrast.comparisonMethod,
             value: lightContrast.value,
             min: lightContrast.min,
             max: lightContrast.max,
-          });
+          };
+          lightColor = lightContrast.invertComparison
+            ? adjustColorToMeetContrast(lightSource, lightColor, opts)
+            : adjustColorToMeetContrast(lightColor, lightSource, opts);
         }
       }
     }

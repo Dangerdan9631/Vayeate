@@ -130,7 +130,9 @@
     },
     {
       "colorRef": "editorBg",
-      "light": null,
+      "light": {
+        "value": "#dfdbdb"
+      },
       "dark": {
         "value": "#282e35"
       },
@@ -462,7 +464,7 @@
       "dark": {
         "value": "#acd6ff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "activityBarBadgeBg",
@@ -470,7 +472,7 @@
       "dark": {
         "value": "#0059b1"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "badgeFg",
@@ -478,7 +480,7 @@
       "dark": {
         "value": "#acd6ff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "badgeBg",
@@ -486,7 +488,7 @@
       "dark": {
         "value": "#0059b1"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "extensionBadgeRemoteFg",
@@ -1052,69 +1054,99 @@
   "contrastAssignments": [
     {
       "contrastVariableRef": "ideChrome",
-      "light": null,
+      "light": {
+        "value": 2,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
       "dark": {
         "value": 2,
         "comparisonMethod": "greaterThan",
         "min": 2,
         "max": null
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "comment",
-      "light": null,
-      "dark": {
+      "light": {
         "value": 1.5,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
+      "dark": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "string",
-      "light": null,
-      "dark": {
-        "value": 3,
+      "light": {
+        "value": 4,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
+      "dark": {
+        "value": 4,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "keyword",
-      "light": null,
-      "dark": {
+      "light": {
         "value": 5,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
+      "dark": {
+        "value": 6,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "typeName",
-      "light": null,
-      "dark": {
+      "light": {
         "value": 5,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
-    },
-    {
-      "contrastVariableRef": "defaultText",
-      "light": null,
       "dark": {
-        "value": 3,
+        "value": 6,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "defaultText",
+      "light": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": 8
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
     }
   ]
 }
