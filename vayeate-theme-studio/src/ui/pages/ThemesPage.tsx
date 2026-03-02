@@ -46,7 +46,9 @@ export function ThemesPage() {
             <ThemeVariablesCard
               colorAssignments={vm.theme.colorAssignments}
               contrastAssignments={vm.theme.contrastAssignments}
+              colorVariables={vm.colorVariablesFromTemplate}
               contrastVariables={vm.contrastVariablesFromTemplate}
+              groups={vm.groupsFromTemplate}
               orphanColorKeys={vm.orphanColorKeys}
               orphanContrastKeys={vm.orphanContrastKeys}
               onUpdateColorDark={vm.updateColorAssignmentDark}

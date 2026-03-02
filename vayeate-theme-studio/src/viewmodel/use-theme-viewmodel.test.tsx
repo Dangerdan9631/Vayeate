@@ -128,8 +128,13 @@ describe('mergeAssignmentsFromTemplate', () => {
     locked: true,
     catalogRefs: [],
     mappings: [],
-    colorVariables: [{ key: 'primary' }, { key: 'secondary' }],
-    contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary' }],
+    colorVariables: [
+      { key: 'primary', groupRef: null },
+      { key: 'secondary', groupRef: null },
+    ],
+    contrastVariables: [
+      { key: 'textContrast', comparisonSourceRef: 'primary', groupRef: null },
+    ],
     groups: [],
   };
 

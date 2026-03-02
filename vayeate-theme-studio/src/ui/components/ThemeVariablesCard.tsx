@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type {
   ColorAssignment,
+  ColorVariable,
   ContrastAssignment,
   ContrastComparisonMethod,
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../model/schemas';
 
+const UNGROUPED_KEY = '__ungrouped__';
+
 interface ThemeVariablesCardProps {
   colorAssignments: readonly ColorAssignment[];
   contrastAssignments: readonly ContrastAssignment[];
+  colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
+  groups: readonly string[];
   orphanColorKeys: Set<string>;
   orphanContrastKeys: Set<string>;
   onUpdateColorDark: (colorRef: string, value: string | null) => void;
@@ -27,13 +32,118 @@ const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] =
   { value: 'greaterThan', label: '> Greater than' },
 ];
 
+function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
+  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
+  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
+  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
+}
+
+function buildColorAssignmentsByGroup(
+  assignments: readonly ColorAssignment[],
+  colorVariables: readonly ColorVariable[],
+): Map<string, ColorAssignment[]> {
+  const varMap = new Map(colorVariables.map((v) => [v.key, v]));
+  const byGroup = new Map<string, ColorAssignment[]>();
+  for (const a of assignments) {
+    const groupRef = varMap.get(a.colorRef)?.groupRef ?? null;
+    const groupKey = groupRef ?? UNGROUPED_KEY;
+    let list = byGroup.get(groupKey);
+    if (!list) {
+      list = [];
+      byGroup.set(groupKey, list);
+    }
+    list.push(a);
+  }
+  return byGroup;
+}
+
+function buildContrastAssignmentsByGroup(
+  assignments: readonly ContrastAssignment[],
+  contrastVariables: readonly ContrastVariable[],
+): Map<string, ContrastAssignment[]> {
+  const varMap = new Map(contrastVariables.map((v) => [v.key, v]));
+  const byGroup = new Map<string, ContrastAssignment[]>();
+  for (const a of assignments) {
+    const groupRef = varMap.get(a.contrastVariableRef)?.groupRef ?? null;
+    const groupKey = groupRef ?? UNGROUPED_KEY;
+    let list = byGroup.get(groupKey);
+    if (!list) {
+      list = [];
+      byGroup.set(groupKey, list);
+    }
+    list.push(a);
+  }
+  return byGroup;
+}
+
 function ColorAssignmentsSection({
+  assignments,
+  colorVariables,
+  orphanKeys,
+  onUpdateDark,
+  onUpdateLight,
+  onUpdateUseDark,
+}: {
+  assignments: readonly ColorAssignment[];
+  colorVariables: readonly ColorVariable[];
+  orphanKeys: Set<string>;
+  onUpdateDark: (colorRef: string, value: string | null) => void;
+  onUpdateLight: (colorRef: string, value: string | null) => void;
+  onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+  const byGroup = useMemo(
+    () => buildColorAssignmentsByGroup(assignments, colorVariables),
+    [assignments, colorVariables],
+  );
+  const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
+
+  return (
+    <div className="tree-section">
+      <button
+        type="button"
+        className="tree-header"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <span className="material-symbols-outlined tree-chevron">
+          {collapsed ? 'chevron_right' : 'expand_more'}
+        </span>
+        <span className="tree-label">Color Variables</span>
+        <span className="tree-count">({assignments.length})</span>
+      </button>
+
+      {!collapsed && (
+        <div className="tree-children">
+          {groupKeysInOrder.map((groupKey) => {
+            const groupAssignments = byGroup.get(groupKey) ?? [];
+            const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+            return (
+              <ColorAssignmentsGroupSubsection
+                key={groupKey}
+                groupLabel={groupLabel}
+                assignments={groupAssignments}
+                orphanKeys={orphanKeys}
+                onUpdateDark={onUpdateDark}
+                onUpdateLight={onUpdateLight}
+                onUpdateUseDark={onUpdateUseDark}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ColorAssignmentsGroupSubsection({
+  groupLabel,
   assignments,
   orphanKeys,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
 }: {
+  groupLabel: string;
   assignments: readonly ColorAssignment[];
   orphanKeys: Set<string>;
   onUpdateDark: (colorRef: string, value: string | null) => void;
@@ -52,10 +162,9 @@ function ColorAssignmentsSection({
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
         </span>
-        <span className="tree-label">Color Variables</span>
+        <span className="tree-label">{groupLabel}</span>
         <span className="tree-count">({assignments.length})</span>
       </button>
-
       {!collapsed && (
         <div className="tree-children">
           {assignments.length === 0 && (
@@ -192,8 +301,15 @@ function ContrastAssignmentsSection({
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-
-  const varMap = new Map(contrastVariables.map((v) => [v.key, v]));
+  const varMap = useMemo(
+    () => new Map(contrastVariables.map((v) => [v.key, v])),
+    [contrastVariables],
+  );
+  const byGroup = useMemo(
+    () => buildContrastAssignmentsByGroup(assignments, contrastVariables),
+    [assignments, contrastVariables],
+  );
+  const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
 
   return (
     <div className="tree-section">
@@ -209,6 +325,62 @@ function ContrastAssignmentsSection({
         <span className="tree-count">({assignments.length})</span>
       </button>
 
+      {!collapsed && (
+        <div className="tree-children">
+          {groupKeysInOrder.map((groupKey) => {
+            const groupAssignments = byGroup.get(groupKey) ?? [];
+            const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+            return (
+              <ContrastAssignmentsGroupSubsection
+                key={groupKey}
+                groupLabel={groupLabel}
+                assignments={groupAssignments}
+                varMap={varMap}
+                orphanKeys={orphanKeys}
+                onUpdateDark={onUpdateDark}
+                onUpdateLight={onUpdateLight}
+                onUpdateUseDark={onUpdateUseDark}
+              />
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ContrastAssignmentsGroupSubsection({
+  groupLabel,
+  assignments,
+  varMap,
+  orphanKeys,
+  onUpdateDark,
+  onUpdateLight,
+  onUpdateUseDark,
+}: {
+  groupLabel: string;
+  assignments: readonly ContrastAssignment[];
+  varMap: Map<string, ContrastVariable>;
+  orphanKeys: Set<string>;
+  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
+  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
+  onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <div className="tree-section">
+      <button
+        type="button"
+        className="tree-header"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <span className="material-symbols-outlined tree-chevron">
+          {collapsed ? 'chevron_right' : 'expand_more'}
+        </span>
+        <span className="tree-label">{groupLabel}</span>
+        <span className="tree-count">({assignments.length})</span>
+      </button>
       {!collapsed && (
         <div className="tree-children">
           {assignments.length === 0 && (
@@ -424,7 +596,9 @@ function matchesSearch(key: string, searchQuery: string): boolean {
 export function ThemeVariablesCard({
   colorAssignments,
   contrastAssignments,
+  colorVariables,
   contrastVariables,
+  groups: _groups,
   orphanColorKeys,
   orphanContrastKeys,
   onUpdateColorDark,
@@ -456,6 +630,7 @@ export function ThemeVariablesCard({
       />
       <ColorAssignmentsSection
         assignments={filteredColorAssignments}
+        colorVariables={colorVariables}
         orphanKeys={orphanColorKeys}
         onUpdateDark={onUpdateColorDark}
         onUpdateLight={onUpdateColorLight}

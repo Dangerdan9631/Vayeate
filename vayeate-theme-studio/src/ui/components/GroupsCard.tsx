@@ -63,7 +63,7 @@ export function GroupsCard({
                 <button
                   type="button"
                   className="btn-icon btn-danger-icon"
-                  title={inUse ? 'Cannot remove: group has mappings' : 'Remove group'}
+                  title={inUse ? 'Cannot remove: group has mappings or variables' : 'Remove group'}
                   disabled={inUse}
                   onClick={() => onRemoveGroup(name)}
                 >

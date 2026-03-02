@@ -324,4 +324,236 @@ describe('useTemplateViewModel groups', () => {
 
     expect(result.current.template?.mappings[0]?.groupRef).toBe('G1');
   });
+
+  it('removeGroup does nothing when group has variables', async () => {
+    const templateWithGroupAndVariable: Template = {
+      ...mockTemplate,
+      groups: ['G1'],
+      mappings: [],
+      colorVariables: [{ key: 'primary', groupRef: 'G1' }],
+      contrastVariables: [],
+    };
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: () => Promise.resolve(),
+      loadTemplate: () => Promise.resolve(templateWithGroupAndVariable),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.removeGroup('G1');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+
+    expect(result.current.template?.groups).toContain('G1');
+  });
+
+  it('updateColorVariableGroupRef updates color variable group', async () => {
+    const templateWithVar: Template = {
+      ...mockTemplate,
+      groups: ['G1'],
+      colorVariables: [{ key: 'primary', groupRef: null }],
+      contrastVariables: [],
+    };
+    let savedTemplate: Template | null = templateWithVar;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithVar),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.colorVariables[0]?.groupRef).toBeNull();
+
+    await act(async () => {
+      result.current.updateColorVariableGroupRef('primary', 'G1');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.colorVariables[0]?.groupRef).toBe('G1');
+  });
+
+  it('updateContrastVariableGroupRef updates contrast variable group', async () => {
+    const templateWithVar: Template = {
+      ...mockTemplate,
+      groups: ['G1'],
+      colorVariables: [],
+      contrastVariables: [{ key: 'textContrast', comparisonSourceRef: null, groupRef: null }],
+    };
+    let savedTemplate: Template | null = templateWithVar;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithVar),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.contrastVariables[0]?.groupRef).toBeNull();
+
+    await act(async () => {
+      result.current.updateContrastVariableGroupRef('textContrast', 'G1');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.contrastVariables[0]?.groupRef).toBe('G1');
+  });
+
+  it('addColorVariable with groupRef creates variable with that group', async () => {
+    const templateWithGroup: Template = {
+      ...mockTemplate,
+      groups: ['G1'],
+      colorVariables: [],
+      contrastVariables: [],
+    };
+    let savedTemplate: Template | null = templateWithGroup;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithGroup),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.addColorVariable('primary', 'G1');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.colorVariables).toHaveLength(1);
+    expect(result.current.template?.colorVariables[0]).toEqual({ key: 'primary', groupRef: 'G1' });
+  });
+
+  it('addContrastVariable with groupRef creates variable with that group', async () => {
+    const templateWithGroup: Template = {
+      ...mockTemplate,
+      groups: ['G1'],
+      colorVariables: [],
+      contrastVariables: [],
+    };
+    let savedTemplate: Template | null = templateWithGroup;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithGroup),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.addContrastVariable('textContrast', 'G1');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.contrastVariables).toHaveLength(1);
+    expect(result.current.template?.contrastVariables[0]).toMatchObject({
+      key: 'textContrast',
+      comparisonSourceRef: null,
+      groupRef: 'G1',
+    });
+  });
 });

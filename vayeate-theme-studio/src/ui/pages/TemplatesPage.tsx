@@ -104,6 +104,7 @@ export function TemplatesPage() {
             <VariablesCard
               colorVariables={vm.template.colorVariables}
               contrastVariables={vm.template.contrastVariables}
+              groups={vm.template.groups}
               referencedColorVarKeys={vm.referencedColorVarKeys}
               referencedContrastVarKeys={vm.referencedContrastVarKeys}
               canEdit={canEdit}
@@ -111,6 +112,8 @@ export function TemplatesPage() {
               onRemoveColorVariable={vm.removeColorVariable}
               onAddContrastVariable={vm.addContrastVariable}
               onRemoveContrastVariable={vm.removeContrastVariable}
+              onUpdateColorVariableGroupRef={vm.updateColorVariableGroupRef}
+              onUpdateContrastVariableGroupRef={vm.updateContrastVariableGroupRef}
               onUpdateContrastComparisonSource={vm.updateContrastComparisonSource}
             />
           )}

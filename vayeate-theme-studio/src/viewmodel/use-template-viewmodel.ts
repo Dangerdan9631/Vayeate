@@ -156,6 +156,12 @@ export function useTemplateViewModel() {
     for (const m of template.mappings) {
       if (m.groupRef) s.add(m.groupRef);
     }
+    for (const v of template.colorVariables) {
+      if (v.groupRef) s.add(v.groupRef);
+    }
+    for (const v of template.contrastVariables) {
+      if (v.groupRef) s.add(v.groupRef);
+    }
     return s;
   }, [template]);
 
@@ -339,11 +345,14 @@ export function useTemplateViewModel() {
   // --- Variable CRUD ---
 
   const addColorVariable = useCallback(
-    (key: string) => {
+    (key: string, groupRef?: string | null) => {
       if (!template) return;
-      log.debug('addColorVariable', key);
+      log.debug('addColorVariable', key, groupRef ?? null);
       const base = getBaseForEdit(template);
-      const newVars: ColorVariable[] = [...base.colorVariables, { key }];
+      const newVars: ColorVariable[] = [
+        ...base.colorVariables,
+        { key, groupRef: groupRef ?? null },
+      ];
       dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, colorVariables: newVars } });
     },
     [dispatch, template],
@@ -365,11 +374,14 @@ export function useTemplateViewModel() {
   );
 
   const addContrastVariable = useCallback(
-    (key: string) => {
+    (key: string, groupRef?: string | null) => {
       if (!template) return;
-      log.debug('addContrastVariable', key);
+      log.debug('addContrastVariable', key, groupRef ?? null);
       const base = getBaseForEdit(template);
-      const newVars: ContrastVariable[] = [...base.contrastVariables, { key, comparisonSourceRef: null }];
+      const newVars: ContrastVariable[] = [
+        ...base.contrastVariables,
+        { key, comparisonSourceRef: null, groupRef: groupRef ?? null },
+      ];
       dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, contrastVariables: newVars } });
     },
     [dispatch, template],
@@ -403,6 +415,32 @@ export function useTemplateViewModel() {
     [dispatch, template],
   );
 
+  const updateColorVariableGroupRef = useCallback(
+    (key: string, groupRef: string | null) => {
+      if (!template) return;
+      log.debug('updateColorVariableGroupRef', key, groupRef);
+      const base = getBaseForEdit(template);
+      const newVars = base.colorVariables.map((v) =>
+        v.key === key ? { ...v, groupRef } : v,
+      );
+      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, colorVariables: newVars } });
+    },
+    [dispatch, template],
+  );
+
+  const updateContrastVariableGroupRef = useCallback(
+    (key: string, groupRef: string | null) => {
+      if (!template) return;
+      log.debug('updateContrastVariableGroupRef', key, groupRef);
+      const base = getBaseForEdit(template);
+      const newVars = base.contrastVariables.map((v) =>
+        v.key === key ? { ...v, groupRef } : v,
+      );
+      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, contrastVariables: newVars } });
+    },
+    [dispatch, template],
+  );
+
   // --- Group CRUD ---
 
   const addGroup = useCallback(
@@ -430,7 +468,7 @@ export function useTemplateViewModel() {
     (name: string) => {
       if (!template) return;
       if (groupNamesInUse.has(name)) {
-        log.warn('removeGroup blocked: group has mappings', name);
+        log.warn('removeGroup blocked: group has mappings or variables', name);
         return;
       }
       log.debug('removeGroup', name);
@@ -475,6 +513,8 @@ export function useTemplateViewModel() {
     updateMappingColorRef,
     updateMappingContrastRef,
     updateMappingGroupRef,
+    updateColorVariableGroupRef,
+    updateContrastVariableGroupRef,
     addGroup,
     removeGroup,
     addColorVariable,

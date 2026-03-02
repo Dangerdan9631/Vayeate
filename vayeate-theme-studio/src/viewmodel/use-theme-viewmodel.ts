@@ -104,8 +104,18 @@ export function useThemeViewModel() {
     return () => { cancelled = true; };
   }, [selectedTemplateName, selectedTemplateVersion]);
 
+  const colorVariablesFromTemplate = useMemo(
+    () => loadedTemplate?.colorVariables ?? [],
+    [loadedTemplate],
+  );
+
   const contrastVariablesFromTemplate: readonly ContrastVariable[] = useMemo(
     () => loadedTemplate?.contrastVariables ?? [],
+    [loadedTemplate],
+  );
+
+  const groupsFromTemplate = useMemo(
+    () => loadedTemplate?.groups ?? [],
     [loadedTemplate],
   );
 
@@ -391,7 +401,9 @@ export function useThemeViewModel() {
     templateVersionsByName,
     selectedTemplateName,
     selectedTemplateVersion,
+    colorVariablesFromTemplate,
     contrastVariablesFromTemplate,
+    groupsFromTemplate,
     orphanColorKeys,
     orphanContrastKeys,
     canGenerate,

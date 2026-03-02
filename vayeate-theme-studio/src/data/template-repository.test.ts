@@ -103,4 +103,33 @@ describe('createTemplateRepository', () => {
     expect(loaded?.groups).toEqual([]);
     expect(loaded?.mappings[0]?.groupRef).toBeNull();
   });
+
+  it('loadTemplate applies default groupRef for legacy colorVariables and contrastVariables', async () => {
+    const repo = createTemplateRepository(baseDir);
+    const templatesDir = join(baseDir, 'templates');
+    mkdirSync(templatesDir, { recursive: true });
+    const legacy = {
+      name: 'legacy-vars-template',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [{ key: 'primary' }],
+      contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary' }],
+      groups: [],
+    };
+    writeFileSync(
+      join(templatesDir, 'legacy-vars-template-1.0.0.template.json'),
+      JSON.stringify(legacy, null, 2),
+      'utf-8',
+    );
+    const loaded = await repo.loadTemplate('legacy-vars-template', '1.0.0');
+    expect(loaded).not.toBeNull();
+    expect(loaded?.colorVariables[0]).toEqual({ key: 'primary', groupRef: null });
+    expect(loaded?.contrastVariables[0]).toEqual({
+      key: 'textContrast',
+      comparisonSourceRef: 'primary',
+      groupRef: null,
+    });
+  });
 });

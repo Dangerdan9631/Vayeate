@@ -104,7 +104,7 @@ describe('buildScopeColorMap', () => {
       colorAssignment('editorBg', '#1e1e1e', '#ffffff'),
     ];
     const contrastVariables: ContrastVariable[] = [
-      { key: 'textContrast', comparisonSourceRef: 'editorBg' },
+      { key: 'textContrast', comparisonSourceRef: 'editorBg', groupRef: null },
     ];
     const contrastAssignments: ContrastAssignment[] = [
       {
@@ -135,7 +135,7 @@ describe('buildScopeColorMap', () => {
       colorAssignment('keywordColor', '#569cd6', '#0000ff'),
     ];
     const contrastVariables: ContrastVariable[] = [
-      { key: 'noSource', comparisonSourceRef: null },
+      { key: 'noSource', comparisonSourceRef: null, groupRef: null },
     ];
     const contrastAssignments: ContrastAssignment[] = [
       {

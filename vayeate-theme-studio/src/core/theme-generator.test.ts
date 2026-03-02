@@ -25,7 +25,10 @@ function template(mappings: Mapping[], overrides: Partial<Template> = {}): Templ
     locked: false,
     catalogRefs: [],
     mappings,
-    colorVariables: [{ key: 'fg' }, { key: 'comment' }],
+    colorVariables: [
+      { key: 'fg', groupRef: null },
+      { key: 'comment', groupRef: null },
+    ],
     contrastVariables: [],
     groups: [],
     ...overrides,

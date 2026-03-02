@@ -102,6 +102,7 @@ export type CatalogReference = z.infer<typeof catalogReferenceSchema>;
 export const colorVariableSchema = z
   .object({
     key: colorVariableKeySchema,
+    groupRef: z.string().nullable().optional().default(null),
   })
   .readonly();
 export type ColorVariable = z.infer<typeof colorVariableSchema>;
@@ -110,6 +111,7 @@ export const contrastVariableSchema = z
   .object({
     key: contrastVariableKeySchema,
     comparisonSourceRef: colorVariableKeySchema.nullable(),
+    groupRef: z.string().nullable().optional().default(null),
   })
   .readonly();
 export type ContrastVariable = z.infer<typeof contrastVariableSchema>;
