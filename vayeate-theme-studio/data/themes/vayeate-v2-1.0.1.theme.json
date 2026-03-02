@@ -1052,34 +1052,52 @@
   "contrastAssignments": [
     {
       "contrastVariableRef": "ideChrome",
-      "light": null,
+      "light": {
+        "value": 2,
+        "comparisonMethod": "lessThan",
+        "min": null,
+        "max": null
+      },
       "dark": {
         "value": 2,
         "comparisonMethod": "greaterThan",
         "min": 2,
-        "max": null
+        "max": null,
+        "invertComparison": false
       },
       "useDarkForLight": true
     },
     {
       "contrastVariableRef": "comment",
-      "light": null,
-      "dark": {
-        "value": 1.5,
-        "comparisonMethod": "greaterThan",
+      "light": {
+        "value": 3,
+        "comparisonMethod": "lessThan",
         "min": null,
-        "max": null
+        "max": null,
+        "invertComparison": false
       },
-      "useDarkForLight": true
-    },
-    {
-      "contrastVariableRef": "string",
-      "light": null,
       "dark": {
         "value": 3,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "string",
+      "light": {
+        "value": 4,
+        "comparisonMethod": "lessThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null,
+        "invertComparison": false
       },
       "useDarkForLight": true
     },
@@ -1088,31 +1106,52 @@
       "light": null,
       "dark": {
         "value": 5,
+        "comparisonMethod": "lessThan",
+        "min": null,
+        "max": null,
+        "invertComparison": false
+      },
+      "dark": {
+        "value": 6,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "typeName",
       "light": null,
       "dark": {
         "value": 5,
+        "comparisonMethod": "lessThan",
+        "min": null,
+        "max": null,
+        "invertComparison": false
+      },
+      "dark": {
+        "value": 6,
         "comparisonMethod": "greaterThan",
         "min": null,
         "max": null
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "defaultText",
       "light": null,
       "dark": {
         "value": 3,
-        "comparisonMethod": "greaterThan",
+        "comparisonMethod": "lessThan",
         "min": null,
         "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null,
+        "invertComparison": false
       },
       "useDarkForLight": true
     }
