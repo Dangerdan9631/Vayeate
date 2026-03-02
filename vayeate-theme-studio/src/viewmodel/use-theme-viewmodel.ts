@@ -10,6 +10,7 @@ import type {
   ContrastAssignmentValue,
   ContrastComparisonMethod,
   ContrastVariable,
+  ContrastVariableKey,
   Template,
   TemplateReference,
   Theme,
@@ -273,6 +274,16 @@ export function useThemeViewModel() {
     [dispatch, theme],
   );
 
+  const changeIdePrimaryColorContrastRef = useCallback(
+    (ref: ContrastVariableKey | null) => {
+      if (!theme) return;
+      log.debug('changeIdePrimaryColorContrastRef', ref);
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, idePrimaryColorContrastVariableRef: ref } });
+    },
+    [dispatch, theme],
+  );
+
   // --- Theme background color (no version bump) ---
 
   const changeThemeBackgroundColorRef = useCallback(
@@ -421,6 +432,7 @@ export function useThemeViewModel() {
     changeTemplate,
     changeTemplateVersion,
     changeIdePrimaryColorRef,
+    changeIdePrimaryColorContrastRef,
     changeThemeBackgroundColorRef,
     updateColorAssignmentDark,
     updateColorAssignmentLight,
@@ -465,6 +477,11 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     ? theme.idePrimaryColorVariableRef
     : null;
 
+  const idePrimaryColorContrastVariableRef = theme.idePrimaryColorContrastVariableRef != null &&
+    template.contrastVariables.some((v) => v.key === theme.idePrimaryColorContrastVariableRef)
+    ? theme.idePrimaryColorContrastVariableRef
+    : null;
+
   const themeBackgroundColorVariableRef = theme.themeBackgroundColorVariableRef &&
     newColorAssignments.some((a) => a.colorRef === theme.themeBackgroundColorVariableRef)
     ? theme.themeBackgroundColorVariableRef
@@ -474,6 +491,7 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     ...theme,
     templateRef,
     idePrimaryColorVariableRef,
+    idePrimaryColorContrastVariableRef,
     themeBackgroundColorVariableRef,
     colorAssignments: newColorAssignments,
     contrastAssignments: newContrastAssignments,

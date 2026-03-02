@@ -82,6 +82,8 @@ export function ThemesPage() {
               colorVariableKeys={vm.colorVariableKeys}
               idePrimaryColorRef={vm.theme.idePrimaryColorVariableRef}
               onChangeIdePrimaryColorRef={vm.changeIdePrimaryColorRef}
+              idePrimaryColorContrastRef={vm.theme.idePrimaryColorContrastVariableRef ?? null}
+              onChangeIdePrimaryColorContrastRef={vm.changeIdePrimaryColorContrastRef}
               themeBackgroundColorRef={vm.theme.themeBackgroundColorVariableRef}
               onChangeThemeBackgroundColorRef={vm.changeThemeBackgroundColorRef}
               mappings={vm.templateMappings}

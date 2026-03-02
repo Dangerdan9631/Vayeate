@@ -217,6 +217,7 @@ export const themeSchema = z
     version: versionSchema,
     templateRef: templateReferenceSchema.nullable(),
     idePrimaryColorVariableRef: colorVariableKeySchema.nullable(),
+    idePrimaryColorContrastVariableRef: contrastVariableKeySchema.nullable().optional().default(null),
     themeBackgroundColorVariableRef: colorVariableKeySchema.nullable(),
     colorAssignments: z.array(colorAssignmentSchema).readonly(),
     contrastAssignments: z.array(contrastAssignmentSchema).readonly(),

@@ -6,7 +6,8 @@ import type {
   Mapping,
 } from '../../model/schemas';
 import type { TokenizedPreview } from '../../core/tokenizer';
-import { buildScopeColorMap, resolveTokenColor } from '../../core/scope-resolver';
+import { adjustColorToMeetContrast, contrastRatio } from '../../core/color';
+import { buildScopeColorMap, resolveTokenColor, resolveTokenEntry } from '../../core/scope-resolver';
 import { previewService } from '../../services/preview-service';
 
 /** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
@@ -14,7 +15,10 @@ interface ResolvedToken {
   text: string;
   darkColor: string;
   lightColor: string;
-  title: string;
+  /** Tooltip for the dark preview column. */
+  titleDark: string;
+  /** Tooltip for the light preview column. */
+  titleLight: string;
 }
 
 type ResolvedLine = { tokens: ResolvedToken[] };
@@ -49,6 +53,8 @@ interface EditorPreviewsCardProps {
   colorVariableKeys: string[];
   idePrimaryColorRef: string | null;
   onChangeIdePrimaryColorRef: (ref: string | null) => void;
+  idePrimaryColorContrastRef: string | null;
+  onChangeIdePrimaryColorContrastRef: (ref: string | null) => void;
   themeBackgroundColorRef: string | null;
   onChangeThemeBackgroundColorRef: (ref: string | null) => void;
   mappings: readonly Mapping[];
@@ -67,6 +73,53 @@ function colorForRef(
   return a.useDarkForLight ? (a.dark?.value ?? fallback) : (a.light?.value ?? fallback);
 }
 
+/** Resolve IDE primary color, optionally applying the given contrast variable. */
+function resolveIdePrimaryColor(
+  colorAssignments: readonly ColorAssignment[],
+  contrastAssignments: readonly ContrastAssignment[],
+  contrastVariables: readonly ContrastVariable[],
+  colorRef: string | null,
+  contrastRef: string | null,
+  mode: 'dark' | 'light',
+  fallback: string,
+): string {
+  const base = colorForRef(colorAssignments, colorRef, mode, fallback);
+  if (!contrastRef || !colorRef) return base;
+  const cv = contrastVariables.find((v) => v.key === contrastRef);
+  const sourceRef = cv?.comparisonSourceRef ?? null;
+  if (!sourceRef) return base;
+  const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastRef);
+  if (!a) return base;
+  const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
+  if (!val) return base;
+  const sourceColor = colorForRef(colorAssignments, sourceRef, mode, fallback);
+  const opts = {
+    comparisonMethod: val.comparisonMethod,
+    value: val.value,
+    min: val.min ?? null,
+    max: val.max ?? null,
+  };
+  return adjustColorToMeetContrast(base, sourceColor, opts);
+}
+
+/** Get contrast assignment params for a contrast variable and mode, or null. */
+function contrastParamsForRef(
+  contrastAssignments: readonly ContrastAssignment[],
+  contrastVariableRef: string,
+  mode: 'dark' | 'light',
+): { value: number; comparisonMethod: string; min: number | null; max: number | null } | null {
+  const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastVariableRef);
+  if (!a) return null;
+  const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
+  if (!val) return null;
+  return {
+    value: val.value,
+    comparisonMethod: val.comparisonMethod,
+    min: val.min ?? null,
+    max: val.max ?? null,
+  };
+}
+
 export function EditorPreviewsCard({
   colorAssignments,
   contrastAssignments,
@@ -74,6 +127,8 @@ export function EditorPreviewsCard({
   colorVariableKeys,
   idePrimaryColorRef,
   onChangeIdePrimaryColorRef,
+  idePrimaryColorContrastRef,
+  onChangeIdePrimaryColorContrastRef,
   themeBackgroundColorRef,
   onChangeThemeBackgroundColorRef,
   mappings,
@@ -104,18 +159,97 @@ export function EditorPreviewsCard({
     return previews.map((preview) => ({
       previewKey: `${preview.language}/${preview.fileName}`,
       lines: preview.lines.map((line) => ({
-        tokens: line.tokens.map((token) => ({
-          text: token.text,
-          darkColor: resolveTokenColor(token.scopes, scopeColorMap, 'dark') ?? DEFAULT_DARK_FG,
-          lightColor: resolveTokenColor(token.scopes, scopeColorMap, 'light') ?? DEFAULT_LIGHT_FG,
-          title: token.scopes.length > 0 ? token.scopes.join(' › ') : 'no scope',
-        })),
+        tokens: line.tokens.map((token) => {
+          const entry = resolveTokenEntry(token.scopes, scopeColorMap);
+          const scopeLabel = token.scopes.length > 0 ? token.scopes.join(' › ') : 'no scope';
+          if (entry) {
+            const buildTitle = (mode: 'dark' | 'light') => {
+              const lines: string[] = [
+                scopeLabel,
+                `Color variable: ${entry.colorVariableRef}`,
+                `Contrast variable: ${entry.contrastVariableRef ?? '—'}`,
+              ];
+              const assigned = mode === 'dark' ? entry.assignedDark : entry.assignedLight;
+              const resolved = mode === 'dark' ? entry.darkColor : entry.lightColor;
+              if (entry.contrastVariableRef) {
+                const cv = contrastVariables.find((v) => v.key === entry.contrastVariableRef);
+                const comparisonSourceRef = cv?.comparisonSourceRef ?? null;
+                const comparisonSourceColor = comparisonSourceRef
+                  ? colorForRef(colorAssignments, comparisonSourceRef, mode, '')
+                  : null;
+                const sourceColorDisplay = comparisonSourceColor || '—';
+                lines.push(
+                  `Comparison source: ${comparisonSourceRef ?? '—'} (${sourceColorDisplay})`,
+                );
+                const params = contrastParamsForRef(contrastAssignments, entry.contrastVariableRef, mode);
+                if (params) {
+                  const minMax = [params.min, params.max].filter((x) => x != null).length
+                    ? `, min: ${params.min ?? '—'}, max: ${params.max ?? '—'}`
+                    : '';
+                  lines.push(
+                    `Contrast params: value: ${params.value}, method: ${params.comparisonMethod}${minMax}`,
+                  );
+                }
+                const hasMinMax = params && (params.min != null || params.max != null);
+                const BLACK = '#000000';
+                if (comparisonSourceColor) {
+                  const evaluated =
+                    assigned ? contrastRatio(assigned, comparisonSourceColor) : null;
+                  const resolvedRatio =
+                    resolved ? contrastRatio(resolved, comparisonSourceColor) : null;
+                  const evaluatedVsBlack = assigned ? contrastRatio(assigned, BLACK) : null;
+                  const resolvedVsBlack = resolved ? contrastRatio(resolved, BLACK) : null;
+                  const evalSuffix = hasMinMax && evaluatedVsBlack != null ? ` (vs black: ${evaluatedVsBlack.toFixed(2)})` : '';
+                  const resolvedSuffix = hasMinMax && resolvedVsBlack != null ? ` (vs black: ${resolvedVsBlack.toFixed(2)})` : '';
+                  lines.push(
+                    `Evaluated contrast: ${evaluated != null ? evaluated.toFixed(2) : '—'}${evalSuffix}`,
+                    `Resolved contrast: ${resolvedRatio != null ? resolvedRatio.toFixed(2) : '—'}${resolvedSuffix}`,
+                  );
+                } else {
+                  lines.push('Evaluated contrast: —', 'Resolved contrast: —');
+                }
+              }
+              lines.push(`Assigned: ${assigned ?? '—'}`, `Resolved: ${resolved ?? '—'}`);
+              return lines.join('\n');
+            };
+            return {
+              text: token.text,
+              darkColor: entry.darkColor ?? DEFAULT_DARK_FG,
+              lightColor: entry.lightColor ?? DEFAULT_LIGHT_FG,
+              titleDark: buildTitle('dark'),
+              titleLight: buildTitle('light'),
+            };
+          }
+          return {
+            text: token.text,
+            darkColor: resolveTokenColor(token.scopes, scopeColorMap, 'dark') ?? DEFAULT_DARK_FG,
+            lightColor: resolveTokenColor(token.scopes, scopeColorMap, 'light') ?? DEFAULT_LIGHT_FG,
+            titleDark: scopeLabel,
+            titleLight: scopeLabel,
+          };
+        }),
       })),
     }));
-  }, [previews, scopeColorMap]);
+  }, [previews, scopeColorMap, colorAssignments, contrastAssignments, contrastVariables]);
 
-  const darkColumnBg = colorForRef(colorAssignments, idePrimaryColorRef, 'dark', '#1e1e1e');
-  const lightColumnBg = colorForRef(colorAssignments, idePrimaryColorRef, 'light', '#ffffff');
+  const darkColumnBg = resolveIdePrimaryColor(
+    colorAssignments,
+    contrastAssignments,
+    contrastVariables,
+    idePrimaryColorRef,
+    idePrimaryColorContrastRef,
+    'dark',
+    '#1e1e1e',
+  );
+  const lightColumnBg = resolveIdePrimaryColor(
+    colorAssignments,
+    contrastAssignments,
+    contrastVariables,
+    idePrimaryColorRef,
+    idePrimaryColorContrastRef,
+    'light',
+    '#ffffff',
+  );
   const darkCodeBg = colorForRef(colorAssignments, themeBackgroundColorRef, 'dark', '#1e1e1e');
   const lightCodeBg = colorForRef(colorAssignments, themeBackgroundColorRef, 'light', '#ffffff');
   const darkTextColor = textColorForBackground(darkColumnBg);
@@ -166,6 +300,22 @@ export function EditorPreviewsCard({
           {colorVariableKeys.map((key) => (
             <option key={key} value={key}>
               {key}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label className="field-row">
+        <span className="field-label">IDE Primary Contrast Variable</span>
+        <select
+          className="field-select"
+          value={idePrimaryColorContrastRef ?? ''}
+          onChange={(e) => onChangeIdePrimaryColorContrastRef(e.target.value || null)}
+        >
+          <option value="">— select —</option>
+          {contrastVariables.map((v) => (
+            <option key={v.key} value={v.key}>
+              {v.key}
             </option>
           ))}
         </select>
@@ -276,7 +426,7 @@ function ResolvedPreviewLines({
             <span
               key={tokenIdx}
               style={{ color: mode === 'dark' ? token.darkColor : token.lightColor }}
-              title={token.title}
+              title={mode === 'dark' ? token.titleDark : token.titleLight}
             >
               {token.text}
             </span>

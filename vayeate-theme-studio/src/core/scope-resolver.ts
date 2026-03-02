@@ -16,6 +16,10 @@ export interface ScopeColorMapEntry {
   segments: string[];
   darkColor: string | null;
   lightColor: string | null;
+  colorVariableRef: string;
+  contrastVariableRef: string | null;
+  assignedDark: string | null;
+  assignedLight: string | null;
 }
 
 export interface ScopeColorMap {
@@ -109,6 +113,8 @@ export function buildScopeColorMap(
     const colors = colorByRef.get(colorRef);
     if (!colors) continue;
 
+    const assignedDark = colors.dark;
+    const assignedLight = colors.light;
     let darkColor = colors.dark;
     let lightColor = colors.light;
 
@@ -145,11 +151,36 @@ export function buildScopeColorMap(
       segments,
       darkColor,
       lightColor,
+      colorVariableRef: colorRef,
+      contrastVariableRef: m.contrastVariableRef,
+      assignedDark,
+      assignedLight,
     });
   }
 
   entries.sort((a, b) => b.segments.length - a.segments.length);
   return { entries };
+}
+
+/**
+ * Resolve the best-matching entry for a token's scope stack.
+ * Same matching logic as resolveTokenColor but returns the full entry, or null if no entry has a color.
+ */
+export function resolveTokenEntry(
+  scopes: string[],
+  scopeColorMap: ScopeColorMap,
+): ScopeColorMapEntry | null {
+  const scopeList = scopes.length > 0 ? scopes : [''];
+  for (let s = scopeList.length - 1; s >= 0; s--) {
+    const scopeSegments = toSegments(scopeList[s]);
+    for (const entry of scopeColorMap.entries) {
+      if (segmentPrefixMatch(entry.segments, scopeSegments)) {
+        if (entry.darkColor || entry.lightColor) return entry;
+        break;
+      }
+    }
+  }
+  return null;
 }
 
 /**

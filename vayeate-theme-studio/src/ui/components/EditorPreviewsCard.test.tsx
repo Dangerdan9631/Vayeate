@@ -31,6 +31,8 @@ function makeProps(overrides: Partial<{
     colorVariableKeys: ['editorBg'],
     idePrimaryColorRef: null as string | null,
     onChangeIdePrimaryColorRef: vi.fn(),
+    idePrimaryColorContrastRef: null as string | null,
+    onChangeIdePrimaryColorContrastRef: vi.fn(),
     themeBackgroundColorRef: null as string | null,
     onChangeThemeBackgroundColorRef: vi.fn(),
     mappings: overrides.mappings ?? [
@@ -58,10 +60,11 @@ describe('EditorPreviewsCard', () => {
     vi.mocked(previewService.loadPreviews).mockResolvedValue([mockPreview]);
   });
 
-  it('renders IDE Primary Color and Theme Background selectors', () => {
+  it('renders IDE Primary Color, IDE Primary Contrast, and Theme Background selectors', () => {
     render(<EditorPreviewsCard {...makeProps()} />);
     expect(screen.getByText('Editor Previews')).toBeInTheDocument();
     expect(screen.getByLabelText(/IDE Primary Color Variable/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/IDE Primary Contrast Variable/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Theme Background Color Variable/i)).toBeInTheDocument();
   });
 

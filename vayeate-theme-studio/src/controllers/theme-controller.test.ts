@@ -14,6 +14,7 @@ describe('createThemeWithParams', () => {
     expect(theme.version).toBe('1.0.0');
     expect(theme.templateRef).toBeNull();
     expect(theme.idePrimaryColorVariableRef).toBeNull();
+    expect(theme.idePrimaryColorContrastVariableRef).toBeNull();
     expect(theme.themeBackgroundColorVariableRef).toBeNull();
     expect(theme.colorAssignments).toEqual([]);
     expect(theme.contrastAssignments).toEqual([]);

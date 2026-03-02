@@ -10,6 +10,7 @@ const mockTheme: Theme = {
   version: '1.0.0',
   templateRef: null,
   idePrimaryColorVariableRef: null,
+  idePrimaryColorContrastVariableRef: null,
   themeBackgroundColorVariableRef: null,
   colorAssignments: [],
   contrastAssignments: [],
@@ -117,6 +118,7 @@ describe('mergeAssignmentsFromTemplate', () => {
     version: '2.0.0',
     templateRef: null,
     idePrimaryColorVariableRef: null,
+    idePrimaryColorContrastVariableRef: null,
     themeBackgroundColorVariableRef: null,
     colorAssignments: [],
     contrastAssignments: [],
@@ -190,6 +192,24 @@ describe('mergeAssignmentsFromTemplate', () => {
     };
     const merged = mergeAssignmentsFromTemplate(themeWithPrimary, template);
     expect(merged.idePrimaryColorVariableRef).toBe('primary');
+  });
+
+  it('clears idePrimaryColorContrastVariableRef if it no longer exists in template', () => {
+    const themeWithContrast: Theme = {
+      ...baseTheme,
+      idePrimaryColorContrastVariableRef: 'removed',
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithContrast, template);
+    expect(merged.idePrimaryColorContrastVariableRef).toBeNull();
+  });
+
+  it('preserves idePrimaryColorContrastVariableRef if it still exists in template', () => {
+    const themeWithContrast: Theme = {
+      ...baseTheme,
+      idePrimaryColorContrastVariableRef: 'textContrast',
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithContrast, template);
+    expect(merged.idePrimaryColorContrastVariableRef).toBe('textContrast');
   });
 
   it('clears themeBackgroundColorVariableRef if it no longer exists in template', () => {

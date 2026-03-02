@@ -79,16 +79,19 @@ export function resolveColor(
   let color = colorForRef(theme.colorAssignments, colorRef, mode);
   if (!color) return null;
 
+  const contrastRef =
+    mapping.contrastVariableRef ??
+    (mapping.colorVariableRef === theme.idePrimaryColorVariableRef ? theme.idePrimaryColorContrastVariableRef ?? null : null);
   if (
-    mapping.contrastVariableRef &&
+    contrastRef &&
     template.contrastVariables.length > 0 &&
     theme.contrastAssignments.length > 0
   ) {
-    const cv = template.contrastVariables.find((v) => v.key === mapping.contrastVariableRef);
+    const cv = template.contrastVariables.find((v) => v.key === contrastRef);
     const sourceRef = cv?.comparisonSourceRef ?? null;
     if (sourceRef) {
       const sourceColor = colorForRef(theme.colorAssignments, sourceRef, mode);
-      const contrastVal = contrastValueForRef(theme.contrastAssignments, mapping.contrastVariableRef, mode);
+      const contrastVal = contrastValueForRef(theme.contrastAssignments, contrastRef, mode);
       if (sourceColor && contrastVal) {
         color = adjustColorToMeetContrast(color, sourceColor, {
           comparisonMethod: contrastVal.comparisonMethod,

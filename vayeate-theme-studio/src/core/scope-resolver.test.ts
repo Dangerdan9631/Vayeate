@@ -3,6 +3,7 @@ import { contrastRatio } from './color';
 import {
   buildScopeColorMap,
   resolveTokenColor,
+  resolveTokenEntry,
   type ScopeColorMap,
 } from './scope-resolver';
 import type {
@@ -117,6 +118,10 @@ describe('buildScopeColorMap', () => {
     const map = buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables);
     expect(map.entries).toHaveLength(1);
     const entry = map.entries[0];
+    expect(entry.colorVariableRef).toBe('keywordColor');
+    expect(entry.contrastVariableRef).toBe('textContrast');
+    expect(entry.assignedDark).toBe('#555555');
+    expect(entry.assignedLight).toBe('#888888');
     expect(entry.darkColor).not.toBe('#555555');
     expect(entry.lightColor).not.toBe('#888888');
     if (entry.darkColor) {
@@ -165,10 +170,10 @@ describe('buildScopeColorMap', () => {
 describe('resolveTokenColor', () => {
   const scopeColorMap: ScopeColorMap = {
     entries: [
-      { segments: ['source', 'ts'], darkColor: '#1e1e1e', lightColor: '#1f1f1f' },
-      { segments: ['keyword', 'control'], darkColor: '#569cd6', lightColor: '#0000ff' },
-      { segments: ['keyword'], darkColor: '#c586c0', lightColor: '#af00db' },
-      { segments: ['string', 'quoted'], darkColor: '#ce9178', lightColor: '#a31515' },
+      { segments: ['source', 'ts'], darkColor: '#1e1e1e', lightColor: '#1f1f1f', colorVariableRef: 'bg', contrastVariableRef: null, assignedDark: '#1e1e1e', assignedLight: '#1f1f1f' },
+      { segments: ['keyword', 'control'], darkColor: '#569cd6', lightColor: '#0000ff', colorVariableRef: 'kw', contrastVariableRef: null, assignedDark: '#569cd6', assignedLight: '#0000ff' },
+      { segments: ['keyword'], darkColor: '#c586c0', lightColor: '#af00db', colorVariableRef: 'kw2', contrastVariableRef: null, assignedDark: '#c586c0', assignedLight: '#af00db' },
+      { segments: ['string', 'quoted'], darkColor: '#ce9178', lightColor: '#a31515', colorVariableRef: 'str', contrastVariableRef: null, assignedDark: '#ce9178', assignedLight: '#a31515' },
     ],
   };
 
@@ -199,9 +204,42 @@ describe('resolveTokenColor', () => {
 
   it('handles wildcard in token key', () => {
     const map: ScopeColorMap = {
-      entries: [{ segments: ['string', '*'], darkColor: '#ce9178', lightColor: '#a31515' }],
+      entries: [{ segments: ['string', '*'], darkColor: '#ce9178', lightColor: '#a31515', colorVariableRef: 'str', contrastVariableRef: null, assignedDark: '#ce9178', assignedLight: '#a31515' }],
     };
     const color = resolveTokenColor(['string.quoted.double.json'], map, 'dark');
     expect(color).toBe('#ce9178');
+  });
+});
+
+describe('resolveTokenEntry', () => {
+  const scopeColorMap: ScopeColorMap = {
+    entries: [
+      { segments: ['keyword', 'control'], darkColor: '#569cd6', lightColor: '#0000ff', colorVariableRef: 'kw', contrastVariableRef: 'ideChrome', assignedDark: '#555555', assignedLight: '#888888' },
+      { segments: ['keyword'], darkColor: '#c586c0', lightColor: '#af00db', colorVariableRef: 'kw2', contrastVariableRef: null, assignedDark: '#c586c0', assignedLight: '#af00db' },
+    ],
+  };
+
+  it('returns the matching entry with metadata', () => {
+    const entry = resolveTokenEntry(['source.ts', 'keyword.control.ts'], scopeColorMap);
+    expect(entry).not.toBeNull();
+    expect(entry?.colorVariableRef).toBe('kw');
+    expect(entry?.contrastVariableRef).toBe('ideChrome');
+    expect(entry?.assignedDark).toBe('#555555');
+    expect(entry?.assignedLight).toBe('#888888');
+    expect(entry?.darkColor).toBe('#569cd6');
+    expect(entry?.lightColor).toBe('#0000ff');
+  });
+
+  it('returned entry matches resolveTokenColor for dark and light', () => {
+    const scopes = ['source.ts', 'keyword.control.ts'];
+    const entry = resolveTokenEntry(scopes, scopeColorMap);
+    expect(entry).not.toBeNull();
+    expect(resolveTokenColor(scopes, scopeColorMap, 'dark')).toBe(entry?.darkColor);
+    expect(resolveTokenColor(scopes, scopeColorMap, 'light')).toBe(entry?.lightColor);
+  });
+
+  it('returns null when no entry has a color', () => {
+    const emptyMap: ScopeColorMap = { entries: [] };
+    expect(resolveTokenEntry(['keyword'], emptyMap)).toBeNull();
   });
 });

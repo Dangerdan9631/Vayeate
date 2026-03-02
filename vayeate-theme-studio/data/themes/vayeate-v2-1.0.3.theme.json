@@ -1,11 +1,12 @@
 {
   "name": "vayeate-v2",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "templateRef": {
     "name": "vayeate-v2",
-    "version": "1.0.1"
+    "version": "1.0.4"
   },
   "idePrimaryColorVariableRef": "chromePrimaryBg",
+  "idePrimaryColorContrastVariableRef": "ideChrome",
   "themeBackgroundColorVariableRef": "editorBg",
   "colorAssignments": [
     {
@@ -114,19 +115,23 @@
     },
     {
       "colorRef": "sideBarBg",
-      "light": null,
+      "light": {
+        "value": "#dfdbdb"
+      },
       "dark": {
         "value": "#2e363e"
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "colorRef": "sideBarFg",
-      "light": null,
+      "light": {
+        "value": "#2e363e"
+      },
       "dark": {
         "value": "#cccccc"
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "colorRef": "editorBg",
@@ -148,19 +153,23 @@
     },
     {
       "colorRef": "editorLineHighlightBg",
-      "light": null,
+      "light": {
+        "value": "#bac8de"
+      },
       "dark": {
         "value": "#2f363f"
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "colorRef": "editorSelectionBg",
-      "light": null,
+      "light": {
+        "value": "#bac8de"
+      },
       "dark": {
         "value": "#34516d"
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "colorRef": "editorLineNumberFg",
@@ -464,7 +473,7 @@
       "dark": {
         "value": "#acd6ff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "activityBarBadgeBg",
@@ -472,7 +481,7 @@
       "dark": {
         "value": "#0059b1"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "badgeFg",
@@ -480,7 +489,7 @@
       "dark": {
         "value": "#acd6ff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "badgeBg",
@@ -488,7 +497,7 @@
       "dark": {
         "value": "#0059b1"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "extensionBadgeRemoteFg",
@@ -1055,7 +1064,7 @@
     {
       "contrastVariableRef": "ideChrome",
       "light": {
-        "value": 2,
+        "value": 3.1,
         "comparisonMethod": "lessThan",
         "min": null,
         "max": null
@@ -1066,15 +1075,15 @@
         "min": 2,
         "max": null
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "contrastVariableRef": "comment",
       "light": {
-        "value": 3,
+        "value": 2.5,
         "comparisonMethod": "lessThan",
         "min": null,
-        "max": null
+        "max": 10
       },
       "dark": {
         "value": 3,
@@ -1088,8 +1097,8 @@
       "contrastVariableRef": "string",
       "light": {
         "value": 4,
-        "comparisonMethod": "lessThan",
-        "min": null,
+        "comparisonMethod": "greaterThan",
+        "min": 5,
         "max": null
       },
       "dark": {
@@ -1104,8 +1113,8 @@
       "contrastVariableRef": "keyword",
       "light": {
         "value": 5,
-        "comparisonMethod": "lessThan",
-        "min": null,
+        "comparisonMethod": "equalTo",
+        "min": 3,
         "max": null
       },
       "dark": {
@@ -1120,8 +1129,8 @@
       "contrastVariableRef": "typeName",
       "light": {
         "value": 5,
-        "comparisonMethod": "lessThan",
-        "min": null,
+        "comparisonMethod": "equalTo",
+        "min": 5,
         "max": null
       },
       "dark": {
@@ -1136,7 +1145,7 @@
       "contrastVariableRef": "defaultText",
       "light": {
         "value": 3,
-        "comparisonMethod": "lessThan",
+        "comparisonMethod": "equalTo",
         "min": null,
         "max": null
       },
