@@ -197,7 +197,6 @@ export const contrastAssignmentValueSchema = z
     comparisonMethod: contrastComparisonMethodSchema,
     min: contrastValueSchema.nullable(),
     max: contrastValueSchema.nullable(),
-    invertComparison: z.boolean().optional().default(false),
   })
   .readonly();
 export type ContrastAssignmentValue = z.infer<typeof contrastAssignmentValueSchema>;

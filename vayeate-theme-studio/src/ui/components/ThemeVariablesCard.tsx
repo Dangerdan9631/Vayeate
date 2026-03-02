@@ -21,8 +21,8 @@ interface ThemeVariablesCardProps {
   onUpdateColorDark: (colorRef: string, value: string | null) => void;
   onUpdateColorLight: (colorRef: string, value: string | null) => void;
   onUpdateColorUseDark: (colorRef: string, useDark: boolean) => void;
-  onUpdateContrastDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
-  onUpdateContrastLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
+  onUpdateContrastDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
+  onUpdateContrastLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastUseDark: (contrastRef: string, useDark: boolean) => void;
 }
 
@@ -296,8 +296,8 @@ function ContrastAssignmentsSection({
   assignments: readonly ContrastAssignment[];
   contrastVariables: readonly ContrastVariable[];
   orphanKeys: Set<string>;
-  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
-  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
+  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
+  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -362,8 +362,8 @@ function ContrastAssignmentsGroupSubsection({
   assignments: readonly ContrastAssignment[];
   varMap: Map<string, ContrastVariable>;
   orphanKeys: Set<string>;
-  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
-  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
+  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
+  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -414,8 +414,8 @@ function ContrastAssignmentRow({
   assignment: ContrastAssignment;
   variable: ContrastVariable | null;
   isOrphan: boolean;
-  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
-  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | boolean | null) => void;
+  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
+  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
 }) {
   const ref = assignment.contrastVariableRef;
@@ -583,26 +583,6 @@ function ContrastAssignmentRow({
             setEditMaxLight(null);
           }}
         />
-      </div>
-
-      <div className="theme-contrast-row4 theme-contrast-invert-row">
-        <label className="theme-contrast-invert-check" title="Invert comparison: swap comparison source and evaluated color">
-          <input
-            type="checkbox"
-            checked={dark?.invertComparison ?? false}
-            onChange={(e) => onUpdateDark(ref, 'invertComparison', e.target.checked)}
-          />
-          <span className="theme-contrast-invert-label">Invert</span>
-        </label>
-        <label className="theme-contrast-invert-check" title="Invert comparison: swap comparison source and evaluated color">
-          <input
-            type="checkbox"
-            checked={assignment.useDarkForLight ? (dark?.invertComparison ?? false) : (light?.invertComparison ?? false)}
-            disabled={assignment.useDarkForLight}
-            onChange={(e) => onUpdateLight(ref, 'invertComparison', e.target.checked)}
-          />
-          <span className="theme-contrast-invert-label">Invert</span>
-        </label>
       </div>
     </div>
   );

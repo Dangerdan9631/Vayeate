@@ -50,7 +50,7 @@ function contrastValueForRef(
   contrastAssignments: readonly ContrastAssignment[],
   contrastVariableRef: string,
   mode: Mode,
-): { value: number; comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan'; min: number | null; max: number | null; invertComparison: boolean } | null {
+): { value: number; comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan'; min: number | null; max: number | null } | null {
   const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastVariableRef);
   if (!a) return null;
   const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
@@ -60,7 +60,6 @@ function contrastValueForRef(
     comparisonMethod: val.comparisonMethod,
     min: val.min ?? null,
     max: val.max ?? null,
-    invertComparison: val.invertComparison ?? false,
   };
 }
 
@@ -91,15 +90,12 @@ export function resolveColor(
       const sourceColor = colorForRef(theme.colorAssignments, sourceRef, mode);
       const contrastVal = contrastValueForRef(theme.contrastAssignments, mapping.contrastVariableRef, mode);
       if (sourceColor && contrastVal) {
-        const opts = {
+        color = adjustColorToMeetContrast(color, sourceColor, {
           comparisonMethod: contrastVal.comparisonMethod,
           value: contrastVal.value,
           min: contrastVal.min,
           max: contrastVal.max,
-        };
-        color = contrastVal.invertComparison
-          ? adjustColorToMeetContrast(sourceColor, color, opts)
-          : adjustColorToMeetContrast(color, sourceColor, opts);
+        });
       }
     }
   }

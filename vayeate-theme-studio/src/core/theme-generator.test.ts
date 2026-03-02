@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { adjustColorToMeetContrast } from './color';
 import { resolveColor, generateTheme, generateThemePair } from './theme-generator';
 import type { Theme, Template, Mapping } from '../model/schemas';
 
@@ -78,41 +77,6 @@ describe('resolveColor', () => {
     const t = theme();
     const tpl = template([mapping('editor.foreground', 'theme', null)]);
     expect(resolveColor(t, tpl, tpl.mappings[0], 'dark')).toBeNull();
-  });
-
-  it('applies invertComparison when contrast assignment has invertComparison true', () => {
-    const tokenColor = '#ffffff';
-    const sourceColor = '#888888';
-    const t = theme({
-      colorAssignments: [
-        { colorRef: 'fg', dark: { value: tokenColor }, light: { value: '#888888' }, useDarkForLight: false },
-        { colorRef: 'editorBg', dark: { value: sourceColor }, light: { value: '#ffffff' }, useDarkForLight: false },
-      ],
-      contrastAssignments: [
-        {
-          contrastVariableRef: 'textContrast',
-          dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null, invertComparison: true },
-          light: null,
-          useDarkForLight: false,
-        },
-      ],
-    });
-    const tpl = template(
-      [
-        mapping('editor.foreground', 'theme', 'fg', 'textContrast'),
-      ],
-      {
-        contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'editorBg', groupRef: null }],
-      },
-    );
-    const result = resolveColor(t, tpl, tpl.mappings[0], 'dark');
-    const expected = adjustColorToMeetContrast(sourceColor, tokenColor, {
-      comparisonMethod: 'greaterThan',
-      value: 4.5,
-      min: null,
-      max: null,
-    });
-    expect(result).toBe(expected);
   });
 });
 
