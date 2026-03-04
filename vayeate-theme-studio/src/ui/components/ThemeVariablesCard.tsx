@@ -210,6 +210,8 @@ function ColorAssignmentRow({
   const displayLight = assignment.useDarkForLight ? darkValue : (pendingLightPicker ?? lightValue);
   const displayDarkHex = pendingDarkHex ?? darkValue;
   const displayLightHex = assignment.useDarkForLight ? darkValue : (pendingLightHex ?? lightValue);
+  const pickerValueDark = (displayDark.length === 9 ? displayDark.slice(0, 7) : displayDark) || '#000000';
+  const pickerValueLight = (displayLight.length === 9 ? displayLight.slice(0, 7) : displayLight) || '#ffffff';
 
   return (
     <div className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''}`}>
@@ -236,10 +238,11 @@ function ColorAssignmentRow({
       <input
         type="color"
         className="theme-color-picker"
-        value={displayDark || '#000000'}
+        value={pickerValueDark}
         onChange={(e) => setPendingDarkPicker(e.target.value)}
         onBlur={(e) => {
-          const v = e.target.value.trim() || null;
+          let v = e.target.value.trim() || null;
+          if (v && darkValue.length === 9) v = v + darkValue.slice(7, 9);
           onUpdateDark(assignment.colorRef, v);
           setPendingDarkPicker(null);
         }}
@@ -262,12 +265,13 @@ function ColorAssignmentRow({
       <input
         type="color"
         className="theme-color-picker"
-        value={displayLight || '#ffffff'}
+        value={pickerValueLight}
         disabled={assignment.useDarkForLight}
         onChange={(e) => setPendingLightPicker(e.target.value)}
         onBlur={() => {
           if (!assignment.useDarkForLight) {
-            const v = (pendingLightPicker ?? lightValue) || null;
+            let v = (pendingLightPicker ?? lightValue) || null;
+            if (v && lightValue.length === 9) v = v + lightValue.slice(7, 9);
             onUpdateLight(assignment.colorRef, v);
           }
           setPendingLightPicker(null);

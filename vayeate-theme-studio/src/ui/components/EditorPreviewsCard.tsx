@@ -29,18 +29,19 @@ const DEFAULT_LIGHT_FG = '#1f1f1f';
 
 /** Returns black or white for readable text on the given hex background (relative luminance). */
 function textColorForBackground(hex: string): string {
-  const m = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.exec(hex);
+  const m = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.exec(hex);
   if (!m) return '#ffffff';
   let r: number, g: number, b: number;
   const raw = m[1];
-  if (raw.length === 3) {
-    r = parseInt(raw[0] + raw[0], 16) / 255;
-    g = parseInt(raw[1] + raw[1], 16) / 255;
-    b = parseInt(raw[2] + raw[2], 16) / 255;
+  const rgbPart = raw.length === 8 ? raw.slice(0, 6) : raw;
+  if (rgbPart.length === 3) {
+    r = parseInt(rgbPart[0] + rgbPart[0], 16) / 255;
+    g = parseInt(rgbPart[1] + rgbPart[1], 16) / 255;
+    b = parseInt(rgbPart[2] + rgbPart[2], 16) / 255;
   } else {
-    r = parseInt(raw.slice(0, 2), 16) / 255;
-    g = parseInt(raw.slice(2, 4), 16) / 255;
-    b = parseInt(raw.slice(4, 6), 16) / 255;
+    r = parseInt(rgbPart.slice(0, 2), 16) / 255;
+    g = parseInt(rgbPart.slice(2, 4), 16) / 255;
+    b = parseInt(rgbPart.slice(4, 6), 16) / 255;
   }
   const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
   return luminance > 0.5 ? '#000000' : '#ffffff';
@@ -297,7 +298,7 @@ export function EditorPreviewsCard({
           onChange={(e) => onChangeIdePrimaryColorRef(e.target.value || null)}
         >
           <option value="">— select —</option>
-          {colorVariableKeys.map((key) => (
+          {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
             <option key={key} value={key}>
               {key}
             </option>
@@ -313,7 +314,7 @@ export function EditorPreviewsCard({
           onChange={(e) => onChangeIdePrimaryColorContrastRef(e.target.value || null)}
         >
           <option value="">— select —</option>
-          {contrastVariables.map((v) => (
+          {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
             <option key={v.key} value={v.key}>
               {v.key}
             </option>
@@ -329,7 +330,7 @@ export function EditorPreviewsCard({
           onChange={(e) => onChangeThemeBackgroundColorRef(e.target.value || null)}
         >
           <option value="">— select —</option>
-          {colorVariableKeys.map((key) => (
+          {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
             <option key={key} value={key}>
               {key}
             </option>

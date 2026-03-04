@@ -1,0 +1,1357 @@
+{
+  "name": "vayeate-tokens",
+  "version": "1.0.1",
+  "type": "manual",
+  "locked": true,
+  "sources": [],
+  "tokens": [
+    {
+      "key": "titleBar.activeBackground",
+      "type": "theme"
+    },
+    {
+      "key": "titleBar.activeForeground",
+      "type": "theme"
+    },
+    {
+      "key": "titleBar.border",
+      "type": "theme"
+    },
+    {
+      "key": "titleBar.inactiveBackground",
+      "type": "theme"
+    },
+    {
+      "key": "titleBar.inactiveForeground",
+      "type": "theme"
+    },
+    {
+      "key": "focusBorder",
+      "type": "theme"
+    },
+    {
+      "key": "menu.background",
+      "type": "theme"
+    },
+    {
+      "key": "menu.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "menu.separatorBackground",
+      "type": "theme"
+    },
+    {
+      "key": "menu.selectionForeground",
+      "type": "theme"
+    },
+    {
+      "key": "menu.selectionBackground",
+      "type": "theme"
+    },
+    {
+      "key": "menubar.selectionForeground",
+      "type": "theme"
+    },
+    {
+      "key": "menubar.selectionBackground",
+      "type": "theme"
+    },
+    {
+      "key": "activityBar.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "activityBar.background",
+      "type": "theme"
+    },
+    {
+      "key": "activityBar.activeBorder",
+      "type": "theme"
+    },
+    {
+      "key": "activityBar.dropBorder",
+      "type": "theme"
+    },
+    {
+      "key": "activityBar.inactiveForeground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBar.background",
+      "type": "theme"
+    },
+    {
+      "key": "statusBar.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBar.debuggingBackground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBar.debuggingForeground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBarItem.remoteForeground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBar.noFolderBackground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBar.noFolderForeground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBarItem.activeBackground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBarItem.errorBackground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBarItem.errorForeground",
+      "type": "theme"
+    },
+    {
+      "key": "statusBarItem.hoverBackground",
+      "type": "theme"
+    },
+    {
+      "key": "progressBar.background",
+      "type": "theme"
+    },
+    {
+      "key": "notifications.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "notifications.background",
+      "type": "theme"
+    },
+    {
+      "key": "notifications.border",
+      "type": "theme"
+    },
+    {
+      "key": "notificationToast.border",
+      "type": "theme"
+    },
+    {
+      "key": "notificationCenterHeader.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "notificationCenterHeader.background",
+      "type": "theme"
+    },
+    {
+      "key": "notificationCenter.border",
+      "type": "theme"
+    },
+    {
+      "key": "notificationsInfoIcon.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "notificationsWarningIcon.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "notificationsErrorIcon.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "notificationLink.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "extensionButton.prominentBackground",
+      "type": "theme"
+    },
+    {
+      "key": "extensionButton.prominentForeground",
+      "type": "theme"
+    },
+    {
+      "key": "extensionButton.prominentHoverBackground",
+      "type": "theme"
+    },
+    {
+      "key": "activityBarBadge.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "activityBarBadge.background",
+      "type": "theme"
+    },
+    {
+      "key": "badge.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "badge.background",
+      "type": "theme"
+    },
+    {
+      "key": "extensionBadge.remoteForeground",
+      "type": "theme"
+    },
+    {
+      "key": "extensionBadge.remoteBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorGutter.background",
+      "type": "theme"
+    },
+    {
+      "key": "editorGutter.addedBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorGutter.deletedBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorGutter.modifiedBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorGroupHeader.tabsBackground",
+      "type": "theme"
+    },
+    {
+      "key": "tab.activeBackground",
+      "type": "theme"
+    },
+    {
+      "key": "tab.activeForeground",
+      "type": "theme"
+    },
+    {
+      "key": "tab.border",
+      "type": "theme"
+    },
+    {
+      "key": "tab.inactiveBackground",
+      "type": "theme"
+    },
+    {
+      "key": "tab.inactiveForeground",
+      "type": "theme"
+    },
+    {
+      "key": "panel.border",
+      "type": "theme"
+    },
+    {
+      "key": "panelTitle.activeForeground",
+      "type": "theme"
+    },
+    {
+      "key": "panelTitle.activeBorder",
+      "type": "theme"
+    },
+    {
+      "key": "panelTitle.inactiveForeground",
+      "type": "theme"
+    },
+    {
+      "key": "panel.background",
+      "type": "theme"
+    },
+    {
+      "key": "panel.dropBorder",
+      "type": "theme"
+    },
+    {
+      "key": "panelSection.border",
+      "type": "theme"
+    },
+    {
+      "key": "panelSection.dropBackground",
+      "type": "theme"
+    },
+    {
+      "key": "panelSectionHeader.background",
+      "type": "theme"
+    },
+    {
+      "key": "sideBarSectionHeader.background",
+      "type": "theme"
+    },
+    {
+      "key": "sideBarSectionHeader.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorLineNumber.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorLineNumber.activeForeground",
+      "type": "theme"
+    },
+    {
+      "key": "breadcrumb.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "breadcrumb.background",
+      "type": "theme"
+    },
+    {
+      "key": "breadcrumb.focusForeground",
+      "type": "theme"
+    },
+    {
+      "key": "breadcrumb.activeSelectionForeground",
+      "type": "theme"
+    },
+    {
+      "key": "breadcrumbPicker.background",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBlack",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBlue",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightBlack",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightBlue",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightCyan",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightGreen",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightMagenta",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightRed",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightWhite",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiBrightYellow",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiCyan",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiGreen",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiMagenta",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiRed",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiWhite",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.ansiYellow",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.border",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "terminal.background",
+      "type": "theme"
+    },
+    {
+      "key": "foreground",
+      "type": "theme"
+    },
+    {
+      "key": "sideBar.background",
+      "type": "theme"
+    },
+    {
+      "key": "sideBar.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "sideBarTitle.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "sideBar.dropBackground",
+      "type": "theme"
+    },
+    {
+      "key": "sideBar.border",
+      "type": "theme"
+    },
+    {
+      "key": "editor.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editor.background",
+      "type": "theme"
+    },
+    {
+      "key": "editorCursor.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editor.lineHighlightBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editor.selectionBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorIndentGuide.background",
+      "type": "theme"
+    },
+    {
+      "key": "editorIndentGuide.activeBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorInlayHint.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorInlayHint.background",
+      "type": "theme"
+    },
+    {
+      "key": "editor.findMatchBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editor.findMatchHighlightBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editor.findRangeHighlightBackground",
+      "type": "theme"
+    },
+    {
+      "key": "editorLink.activeForeground",
+      "type": "theme"
+    },
+    {
+      "key": "editorCodeLens.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorBracketMatch.background",
+      "type": "theme"
+    },
+    {
+      "key": "editorBracketMatch.border",
+      "type": "theme"
+    },
+    {
+      "key": "editorRuler.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorGroup.emptyBackground",
+      "type": "theme"
+    },
+    {
+      "key": "gitDecoration.conflictingResourceForeground",
+      "type": "theme"
+    },
+    {
+      "key": "gitDecoration.deletedResourceForeground",
+      "type": "theme"
+    },
+    {
+      "key": "gitDecoration.ignoredResourceForeground",
+      "type": "theme"
+    },
+    {
+      "key": "gitDecoration.modifiedResourceForeground",
+      "type": "theme"
+    },
+    {
+      "key": "gitDecoration.untrackedResourceForeground",
+      "type": "theme"
+    },
+    {
+      "key": "diffEditor.insertedTextBackground",
+      "type": "theme"
+    },
+    {
+      "key": "diffEditor.removedTextBackground",
+      "type": "theme"
+    },
+    {
+      "key": "textPreformat.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorWidget.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "editorWidget.background",
+      "type": "theme"
+    },
+    {
+      "key": "editorWidget.border",
+      "type": "theme"
+    },
+    {
+      "key": "widget.shadow",
+      "type": "theme"
+    },
+    {
+      "key": "panelSectionHeader.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "list.activeSelectionBackground",
+      "type": "theme"
+    },
+    {
+      "key": "list.activeSelectionForeground",
+      "type": "theme"
+    },
+    {
+      "key": "list.focusBackground",
+      "type": "theme"
+    },
+    {
+      "key": "list.focusForeground",
+      "type": "theme"
+    },
+    {
+      "key": "list.highlightForeground",
+      "type": "theme"
+    },
+    {
+      "key": "list.hoverBackground",
+      "type": "theme"
+    },
+    {
+      "key": "list.hoverForeground",
+      "type": "theme"
+    },
+    {
+      "key": "list.inactiveSelectionBackground",
+      "type": "theme"
+    },
+    {
+      "key": "list.inactiveSelectionForeground",
+      "type": "theme"
+    },
+    {
+      "key": "list.invalidItemForeground",
+      "type": "theme"
+    },
+    {
+      "key": "button.background",
+      "type": "theme"
+    },
+    {
+      "key": "button.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "button.hoverBackground",
+      "type": "theme"
+    },
+    {
+      "key": "button.secondaryBackground",
+      "type": "theme"
+    },
+    {
+      "key": "button.secondaryForeground",
+      "type": "theme"
+    },
+    {
+      "key": "button.secondaryHoverBackground",
+      "type": "theme"
+    },
+    {
+      "key": "dropdown.background",
+      "type": "theme"
+    },
+    {
+      "key": "dropdown.border",
+      "type": "theme"
+    },
+    {
+      "key": "dropdown.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "dropdown.listBackground",
+      "type": "theme"
+    },
+    {
+      "key": "scrollbar.shadow",
+      "type": "theme"
+    },
+    {
+      "key": "scrollbarSlider.activeBackground",
+      "type": "theme"
+    },
+    {
+      "key": "scrollbarSlider.background",
+      "type": "theme"
+    },
+    {
+      "key": "scrollbarSlider.hoverBackground",
+      "type": "theme"
+    },
+    {
+      "key": "input.background",
+      "type": "theme"
+    },
+    {
+      "key": "input.border",
+      "type": "theme"
+    },
+    {
+      "key": "input.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "input.placeholderForeground",
+      "type": "theme"
+    },
+    {
+      "key": "inputOption.activeForeground",
+      "type": "theme"
+    },
+    {
+      "key": "inputOption.activeBorder",
+      "type": "theme"
+    },
+    {
+      "key": "inputValidation.errorBackground",
+      "type": "theme"
+    },
+    {
+      "key": "inputValidation.errorForeground",
+      "type": "theme"
+    },
+    {
+      "key": "inputValidation.infoBackground",
+      "type": "theme"
+    },
+    {
+      "key": "inputValidation.infoForeground",
+      "type": "theme"
+    },
+    {
+      "key": "inputValidation.warningBackground",
+      "type": "theme"
+    },
+    {
+      "key": "inputValidation.warningForeground",
+      "type": "theme"
+    },
+    {
+      "key": "source",
+      "type": "token"
+    },
+    {
+      "key": "entity.name",
+      "type": "token"
+    },
+    {
+      "key": "meta.use.rust",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.accessor",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.brackets",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.comma",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.curlybrace",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.typeparameters",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.parameters",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.parenthesis",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.squarebracket",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.section",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.semi",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.separator",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.terminator",
+      "type": "token"
+    },
+    {
+      "key": "comment",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.comment",
+      "type": "token"
+    },
+    {
+      "key": "string",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.string",
+      "type": "token"
+    },
+    {
+      "key": "constant.character.escape",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.interpolation",
+      "type": "token"
+    },
+    {
+      "key": "meta.attribute",
+      "type": "token"
+    },
+    {
+      "key": "meta.attribute keyword",
+      "type": "token"
+    },
+    {
+      "key": "meta.attribute punctuation.brackets",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.annotation",
+      "type": "token"
+    },
+    {
+      "key": "storage.type.annotation",
+      "type": "token"
+    },
+    {
+      "key": "keyword",
+      "type": "token"
+    },
+    {
+      "key": "constant.language",
+      "type": "token"
+    },
+    {
+      "key": "storage.modifier",
+      "type": "token"
+    },
+    {
+      "key": "variable.language",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.type.class",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.type.kotlin",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.type.enum",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.type.struct",
+      "type": "token"
+    },
+    {
+      "key": "entity.other.inherited-class",
+      "type": "token"
+    },
+    {
+      "key": "storage.type",
+      "type": "token"
+    },
+    {
+      "key": "variable.other.object",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.type.interface",
+      "type": "token"
+    },
+    {
+      "key": "variable.other.constant",
+      "type": "token"
+    },
+    {
+      "key": "source.powershell support.constant.variable",
+      "type": "token"
+    },
+    {
+      "key": "constant.other.enum",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.variable.field",
+      "type": "token"
+    },
+    {
+      "key": "variable.other",
+      "type": "token"
+    },
+    {
+      "key": "source.powershell support.variable",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.function",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.variable.property",
+      "type": "token"
+    },
+    {
+      "key": "variable.other.object.property",
+      "type": "token"
+    },
+    {
+      "key": "source.powershell support.function",
+      "type": "token"
+    },
+    {
+      "key": "variable.parameter",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.variable.parameter",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.type.type-parameter",
+      "type": "token"
+    },
+    {
+      "key": "storage.type.generic",
+      "type": "token"
+    },
+    {
+      "key": "source.java punctuation.bracket.angle",
+      "type": "token"
+    },
+    {
+      "key": "constant.numeric",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.tag",
+      "type": "token"
+    },
+    {
+      "key": "keyword.other.documentation",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.tag",
+      "type": "token"
+    },
+    {
+      "key": "entity.other.attribute-name",
+      "type": "token"
+    },
+    {
+      "key": "comment.block.documentation",
+      "type": "token"
+    },
+    {
+      "key": "comment.block.javadoc",
+      "type": "token"
+    },
+    {
+      "key": "comment.line.documentation",
+      "type": "token"
+    },
+    {
+      "key": "comment.block.documentation string.quoted.double",
+      "type": "token"
+    },
+    {
+      "key": "comment.block.documentation punctuation.definition.string",
+      "type": "token"
+    },
+    {
+      "key": "text.xml punctuation.definition.tag",
+      "type": "token"
+    },
+    {
+      "key": "text.xml meta.tag",
+      "type": "token"
+    },
+    {
+      "key": "text.xml entity.name.tag",
+      "type": "token"
+    },
+    {
+      "key": "text.xml entity.other.attribute-name",
+      "type": "token"
+    },
+    {
+      "key": "source.yaml punctuation.definition",
+      "type": "token"
+    },
+    {
+      "key": "source.json punctuation.definition",
+      "type": "token"
+    },
+    {
+      "key": "source.yaml punctuation.separator",
+      "type": "token"
+    },
+    {
+      "key": "source.json punctuation.separator",
+      "type": "token"
+    },
+    {
+      "key": "source.yaml entity.other",
+      "type": "token"
+    },
+    {
+      "key": "source.yaml entity.name.tag",
+      "type": "token"
+    },
+    {
+      "key": "source.json support.type",
+      "type": "token"
+    },
+    {
+      "key": "source.yaml constant.language",
+      "type": "token"
+    },
+    {
+      "key": "source.json constant.language",
+      "type": "token"
+    },
+    {
+      "key": "heading.1 entity.name.section",
+      "type": "token"
+    },
+    {
+      "key": "punctuation.definition.heading",
+      "type": "token"
+    },
+    {
+      "key": "heading.2 entity.name.section",
+      "type": "token"
+    },
+    {
+      "key": "heading.3 entity.name.section",
+      "type": "token"
+    },
+    {
+      "key": "entity.name.section",
+      "type": "token"
+    },
+    {
+      "key": "constant.other.reference.link",
+      "type": "token"
+    },
+    {
+      "key": "markup.underline.link",
+      "type": "token"
+    },
+    {
+      "key": "fenced_code.block.language",
+      "type": "token"
+    },
+    {
+      "key": "markup.inline",
+      "type": "token"
+    },
+    {
+      "key": "string.other.link",
+      "type": "token"
+    },
+    {
+      "key": "text.html.markdown punctuation.definition",
+      "type": "token"
+    },
+    {
+      "key": "text.html.markdown punctuation.definition.string",
+      "type": "token"
+    },
+    {
+      "key": "text.html.markdown meta.separator",
+      "type": "token"
+    },
+    {
+      "key": "source.ini keyword",
+      "type": "token"
+    },
+    {
+      "key": "source.ini entity.name.section",
+      "type": "token"
+    },
+    {
+      "key": "source.ini",
+      "type": "token"
+    },
+    {
+      "key": "source.ini punctuation",
+      "type": "token"
+    },
+    {
+      "key": "source.ini punctuation.separator",
+      "type": "token"
+    },
+    {
+      "key": "source.toml keyword",
+      "type": "token"
+    },
+    {
+      "key": "source.toml entity.other.attribute-name",
+      "type": "token"
+    },
+    {
+      "key": "source.toml",
+      "type": "token"
+    },
+    {
+      "key": "source.toml punctuation",
+      "type": "token"
+    },
+    {
+      "key": "source.toml punctuation.separator",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian entity.name.include.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian string.regexp",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "source.regex-pipeline.obsidian comment.line.text.obsidian",
+      "type": "token"
+    },
+    {
+      "key": "local",
+      "type": "semantic token"
+    },
+    {
+      "key": "namespace",
+      "type": "semantic token"
+    },
+    {
+      "key": "operator",
+      "type": "semantic token"
+    },
+    {
+      "key": "punctuation",
+      "type": "semantic token"
+    },
+    {
+      "key": "variable",
+      "type": "semantic token"
+    },
+    {
+      "key": "comment",
+      "type": "semantic token"
+    },
+    {
+      "key": "comment.documentation",
+      "type": "semantic token"
+    },
+    {
+      "key": "string",
+      "type": "semantic token"
+    },
+    {
+      "key": "regexp",
+      "type": "semantic token"
+    },
+    {
+      "key": "stringEscapeCharacter",
+      "type": "semantic token"
+    },
+    {
+      "key": "keyword",
+      "type": "semantic token"
+    },
+    {
+      "key": "controlKeyword",
+      "type": "semantic token"
+    },
+    {
+      "key": "plainKeyword",
+      "type": "semantic token"
+    },
+    {
+      "key": "class",
+      "type": "semantic token"
+    },
+    {
+      "key": "enum",
+      "type": "semantic token"
+    },
+    {
+      "key": "struct",
+      "type": "semantic token"
+    },
+    {
+      "key": "interface",
+      "type": "semantic token"
+    },
+    {
+      "key": "delegate",
+      "type": "semantic token"
+    },
+    {
+      "key": "constant",
+      "type": "semantic token"
+    },
+    {
+      "key": "enumMember",
+      "type": "semantic token"
+    },
+    {
+      "key": "variable.static.readonly",
+      "type": "semantic token"
+    },
+    {
+      "key": "property.static.readonly",
+      "type": "semantic token"
+    },
+    {
+      "key": "field.static",
+      "type": "semantic token"
+    },
+    {
+      "key": "field",
+      "type": "semantic token"
+    },
+    {
+      "key": "property:java",
+      "type": "semantic token"
+    },
+    {
+      "key": "method",
+      "type": "semantic token"
+    },
+    {
+      "key": "property",
+      "type": "semantic token"
+    },
+    {
+      "key": "parameter",
+      "type": "semantic token"
+    },
+    {
+      "key": "typeParameter",
+      "type": "semantic token"
+    },
+    {
+      "key": "number",
+      "type": "semantic token"
+    },
+    {
+      "key": "xmlDocCommentAttributeName",
+      "type": "semantic token"
+    },
+    {
+      "key": "xmlDocCommentName",
+      "type": "semantic token"
+    },
+    {
+      "key": "xmlDocCommentAttributeQuotes",
+      "type": "semantic token"
+    },
+    {
+      "key": "xmlDocCommentDelimiter",
+      "type": "semantic token"
+    },
+    {
+      "key": "xmlDocCommentText",
+      "type": "semantic token"
+    },
+    {
+      "key": "*.deprecated",
+      "type": "semantic token"
+    },
+    {
+      "key": "sideBarTitle.background",
+      "type": "theme"
+    }
+  ]
+}

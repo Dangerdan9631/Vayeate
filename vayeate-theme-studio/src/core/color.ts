@@ -38,18 +38,22 @@ export function normalizeHex(hex: string): string {
       .map((c) => c + c)
       .join('')}`;
   }
-  if (value.length === 6 || value.length === 8) {
-    return `#${value.slice(0, 6)}`;
+  if (value.length === 6) {
+    return `#${value}`;
+  }
+  if (value.length === 8) {
+    return `#${value}`;
   }
   throw new Error(`Invalid hex color length: ${hex}`);
 }
 
 export function hexToRgb(hex: string): Rgb {
   const n = normalizeHex(hex);
+  const rgbHex = n.slice(1, 7);
   return {
-    r: parseInt(n.slice(1, 3), 16) / 255,
-    g: parseInt(n.slice(3, 5), 16) / 255,
-    b: parseInt(n.slice(5, 7), 16) / 255,
+    r: parseInt(rgbHex.slice(0, 2), 16) / 255,
+    g: parseInt(rgbHex.slice(2, 4), 16) / 255,
+    b: parseInt(rgbHex.slice(4, 6), 16) / 255,
   };
 }
 

@@ -54,7 +54,7 @@ export function GroupsCard({
         {groups.length === 0 && (
           <div className="empty-hint">No groups defined.</div>
         )}
-        {groups.map((name) => {
+        {[...groups].sort((a, b) => a.localeCompare(b)).map((name) => {
           const inUse = groupNamesInUse.has(name);
           return (
             <div key={name} className="variable-row">

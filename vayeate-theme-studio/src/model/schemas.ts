@@ -6,8 +6,8 @@ const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 const SEMVER_REGEX = /^v?\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$/;
 const VARIABLE_KEY_REGEX = /^[a-zA-Z][a-zA-Z0-9]*$/;
 const TOKEN_KEY_REGEX = /^([a-zA-Z*0-9][a-zA-Z0-9_*-]*)((\.| |:)([a-zA-Z*0-9][a-zA-Z0-9_*-]*))*$/;
-/** Bare hex (no #): 3, 6, or 8 hex digits */
-const BARE_HEX_REGEX = /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})([0-9A-Fa-f]{2})?$/;
+/** Bare hex (no #): 3, 6, or 8 hex digits only */
+const BARE_HEX_REGEX = /^([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$/;
 
 /**
  * Normalizes a hex color string to canonical form (# + hex). Accepts optional

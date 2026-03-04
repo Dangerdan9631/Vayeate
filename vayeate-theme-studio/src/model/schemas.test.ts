@@ -23,6 +23,7 @@ describe('hexColorSchema', () => {
     expect(() => hexColorSchema.parse('gg0000')).toThrow();
     expect(() => hexColorSchema.parse('ff')).toThrow();
     expect(() => hexColorSchema.parse('ff00')).toThrow();
+    expect(() => hexColorSchema.parse('ff000')).toThrow();
     expect(() => hexColorSchema.parse('')).toThrow();
   });
 });

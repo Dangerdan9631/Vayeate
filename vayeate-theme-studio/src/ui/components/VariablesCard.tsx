@@ -124,7 +124,7 @@ function ColorGroupSubsection({
                 title="Group"
               >
                 <option value="">Ungrouped</option>
-                {groups.map((g) => (
+                {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
                   <option key={g} value={g}>
                     {g}
                   </option>
@@ -293,7 +293,7 @@ function ContrastGroupSubsection({
                 title="Group"
               >
                 <option value="">Ungrouped</option>
-                {groups.map((g) => (
+                {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
                   <option key={g} value={g}>
                     {g}
                   </option>

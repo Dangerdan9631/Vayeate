@@ -177,7 +177,7 @@ function MappingTypeSection({
                   title="Group"
                 >
                   <option value="">Ungrouped</option>
-                  {groups.map((g) => (
+                  {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
                     <option key={g} value={g}>
                       {g}
                     </option>
@@ -208,7 +208,7 @@ function MappingTypeSection({
                   }
                 >
                   <option value="">— color —</option>
-                  {colorVariables.map((v) => (
+                  {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
                     <option key={v.key} value={v.key}>
                       {v.key}
                     </option>
@@ -227,7 +227,7 @@ function MappingTypeSection({
                   }
                 >
                   <option value="">— contrast —</option>
-                  {contrastVariables.map((v) => (
+                  {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
                     <option key={v.key} value={v.key}>
                       {v.key}
                     </option>
@@ -404,7 +404,7 @@ export function MappingsCard({
               {colorVariables.length === 0 ? (
                 <div className="mappings-filter-empty">No color variables</div>
               ) : (
-                colorVariables.map((v) => (
+                [...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
                   <label key={v.key} className="mappings-filter-check">
                     <input
                       type="checkbox"
@@ -439,7 +439,7 @@ export function MappingsCard({
               {contrastVariables.length === 0 ? (
                 <div className="mappings-filter-empty">No contrast variables</div>
               ) : (
-                contrastVariables.map((v) => (
+                [...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
                   <label key={v.key} className="mappings-filter-check">
                     <input
                       type="checkbox"

@@ -1,11 +1,11 @@
 {
   "name": "vayeate-v2",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "templateRef": {
     "name": "vayeate-v2",
-    "version": "1.0.4"
+    "version": "1.0.7"
   },
-  "idePrimaryColorVariableRef": "chromePrimaryBg",
+  "idePrimaryColorVariableRef": "chromeDarkBg",
   "idePrimaryColorContrastVariableRef": "ideChrome",
   "themeBackgroundColorVariableRef": "editorBg",
   "colorAssignments": [
@@ -154,7 +154,7 @@
     {
       "colorRef": "editorLineHighlightBg",
       "light": {
-        "value": "#bac8de"
+        "value": "#453721"
       },
       "dark": {
         "value": "#2f363f"
@@ -173,11 +173,13 @@
     },
     {
       "colorRef": "editorLineNumberFg",
-      "light": null,
+      "light": {
+        "value": "#dfdbdb"
+      },
       "dark": {
         "value": "#679acc"
       },
-      "useDarkForLight": true
+      "useDarkForLight": false
     },
     {
       "colorRef": "editorIndentGuideBg",
@@ -691,7 +693,7 @@
         "value": "#ffffff"
       },
       "dark": {
-        "value": "#000000"
+        "value": "#282e35"
       },
       "useDarkForLight": true
     },
@@ -703,7 +705,7 @@
       "dark": {
         "value": "#6182b8"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightBlack",
@@ -713,7 +715,7 @@
       "dark": {
         "value": "#90a4ae"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightCyan",
@@ -723,7 +725,7 @@
       "dark": {
         "value": "#39adb5"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightGreen",
@@ -733,7 +735,7 @@
       "dark": {
         "value": "#91b859"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightMagenta",
@@ -743,7 +745,7 @@
       "dark": {
         "value": "#7c4dff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightRed",
@@ -753,7 +755,7 @@
       "dark": {
         "value": "#e53935"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightWhite",
@@ -763,7 +765,7 @@
       "dark": {
         "value": "#ffffff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiBrightYellow",
@@ -773,7 +775,7 @@
       "dark": {
         "value": "#ffb62c"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiCyan",
@@ -783,7 +785,7 @@
       "dark": {
         "value": "#39adb5"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiGreen",
@@ -793,7 +795,7 @@
       "dark": {
         "value": "#91b859"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiMagenta",
@@ -803,7 +805,7 @@
       "dark": {
         "value": "#7c4dff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiRed",
@@ -813,7 +815,7 @@
       "dark": {
         "value": "#e53935"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiWhite",
@@ -823,7 +825,7 @@
       "dark": {
         "value": "#ffffff"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalAnsiYellow",
@@ -833,7 +835,7 @@
       "dark": {
         "value": "#ffb62c"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalBorder",
@@ -843,7 +845,7 @@
       "dark": {
         "value": "#4f384a"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "terminalFg",
@@ -853,7 +855,7 @@
       "dark": {
         "value": "#f6f6f4"
       },
-      "useDarkForLight": false
+      "useDarkForLight": true
     },
     {
       "colorRef": "defaultText",
@@ -1094,6 +1096,22 @@
         "value": "#6c796e"
       },
       "useDarkForLight": true
+    },
+    {
+      "colorRef": "terminalBg",
+      "light": null,
+      "dark": {
+        "value": "#282e35"
+      },
+      "useDarkForLight": true
+    },
+    {
+      "colorRef": "inputBg",
+      "light": null,
+      "dark": {
+        "value": "#282e35"
+      },
+      "useDarkForLight": true
     }
   ],
   "contrastAssignments": [
@@ -1103,10 +1121,10 @@
         "value": 3.1,
         "comparisonMethod": "lessThan",
         "min": null,
-        "max": null
+        "max": 8
       },
       "dark": {
-        "value": 2,
+        "value": 1,
         "comparisonMethod": "greaterThan",
         "min": 2,
         "max": null
@@ -1192,6 +1210,22 @@
         "max": null
       },
       "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "terminal",
+      "light": {
+        "value": 5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": true
     }
   ]
 }

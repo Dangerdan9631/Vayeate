@@ -14,8 +14,8 @@ describe('normalizeHex', () => {
   it('keeps 6-digit hex', () => {
     expect(normalizeHex('#ff0000')).toBe('#ff0000');
   });
-  it('strips alpha from 8-digit', () => {
-    expect(normalizeHex('#ff0000ff')).toBe('#ff0000');
+  it('keeps 8-digit hex with alpha', () => {
+    expect(normalizeHex('#ff0000ff')).toBe('#ff0000ff');
   });
   it('throws on invalid', () => {
     expect(() => normalizeHex('ff0000')).toThrow();
