@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppState } from '../ui/context/useAppState';
+import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { catalogService } from '../services/catalog-service';
@@ -19,9 +19,9 @@ import type {
 const log = createLogger('TemplateVM');
 
 export function useTemplateViewModel() {
-  const { state, dispatch } = useAppState();
-  const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = state.templates;
-  const { catalogRefs } = state.catalogs;
+  const dispatch = useAppDispatch();
+  const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
+  const { catalogRefs } = useCatalogsState();
 
   useEffect(() => {
     log.debug('initial mount → LOAD_TEMPLATE_REFS + LOAD_CATALOG_REFS');

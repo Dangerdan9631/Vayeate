@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppState } from '../ui/context/useAppState';
+import { useAppDispatch, useCatalogsState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../utils/version';
 import { nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
@@ -8,8 +8,8 @@ import type { Catalog, CatalogReference, Source, Token, TokenType } from '../mod
 const log = createLogger('CatalogVM');
 
 export function useCatalogViewModel() {
-  const { state, dispatch } = useAppState();
-  const { catalogRefs, selectedRef, catalog, isCreating, createDialogOpen } = state.catalogs;
+  const dispatch = useAppDispatch();
+  const { catalogRefs, selectedRef, catalog, isCreating, createDialogOpen } = useCatalogsState();
 
   useEffect(() => {
     log.debug('initial mount → LOAD_CATALOG_REFS');

@@ -20,6 +20,13 @@ import {
   type AppState,
   type AppStateUpdate,
 } from '../../state/app-state';
+import {
+  ActiveTabContext,
+  AppDispatchContext,
+  CatalogsStateContext,
+  TemplatesStateContext,
+  ThemesStateContext,
+} from './slice-contexts';
 
 const log = createLogger('AppContext');
 
@@ -487,5 +494,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const value: AppContextValue = { state, dispatch };
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={value}>
+      <AppDispatchContext.Provider value={dispatch}>
+        <ActiveTabContext.Provider value={state.activeTab}>
+          <CatalogsStateContext.Provider value={state.catalogs}>
+            <TemplatesStateContext.Provider value={state.templates}>
+              <ThemesStateContext.Provider value={state.themes}>
+                {children}
+              </ThemesStateContext.Provider>
+            </TemplatesStateContext.Provider>
+          </CatalogsStateContext.Provider>
+        </ActiveTabContext.Provider>
+      </AppDispatchContext.Provider>
+    </AppContext.Provider>
+  );
 }

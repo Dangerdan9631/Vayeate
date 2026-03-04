@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAppState } from '../ui/context/useAppState';
+import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { templateService } from '../services/template-service';
@@ -20,9 +20,9 @@ import type {
 const log = createLogger('ThemeVM');
 
 export function useThemeViewModel() {
-  const { state, dispatch } = useAppState();
-  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult, saveError } = state.themes;
-  const { templateRefs } = state.templates;
+  const dispatch = useAppDispatch();
+  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult, saveError } = useThemesState();
+  const { templateRefs } = useTemplatesState();
 
   useEffect(() => {
     log.debug('initial mount → LOAD_THEME_REFS + LOAD_TEMPLATE_REFS');
