@@ -1121,6 +1121,16 @@ body {
   gap: 12px;
 }
 
+.theme-preview-virtual-inner {
+  position: relative;
+  width: 100%;
+  flex: none;
+}
+
+.theme-preview-virtual-block {
+  box-sizing: border-box;
+}
+
 .theme-preview-block {
   display: flex;
   flex-direction: column;

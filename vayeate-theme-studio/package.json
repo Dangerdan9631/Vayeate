@@ -15,6 +15,7 @@
     "electron:preview": "electron ."
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.13.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vscode-oniguruma": "^2.0.1",

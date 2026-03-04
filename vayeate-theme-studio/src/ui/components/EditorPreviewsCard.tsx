@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import type {
   ColorAssignment,
   ContrastAssignment,
@@ -256,14 +257,28 @@ export function EditorPreviewsCard({
   const darkTextColor = textColorForBackground(darkColumnBg);
   const lightTextColor = textColorForBackground(lightColumnBg);
 
-  const darkInnerRef = useRef<HTMLDivElement | null>(null);
-  const lightInnerRef = useRef<HTMLDivElement | null>(null);
+  const darkScrollRef = useRef<HTMLDivElement | null>(null);
+  const lightScrollRef = useRef<HTMLDivElement | null>(null);
   const isSyncingScrollRef = useRef(false);
+
+  const virtualizer = useVirtualizer({
+    count: previews.length,
+    getScrollElement: () => darkScrollRef.current,
+    estimateSize: () => 200,
+    overscan: 2,
+  });
+  const virtualItems = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+  /** When scroll container has no size (e.g. jsdom, initial layout), virtualizer returns no items; show first N so content is visible. */
+  const fallbackIndices =
+    previews.length > 0 && virtualItems.length === 0
+      ? previews.map((_, i) => i).slice(0, 10)
+      : null;
 
   const handleDarkScroll = () => {
     if (isSyncingScrollRef.current) return;
-    const el = darkInnerRef.current;
-    const other = lightInnerRef.current;
+    const el = darkScrollRef.current;
+    const other = lightScrollRef.current;
     if (!el || !other) return;
     isSyncingScrollRef.current = true;
     other.scrollTop = el.scrollTop;
@@ -275,8 +290,8 @@ export function EditorPreviewsCard({
 
   const handleLightScroll = () => {
     if (isSyncingScrollRef.current) return;
-    const el = lightInnerRef.current;
-    const other = darkInnerRef.current;
+    const el = lightScrollRef.current;
+    const other = darkScrollRef.current;
     if (!el || !other) return;
     isSyncingScrollRef.current = true;
     other.scrollTop = el.scrollTop;
@@ -347,63 +362,161 @@ export function EditorPreviewsCard({
       <div className="theme-preview-columns">
         <div className="theme-preview-col" style={{ backgroundColor: darkColumnBg, color: darkTextColor }}>
           <h3 className="theme-preview-heading">Dark</h3>
-          <div ref={darkInnerRef} className="theme-preview-column-inner" onScroll={handleDarkScroll}>
+          <div
+            ref={darkScrollRef}
+            className="theme-preview-column-inner"
+            onScroll={handleDarkScroll}
+          >
             {previews.length === 0 ? (
               <div className="theme-preview-block">
                 <span className="theme-preview-placeholder">
                   Load examples from disk
                 </span>
               </div>
-            ) : (
-              previews.map((preview, idx) => (
-                <div key={`${preview.language}/${preview.fileName}`} className="theme-preview-block">
-                  <div className="theme-preview-block-label">
-                    {preview.language} / {preview.fileName}
+            ) : fallbackIndices ? (
+              fallbackIndices.map((idx) => {
+                const preview = previews[idx];
+                const resolved = resolvedPreviews[idx];
+                const key = `${preview.language}/${preview.fileName}`;
+                return (
+                  <div key={key} className="theme-preview-block">
+                    <div className="theme-preview-block-label">
+                      {preview.language} / {preview.fileName}
+                    </div>
+                    <pre
+                      className="theme-preview-code"
+                      style={{ backgroundColor: darkCodeBg }}
+                    >
+                      <code>
+                        <ResolvedPreviewLines
+                          lines={resolved?.lines ?? []}
+                          mode="dark"
+                        />
+                      </code>
+                    </pre>
                   </div>
-                  <pre
-                    className="theme-preview-code"
-                    style={{ backgroundColor: darkCodeBg }}
-                  >
-                    <code>
-                      <ResolvedPreviewLines
-                        lines={resolvedPreviews[idx]?.lines ?? []}
-                        mode="dark"
-                      />
-                    </code>
-                  </pre>
-                </div>
-              ))
+                );
+              })
+            ) : (
+              <div
+                className="theme-preview-virtual-inner"
+                style={{ height: totalSize }}
+              >
+                {virtualItems.map((virtualItem) => {
+                  const preview = previews[virtualItem.index];
+                  const resolved = resolvedPreviews[virtualItem.index];
+                  const key = `${preview.language}/${preview.fileName}`;
+                  return (
+                    <div
+                      key={key}
+                      ref={(el) => el && virtualizer.measureElement(el)}
+                      data-index={virtualItem.index}
+                      className="theme-preview-block theme-preview-virtual-block"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: `translateY(${virtualItem.start}px)`,
+                      }}
+                    >
+                      <div className="theme-preview-block-label">
+                        {preview.language} / {preview.fileName}
+                      </div>
+                      <pre
+                        className="theme-preview-code"
+                        style={{ backgroundColor: darkCodeBg }}
+                      >
+                        <code>
+                          <ResolvedPreviewLines
+                            lines={resolved?.lines ?? []}
+                            mode="dark"
+                          />
+                        </code>
+                      </pre>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
         <div className="theme-preview-col" style={{ backgroundColor: lightColumnBg, color: lightTextColor }}>
           <h3 className="theme-preview-heading">Light</h3>
-          <div ref={lightInnerRef} className="theme-preview-column-inner" onScroll={handleLightScroll}>
+          <div
+            ref={lightScrollRef}
+            className="theme-preview-column-inner"
+            onScroll={handleLightScroll}
+          >
             {previews.length === 0 ? (
               <div className="theme-preview-block">
                 <span className="theme-preview-placeholder">
                   Load examples from disk
                 </span>
               </div>
-            ) : (
-              previews.map((preview, idx) => (
-                <div key={`${preview.language}/${preview.fileName}`} className="theme-preview-block">
-                  <div className="theme-preview-block-label">
-                    {preview.language} / {preview.fileName}
+            ) : fallbackIndices ? (
+              fallbackIndices.map((idx) => {
+                const preview = previews[idx];
+                const resolved = resolvedPreviews[idx];
+                const key = `${preview.language}/${preview.fileName}`;
+                return (
+                  <div key={key} className="theme-preview-block">
+                    <div className="theme-preview-block-label">
+                      {preview.language} / {preview.fileName}
+                    </div>
+                    <pre
+                      className="theme-preview-code"
+                      style={{ backgroundColor: lightCodeBg }}
+                    >
+                      <code>
+                        <ResolvedPreviewLines
+                          lines={resolved?.lines ?? []}
+                          mode="light"
+                        />
+                      </code>
+                    </pre>
                   </div>
-                  <pre
-                    className="theme-preview-code"
-                    style={{ backgroundColor: lightCodeBg }}
-                  >
-                    <code>
-                      <ResolvedPreviewLines
-                        lines={resolvedPreviews[idx]?.lines ?? []}
-                        mode="light"
-                      />
-                    </code>
-                  </pre>
-                </div>
-              ))
+                );
+              })
+            ) : (
+              <div
+                className="theme-preview-virtual-inner"
+                style={{ height: totalSize }}
+              >
+                {virtualItems.map((virtualItem) => {
+                  const preview = previews[virtualItem.index];
+                  const resolved = resolvedPreviews[virtualItem.index];
+                  const key = `${preview.language}/${preview.fileName}`;
+                  return (
+                    <div
+                      key={key}
+                      className="theme-preview-block theme-preview-virtual-block"
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        transform: `translateY(${virtualItem.start}px)`,
+                      }}
+                    >
+                      <div className="theme-preview-block-label">
+                        {preview.language} / {preview.fileName}
+                      </div>
+                      <pre
+                        className="theme-preview-code"
+                        style={{ backgroundColor: lightCodeBg }}
+                      >
+                        <code>
+                          <ResolvedPreviewLines
+                            lines={resolved?.lines ?? []}
+                            mode="light"
+                          />
+                        </code>
+                      </pre>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
