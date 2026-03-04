@@ -940,6 +940,10 @@ body {
   white-space: nowrap;
 }
 
+.theme-var-name.theme-var-name--blocking {
+  color: #dc2626;
+}
+
 .theme-color-hex {
   font-size: 12px;
   padding: 4px 6px;

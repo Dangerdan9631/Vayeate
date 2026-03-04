@@ -212,10 +212,15 @@ function ColorAssignmentRow({
   const displayLightHex = assignment.useDarkForLight ? darkValue : (pendingLightHex ?? lightValue);
   const pickerValueDark = (displayDark.length === 9 ? displayDark.slice(0, 7) : displayDark) || '#000000';
   const pickerValueLight = (displayLight.length === 9 ? displayLight.slice(0, 7) : displayLight) || '#ffffff';
+  const hasGenerationIssue =
+    assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
 
   return (
     <div className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''}`}>
-      <span className="theme-var-name" title={assignment.colorRef}>
+      <span
+        className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
+        title={assignment.colorRef}
+      >
         {assignment.colorRef}
         {isOrphan && (
           <span className="material-symbols-outlined mapping-warning-icon" title="Variable not in template">
@@ -433,10 +438,16 @@ function ContrastAssignmentRow({
   const [editMinLight, setEditMinLight] = useState<string | null>(null);
   const [editMaxLight, setEditMaxLight] = useState<string | null>(null);
 
+  const hasGenerationIssue =
+    assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
+
   return (
     <div className={`theme-contrast-block ${isOrphan ? 'theme-row-orphan' : ''}`}>
       <div className="theme-contrast-row1">
-        <span className="theme-var-name" title={ref}>
+        <span
+          className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
+          title={ref}
+        >
           {ref}
           {isOrphan && (
             <span className="material-symbols-outlined mapping-warning-icon" title="Variable not in template">
