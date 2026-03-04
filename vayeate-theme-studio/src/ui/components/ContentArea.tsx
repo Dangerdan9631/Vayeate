@@ -8,14 +8,29 @@ interface ContentAreaProps {
 }
 
 export function ContentArea({ activeTab }: ContentAreaProps) {
-  switch (activeTab) {
-    case 'catalogs':
-      return <CatalogsPage />;
-    case 'templates':
-      return <TemplatesPage />;
-    case 'themes':
-      return <ThemesPage />;
-    default:
-      return <CatalogsPage />;
-  }
+  return (
+    <>
+      <div
+        className="content-area-panel"
+        data-active={activeTab === 'catalogs'}
+        aria-hidden={activeTab !== 'catalogs'}
+      >
+        <CatalogsPage />
+      </div>
+      <div
+        className="content-area-panel"
+        data-active={activeTab === 'templates'}
+        aria-hidden={activeTab !== 'templates'}
+      >
+        <TemplatesPage />
+      </div>
+      <div
+        className="content-area-panel"
+        data-active={activeTab === 'themes'}
+        aria-hidden={activeTab !== 'themes'}
+      >
+        <ThemesPage />
+      </div>
+    </>
+  );
 }

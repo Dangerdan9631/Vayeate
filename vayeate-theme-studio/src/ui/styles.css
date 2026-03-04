@@ -101,6 +101,19 @@ body {
   overflow-y: auto;
 }
 
+/* Tab panels: all mounted, only the active one visible (preserves scroll and local state) */
+.content-area-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+
+.content-area-panel[data-active='false'] {
+  display: none;
+}
+
 .placeholder {
   border: 1px solid #d1d5db;
   border-radius: 10px;
