@@ -41,13 +41,16 @@ describe('syncCatalogTokens', () => {
     ]);
   });
 
-  it('filters out theme candidates without a dot', async () => {
-    vi.stubGlobal('fetch', mockFetch('`nodot` and `has.dot`'));
+  it('accepts theme candidates with or without a dot', async () => {
+    vi.stubGlobal('fetch', mockFetch('`foreground` and `icon.foreground`'));
     const sources: Source[] = [
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([{ key: 'has.dot', type: 'theme' }]);
+    expect(result).toEqual([
+      { key: 'foreground', type: 'theme' },
+      { key: 'icon.foreground', type: 'theme' },
+    ]);
   });
 
   it('filters out theme candidates shorter than 3 chars', async () => {
@@ -158,6 +161,15 @@ describe('syncCatalogTokens', () => {
     await expect(syncCatalogTokens(sources)).rejects.toThrow('Failed to fetch');
   });
 
+  it('throws when color-registry source has tokenType other than theme', async () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'token' },
+    ];
+    await expect(syncCatalogTokens(sources)).rejects.toThrow(
+      'color-registry and color-registry-set require tokenType theme',
+    );
+  });
+
   it('throws on unsupported source type', async () => {
     const sources = [
       { url: 'https://example.com', type: 'unknown' as 'default', tokenType: 'theme' as const },
@@ -228,5 +240,134 @@ describe('syncCatalogTokens', () => {
       { key: 'editor.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
     ]);
+  });
+
+  it('extracts theme token keys from color-registry source (registerColor)', async () => {
+    const code = `
+      export const foreground = registerColor('icon.foreground',
+        { dark: '#C5C5C5', light: '#424242' },
+        nls.localize('iconForeground', "The default color for icons."));
+      export const x = registerColor("activityBar.background",
+        { dark: '#333' }, nls.localize('x', ''));
+      export const y = registerColor('editor.foreground', { dark: '#CCC' }, nls.localize('y', ''));
+    `;
+    vi.stubGlobal('fetch', mockFetch(code));
+    const sources: Source[] = [
+      { url: 'https://raw.githubusercontent.com/example/colors.ts', type: 'color-registry', tokenType: 'theme' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result).toEqual([
+      { key: 'activityBar.background', type: 'theme' },
+      { key: 'editor.foreground', type: 'theme' },
+      { key: 'icon.foreground', type: 'theme' },
+    ]);
+  });
+
+  it('accepts theme tokens with or without dot in color-registry source', async () => {
+    const code = `
+      registerColor('foreground', { dark: '#CCC' }, nls.localize('x', ''));
+      registerColor('icon.foreground', { dark: '#C5C5C5' }, nls.localize('y', ''));
+    `;
+    vi.stubGlobal('fetch', mockFetch(code));
+    const sources: Source[] = [
+      { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'theme' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result).toEqual([
+      { key: 'foreground', type: 'theme' },
+      { key: 'icon.foreground', type: 'theme' },
+    ]);
+  });
+
+  it('deduplicates tokens from default and color-registry sources', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve('`editor.background` and `editor.foreground`'),
+      })
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve("registerColor('editor.background', { dark: '#1e1e1e' }, nls.localize('x',''));"),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+    const sources: Source[] = [
+      { url: 'https://example.com/docs', type: 'default', tokenType: 'theme' },
+      { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'theme' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result).toEqual([
+      { key: 'editor.background', type: 'theme' },
+      { key: 'editor.foreground', type: 'theme' },
+    ]);
+  });
+
+  it('color-registry-set fetches manifest then each export and parses registerColor', async () => {
+    const manifest = `
+      export * from './colorUtils.js';
+      export * from './colors/baseColors.js';
+    `;
+    const colorUtilsContent = '// no registerColor here';
+    const baseColorsContent = `
+      registerColor('foreground', { dark: '#CCC' }, nls.localize('x', ''));
+      registerColor('icon.foreground', { dark: '#C5C5C5' }, nls.localize('y', ''));
+    `;
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve(manifest),
+      })
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve(colorUtilsContent),
+      })
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve(baseColorsContent),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const sources: Source[] = [
+      {
+        url: 'https://raw.githubusercontent.com/example/common/colorRegistry.ts',
+        type: 'color-registry-set',
+        tokenType: 'theme',
+      },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result).toEqual([
+      { key: 'foreground', type: 'theme' },
+      { key: 'icon.foreground', type: 'theme' },
+    ]);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    const urls = fetchMock.mock.calls.map((c) => c[0]);
+    expect(urls[0]).toBe('https://raw.githubusercontent.com/example/common/colorRegistry.ts');
+    expect(urls[1]).toMatch(/\.ts$/);
+    expect(urls[2]).toMatch(/\.ts$/);
+  });
+
+  it('color-registry-set resolves .js export paths to .ts URLs', async () => {
+    const manifest = "export * from './colors/baseColors.js';";
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve(manifest),
+      })
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve("registerColor('editor.background', { dark: '#1e1e1e' }, nls.localize('x',''));"),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+    const sources: Source[] = [
+      {
+        url: 'https://example.com/theme/common/colorRegistry.ts',
+        type: 'color-registry-set',
+        tokenType: 'theme',
+      },
+    ];
+    await syncCatalogTokens(sources);
+    expect(fetchMock).toHaveBeenCalledWith('https://example.com/theme/common/colors/baseColors.ts');
   });
 });

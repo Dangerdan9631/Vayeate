@@ -63,7 +63,7 @@ export type ContrastValue = z.infer<typeof contrastValueSchema>;
 export const catalogTypeSchema = z.enum(['manual', 'remote']);
 export type CatalogType = z.infer<typeof catalogTypeSchema>;
 
-export const sourceTypeSchema = z.enum(['default']);
+export const sourceTypeSchema = z.enum(['default', 'color-registry', 'color-registry-set']);
 export type SourceType = z.infer<typeof sourceTypeSchema>;
 
 export const tokenTypeSchema = z.enum(['theme', 'token', 'semantic token']);
@@ -90,7 +90,11 @@ export const sourceSchema = z
     type: sourceTypeSchema,
     tokenType: tokenTypeSchema,
   })
-  .readonly();
+  .readonly()
+  .refine(
+    (s) => s.type === 'default' || s.tokenType === 'theme',
+    { message: 'color-registry and color-registry-set require tokenType theme' },
+  );
 export type Source = z.infer<typeof sourceSchema>;
 
 export const catalogSchema = z

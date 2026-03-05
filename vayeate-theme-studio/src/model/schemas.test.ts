@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hexColorSchema } from './schemas';
+import { hexColorSchema, sourceSchema } from './schemas';
 
 describe('hexColorSchema', () => {
   it('accepts # prefixed hex and returns unchanged', () => {
@@ -25,5 +25,34 @@ describe('hexColorSchema', () => {
     expect(() => hexColorSchema.parse('ff00')).toThrow();
     expect(() => hexColorSchema.parse('ff000')).toThrow();
     expect(() => hexColorSchema.parse('')).toThrow();
+  });
+});
+
+describe('sourceSchema', () => {
+  it('rejects color-registry with tokenType other than theme', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/colors.ts',
+      type: 'color-registry',
+      tokenType: 'token',
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts color-registry-set with tokenType theme', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/colorRegistry.ts',
+      type: 'color-registry-set',
+      tokenType: 'theme',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects color-registry-set with tokenType other than theme', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/colorRegistry.ts',
+      type: 'color-registry-set',
+      tokenType: 'token',
+    });
+    expect(result.success).toBe(false);
   });
 });

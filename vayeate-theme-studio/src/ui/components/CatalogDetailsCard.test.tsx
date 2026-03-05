@@ -72,6 +72,71 @@ describe('CatalogDetailsCard sources UI', () => {
     expect(urlInputs).toHaveLength(3); // 2 existing + 1 add row
   });
 
+  it('shows default, color-registry, and color-registry-set when token type is theme', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/a', type: 'default', tokenType: 'theme' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+    expect(screen.getAllByRole('option', { name: 'default' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('option', { name: 'color-registry' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('option', { name: 'color-registry-set' }).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('shows only default as source type when token type is not theme', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/a', type: 'default', tokenType: 'token' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+    const selectsWithOnlyDefault = screen.getAllByRole('combobox').filter((el) => {
+      const opts = el.querySelectorAll('option');
+      return opts.length === 1 && (opts[0] as HTMLOptionElement).value === 'default';
+    });
+    expect(selectsWithOnlyDefault.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('shows only theme as token type when source type is color-registry', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'theme' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+    const sourceTypeSelect = screen.getByDisplayValue('color-registry');
+    const row = sourceTypeSelect.closest('.source-row');
+    const tokenTypeSelect = row?.querySelectorAll('select')[0];
+    const tokenTypeOptions = tokenTypeSelect?.querySelectorAll('option') ?? [];
+    expect(tokenTypeOptions).toHaveLength(1);
+    expect((tokenTypeOptions[0] as HTMLOptionElement).value).toBe('theme');
+  });
+
   it('calls onUpdateSources when add button clicked', async () => {
     const user = userEvent.setup();
     const onUpdateSources = vi.fn();

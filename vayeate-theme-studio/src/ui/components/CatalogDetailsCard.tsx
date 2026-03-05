@@ -2,7 +2,17 @@ import { useState } from 'react';
 import type { Catalog, Source, SourceType, TokenType } from '../../model/schemas';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'token', 'semantic token'];
-const SOURCE_TYPE_OPTIONS: SourceType[] = ['default'];
+const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];
+
+function getSourceTypeOptions(tokenType: TokenType): SourceType[] {
+  return tokenType === 'theme' ? SOURCE_TYPE_OPTIONS_FOR_THEME : ['default'];
+}
+
+function getTokenTypeOptions(sourceType: SourceType): TokenType[] {
+  return sourceType === 'color-registry' || sourceType === 'color-registry-set'
+    ? (['theme'] as TokenType[])
+    : TOKEN_TYPE_OPTIONS;
+}
 
 interface CatalogDetailsCardProps {
   catalog: Catalog;
@@ -109,7 +119,7 @@ export function CatalogDetailsCard({
                     })
                   }
                 >
-                  {TOKEN_TYPE_OPTIONS.map((t) => (
+                  {getTokenTypeOptions(source.type).map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
@@ -124,7 +134,7 @@ export function CatalogDetailsCard({
                     })
                   }
                 >
-                  {SOURCE_TYPE_OPTIONS.map((t) => (
+                  {getSourceTypeOptions(source.tokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
@@ -151,7 +161,16 @@ export function CatalogDetailsCard({
                 <select
                   className="field-select source-select"
                   value={newTokenType}
-                  onChange={(e) => setNewTokenType(e.target.value as TokenType)}
+                  onChange={(e) => {
+                    const tokenType = e.target.value as TokenType;
+                    setNewTokenType(tokenType);
+                    if (
+                      tokenType !== 'theme' &&
+                      (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
+                    ) {
+                      setNewSourceType('default');
+                    }
+                  }}
                 >
                   {TOKEN_TYPE_OPTIONS.map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -162,7 +181,7 @@ export function CatalogDetailsCard({
                   value={newSourceType}
                   onChange={(e) => setNewSourceType(e.target.value as SourceType)}
                 >
-                  {SOURCE_TYPE_OPTIONS.map((t) => (
+                  {getSourceTypeOptions(newTokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
