@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useTemplateViewModel, computeOrphanKeys } from './use-template-viewmodel';
-import type { Template, Mapping, Token } from '../model/schemas';
+import type { Catalog, Template, Mapping, Token } from '../model/schemas';
 
 const mockTemplate: Template = {
   name: 'test-template',
@@ -555,5 +555,324 @@ describe('useTemplateViewModel groups', () => {
       comparisonSourceRef: null,
       groupRef: 'G1',
     });
+  });
+});
+
+describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => {
+  const catalogWithCommentToken: Catalog = {
+    name: 'cat-a',
+    version: '1.0.0',
+    type: 'remote',
+    locked: false,
+    sources: [],
+    tokens: [{ key: 'comment', type: 'textmate token' }],
+    semanticTokenTypes: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
+  };
+
+  const catalogWithCommentAndKeyword: Catalog = {
+    ...catalogWithCommentToken,
+    tokens: [
+      { key: 'comment', type: 'textmate token' },
+      { key: 'keyword', type: 'textmate token' },
+    ],
+  };
+
+  it('enabling a catalog adds new mappings with groupRef set to catalog name and adds group only when new mappings added', async () => {
+    let savedTemplate: Template | null = null;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: (_name: string, _version: string) =>
+        Promise.resolve(catalogWithCommentToken),
+      listCatalogs: () =>
+        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'CREATE_TEMPLATE', params: { name: 'test-template' } });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.catalogRefs).toEqual([]);
+    expect(result.current.template?.groups).toEqual([]);
+
+    await act(async () => {
+      result.current.toggleCatalog('cat-a', true);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const template = result.current.template;
+    expect(template?.catalogRefs).toHaveLength(1);
+    expect(template?.catalogRefs[0]).toEqual({ name: 'cat-a', version: '1.0.0' });
+    expect(template?.groups).toContain('cat-a');
+    const commentMapping = template?.mappings.find(
+      (m) => m.token.key === 'comment' && m.token.type === 'textmate token',
+    );
+    expect(commentMapping?.groupRef).toBe('cat-a');
+  });
+
+  it('enabling a catalog does not change existing mappings', async () => {
+    const templateWithExistingMapping: Template = {
+      ...mockTemplate,
+      catalogRefs: [],
+      mappings: [
+        {
+          token: { key: 'comment', type: 'textmate token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'OtherGroup',
+        },
+      ],
+      groups: ['OtherGroup'],
+    };
+    let savedTemplate: Template | null = templateWithExistingMapping;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(catalogWithCommentToken),
+      listCatalogs: () =>
+        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithExistingMapping),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const mappingBefore = result.current.template?.mappings[0];
+    expect(mappingBefore?.groupRef).toBe('OtherGroup');
+
+    await act(async () => {
+      result.current.toggleCatalog('cat-a', true);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const mappingAfter = result.current.template?.mappings.find(
+      (m) => m.token.key === 'comment' && m.token.type === 'textmate token',
+    );
+    expect(mappingAfter?.groupRef).toBe('OtherGroup');
+    expect(result.current.template?.groups).toContain('OtherGroup');
+  });
+
+  it('disabling a catalog removes the catalog-named group when no mappings or variables reference it', async () => {
+    const templateWithCatalog: Template = {
+      ...mockTemplate,
+      catalogRefs: [{ name: 'cat-a', version: '1.0.0' }],
+      mappings: [
+        {
+          token: { key: 'comment', type: 'textmate token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'cat-a',
+        },
+      ],
+      groups: ['cat-a'],
+    };
+    let savedTemplate: Template | null = templateWithCatalog;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(catalogWithCommentToken),
+      listCatalogs: () =>
+        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatalog),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.groups).toContain('cat-a');
+
+    await act(async () => {
+      result.current.toggleCatalog('cat-a', false);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.catalogRefs).toHaveLength(0);
+    expect(result.current.template?.groups).not.toContain('cat-a');
+    const commentMapping = result.current.template?.mappings.find(
+      (m) => m.token.key === 'comment' && m.token.type === 'textmate token',
+    );
+    expect(commentMapping).toBeUndefined();
+  });
+
+  it('disabling a catalog leaves the group when a variable still references it', async () => {
+    const templateWithCatalogAndVariable: Template = {
+      ...mockTemplate,
+      catalogRefs: [{ name: 'cat-a', version: '1.0.0' }],
+      mappings: [
+        {
+          token: { key: 'comment', type: 'textmate token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'cat-a',
+        },
+      ],
+      colorVariables: [{ key: 'primary', groupRef: 'cat-a' }],
+      groups: ['cat-a'],
+    };
+    let savedTemplate: Template | null = templateWithCatalogAndVariable;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(catalogWithCommentToken),
+      listCatalogs: () =>
+        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatalogAndVariable),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.toggleCatalog('cat-a', false);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.groups).toContain('cat-a');
+    expect(result.current.template?.colorVariables[0]?.groupRef).toBe('cat-a');
+  });
+
+  it('changing catalog version adds new mappings with that catalog group and ensures group in template.groups', async () => {
+    const templateWithCatalogV1: Template = {
+      ...mockTemplate,
+      catalogRefs: [{ name: 'cat-a', version: '1.0.0' }],
+      mappings: [
+        {
+          token: { key: 'comment', type: 'textmate token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'cat-a',
+        },
+      ],
+      groups: ['cat-a'],
+    };
+    let savedTemplate: Template | null = templateWithCatalogV1;
+    const loadCatalogMock = (name: string, version: string): Promise<Catalog | null> => {
+      if (name !== 'cat-a') return Promise.resolve(null);
+      return version === '1.0.1'
+        ? Promise.resolve(catalogWithCommentAndKeyword)
+        : Promise.resolve(catalogWithCommentToken);
+    };
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: loadCatalogMock,
+      listCatalogs: () =>
+        Promise.resolve([
+          { name: 'cat-a', version: '1.0.0' },
+          { name: 'cat-a', version: '1.0.1' },
+        ]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatalogV1),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.template?.mappings).toHaveLength(1);
+
+    await act(async () => {
+      result.current.changeCatalogVersion('cat-a', '1.0.1');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const template = result.current.template;
+    expect(template?.catalogRefs[0]?.version).toBe('1.0.1');
+    const keywordMapping = template?.mappings.find(
+      (m) => m.token.key === 'keyword' && m.token.type === 'textmate token',
+    );
+    expect(keywordMapping).toBeDefined();
+    expect(keywordMapping?.groupRef).toBe('cat-a');
+    expect(template?.groups).toContain('cat-a');
   });
 });

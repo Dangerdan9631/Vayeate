@@ -1,0 +1,13 @@
+{
+  "name": "directive-maintainer",
+  "version": "0.1.0",
+  "description": "Logs session deltas and proposes durable Cursor rule, skill, and subagent updates.",
+  "author": "Dan Garvey",
+  "components": {
+    "rules": ["rules/**/*.mdc"],
+    "agents": ["agents/**/*.md"],
+    "skills": ["skills/**/SKILL.md"],
+    "commands": ["commands/**/*.md"],
+    "hooks": ["hooks.json"]
+  }
+}

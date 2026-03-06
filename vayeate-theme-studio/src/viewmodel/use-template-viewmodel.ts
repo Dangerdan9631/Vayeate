@@ -258,8 +258,34 @@ export function useTemplateViewModel() {
         newCatalogRefs = base.catalogRefs.filter((r) => r.name !== catalogName);
       }
 
-      const newMappings = await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
-      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings };
+      const { mappings: newMappings, groupsToEnsure } = await mergeMappingsFromCatalogRefs(
+        newCatalogRefs,
+        base.mappings,
+      );
+
+      let newGroups: string[];
+      if (include) {
+        newGroups = [...(base.groups ?? [])];
+        for (const g of groupsToEnsure) {
+          if (!newGroups.includes(g)) newGroups.push(g);
+        }
+      } else {
+        const groupNamesInUseAfter = new Set<string>();
+        for (const m of newMappings) {
+          if (m.groupRef) groupNamesInUseAfter.add(m.groupRef);
+        }
+        for (const v of base.colorVariables) {
+          if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
+        }
+        for (const v of base.contrastVariables) {
+          if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
+        }
+        newGroups = (base.groups ?? []).filter(
+          (g) => g !== catalogName || groupNamesInUseAfter.has(g),
+        );
+      }
+
+      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings, groups: newGroups };
       dispatch({ type: 'SAVE_TEMPLATE', template: updated });
     },
     [dispatch, template, catalogVersionsByName],
@@ -275,8 +301,15 @@ export function useTemplateViewModel() {
         r.name === catalogName ? { ...r, version: newVersion } : r,
       );
 
-      const newMappings = await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
-      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings };
+      const { mappings: newMappings, groupsToEnsure } = await mergeMappingsFromCatalogRefs(
+        newCatalogRefs,
+        base.mappings,
+      );
+      const newGroups = [...(base.groups ?? [])];
+      for (const g of groupsToEnsure) {
+        if (!newGroups.includes(g)) newGroups.push(g);
+      }
+      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings, groups: newGroups };
       dispatch({ type: 'SAVE_TEMPLATE', template: updated });
     },
     [dispatch, template],
@@ -566,21 +599,27 @@ export function useTemplateViewModel() {
   };
 }
 
+export interface MergeMappingsResult {
+  mappings: Mapping[];
+  groupsToEnsure: string[];
+}
+
 async function mergeMappingsFromCatalogRefs(
   catalogRefs: readonly CatalogReference[],
   existingMappings: readonly Mapping[],
-): Promise<Mapping[]> {
-  const allTokens: Token[] = [];
+): Promise<MergeMappingsResult> {
+  const catalogTokensByRef: { ref: CatalogReference; tokens: readonly Token[] }[] = [];
   const semanticTypesSet = new Set<string>(['*']);
   for (const ref of catalogRefs) {
     const catalog = await catalogService.loadCatalog(ref.name, ref.version);
     if (catalog) {
-      allTokens.push(...catalog.tokens);
+      catalogTokensByRef.push({ ref, tokens: catalog.tokens });
       const types = catalog.semanticTokenTypes ?? [];
       for (const t of types) semanticTypesSet.add(t);
     }
   }
 
+  const allTokens = catalogTokensByRef.flatMap(({ tokens }) => tokens);
   const catalogTokenKeys = new Set(allTokens.map((t) => `${t.type}::${t.key}`));
   for (const type of semanticTypesSet) {
     catalogTokenKeys.add(`semantic token::${type}`);
@@ -591,6 +630,7 @@ async function mergeMappingsFromCatalogRefs(
   );
 
   const newMappings: Mapping[] = [];
+  const groupsToEnsure = new Set<string>();
 
   for (const m of existingMappings) {
     const key = `${m.token.type}::${m.token.key}`;
@@ -603,17 +643,20 @@ async function mergeMappingsFromCatalogRefs(
     }
   }
 
-  for (const token of allTokens) {
-    if (token.type === 'semantic token') continue;
-    const key = `${token.type}::${token.key}`;
-    if (!existingKeys.has(key)) {
-      newMappings.push({
-        token,
-        colorVariableRef: null,
-        contrastVariableRef: null,
-        groupRef: null,
-      });
-      existingKeys.add(key);
+  for (const { ref, tokens } of catalogTokensByRef) {
+    for (const token of tokens) {
+      if (token.type === 'semantic token') continue;
+      const key = `${token.type}::${token.key}`;
+      if (!existingKeys.has(key)) {
+        newMappings.push({
+          token,
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: ref.name,
+        });
+        groupsToEnsure.add(ref.name);
+        existingKeys.add(key);
+      }
     }
   }
 
@@ -629,7 +672,7 @@ async function mergeMappingsFromCatalogRefs(
     existingKeys.add(key);
   }
 
-  return newMappings;
+  return { mappings: newMappings, groupsToEnsure: [...groupsToEnsure] };
 }
 
 export interface SemanticCatalogInfo {
