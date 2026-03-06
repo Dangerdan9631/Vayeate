@@ -1,8 +1,8 @@
 {
   "name": "vayeate-tokens",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "manual",
-  "locked": true,
+  "locked": false,
   "sources": [],
   "tokens": [
     {

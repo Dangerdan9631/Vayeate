@@ -174,6 +174,15 @@ describe('generateTheme', () => {
     expect(out.semanticTokenColors['*.deprecated']).toEqual({ strikethrough: true });
   });
 
+  it('produces semanticTokenColors for composite key variable.readonly.defaultLibrary:java', () => {
+    const t = theme();
+    const tpl = template([
+      mapping('variable.readonly.defaultLibrary:java', 'semantic token', 'fg'),
+    ]);
+    const out = generateTheme(t, tpl, 'dark');
+    expect(out.semanticTokenColors['variable.readonly.defaultLibrary:java']).toBe('#d4d4d4');
+  });
+
   it('sets semanticHighlighting true', () => {
     const t = theme();
     const tpl = template([]);

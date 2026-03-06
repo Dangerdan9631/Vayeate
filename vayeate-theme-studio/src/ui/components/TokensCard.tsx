@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Catalog, Token, TokenType } from '../../model/schemas';
 import { tokenKeySchema } from '../../model/schemas';
+import { mergeSemanticSelectorInto } from '../../core/semantic-token';
 
 interface TokensCardProps {
   catalog: Catalog;
@@ -10,9 +11,14 @@ interface TokensCardProps {
   onRemoveToken: (key: string, tokenType: TokenType) => void;
   onUpdateTokenKey: (oldKey: string, newKey: string, tokenType: TokenType) => void;
   onBulkAdd: () => void;
+  onAddSemanticFromSelector?: (selector: string) => void;
+  onSetSemanticTypes?: (types: string[]) => void;
+  onSetSemanticModifiers?: (modifiers: string[]) => void;
+  onSetSemanticLanguages?: (languages: string[]) => void;
 }
 
-const TOKEN_TYPES: TokenType[] = ['theme', 'token', 'semantic token'];
+/** Sections shown in the catalog pane: Theme Tokens, Tokens, Semantic Tokens */
+const TOKEN_LIST_SECTIONS: TokenType[] = ['theme', 'token'];
 
 function isValidTokenKey(value: string): boolean {
   return tokenKeySchema.safeParse(value).success;
@@ -39,9 +45,7 @@ function TokenTypeSection({
   const label =
     tokenType === 'theme'
       ? 'Theme Tokens'
-      : tokenType === 'token'
-        ? 'Tokens'
-        : 'Semantic Tokens';
+      : 'Tokens';
 
   return (
     <div className="tree-section">
@@ -124,6 +128,211 @@ function matchesSearch(key: string, searchQuery: string): boolean {
   return !q || key.toLowerCase().includes(q);
 }
 
+function canAddSemanticSelector(selector: string, catalog: Catalog): boolean {
+  const trimmed = selector.trim();
+  if (!trimmed) return false;
+  const current = {
+    types: catalog.semanticTokenTypes ?? [],
+    modifiers: catalog.semanticTokenModifiers ?? [],
+    languages: catalog.semanticTokenLanguages ?? [],
+  };
+  return mergeSemanticSelectorInto(trimmed, current) !== null;
+}
+
+function SemanticTokenCatalogSection({
+  catalog,
+  canEdit,
+  onAddSemanticFromSelector,
+  onSetSemanticTypes,
+  onSetSemanticModifiers,
+  onSetSemanticLanguages,
+}: {
+  catalog: Catalog;
+  canEdit: boolean;
+  onAddSemanticFromSelector?: (selector: string) => void;
+  onSetSemanticTypes?: (types: string[]) => void;
+  onSetSemanticModifiers?: (modifiers: string[]) => void;
+  onSetSemanticLanguages?: (languages: string[]) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectorInput, setSelectorInput] = useState('');
+  const types = catalog.semanticTokenTypes ?? [];
+  const modifiers = catalog.semanticTokenModifiers ?? [];
+  const languages = catalog.semanticTokenLanguages ?? [];
+  const hasAny = types.length > 0 || modifiers.length > 0 || languages.length > 0;
+  const showSection = canEdit || hasAny;
+  const addEnabled =
+    canEdit &&
+    onAddSemanticFromSelector &&
+    canAddSemanticSelector(selectorInput, catalog);
+
+  if (!showSection) return null;
+
+  const handleAddSelector = () => {
+    const trimmed = selectorInput.trim();
+    if (!trimmed || !onAddSemanticFromSelector) return;
+    if (mergeSemanticSelectorInto(trimmed, {
+      types,
+      modifiers,
+      languages,
+    }) !== null) {
+      onAddSemanticFromSelector(trimmed);
+      setSelectorInput('');
+    }
+  };
+
+  return (
+    <div className="tree-section">
+      <button
+        type="button"
+        className="tree-header"
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        <span className="material-symbols-outlined tree-chevron">
+          {collapsed ? 'chevron_right' : 'expand_more'}
+        </span>
+        <span className="tree-label">Semantic Tokens</span>
+        <span className="tree-count">
+          ({types.length + modifiers.length + languages.length})
+        </span>
+      </button>
+      {!collapsed && (
+        <div className="tree-children">
+          {canEdit && onAddSemanticFromSelector && (
+            <div className="token-row token-add-row">
+              <input
+                className="token-input"
+                type="text"
+                placeholder="type.modifier.modifier:language or *"
+                value={selectorInput}
+                onChange={(e) => setSelectorInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleAddSelector();
+                  }
+                }}
+                aria-label="Semantic selector"
+              />
+              <button
+                type="button"
+                className="btn-icon btn-add-icon"
+                title="Add"
+                disabled={!addEnabled}
+                onClick={handleAddSelector}
+              >
+                <span className="material-symbols-outlined">add</span>
+              </button>
+            </div>
+          )}
+          {types.map((t, i) => (
+            <div key={`type-${i}-${t}`} className="token-row">
+              <span className="token-label">tokenType:</span>
+              {canEdit && onSetSemanticTypes ? (
+                <>
+                  <input
+                    className="token-input"
+                    type="text"
+                    defaultValue={t}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim();
+                      if (v !== t) {
+                        const next = types.map((x, j) => (j === i ? v : x));
+                        onSetSemanticTypes(next);
+                      }
+                    }}
+                    aria-label={`tokenType ${i + 1}`}
+                  />
+                  <button
+                    type="button"
+                    className="btn-icon btn-danger-icon"
+                    title="Remove"
+                    onClick={() =>
+                      onSetSemanticTypes(types.filter((_, j) => j !== i))
+                    }
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </>
+              ) : (
+                <span className="token-text">{t}</span>
+              )}
+            </div>
+          ))}
+          {modifiers.map((m, i) => (
+            <div key={`modifier-${i}-${m}`} className="token-row">
+              <span className="token-label">modifier:</span>
+              {canEdit && onSetSemanticModifiers ? (
+                <>
+                  <input
+                    className="token-input"
+                    type="text"
+                    defaultValue={m}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim();
+                      if (v !== m) {
+                        const next = modifiers.map((x, j) => (j === i ? v : x));
+                        onSetSemanticModifiers(next);
+                      }
+                    }}
+                    aria-label={`modifier ${i + 1}`}
+                  />
+                  <button
+                    type="button"
+                    className="btn-icon btn-danger-icon"
+                    title="Remove"
+                    onClick={() =>
+                      onSetSemanticModifiers(modifiers.filter((_, j) => j !== i))
+                    }
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </>
+              ) : (
+                <span className="token-text">{m}</span>
+              )}
+            </div>
+          ))}
+          {languages.map((lang, i) => (
+            <div key={`language-${i}-${lang}`} className="token-row">
+              <span className="token-label">language:</span>
+              {canEdit && onSetSemanticLanguages ? (
+                <>
+                  <input
+                    className="token-input"
+                    type="text"
+                    defaultValue={lang}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim();
+                      if (v !== lang) {
+                        const next = languages.map((x, j) => (j === i ? v : x));
+                        onSetSemanticLanguages(next);
+                      }
+                    }}
+                    aria-label={`language ${i + 1}`}
+                  />
+                  <button
+                    type="button"
+                    className="btn-icon btn-danger-icon"
+                    title="Remove"
+                    onClick={() =>
+                      onSetSemanticLanguages(languages.filter((_, j) => j !== i))
+                    }
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </>
+              ) : (
+                <span className="token-text">{lang}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TokensCard({
   catalog,
   tokensByType,
@@ -132,12 +341,16 @@ export function TokensCard({
   onRemoveToken,
   onUpdateTokenKey,
   onBulkAdd,
+  onAddSemanticFromSelector,
+  onSetSemanticTypes,
+  onSetSemanticModifiers,
+  onSetSemanticLanguages,
 }: TokensCardProps) {
   const canEdit = catalog.type === 'manual' && isLatestVersion;
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredTokensByType = Object.fromEntries(
-    TOKEN_TYPES.map((tt) => [
+    TOKEN_LIST_SECTIONS.map((tt) => [
       tt,
       tokensByType[tt]
         .filter((t) => matchesSearch(t.key, searchQuery))
@@ -163,7 +376,7 @@ export function TokensCard({
         onChange={(e) => setSearchQuery(e.target.value)}
         aria-label="Search tokens"
       />
-      {TOKEN_TYPES.map((tt) => (
+      {TOKEN_LIST_SECTIONS.map((tt) => (
         <TokenTypeSection
           key={tt}
           tokenType={tt}
@@ -174,6 +387,14 @@ export function TokensCard({
           onUpdateKey={(oldKey, newKey) => onUpdateTokenKey(oldKey, newKey, tt)}
         />
       ))}
+      <SemanticTokenCatalogSection
+        catalog={catalog}
+        canEdit={canEdit}
+        onAddSemanticFromSelector={onAddSemanticFromSelector}
+        onSetSemanticTypes={onSetSemanticTypes}
+        onSetSemanticModifiers={onSetSemanticModifiers}
+        onSetSemanticLanguages={onSetSemanticLanguages}
+      />
     </div>
   );
 }

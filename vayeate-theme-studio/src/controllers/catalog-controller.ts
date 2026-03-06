@@ -16,5 +16,8 @@ export function createCatalogWithParams(params: CreateCatalogParams): Catalog {
     locked: false,
     sources: [],
     tokens: [],
+    semanticTokenTypes: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
   };
 }

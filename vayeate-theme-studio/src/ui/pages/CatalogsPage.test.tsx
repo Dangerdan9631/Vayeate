@@ -11,6 +11,9 @@ const mockCatalog: Catalog = {
   locked: false,
   sources: [],
   tokens: [],
+  semanticTokenTypes: [],
+  semanticTokenModifiers: [],
+  semanticTokenLanguages: [],
 };
 
 beforeEach(() => {

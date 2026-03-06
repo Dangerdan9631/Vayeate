@@ -1349,5 +1349,46 @@
       "key": "*.deprecated",
       "type": "semantic token"
     }
+  ],
+  "semanticTokenTypes": [
+    "class",
+    "comment",
+    "constant",
+    "controlKeyword",
+    "delegate",
+    "enum",
+    "enumMember",
+    "field",
+    "interface",
+    "keyword",
+    "local",
+    "method",
+    "namespace",
+    "number",
+    "operator",
+    "parameter",
+    "plainKeyword",
+    "property",
+    "punctuation",
+    "regexp",
+    "string",
+    "stringEscapeCharacter",
+    "struct",
+    "typeParameter",
+    "variable",
+    "xmlDocCommentAttributeName",
+    "xmlDocCommentAttributeQuotes",
+    "xmlDocCommentDelimiter",
+    "xmlDocCommentName",
+    "xmlDocCommentText"
+  ],
+  "semanticTokenModifiers": [
+    "deprecated",
+    "documentation",
+    "readonly",
+    "static"
+  ],
+  "semanticTokenLanguages": [
+    "java"
   ]
 }

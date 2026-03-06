@@ -4,6 +4,7 @@ import { compareVersions } from '../utils/version';
 import { nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import type { Catalog, CatalogReference, Source, Token, TokenType } from '../model/schemas';
+import { mergeSemanticSelectorInto } from '../core/semantic-token';
 
 const log = createLogger('CatalogVM');
 
@@ -166,6 +167,28 @@ export function useCatalogViewModel() {
         return;
       }
       log.debug('addToken', key, tokenType, 'to', catalog.name);
+
+      if (tokenType === 'semantic token') {
+        const current = {
+          types: catalog.semanticTokenTypes ?? [],
+          modifiers: catalog.semanticTokenModifiers ?? [],
+          languages: catalog.semanticTokenLanguages ?? [],
+        };
+        const merged = mergeSemanticSelectorInto(key, current);
+        if (!merged) return;
+        const base = catalog.locked
+          ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+          : catalog;
+        const updated: Catalog = {
+          ...base,
+          semanticTokenTypes: merged.types,
+          semanticTokenModifiers: merged.modifiers,
+          semanticTokenLanguages: merged.languages,
+        };
+        dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+        return;
+      }
+
       const newToken: Token = { key, type: tokenType };
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
@@ -245,6 +268,69 @@ export function useCatalogViewModel() {
     [dispatch, catalog],
   );
 
+  const addSemanticFromSelector = useCallback(
+    (selector: string) => {
+      if (!catalog) {
+        log.warn('addSemanticFromSelector called with no catalog loaded');
+        return;
+      }
+      const current = {
+        types: catalog.semanticTokenTypes ?? [],
+        modifiers: catalog.semanticTokenModifiers ?? [],
+        languages: catalog.semanticTokenLanguages ?? [],
+      };
+      const merged = mergeSemanticSelectorInto(selector, current);
+      if (!merged) return;
+      const base = catalog.locked
+        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+        : catalog;
+      const updated: Catalog = {
+        ...base,
+        semanticTokenTypes: merged.types,
+        semanticTokenModifiers: merged.modifiers,
+        semanticTokenLanguages: merged.languages,
+      };
+      dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+    },
+    [dispatch, catalog],
+  );
+
+  const setSemanticTypes = useCallback(
+    (types: string[]) => {
+      if (!catalog) return;
+      const base = catalog.locked
+        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+        : catalog;
+      const updated: Catalog = { ...base, semanticTokenTypes: types };
+      dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+    },
+    [dispatch, catalog],
+  );
+
+  const setSemanticModifiers = useCallback(
+    (modifiers: string[]) => {
+      if (!catalog) return;
+      const base = catalog.locked
+        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+        : catalog;
+      const updated: Catalog = { ...base, semanticTokenModifiers: modifiers };
+      dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+    },
+    [dispatch, catalog],
+  );
+
+  const setSemanticLanguages = useCallback(
+    (languages: string[]) => {
+      if (!catalog) return;
+      const base = catalog.locked
+        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+        : catalog;
+      const updated: Catalog = { ...base, semanticTokenLanguages: languages };
+      dispatch({ type: 'SAVE_CATALOG', catalog: updated });
+    },
+    [dispatch, catalog],
+  );
+
   const revertToVersion = useCallback(
     (name: string, version: string) => {
       log.debug('revertToVersion', name, `v${version}`);
@@ -279,6 +365,10 @@ export function useCatalogViewModel() {
     bulkAddTokens,
     removeToken,
     updateTokenKey,
+    addSemanticFromSelector,
+    setSemanticTypes,
+    setSemanticModifiers,
+    setSemanticLanguages,
     revertToVersion,
   };
 }

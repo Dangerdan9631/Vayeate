@@ -3,6 +3,7 @@ import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/conte
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { catalogService } from '../services/catalog-service';
+import { formatSemanticSelector, parseSemanticSelector } from '../core/semantic-token';
 import type {
   CatalogReference,
   ColorVariable,
@@ -342,6 +343,44 @@ export function useTemplateViewModel() {
     [dispatch, template],
   );
 
+  const addSemanticVariantMapping = useCallback(
+    (type: string, modifiers: string[], language: string | null) => {
+      if (!template) return;
+      const key = formatSemanticSelector(type, modifiers, language);
+      if (!key) return;
+      const existing = template.mappings.some(
+        (m) => m.token.type === 'semantic token' && m.token.key === key,
+      );
+      if (existing) return;
+      log.debug('addSemanticVariantMapping', key);
+      const base = getBaseForEdit(template);
+      const newMapping: Mapping = {
+        token: { key, type: 'semantic token' },
+        colorVariableRef: null,
+        contrastVariableRef: null,
+        groupRef: null,
+      };
+      dispatch({
+        type: 'SAVE_TEMPLATE',
+        template: { ...base, mappings: [...base.mappings, newMapping] },
+      });
+    },
+    [dispatch, template],
+  );
+
+  const removeMapping = useCallback(
+    (tokenKey: string, tokenType: TokenType) => {
+      if (!template) return;
+      log.debug('removeMapping', tokenKey, tokenType);
+      const base = getBaseForEdit(template);
+      const newMappings = base.mappings.filter(
+        (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
+      );
+      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+    },
+    [dispatch, template],
+  );
+
   // --- Variable CRUD ---
 
   const addColorVariable = useCallback(
@@ -513,6 +552,8 @@ export function useTemplateViewModel() {
     updateMappingColorRef,
     updateMappingContrastRef,
     updateMappingGroupRef,
+    addSemanticVariantMapping,
+    removeMapping,
     updateColorVariableGroupRef,
     updateContrastVariableGroupRef,
     addGroup,
@@ -530,16 +571,21 @@ async function mergeMappingsFromCatalogRefs(
   existingMappings: readonly Mapping[],
 ): Promise<Mapping[]> {
   const allTokens: Token[] = [];
+  const semanticTypesSet = new Set<string>(['*']);
   for (const ref of catalogRefs) {
     const catalog = await catalogService.loadCatalog(ref.name, ref.version);
     if (catalog) {
       allTokens.push(...catalog.tokens);
+      const types = catalog.semanticTokenTypes ?? [];
+      for (const t of types) semanticTypesSet.add(t);
     }
   }
 
-  const catalogTokenKeys = new Set(
-    allTokens.map((t) => `${t.type}::${t.key}`),
-  );
+  const catalogTokenKeys = new Set(allTokens.map((t) => `${t.type}::${t.key}`));
+  for (const type of semanticTypesSet) {
+    catalogTokenKeys.add(`semantic token::${type}`);
+  }
+
   const existingKeys = new Set(
     existingMappings.map((m) => `${m.token.type}::${m.token.key}`),
   );
@@ -558,6 +604,7 @@ async function mergeMappingsFromCatalogRefs(
   }
 
   for (const token of allTokens) {
+    if (token.type === 'semantic token') continue;
     const key = `${token.type}::${token.key}`;
     if (!existingKeys.has(key)) {
       newMappings.push({
@@ -570,20 +617,59 @@ async function mergeMappingsFromCatalogRefs(
     }
   }
 
+  for (const type of semanticTypesSet) {
+    const key = `semantic token::${type}`;
+    if (existingKeys.has(key)) continue;
+    newMappings.push({
+      token: { key: type, type: 'semantic token' },
+      colorVariableRef: null,
+      contrastVariableRef: null,
+      groupRef: null,
+    });
+    existingKeys.add(key);
+  }
+
   return newMappings;
+}
+
+export interface SemanticCatalogInfo {
+  semanticTokenTypes: string[];
+  semanticTokenModifiers: string[];
+  semanticTokenLanguages: string[];
 }
 
 export function computeOrphanKeys(
   mappings: readonly Mapping[],
   catalogTokens: readonly Token[],
+  semanticCatalog?: SemanticCatalogInfo,
 ): Set<string> {
   const catalogKeys = new Set(catalogTokens.map((t) => `${t.type}::${t.key}`));
+  const typesSet = semanticCatalog
+    ? new Set(semanticCatalog.semanticTokenTypes.concat('*'))
+    : null;
+  const modifiersSet = semanticCatalog
+    ? new Set(semanticCatalog.semanticTokenModifiers)
+    : null;
+  const languagesSet = semanticCatalog
+    ? new Set(semanticCatalog.semanticTokenLanguages)
+    : null;
+
   const orphans = new Set<string>();
   for (const m of mappings) {
     const key = `${m.token.type}::${m.token.key}`;
-    if (!catalogKeys.has(key)) {
-      orphans.add(key);
+    if (catalogKeys.has(key)) continue;
+    if (m.token.type === 'semantic token' && typesSet && modifiersSet && languagesSet) {
+      try {
+        const parsed = parseSemanticSelector(m.token.key);
+        const typeOk = parsed.type === '*' || typesSet.has(parsed.type);
+        const modOk = parsed.modifiers.every((mod) => modifiersSet.has(mod));
+        const langOk = !parsed.language || languagesSet.has(parsed.language);
+        if (typeOk && modOk && langOk) continue;
+      } catch {
+        // invalid selector → orphan
+      }
     }
+    orphans.add(key);
   }
   return orphans;
 }

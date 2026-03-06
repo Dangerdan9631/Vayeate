@@ -58,6 +58,10 @@ export function CatalogsPage() {
               onRemoveToken={vm.removeToken}
               onUpdateTokenKey={vm.updateTokenKey}
               onBulkAdd={() => setBulkAddOpen(true)}
+              onAddSemanticFromSelector={vm.addSemanticFromSelector}
+              onSetSemanticTypes={vm.setSemanticTypes}
+              onSetSemanticModifiers={vm.setSemanticModifiers}
+              onSetSemanticLanguages={vm.setSemanticLanguages}
             />
           )}
         </div>

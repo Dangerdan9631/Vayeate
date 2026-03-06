@@ -203,18 +203,21 @@ function createActionProcessor() {
       case 'SYNC_CATALOG': {
         log.debug('SYNC_CATALOG', action.catalog.name, `v${action.catalog.version}`,
           `locked=${action.catalog.locked}`, `(${action.catalog.sources.length} source(s))`);
-        const tokens = await syncCatalogTokens(
+        const result = await syncCatalogTokens(
           action.catalog.sources,
           (url) => catalogService.fetchUrl(url),
         );
         const version = action.catalog.locked
           ? nextPatchVersion(action.catalog.version)
           : action.catalog.version;
-        log.debug('sync produced', tokens.length, `token(s),`,
+        log.debug('sync produced', result.tokens.length, `token(s),`,
           action.catalog.locked ? `bumping to v${version}` : `saving to current v${version}`);
         const synced: Catalog = {
           ...action.catalog,
-          tokens,
+          tokens: result.tokens,
+          semanticTokenTypes: result.semanticTokenTypes,
+          semanticTokenModifiers: result.semanticTokenModifiers,
+          semanticTokenLanguages: result.semanticTokenLanguages,
           version,
           locked: true,
         };

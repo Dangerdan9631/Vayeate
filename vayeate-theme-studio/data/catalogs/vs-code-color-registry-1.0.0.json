@@ -1015,5 +1015,8 @@
       "key": "widget.shadow",
       "type": "theme"
     }
-  ]
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
 }

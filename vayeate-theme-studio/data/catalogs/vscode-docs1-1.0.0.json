@@ -4,5 +4,8 @@
   "type": "remote",
   "locked": true,
   "sources": [],
-  "tokens": []
+  "tokens": [],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
 }

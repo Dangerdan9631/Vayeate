@@ -835,5 +835,8 @@
       "key": "workbench.colorCustomizations",
       "type": "theme"
     }
-  ]
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
 }

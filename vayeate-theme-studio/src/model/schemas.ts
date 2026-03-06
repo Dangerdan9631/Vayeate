@@ -97,6 +97,9 @@ export const sourceSchema = z
   );
 export type Source = z.infer<typeof sourceSchema>;
 
+const semanticTokenTypeOrModifierSchema = z.string();
+const semanticTokenLanguageSchema = z.string();
+
 export const catalogSchema = z
   .object({
     name: catalogNameSchema,
@@ -105,6 +108,9 @@ export const catalogSchema = z
     locked: z.boolean(),
     sources: z.array(sourceSchema).readonly(),
     tokens: z.array(tokenSchema).readonly(),
+    semanticTokenTypes: z.array(semanticTokenTypeOrModifierSchema).readonly().optional().default([]),
+    semanticTokenModifiers: z.array(semanticTokenTypeOrModifierSchema).readonly().optional().default([]),
+    semanticTokenLanguages: z.array(semanticTokenLanguageSchema).readonly().optional().default([]),
   })
   .readonly();
 export type Catalog = z.infer<typeof catalogSchema>;

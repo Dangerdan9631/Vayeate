@@ -1,5 +1,6 @@
 import type { Source, Token, TokenType } from '../model/schemas';
 import { createLogger } from '../utils/logger';
+import { parseSemanticSelector } from '../core/semantic-token';
 
 const log = createLogger('CatalogSync');
 
@@ -16,8 +17,19 @@ const THEME_ONLY_SOURCE_TYPES = ['color-registry', 'color-registry-set'] as cons
 
 /** Theme color IDs: optional segments after first (e.g. "foreground" or "icon.foreground") */
 const THEME_COLOR_RE = /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$/;
-const SEMANTIC_TOKEN_RE = /^[a-z][a-zA-Z]*(\.[a-z][a-zA-Z]*)*$/;
 const TEXTMATE_SCOPE_RE = /^([a-zA-Z][a-zA-Z0-9_-]*|\*)(\.([a-zA-Z][a-zA-Z0-9_-]*|\*))+$/;
+
+function isValidSemanticSelector(candidate: string): boolean {
+  try {
+    const parsed = parseSemanticSelector(candidate);
+    if (parsed.type.length === 0) return false;
+    // VS Code semantic types are camelCase (or *); reject type starting with uppercase
+    if (parsed.type !== '*' && parsed.type[0] !== parsed.type[0].toLowerCase()) return false;
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function filterByTokenType(candidate: string, tokenType: TokenType): boolean {
   switch (tokenType) {
@@ -29,7 +41,7 @@ function filterByTokenType(candidate: string, tokenType: TokenType): boolean {
         THEME_COLOR_RE.test(candidate)
       );
     case 'semantic token':
-      return SEMANTIC_TOKEN_RE.test(candidate);
+      return isValidSemanticSelector(candidate);
     case 'token':
       return (
         candidate.length >= 3 &&
@@ -107,7 +119,7 @@ async function defaultFetchText(url: string): Promise<string> {
 export async function syncCatalogTokens(
   sources: readonly Source[],
   fetchText: FetchText = defaultFetchText,
-): Promise<Token[]> {
+): Promise<SyncCatalogResult> {
   log.debug('starting sync', `(${sources.length} source(s))`);
   const allTokens: Token[] = [];
 
@@ -174,9 +186,45 @@ export async function syncCatalogTokens(
 
   log.debug('sync complete', `→ ${deduped.length} unique token(s)`);
 
-  return deduped.sort((a, b) => {
+  const sortedTokens = deduped.sort((a, b) => {
     const typeCmp = a.type.localeCompare(b.type);
     if (typeCmp !== 0) return typeCmp;
     return a.key.localeCompare(b.key);
   });
+
+  const semanticTokens = sortedTokens.filter((t) => t.type === 'semantic token');
+  const semanticTokenTypes: string[] = [];
+  const semanticTokenModifiers: string[] = [];
+  const semanticTokenLanguages: string[] = [];
+  for (const t of semanticTokens) {
+    try {
+      const parsed = parseSemanticSelector(t.key);
+      if (parsed.type !== '*') {
+        semanticTokenTypes.push(parsed.type);
+      }
+      semanticTokenModifiers.push(...parsed.modifiers);
+      if (parsed.language) {
+        semanticTokenLanguages.push(parsed.language);
+      }
+    } catch {
+      // skip invalid keys
+    }
+  }
+  const types = [...new Set(semanticTokenTypes)].sort();
+  const modifiers = [...new Set(semanticTokenModifiers)].sort();
+  const languages = [...new Set(semanticTokenLanguages)].sort();
+
+  return {
+    tokens: sortedTokens,
+    semanticTokenTypes: types,
+    semanticTokenModifiers: modifiers,
+    semanticTokenLanguages: languages,
+  };
 }
+
+export type SyncCatalogResult = {
+  tokens: Token[];
+  semanticTokenTypes: string[];
+  semanticTokenModifiers: string[];
+  semanticTokenLanguages: string[];
+};

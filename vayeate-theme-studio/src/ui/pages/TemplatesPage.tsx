@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTemplateViewModel, computeOrphanKeys } from '../../viewmodel/use-template-viewmodel';
 import { catalogService } from '../../services/catalog-service';
+import type { Catalog } from '../../model/schemas';
 import { CreateTemplateDialog } from '../components/CreateTemplateDialog';
 import { GroupsCard } from '../components/GroupsCard';
 import { MappingsCard } from '../components/MappingsCard';
@@ -13,22 +14,45 @@ import type { Token } from '../../model/schemas';
 export function TemplatesPage() {
   const vm = useTemplateViewModel();
   const [orphanKeys, setOrphanKeys] = useState<Set<string>>(new Set());
+  const [semanticCatalog, setSemanticCatalog] = useState<{
+    semanticTokenTypes: string[];
+    semanticTokenModifiers: string[];
+    semanticTokenLanguages: string[];
+  } | null>(null);
 
   useEffect(() => {
     if (!vm.template) {
       setOrphanKeys(new Set());
+      setSemanticCatalog(null);
       return;
     }
 
     let cancelled = false;
     (async () => {
       const allTokens: Token[] = [];
+      const typesSet = new Set<string>();
+      const modifiersSet = new Set<string>();
+      const languagesSet = new Set<string>();
       for (const ref of vm.template!.catalogRefs) {
-        const catalog = await catalogService.loadCatalog(ref.name, ref.version);
-        if (catalog) allTokens.push(...catalog.tokens);
+        const catalog = await catalogService.loadCatalog(ref.name, ref.version) as Catalog | null;
+        if (catalog) {
+          allTokens.push(...catalog.tokens);
+          (catalog.semanticTokenTypes ?? []).forEach((t) => typesSet.add(t));
+          (catalog.semanticTokenModifiers ?? []).forEach((m) => modifiersSet.add(m));
+          (catalog.semanticTokenLanguages ?? []).forEach((l) => languagesSet.add(l));
+        }
       }
+      const catalogInfo =
+        typesSet.size > 0 || modifiersSet.size > 0 || languagesSet.size > 0
+          ? {
+              semanticTokenTypes: [...typesSet].sort(),
+              semanticTokenModifiers: [...modifiersSet].sort(),
+              semanticTokenLanguages: [...languagesSet].sort(),
+            }
+          : undefined;
       if (!cancelled) {
-        setOrphanKeys(computeOrphanKeys(vm.template!.mappings, allTokens));
+        setOrphanKeys(computeOrphanKeys(vm.template!.mappings, allTokens, catalogInfo));
+        setSemanticCatalog(catalogInfo ?? null);
       }
     })();
     return () => { cancelled = true; };
@@ -84,9 +108,12 @@ export function TemplatesPage() {
               contrastVariables={vm.template.contrastVariables}
               orphanKeys={orphanKeys}
               canEdit={canEdit}
+              semanticCatalog={semanticCatalog}
               onUpdateGroupRef={vm.updateMappingGroupRef}
               onUpdateColorRef={vm.updateMappingColorRef}
               onUpdateContrastRef={vm.updateMappingContrastRef}
+              onAddSemanticVariant={vm.addSemanticVariantMapping}
+              onRemoveMapping={vm.removeMapping}
             />
           )}
         </div>

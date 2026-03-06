@@ -13,6 +13,9 @@ const sampleCatalog: Catalog = {
   locked: false,
   sources: [],
   tokens: [],
+  semanticTokenTypes: [],
+  semanticTokenModifiers: [],
+  semanticTokenLanguages: [],
 };
 
 const sampleRef: CatalogReference = { name: 'test-catalog', version: '1.0.0' };

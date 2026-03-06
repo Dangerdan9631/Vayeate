@@ -1,0 +1,22 @@
+{
+  "name": "Test",
+  "version": "1.0.0",
+  "type": "manual",
+  "locked": false,
+  "sources": [],
+  "tokens": [],
+  "semanticTokenTypes": [
+    "foo",
+    "foo2",
+    "foo3"
+  ],
+  "semanticTokenModifiers": [
+    "bar",
+    "bar2",
+    "baz",
+    "butt"
+  ],
+  "semanticTokenLanguages": [
+    "java2"
+  ]
+}

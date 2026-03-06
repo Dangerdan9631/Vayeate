@@ -20,9 +20,12 @@ afterEach(() => {
 });
 
 describe('syncCatalogTokens', () => {
-  it('returns empty array for no sources', async () => {
+  it('returns empty result for no sources', async () => {
     const result = await syncCatalogTokens([]);
-    expect(result).toEqual([]);
+    expect(result.tokens).toEqual([]);
+    expect(result.semanticTokenTypes).toEqual([]);
+    expect(result.semanticTokenModifiers).toEqual([]);
+    expect(result.semanticTokenLanguages).toEqual([]);
   });
 
   it('extracts theme color tokens from backtick-quoted text', async () => {
@@ -35,7 +38,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/docs', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'editor.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
     ]);
@@ -47,7 +50,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'foreground', type: 'theme' },
       { key: 'icon.foreground', type: 'theme' },
     ]);
@@ -59,7 +62,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'a.b', type: 'theme' },
       { key: 'abc.def', type: 'theme' },
     ]);
@@ -71,7 +74,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([{ key: 'clean.val', type: 'theme' }]);
+    expect(result.tokens).toEqual([{ key: 'clean.val', type: 'theme' }]);
   });
 
   it('extracts semantic token keys', async () => {
@@ -80,10 +83,13 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'semantic token' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'class.static', type: 'semantic token' },
       { key: 'variable', type: 'semantic token' },
     ]);
+    expect(result.semanticTokenTypes).toEqual(['class', 'variable']);
+    expect(result.semanticTokenModifiers).toEqual(['static']);
+    expect(result.semanticTokenLanguages).toEqual([]);
   });
 
   it('rejects semantic tokens starting with uppercase', async () => {
@@ -92,7 +98,22 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'semantic token' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([{ key: 'variable', type: 'semantic token' }]);
+    expect(result.tokens).toEqual([{ key: 'variable', type: 'semantic token' }]);
+  });
+
+  it('accepts semantic tokens with * type and :language and omits * from types list', async () => {
+    vi.stubGlobal('fetch', mockFetch('`variable.readonly.defaultLibrary:java` and `*.deprecated`'));
+    const sources: Source[] = [
+      { url: 'https://example.com', type: 'default', tokenType: 'semantic token' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result.tokens).toEqual([
+      { key: '*.deprecated', type: 'semantic token' },
+      { key: 'variable.readonly.defaultLibrary:java', type: 'semantic token' },
+    ]);
+    expect(result.semanticTokenTypes).toEqual(['variable']);
+    expect(result.semanticTokenModifiers).toEqual(['defaultLibrary', 'deprecated', 'readonly']);
+    expect(result.semanticTokenLanguages).toEqual(['java']);
   });
 
   it('extracts TextMate scope tokens', async () => {
@@ -104,7 +125,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'token' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'entity.name.function', type: 'token' },
       { key: 'keyword.*', type: 'token' },
       { key: 'source.python', type: 'token' },
@@ -117,7 +138,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'token' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([{ key: 'has.dot', type: 'token' }]);
+    expect(result.tokens).toEqual([{ key: 'has.dot', type: 'token' }]);
   });
 
   it('deduplicates tokens across multiple sources', async () => {
@@ -138,7 +159,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/b', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'editor.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
     ]);
@@ -150,7 +171,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result.map((t) => t.key)).toEqual(['a.c', 'm.d', 'z.b']);
+    expect(result.tokens.map((t) => t.key)).toEqual(['a.c', 'm.d', 'z.b']);
   });
 
   it('throws on fetch failure', async () => {
@@ -183,7 +204,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([{ key: 'editor.background', type: 'theme' }]);
+    expect(result.tokens).toEqual([{ key: 'editor.background', type: 'theme' }]);
   });
 
   it('handles mixed token types from different sources', async () => {
@@ -204,7 +225,8 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/b', type: 'default', tokenType: 'semantic token' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    // Sorted by type then key: 'semantic token' before 'theme'
+    expect(result.tokens).toEqual([
       { key: 'function', type: 'semantic token' },
       { key: 'variable', type: 'semantic token' },
       { key: 'editor.background', type: 'theme' },
@@ -221,7 +243,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/docs', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'editor.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
     ]);
@@ -236,7 +258,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com', type: 'default', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'editor.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
     ]);
@@ -256,7 +278,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://raw.githubusercontent.com/example/colors.ts', type: 'color-registry', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'activityBar.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
       { key: 'icon.foreground', type: 'theme' },
@@ -273,7 +295,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'foreground', type: 'theme' },
       { key: 'icon.foreground', type: 'theme' },
     ]);
@@ -296,7 +318,7 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'theme' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'editor.background', type: 'theme' },
       { key: 'editor.foreground', type: 'theme' },
     ]);
@@ -336,7 +358,7 @@ describe('syncCatalogTokens', () => {
       },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result).toEqual([
+    expect(result.tokens).toEqual([
       { key: 'foreground', type: 'theme' },
       { key: 'icon.foreground', type: 'theme' },
     ]);

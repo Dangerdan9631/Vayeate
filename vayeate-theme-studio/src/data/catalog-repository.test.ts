@@ -25,13 +25,21 @@ describe('createCatalogRepository', () => {
     locked: false,
     sources: [],
     tokens: [],
+    semanticTokenTypes: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
   };
 
   it('saves and loads a catalog round-trip', async () => {
     const repo = createCatalogRepository(baseDir);
     await repo.saveCatalog(validCatalog);
     const loaded = await repo.loadCatalog('my-catalog', '1.0.0');
-    expect(loaded).toEqual(validCatalog);
+    expect(loaded).toEqual({
+      ...validCatalog,
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    });
   });
 
   it('listCatalogs returns saved catalog references', async () => {

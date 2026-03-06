@@ -19,6 +19,9 @@ function makeProps(overrides: Partial<{
       locked: false,
       sources: [],
       tokens: [],
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
     },
     tokenCounts,
     isLatestVersion: overrides.isLatestVersion ?? true,
@@ -46,6 +49,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources: [],
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -65,6 +71,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -84,6 +93,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -104,6 +116,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -126,6 +141,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -167,6 +185,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -200,6 +221,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
@@ -228,6 +252,9 @@ describe('CatalogDetailsCard sources UI', () => {
         locked: false,
         sources,
         tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
       },
     });
     render(<CatalogDetailsCard {...props} />);
