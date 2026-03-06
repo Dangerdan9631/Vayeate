@@ -42,7 +42,7 @@ function filterByTokenType(candidate: string, tokenType: TokenType): boolean {
       );
     case 'semantic token':
       return isValidSemanticSelector(candidate);
-    case 'token':
+    case 'textmate token':
       return (
         candidate.length >= 3 &&
         candidate.length <= 160 &&

@@ -97,7 +97,7 @@ export function useTemplateViewModel() {
   // --- Mapping helpers ---
 
   const mappingsByType = useMemo(() => {
-    const groups: Record<TokenType, Mapping[]> = { theme: [], token: [], 'semantic token': [] };
+    const groups: Record<TokenType, Mapping[]> = { theme: [], 'textmate token': [], 'semantic token': [] };
     if (!template) return groups;
     for (const m of template.mappings) {
       groups[m.token.type].push(m);
@@ -106,7 +106,7 @@ export function useTemplateViewModel() {
   }, [template]);
 
   const mappingCountsByType = useMemo(() => {
-    const counts: Record<TokenType, number> = { theme: 0, token: 0, 'semantic token': 0 };
+    const counts: Record<TokenType, number> = { theme: 0, 'textmate token': 0, 'semantic token': 0 };
     if (!template) return counts;
     for (const m of template.mappings) {
       counts[m.token.type]++;

@@ -10,7 +10,7 @@ function makeProps(overrides: Partial<{
   onUpdateSources: (sources: Source[]) => void;
   onSync: () => void;
 }> = {}) {
-  const tokenCounts: Record<TokenType, number> = { theme: 0, token: 0, 'semantic token': 0 };
+  const tokenCounts: Record<TokenType, number> = { theme: 0, 'textmate token': 0, 'semantic token': 0 };
   return {
     catalog: overrides.catalog ?? {
       name: 'test',
@@ -61,7 +61,7 @@ describe('CatalogDetailsCard sources UI', () => {
   it('renders existing sources as rows', () => {
     const sources: Source[] = [
       { url: 'https://example.com/a', type: 'default', tokenType: 'theme' },
-      { url: 'https://example.com/b', type: 'default', tokenType: 'token' },
+      { url: 'https://example.com/b', type: 'default', tokenType: 'textmate token' },
     ];
     const props = makeProps({
       catalog: {
@@ -106,7 +106,7 @@ describe('CatalogDetailsCard sources UI', () => {
 
   it('shows only default as source type when token type is not theme', () => {
     const sources: Source[] = [
-      { url: 'https://example.com/a', type: 'default', tokenType: 'token' },
+      { url: 'https://example.com/a', type: 'default', tokenType: 'textmate token' },
     ];
     const props = makeProps({
       catalog: {

@@ -132,7 +132,7 @@ export function generateTheme(theme: Theme, template: Template, mode: Mode): Gen
       continue;
     }
 
-    if (tokenType === 'token') {
+    if (tokenType === 'textmate token') {
       const colorRef = m.colorVariableRef;
       if (!colorRef) continue;
       const existing = tokenGroupsByColorRef.get(colorRef);

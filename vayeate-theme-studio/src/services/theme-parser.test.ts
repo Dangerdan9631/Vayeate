@@ -27,11 +27,11 @@ describe('parseThemeJson', () => {
     });
     const result = parseThemeJson(json);
     expect(result.tokens).toEqual([
-      { key: 'comment', type: 'token' },
-      { key: 'string', type: 'token' },
-      { key: 'keyword', type: 'token' },
+      { key: 'comment', type: 'textmate token' },
+      { key: 'string', type: 'textmate token' },
+      { key: 'keyword', type: 'textmate token' },
     ]);
-    expect(result.counts.token).toBe(3);
+    expect(result.counts['textmate token']).toBe(3);
   });
 
   it('extracts semantic token keys from semanticTokenColors', () => {
@@ -62,7 +62,7 @@ describe('parseThemeJson', () => {
       semanticTokenColors: { keyword: '#569cd6' },
     });
     const result = parseThemeJson(json);
-    expect(result.counts).toEqual({ theme: 1, token: 1, 'semantic token': 1 });
+    expect(result.counts).toEqual({ theme: 1, 'textmate token': 1, 'semantic token': 1 });
     expect(result.tokens).toHaveLength(3);
   });
 
@@ -75,8 +75,8 @@ describe('parseThemeJson', () => {
     });
     const result = parseThemeJson(json);
     expect(result.tokens).toEqual([
-      { key: 'comment', type: 'token' },
-      { key: 'string', type: 'token' },
+      { key: 'comment', type: 'textmate token' },
+      { key: 'string', type: 'textmate token' },
     ]);
   });
 
@@ -89,7 +89,7 @@ describe('parseThemeJson', () => {
     });
     const result = parseThemeJson(json);
     expect(result.tokens).toEqual([
-      { key: 'keyword', type: 'token' },
+      { key: 'keyword', type: 'textmate token' },
     ]);
   });
 
@@ -104,7 +104,7 @@ describe('parseThemeJson', () => {
   it('returns empty result for empty object', () => {
     const result = parseThemeJson('{}');
     expect(result.tokens).toEqual([]);
-    expect(result.counts).toEqual({ theme: 0, token: 0, 'semantic token': 0 });
+    expect(result.counts).toEqual({ theme: 0, 'textmate token': 0, 'semantic token': 0 });
   });
 
   it('parses scope selectors with spaces (TextMate "or" style)', () => {

@@ -19,7 +19,7 @@ function mapping(
   contrastRef: string | null = null,
 ): Mapping {
   return {
-    token: { key, type: 'token' },
+    token: { key, type: 'textmate token' },
     colorVariableRef: colorRef,
     contrastVariableRef: contrastRef,
     groupRef: null,
@@ -90,7 +90,7 @@ describe('buildScopeColorMap', () => {
 
   it('ignores mappings without colorVariableRef', () => {
     const mappings: Mapping[] = [
-      { token: { key: 'keyword', type: 'token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
+      { token: { key: 'keyword', type: 'textmate token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
     ];
     const map = buildScopeColorMap(mappings, []);
     expect(map.entries).toHaveLength(0);

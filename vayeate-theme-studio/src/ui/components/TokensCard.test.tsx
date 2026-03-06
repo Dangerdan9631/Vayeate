@@ -25,7 +25,7 @@ describe('TokensCard', () => {
     const user = userEvent.setup();
     const tokensByType: Record<TokenType, Token[]> = {
       theme: makeTokens('theme', ['color.fg', 'color.bg', 'background']),
-      token: [],
+      'textmate token': [],
       'semantic token': [],
     };
     render(
@@ -63,7 +63,7 @@ describe('TokensCard', () => {
     render(
       <TokensCard
         catalog={catalog}
-        tokensByType={{ theme: [], token: [], 'semantic token': [] }}
+        tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
         isLatestVersion={true}
         onAddToken={vi.fn()}
         onRemoveToken={vi.fn()}
@@ -89,7 +89,7 @@ describe('TokensCard', () => {
     render(
       <TokensCard
         catalog={catalogWithSemantic}
-        tokensByType={{ theme: [], token: [], 'semantic token': [] }}
+        tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
         isLatestVersion={true}
         onAddToken={vi.fn()}
         onRemoveToken={vi.fn()}
@@ -114,7 +114,7 @@ describe('TokensCard', () => {
     render(
       <TokensCard
         catalog={catalog}
-        tokensByType={{ theme: [], token: [], 'semantic token': [] }}
+        tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
         isLatestVersion={true}
         onAddToken={vi.fn()}
         onRemoveToken={vi.fn()}
@@ -123,8 +123,7 @@ describe('TokensCard', () => {
       />,
     );
     expect(screen.getByText('Theme Tokens')).toBeInTheDocument();
+    expect(screen.getByText('Textmate Tokens')).toBeInTheDocument();
     expect(screen.getByText('Semantic Tokens')).toBeInTheDocument();
-    const tokensLabels = screen.getAllByText('Tokens');
-    expect(tokensLabels.length).toBeGreaterThanOrEqual(1);
   });
 });

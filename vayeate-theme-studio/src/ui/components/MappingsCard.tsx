@@ -37,7 +37,7 @@ interface MappingsCardProps {
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
 }
 
-const TOKEN_TYPES: TokenType[] = ['theme', 'token', 'semantic token'];
+const TOKEN_TYPES: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 
 function getSemanticType(key: string): string {
   try {
@@ -441,8 +441,8 @@ function SemanticTypeBlock({
 function tokenTypeLabel(tokenType: TokenType): string {
   return tokenType === 'theme'
     ? 'Theme Tokens'
-    : tokenType === 'token'
-      ? 'Tokens'
+    : tokenType === 'textmate token'
+      ? 'Textmate Tokens'
       : 'Semantic Tokens';
 }
 
@@ -716,7 +716,7 @@ function buildByGroup(
   function ensureGroup(key: string): Record<TokenType, Mapping[]> {
     let rec = byGroup.get(key);
     if (!rec) {
-      rec = { theme: [], token: [], 'semantic token': [] };
+      rec = { theme: [], 'textmate token': [], 'semantic token': [] };
       byGroup.set(key, rec);
     }
     return rec;

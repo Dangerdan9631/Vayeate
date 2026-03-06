@@ -66,7 +66,7 @@ export type CatalogType = z.infer<typeof catalogTypeSchema>;
 export const sourceTypeSchema = z.enum(['default', 'color-registry', 'color-registry-set']);
 export type SourceType = z.infer<typeof sourceTypeSchema>;
 
-export const tokenTypeSchema = z.enum(['theme', 'token', 'semantic token']);
+export const tokenTypeSchema = z.enum(['theme', 'textmate token', 'semantic token']);
 export type TokenType = z.infer<typeof tokenTypeSchema>;
 
 export const contrastComparisonMethodSchema = z.enum(['lessThan', 'equalTo', 'greaterThan']);

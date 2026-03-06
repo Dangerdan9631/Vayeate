@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import type { Catalog, Source, SourceType, TokenType } from '../../model/schemas';
 
-const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'token', 'semantic token'];
+const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];
+
+function getTokenTypeLabel(t: TokenType): string {
+  return t === 'theme' ? 'Theme Tokens' : t === 'textmate token' ? 'Textmate Tokens' : 'Semantic Tokens';
+}
 
 function getSourceTypeOptions(tokenType: TokenType): SourceType[] {
   return tokenType === 'theme' ? SOURCE_TYPE_OPTIONS_FOR_THEME : ['default'];
@@ -78,8 +82,8 @@ export function CatalogDetailsCard({
         <span className="detail-label">Theme tokens</span>
         <span className="detail-value">{tokenCounts.theme}</span>
 
-        <span className="detail-label">Tokens</span>
-        <span className="detail-value">{tokenCounts.token}</span>
+        <span className="detail-label">Textmate tokens</span>
+        <span className="detail-value">{tokenCounts['textmate token']}</span>
 
         <span className="detail-label">Semantic tokens</span>
         <span className="detail-value">{tokenCounts['semantic token']}</span>
@@ -120,7 +124,7 @@ export function CatalogDetailsCard({
                   }
                 >
                   {getTokenTypeOptions(source.type).map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                    <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
                   ))}
                 </select>
                 <select
@@ -173,7 +177,7 @@ export function CatalogDetailsCard({
                   }}
                 >
                   {TOKEN_TYPE_OPTIONS.map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                    <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
                   ))}
                 </select>
                 <select

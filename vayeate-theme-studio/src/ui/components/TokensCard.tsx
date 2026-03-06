@@ -18,7 +18,7 @@ interface TokensCardProps {
 }
 
 /** Sections shown in the catalog pane: Theme Tokens, Tokens, Semantic Tokens */
-const TOKEN_LIST_SECTIONS: TokenType[] = ['theme', 'token'];
+const TOKEN_LIST_SECTIONS: TokenType[] = ['theme', 'textmate token'];
 
 function isValidTokenKey(value: string): boolean {
   return tokenKeySchema.safeParse(value).success;
@@ -45,7 +45,7 @@ function TokenTypeSection({
   const label =
     tokenType === 'theme'
       ? 'Theme Tokens'
-      : 'Tokens';
+      : 'Textmate Tokens';
 
   return (
     <div className="tree-section">

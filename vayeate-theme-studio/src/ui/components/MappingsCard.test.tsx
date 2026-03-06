@@ -21,7 +21,7 @@ function mapping(
 const defaultProps = {
   mappingsByType: {
     theme: [],
-    token: [],
+    'textmate token': [],
     'semantic token': [
       mapping('*', 'semantic token'),
       mapping('class', 'semantic token'),

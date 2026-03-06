@@ -687,523 +687,523 @@
     },
     {
       "key": "source",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "meta.use.rust",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.accessor",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.brackets",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.comma",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.curlybrace",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.typeparameters",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.parameters",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.parenthesis",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.squarebracket",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.section",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.semi",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.separator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.terminator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "comment",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.comment",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "string",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.string",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "constant.character.escape",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.interpolation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "meta.attribute",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "meta.attribute keyword",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "meta.attribute punctuation.brackets",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.annotation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "storage.type.annotation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "keyword",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "constant.language",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "storage.modifier",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "variable.language",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.type.class",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.type.kotlin",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.type.enum",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.type.struct",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.other.inherited-class",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "storage.type",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "variable.other.object",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.type.interface",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "variable.other.constant",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.powershell support.constant.variable",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "constant.other.enum",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.variable.field",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "variable.other",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.powershell support.variable",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.function",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.variable.property",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "variable.other.object.property",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.powershell support.function",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "variable.parameter",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.variable.parameter",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.type.type-parameter",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "storage.type.generic",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.java punctuation.bracket.angle",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "constant.numeric",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.tag",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "keyword.other.documentation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.tag",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.other.attribute-name",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "comment.block.documentation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "comment.block.javadoc",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "comment.line.documentation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "comment.block.documentation string.quoted.double",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "comment.block.documentation punctuation.definition.string",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.xml punctuation.definition.tag",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.xml meta.tag",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.xml entity.name.tag",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.xml entity.other.attribute-name",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.yaml punctuation.definition",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.json punctuation.definition",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.yaml punctuation.separator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.json punctuation.separator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.yaml entity.other",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.yaml entity.name.tag",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.json support.type",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.yaml constant.language",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.json constant.language",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "heading.1 entity.name.section",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "punctuation.definition.heading",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "heading.2 entity.name.section",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "heading.3 entity.name.section",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "entity.name.section",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "constant.other.reference.link",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "markup.underline.link",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "fenced_code.block.language",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "markup.inline",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "string.other.link",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.html.markdown punctuation.definition",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.html.markdown punctuation.definition.string",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "text.html.markdown meta.separator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.ini keyword",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.ini entity.name.section",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.ini",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.ini punctuation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.ini punctuation.separator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.toml keyword",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.toml entity.other.attribute-name",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.toml",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.toml punctuation",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.toml punctuation.separator",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.control.include.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.margin.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.template.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian entity.name.rule.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian entity.name.include.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian string.regexp",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian string.regexp.escape.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian string.regexp.control.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian string.regexp.paren.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian string.regexp.pattern.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian string.regexp.replace.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian comment.line.double-colon.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "source.regex-pipeline.obsidian comment.line.text.obsidian",
-      "type": "token"
+      "type": "textmate token"
     },
     {
       "key": "local",

@@ -55,7 +55,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDia
 
         {parsed && (
           <div className="bulk-add-summary">
-            <span>Parsed: {parsed.result.counts.theme} theme, {parsed.result.counts.token} token, {parsed.result.counts['semantic token']} semantic</span>
+            <span>Parsed: {parsed.result.counts.theme} theme, {parsed.result.counts['textmate token']} textmate, {parsed.result.counts['semantic token']} semantic</span>
             <span className="bulk-add-new">
               {parsed.newCount} new token{parsed.newCount !== 1 ? 's' : ''} to add
               {parsed.result.tokens.length - parsed.newCount > 0 && (

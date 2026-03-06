@@ -33,7 +33,7 @@ describe('sourceSchema', () => {
     const result = sourceSchema.safeParse({
       url: 'https://example.com/colors.ts',
       type: 'color-registry',
-      tokenType: 'token',
+      tokenType: 'textmate token',
     });
     expect(result.success).toBe(false);
   });
@@ -51,7 +51,7 @@ describe('sourceSchema', () => {
     const result = sourceSchema.safeParse({
       url: 'https://example.com/colorRegistry.ts',
       type: 'color-registry-set',
-      tokenType: 'token',
+      tokenType: 'textmate token',
     });
     expect(result.success).toBe(false);
   });

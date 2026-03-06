@@ -50,10 +50,10 @@ export function parseThemeJson(text: string): BulkParseResult {
       if (!entry.scope) continue;
       const scopes = Array.isArray(entry.scope) ? entry.scope : [entry.scope];
       for (const scope of scopes) {
-        tokens.push({ key: scope, type: 'token' });
+        tokens.push({ key: scope, type: 'textmate token' });
       }
     }
-    log.debug('parsed tokenColors →', tokens.filter((t) => t.type === 'token').length, 'scope(s)');
+    log.debug('parsed tokenColors →', tokens.filter((t) => t.type === 'textmate token').length, 'scope(s)');
   }
 
   if (theme.semanticTokenColors && typeof theme.semanticTokenColors === 'object') {
@@ -71,7 +71,7 @@ export function parseThemeJson(text: string): BulkParseResult {
     return true;
   });
 
-  const counts: Record<TokenType, number> = { theme: 0, token: 0, 'semantic token': 0 };
+  const counts: Record<TokenType, number> = { theme: 0, 'textmate token': 0, 'semantic token': 0 };
   for (const t of deduped) {
     counts[t.type]++;
   }

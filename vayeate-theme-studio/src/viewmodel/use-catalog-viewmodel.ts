@@ -54,8 +54,8 @@ export function useCatalogViewModel() {
   }, [catalogRefs, selectedRef, selectedName]);
 
   const tokenCountsByType = useMemo(() => {
-    if (!catalog) return { theme: 0, token: 0, 'semantic token': 0 };
-    const counts: Record<TokenType, number> = { theme: 0, token: 0, 'semantic token': 0 };
+    if (!catalog) return { theme: 0, 'textmate token': 0, 'semantic token': 0 };
+    const counts: Record<TokenType, number> = { theme: 0, 'textmate token': 0, 'semantic token': 0 };
     for (const t of catalog.tokens) {
       counts[t.type]++;
     }
@@ -63,7 +63,7 @@ export function useCatalogViewModel() {
   }, [catalog]);
 
   const tokensByType = useMemo(() => {
-    const groups: Record<TokenType, Token[]> = { theme: [], token: [], 'semantic token': [] };
+    const groups: Record<TokenType, Token[]> = { theme: [], 'textmate token': [], 'semantic token': [] };
     if (!catalog) return groups;
     for (const t of catalog.tokens) {
       groups[t.type].push(t);

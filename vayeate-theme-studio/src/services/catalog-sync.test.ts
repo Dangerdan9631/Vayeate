@@ -122,23 +122,23 @@ describe('syncCatalogTokens', () => {
       mockFetch('`source.python` and `entity.name.function` and `keyword.*`'),
     );
     const sources: Source[] = [
-      { url: 'https://example.com', type: 'default', tokenType: 'token' },
+      { url: 'https://example.com', type: 'default', tokenType: 'textmate token' },
     ];
     const result = await syncCatalogTokens(sources);
     expect(result.tokens).toEqual([
-      { key: 'entity.name.function', type: 'token' },
-      { key: 'keyword.*', type: 'token' },
-      { key: 'source.python', type: 'token' },
+      { key: 'entity.name.function', type: 'textmate token' },
+      { key: 'keyword.*', type: 'textmate token' },
+      { key: 'source.python', type: 'textmate token' },
     ]);
   });
 
   it('filters out TextMate candidates without a dot', async () => {
     vi.stubGlobal('fetch', mockFetch('`nodot` and `has.dot`'));
     const sources: Source[] = [
-      { url: 'https://example.com', type: 'default', tokenType: 'token' },
+      { url: 'https://example.com', type: 'default', tokenType: 'textmate token' },
     ];
     const result = await syncCatalogTokens(sources);
-    expect(result.tokens).toEqual([{ key: 'has.dot', type: 'token' }]);
+    expect(result.tokens).toEqual([{ key: 'has.dot', type: 'textmate token' }]);
   });
 
   it('deduplicates tokens across multiple sources', async () => {
@@ -184,7 +184,7 @@ describe('syncCatalogTokens', () => {
 
   it('throws when color-registry source has tokenType other than theme', async () => {
     const sources: Source[] = [
-      { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'token' },
+      { url: 'https://example.com/colors.ts', type: 'color-registry', tokenType: 'textmate token' },
     ];
     await expect(syncCatalogTokens(sources)).rejects.toThrow(
       'color-registry and color-registry-set require tokenType theme',

@@ -36,7 +36,7 @@ function makeProps(overrides: Partial<{
     themeBackgroundColorRef: null as string | null,
     onChangeThemeBackgroundColorRef: vi.fn(),
     mappings: overrides.mappings ?? [
-      { token: { key: 'keyword.control', type: 'token' }, colorVariableRef: 'keywordColor', contrastVariableRef: null, groupRef: null },
+      { token: { key: 'keyword.control', type: 'textmate token' }, colorVariableRef: 'keywordColor', contrastVariableRef: null, groupRef: null },
     ],
   };
 }

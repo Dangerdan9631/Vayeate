@@ -106,11 +106,11 @@ describe('computeOrphanKeys', () => {
   it('returns empty set when all mappings have matching catalog tokens', () => {
     const tokens: Token[] = [
       { key: 'editor.background', type: 'theme' },
-      { key: 'comment', type: 'token' },
+      { key: 'comment', type: 'textmate token' },
     ];
     const mappings: Mapping[] = [
       { token: { key: 'editor.background', type: 'theme' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
-      { token: { key: 'comment', type: 'token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
+      { token: { key: 'comment', type: 'textmate token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
     ];
     expect(computeOrphanKeys(mappings, tokens).size).toBe(0);
   });
@@ -121,11 +121,11 @@ describe('computeOrphanKeys', () => {
     ];
     const mappings: Mapping[] = [
       { token: { key: 'editor.background', type: 'theme' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
-      { token: { key: 'removed-token', type: 'token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
+      { token: { key: 'removed-token', type: 'textmate token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
     ];
     const orphans = computeOrphanKeys(mappings, tokens);
     expect(orphans.size).toBe(1);
-    expect(orphans.has('token::removed-token')).toBe(true);
+    expect(orphans.has('textmate token::removed-token')).toBe(true);
   });
 
   it('returns all mappings as orphans when catalog is empty', () => {

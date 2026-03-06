@@ -38,7 +38,7 @@ function template(mappings: Mapping[], overrides: Partial<Template> = {}): Templ
 
 function mapping(
   key: string,
-  tokenType: 'theme' | 'token' | 'semantic token',
+  tokenType: 'theme' | 'textmate token' | 'semantic token',
   colorRef: string | null = null,
   contrastRef: string | null = null,
 ): Mapping {
@@ -134,9 +134,9 @@ describe('generateTheme', () => {
   it('groups token-type mappings by colorVariableRef into tokenColors', () => {
     const t = theme();
     const tpl = template([
-      mapping('keyword', 'token', 'fg'),
-      mapping('keyword.control', 'token', 'fg'),
-      mapping('comment', 'token', 'comment'),
+      mapping('keyword', 'textmate token', 'fg'),
+      mapping('keyword.control', 'textmate token', 'fg'),
+      mapping('comment', 'textmate token', 'comment'),
     ]);
     const out = generateTheme(t, tpl, 'dark');
     expect(out.tokenColors).toHaveLength(2);
