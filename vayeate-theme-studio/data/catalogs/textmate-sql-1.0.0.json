@@ -1,0 +1,214 @@
+{
+  "name": "textmate-sql",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/sql.tmbundle/refs/heads/master/Syntaxes/SQL.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-dash.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.number-sign.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.slash.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.database-name.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.table-name.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.comparison.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.concatenator.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.math.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.star.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.alias.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.authorization.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.cascade.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.create.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.data-integrity.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.DDL.create.II.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.DML.II.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.DML.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.LUW.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.object-comments.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.order.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.table.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.alter.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.block.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.create.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.drop.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.scope.begin.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.scope.end.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.interpolated.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.other.quoted.brackets.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.other.backtick.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.regexp.modr.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.regexp.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.aggregate.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.scalar.sql",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.string.sql",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

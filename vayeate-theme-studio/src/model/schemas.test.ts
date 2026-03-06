@@ -55,4 +55,67 @@ describe('sourceSchema', () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it('accepts semantic-token-registry with tokenType semantic token', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/tokenClassification.ts',
+      type: 'semantic-token-registry',
+      tokenType: 'semantic token',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects semantic-token-registry with tokenType theme', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/tokenClassification.ts',
+      type: 'semantic-token-registry',
+      tokenType: 'theme',
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects semantic-token-registry with tokenType textmate token', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/tokenClassification.ts',
+      type: 'semantic-token-registry',
+      tokenType: 'textmate token',
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('accepts textmate-xml with tokenType textmate token', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/JSON.tmLanguage',
+      type: 'textmate-xml',
+      tokenType: 'textmate token',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts textmate-json with tokenType textmate token', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/rust.tmLanguage.json',
+      type: 'textmate-json',
+      tokenType: 'textmate token',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects textmate-xml with tokenType theme', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/JSON.tmLanguage',
+      type: 'textmate-xml',
+      tokenType: 'theme',
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects textmate-json with tokenType semantic token', () => {
+    const result = sourceSchema.safeParse({
+      url: 'https://example.com/rust.tmLanguage.json',
+      type: 'textmate-json',
+      tokenType: 'semantic token',
+    });
+    expect(result.success).toBe(false);
+  });
 });

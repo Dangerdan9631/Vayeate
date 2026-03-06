@@ -1,0 +1,282 @@
+{
+  "name": "textmate-yaml",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/yaml.tmbundle/refs/heads/master/Syntaxes/YAML.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.line.number-sign.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.double-quoted.newline.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.single-quoted.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.boolean.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.merge.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.null.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.value.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.float.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.indentation-indicator.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.yaml-version.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.timestamp.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.anchor.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.document.begin.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.document.end.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.character.anchor.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.expected-comment-or-newline.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.expected-newline.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.tag-handle.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.unrecognized.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.alias.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.block-scalar.folded.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.block-scalar.literal.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.property.anchor.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.tag.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.yaml.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.block-mapping.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.directive.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.flow-mapping.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.flow-pair.explicit.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.flow-pair.key.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.flow-pair.value.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.flow-pair.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.flow-sequence.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.property.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.alias.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.anchor.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.block.sequence.item.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.directive.begin.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.key-value.begin.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.mapping.begin.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.mapping.end.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.sequence.begin.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.sequence.end.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.key-value.mapping.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.mapping.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.sequence.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.chomping-indicator.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.tag-handle.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.block.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.directive-name.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.directive-parameter.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.plain.in.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.plain.out.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.other.directive.reserved.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.tag-prefix.yaml",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.alias.yaml",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

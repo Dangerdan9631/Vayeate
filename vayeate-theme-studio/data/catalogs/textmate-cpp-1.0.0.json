@@ -1,0 +1,46 @@
+{
+  "name": "textmate-cpp",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/c.tmbundle/refs/heads/master/Syntaxes/C%2B%2B.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "meta.function-call.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.block.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.block.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.any-method.c",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

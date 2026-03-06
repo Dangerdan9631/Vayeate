@@ -191,6 +191,24 @@ describe('syncCatalogTokens', () => {
     );
   });
 
+  it('throws when semantic-token-registry source has tokenType other than semantic token', async () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/tokenClassification.ts', type: 'semantic-token-registry', tokenType: 'theme' },
+    ];
+    await expect(syncCatalogTokens(sources)).rejects.toThrow(
+      'semantic-token-registry requires tokenType semantic token',
+    );
+  });
+
+  it('throws when textmate-xml source has tokenType other than textmate token', async () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/JSON.tmLanguage', type: 'textmate-xml', tokenType: 'theme' },
+    ];
+    await expect(syncCatalogTokens(sources)).rejects.toThrow(
+      'textmate-xml and textmate-json require tokenType textmate token',
+    );
+  });
+
   it('throws on unsupported source type', async () => {
     const sources = [
       { url: 'https://example.com', type: 'unknown' as 'default', tokenType: 'theme' as const },
@@ -391,5 +409,139 @@ describe('syncCatalogTokens', () => {
     ];
     await syncCatalogTokens(sources);
     expect(fetchMock).toHaveBeenCalledWith('https://example.com/theme/common/colors/baseColors.ts');
+  });
+
+  it('semantic-token-registry extracts types from registerTokenType and modifiers from registerTokenModifier', async () => {
+    const code = `
+      registry.registerTokenType('function', nls.localize('function', "Style for functions"), [['entity.name.function']]);
+      registry.registerTokenType('variable', nls.localize('variable', "Style for variables."), [['variable.other.readwrite']]);
+      registry.registerTokenModifier('declaration', nls.localize('declaration', "Style for all symbol declarations."));
+      registry.registerTokenModifier('readonly', nls.localize('readonly', "Style to use for symbols that are read-only."));
+    `;
+    vi.stubGlobal('fetch', mockFetch(code));
+    const sources: Source[] = [
+      { url: 'https://example.com/tokenClassification.ts', type: 'semantic-token-registry', tokenType: 'semantic token' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result.tokens).toEqual([]);
+    expect(result.semanticTokenTypes).toEqual(['function', 'variable']);
+    expect(result.semanticTokenModifiers).toEqual(['declaration', 'readonly']);
+    expect(result.semanticTokenLanguages).toEqual([]);
+  });
+
+  it('semantic-token-registry parses registerTokenStyleDefault selector and merges type and modifiers', async () => {
+    const code = `
+      registerTokenStyleDefault('variable.readonly', [['variable.other.constant']]);
+      registerTokenStyleDefault('property.readonly', [['variable.other.constant.property']]);
+    `;
+    vi.stubGlobal('fetch', mockFetch(code));
+    const sources: Source[] = [
+      { url: 'https://example.com/tokenClassification.ts', type: 'semantic-token-registry', tokenType: 'semantic token' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result.tokens).toEqual([]);
+    expect(result.semanticTokenTypes).toEqual(['property', 'variable']);
+    expect(result.semanticTokenModifiers).toEqual(['readonly']);
+    expect(result.semanticTokenLanguages).toEqual([]);
+  });
+
+  it('textmate-xml extracts scopeName and name from plist XML', async () => {
+    const plist = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>scopeName</key>
+	<string>source.json</string>
+	<key>name</key>
+	<string>JSON</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>name</key>
+			<string>punctuation.definition.array.begin.json</string>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>constant.language.json</string>
+		</dict>
+	</array>
+</dict>
+</plist>`;
+    vi.stubGlobal('fetch', mockFetch(plist));
+    const sources: Source[] = [
+      { url: 'https://example.com/JSON.tmLanguage', type: 'textmate-xml', tokenType: 'textmate token' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result.tokens).toContainEqual({ key: 'source.json', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'punctuation.definition.array.begin.json', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'constant.language.json', type: 'textmate token' });
+    expect(result.tokens.every((t) => t.type === 'textmate token')).toBe(true);
+    expect(result.tokens).toEqual([...result.tokens].sort((a, b) => a.key.localeCompare(b.key)));
+  });
+
+  it('textmate-json extracts scopeName and name from JSON grammar', async () => {
+    const json = JSON.stringify({
+      scopeName: 'source.rust',
+      name: 'Rust',
+      patterns: [
+        {
+          name: 'meta.macro.metavariable.type.rust',
+          match: 'x',
+          captures: {
+            '1': { name: 'keyword.operator.macro.dollar.rust' },
+            '4': { name: 'entity.name.type.metavariable.rust' },
+          },
+        },
+        { name: 'comment.line.documentation.rust', match: '//' },
+      ],
+      repository: {
+        constants: {
+          patterns: [{ name: 'constant.numeric.decimal.rust', match: '\\d+' }],
+        },
+      },
+    });
+    vi.stubGlobal('fetch', mockFetch(json));
+    const sources: Source[] = [
+      { url: 'https://example.com/rust.tmLanguage.json', type: 'textmate-json', tokenType: 'textmate token' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result.tokens).toContainEqual({ key: 'source.rust', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'meta.macro.metavariable.type.rust', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'keyword.operator.macro.dollar.rust', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'entity.name.type.metavariable.rust', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'comment.line.documentation.rust', type: 'textmate token' });
+    expect(result.tokens).toContainEqual({ key: 'constant.numeric.decimal.rust', type: 'textmate token' });
+    expect(result.tokens.every((t) => t.type === 'textmate token')).toBe(true);
+    expect(result.tokens).toEqual([...result.tokens].sort((a, b) => a.key.localeCompare(b.key)));
+  });
+
+  it('merges semantic-token-registry with default semantic source', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve('`class.static` and `function`'),
+      })
+      .mockResolvedValueOnce({
+        ok: true, status: 200, statusText: 'OK',
+        text: () => Promise.resolve(
+          "registry.registerTokenType('variable', nls.localize('variable', ''));\n" +
+          "registry.registerTokenModifier('declaration', nls.localize('declaration', ''));\n" +
+          "registerTokenStyleDefault('variable.readonly', [['variable.other.constant']]);",
+        ),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+    const sources: Source[] = [
+      { url: 'https://example.com/docs', type: 'default', tokenType: 'semantic token' },
+      { url: 'https://example.com/tokenClassification.ts', type: 'semantic-token-registry', tokenType: 'semantic token' },
+    ];
+    const result = await syncCatalogTokens(sources);
+    expect(result.tokens).toEqual([
+      { key: 'class.static', type: 'semantic token' },
+      { key: 'function', type: 'semantic token' },
+    ]);
+    expect(result.semanticTokenTypes).toEqual(['class', 'function', 'variable']);
+    expect(result.semanticTokenModifiers).toEqual(['declaration', 'readonly', 'static']);
+    expect(result.semanticTokenLanguages).toEqual([]);
   });
 });

@@ -1,0 +1,258 @@
+{
+  "name": "textmate-css",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/css.tmbundle/refs/heads/master/Syntaxes/CSS.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.color.rgb-percentage.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.color.rgb-value.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.wildcard.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.attribute.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.class.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.id.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.pseudo-class.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.pseudo-class.ui-state.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.pseudo-element.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.deprecated.color.w3c-non-standard-color-name.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.at-rule.charset.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.at-rule.font-face.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.at-rule.import.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.at-rule.media.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logic.media.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.important.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.unit.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.at-rule.charset.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.at-rule.font-face.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.at-rule.import.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.at-rule.media.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.attribute-selector.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.property-list.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.property-name.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.property-value.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.selector.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.arbitrary-repitition.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.constant.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.entity.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.keyword.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.function.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.property-list.begin.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.property-list.end.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.key-value.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.operator.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.terminator.rule.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.attribute-value.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.attribute-value.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.color.w3c-standard-color-name.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.font-name.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.media.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.misc.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.transform.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.url.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.property-name.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.property-name.media.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.misc.css",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.url.css",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

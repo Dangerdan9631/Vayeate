@@ -1,0 +1,1174 @@
+{
+  "name": "microsoft-typescript-react",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/microsoft/TypeScript-TmLanguage/refs/heads/master/TypeScriptReact.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "case-clause.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.documentation.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.shebang.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.triple-slash.directive.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.control.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.entity.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.backslash.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.numeric.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.access-type.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.boolean.false.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.boolean.true.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.import-export-all.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.infinity.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.nan.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.null.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.symbol-type.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.undefined.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.binary.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.decimal.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.octal.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.character-class.range.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.character-class.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.character-class.set.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.description.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.email.link.underline.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.tagged-template.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.label.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.directive.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.inline.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.namespace.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.alias.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.class.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.enum.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.instance.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.interface.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.module.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.directive.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.namespace.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.inherited-class.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.attribute.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.newline.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.syntax.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.type.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.anchor.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.as.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.assert.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.default.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.export.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.from.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.intrinsic.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.loop.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.new.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.require.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.satisfies.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.switch.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.trycatch.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.with.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.generator.asterisk.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.compound.bitwise.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.compound.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.bitwise.shift.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.bitwise.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.comparison.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.control.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.decrement.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.definiteassignment.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.delete.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.extends.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.import.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.in.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.infer.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.instanceof.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.is.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.keyof.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.of.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.typeof.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.void.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.increment.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logical.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.negation.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.new.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.optional.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.or.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.quantifier.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.relational.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.rest.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.spread.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.ternary.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.type.annotation.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.type.asserts.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.type.modifier.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.back-reference.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.debugger.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.array-binding-pattern-variable.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.array.literal.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.arrow.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.assertion.look-ahead.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.assertion.look-behind.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.assertion.negative-look-ahead.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.assertion.negative-look-behind.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.block.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.brace.round.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.brace.square.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.decorator.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.delimiter.decimal.period.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.enum.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.example.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.export.default.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.export.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.field.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function-call.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.expression.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.group.assertion.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.group.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.import-equals.external.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.import-equals.internal.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.import.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.indexer.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.indexer.mappedtype.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.interface.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.namespace.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object-binding-pattern-variable.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object-literal.key.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object.member.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.objectliteral.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.parameter.object-binding-pattern.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.parameters.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.paramter.array-binding-pattern.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.return.type.arrow.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.return.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.attributes.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.without-attributes.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.template.expression.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.annotation.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.constructor.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.declaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.function.return.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.function.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.infer.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.parameters.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.paren.cover.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.type.tuple.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.var-single-variable.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.var.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "new.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.accessor.optional.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.accessor.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.decorator.internaldeclaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.decorator.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.binding-pattern.array.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.binding-pattern.object.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.block.tag.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.block.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bracket.angle.begin.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bracket.angle.end.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bracket.curly.begin.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bracket.curly.end.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bracket.square.begin.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bracket.square.end.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.character-class.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.entity.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.group.assertion.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.group.no-capture.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.group.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.inline.tag.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.optional-value.begin.bracket.square.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.optional-value.end.bracket.square.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.begin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.end.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tag.begin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tag.directive.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tag.end.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.template-expression.begin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.template-expression.end.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.typeparameters.begin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.typeparameters.end.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.destructuring.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.embedded.begin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.embedded.end.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.comma.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.key-value.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.label.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.namespace.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.parameter.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.pipe.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.terminator.statement.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.embedded.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.async.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.class.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.class.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.enum.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.function.arrow.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.function.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.interface.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.internaldeclaration.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.namespace.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.numeric.bigint.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.type.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.alias.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.regexp.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.builtin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.component.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.console.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.dom.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.error.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.node.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.promise.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.dom.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.json.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.math.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property.math.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.console.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.dom.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.event-handler.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.json.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.math.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.process.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.promise.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.builtin.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.object.module.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.primitive.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.dom.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.object.node.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.object.process.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.property.dom.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.property.importmeta.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.property.process.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.property.target.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "switch-block.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "switch-expression.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "switch-statement.expr.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.arguments.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.super.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.this.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.object.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.constant.object.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.constant.object.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.constant.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.constant.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.description.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.enummember.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.link.underline.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.object.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.object.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.property.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.readwrite.alias.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.readwrite.tsx",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.regexp",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.tsx",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

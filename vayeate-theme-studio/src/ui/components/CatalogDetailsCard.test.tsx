@@ -104,7 +104,55 @@ describe('CatalogDetailsCard sources UI', () => {
     expect(screen.getAllByRole('option', { name: 'color-registry-set' }).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('shows only default as source type when token type is not theme', () => {
+  it('shows default and semantic-token-registry when token type is semantic token', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/a', type: 'default', tokenType: 'semantic token' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+    expect(screen.getAllByRole('option', { name: 'default' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('option', { name: 'semantic-token-registry' }).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('shows only semantic token as token type when source type is semantic-token-registry', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/tokenClassification.ts', type: 'semantic-token-registry', tokenType: 'semantic token' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+    const sourceTypeSelect = screen.getByDisplayValue('semantic-token-registry');
+    const row = sourceTypeSelect.closest('.source-row');
+    const tokenTypeSelect = row?.querySelectorAll('select')[0];
+    const tokenTypeOptions = tokenTypeSelect?.querySelectorAll('option') ?? [];
+    expect(tokenTypeOptions).toHaveLength(1);
+    expect((tokenTypeOptions[0] as HTMLOptionElement).value).toBe('semantic token');
+  });
+
+  it('shows default, textmate-xml, and textmate-json when token type is textmate token', () => {
     const sources: Source[] = [
       { url: 'https://example.com/a', type: 'default', tokenType: 'textmate token' },
     ];
@@ -122,11 +170,61 @@ describe('CatalogDetailsCard sources UI', () => {
       },
     });
     render(<CatalogDetailsCard {...props} />);
-    const selectsWithOnlyDefault = screen.getAllByRole('combobox').filter((el) => {
-      const opts = el.querySelectorAll('option');
-      return opts.length === 1 && (opts[0] as HTMLOptionElement).value === 'default';
+    expect(screen.getAllByRole('option', { name: 'default' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('option', { name: 'textmate-xml' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('option', { name: 'textmate-json' }).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('shows only textmate token as token type when source type is textmate-xml', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/JSON.tmLanguage', type: 'textmate-xml', tokenType: 'textmate token' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
+      },
     });
-    expect(selectsWithOnlyDefault.length).toBeGreaterThanOrEqual(1);
+    render(<CatalogDetailsCard {...props} />);
+    const sourceTypeSelect = screen.getByDisplayValue('textmate-xml');
+    const row = sourceTypeSelect.closest('.source-row');
+    const tokenTypeSelect = row?.querySelectorAll('select')[0];
+    const tokenTypeOptions = tokenTypeSelect?.querySelectorAll('option') ?? [];
+    expect(tokenTypeOptions).toHaveLength(1);
+    expect((tokenTypeOptions[0] as HTMLOptionElement).value).toBe('textmate token');
+  });
+
+  it('shows only textmate token as token type when source type is textmate-json', () => {
+    const sources: Source[] = [
+      { url: 'https://example.com/rust.tmLanguage.json', type: 'textmate-json', tokenType: 'textmate token' },
+    ];
+    const props = makeProps({
+      catalog: {
+        name: 'test',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources,
+        tokens: [],
+        semanticTokenTypes: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
+      },
+    });
+    render(<CatalogDetailsCard {...props} />);
+    const sourceTypeSelect = screen.getByDisplayValue('textmate-json');
+    const row = sourceTypeSelect.closest('.source-row');
+    const tokenTypeSelect = row?.querySelectorAll('select')[0];
+    const tokenTypeOptions = tokenTypeSelect?.querySelectorAll('option') ?? [];
+    expect(tokenTypeOptions).toHaveLength(1);
+    expect((tokenTypeOptions[0] as HTMLOptionElement).value).toBe('textmate token');
   });
 
   it('shows only theme as token type when source type is color-registry', () => {

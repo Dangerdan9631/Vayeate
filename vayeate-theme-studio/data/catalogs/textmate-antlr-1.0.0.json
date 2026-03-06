@@ -1,0 +1,198 @@
+{
+  "name": "textmate-antlr",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/antlr.tmbundle/refs/heads/master/Syntaxes/ANTLR.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.boolean.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.token.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.rule.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.class.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.token.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.sizeof.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.options.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.definition.class.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.definition.class.extends.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.options-block.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.options.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.rule.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.begin.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.end.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.group.begin.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.group.end.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.options.begin.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.options.end.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.embedded.java-or-c.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.java-or-c",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.eof-char.antlr",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.option.antlr",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

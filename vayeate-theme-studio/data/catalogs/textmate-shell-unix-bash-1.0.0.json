@@ -1,0 +1,378 @@
+{
+  "name": "textmate-shell-unix-bash",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/shellscript.tmbundle/refs/heads/master/Syntaxes/Shell-Unix-Bash.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.line.number-sign.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.shebang.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.ansi-c.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.control-char.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.hex.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.newline.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.octal.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.octal.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.heredoc-token.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expansion.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.extglob.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.glob.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.heredoc.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.herestring.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.list.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logical.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.pipe.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.redirect.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.tilde.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.herestring.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.case-block.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.case-body.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.case-clause-body.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.case-clause.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.case-pattern.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.for-in-loop.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.for-loop.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.group.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.if-block.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.logical-expression.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.select-block.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.subshell.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.while-loop.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.extglob.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.arguments.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.case-pattern.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.line.shebang.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.extglob.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.function.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.group.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.logical-expression.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.subshell.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.variable.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.array.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.pipe-sign.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.terminator.case-clause.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.function.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.interpolated.backtick.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.interpolated.dollar.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.interpolated.process-substitution.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.other.math.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.dollar.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.applescript.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.html.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.markdown.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.applescript.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.html.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.markdown.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.python.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.ruby.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.no-indent.textile.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.python.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.ruby.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.heredoc.textile.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.builtin.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.bracket.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.loop.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.normal.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.positional.shell",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.special.shell",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

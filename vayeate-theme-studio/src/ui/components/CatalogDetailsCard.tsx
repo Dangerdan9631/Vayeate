@@ -3,19 +3,25 @@ import type { Catalog, Source, SourceType, TokenType } from '../../model/schemas
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];
+const SOURCE_TYPE_OPTIONS_FOR_SEMANTIC: SourceType[] = ['default', 'semantic-token-registry'];
+const SOURCE_TYPE_OPTIONS_FOR_TEXTMATE: SourceType[] = ['default', 'textmate-xml', 'textmate-json'];
 
 function getTokenTypeLabel(t: TokenType): string {
   return t === 'theme' ? 'Theme Tokens' : t === 'textmate token' ? 'Textmate Tokens' : 'Semantic Tokens';
 }
 
 function getSourceTypeOptions(tokenType: TokenType): SourceType[] {
-  return tokenType === 'theme' ? SOURCE_TYPE_OPTIONS_FOR_THEME : ['default'];
+  if (tokenType === 'theme') return SOURCE_TYPE_OPTIONS_FOR_THEME;
+  if (tokenType === 'semantic token') return SOURCE_TYPE_OPTIONS_FOR_SEMANTIC;
+  if (tokenType === 'textmate token') return SOURCE_TYPE_OPTIONS_FOR_TEXTMATE;
+  return ['default'];
 }
 
 function getTokenTypeOptions(sourceType: SourceType): TokenType[] {
-  return sourceType === 'color-registry' || sourceType === 'color-registry-set'
-    ? (['theme'] as TokenType[])
-    : TOKEN_TYPE_OPTIONS;
+  if (sourceType === 'color-registry' || sourceType === 'color-registry-set') return ['theme'];
+  if (sourceType === 'semantic-token-registry') return ['semantic token'];
+  if (sourceType === 'textmate-xml' || sourceType === 'textmate-json') return ['textmate token'];
+  return TOKEN_TYPE_OPTIONS;
 }
 
 interface CatalogDetailsCardProps {
@@ -171,6 +177,18 @@ export function CatalogDetailsCard({
                     if (
                       tokenType !== 'theme' &&
                       (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
+                    ) {
+                      setNewSourceType('default');
+                    }
+                    if (
+                      tokenType !== 'semantic token' &&
+                      newSourceType === 'semantic-token-registry'
+                    ) {
+                      setNewSourceType('default');
+                    }
+                    if (
+                      tokenType !== 'textmate token' &&
+                      (newSourceType === 'textmate-xml' || newSourceType === 'textmate-json')
                     ) {
                       setNewSourceType('default');
                     }

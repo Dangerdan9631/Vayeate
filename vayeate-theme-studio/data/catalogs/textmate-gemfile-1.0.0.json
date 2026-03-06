@@ -1,0 +1,30 @@
+{
+  "name": "textmate-gemfile",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/ruby.tmbundle/refs/heads/master/Syntaxes/Gemfile.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "keyword.other.special-method.ruby.gemfile",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.declaration.ruby.gemfile",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.ruby.gemfile",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

@@ -13,7 +13,21 @@ const REGISTER_COLOR_RE = /registerColor\s*\(\s*['"]([^'"]+)['"]/g;
 /** Matches export * from '...' or export * from "..."; capture group 1 = path */
 const EXPORT_STAR_FROM_RE = /export\s*\*\s*from\s*['"]([^'"]+)['"]/g;
 
+/** Matches registerTokenType('id', ...) or registerTokenType("id", ...); capture group 1 = type id */
+const REGISTER_TOKEN_TYPE_RE = /registerTokenType\s*\(\s*['"]([^'"]+)['"]/g;
+/** Matches registerTokenModifier('id', ...) or registerTokenModifier("id", ...); capture group 1 = modifier id */
+const REGISTER_TOKEN_MODIFIER_RE = /registerTokenModifier\s*\(\s*['"]([^'"]+)['"]/g;
+/** Matches registerTokenStyleDefault('selector', ...) or registerTokenStyleDefault("selector", ...); capture group 1 = selector */
+const REGISTER_TOKEN_STYLE_DEFAULT_RE = /registerTokenStyleDefault\s*\(\s*['"]([^'"]+)['"]/g;
+
 const THEME_ONLY_SOURCE_TYPES = ['color-registry', 'color-registry-set'] as const;
+const SEMANTIC_ONLY_SOURCE_TYPES = ['semantic-token-registry'] as const;
+const TEXTMATE_ONLY_SOURCE_TYPES = ['textmate-xml', 'textmate-json'] as const;
+
+/** Plist XML: <key>scopeName</key><string>...</string>; capture group 1 = scope */
+const TMLANGUAGE_SCOPE_NAME_RE = /<key>scopeName<\/key>\s*<string>([^<]+)<\/string>/;
+/** Plist XML: <key>name</key><string>...</string>; capture group 1 = scope */
+const TMLANGUAGE_NAME_RE = /<key>name<\/key>\s*<string>([^<]+)<\/string>/g;
 
 /** Theme color IDs: optional segments after first (e.g. "foreground" or "icon.foreground") */
 const THEME_COLOR_RE = /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$/;
@@ -90,6 +104,62 @@ function parseColorRegistrySource(text: string, tokenType: TokenType): Token[] {
   return unique.map((key) => ({ key, type: tokenType }));
 }
 
+function parseTextmateGrammarSource(xmlText: string): Token[] {
+  const scopes = new Set<string>();
+  const scopeNameMatch = xmlText.match(TMLANGUAGE_SCOPE_NAME_RE);
+  if (scopeNameMatch) {
+    const s = scopeNameMatch[1].trim();
+    if (s) scopes.add(s);
+  }
+  let match: RegExpExecArray | null;
+  const nameRe = new RegExp(TMLANGUAGE_NAME_RE.source, 'g');
+  while ((match = nameRe.exec(xmlText)) !== null) {
+    const s = match[1].trim();
+    if (s) scopes.add(s);
+  }
+  const filtered = [...scopes].filter((scope) => filterByTokenType(scope, 'textmate token'));
+  const unique = [...new Set(filtered)].sort();
+  log.debug('extracted', unique.length, 'token(s) from textmate-xml source');
+  return unique.map((key) => ({ key, type: 'textmate token' }));
+}
+
+/** Recursively collect scope names from .tmLanguage.json: "scopeName" and all "name" string values */
+function collectScopeNamesFromJson(obj: unknown, scopes: Set<string>): void {
+  if (obj === null || typeof obj !== 'object') return;
+  const o = obj as Record<string, unknown>;
+  if (typeof o.scopeName === 'string') {
+    const s = o.scopeName.trim();
+    if (s) scopes.add(s);
+  }
+  if (typeof o.name === 'string') {
+    const s = o.name.trim();
+    if (s) scopes.add(s);
+  }
+  for (const key of Object.keys(o)) {
+    const v = o[key];
+    if (Array.isArray(v)) {
+      for (const item of v) collectScopeNamesFromJson(item, scopes);
+    } else if (v !== null && typeof v === 'object') {
+      collectScopeNamesFromJson(v, scopes);
+    }
+  }
+}
+
+function parseTextmateJsonSource(jsonText: string): Token[] {
+  const scopes = new Set<string>();
+  try {
+    const data = JSON.parse(jsonText) as unknown;
+    collectScopeNamesFromJson(data, scopes);
+  } catch {
+    log.debug('textmate-json: failed to parse JSON');
+    return [];
+  }
+  const filtered = [...scopes].filter((scope) => filterByTokenType(scope, 'textmate token'));
+  const unique = [...new Set(filtered)].sort();
+  log.debug('extracted', unique.length, 'token(s) from textmate-json source');
+  return unique.map((key) => ({ key, type: 'textmate token' }));
+}
+
 function parseExportStarFromPaths(manifestText: string): string[] {
   const paths: string[] = [];
   let match: RegExpExecArray | null;
@@ -104,6 +174,51 @@ function parseExportStarFromPaths(manifestText: string): string[] {
 function resolveExportUrl(relativePath: string, manifestUrl: string): string {
   const url = new URL(relativePath, manifestUrl).href;
   return url.replace(/\.js$/i, '.ts');
+}
+
+export type SemanticRegistryParseResult = {
+  types: string[];
+  modifiers: string[];
+  languages: string[];
+};
+
+function parseSemanticTokenRegistrySource(text: string): SemanticRegistryParseResult {
+  const types = new Set<string>();
+  const modifiers = new Set<string>();
+  const languages = new Set<string>();
+
+  let match: RegExpExecArray | null;
+  const typeRe = new RegExp(REGISTER_TOKEN_TYPE_RE.source, 'g');
+  while ((match = typeRe.exec(text)) !== null) {
+    const id = match[1].trim();
+    if (id) types.add(id);
+  }
+
+  const modifierRe = new RegExp(REGISTER_TOKEN_MODIFIER_RE.source, 'g');
+  while ((match = modifierRe.exec(text)) !== null) {
+    const id = match[1].trim();
+    if (id) modifiers.add(id);
+  }
+
+  const styleDefaultRe = new RegExp(REGISTER_TOKEN_STYLE_DEFAULT_RE.source, 'g');
+  while ((match = styleDefaultRe.exec(text)) !== null) {
+    const selector = match[1].trim();
+    if (!selector) continue;
+    try {
+      const parsed = parseSemanticSelector(selector);
+      if (parsed.type && parsed.type !== '*') types.add(parsed.type);
+      for (const m of parsed.modifiers) modifiers.add(m);
+      if (parsed.language) languages.add(parsed.language);
+    } catch {
+      // skip invalid selector
+    }
+  }
+
+  return {
+    types: [...types].sort(),
+    modifiers: [...modifiers].sort(),
+    languages: [...languages].sort(),
+  };
 }
 
 export type FetchText = (url: string) => Promise<string>;
@@ -122,6 +237,9 @@ export async function syncCatalogTokens(
 ): Promise<SyncCatalogResult> {
   log.debug('starting sync', `(${sources.length} source(s))`);
   const allTokens: Token[] = [];
+  let registryTypes: string[] = [];
+  let registryModifiers: string[] = [];
+  let registryLanguages: string[] = [];
 
   for (const source of sources) {
     if (
@@ -129,6 +247,18 @@ export async function syncCatalogTokens(
       source.tokenType !== 'theme'
     ) {
       throw new Error('color-registry and color-registry-set require tokenType theme');
+    }
+    if (
+      SEMANTIC_ONLY_SOURCE_TYPES.includes(source.type as (typeof SEMANTIC_ONLY_SOURCE_TYPES)[number]) &&
+      source.tokenType !== 'semantic token'
+    ) {
+      throw new Error('semantic-token-registry requires tokenType semantic token');
+    }
+    if (
+      TEXTMATE_ONLY_SOURCE_TYPES.includes(source.type as (typeof TEXTMATE_ONLY_SOURCE_TYPES)[number]) &&
+      source.tokenType !== 'textmate token'
+    ) {
+      throw new Error('textmate-xml and textmate-json require tokenType textmate token');
     }
 
     switch (source.type) {
@@ -162,6 +292,39 @@ export async function syncCatalogTokens(
           log.debug('parsed', url, `→ ${tokens.length} token(s)`);
           allTokens.push(...tokens);
         }
+        break;
+      }
+      case 'semantic-token-registry': {
+        log.debug('fetching source', source.url, 'semantic-token-registry');
+        const text = await fetchText(source.url);
+        log.debug('fetched', source.url, `(${text.length} chars)`);
+        const parsed = parseSemanticTokenRegistrySource(text);
+        registryTypes = [...new Set([...registryTypes, ...parsed.types])].sort();
+        registryModifiers = [...new Set([...registryModifiers, ...parsed.modifiers])].sort();
+        registryLanguages = [...new Set([...registryLanguages, ...parsed.languages])].sort();
+        log.debug(
+          'parsed',
+          source.url,
+          `→ ${parsed.types.length} type(s), ${parsed.modifiers.length} modifier(s), ${parsed.languages.length} language(s)`,
+        );
+        break;
+      }
+      case 'textmate-xml': {
+        log.debug('fetching source', source.url, 'textmate-xml');
+        const text = await fetchText(source.url);
+        log.debug('fetched', source.url, `(${text.length} chars)`);
+        const tokens = parseTextmateGrammarSource(text);
+        log.debug('parsed', source.url, `→ ${tokens.length} token(s)`);
+        allTokens.push(...tokens);
+        break;
+      }
+      case 'textmate-json': {
+        log.debug('fetching source', source.url, 'textmate-json');
+        const text = await fetchText(source.url);
+        log.debug('fetched', source.url, `(${text.length} chars)`);
+        const tokens = parseTextmateJsonSource(text);
+        log.debug('parsed', source.url, `→ ${tokens.length} token(s)`);
+        allTokens.push(...tokens);
         break;
       }
       default:
@@ -210,9 +373,13 @@ export async function syncCatalogTokens(
       // skip invalid keys
     }
   }
-  const types = [...new Set(semanticTokenTypes)].sort();
-  const modifiers = [...new Set(semanticTokenModifiers)].sort();
-  const languages = [...new Set(semanticTokenLanguages)].sort();
+  let types = [...new Set(semanticTokenTypes)].sort();
+  let modifiers = [...new Set(semanticTokenModifiers)].sort();
+  let languages = [...new Set(semanticTokenLanguages)].sort();
+
+  types = [...new Set([...types, ...registryTypes])].sort();
+  modifiers = [...new Set([...modifiers, ...registryModifiers])].sort();
+  languages = [...new Set([...languages, ...registryLanguages])].sort();
 
   return {
     tokens: sortedTokens,

@@ -1,0 +1,74 @@
+{
+  "name": "textmate-ini",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/ini.tmbundle/refs/heads/master/Syntaxes/Ini.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.line.number-sign.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.semicolon.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.section.group-title.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.definition.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.entity.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.key-value.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.ini",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.ini",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

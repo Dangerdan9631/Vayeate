@@ -1,0 +1,162 @@
+{
+  "name": "textmate-xml-grammar",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/xml.tmbundle/refs/heads/master/Syntaxes/XML.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.entity.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.parameter-entity.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.localname.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.namespace.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.documentroot.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.localname.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.namespace.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.bad-ampersand.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.entity.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.entitytype.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.page-props.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.internalsubset.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.scope.between-tag-pair.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.metadata.doctype.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.metadata.processing.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.no-content.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.constant.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.entity.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tag.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.embedded.begin.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.embedded.end.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.namespace.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.java-props.embedded.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.java.embedded.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.cdata.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "text.xml",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.entity.xml",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

@@ -1,0 +1,402 @@
+{
+  "name": "textmate-java",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/java.tmbundle/refs/heads/master/Syntaxes/Java.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.empty.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.binary.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.float.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex-float.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.octal.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.enum.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.key.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.variable.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.class.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.inherited-class.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.character_not_allowed_here.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.assert.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.catch-exception.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.new.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.ternary.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assert.expression-seperator.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.arithmetic.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.bitwise.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.bitwise.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.comparison.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.dereference.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.increment-decrement.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logical.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.import.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.import.static.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.package.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.body.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.identifier.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.declaration.annotation.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.declaration.assertion.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.definition.class.implemented.interfaces.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.definition.class.inherited.classes.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.definition.variable.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.definition.variable.name.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.enum.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.import.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.inner-class.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method-call.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method.body.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method.identifier.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method.return-type.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.package.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.throwables.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.annotation-arguments.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.annotation-arguments.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.method-parameters.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.method-parameters.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.seperator.parameter.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.block.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.block.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.class.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.class.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.enum.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.enum.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.inner-class.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.inner-class.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.method.begin.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.method.end.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.property.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.terminator.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.extends.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.implements.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.import.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.package.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.annotation.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.generic.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.object.array.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.primitive.array.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.primitive.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.token.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.java",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.java",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

@@ -1,0 +1,190 @@
+{
+  "name": "textmate-markdown",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/markdown.tmbundle/refs/heads/master/Syntaxes/Markdown.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "constant.character.escape.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.reference.link.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.whitespace.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.bold.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.italic.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.list.numbered.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.list.unnumbered.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.quote.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.raw.block.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.raw.inline.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.underline.link.image.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "markup.underline.link.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.image.inline.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.image.reference.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.link.email.lt-gt.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.link.inet.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.link.inline.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.link.reference.def.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.link.reference.literal.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.link.reference.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.other.valid-ampersand.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.other.valid-bracket.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.paragraph.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.separator.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.bold.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.constant.begin.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.constant.end.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.constant.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.heading.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.italic.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.link.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.list.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.metadata.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.quote.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.raw.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.key-value.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.other.link.description.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.other.link.description.title.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.other.link.title.markdown",
+      "type": "textmate token"
+    },
+    {
+      "key": "text.html.markdown",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

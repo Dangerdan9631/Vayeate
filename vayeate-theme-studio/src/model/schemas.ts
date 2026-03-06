@@ -63,7 +63,14 @@ export type ContrastValue = z.infer<typeof contrastValueSchema>;
 export const catalogTypeSchema = z.enum(['manual', 'remote']);
 export type CatalogType = z.infer<typeof catalogTypeSchema>;
 
-export const sourceTypeSchema = z.enum(['default', 'color-registry', 'color-registry-set']);
+export const sourceTypeSchema = z.enum([
+  'default',
+  'color-registry',
+  'color-registry-set',
+  'semantic-token-registry',
+  'textmate-xml',
+  'textmate-json',
+]);
 export type SourceType = z.infer<typeof sourceTypeSchema>;
 
 export const tokenTypeSchema = z.enum(['theme', 'textmate token', 'semantic token']);
@@ -92,8 +99,17 @@ export const sourceSchema = z
   })
   .readonly()
   .refine(
-    (s) => s.type === 'default' || s.tokenType === 'theme',
-    { message: 'color-registry and color-registry-set require tokenType theme' },
+    (s) => {
+      if (s.type === 'default') return true;
+      if (s.type === 'color-registry' || s.type === 'color-registry-set') return s.tokenType === 'theme';
+      if (s.type === 'semantic-token-registry') return s.tokenType === 'semantic token';
+      if (s.type === 'textmate-xml' || s.type === 'textmate-json') return s.tokenType === 'textmate token';
+      return true;
+    },
+    {
+      message:
+        'color-registry and color-registry-set require tokenType theme; semantic-token-registry requires tokenType semantic token; textmate-xml and textmate-json require tokenType textmate token',
+    },
   );
 export type Source = z.infer<typeof sourceSchema>;
 
