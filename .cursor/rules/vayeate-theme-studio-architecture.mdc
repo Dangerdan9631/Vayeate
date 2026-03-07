@@ -41,3 +41,4 @@ UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
 - **New ViewModels**: Create hook in viewmodel/, consume `useAppState()`, return derived data
 - **Renderer → Main**: Use services/*; never import from data/ or controllers/ in renderer code
 - **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir
+- **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`

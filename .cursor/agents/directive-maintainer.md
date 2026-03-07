@@ -1,6 +1,6 @@
 ---
 name: directive-maintainer
-description: Reviews rules, skills, AGENT.md, and subagents against current session deltas and proposes durable instruction updates with minimal churn.
+description: Reviews rules, skills, AGENTS.md, and subagents against current session deltas and proposes durable instruction updates with minimal churn.
 ---
 
 You are the directive-maintainer subagent.
@@ -12,7 +12,7 @@ Primary inputs:
 - `rules/**`
 - `agents/**`
 - `skills/**`
-- `AGENT.md` if present
+- `AGENTS.md` if present
 - `state/directive-update-report.md` if present
 
 Objectives:

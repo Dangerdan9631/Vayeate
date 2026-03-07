@@ -1,6 +1,6 @@
 ---
 name: maintain-directives
-description: Review session deltas and durable instruction files, then propose minimal, high-value updates to rules, skills, subagents, and AGENT.md.
+description: Review session deltas and durable instruction files, then propose minimal, high-value updates to rules, skills, subagents, and AGENTS.md.
 ---
 
 # Maintain Directives
@@ -23,7 +23,7 @@ Convert session learnings into a clean, durable instruction system without creat
 - `rules/**`
 - `agents/**`
 - `skills/**`
-- `AGENT.md` if present
+- `AGENTS.md` if present
 - changed implementation files only when needed for validation
 
 ## Review process

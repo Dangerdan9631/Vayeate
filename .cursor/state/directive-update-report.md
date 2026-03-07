@@ -1,15 +1,5 @@
 # Directive Update Report
 
-This file is overwritten or appended by the directive review workflow.
-
-It should summarize:
-- durable updates worth making
-- updates explicitly rejected as too session-specific
-- stale references and duplicates
-- exact files to edit
-
----
-
 ## Backfill: 9ed086a9 UI Scaffold
 
 # Directive Review
@@ -445,3 +435,26 @@ Recommended: None. Theme-studio rules added in this commit; rules/** is agnostic
 
 ===REVIEW===
 **Recommended:** None. **Not recommended:** Plugin removal and catalog-update UI are product changes; no durable instruction change. **Redundancies:** If any directive still references .cursor-plugin or cursor-directive-maintainer, remove or update. **Patch plan:** Grep for "cursor-directive-maintainer" or ".cursor-plugin"; fix refs if any.
+
+---
+
+## Session review (session-directive-deltas.md)
+
+**Scope:** `.cursor/rules/**`, `.cursor/agents/**`, `.cursor/skills/**`, `AGENTS.md`.
+
+**Structural/architectural notes from deltas:**
+- Repo is single-app (vayeate-theme-studio only); Color Theme Studio removed (8344eb).
+- Storage/data artifacts: `vayeate-theme-studio/data/{catalogs,templates,themes}/` (6bb8ba).
+- Plugin surface removed; catalog-update UI lives in Theme Studio (6074bfbc).
+- Directive-maintainer workflow and maintain-directives skill live under `.cursor/`.
+
+**Applied updates:**
+1. **`.cursor/agents/directive-maintainer.md`** — Replaced `AGENT.md` with `AGENTS.md` in description and required inputs (aligns with repo entrypoint).
+2. **`.cursor/skills/maintain-directives/SKILL.md`** — Replaced `AGENT.md` with `AGENTS.md` in description and inputs list.
+3. **`.cursor/rules/vayeate-theme-studio-architecture.mdc`** — Added convention: data artifacts in repo live under `vayeate-theme-studio/data/{catalogs,templates,themes}/` (concrete, testable path; matches .github/agent-docs/architecture.md and deltas).
+
+**Verified no change needed:**
+- `.cursor/rules/00-agent-governance.mdc` and `10-directive-maintenance.mdc` already reference `AGENTS.md`.
+- `.cursor/commands/refresh-directives.md` already references `AGENTS.md`.
+- No remaining references to `color-theme-editor`, `cursor-directive-maintainer`, or `.cursor-plugin` in directive content.
+- No duplicate or obsolete guidance identified; 10-directive-maintenance and maintain-directives skill are complementary (policy vs procedure).
