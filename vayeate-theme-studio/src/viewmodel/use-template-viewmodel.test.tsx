@@ -135,6 +135,19 @@ describe('computeOrphanKeys', () => {
     const orphans = computeOrphanKeys(mappings, []);
     expect(orphans.size).toBe(1);
   });
+
+  it('treats semantic mapping with type * as orphan when * is not in catalog types', () => {
+    const mappings: Mapping[] = [
+      { token: { key: '*.deprecated', type: 'semantic token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null },
+    ];
+    const catalogInfo = {
+      semanticTokenTypes: ['class', 'function'],
+      semanticTokenModifiers: ['readonly'],
+      semanticTokenLanguages: [] as string[],
+    };
+    const orphans = computeOrphanKeys(mappings, [], catalogInfo);
+    expect(orphans.has('semantic token::*.deprecated')).toBe(true);
+  });
 });
 
 describe('useTemplateViewModel groups', () => {
@@ -628,6 +641,68 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       (m) => m.token.key === 'comment' && m.token.type === 'textmate token',
     );
     expect(commentMapping?.groupRef).toBe('cat-a');
+  });
+
+  it('enabling a catalog with semanticTokenTypes creates mappings only for those types (no * placeholder)', async () => {
+    const catalogWithSemanticTypes: Catalog = {
+      name: 'semantic-cat',
+      version: '1.0.0',
+      type: 'remote',
+      locked: false,
+      sources: [],
+      tokens: [],
+      semanticTokenTypes: ['class', 'function'],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    };
+    let savedTemplate: Template | null = null;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: (_name: string, _version: string) =>
+        Promise.resolve(catalogWithSemanticTypes),
+      listCatalogs: () =>
+        Promise.resolve([{ name: 'semantic-cat', version: '1.0.0' }]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'CREATE_TEMPLATE', params: { name: 'test-template' } });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.toggleCatalog('semantic-cat', true);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const template = result.current.template;
+    const semanticMappings = template?.mappings.filter(
+      (m) => m.token.type === 'semantic token',
+    ) ?? [];
+    expect(semanticMappings).toHaveLength(2);
+    expect(semanticMappings.map((m) => m.token.key).sort()).toEqual(['class', 'function']);
+    expect(semanticMappings.every((m) => m.groupRef === 'semantic-cat')).toBe(true);
+    const starMapping = template?.mappings.find(
+      (m) => m.token.type === 'semantic token' && m.token.key === '*',
+    );
+    expect(starMapping).toBeUndefined();
   });
 
   it('enabling a catalog does not change existing mappings', async () => {

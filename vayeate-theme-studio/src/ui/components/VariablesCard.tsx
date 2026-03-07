@@ -170,6 +170,7 @@ function ColorVariablesSection({
   const [collapsed, setCollapsed] = useState(false);
   const byGroup = buildByGroup(colorVariables);
   const groupKeysInOrder = sortedGroupKeys(byGroup);
+  const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
 
   return (
     <div className="tree-section">
@@ -187,7 +188,7 @@ function ColorVariablesSection({
 
       {!collapsed && (
         <div className="tree-children">
-          {groupKeysInOrder.map((groupKey) => {
+          {keysToRender.map((groupKey) => {
             const vars = byGroup.get(groupKey) ?? [];
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
             const groupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
@@ -358,6 +359,7 @@ function ContrastVariablesSection({
   const [collapsed, setCollapsed] = useState(false);
   const byGroup = buildByGroup(contrastVariables);
   const groupKeysInOrder = sortedGroupKeys(byGroup);
+  const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
 
   return (
     <div className="tree-section">
@@ -375,7 +377,7 @@ function ContrastVariablesSection({
 
       {!collapsed && (
         <div className="tree-children">
-          {groupKeysInOrder.map((groupKey) => {
+          {keysToRender.map((groupKey) => {
             const vars = byGroup.get(groupKey) ?? [];
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
             const groupRef = groupKey === UNGROUPED_KEY ? null : groupKey;

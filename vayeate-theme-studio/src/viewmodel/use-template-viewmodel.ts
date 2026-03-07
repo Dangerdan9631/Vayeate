@@ -649,7 +649,7 @@ async function mergeMappingsFromCatalogRefs(
   existingMappings: readonly Mapping[],
 ): Promise<MergeMappingsResult> {
   const catalogTokensByRef: { ref: CatalogReference; tokens: readonly Token[] }[] = [];
-  const semanticTypesSet = new Set<string>(['*']);
+  const semanticTypesSet = new Set<string>();
   const semanticTypeToRef = new Map<string, string>();
   for (const ref of catalogRefs) {
     const catalog = await catalogService.loadCatalog(ref.name, ref.version);
@@ -733,7 +733,7 @@ export function computeOrphanKeys(
 ): Set<string> {
   const catalogKeys = new Set(catalogTokens.map((t) => `${t.type}::${t.key}`));
   const typesSet = semanticCatalog
-    ? new Set(semanticCatalog.semanticTokenTypes.concat('*'))
+    ? new Set(semanticCatalog.semanticTokenTypes)
     : null;
   const modifiersSet = semanticCatalog
     ? new Set(semanticCatalog.semanticTokenModifiers)
@@ -749,7 +749,7 @@ export function computeOrphanKeys(
     if (m.token.type === 'semantic token' && typesSet && modifiersSet && languagesSet) {
       try {
         const parsed = parseSemanticSelector(m.token.key);
-        const typeOk = parsed.type === '*' || typesSet.has(parsed.type);
+        const typeOk = typesSet.has(parsed.type);
         const modOk = parsed.modifiers.every((mod) => modifiersSet.has(mod));
         const langOk = !parsed.language || languagesSet.has(parsed.language);
         if (typeOk && modOk && langOk) continue;

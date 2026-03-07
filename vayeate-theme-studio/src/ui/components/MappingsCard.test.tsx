@@ -156,4 +156,23 @@ describe('MappingsCard semantic token UI', () => {
       null,
     );
   });
+
+  it('does not show * row when there are no * mappings (no placeholder)', () => {
+    render(
+      <MappingsCard
+        {...defaultProps}
+        mappingsByType={{
+          ...defaultProps.mappingsByType,
+          'semantic token': [
+            mapping('class', 'semantic token'),
+            mapping('function', 'semantic token'),
+          ],
+        }}
+      />,
+    );
+
+    expect(screen.getByTitle('class')).toBeInTheDocument();
+    expect(screen.getByTitle('function')).toBeInTheDocument();
+    expect(screen.queryByTitle('*')).not.toBeInTheDocument();
+  });
 });

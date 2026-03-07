@@ -105,6 +105,22 @@ export function useThemeViewModel() {
     return () => { cancelled = true; };
   }, [selectedTemplateName, selectedTemplateVersion]);
 
+  // Sync theme assignments when template has variables the theme has no assignment for (no version bump).
+  useEffect(() => {
+    if (!theme || !loadedTemplate) return;
+    if (theme.templateRef?.name !== loadedTemplate.name || theme.templateRef?.version !== loadedTemplate.version) return;
+
+    const colorRefs = new Set(theme.colorAssignments.map((a) => a.colorRef));
+    const contrastRefs = new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef));
+    const missingColor = loadedTemplate.colorVariables.some((v) => !colorRefs.has(v.key));
+    const missingContrast = loadedTemplate.contrastVariables.some((v) => !contrastRefs.has(v.key));
+    if (!missingColor && !missingContrast) return;
+
+    const base = getBaseInPlace(theme);
+    const merged = mergeAssignmentsFromTemplate(base, loadedTemplate);
+    dispatch({ type: 'SAVE_THEME', theme: merged });
+  }, [theme, loadedTemplate, dispatch]);
+
   const colorVariablesFromTemplate = useMemo(
     () => loadedTemplate?.colorVariables ?? [],
     [loadedTemplate],

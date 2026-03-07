@@ -11,19 +11,10 @@
   "mappings": [
     {
       "token": {
-        "key": "*",
-        "type": "semantic token"
-      },
-      "colorVariableRef": null,
-      "contrastVariableRef": null,
-      "groupRef": null
-    },
-    {
-      "token": {
         "key": "class",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -32,7 +23,7 @@
         "key": "comment",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -41,7 +32,7 @@
         "key": "decorator",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -235,8 +226,28 @@
       "groupRef": "vs-code-semantic-token-registry"
     }
   ],
-  "colorVariables": [],
-  "contrastVariables": [],
+  "colorVariables": [
+    {
+      "key": "a",
+      "groupRef": null
+    },
+    {
+      "key": "b",
+      "groupRef": null
+    }
+  ],
+  "contrastVariables": [
+    {
+      "key": "c1",
+      "comparisonSourceRef": "a",
+      "groupRef": null
+    },
+    {
+      "key": "c2",
+      "comparisonSourceRef": "a",
+      "groupRef": null
+    }
+  ],
   "groups": [
     "vs-code-semantic-token-registry"
   ]

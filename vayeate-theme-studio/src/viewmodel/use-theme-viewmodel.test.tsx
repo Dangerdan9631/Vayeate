@@ -110,6 +110,73 @@ describe('useThemeViewModel', () => {
     expect(result.current.theme?.name).toBe('test-theme');
     expect(result.current.isCreating).toBe(false);
   });
+
+  it('syncs theme assignments when template has more variables than theme (adds missing assignments)', async () => {
+    const themeWithOneVar: Theme = {
+      ...mockTheme,
+      templateRef: { name: 'tpl', version: '1.0.0' },
+      colorAssignments: [
+        { colorRef: 'primary', dark: null, light: null, useDarkForLight: false },
+      ],
+      contrastAssignments: [],
+    };
+    const templateWithTwoVars: Template = {
+      name: 'tpl',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [
+        { key: 'primary', groupRef: null },
+        { key: 'newVar', groupRef: null },
+      ],
+      contrastVariables: [],
+      groups: [],
+    };
+
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(null),
+      saveTemplate: () => Promise.resolve(),
+      loadTemplate: (_name: string, _version: string) =>
+        Promise.resolve(templateWithTwoVars),
+      listTemplates: () => Promise.resolve([{ name: 'tpl', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      createTheme: () => Promise.resolve(mockTheme),
+      saveTheme: () => Promise.resolve(),
+      loadTheme: () => Promise.resolve(themeWithOneVar),
+      listThemes: () => Promise.resolve([{ name: 'test-theme', version: '1.0.0' }]),
+      deleteTheme: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'test-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const theme = result.current.theme;
+    expect(theme).not.toBeNull();
+    expect(theme?.colorAssignments).toHaveLength(2);
+    const newVarAssignment = theme?.colorAssignments.find(
+      (a) => a.colorRef === 'newVar',
+    );
+    expect(newVarAssignment).toBeDefined();
+    expect(newVarAssignment?.dark).toBeNull();
+    expect(newVarAssignment?.light).toBeNull();
+  });
 });
 
 describe('mergeAssignmentsFromTemplate', () => {

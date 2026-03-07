@@ -83,7 +83,7 @@ function SemanticTokenTreeSection({
   const [collapsed, setCollapsed] = useState(false);
   const typesFromMappings = new Set(mappings.map((m) => getSemanticType(m.token.key)));
   const allTypes = [
-    ...new Set([...semanticCatalog.semanticTokenTypes, '*', ...typesFromMappings]),
+    ...new Set([...semanticCatalog.semanticTokenTypes, ...typesFromMappings]),
   ].sort((a, b) => (a === '*' ? -1 : b === '*' ? 1 : a.localeCompare(b)));
 
   const byType = new Map<string, { base: Mapping | null; variants: Mapping[] }>();
