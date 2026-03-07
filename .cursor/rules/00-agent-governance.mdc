@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Agent governance
 
-- Treat `rules/`, `agents/`, `skills/`, and `AGENT.md` as durable instruction sources.
+- Treat `rules/`, `agents/`, `skills/`, and `AGENTS.md` as durable instruction sources.
 - Do not rewrite durable directives because of one local edit.
 - Prefer updating existing directives over creating overlapping new ones.
 - Prefer narrow, specific rules and skills over large generic rules.

@@ -17,7 +17,7 @@ Review in this order:
 2. `rules/**`
 3. `agents/**`
 4. `skills/**`
-5. `AGENT.md` if present
+5. `AGENTS.md` if present
 
 For each possible update:
 - prefer modifying an existing directive over adding a new one

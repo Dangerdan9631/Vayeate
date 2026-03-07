@@ -9,7 +9,7 @@ Required inputs:
 - `rules/**`
 - `agents/**`
 - `skills/**`
-- `AGENT.md` if present
+- `AGENTS.md` if present
 
 Tasks:
 1. Review all durable directive sources.
