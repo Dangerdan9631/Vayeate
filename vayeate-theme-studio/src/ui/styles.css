@@ -723,10 +723,28 @@ body {
 
 /* ── Template catalogs card ────────────────────────────────── */
 
+.template-catalogs-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.template-catalogs-card-header h2 {
+  margin: 0;
+}
+
 .template-catalogs-card .empty-hint {
   font-size: 13px;
   color: #6b7280;
   margin: 0;
+}
+
+.catalog-update-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  opacity: 0.85;
 }
 
 .template-catalog-row {

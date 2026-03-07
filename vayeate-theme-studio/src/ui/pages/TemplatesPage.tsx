@@ -94,8 +94,11 @@ export function TemplatesPage() {
               catalogNames={vm.catalogNamesList}
               catalogVersionsByName={vm.catalogVersionsByName}
               includedCatalogMap={vm.includedCatalogMap}
+              isLatestVersion={vm.isLatestVersion}
+              includedCatalogNamesWithUpdates={vm.includedCatalogNamesWithUpdates}
               onToggleCatalog={vm.toggleCatalog}
               onChangeCatalogVersion={vm.changeCatalogVersion}
+              onUpdateAll={vm.updateAllCatalogsToLatest}
             />
           )}
         </div>

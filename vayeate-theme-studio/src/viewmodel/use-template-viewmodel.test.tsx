@@ -876,3 +876,203 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     expect(template?.groups).toContain('cat-a');
   });
 });
+
+describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => {
+  it('includedCatalogNamesWithUpdates includes catalog when template uses older version', async () => {
+    const templateWithCatV100: Template = {
+      ...mockTemplate,
+      catalogRefs: [{ name: 'cat-a', version: '1.0.0' }],
+      mappings: [],
+      groups: [],
+    };
+    let savedTemplate: Template | null = templateWithCatV100;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () =>
+        Promise.resolve([
+          { name: 'cat-a', version: '1.0.0' },
+          { name: 'cat-a', version: '1.0.1' },
+        ]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatV100),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.includedCatalogNamesWithUpdates).toContain('cat-a');
+  });
+
+  it('includedCatalogNamesWithUpdates excludes catalog when template already uses latest version', async () => {
+    const templateWithCatV101: Template = {
+      ...mockTemplate,
+      catalogRefs: [{ name: 'cat-a', version: '1.0.1' }],
+      mappings: [],
+      groups: [],
+    };
+    let savedTemplate: Template | null = templateWithCatV101;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () =>
+        Promise.resolve([
+          { name: 'cat-a', version: '1.0.0' },
+          { name: 'cat-a', version: '1.0.1' },
+        ]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatV101),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.includedCatalogNamesWithUpdates).not.toContain('cat-a');
+  });
+
+  it('updateAllCatalogsToLatest updates all included catalogs to latest and applies merge and groups', async () => {
+    const catA = {
+      name: 'cat-a',
+      version: '1.0.0',
+      type: 'remote' as const,
+      locked: false,
+      sources: [] as const,
+      tokens: [{ key: 'comment', type: 'textmate token' as const }],
+      semanticTokenTypes: [] as const,
+      semanticTokenModifiers: [] as const,
+      semanticTokenLanguages: [] as const,
+    };
+    const catAV101 = {
+      ...catA,
+      version: '1.0.1',
+      tokens: [
+        { key: 'comment', type: 'textmate token' as const },
+        { key: 'keyword', type: 'textmate token' as const },
+      ],
+    };
+    const catB = {
+      name: 'cat-b',
+      version: '1.0.0',
+      type: 'remote' as const,
+      locked: false,
+      sources: [] as const,
+      tokens: [{ key: 'string', type: 'textmate token' as const }],
+      semanticTokenTypes: [] as const,
+      semanticTokenModifiers: [] as const,
+      semanticTokenLanguages: [] as const,
+    };
+    const catBV102 = {
+      ...catB,
+      version: '1.0.2',
+      tokens: [
+        { key: 'string', type: 'textmate token' as const },
+        { key: 'number', type: 'textmate token' as const },
+      ],
+    };
+    const templateWithTwoCatalogs: Template = {
+      ...mockTemplate,
+      catalogRefs: [
+        { name: 'cat-a', version: '1.0.0' },
+        { name: 'cat-b', version: '1.0.0' },
+      ],
+      mappings: [],
+      groups: [],
+    };
+    let savedTemplate: Template | null = templateWithTwoCatalogs;
+    const loadCatalogMock = (name: string, version: string): Promise<Catalog | null> => {
+      if (name === 'cat-a') return version === '1.0.1' ? Promise.resolve(catAV101) : Promise.resolve(catA);
+      if (name === 'cat-b') return version === '1.0.2' ? Promise.resolve(catBV102) : Promise.resolve(catB);
+      return Promise.resolve(null);
+    };
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: loadCatalogMock,
+      listCatalogs: () =>
+        Promise.resolve([
+          { name: 'cat-a', version: '1.0.0' },
+          { name: 'cat-a', version: '1.0.1' },
+          { name: 'cat-b', version: '1.0.0' },
+          { name: 'cat-b', version: '1.0.2' },
+        ]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithTwoCatalogs),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    expect(result.current.includedCatalogNamesWithUpdates).toContain('cat-a');
+    expect(result.current.includedCatalogNamesWithUpdates).toContain('cat-b');
+    expect(result.current.template?.catalogRefs[0]?.version).toBe('1.0.0');
+    expect(result.current.template?.catalogRefs[1]?.version).toBe('1.0.0');
+
+    await act(async () => {
+      result.current.updateAllCatalogsToLatest();
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const template = result.current.template;
+    expect(template?.catalogRefs[0]).toEqual({ name: 'cat-a', version: '1.0.1' });
+    expect(template?.catalogRefs[1]).toEqual({ name: 'cat-b', version: '1.0.2' });
+    const keywordMapping = template?.mappings.find(
+      (m) => m.token.key === 'keyword' && m.token.type === 'textmate token',
+    );
+    const numberMapping = template?.mappings.find(
+      (m) => m.token.key === 'number' && m.token.type === 'textmate token',
+    );
+    expect(keywordMapping?.groupRef).toBe('cat-a');
+    expect(numberMapping?.groupRef).toBe('cat-b');
+    expect(template?.groups).toContain('cat-a');
+    expect(template?.groups).toContain('cat-b');
+  });
+});

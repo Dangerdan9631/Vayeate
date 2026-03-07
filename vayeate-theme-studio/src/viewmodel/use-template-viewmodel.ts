@@ -94,6 +94,18 @@ export function useTemplateViewModel() {
     return m;
   }, [template]);
 
+  const includedCatalogNamesWithUpdates = useMemo(() => {
+    if (!template) return [];
+    const names: string[] = [];
+    for (const ref of template.catalogRefs) {
+      const versions = catalogVersionsByName[ref.name];
+      if (versions?.length > 0 && versions[0].version !== ref.version) {
+        names.push(ref.name);
+      }
+    }
+    return names;
+  }, [template, catalogVersionsByName]);
+
   // --- Mapping helpers ---
 
   const mappingsByType = useMemo(() => {
@@ -313,6 +325,32 @@ export function useTemplateViewModel() {
       dispatch({ type: 'SAVE_TEMPLATE', template: updated });
     },
     [dispatch, template],
+  );
+
+  const updateAllCatalogsToLatest = useCallback(
+    async () => {
+      if (!template || !isLatestVersion) return;
+      log.debug('updateAllCatalogsToLatest');
+
+      const base = getBaseForEdit(template);
+      const newCatalogRefs: CatalogReference[] = base.catalogRefs.map((ref) => {
+        const versions = catalogVersionsByName[ref.name];
+        const latest = versions?.[0];
+        return latest ? { name: ref.name, version: latest.version } : ref;
+      });
+
+      const { mappings: newMappings, groupsToEnsure } = await mergeMappingsFromCatalogRefs(
+        newCatalogRefs,
+        base.mappings,
+      );
+      const newGroups = [...(base.groups ?? [])];
+      for (const g of groupsToEnsure) {
+        if (!newGroups.includes(g)) newGroups.push(g);
+      }
+      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings, groups: newGroups };
+      dispatch({ type: 'SAVE_TEMPLATE', template: updated });
+    },
+    [dispatch, template, isLatestVersion, catalogVersionsByName],
   );
 
   // --- Mapping updates ---
@@ -565,6 +603,7 @@ export function useTemplateViewModel() {
     catalogNamesList,
     catalogVersionsByName,
     includedCatalogMap,
+    includedCatalogNamesWithUpdates,
     mappingsByType,
     mappingCountsByType,
     colorVariableKeys,
@@ -582,6 +621,7 @@ export function useTemplateViewModel() {
     lockTemplate,
     toggleCatalog,
     changeCatalogVersion,
+    updateAllCatalogsToLatest,
     updateMappingColorRef,
     updateMappingContrastRef,
     updateMappingGroupRef,
