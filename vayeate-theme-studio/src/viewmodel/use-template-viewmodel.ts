@@ -650,12 +650,16 @@ async function mergeMappingsFromCatalogRefs(
 ): Promise<MergeMappingsResult> {
   const catalogTokensByRef: { ref: CatalogReference; tokens: readonly Token[] }[] = [];
   const semanticTypesSet = new Set<string>(['*']);
+  const semanticTypeToRef = new Map<string, string>();
   for (const ref of catalogRefs) {
     const catalog = await catalogService.loadCatalog(ref.name, ref.version);
     if (catalog) {
       catalogTokensByRef.push({ ref, tokens: catalog.tokens });
       const types = catalog.semanticTokenTypes ?? [];
-      for (const t of types) semanticTypesSet.add(t);
+      for (const t of types) {
+        semanticTypesSet.add(t);
+        if (!semanticTypeToRef.has(t)) semanticTypeToRef.set(t, ref.name);
+      }
     }
   }
 
@@ -685,7 +689,6 @@ async function mergeMappingsFromCatalogRefs(
 
   for (const { ref, tokens } of catalogTokensByRef) {
     for (const token of tokens) {
-      if (token.type === 'semantic token') continue;
       const key = `${token.type}::${token.key}`;
       if (!existingKeys.has(key)) {
         newMappings.push({
@@ -703,11 +706,13 @@ async function mergeMappingsFromCatalogRefs(
   for (const type of semanticTypesSet) {
     const key = `semantic token::${type}`;
     if (existingKeys.has(key)) continue;
+    const groupRef = semanticTypeToRef.get(type) ?? null;
+    if (groupRef) groupsToEnsure.add(groupRef);
     newMappings.push({
       token: { key: type, type: 'semantic token' },
       colorVariableRef: null,
       contrastVariableRef: null,
-      groupRef: null,
+      groupRef,
     });
     existingKeys.add(key);
   }

@@ -1,0 +1,243 @@
+{
+  "name": "test2",
+  "version": "1.0.0",
+  "locked": false,
+  "catalogRefs": [
+    {
+      "name": "vs-code-semantic-token-registry",
+      "version": "1.0.0"
+    }
+  ],
+  "mappings": [
+    {
+      "token": {
+        "key": "*",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": null
+    },
+    {
+      "token": {
+        "key": "class",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "comment",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "decorator",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "enum",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "enumMember",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "event",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "function",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "interface",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "keyword",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "label",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "macro",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "member",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "method",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "namespace",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "number",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "operator",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "parameter",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "property",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "regexp",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "string",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "struct",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "type",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "typeParameter",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "variable",
+        "type": "semantic token"
+      },
+      "colorVariableRef": null,
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    }
+  ],
+  "colorVariables": [],
+  "contrastVariables": [],
+  "groups": [
+    "vs-code-semantic-token-registry"
+  ]
+}
