@@ -14,6 +14,8 @@ const mockTemplate: Template = {
   colorVariables: [],
   contrastVariables: [],
   groups: [],
+  semanticTokenModifiers: [],
+  semanticTokenLanguages: [],
 };
 
 beforeEach(() => {
@@ -338,6 +340,70 @@ describe('useTemplateViewModel groups', () => {
     expect(result.current.template?.mappings[0]?.groupRef).toBe('G1');
   });
 
+  it('updateMappingGroupRef on base semantic token moves variants to same group', async () => {
+    const templateWithSemanticBaseAndVariant: Template = {
+      ...mockTemplate,
+      groups: ['g1', 'g2'],
+      mappings: [
+        {
+          token: { key: 'class', type: 'semantic token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'g1',
+        },
+        {
+          token: { key: 'class.readonly', type: 'semantic token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'g1',
+        },
+      ],
+    };
+    let savedTemplate: Template | null = templateWithSemanticBaseAndVariant;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithSemanticBaseAndVariant),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.updateMappingGroupRef('class', 'semantic token', 'g2');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const baseMapping = result.current.template?.mappings.find(
+      (m) => m.token.type === 'semantic token' && m.token.key === 'class',
+    );
+    const variantMapping = result.current.template?.mappings.find(
+      (m) => m.token.type === 'semantic token' && m.token.key === 'class.readonly',
+    );
+    expect(baseMapping?.groupRef).toBe('g2');
+    expect(variantMapping?.groupRef).toBe('g2');
+  });
+
   it('removeGroup does nothing when group has variables', async () => {
     const templateWithGroupAndVariable: Template = {
       ...mockTemplate,
@@ -652,8 +718,8 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       sources: [],
       tokens: [],
       semanticTokenTypes: ['class', 'function'],
-      semanticTokenModifiers: [],
-      semanticTokenLanguages: [],
+      semanticTokenModifiers: ['readonly', 'static'],
+      semanticTokenLanguages: ['typescript'],
     };
     let savedTemplate: Template | null = null;
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
@@ -703,6 +769,128 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       (m) => m.token.type === 'semantic token' && m.token.key === '*',
     );
     expect(starMapping).toBeUndefined();
+    expect(template?.semanticTokenModifiers).toEqual(['readonly', 'static']);
+    expect(template?.semanticTokenLanguages).toEqual(['typescript']);
+  });
+
+  it('addSemanticVariantMapping inherits groupRef from base semantic token mapping', async () => {
+    const templateWithBaseSemantic: Template = {
+      ...mockTemplate,
+      catalogRefs: [{ name: 'semantic-cat', version: '1.0.0' }],
+      mappings: [
+        {
+          token: { key: 'class', type: 'semantic token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          groupRef: 'semantic-cat',
+        },
+      ],
+      groups: ['semantic-cat'],
+      semanticTokenModifiers: ['readonly'],
+      semanticTokenLanguages: [],
+    };
+    let savedTemplate: Template | null = templateWithBaseSemantic;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    result.current.addSemanticVariantMapping('class', ['readonly'], null);
+
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const variantMapping = result.current.template?.mappings.find(
+      (m) => m.token.type === 'semantic token' && m.token.key === 'class.readonly',
+    );
+    expect(variantMapping).toBeDefined();
+    expect(variantMapping?.groupRef).toBe('semantic-cat');
+  });
+
+  it('updateSemanticVariantKey updates variant selector and preserves refs', async () => {
+    const templateWithVariant: Template = {
+      ...mockTemplate,
+      mappings: [
+        { token: { key: 'class', type: 'semantic token' }, colorVariableRef: null, contrastVariableRef: null, groupRef: 'g1' },
+        {
+          token: { key: 'class.readonly', type: 'semantic token' },
+          colorVariableRef: 'fg',
+          contrastVariableRef: 'high',
+          groupRef: 'g1',
+        },
+      ],
+      semanticTokenModifiers: ['readonly', 'static'],
+      semanticTokenLanguages: ['typescript'],
+    };
+    let savedTemplate: Template | null = templateWithVariant;
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(mockTemplate),
+      saveTemplate: (t: Template) => {
+        savedTemplate = t;
+        return Promise.resolve();
+      },
+      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithVariant),
+      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
+      deleteTemplate: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
+
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    await act(async () => {
+      result.current.updateSemanticVariantKey('class.readonly', ['static'], 'typescript');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 100));
+    });
+
+    const updated = result.current.template?.mappings.find(
+      (m) => m.token.type === 'semantic token' && m.token.key === 'class.static:typescript',
+    );
+    expect(updated).toBeDefined();
+    expect(updated?.colorVariableRef).toBe('fg');
+    expect(updated?.contrastVariableRef).toBe('high');
+    expect(updated?.groupRef).toBe('g1');
+    const oldMapping = result.current.template?.mappings.find(
+      (m) => m.token.key === 'class.readonly',
+    );
+    expect(oldMapping).toBeUndefined();
   });
 
   it('enabling a catalog does not change existing mappings', async () => {

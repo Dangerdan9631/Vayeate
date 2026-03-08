@@ -270,10 +270,8 @@ export function useTemplateViewModel() {
         newCatalogRefs = base.catalogRefs.filter((r) => r.name !== catalogName);
       }
 
-      const { mappings: newMappings, groupsToEnsure } = await mergeMappingsFromCatalogRefs(
-        newCatalogRefs,
-        base.mappings,
-      );
+      const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
+        await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
 
       let newGroups: string[];
       if (include) {
@@ -297,7 +295,14 @@ export function useTemplateViewModel() {
         );
       }
 
-      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings, groups: newGroups };
+      const updated: Template = {
+        ...base,
+        catalogRefs: newCatalogRefs,
+        mappings: newMappings,
+        groups: newGroups,
+        semanticTokenModifiers,
+        semanticTokenLanguages,
+      };
       dispatch({ type: 'SAVE_TEMPLATE', template: updated });
     },
     [dispatch, template, catalogVersionsByName],
@@ -313,15 +318,20 @@ export function useTemplateViewModel() {
         r.name === catalogName ? { ...r, version: newVersion } : r,
       );
 
-      const { mappings: newMappings, groupsToEnsure } = await mergeMappingsFromCatalogRefs(
-        newCatalogRefs,
-        base.mappings,
-      );
+      const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
+        await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
       const newGroups = [...(base.groups ?? [])];
       for (const g of groupsToEnsure) {
         if (!newGroups.includes(g)) newGroups.push(g);
       }
-      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings, groups: newGroups };
+      const updated: Template = {
+        ...base,
+        catalogRefs: newCatalogRefs,
+        mappings: newMappings,
+        groups: newGroups,
+        semanticTokenModifiers,
+        semanticTokenLanguages,
+      };
       dispatch({ type: 'SAVE_TEMPLATE', template: updated });
     },
     [dispatch, template],
@@ -339,15 +349,20 @@ export function useTemplateViewModel() {
         return latest ? { name: ref.name, version: latest.version } : ref;
       });
 
-      const { mappings: newMappings, groupsToEnsure } = await mergeMappingsFromCatalogRefs(
-        newCatalogRefs,
-        base.mappings,
-      );
+      const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
+        await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
       const newGroups = [...(base.groups ?? [])];
       for (const g of groupsToEnsure) {
         if (!newGroups.includes(g)) newGroups.push(g);
       }
-      const updated: Template = { ...base, catalogRefs: newCatalogRefs, mappings: newMappings, groups: newGroups };
+      const updated: Template = {
+        ...base,
+        catalogRefs: newCatalogRefs,
+        mappings: newMappings,
+        groups: newGroups,
+        semanticTokenModifiers,
+        semanticTokenLanguages,
+      };
       dispatch({ type: 'SAVE_TEMPLATE', template: updated });
     },
     [dispatch, template, isLatestVersion, catalogVersionsByName],
@@ -404,11 +419,32 @@ export function useTemplateViewModel() {
       if (!template) return;
       log.debug('updateMappingGroupRef', tokenKey, tokenType, groupRef);
       const base = getBaseForEdit(template);
-      const newMappings = base.mappings.map((m) =>
-        m.token.key === tokenKey && m.token.type === tokenType
-          ? { ...m, groupRef }
-          : m,
-      );
+      let semanticBaseType: string | null = null;
+      if (tokenType === 'semantic token') {
+        try {
+          const parsed = parseSemanticSelector(tokenKey);
+          const isBase =
+            parsed.modifiers.length === 0 &&
+            (parsed.language === null || parsed.language === '');
+          if (isBase) semanticBaseType = parsed.type;
+        } catch {
+          /* not a valid semantic selector */
+        }
+      }
+      const newMappings = base.mappings.map((m) => {
+        if (m.token.type !== tokenType) return m;
+        if (tokenType === 'semantic token' && semanticBaseType !== null) {
+          try {
+            const p = parseSemanticSelector(m.token.key);
+            if (p.type === semanticBaseType) return { ...m, groupRef };
+          } catch {
+            /* ignore */
+          }
+          return m;
+        }
+        if (m.token.key === tokenKey) return { ...m, groupRef };
+        return m;
+      });
       dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
     },
     [dispatch, template],
@@ -417,23 +453,82 @@ export function useTemplateViewModel() {
   const addSemanticVariantMapping = useCallback(
     (type: string, modifiers: string[], language: string | null) => {
       if (!template) return;
-      const key = formatSemanticSelector(type, modifiers, language);
-      if (!key) return;
-      const existing = template.mappings.some(
-        (m) => m.token.type === 'semantic token' && m.token.key === key,
-      );
-      if (existing) return;
-      log.debug('addSemanticVariantMapping', key);
       const base = getBaseForEdit(template);
+      const baseMapping = base.mappings.find(
+        (m) => m.token.type === 'semantic token' && m.token.key === type,
+      );
+      let key: string;
+      if (modifiers.length === 0 && (language === null || language.trim() === '')) {
+        key = `${type}.empty-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      } else {
+        key = formatSemanticSelector(type, modifiers, language);
+        if (!key) return;
+        const existing = template.mappings.some(
+          (m) => m.token.type === 'semantic token' && m.token.key === key,
+        );
+        if (existing) return;
+      }
+      log.debug('addSemanticVariantMapping', key);
       const newMapping: Mapping = {
         token: { key, type: 'semantic token' },
         colorVariableRef: null,
         contrastVariableRef: null,
-        groupRef: null,
+        groupRef: baseMapping?.groupRef ?? null,
       };
+      const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
+      const newLanguages =
+        language && language.trim() !== ''
+          ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
+          : (base.semanticTokenLanguages ?? []);
       dispatch({
         type: 'SAVE_TEMPLATE',
-        template: { ...base, mappings: [...base.mappings, newMapping] },
+        template: {
+          ...base,
+          mappings: [...base.mappings, newMapping],
+          semanticTokenModifiers: newModifiers,
+          semanticTokenLanguages: newLanguages,
+        },
+      });
+    },
+    [dispatch, template],
+  );
+
+  const updateSemanticVariantKey = useCallback(
+    (oldKey: string, modifiers: string[], language: string | null) => {
+      if (!template) return;
+      let parsed: { type: string; modifiers: string[]; language: string | null };
+      try {
+        parsed = parseSemanticSelector(oldKey);
+      } catch {
+        return;
+      }
+      const newKey = formatSemanticSelector(parsed.type, modifiers, language);
+      if (!newKey || newKey === oldKey) return;
+      if (newKey === parsed.type) return;
+      const existing = template.mappings.some(
+        (m) => m.token.type === 'semantic token' && m.token.key === newKey,
+      );
+      if (existing) return;
+      log.debug('updateSemanticVariantKey', oldKey, '->', newKey);
+      const base = getBaseForEdit(template);
+      const newMappings = base.mappings.map((m) =>
+        m.token.type === 'semantic token' && m.token.key === oldKey
+          ? { ...m, token: { key: newKey, type: 'semantic token' as const } }
+          : m,
+      );
+      const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
+      const newLanguages =
+        language && language.trim() !== ''
+          ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
+          : (base.semanticTokenLanguages ?? []);
+      dispatch({
+        type: 'SAVE_TEMPLATE',
+        template: {
+          ...base,
+          mappings: newMappings,
+          semanticTokenModifiers: newModifiers,
+          semanticTokenLanguages: newLanguages,
+        },
       });
     },
     [dispatch, template],
@@ -626,6 +721,7 @@ export function useTemplateViewModel() {
     updateMappingContrastRef,
     updateMappingGroupRef,
     addSemanticVariantMapping,
+    updateSemanticVariantKey,
     removeMapping,
     updateColorVariableGroupRef,
     updateContrastVariableGroupRef,
@@ -642,6 +738,8 @@ export function useTemplateViewModel() {
 export interface MergeMappingsResult {
   mappings: Mapping[];
   groupsToEnsure: string[];
+  semanticTokenModifiers: string[];
+  semanticTokenLanguages: string[];
 }
 
 async function mergeMappingsFromCatalogRefs(
@@ -651,6 +749,8 @@ async function mergeMappingsFromCatalogRefs(
   const catalogTokensByRef: { ref: CatalogReference; tokens: readonly Token[] }[] = [];
   const semanticTypesSet = new Set<string>();
   const semanticTypeToRef = new Map<string, string>();
+  const modifiersSet = new Set<string>();
+  const languagesSet = new Set<string>();
   for (const ref of catalogRefs) {
     const catalog = await catalogService.loadCatalog(ref.name, ref.version);
     if (catalog) {
@@ -660,6 +760,8 @@ async function mergeMappingsFromCatalogRefs(
         semanticTypesSet.add(t);
         if (!semanticTypeToRef.has(t)) semanticTypeToRef.set(t, ref.name);
       }
+      (catalog.semanticTokenModifiers ?? []).forEach((m) => modifiersSet.add(m));
+      (catalog.semanticTokenLanguages ?? []).forEach((l) => languagesSet.add(l));
     }
   }
 
@@ -717,7 +819,25 @@ async function mergeMappingsFromCatalogRefs(
     existingKeys.add(key);
   }
 
-  return { mappings: newMappings, groupsToEnsure: [...groupsToEnsure] };
+  for (const m of newMappings) {
+    if (m.token.type !== 'semantic token') continue;
+    try {
+      const parsed = parseSemanticSelector(m.token.key);
+      parsed.modifiers.forEach((mod) => modifiersSet.add(mod));
+      if (parsed.language && parsed.language.trim() !== '') languagesSet.add(parsed.language);
+    } catch {
+      // skip invalid selectors
+    }
+  }
+
+  const semanticTokenModifiers = [...modifiersSet].sort();
+  const semanticTokenLanguages = [...languagesSet].sort();
+  return {
+    mappings: newMappings,
+    groupsToEnsure: [...groupsToEnsure],
+    semanticTokenModifiers,
+    semanticTokenLanguages,
+  };
 }
 
 export interface SemanticCatalogInfo {

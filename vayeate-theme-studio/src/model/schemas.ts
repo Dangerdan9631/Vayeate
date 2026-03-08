@@ -178,6 +178,8 @@ export const templateSchema = z
     colorVariables: z.array(colorVariableSchema).readonly(),
     contrastVariables: z.array(contrastVariableSchema).readonly(),
     groups: z.array(z.string()).readonly().default([]),
+    semanticTokenModifiers: z.array(semanticTokenTypeOrModifierSchema).readonly().optional().default([]),
+    semanticTokenLanguages: z.array(semanticTokenLanguageSchema).readonly().optional().default([]),
   })
   .readonly();
 export type Template = z.infer<typeof templateSchema>;

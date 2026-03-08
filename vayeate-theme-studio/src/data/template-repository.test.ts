@@ -27,6 +27,8 @@ describe('createTemplateRepository', () => {
     colorVariables: [],
     contrastVariables: [],
     groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
   };
 
   it('saves and loads a template round-trip', async () => {
@@ -102,6 +104,31 @@ describe('createTemplateRepository', () => {
     expect(loaded).not.toBeNull();
     expect(loaded?.groups).toEqual([]);
     expect(loaded?.mappings[0]?.groupRef).toBeNull();
+  });
+
+  it('loadTemplate applies default semanticTokenModifiers and semanticTokenLanguages for legacy JSON', async () => {
+    const repo = createTemplateRepository(baseDir);
+    const templatesDir = join(baseDir, 'templates');
+    mkdirSync(templatesDir, { recursive: true });
+    const legacy = {
+      name: 'legacy-semantic-template',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [],
+      contrastVariables: [],
+      groups: [],
+    };
+    writeFileSync(
+      join(templatesDir, 'legacy-semantic-template-1.0.0.template.json'),
+      JSON.stringify(legacy, null, 2),
+      'utf-8',
+    );
+    const loaded = await repo.loadTemplate('legacy-semantic-template', '1.0.0');
+    expect(loaded).not.toBeNull();
+    expect(loaded?.semanticTokenModifiers).toEqual([]);
+    expect(loaded?.semanticTokenLanguages).toEqual([]);
   });
 
   it('loadTemplate applies default groupRef for legacy colorVariables and contrastVariables', async () => {

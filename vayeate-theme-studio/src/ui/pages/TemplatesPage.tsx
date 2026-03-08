@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useTemplateViewModel, computeOrphanKeys } from '../../viewmodel/use-template-viewmodel';
+import {
+  useTemplateViewModel,
+  computeOrphanKeys,
+  type SemanticCatalogInfo,
+} from '../../viewmodel/use-template-viewmodel';
 import { catalogService } from '../../services/catalog-service';
 import type { Catalog } from '../../model/schemas';
 import { CreateTemplateDialog } from '../components/CreateTemplateDialog';
@@ -14,16 +18,10 @@ import type { Token } from '../../model/schemas';
 export function TemplatesPage() {
   const vm = useTemplateViewModel();
   const [orphanKeys, setOrphanKeys] = useState<Set<string>>(new Set());
-  const [semanticCatalog, setSemanticCatalog] = useState<{
-    semanticTokenTypes: string[];
-    semanticTokenModifiers: string[];
-    semanticTokenLanguages: string[];
-  } | null>(null);
 
   useEffect(() => {
     if (!vm.template) {
       setOrphanKeys(new Set());
-      setSemanticCatalog(null);
       return;
     }
 
@@ -42,7 +40,7 @@ export function TemplatesPage() {
           (catalog.semanticTokenLanguages ?? []).forEach((l) => languagesSet.add(l));
         }
       }
-      const catalogInfo =
+      const semanticCatalog: SemanticCatalogInfo | undefined =
         typesSet.size > 0 || modifiersSet.size > 0 || languagesSet.size > 0
           ? {
               semanticTokenTypes: [...typesSet].sort(),
@@ -51,8 +49,7 @@ export function TemplatesPage() {
             }
           : undefined;
       if (!cancelled) {
-        setOrphanKeys(computeOrphanKeys(vm.template!.mappings, allTokens, catalogInfo));
-        setSemanticCatalog(catalogInfo ?? null);
+        setOrphanKeys(computeOrphanKeys(vm.template!.mappings, allTokens, semanticCatalog));
       }
     })();
     return () => { cancelled = true; };
@@ -111,11 +108,15 @@ export function TemplatesPage() {
               contrastVariables={vm.template.contrastVariables}
               orphanKeys={orphanKeys}
               canEdit={canEdit}
-              semanticCatalog={semanticCatalog}
               onUpdateGroupRef={vm.updateMappingGroupRef}
               onUpdateColorRef={vm.updateMappingColorRef}
               onUpdateContrastRef={vm.updateMappingContrastRef}
-              onAddSemanticVariant={vm.addSemanticVariantMapping}
+              semanticVariant={{
+                semanticTokenModifiers: vm.template.semanticTokenModifiers ?? [],
+                semanticTokenLanguages: vm.template.semanticTokenLanguages ?? [],
+                onAddSemanticVariant: vm.addSemanticVariantMapping,
+                onUpdateSemanticVariantKey: vm.updateSemanticVariantKey,
+              }}
               onRemoveMapping={vm.removeMapping}
             />
           )}

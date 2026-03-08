@@ -15,7 +15,7 @@
         "type": "semantic token"
       },
       "colorVariableRef": "a",
-      "contrastVariableRef": null,
+      "contrastVariableRef": "c1",
       "groupRef": "vs-code-semantic-token-registry"
     },
     {
@@ -41,7 +41,7 @@
         "key": "enum",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -50,7 +50,7 @@
         "key": "enumMember",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -59,7 +59,7 @@
         "key": "event",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -68,7 +68,7 @@
         "key": "function",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -77,7 +77,7 @@
         "key": "interface",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -86,7 +86,7 @@
         "key": "keyword",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -95,7 +95,7 @@
         "key": "label",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -104,7 +104,7 @@
         "key": "macro",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -113,7 +113,7 @@
         "key": "member",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -122,7 +122,7 @@
         "key": "method",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -131,7 +131,7 @@
         "key": "namespace",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -140,7 +140,7 @@
         "key": "number",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -149,7 +149,7 @@
         "key": "operator",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -158,7 +158,7 @@
         "key": "parameter",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -167,7 +167,7 @@
         "key": "property",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -176,7 +176,7 @@
         "key": "regexp",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -185,7 +185,7 @@
         "key": "string",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -194,7 +194,7 @@
         "key": "struct",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -203,7 +203,7 @@
         "key": "type",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -212,7 +212,7 @@
         "key": "typeParameter",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     },
@@ -221,7 +221,16 @@
         "key": "variable",
         "type": "semantic token"
       },
-      "colorVariableRef": null,
+      "colorVariableRef": "a",
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "class.abstract",
+        "type": "semantic token"
+      },
+      "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
     }
@@ -250,5 +259,17 @@
   ],
   "groups": [
     "vs-code-semantic-token-registry"
-  ]
+  ],
+  "semanticTokenModifiers": [
+    "abstract",
+    "async",
+    "declaration",
+    "defaultLibrary",
+    "deprecated",
+    "documentation",
+    "modification",
+    "readonly",
+    "static"
+  ],
+  "semanticTokenLanguages": []
 }

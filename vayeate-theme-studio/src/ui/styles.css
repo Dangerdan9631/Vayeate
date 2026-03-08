@@ -251,6 +251,14 @@ body {
   background: #f3f4f6;
 }
 
+.btn-secondary:disabled {
+  opacity: 0.6;
+  color: #9ca3af;
+  border-color: #e5e7eb;
+  background: #f9fafb;
+  cursor: not-allowed;
+}
+
 .btn-danger {
   padding: 8px 16px;
   font-size: 14px;
@@ -807,10 +815,273 @@ body {
   padding-right: 4px;
 }
 
+/* Missing color blocks template lock; highlight with red font (warning icon is for catalog orphan only) */
+.mapping-blocking-lock {
+  color: #dc2626;
+}
+
+/* Only the variant token label (full selector) is red when blocking lock; keep controls row default color */
+.mapping-variant-wrapper.mapping-blocking-lock .mapping-variant-label {
+  color: #dc2626;
+}
+.mapping-variant-wrapper.mapping-blocking-lock .mapping-variant-controls-row {
+  color: #374151;
+}
+
 .mapping-warning-icon {
   font-size: 16px;
   color: #d97706;
   flex-shrink: 0;
+}
+
+.mapping-row-add-variant-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mapping-row-add-variant-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.mapping-row-add-variant-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.mapping-row-add-variant-btn .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.mapping-add-variant-popover {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+}
+
+.mapping-add-variant-popover-section {
+  margin-bottom: 10px;
+}
+
+.mapping-add-variant-popover-section:last-of-type {
+  margin-bottom: 12px;
+}
+
+.mapping-add-variant-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.mapping-add-variant-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mapping-add-variant-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.mapping-add-variant-check:hover {
+  background: #f3f4f6;
+}
+
+.mapping-add-variant-check input {
+  margin: 0;
+  cursor: pointer;
+}
+
+.mapping-add-variant-empty {
+  font-size: 12px;
+  color: #9ca3af;
+  padding: 4px 6px;
+}
+
+.mapping-add-variant-submit {
+  width: 100%;
+  padding: 6px 12px;
+  font-size: 13px;
+  border: 1px solid #6366f1;
+  border-radius: 6px;
+  background: #6366f1;
+  color: #fff;
+  cursor: pointer;
+}
+
+.mapping-add-variant-submit:hover:not(:disabled) {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+.mapping-add-variant-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Semantic block: shared grid so base and variant rows align */
+.mapping-semantic-block {
+  display: grid;
+  grid-template-columns: 120px 1fr 120px 120px auto;
+  gap: 8px;
+  align-items: center;
+  padding: 3px 0;
+}
+
+.mapping-semantic-block .mapping-row-base {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+  padding: 0;
+  gap: 8px;
+}
+
+.mapping-semantic-block .mapping-col-group {
+  grid-column: 1;
+}
+
+.mapping-semantic-block .mapping-col-name {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.mapping-semantic-block .mapping-row-base .mapping-col-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mapping-semantic-block .mapping-col-color {
+  grid-column: 3;
+}
+
+.mapping-semantic-block .mapping-col-contrast {
+  grid-column: 4;
+}
+
+.mapping-semantic-block .mapping-col-action {
+  grid-column: 5;
+}
+
+.mapping-variant-wrapper {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-template-rows: auto auto;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 2px 8px;
+}
+
+.mapping-variant-label {
+  grid-column: 1 / -1;
+  padding-left: 12px;
+  font-size: 11px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mapping-variant-controls-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Spans columns 1+2 so indent is only 12px; modifier + language stay in name area */
+.mapping-variant-indent-and-name {
+  grid-column: 1 / 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding-left: 12px;
+  border-left: 2px solid #e5e7eb;
+}
+
+.mapping-variant-multiselect-wrap {
+  position: relative;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.mapping-variant-multiselect-btn {
+  width: 100%;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mapping-variant-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  min-width: 160px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 40;
+}
+
+.mapping-variant-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.mapping-variant-remove-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.mapping-variant-remove-btn .material-symbols-outlined {
+  font-size: 18px;
 }
 
 .empty-hint {

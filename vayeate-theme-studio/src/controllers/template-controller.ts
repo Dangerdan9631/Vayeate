@@ -17,5 +17,7 @@ export function createTemplateWithParams(params: CreateTemplateParams): Template
     colorVariables: [],
     contrastVariables: [],
     groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
   };
 }
