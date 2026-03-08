@@ -30,6 +30,7 @@ export type AppAction =
   | { type: 'CLOSE_THEME_CREATE_DIALOG' }
   | { type: 'CREATE_THEME'; params: { name: string } }
   | { type: 'SAVE_THEME'; theme: Theme }
+  | { type: 'END_HUE_DRAG_RESULT'; theme: Theme }
   | { type: 'THEME_PANE_SELECTIONS_CHANGED'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
   | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number }
   | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }

@@ -436,9 +436,7 @@ describe('useThemeViewModel hue adjustment', () => {
     });
     await act(async () => {
       result.current.endHueDrag();
-    });
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 250));
+      await new Promise((r) => setTimeout(r, 350));
     });
     expect(result.current.hueAdjustment).toBe(0);
     expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
@@ -575,9 +573,7 @@ describe('useThemeViewModel hue adjustment', () => {
     });
     await act(async () => {
       result.current.endHueDrag();
-    });
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 250));
+      await new Promise((r) => setTimeout(r, 350));
     });
     expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
     expect(result.current.theme!.colorAssignments[0].light!.value).toBe(originalLight);

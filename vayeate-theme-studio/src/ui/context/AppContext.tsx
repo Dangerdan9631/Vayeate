@@ -418,7 +418,28 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
 
       case 'SAVE_THEME': {
         log.debug('SAVE_THEME', action.theme.name, `v${action.theme.version}`);
-        setState({ type: 'SET_THEME', theme: action.theme });
+        setState({ type: 'SET_THEME', theme: action.theme, preserveHue: true });
+        setState({ type: 'SET_THEME_SAVE_ERROR', error: null });
+        pendingThemeToSave = action.theme;
+        if (saveThemeTimeoutId !== null) clearTimeout(saveThemeTimeoutId);
+        saveThemeTimeoutId = setTimeout(() => {
+          saveThemeTimeoutId = null;
+          const theme = pendingThemeToSave;
+          pendingThemeToSave = null;
+          if (theme) {
+            themeService.saveTheme(theme).catch((err) => {
+              const message = err instanceof Error ? err.message : String(err);
+              log.error('SAVE_THEME persist failed', err);
+              setState({ type: 'SET_THEME_SAVE_ERROR', error: message });
+            });
+          }
+        }, SAVE_THEME_DEBOUNCE_MS);
+        break;
+      }
+
+      case 'END_HUE_DRAG_RESULT': {
+        log.debug('END_HUE_DRAG_RESULT', action.theme.name);
+        setState({ type: 'SET_THEME_AND_HUE', theme: action.theme, hueAdjustment: 0 });
         setState({ type: 'SET_THEME_SAVE_ERROR', error: null });
         pendingThemeToSave = action.theme;
         if (saveThemeTimeoutId !== null) clearTimeout(saveThemeTimeoutId);

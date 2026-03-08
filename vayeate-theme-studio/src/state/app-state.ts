@@ -102,7 +102,8 @@ export type AppStateUpdate =
   | { type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN'; value: boolean }
   | { type: 'SET_THEME_REFS'; refs: ThemeReference[] }
   | { type: 'SET_SELECTED_THEME_REF'; ref: ThemeReference | null }
-  | { type: 'SET_THEME'; theme: Theme | null }
+  | { type: 'SET_THEME'; theme: Theme | null; preserveHue?: boolean }
+  | { type: 'SET_THEME_AND_HUE'; theme: Theme | null; hueAdjustment: number }
   | { type: 'SET_THEME_PANE_SELECTIONS'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
   | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }
   | { type: 'SET_THEME_IS_CREATING'; value: boolean }
@@ -141,7 +142,19 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
     case 'SET_SELECTED_THEME_REF':
       return { ...state, themes: { ...state.themes, selectedRef: update.ref, hueAdjustment: 0 } };
     case 'SET_THEME':
-      return { ...state, themes: { ...state.themes, theme: update.theme, hueAdjustment: 0 } };
+      return {
+        ...state,
+        themes: {
+          ...state.themes,
+          theme: update.theme,
+          ...(update.preserveHue === true ? {} : { hueAdjustment: 0 }),
+        },
+      };
+    case 'SET_THEME_AND_HUE':
+      return {
+        ...state,
+        themes: { ...state.themes, theme: update.theme, hueAdjustment: update.hueAdjustment },
+      };
     case 'SET_THEME_PANE_SELECTIONS':
       return {
         ...state,
@@ -196,6 +209,8 @@ function updatePayloadSummary(update: AppStateUpdate): string {
       return update.ref ? `${update.ref.name} v${update.ref.version}` : '(none)';
     case 'SET_THEME':
       return update.theme ? `${update.theme.name} v${update.theme.version} (${update.theme.colorAssignments.length} color, ${update.theme.contrastAssignments.length} contrast)` : '(none)';
+    case 'SET_THEME_AND_HUE':
+      return update.theme ? `${update.theme.name} hue=${update.hueAdjustment}` : '(none)';
     case 'SET_THEME_PANE_SELECTIONS':
       return `colors=${update.checkedColorRefs.length} contrast=${update.checkedContrastRefs.length}`;
     case 'SET_THEME_HUE_ADJUSTMENT':

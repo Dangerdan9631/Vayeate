@@ -531,7 +531,7 @@ export function useThemeViewModel() {
     const start = hueDragStartRef.current;
     hueDragStartRef.current = null;
     if (!start || !theme) return;
-    if (hueAdjustment === start.hueAdjustment) return;
+    if (hueAdjustment === start.hueAdjustment && hueAdjustment === 0) return;
     log.debug('endHueDrag', start.hueAdjustment, '→', hueAdjustment);
     const newAssignments = applyHueToAssignmentsFiltered(
       start.theme.colorAssignments,
@@ -543,8 +543,7 @@ export function useThemeViewModel() {
     const prev = themePaneStateFromState(start.theme, checkedColorRefsArray, checkedContrastRefsArray, start.hueAdjustment);
     const next = themePaneStateFromState(nextTheme, checkedColorRefsArray, checkedContrastRefsArray, 0);
     undoStack.push('themes', 'Hue adjustment', prev, next);
-    dispatch({ type: 'SAVE_THEME', theme: nextTheme });
-    dispatch({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
+    dispatch({ type: 'END_HUE_DRAG_RESULT', theme: nextTheme });
   }, [
     theme,
     hueAdjustment,
