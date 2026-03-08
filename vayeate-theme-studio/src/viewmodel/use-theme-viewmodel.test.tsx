@@ -462,3 +462,155 @@ describe('useThemeViewModel hue adjustment', () => {
     expect(result.current.hueAdjustment).toBe(20);
   });
 });
+
+describe('useThemeViewModel variable selection', () => {
+  const themeWithTwoColors: Theme = {
+    name: 'sel-theme',
+    version: '1.0.0',
+    templateRef: { name: 'tpl', version: '1.0.0' },
+    idePrimaryColorVariableRef: null,
+    idePrimaryColorContrastVariableRef: null,
+    themeBackgroundColorVariableRef: null,
+    colorAssignments: [
+      { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
+      { colorRef: 'secondary', dark: { value: '#00ff00' }, light: { value: '#00cc00' }, useDarkForLight: false },
+    ],
+    contrastAssignments: [
+      { contrastVariableRef: 'textContrast', dark: { value: 4.5, comparisonMethod: 'greaterThan' as const, min: null, max: null }, light: null, useDarkForLight: true },
+    ],
+  };
+
+  const templateForSel: Template = {
+    name: 'tpl',
+    version: '1.0.0',
+    locked: false,
+    catalogRefs: [],
+    mappings: [],
+    colorVariables: [{ key: 'primary', groupRef: null }, { key: 'secondary', groupRef: null }],
+    contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary', groupRef: null }],
+    groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
+  };
+
+  beforeEach(() => {
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(null),
+      saveTemplate: () => Promise.resolve(),
+      loadTemplate: () => Promise.resolve(templateForSel),
+      listTemplates: () => Promise.resolve([]),
+      deleteTemplate: () => Promise.resolve(),
+      createTheme: () => Promise.resolve(themeWithTwoColors),
+      saveTheme: () => Promise.resolve(),
+      loadTheme: () => Promise.resolve(themeWithTwoColors),
+      listThemes: () => Promise.resolve([{ name: 'sel-theme', version: '1.0.0' }]),
+      deleteTheme: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+  });
+
+  it('initializes checkedColorRefs and checkedContrastRefs to all when theme loads', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    expect(result.current.checkedColorRefs.has('primary')).toBe(true);
+    expect(result.current.checkedColorRefs.has('secondary')).toBe(true);
+    expect(result.current.checkedContrastRefs.has('textContrast')).toBe(true);
+  });
+
+  it('displayColorAssignments applies hue only to checked color refs', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalPrimary = result.current.theme!.colorAssignments[0].dark!.value;
+    const originalSecondary = result.current.theme!.colorAssignments[1].dark!.value;
+    await act(async () => {
+      result.current.toggleColorChecked('secondary');
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(50);
+    });
+    expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(originalPrimary);
+    expect(result.current.displayColorAssignments[1].dark!.value).toBe(originalSecondary);
+  });
+
+  it('commitHueAdjustment only updates checked color refs', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalSecondary = result.current.theme!.colorAssignments[1].dark!.value;
+    await act(async () => {
+      result.current.toggleColorChecked('secondary');
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(25);
+    });
+    await act(async () => {
+      result.current.commitHueAdjustment();
+    });
+    expect(result.current.theme!.colorAssignments[1].dark!.value).toBe(originalSecondary);
+  });
+
+  it('setAllColorChecked updates all color refs', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setAllColorChecked(false);
+    });
+    expect(result.current.checkedColorRefs.has('primary')).toBe(false);
+    expect(result.current.checkedColorRefs.has('secondary')).toBe(false);
+    await act(async () => {
+      result.current.setAllColorChecked(true);
+    });
+    expect(result.current.checkedColorRefs.has('primary')).toBe(true);
+    expect(result.current.checkedColorRefs.has('secondary')).toBe(true);
+  });
+
+  it('setColorGroupChecked updates only refs in that group', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setColorGroupChecked('__ungrouped__', false);
+    });
+    expect(result.current.checkedColorRefs.has('primary')).toBe(false);
+    expect(result.current.checkedColorRefs.has('secondary')).toBe(false);
+    expect(result.current.checkedContrastRefs.has('textContrast')).toBe(true);
+    await act(async () => {
+      result.current.setColorGroupChecked('__ungrouped__', true);
+    });
+    expect(result.current.checkedColorRefs.has('primary')).toBe(true);
+    expect(result.current.checkedColorRefs.has('secondary')).toBe(true);
+  });
+});

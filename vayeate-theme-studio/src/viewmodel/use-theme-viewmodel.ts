@@ -20,12 +20,22 @@ import type {
 
 const log = createLogger('ThemeVM');
 
-function applyHueToAssignments(assignments: readonly ColorAssignment[], shift: number): ColorAssignment[] {
-  return assignments.map((a) => ({
-    ...a,
-    dark: a.dark ? { value: applyHueShift(a.dark.value, shift) } : null,
-    light: a.light ? { value: applyHueShift(a.light.value, shift) } : null,
-  }));
+const UNGROUPED_KEY = '__ungrouped__';
+
+function applyHueToAssignmentsFiltered(
+  assignments: readonly ColorAssignment[],
+  shift: number,
+  checkedRefs: ReadonlySet<string>,
+): ColorAssignment[] {
+  return assignments.map((a) =>
+    checkedRefs.has(a.colorRef)
+      ? {
+          ...a,
+          dark: a.dark ? { value: applyHueShift(a.dark.value, shift) } : null,
+          light: a.light ? { value: applyHueShift(a.light.value, shift) } : null,
+        }
+      : a,
+  );
 }
 
 export function useThemeViewModel() {
@@ -101,12 +111,28 @@ export function useThemeViewModel() {
 
   const [loadedTemplate, setLoadedTemplate] = useState<Template | null>(null);
   const [hueAdjustment, setHueAdjustment] = useState(0);
+  const [checkedColorRefs, setCheckedColorRefs] = useState<Set<string>>(new Set());
+  const [checkedContrastRefs, setCheckedContrastRefs] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!theme) {
+      setCheckedColorRefs(new Set());
+      setCheckedContrastRefs(new Set());
+      return;
+    }
+    setCheckedColorRefs(new Set(theme.colorAssignments.map((a) => a.colorRef)));
+    setCheckedContrastRefs(new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef)));
+  }, [theme]);
 
   const displayColorAssignments = useMemo(() => {
     if (!theme) return [];
     if (hueAdjustment === 0) return theme.colorAssignments;
-    return applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
-  }, [theme, hueAdjustment]);
+    return applyHueToAssignmentsFiltered(
+      theme.colorAssignments,
+      hueAdjustment / 100,
+      checkedColorRefs,
+    );
+  }, [theme, hueAdjustment, checkedColorRefs]);
 
   useEffect(() => {
     if (!selectedTemplateName || !selectedTemplateVersion) {
@@ -332,10 +358,14 @@ export function useThemeViewModel() {
     if (!theme || hueAdjustment === 0) return;
     log.debug('commitHueAdjustment', hueAdjustment);
     const base = getBaseInPlace(theme);
-    const newAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+    const newAssignments = applyHueToAssignmentsFiltered(
+      theme.colorAssignments,
+      hueAdjustment / 100,
+      checkedColorRefs,
+    );
     dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     setHueAdjustment(0);
-  }, [dispatch, theme, hueAdjustment]);
+  }, [dispatch, theme, hueAdjustment, checkedColorRefs]);
 
   const revertHueAdjustment = useCallback(() => {
     setHueAdjustment(0);
@@ -350,7 +380,11 @@ export function useThemeViewModel() {
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
-        workingAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+        workingAssignments = applyHueToAssignmentsFiltered(
+          theme.colorAssignments,
+          hueAdjustment / 100,
+          checkedColorRefs,
+        );
         setHueAdjustment(0);
       }
       const newAssignments = workingAssignments.map((a) =>
@@ -360,7 +394,7 @@ export function useThemeViewModel() {
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme, hueAdjustment],
+    [dispatch, theme, hueAdjustment, checkedColorRefs],
   );
 
   const updateColorAssignmentLight = useCallback(
@@ -370,7 +404,11 @@ export function useThemeViewModel() {
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
-        workingAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+        workingAssignments = applyHueToAssignmentsFiltered(
+          theme.colorAssignments,
+          hueAdjustment / 100,
+          checkedColorRefs,
+        );
         setHueAdjustment(0);
       }
       const newAssignments = workingAssignments.map((a) =>
@@ -380,7 +418,7 @@ export function useThemeViewModel() {
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme, hueAdjustment],
+    [dispatch, theme, hueAdjustment, checkedColorRefs],
   );
 
   const updateColorAssignmentUseDarkForLight = useCallback(
@@ -390,7 +428,11 @@ export function useThemeViewModel() {
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
-        workingAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+        workingAssignments = applyHueToAssignmentsFiltered(
+          theme.colorAssignments,
+          hueAdjustment / 100,
+          checkedColorRefs,
+        );
         setHueAdjustment(0);
       }
       const newAssignments = workingAssignments.map((a) =>
@@ -398,7 +440,7 @@ export function useThemeViewModel() {
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme, hueAdjustment],
+    [dispatch, theme, hueAdjustment, checkedColorRefs],
   );
 
   // --- Contrast assignment updates (no version bump) ---
@@ -446,6 +488,128 @@ export function useThemeViewModel() {
     [dispatch, theme],
   );
 
+  const toggleColorChecked = useCallback((ref: string) => {
+    setCheckedColorRefs((prev) => {
+      const next = new Set(prev);
+      if (next.has(ref)) next.delete(ref);
+      else next.add(ref);
+      return next;
+    });
+  }, []);
+
+  const toggleContrastChecked = useCallback((ref: string) => {
+    setCheckedContrastRefs((prev) => {
+      const next = new Set(prev);
+      if (next.has(ref)) next.delete(ref);
+      else next.add(ref);
+      return next;
+    });
+  }, []);
+
+  const setAllColorChecked = useCallback((checked: boolean) => {
+    setCheckedColorRefs((prev) => {
+      if (!theme) return prev;
+      return checked
+        ? new Set(theme.colorAssignments.map((a) => a.colorRef))
+        : new Set();
+    });
+  }, [theme]);
+
+  const setAllContrastChecked = useCallback((checked: boolean) => {
+    setCheckedContrastRefs((prev) => {
+      if (!theme) return prev;
+      return checked
+        ? new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef))
+        : new Set();
+    });
+  }, [theme]);
+
+  const setAllVariablesChecked = useCallback(
+    (checked: boolean) => {
+      if (!theme) return;
+      if (checked) {
+        setCheckedColorRefs(new Set(theme.colorAssignments.map((a) => a.colorRef)));
+        setCheckedContrastRefs(new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef)));
+      } else {
+        setCheckedColorRefs(new Set());
+        setCheckedContrastRefs(new Set());
+      }
+    },
+    [theme],
+  );
+
+  const setColorGroupChecked = useCallback(
+    (groupKey: string, checked: boolean) => {
+      if (!theme) return;
+      const varMap = new Map(colorVariablesFromTemplate.map((v) => [v.key, v]));
+      const refsInGroup = theme.colorAssignments
+        .filter((a) => {
+          const v = varMap.get(a.colorRef);
+          const g = v?.groupRef ?? null;
+          const k = g === null ? UNGROUPED_KEY : g;
+          return k === groupKey;
+        })
+        .map((a) => a.colorRef);
+      setCheckedColorRefs((prev) => {
+        const next = new Set(prev);
+        refsInGroup.forEach((r) => (checked ? next.add(r) : next.delete(r)));
+        return next;
+      });
+    },
+    [theme, colorVariablesFromTemplate],
+  );
+
+  const setContrastGroupChecked = useCallback(
+    (groupKey: string, checked: boolean) => {
+      if (!theme) return;
+      const varMap = new Map(contrastVariablesFromTemplate.map((v) => [v.key, v]));
+      const refsInGroup = theme.contrastAssignments
+        .filter((a) => {
+          const v = varMap.get(a.contrastVariableRef);
+          const g = v?.groupRef ?? null;
+          const k = g === null ? UNGROUPED_KEY : g;
+          return k === groupKey;
+        })
+        .map((a) => a.contrastVariableRef);
+      setCheckedContrastRefs((prev) => {
+        const next = new Set(prev);
+        refsInGroup.forEach((r) => (checked ? next.add(r) : next.delete(r)));
+        return next;
+      });
+    },
+    [theme, contrastVariablesFromTemplate],
+  );
+
+  const colorSectionState = useMemo(() => {
+    if (!theme?.colorAssignments.length) return 'all' as const;
+    const refs = theme.colorAssignments.map((a) => a.colorRef);
+    const all = refs.every((r) => checkedColorRefs.has(r));
+    const none = refs.every((r) => !checkedColorRefs.has(r));
+    if (all) return 'all' as const;
+    if (none) return 'none' as const;
+    return 'some' as const;
+  }, [theme, checkedColorRefs]);
+
+  const contrastSectionState = useMemo(() => {
+    if (!theme?.contrastAssignments.length) return 'all' as const;
+    const refs = theme.contrastAssignments.map((a) => a.contrastVariableRef);
+    const all = refs.every((r) => checkedContrastRefs.has(r));
+    const none = refs.every((r) => !checkedContrastRefs.has(r));
+    if (all) return 'all' as const;
+    if (none) return 'none' as const;
+    return 'some' as const;
+  }, [theme, checkedContrastRefs]);
+
+  const cardState = useMemo(() => {
+    const colorAll = colorSectionState === 'all';
+    const colorNone = colorSectionState === 'none';
+    const contrastAll = contrastSectionState === 'all';
+    const contrastNone = contrastSectionState === 'none';
+    if (colorAll && contrastAll) return 'all' as const;
+    if (colorNone && contrastNone) return 'none' as const;
+    return 'some' as const;
+  }, [colorSectionState, contrastSectionState]);
+
   // --- Color variable keys from assignments (for the IDE primary color dropdown) ---
 
   const colorVariableKeys = useMemo(() => {
@@ -486,6 +650,18 @@ export function useThemeViewModel() {
     displayColorAssignments,
     commitHueAdjustment,
     revertHueAdjustment,
+    checkedColorRefs,
+    checkedContrastRefs,
+    toggleColorChecked,
+    toggleContrastChecked,
+    setAllColorChecked,
+    setAllContrastChecked,
+    setAllVariablesChecked,
+    setColorGroupChecked,
+    setContrastGroupChecked,
+    colorSectionState,
+    contrastSectionState,
+    cardState,
     selectTheme,
     selectName,
     openCreateDialog,

@@ -635,6 +635,68 @@ body {
   margin-left: 4px;
 }
 
+.tree-header-with-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  width: 100%;
+  min-width: 0;
+}
+
+.tree-section-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.tree-header-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1f2937;
+  text-align: left;
+  min-width: 0;
+}
+
+.tree-header-with-checkbox .tree-header-toggle:hover {
+  background: #e5e7eb;
+}
+
+.theme-variables-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.theme-variables-card-header h2 {
+  margin: 0;
+}
+
+.theme-variables-card-checkbox {
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.theme-var-check-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.theme-var-check {
+  cursor: pointer;
+}
+
 .tree-children {
   padding: 4px 0 4px 28px;
 }
@@ -1414,7 +1476,7 @@ body {
 
 .theme-color-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px minmax(0, 1fr) 32px auto;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) 32px minmax(0, 1fr) 32px auto;
   gap: 6px;
   align-items: center;
   padding: 4px 0;
@@ -1490,7 +1552,7 @@ body {
 
 .theme-contrast-row1 {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 6px;
   align-items: center;
   padding: 2px 0;

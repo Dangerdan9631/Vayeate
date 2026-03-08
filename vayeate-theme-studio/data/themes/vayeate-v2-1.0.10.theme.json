@@ -13,7 +13,7 @@
       "colorRef": "chromePrimaryBg",
       "light": null,
       "dark": {
-        "value": "#2f5d8b"
+        "value": "#458b2f"
       },
       "useDarkForLight": true
     },
@@ -21,7 +21,7 @@
       "colorRef": "chromePrimaryFg",
       "light": null,
       "dark": {
-        "value": "#c6e3ff"
+        "value": "#d4ffc6"
       },
       "useDarkForLight": true
     },
@@ -29,7 +29,7 @@
       "colorRef": "chromeBorder",
       "light": null,
       "dark": {
-        "value": "#336699"
+        "value": "#4b9933"
       },
       "useDarkForLight": true
     },
@@ -37,7 +37,7 @@
       "colorRef": "chromeInactiveBg",
       "light": null,
       "dark": {
-        "value": "#4f5c68"
+        "value": "#56684f"
       },
       "useDarkForLight": true
     },
@@ -45,7 +45,7 @@
       "colorRef": "chromeInactiveFg",
       "light": null,
       "dark": {
-        "value": "#ebf0f4"
+        "value": "#eef4eb"
       },
       "useDarkForLight": true
     },
@@ -53,7 +53,7 @@
       "colorRef": "chromeAccentFg",
       "light": null,
       "dark": {
-        "value": "#52a9ff"
+        "value": "#7cff52"
       },
       "useDarkForLight": true
     },
@@ -61,7 +61,7 @@
       "colorRef": "chromeDarkBg",
       "light": null,
       "dark": {
-        "value": "#1b3d5f"
+        "value": "#2b5f1b"
       },
       "useDarkForLight": true
     },
@@ -69,7 +69,7 @@
       "colorRef": "chromeSelectionFg",
       "light": null,
       "dark": {
-        "value": "#ccffff"
+        "value": "#f2ffcc"
       },
       "useDarkForLight": true
     },
@@ -77,17 +77,17 @@
       "colorRef": "chromeBrightFg",
       "light": null,
       "dark": {
-        "value": "#99ccff"
+        "value": "#b1ff99"
       },
       "useDarkForLight": true
     },
     {
       "colorRef": "chromeMutedFg",
       "light": {
-        "value": "#ebf0f4"
+        "value": "#eef4eb"
       },
       "dark": {
-        "value": "#7da9d4"
+        "value": "#92d47d"
       },
       "useDarkForLight": true
     },
@@ -95,7 +95,7 @@
       "colorRef": "chromeAccent",
       "light": null,
       "dark": {
-        "value": "#3399ff"
+        "value": "#64ff33"
       },
       "useDarkForLight": true
     },
@@ -103,7 +103,7 @@
       "colorRef": "menuSeparatorBg",
       "light": null,
       "dark": {
-        "value": "#99ccff"
+        "value": "#b1ff99"
       },
       "useDarkForLight": true
     },
@@ -111,24 +111,24 @@
       "colorRef": "buttonHoverBg",
       "light": null,
       "dark": {
-        "value": "#345a80"
+        "value": "#468034"
       },
       "useDarkForLight": true
     },
     {
       "colorRef": "sideBarBg",
       "light": {
-        "value": "#d6d5dc"
+        "value": "#d5dcd8"
       },
       "dark": {
-        "value": "#2e363e"
+        "value": "#323e2e"
       },
       "useDarkForLight": false
     },
     {
       "colorRef": "sideBarFg",
       "light": {
-        "value": "#2e363e"
+        "value": "#323e2e"
       },
       "dark": {
         "value": "#cccccc"
@@ -383,7 +383,7 @@
       "colorRef": "statusBarDebuggingBg",
       "light": null,
       "dark": {
-        "value": "#356445"
+        "value": "#645135"
       },
       "useDarkForLight": true
     },
@@ -399,7 +399,7 @@
       "colorRef": "statusBarRemoteFg",
       "light": null,
       "dark": {
-        "value": "#ffd6d6"
+        "value": "#e1d6ff"
       },
       "useDarkForLight": true
     },
@@ -407,7 +407,7 @@
       "colorRef": "statusBarNoFolderBg",
       "light": null,
       "dark": {
-        "value": "#655938"
+        "value": "#653865"
       },
       "useDarkForLight": true
     },
@@ -423,7 +423,7 @@
       "colorRef": "statusBarItemActiveBg",
       "light": null,
       "dark": {
-        "value": "#cccccc2e"
+        "value": "#cccccc"
       },
       "useDarkForLight": true
     },
@@ -431,7 +431,7 @@
       "colorRef": "statusBarItemErrorBg",
       "light": null,
       "dark": {
-        "value": "#ac280d"
+        "value": "#510dac"
       },
       "useDarkForLight": true
     },
@@ -447,7 +447,7 @@
       "colorRef": "statusBarItemHoverBg",
       "light": null,
       "dark": {
-        "value": "#ffffff2e"
+        "value": "#ffffff"
       },
       "useDarkForLight": true
     },
@@ -455,7 +455,7 @@
       "colorRef": "notificationsInfoIconFg",
       "light": null,
       "dark": {
-        "value": "#99ccff"
+        "value": "#b1ff99"
       },
       "useDarkForLight": true
     },
@@ -463,7 +463,7 @@
       "colorRef": "notificationsWarningIconFg",
       "light": null,
       "dark": {
-        "value": "#d19c00"
+        "value": "#d100d0"
       },
       "useDarkForLight": true
     },
@@ -471,7 +471,7 @@
       "colorRef": "notificationsErrorIconFg",
       "light": null,
       "dark": {
-        "value": "#cd9b68"
+        "value": "#b568cd"
       },
       "useDarkForLight": true
     },
@@ -479,7 +479,7 @@
       "colorRef": "activityBarBadgeFg",
       "light": null,
       "dark": {
-        "value": "#acd6ff"
+        "value": "#c0ffac"
       },
       "useDarkForLight": true
     },
@@ -487,7 +487,7 @@
       "colorRef": "activityBarBadgeBg",
       "light": null,
       "dark": {
-        "value": "#0059b1"
+        "value": "#2bb100"
       },
       "useDarkForLight": true
     },
@@ -495,7 +495,7 @@
       "colorRef": "badgeFg",
       "light": null,
       "dark": {
-        "value": "#acd6ff"
+        "value": "#c0ffac"
       },
       "useDarkForLight": true
     },
@@ -503,7 +503,7 @@
       "colorRef": "badgeBg",
       "light": null,
       "dark": {
-        "value": "#0059b1"
+        "value": "#2bb100"
       },
       "useDarkForLight": true
     },
@@ -511,7 +511,7 @@
       "colorRef": "extensionBadgeRemoteFg",
       "light": null,
       "dark": {
-        "value": "#acd6ff"
+        "value": "#c0ffac"
       },
       "useDarkForLight": true
     },
@@ -519,7 +519,7 @@
       "colorRef": "extensionBadgeRemoteBg",
       "light": null,
       "dark": {
-        "value": "#0059b1"
+        "value": "#2bb100"
       },
       "useDarkForLight": true
     },
@@ -527,7 +527,7 @@
       "colorRef": "panelTitleInactiveFg",
       "light": null,
       "dark": {
-        "value": "#a2b7cc"
+        "value": "#accca2"
       },
       "useDarkForLight": true
     },
@@ -687,7 +687,7 @@
       "colorRef": "dropdownBg",
       "light": null,
       "dark": {
-        "value": "#282e35"
+        "value": "#2b3528"
       },
       "useDarkForLight": true
     },
@@ -1097,7 +1097,7 @@
       "colorRef": "commentDocumentation",
       "light": null,
       "dark": {
-        "value": "#6c796e"
+        "value": "#79716c"
       },
       "useDarkForLight": true
     },
@@ -1113,7 +1113,7 @@
       "colorRef": "inputBg",
       "light": null,
       "dark": {
-        "value": "#282e35"
+        "value": "#2b3528"
       },
       "useDarkForLight": true
     }

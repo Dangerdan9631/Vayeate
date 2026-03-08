@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
   ColorAssignment,
   ColorVariable,
@@ -10,6 +10,8 @@ import type {
 
 const UNGROUPED_KEY = '__ungrouped__';
 
+type TriState = 'all' | 'none' | 'some';
+
 interface ThemeVariablesCardProps {
   colorAssignments: readonly ColorAssignment[];
   contrastAssignments: readonly ContrastAssignment[];
@@ -18,12 +20,66 @@ interface ThemeVariablesCardProps {
   groups: readonly string[];
   orphanColorKeys: Set<string>;
   orphanContrastKeys: Set<string>;
+  checkedColorRefs: ReadonlySet<string>;
+  checkedContrastRefs: ReadonlySet<string>;
+  onToggleColorChecked: (ref: string) => void;
+  onToggleContrastChecked: (ref: string) => void;
+  onSetAllColorChecked: (checked: boolean) => void;
+  onSetAllContrastChecked: (checked: boolean) => void;
+  onSetAllVariablesChecked: (checked: boolean) => void;
+  onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
+  onSetContrastGroupChecked: (groupKey: string, checked: boolean) => void;
+  colorSectionState: TriState;
+  contrastSectionState: TriState;
+  cardState: TriState;
   onUpdateColorDark: (colorRef: string, value: string | null) => void;
   onUpdateColorLight: (colorRef: string, value: string | null) => void;
   onUpdateColorUseDark: (colorRef: string, useDark: boolean) => void;
   onUpdateContrastDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastUseDark: (contrastRef: string, useDark: boolean) => void;
+}
+
+function TriStateCheckbox({
+  state,
+  onChange,
+  onClickCapture,
+  ariaLabel,
+  className,
+}: {
+  state: TriState;
+  onChange: (checked: boolean) => void;
+  onClickCapture?: (e: React.MouseEvent) => void;
+  ariaLabel: string;
+  className?: string;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  const checked = state === 'all';
+  const indeterminate = state === 'some';
+
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (indeterminate) {
+      onChange(true);
+    } else {
+      onChange(e.target.checked);
+    }
+  };
+
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      className={className}
+      checked={checked}
+      onChange={handleChange}
+      onClick={onClickCapture}
+      aria-label={ariaLabel}
+    />
+  );
 }
 
 const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] = [
@@ -80,6 +136,11 @@ function ColorAssignmentsSection({
   assignments,
   colorVariables,
   orphanKeys,
+  checkedColorRefs,
+  onToggleColorChecked,
+  sectionState,
+  onSetAllColorChecked,
+  onSetColorGroupChecked,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
@@ -87,6 +148,11 @@ function ColorAssignmentsSection({
   assignments: readonly ColorAssignment[];
   colorVariables: readonly ColorVariable[];
   orphanKeys: Set<string>;
+  checkedColorRefs: ReadonlySet<string>;
+  onToggleColorChecked: (ref: string) => void;
+  sectionState: TriState;
+  onSetAllColorChecked: (checked: boolean) => void;
+  onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
   onUpdateDark: (colorRef: string, value: string | null) => void;
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
@@ -100,29 +166,53 @@ function ColorAssignmentsSection({
 
   return (
     <div className="tree-section">
-      <button
-        type="button"
-        className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        <span className="material-symbols-outlined tree-chevron">
-          {collapsed ? 'chevron_right' : 'expand_more'}
-        </span>
-        <span className="tree-label">Color Variables</span>
-        <span className="tree-count">({assignments.length})</span>
-      </button>
+      <div className="tree-header tree-header-with-checkbox">
+        <TriStateCheckbox
+          state={sectionState}
+          onChange={onSetAllColorChecked}
+          onClickCapture={(e) => e.stopPropagation()}
+          ariaLabel="Select all color variables"
+          className="tree-section-checkbox"
+        />
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">Color Variables</span>
+          <span className="tree-count">({assignments.length})</span>
+        </button>
+      </div>
 
       {!collapsed && (
         <div className="tree-children">
           {groupKeysInOrder.map((groupKey) => {
             const groupAssignments = byGroup.get(groupKey) ?? [];
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+            const refsInGroup = groupAssignments.map((a) => a.colorRef);
+            const groupState: TriState =
+              refsInGroup.length === 0
+                ? 'none'
+                : refsInGroup.every((r) => checkedColorRefs.has(r))
+                  ? 'all'
+                  : refsInGroup.every((r) => !checkedColorRefs.has(r))
+                    ? 'none'
+                    : 'some';
             return (
               <ColorAssignmentsGroupSubsection
                 key={groupKey}
+                groupKey={groupKey}
                 groupLabel={groupLabel}
+                groupState={groupState}
                 assignments={groupAssignments}
                 orphanKeys={orphanKeys}
+                checkedColorRefs={checkedColorRefs}
+                onToggleColorChecked={onToggleColorChecked}
+                onSetColorGroupChecked={onSetColorGroupChecked}
                 onUpdateDark={onUpdateDark}
                 onUpdateLight={onUpdateLight}
                 onUpdateUseDark={onUpdateUseDark}
@@ -136,16 +226,26 @@ function ColorAssignmentsSection({
 }
 
 function ColorAssignmentsGroupSubsection({
+  groupKey,
   groupLabel,
+  groupState,
   assignments,
   orphanKeys,
+  checkedColorRefs,
+  onToggleColorChecked,
+  onSetColorGroupChecked,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
 }: {
+  groupKey: string;
   groupLabel: string;
+  groupState: TriState;
   assignments: readonly ColorAssignment[];
   orphanKeys: Set<string>;
+  checkedColorRefs: ReadonlySet<string>;
+  onToggleColorChecked: (ref: string) => void;
+  onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
   onUpdateDark: (colorRef: string, value: string | null) => void;
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
@@ -154,17 +254,27 @@ function ColorAssignmentsGroupSubsection({
 
   return (
     <div className="tree-section">
-      <button
-        type="button"
-        className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        <span className="material-symbols-outlined tree-chevron">
-          {collapsed ? 'chevron_right' : 'expand_more'}
-        </span>
-        <span className="tree-label">{groupLabel}</span>
-        <span className="tree-count">({assignments.length})</span>
-      </button>
+      <div className="tree-header tree-header-with-checkbox">
+        <TriStateCheckbox
+          state={groupState}
+          onChange={(checked) => onSetColorGroupChecked(groupKey, checked)}
+          onClickCapture={(e) => e.stopPropagation()}
+          ariaLabel={`Select all in group: ${groupLabel}`}
+          className="tree-section-checkbox"
+        />
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">{groupLabel}</span>
+          <span className="tree-count">({assignments.length})</span>
+        </button>
+      </div>
       {!collapsed && (
         <div className="tree-children">
           {assignments.length === 0 && (
@@ -175,6 +285,8 @@ function ColorAssignmentsGroupSubsection({
               key={a.colorRef}
               assignment={a}
               isOrphan={orphanKeys.has(a.colorRef)}
+              checked={checkedColorRefs.has(a.colorRef)}
+              onToggleChecked={onToggleColorChecked}
               onUpdateDark={onUpdateDark}
               onUpdateLight={onUpdateLight}
               onUpdateUseDark={onUpdateUseDark}
@@ -189,12 +301,16 @@ function ColorAssignmentsGroupSubsection({
 function ColorAssignmentRow({
   assignment,
   isOrphan,
+  checked,
+  onToggleChecked,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
 }: {
   assignment: ColorAssignment;
   isOrphan: boolean;
+  checked: boolean;
+  onToggleChecked: (ref: string) => void;
   onUpdateDark: (colorRef: string, value: string | null) => void;
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
@@ -217,6 +333,15 @@ function ColorAssignmentRow({
 
   return (
     <div className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''}`}>
+      <label className="theme-var-check-wrap" title="Include in palette adjustments">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={() => onToggleChecked(assignment.colorRef)}
+          aria-label={`Include ${assignment.colorRef} in palette adjustments`}
+          className="theme-var-check"
+        />
+      </label>
       <span
         className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
         title={assignment.colorRef}
@@ -298,6 +423,11 @@ function ContrastAssignmentsSection({
   assignments,
   contrastVariables,
   orphanKeys,
+  checkedContrastRefs,
+  onToggleContrastChecked,
+  sectionState,
+  onSetAllContrastChecked,
+  onSetContrastGroupChecked,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
@@ -305,6 +435,11 @@ function ContrastAssignmentsSection({
   assignments: readonly ContrastAssignment[];
   contrastVariables: readonly ContrastVariable[];
   orphanKeys: Set<string>;
+  checkedContrastRefs: ReadonlySet<string>;
+  onToggleContrastChecked: (ref: string) => void;
+  sectionState: TriState;
+  onSetAllContrastChecked: (checked: boolean) => void;
+  onSetContrastGroupChecked: (groupKey: string, checked: boolean) => void;
   onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
@@ -322,30 +457,54 @@ function ContrastAssignmentsSection({
 
   return (
     <div className="tree-section">
-      <button
-        type="button"
-        className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        <span className="material-symbols-outlined tree-chevron">
-          {collapsed ? 'chevron_right' : 'expand_more'}
-        </span>
-        <span className="tree-label">Contrast Variables</span>
-        <span className="tree-count">({assignments.length})</span>
-      </button>
+      <div className="tree-header tree-header-with-checkbox">
+        <TriStateCheckbox
+          state={sectionState}
+          onChange={onSetAllContrastChecked}
+          onClickCapture={(e) => e.stopPropagation()}
+          ariaLabel="Select all contrast variables"
+          className="tree-section-checkbox"
+        />
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">Contrast Variables</span>
+          <span className="tree-count">({assignments.length})</span>
+        </button>
+      </div>
 
       {!collapsed && (
         <div className="tree-children">
           {groupKeysInOrder.map((groupKey) => {
             const groupAssignments = byGroup.get(groupKey) ?? [];
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+            const refsInGroup = groupAssignments.map((a) => a.contrastVariableRef);
+            const groupState: TriState =
+              refsInGroup.length === 0
+                ? 'none'
+                : refsInGroup.every((r) => checkedContrastRefs.has(r))
+                  ? 'all'
+                  : refsInGroup.every((r) => !checkedContrastRefs.has(r))
+                    ? 'none'
+                    : 'some';
             return (
               <ContrastAssignmentsGroupSubsection
                 key={groupKey}
+                groupKey={groupKey}
                 groupLabel={groupLabel}
+                groupState={groupState}
                 assignments={groupAssignments}
                 varMap={varMap}
                 orphanKeys={orphanKeys}
+                checkedContrastRefs={checkedContrastRefs}
+                onToggleContrastChecked={onToggleContrastChecked}
+                onSetContrastGroupChecked={onSetContrastGroupChecked}
                 onUpdateDark={onUpdateDark}
                 onUpdateLight={onUpdateLight}
                 onUpdateUseDark={onUpdateUseDark}
@@ -359,18 +518,28 @@ function ContrastAssignmentsSection({
 }
 
 function ContrastAssignmentsGroupSubsection({
+  groupKey,
   groupLabel,
+  groupState,
   assignments,
   varMap,
   orphanKeys,
+  checkedContrastRefs,
+  onToggleContrastChecked,
+  onSetContrastGroupChecked,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
 }: {
+  groupKey: string;
   groupLabel: string;
+  groupState: TriState;
   assignments: readonly ContrastAssignment[];
   varMap: Map<string, ContrastVariable>;
   orphanKeys: Set<string>;
+  checkedContrastRefs: ReadonlySet<string>;
+  onToggleContrastChecked: (ref: string) => void;
+  onSetContrastGroupChecked: (groupKey: string, checked: boolean) => void;
   onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
@@ -379,17 +548,27 @@ function ContrastAssignmentsGroupSubsection({
 
   return (
     <div className="tree-section">
-      <button
-        type="button"
-        className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
-      >
-        <span className="material-symbols-outlined tree-chevron">
-          {collapsed ? 'chevron_right' : 'expand_more'}
-        </span>
-        <span className="tree-label">{groupLabel}</span>
-        <span className="tree-count">({assignments.length})</span>
-      </button>
+      <div className="tree-header tree-header-with-checkbox">
+        <TriStateCheckbox
+          state={groupState}
+          onChange={(checked) => onSetContrastGroupChecked(groupKey, checked)}
+          onClickCapture={(e) => e.stopPropagation()}
+          ariaLabel={`Select all in group: ${groupLabel}`}
+          className="tree-section-checkbox"
+        />
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={() => setCollapsed(!collapsed)}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">{groupLabel}</span>
+          <span className="tree-count">({assignments.length})</span>
+        </button>
+      </div>
       {!collapsed && (
         <div className="tree-children">
           {assignments.length === 0 && (
@@ -401,6 +580,8 @@ function ContrastAssignmentsGroupSubsection({
               assignment={a}
               variable={varMap.get(a.contrastVariableRef) ?? null}
               isOrphan={orphanKeys.has(a.contrastVariableRef)}
+              checked={checkedContrastRefs.has(a.contrastVariableRef)}
+              onToggleChecked={onToggleContrastChecked}
               onUpdateDark={onUpdateDark}
               onUpdateLight={onUpdateLight}
               onUpdateUseDark={onUpdateUseDark}
@@ -416,6 +597,8 @@ function ContrastAssignmentRow({
   assignment,
   variable,
   isOrphan,
+  checked,
+  onToggleChecked,
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
@@ -423,6 +606,8 @@ function ContrastAssignmentRow({
   assignment: ContrastAssignment;
   variable: ContrastVariable | null;
   isOrphan: boolean;
+  checked: boolean;
+  onToggleChecked: (ref: string) => void;
   onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
@@ -444,6 +629,15 @@ function ContrastAssignmentRow({
   return (
     <div className={`theme-contrast-block ${isOrphan ? 'theme-row-orphan' : ''}`}>
       <div className="theme-contrast-row1">
+        <label className="theme-var-check-wrap" title="Include in palette adjustments">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={() => onToggleChecked(ref)}
+            aria-label={`Include ${ref} in palette adjustments`}
+            className="theme-var-check"
+          />
+        </label>
         <span
           className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
           title={ref}
@@ -616,6 +810,18 @@ export function ThemeVariablesCard({
   groups: _groups,
   orphanColorKeys,
   orphanContrastKeys,
+  checkedColorRefs,
+  checkedContrastRefs,
+  onToggleColorChecked,
+  onToggleContrastChecked,
+  onSetAllColorChecked,
+  onSetAllContrastChecked,
+  onSetAllVariablesChecked,
+  onSetColorGroupChecked,
+  onSetContrastGroupChecked,
+  colorSectionState,
+  contrastSectionState,
+  cardState,
   onUpdateColorDark,
   onUpdateColorLight,
   onUpdateColorUseDark,
@@ -634,7 +840,15 @@ export function ThemeVariablesCard({
 
   return (
     <div className="tokens-card placeholder">
-      <h2>Variables</h2>
+      <div className="theme-variables-card-header">
+        <TriStateCheckbox
+          state={cardState}
+          onChange={onSetAllVariablesChecked}
+          ariaLabel="Select all variables for palette adjustments"
+          className="theme-variables-card-checkbox"
+        />
+        <h2>Variables</h2>
+      </div>
       <input
         type="text"
         className="card-search-input"
@@ -647,6 +861,11 @@ export function ThemeVariablesCard({
         assignments={filteredColorAssignments}
         colorVariables={colorVariables}
         orphanKeys={orphanColorKeys}
+        checkedColorRefs={checkedColorRefs}
+        onToggleColorChecked={onToggleColorChecked}
+        sectionState={colorSectionState}
+        onSetAllColorChecked={onSetAllColorChecked}
+        onSetColorGroupChecked={onSetColorGroupChecked}
         onUpdateDark={onUpdateColorDark}
         onUpdateLight={onUpdateColorLight}
         onUpdateUseDark={onUpdateColorUseDark}
@@ -655,6 +874,11 @@ export function ThemeVariablesCard({
         assignments={filteredContrastAssignments}
         contrastVariables={contrastVariables}
         orphanKeys={orphanContrastKeys}
+        checkedContrastRefs={checkedContrastRefs}
+        onToggleContrastChecked={onToggleContrastChecked}
+        sectionState={contrastSectionState}
+        onSetAllContrastChecked={onSetAllContrastChecked}
+        onSetContrastGroupChecked={onSetContrastGroupChecked}
         onUpdateDark={onUpdateContrastDark}
         onUpdateLight={onUpdateContrastLight}
         onUpdateUseDark={onUpdateContrastUseDark}
