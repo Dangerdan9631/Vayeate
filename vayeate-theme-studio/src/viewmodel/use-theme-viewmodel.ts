@@ -463,6 +463,22 @@ export function useThemeViewModel() {
     },
     [dispatch, theme],
   );
+  const changeEditorPreviewMenuForegroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewMenuForegroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeEditorPreviewMenuBackgroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewMenuBackgroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
 
   const commitHueAdjustment = useCallback(() => {
     if (!theme || hueAdjustment === 0) return;
@@ -869,6 +885,8 @@ export function useThemeViewModel() {
     changeEditorPreviewScrollbarBackgroundTokenRef,
     changeEditorPreviewScrollbarForegroundTokenRef,
     changeEditorPreviewSelectionBackgroundTokenRef,
+    changeEditorPreviewMenuForegroundTokenRef,
+    changeEditorPreviewMenuBackgroundTokenRef,
     updateColorAssignmentDark,
     updateColorAssignmentLight,
     updateColorAssignmentUseDarkForLight,
@@ -927,6 +945,8 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
   const editorPreviewScrollbarBackgroundTokenRef = validTokenRef(theme.editorPreviewScrollbarBackgroundTokenRef);
   const editorPreviewScrollbarForegroundTokenRef = validTokenRef(theme.editorPreviewScrollbarForegroundTokenRef);
   const editorPreviewSelectionBackgroundTokenRef = validTokenRef(theme.editorPreviewSelectionBackgroundTokenRef);
+  const editorPreviewMenuForegroundTokenRef = validTokenRef(theme.editorPreviewMenuForegroundTokenRef);
+  const editorPreviewMenuBackgroundTokenRef = validTokenRef(theme.editorPreviewMenuBackgroundTokenRef);
 
   return {
     ...theme,
@@ -943,6 +963,8 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     editorPreviewScrollbarBackgroundTokenRef,
     editorPreviewScrollbarForegroundTokenRef,
     editorPreviewSelectionBackgroundTokenRef,
+    editorPreviewMenuForegroundTokenRef,
+    editorPreviewMenuBackgroundTokenRef,
     colorAssignments: newColorAssignments,
     contrastAssignments: newContrastAssignments,
   };

@@ -2055,6 +2055,14 @@ body {
   align-items: flex-start;
 }
 
+.theme-preview-fields-menu-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px 24px;
+  align-items: flex-start;
+}
+
 .theme-preview-fields-row {
   display: flex;
   flex-direction: row;
@@ -2299,7 +2307,7 @@ body {
   max-height: 220px;
   overflow-y: auto;
   padding: 6px;
-  background: var(--preview-dropdown-bg, #2d2d2d);
+  /* background/color set inline from Menu Background / Menu Foreground token refs */
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);

@@ -17,6 +17,8 @@
   "editorPreviewScrollbarBackgroundTokenRef": "editor.background",
   "editorPreviewScrollbarForegroundTokenRef": "scrollbarSlider.background",
   "editorPreviewSelectionBackgroundTokenRef": "editor.selectionBackground",
+  "editorPreviewMenuForegroundTokenRef": "list.focusForeground",
+  "editorPreviewMenuBackgroundTokenRef": "list.focusBackground",
   "colorAssignments": [
     {
       "colorRef": "chromePrimaryBg",

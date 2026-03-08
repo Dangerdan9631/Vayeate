@@ -56,6 +56,10 @@ function makeProps(overrides: Partial<{
     onChangeEditorPreviewScrollbarForegroundTokenRef: vi.fn(),
     editorPreviewSelectionBackgroundTokenRef: null as string | null,
     onChangeEditorPreviewSelectionBackgroundTokenRef: vi.fn(),
+    editorPreviewMenuForegroundTokenRef: null as string | null,
+    onChangeEditorPreviewMenuForegroundTokenRef: vi.fn(),
+    editorPreviewMenuBackgroundTokenRef: null as string | null,
+    onChangeEditorPreviewMenuBackgroundTokenRef: vi.fn(),
   };
 }
 
@@ -88,6 +92,8 @@ describe('EditorPreviewsCard', () => {
     expect(screen.getByText('Line Number Foreground')).toBeInTheDocument();
     expect(screen.getByText('IDE Current Tab Color')).toBeInTheDocument();
     expect(screen.getByText('Selection Background')).toBeInTheDocument();
+    expect(screen.getByText('Menu Foreground')).toBeInTheDocument();
+    expect(screen.getByText('Menu Background')).toBeInTheDocument();
   });
 
   it('renders Dark and Light preview columns', () => {

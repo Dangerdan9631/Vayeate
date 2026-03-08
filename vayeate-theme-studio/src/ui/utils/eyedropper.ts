@@ -81,7 +81,7 @@ function clientToCanvasPixel(
 
 const LOUPE_SIZE = 120;
 const LOUPE_PIXEL_RADIUS = 10; // 21×21 source region
-const ZOOM_MIN = 0.5;
+const ZOOM_MIN = 1;
 const ZOOM_MAX = 8;
 const ZOOM_STEP = 1.1;
 
@@ -126,7 +126,7 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
   ].join(';');
 
   const hint = document.createElement('div');
-  hint.textContent = 'Scroll to zoom • Loupe follows cursor • Click to pick • Esc to cancel';
+  hint.textContent = 'Scroll to zoom • Loupe follows cursor • Click image to pick • Click outside or Esc to cancel';
   hint.style.cssText = [
     'position:fixed',
     'top:16px',
@@ -144,7 +144,7 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
     'max-width:100%',
     'max-height:100%',
     'flex-shrink:0',
-    'transform-origin:center',
+    'transform-origin:0 0',
   ].join(';');
   composite.style.width = '100%';
   composite.style.height = '100%';
@@ -185,6 +185,16 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
   loupeContainer.appendChild(loupeHex);
 
   let zoom = 1;
+  let panX = 0;
+  let panY = 0;
+  let anchorLeft: number | null = null;
+  let anchorTop: number | null = null;
+  let anchorW: number | null = null;
+  let anchorH: number | null = null;
+
+  function applyTransform() {
+    zoomWrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+  }
 
   function drawLoupe(px: number, py: number, hex: string) {
     if (!ctx) return;
@@ -252,9 +262,37 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
         e.clientY <= wr.bottom;
       if (!overImage) return;
       e.preventDefault();
+
+      if (anchorLeft === null || anchorTop === null || anchorW === null || anchorH === null) {
+        anchorLeft = wr.left - panX;
+        anchorTop = wr.top - panY;
+        anchorW = wr.width / zoom;
+        anchorH = wr.height / zoom;
+      }
+
+      const cx = e.clientX;
+      const cy = e.clientY;
+      const left0 = anchorLeft;
+      const top0 = anchorTop;
+      const W = anchorW;
+      const H = anchorH;
+
       const delta = e.deltaY > 0 ? 1 / ZOOM_STEP : ZOOM_STEP;
-      zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * delta));
-      zoomWrapper.style.transform = `scale(${zoom})`;
+      const sNew = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * delta));
+      panX = (cx - left0) * (1 - sNew / zoom) + panX * (sNew / zoom);
+      panY = (cy - top0) * (1 - sNew / zoom) + panY * (sNew / zoom);
+      zoom = sNew;
+
+      if (zoom <= 1) {
+        const panXMin = 0;
+        const panXMax = W * (1 - zoom);
+        const panYMin = 0;
+        const panYMax = H * (1 - zoom);
+        panX = Math.max(panXMin, Math.min(panXMax, panX));
+        panY = Math.max(panYMin, Math.min(panYMax, panY));
+      }
+
+      applyTransform();
     }
 
     function onMouseMove(e: MouseEvent) {
@@ -266,7 +304,7 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
         e.clientY <= wrapperRect.bottom;
       if (!inBounds) {
         loupeContainer.style.display = 'none';
-        hint.textContent = 'Scroll to zoom • Loupe follows cursor • Click to pick • Esc to cancel';
+        hint.textContent = 'Scroll to zoom • Loupe follows cursor • Click image to pick • Click outside or Esc to cancel';
         return;
       }
       const pt = clientToCanvasPixel(e.clientX, e.clientY, zoomWrapper, totalW, totalH);
@@ -296,6 +334,14 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
     document.body.style.overflow = 'hidden';
     document.body.appendChild(overlay);
     document.body.appendChild(loupeContainer);
+    applyTransform();
+    requestAnimationFrame(() => {
+      const wr = zoomWrapper.getBoundingClientRect();
+      anchorLeft = wr.left;
+      anchorTop = wr.top;
+      anchorW = wr.width;
+      anchorH = wr.height;
+    });
     document.addEventListener('keydown', onKeyDown);
     overlay.addEventListener('wheel', onWheel, { passive: false });
     overlay.addEventListener('mousemove', onMouseMove);
@@ -303,14 +349,19 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
     overlay.addEventListener(
       'click',
       (e) => {
-        if (e.target !== composite) return;
-        const pt = clientToCanvasPixel(e.clientX, e.clientY, zoomWrapper, totalW, totalH);
-        if (!pt) return;
-        const imageData = ctx.getImageData(pt.px, pt.py, 1, 1);
-        const [r, g, b] = imageData.data;
-        document.removeEventListener('keydown', onKeyDown);
-        cleanup();
-        resolve(rgbToHex(r, g, b));
+        if (e.target === composite) {
+          const pt = clientToCanvasPixel(e.clientX, e.clientY, zoomWrapper, totalW, totalH);
+          if (!pt) return;
+          const imageData = ctx.getImageData(pt.px, pt.py, 1, 1);
+          const [r, g, b] = imageData.data;
+          document.removeEventListener('keydown', onKeyDown);
+          cleanup();
+          resolve(rgbToHex(r, g, b));
+        } else {
+          document.removeEventListener('keydown', onKeyDown);
+          cleanup();
+          resolve(null);
+        }
       },
       { once: true },
     );

@@ -24,6 +24,8 @@ export function createThemeWithParams(params: CreateThemeParams): Theme {
     editorPreviewScrollbarBackgroundTokenRef: null,
     editorPreviewScrollbarForegroundTokenRef: null,
     editorPreviewSelectionBackgroundTokenRef: null,
+    editorPreviewMenuForegroundTokenRef: null,
+    editorPreviewMenuBackgroundTokenRef: null,
     colorAssignments: [],
     contrastAssignments: [],
   };

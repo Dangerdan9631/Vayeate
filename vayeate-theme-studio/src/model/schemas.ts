@@ -256,6 +256,8 @@ export const themeSchema = z
     editorPreviewScrollbarBackgroundTokenRef: tokenKeySchema.nullable().optional().default(null),
     editorPreviewScrollbarForegroundTokenRef: tokenKeySchema.nullable().optional().default(null),
     editorPreviewSelectionBackgroundTokenRef: tokenKeySchema.nullable().optional().default(null),
+    editorPreviewMenuForegroundTokenRef: tokenKeySchema.nullable().optional().default(null),
+    editorPreviewMenuBackgroundTokenRef: tokenKeySchema.nullable().optional().default(null),
     /** @deprecated Legacy: kept for loading old theme JSON; not persisted on save */
     idePrimaryColorVariableRef: colorVariableKeySchema.nullable().optional(),
     idePrimaryColorContrastVariableRef: contrastVariableKeySchema.nullable().optional(),

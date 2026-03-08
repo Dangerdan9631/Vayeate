@@ -51,6 +51,8 @@ const sampleTheme: Theme = {
   editorPreviewScrollbarBackgroundTokenRef: null,
   editorPreviewScrollbarForegroundTokenRef: null,
   editorPreviewSelectionBackgroundTokenRef: null,
+  editorPreviewMenuForegroundTokenRef: null,
+  editorPreviewMenuBackgroundTokenRef: null,
   colorAssignments: [],
   contrastAssignments: [],
 };

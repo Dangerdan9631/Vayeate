@@ -18,6 +18,8 @@ const previewTokenRefsNull = {
   editorPreviewScrollbarBackgroundTokenRef: null,
   editorPreviewScrollbarForegroundTokenRef: null,
   editorPreviewSelectionBackgroundTokenRef: null,
+  editorPreviewMenuForegroundTokenRef: null,
+  editorPreviewMenuBackgroundTokenRef: null,
 };
 
 const mockTheme: Theme = {

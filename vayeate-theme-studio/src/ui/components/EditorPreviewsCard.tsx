@@ -60,6 +60,10 @@ interface EditorPreviewsCardProps {
   onChangeEditorPreviewScrollbarForegroundTokenRef: (tokenKey: string | null) => void;
   editorPreviewSelectionBackgroundTokenRef: string | null;
   onChangeEditorPreviewSelectionBackgroundTokenRef: (tokenKey: string | null) => void;
+  editorPreviewMenuForegroundTokenRef: string | null;
+  onChangeEditorPreviewMenuForegroundTokenRef: (tokenKey: string | null) => void;
+  editorPreviewMenuBackgroundTokenRef: string | null;
+  onChangeEditorPreviewMenuBackgroundTokenRef: (tokenKey: string | null) => void;
 }
 
 function colorForRef(
@@ -215,6 +219,10 @@ export function EditorPreviewsCard({
   onChangeEditorPreviewScrollbarForegroundTokenRef,
   editorPreviewSelectionBackgroundTokenRef,
   onChangeEditorPreviewSelectionBackgroundTokenRef,
+  editorPreviewMenuForegroundTokenRef,
+  onChangeEditorPreviewMenuForegroundTokenRef,
+  editorPreviewMenuBackgroundTokenRef,
+  onChangeEditorPreviewMenuBackgroundTokenRef,
 }: EditorPreviewsCardProps) {
   const [previews, setPreviews] = useState<TokenizedPreview[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -351,6 +359,8 @@ export function EditorPreviewsCard({
   const lightScrollbarFg = resolveColorForThemeTokenKey(editorPreviewScrollbarForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#79797966');
   const darkSelectionBg = resolveColorForThemeTokenKey(editorPreviewSelectionBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#264f78');
   const lightSelectionBg = resolveColorForThemeTokenKey(editorPreviewSelectionBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#add6ff');
+  const darkMenuFg = resolveColorForThemeTokenKey(editorPreviewMenuForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#cccccc');
+  const darkMenuBg = resolveColorForThemeTokenKey(editorPreviewMenuBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#2d2d2d');
 
   const darkScrollRef = useRef<HTMLDivElement | null>(null);
   const lightScrollRef = useRef<HTMLDivElement | null>(null);
@@ -382,6 +392,18 @@ export function EditorPreviewsCard({
     return lastBefore?.index ?? virtualItems[0]?.index ?? fallbackIndices?.[0] ?? 0;
   })();
   const currentPreview = previews[currentSampleIndex];
+
+  /** When multiple previews share a language, show "lang - file.ex"; otherwise just the language. */
+  const previewLabelByIndex = useMemo(() => {
+    const countByLang = new Map<string, number>();
+    for (const p of previews) {
+      countByLang.set(p.language, (countByLang.get(p.language) ?? 0) + 1);
+    }
+    return (preview: TokenizedPreview) =>
+      (countByLang.get(preview.language) ?? 0) > 1
+        ? `${preview.language} - ${preview.fileName}`
+        : preview.language;
+  }, [previews]);
 
   useEffect(() => {
     if (!sampleDropdownOpen) return;
@@ -511,6 +533,20 @@ export function EditorPreviewsCard({
           onChange={onChangeEditorPreviewSelectionBackgroundTokenRef}
           options={themeTokenKeys}
         />
+        <div className="theme-preview-fields theme-preview-fields-menu-row">
+          <FilterableTokenSelect
+            label="Menu Foreground"
+            value={editorPreviewMenuForegroundTokenRef}
+            onChange={onChangeEditorPreviewMenuForegroundTokenRef}
+            options={themeTokenKeys}
+          />
+          <FilterableTokenSelect
+            label="Menu Background"
+            value={editorPreviewMenuBackgroundTokenRef}
+            onChange={onChangeEditorPreviewMenuBackgroundTokenRef}
+            options={themeTokenKeys}
+          />
+        </div>
       </div>
 
       {loadError && (
@@ -540,7 +576,7 @@ export function EditorPreviewsCard({
                 style={{ backgroundColor: darkIdeTabColor, color: darkIdeFgColor }}
               >
                 <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-left" aria-hidden>description</span>
-                {currentPreview ? currentPreview.language : ''}
+                {currentPreview ? previewLabelByIndex(currentPreview) : ''}
                 <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-close" aria-hidden>close</span>
               </span>
               <div className="theme-preview-sample-dropdown-wrap">
@@ -556,7 +592,15 @@ export function EditorPreviewsCard({
                   <span className="material-symbols-outlined" aria-hidden>list</span>
                 </button>
                 {sampleDropdownOpen && (
-                  <div className="theme-preview-sample-dropdown" role="listbox">
+                  <div
+                    className="theme-preview-sample-dropdown"
+                    role="listbox"
+                    style={{
+                      backgroundColor: darkMenuBg,
+                      color: darkMenuFg,
+                      scrollbarColor: `${darkMenuFg} ${darkMenuBg}`,
+                    }}
+                  >
                     {previews.map((p, i) => (
                       <button
                         key={`${p.language}/${p.fileName}`}
@@ -565,7 +609,7 @@ export function EditorPreviewsCard({
                         className="theme-preview-sample-dropdown-item"
                         onClick={() => scrollToSample(i)}
                       >
-                        {p.language}
+                        {previewLabelByIndex(p)}
                       </button>
                     ))}
                   </div>
@@ -594,7 +638,7 @@ export function EditorPreviewsCard({
                 return (
                   <div key={key} className="theme-preview-block">
                     <div className="theme-preview-block-label">
-                      {preview.language}
+                      {previewLabelByIndex(preview)}
                     </div>
                     <div className="theme-preview-code-wrap">
                       <div
@@ -643,7 +687,7 @@ export function EditorPreviewsCard({
                       }}
                     >
                       <div className="theme-preview-block-label">
-                        {preview.language}
+                        {previewLabelByIndex(preview)}
                       </div>
                       <div className="theme-preview-code-wrap">
                         <div
@@ -690,7 +734,7 @@ export function EditorPreviewsCard({
                 style={{ backgroundColor: lightIdeTabColor, color: lightIdeFgColor }}
               >
                 <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-left" aria-hidden>description</span>
-                {currentPreview ? currentPreview.language : ''}
+                {currentPreview ? previewLabelByIndex(currentPreview) : ''}
                 <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-close" aria-hidden>close</span>
               </span>
             </div>
@@ -716,7 +760,7 @@ export function EditorPreviewsCard({
                 return (
                   <div key={key} className="theme-preview-block">
                     <div className="theme-preview-block-label">
-                      {preview.language}
+                      {previewLabelByIndex(preview)}
                     </div>
                     <div className="theme-preview-code-wrap">
                       <div
@@ -763,7 +807,7 @@ export function EditorPreviewsCard({
                       }}
                     >
                       <div className="theme-preview-block-label">
-                        {preview.language}
+                        {previewLabelByIndex(preview)}
                       </div>
                       <div className="theme-preview-code-wrap">
                         <div

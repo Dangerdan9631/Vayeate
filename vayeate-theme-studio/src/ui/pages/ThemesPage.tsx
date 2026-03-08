@@ -140,6 +140,10 @@ export function ThemesPage() {
               onChangeEditorPreviewScrollbarForegroundTokenRef={vm.changeEditorPreviewScrollbarForegroundTokenRef}
               editorPreviewSelectionBackgroundTokenRef={vm.theme.editorPreviewSelectionBackgroundTokenRef ?? null}
               onChangeEditorPreviewSelectionBackgroundTokenRef={vm.changeEditorPreviewSelectionBackgroundTokenRef}
+              editorPreviewMenuForegroundTokenRef={vm.theme.editorPreviewMenuForegroundTokenRef ?? null}
+              onChangeEditorPreviewMenuForegroundTokenRef={vm.changeEditorPreviewMenuForegroundTokenRef}
+              editorPreviewMenuBackgroundTokenRef={vm.theme.editorPreviewMenuBackgroundTokenRef ?? null}
+              onChangeEditorPreviewMenuBackgroundTokenRef={vm.changeEditorPreviewMenuBackgroundTokenRef}
             />
           )}
         </div>

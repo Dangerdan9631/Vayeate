@@ -19,6 +19,8 @@ function theme(overrides: Partial<Theme> = {}): Theme {
     editorPreviewScrollbarBackgroundTokenRef: null,
     editorPreviewScrollbarForegroundTokenRef: null,
     editorPreviewSelectionBackgroundTokenRef: null,
+    editorPreviewMenuForegroundTokenRef: null,
+    editorPreviewMenuBackgroundTokenRef: null,
     colorAssignments: [
       { colorRef: 'fg', dark: { value: '#d4d4d4' }, light: { value: '#1f1f1f' }, useDarkForLight: false },
       { colorRef: 'comment', dark: { value: '#6a9955' }, light: { value: '#008000' }, useDarkForLight: false },
