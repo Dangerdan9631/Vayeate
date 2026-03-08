@@ -1627,14 +1627,17 @@ body {
 
 .theme-palette-swatch-checked {
   border-color: black;
+  border-width: 1px;
 }
 
 .theme-palette-swatch-partial {
-  border-color: grey;
+  border-color: lightgray;
+  border-width: 1px;
 }
 
 .theme-palette-swatch-unchecked {
   border-color: white;
+  border-width: 2px;
 }
 
 .theme-palette-swatch-primary {
@@ -1652,6 +1655,26 @@ body {
   grid-template-columns: repeat(2, 10px);
   gap: 1px;
   justify-content: center;
+}
+
+.theme-palette-card {
+  position: relative;
+}
+
+.theme-palette-copy-toast {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* ── Theme color assignment rows ───────────────────────────── */

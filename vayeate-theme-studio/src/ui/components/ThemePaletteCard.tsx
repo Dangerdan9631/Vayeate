@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../model/schemas';
 import { clusterColors } from '../../core/color-clustering';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
@@ -117,6 +117,14 @@ export function ThemePaletteCard({
 }: ThemePaletteCardProps) {
   const showCommitRevert = hueAdjustment !== 0;
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
+  const [copiedHex, setCopiedHex] = useState<string | null>(null);
+  const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+    };
+  }, []);
 
   const byGroup = useMemo(
     () => buildColorAssignmentsByGroup(colorAssignments, colorVariables),
@@ -140,7 +148,14 @@ export function ThemePaletteCard({
   }, [byGroup, groupKeysInOrder, clusterCountK]);
 
   const copyHexToClipboard = useCallback((hex: string) => {
-    navigator.clipboard.writeText(normalizeHex(hex));
+    const normalized = normalizeHex(hex);
+    navigator.clipboard.writeText(normalized);
+    if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+    setCopiedHex(normalized);
+    copyToastTimeoutRef.current = setTimeout(() => {
+      setCopiedHex(null);
+      copyToastTimeoutRef.current = null;
+    }, 2500);
   }, []);
 
   const handleSwatchClick = useCallback(
@@ -156,6 +171,11 @@ export function ThemePaletteCard({
 
   return (
     <div className="catalog-details-card placeholder theme-palette-card">
+      {copiedHex && (
+        <div className="theme-palette-copy-toast" role="status" aria-live="polite">
+          Copied {copiedHex}
+        </div>
+      )}
       <h2>Theme Palette</h2>
       <div className="theme-palette-hue-row">
         <label htmlFor="theme-palette-hue-slider" className="theme-palette-hue-label">
