@@ -62,6 +62,9 @@ export function ThemesPage() {
               onHueChange={vm.setHueAdjustment}
               onCommit={vm.commitHueAdjustment}
               onRevert={vm.revertHueAdjustment}
+              colorAssignments={vm.displayColorAssignments}
+              colorVariables={vm.colorVariablesFromTemplate}
+              groups={vm.groupsFromTemplate}
             />
           )}
           {vm.theme && vm.theme.templateRef && (
