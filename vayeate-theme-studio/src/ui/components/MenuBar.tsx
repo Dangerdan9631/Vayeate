@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useColorScheme } from '../context/ColorSchemeContext';
 import { useUndoStack } from '../context/UndoContext';
 
 export function MenuBar() {
+  const { theme, toggleColorScheme } = useColorScheme();
   const { undo, redo, goTo, canUndo, canRedo, frames, currentIndex, activePane } = useUndoStack();
   const [fileOpen, setFileOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -112,6 +114,18 @@ export function MenuBar() {
         <div className="menu-title-block">
           <img src="/icon.png" alt="" className="menu-title-icon" width={20} height={20} />
           <span className="menu-title">Vayeate Theme Studio</span>
+        </div>
+        <div className="menu-theme-toggle-wrap">
+          <button
+            type="button"
+            className="menu-theme-toggle"
+            onClick={toggleColorScheme}
+            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+          >
+            <span className="material-symbols-outlined" aria-hidden>
+              {theme === 'light' ? 'light_mode' : 'dark_mode'}
+            </span>
+          </button>
         </div>
         <div className="window-controls">
           <button

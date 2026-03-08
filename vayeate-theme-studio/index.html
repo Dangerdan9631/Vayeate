@@ -6,6 +6,13 @@
     <title>Vayeate Theme Studio</title>
   </head>
   <body>
+    <script>
+      (function () {
+        var v = localStorage.getItem('vayeate-theme-studio-color-scheme');
+        if (v === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        else document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
     <div id="app"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

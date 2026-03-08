@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import './styles.css';
 import { AppProvider } from './context/AppContext';
+import { ColorSchemeProvider } from './context/ColorSchemeContext';
 import { useUndoStack } from './context/UndoContext';
 import { useActiveTab, useAppDispatch } from './context/slice-contexts';
 import { ContentArea } from './components/ContentArea';
@@ -68,8 +69,10 @@ function AppShell() {
 
 export function App() {
   return (
-    <AppProvider>
-      <AppShell />
-    </AppProvider>
+    <ColorSchemeProvider>
+      <AppProvider>
+        <AppShell />
+      </AppProvider>
+    </ColorSchemeProvider>
   );
 }
