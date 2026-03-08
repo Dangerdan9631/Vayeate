@@ -28,6 +28,7 @@ export interface ThemePaneState {
   theme: Theme | null;
   checkedColorRefs: string[];
   checkedContrastRefs: string[];
+  hueAdjustment: number;
 }
 
 function themePaneStateFromThemesState(t: ThemesState): ThemePaneState {
@@ -35,6 +36,7 @@ function themePaneStateFromThemesState(t: ThemesState): ThemePaneState {
     theme: t.theme,
     checkedColorRefs: t.checkedColorRefs,
     checkedContrastRefs: t.checkedContrastRefs,
+    hueAdjustment: t.hueAdjustment ?? 0,
   };
 }
 
@@ -98,7 +100,7 @@ export function UndoProvider({
 
   const themeStackRef = useRef(
     createUndoStack<ThemePaneState>(
-      { theme: null, checkedColorRefs: [], checkedContrastRefs: [] },
+      { theme: null, checkedColorRefs: [], checkedContrastRefs: [], hueAdjustment: 0 },
       MAX_FRAMES,
     ),
   );
@@ -190,6 +192,7 @@ export function UndoProvider({
           theme: s.theme ?? undefined,
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
+          hueAdjustment: s.hueAdjustment,
         } as AppAction);
         setVersion((v) => v + 1);
       }
@@ -229,6 +232,7 @@ export function UndoProvider({
           theme: s.theme ?? undefined,
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
+          hueAdjustment: s.hueAdjustment,
         } as AppAction);
         setVersion((v) => v + 1);
       }
@@ -269,6 +273,7 @@ export function UndoProvider({
             theme: s.theme ?? undefined,
             checkedColorRefs: s.checkedColorRefs,
             checkedContrastRefs: s.checkedContrastRefs,
+            hueAdjustment: s.hueAdjustment,
           } as AppAction);
           setVersion((v) => v + 1);
         }

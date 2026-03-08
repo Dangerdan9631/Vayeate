@@ -1801,7 +1801,7 @@ body {
   min-width: 0;
 }
 
-/* Shared icon-only checkbox: icon only, light grey unchecked / light blue checked */
+/* Boolean toggle buttons (apply to dark/light, cluster by dark/light, use dark for light): selected = filled bg + normal fg; unselected = no bg/border + muted fg */
 .theme-icon-checkbox {
   display: inline-flex;
   align-items: center;
@@ -1809,12 +1809,19 @@ body {
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
-  background: var(--border-subtle);
+  background: transparent;
+  border: none;
   position: relative;
+  color: var(--text-muted-2);
+}
+
+.theme-icon-checkbox .material-symbols-outlined {
+  color: inherit;
 }
 
 .theme-icon-checkbox:has(input:checked) {
   background: var(--accent-checked-bg);
+  color: var(--app-text);
 }
 
 .theme-icon-checkbox input[type="checkbox"] {

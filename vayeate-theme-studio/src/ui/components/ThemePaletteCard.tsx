@@ -20,7 +20,9 @@ function normalizeHex(hex: string): string {
 interface ThemePaletteCardProps {
   hueAdjustment: number;
   onHueChange: (value: number) => void;
-  onCommit: () => void;
+  onRecenter: () => void;
+  onHueDragStart?: () => void;
+  onHueDragEnd?: () => void;
   applyToDark: boolean;
   applyToLight: boolean;
   onApplyToDarkChange: (checked: boolean) => void;
@@ -125,7 +127,9 @@ function swatchState(refs: string[], checkedColorRefs: ReadonlySet<string>): Tri
 export function ThemePaletteCard({
   hueAdjustment,
   onHueChange,
-  onCommit,
+  onRecenter,
+  onHueDragStart,
+  onHueDragEnd,
   applyToDark,
   applyToLight,
   onApplyToDarkChange,
@@ -142,7 +146,24 @@ export function ThemePaletteCard({
   onSetSelectedColorsPreview,
   onColorPickerClose,
 }: ThemePaletteCardProps) {
-  const showCommit = hueAdjustment !== 0;
+  const showRecenter = hueAdjustment !== 0;
+  const isHueDraggingRef = useRef(false);
+
+  const handleHuePointerUp = useCallback(() => {
+    if (!isHueDraggingRef.current) return;
+    isHueDraggingRef.current = false;
+    onHueDragEnd?.();
+  }, [onHueDragEnd]);
+
+  useEffect(() => {
+    if (!onHueDragEnd) return;
+    window.addEventListener('pointerup', handleHuePointerUp);
+    window.addEventListener('pointercancel', handleHuePointerUp);
+    return () => {
+      window.removeEventListener('pointerup', handleHuePointerUp);
+      window.removeEventListener('pointercancel', handleHuePointerUp);
+    };
+  }, [onHueDragEnd, handleHuePointerUp]);
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
   const [clusterByDark, setClusterByDark] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
@@ -364,10 +385,10 @@ export function ThemePaletteCard({
         <label htmlFor="theme-palette-hue-slider" className="theme-palette-hue-label">
           Hue Adjustment
         </label>
-        {showCommit && (
+        {showRecenter && (
           <div className="theme-palette-actions">
-            <button type="button" className="theme-palette-btn" onClick={onCommit} aria-label="Commit hue adjustment">
-              Commit
+            <button type="button" className="theme-palette-btn" onClick={onRecenter} aria-label="Recenter hue slider to 0">
+              Recenter
             </button>
           </div>
         )}
@@ -382,6 +403,10 @@ export function ThemePaletteCard({
           step={1}
           value={hueAdjustment}
           onChange={(e) => onHueChange(Number(e.target.value))}
+          onPointerDown={() => {
+            isHueDraggingRef.current = true;
+            onHueDragStart?.();
+          }}
           aria-label="Hue adjustment"
           aria-valuemin={-100}
           aria-valuemax={100}

@@ -408,11 +408,14 @@ describe('useThemeViewModel hue adjustment', () => {
     await act(async () => {
       result.current.setHueAdjustment(50);
     });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
     expect(result.current.hueAdjustment).toBe(50);
     expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(originalDark);
   });
 
-  it('commitHueAdjustment persists shifted colors and resets hue', async () => {
+  it('endHueDrag after moving slider persists shifted colors and resets hue', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -426,13 +429,22 @@ describe('useThemeViewModel hue adjustment', () => {
       result.current.setHueAdjustment(25);
     });
     await act(async () => {
-      result.current.commitHueAdjustment();
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await act(async () => {
+      result.current.startHueDrag();
+    });
+    await act(async () => {
+      result.current.endHueDrag();
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 250));
     });
     expect(result.current.hueAdjustment).toBe(0);
     expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
   });
 
-  it('updateColorAssignmentDark when hue non-zero commits then applies edit', async () => {
+  it('updateColorAssignmentDark when hue non-zero bakes hue then applies edit', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -445,7 +457,13 @@ describe('useThemeViewModel hue adjustment', () => {
       result.current.setHueAdjustment(10);
     });
     await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await act(async () => {
       result.current.updateColorAssignmentDark('primary', '#0000ff');
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
     });
     expect(result.current.hueAdjustment).toBe(0);
     expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
@@ -462,6 +480,9 @@ describe('useThemeViewModel hue adjustment', () => {
     });
     await act(async () => {
       result.current.setHueAdjustment(20);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 250));
     });
     await act(async () => {
       result.current.updateContrastAssignmentDark('textContrast', 'value', 5);
@@ -498,6 +519,9 @@ describe('useThemeViewModel hue adjustment', () => {
     await act(async () => {
       result.current.setHueAdjustment(50);
     });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
     expect(result.current.displayColorAssignments[0].dark!.value).toBe(originalDark);
     expect(result.current.displayColorAssignments[0].light!.value).not.toBe(result.current.theme!.colorAssignments[0].light!.value);
   });
@@ -518,11 +542,14 @@ describe('useThemeViewModel hue adjustment', () => {
     await act(async () => {
       result.current.setHueAdjustment(50);
     });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
     expect(result.current.displayColorAssignments[0].light!.value).toBe(originalLight);
     expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(result.current.theme!.colorAssignments[0].dark!.value);
   });
 
-  it('commitHueAdjustment respects applyToDark and applyToLight', async () => {
+  it('endHueDrag respects applyToDark and applyToLight', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -541,10 +568,46 @@ describe('useThemeViewModel hue adjustment', () => {
       result.current.setHueAdjustment(25);
     });
     await act(async () => {
-      result.current.commitHueAdjustment();
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await act(async () => {
+      result.current.startHueDrag();
+    });
+    await act(async () => {
+      result.current.endHueDrag();
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 250));
     });
     expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
     expect(result.current.theme!.colorAssignments[0].light!.value).toBe(originalLight);
+  });
+
+  it('recenterHue resets slider to 0 without changing theme', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalDark = result.current.theme!.colorAssignments[0].dark!.value;
+    await act(async () => {
+      result.current.setHueAdjustment(40);
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    expect(result.current.hueAdjustment).toBe(40);
+    await act(async () => {
+      result.current.recenterHue();
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    expect(result.current.hueAdjustment).toBe(0);
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe(originalDark);
   });
 });
 
@@ -700,7 +763,7 @@ describe('useThemeViewModel variable selection', () => {
     expect(result.current.displayColorAssignments[1].dark!.value).toBe(originalSecondary);
   });
 
-  it('commitHueAdjustment only updates checked color refs', async () => {
+  it('endHueDrag only updates checked color refs', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -714,10 +777,22 @@ describe('useThemeViewModel variable selection', () => {
       result.current.toggleColorChecked('secondary');
     });
     await act(async () => {
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await act(async () => {
       result.current.setHueAdjustment(25);
     });
     await act(async () => {
-      result.current.commitHueAdjustment();
+      await new Promise((r) => setTimeout(r, 50));
+    });
+    await act(async () => {
+      result.current.startHueDrag();
+    });
+    await act(async () => {
+      result.current.endHueDrag();
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
     });
     expect(result.current.theme!.colorAssignments[1].dark!.value).toBe(originalSecondary);
   });

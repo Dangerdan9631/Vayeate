@@ -26,7 +26,7 @@ function renderCard(overrides: Record<string, unknown> = {}) {
     <ThemePaletteCard
       hueAdjustment={0}
       onHueChange={vi.fn()}
-      onCommit={vi.fn()}
+      onRecenter={vi.fn()}
       {...defaultPaletteProps}
       {...overrides}
     />,
@@ -49,14 +49,14 @@ describe('ThemePaletteCard', () => {
     expect(slider).toHaveValue('0');
   });
 
-  it('does not show Commit when hueAdjustment is 0', () => {
+  it('does not show Recenter when hueAdjustment is 0', () => {
     renderCard();
-    expect(screen.queryByRole('button', { name: 'Commit' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Recenter hue slider to 0' })).not.toBeInTheDocument();
   });
 
-  it('shows Commit when hueAdjustment is non-zero', () => {
+  it('shows Recenter when hueAdjustment is non-zero', () => {
     renderCard({ hueAdjustment: 50 });
-    expect(screen.getByRole('button', { name: 'Commit hue adjustment' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Recenter hue slider to 0' })).toBeInTheDocument();
   });
 
   it('calls onHueChange when slider value changes', () => {
@@ -67,12 +67,12 @@ describe('ThemePaletteCard', () => {
     expect(onHueChange).toHaveBeenCalledWith(50);
   });
 
-  it('calls onCommit when Commit is clicked', async () => {
+  it('calls onRecenter when Recenter is clicked', async () => {
     const user = userEvent.setup();
-    const onCommit = vi.fn();
-    renderCard({ hueAdjustment: 30, onCommit });
-    await user.click(screen.getByRole('button', { name: 'Commit hue adjustment' }));
-    expect(onCommit).toHaveBeenCalledTimes(1);
+    const onRecenter = vi.fn();
+    renderCard({ hueAdjustment: 30, onRecenter });
+    await user.click(screen.getByRole('button', { name: 'Recenter hue slider to 0' }));
+    expect(onRecenter).toHaveBeenCalledTimes(1);
   });
 
   it('renders Cluster count (k) slider with min 1, max 12, default 5', () => {

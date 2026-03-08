@@ -60,7 +60,9 @@ export function ThemesPage() {
             <ThemePaletteCard
               hueAdjustment={vm.hueAdjustment}
               onHueChange={vm.setHueAdjustment}
-              onCommit={vm.commitHueAdjustment}
+              onRecenter={vm.recenterHue}
+              onHueDragStart={vm.startHueDrag}
+              onHueDragEnd={vm.endHueDrag}
               applyToDark={vm.applyHueToDark}
               applyToLight={vm.applyHueToLight}
               onApplyToDarkChange={vm.setApplyHueToDark}

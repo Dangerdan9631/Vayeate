@@ -457,6 +457,14 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
             checkedContrastRefs: action.checkedContrastRefs,
           });
         }
+        if (action.hueAdjustment !== undefined) {
+          setState({ type: 'SET_THEME_HUE_ADJUSTMENT', value: action.hueAdjustment });
+        }
+        break;
+      }
+
+      case 'SET_THEME_HUE_ADJUSTMENT': {
+        setState({ type: 'SET_THEME_HUE_ADJUSTMENT', value: action.value });
         break;
       }
 
