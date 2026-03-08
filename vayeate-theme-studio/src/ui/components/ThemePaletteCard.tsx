@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../model/schemas';
 import { clusterColors } from '../../core/color-clustering';
 import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
+import type { ThemePaneState } from '../context/UndoContext';
 import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
@@ -32,6 +33,10 @@ interface ThemePaletteCardProps {
   onSetColorRefsChecked: (refs: string[], checked: boolean) => void;
   selectedColorsDisplay: SelectedColorsDisplay;
   onSetSelectedColors: (hex: string) => void;
+  /** When set, color picker uses preview-on-change and one undo on close. */
+  onColorPickerOpen?: () => ThemePaneState;
+  onSetSelectedColorsPreview?: (hex: string) => void;
+  onColorPickerClose?: (snapshot: ThemePaneState) => void;
 }
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
@@ -133,6 +138,9 @@ export function ThemePaletteCard({
   onSetColorRefsChecked,
   selectedColorsDisplay,
   onSetSelectedColors,
+  onColorPickerOpen,
+  onSetSelectedColorsPreview,
+  onColorPickerClose,
 }: ThemePaletteCardProps) {
   const showCommit = hueAdjustment !== 0;
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
@@ -142,6 +150,7 @@ export function ThemePaletteCard({
   const [pendingHex, setPendingHex] = useState<string | null>(null);
   const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const paletteColorInputRef = useRef<HTMLInputElement | null>(null);
+  const colorPickerSnapshotRef = useRef<ThemePaneState | null>(null);
 
   useEffect(() => {
     return () => {
@@ -280,7 +289,17 @@ export function ThemePaletteCard({
                 const v = e.target.value;
                 setColorPickerValue(v);
                 setPendingHex(v);
-                onSetSelectedColors(v);
+                if (colorPickerSnapshotRef.current != null && onSetSelectedColorsPreview) {
+                  onSetSelectedColorsPreview(v);
+                } else {
+                  onSetSelectedColors(v);
+                }
+              }}
+              onBlur={() => {
+                if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
+                  onColorPickerClose(colorPickerSnapshotRef.current);
+                  colorPickerSnapshotRef.current = null;
+                }
               }}
               disabled={selectedColorsDisplay.kind === 'none'}
               aria-label="Color"
@@ -298,6 +317,9 @@ export function ThemePaletteCard({
               disabled={selectedColorsDisplay.kind === 'none'}
               onClick={() => {
                 if (selectedColorsDisplay.kind === 'none') return;
+                if (onColorPickerOpen && onSetSelectedColorsPreview && onColorPickerClose) {
+                  colorPickerSnapshotRef.current = onColorPickerOpen();
+                }
                 setColorPickerValue(
                   selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
                 );

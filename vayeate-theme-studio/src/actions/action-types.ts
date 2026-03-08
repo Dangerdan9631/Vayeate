@@ -33,7 +33,7 @@ export type AppAction =
   | { type: 'THEME_PANE_SELECTIONS_CHANGED'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
   | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[] }
   | { type: 'RESTORE_TEMPLATE_STATE'; template: Template | null }
-  | { type: 'RESTORE_CATALOG_STATE'; catalog: Catalog | null }
+  | { type: 'RESTORE_CATALOG_STATE'; catalog: Catalog | null; deleteVersionOnRestore?: { name: string; version: string } }
   | { type: 'DELETE_THEME_VERSION'; name: string; version: string }
   | { type: 'DISMISS_THEME_SAVE_ERROR' }
   | { type: 'GENERATE_THEME'; themeName: string; themeVersion: string; templateName: string; templateVersion: string };

@@ -3,6 +3,7 @@ import {
   useCallback,
   useReducer,
   useRef,
+  type MutableRefObject,
   type ReactNode,
 } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
@@ -27,7 +28,7 @@ import {
   TemplatesStateContext,
   ThemesStateContext,
 } from './slice-contexts';
-import { UndoProvider } from './UndoContext';
+import { UndoProvider, type CatalogUndoPush, type CatalogPaneState } from './UndoContext';
 
 const log = createLogger('AppContext');
 
@@ -101,7 +102,7 @@ async function refreshThemeRefsOnly(setState: SetState) {
   return refs;
 }
 
-function createActionProcessor() {
+function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoPush | null>) {
   let saveThemeTimeoutId: ReturnType<typeof setTimeout> | null = null;
   let pendingThemeToSave: Theme | null = null;
 
@@ -204,6 +205,18 @@ function createActionProcessor() {
       case 'SYNC_CATALOG': {
         log.debug('SYNC_CATALOG', action.catalog.name, `v${action.catalog.version}`,
           `locked=${action.catalog.locked}`, `(${action.catalog.sources.length} source(s))`);
+        const prev: CatalogPaneState = {
+          catalog: action.catalog,
+          undoMetadata:
+            !action.catalog.locked
+              ? {
+                  deleteVersionOnRestore: {
+                    name: action.catalog.name,
+                    version: nextPatchVersion(action.catalog.version),
+                  },
+                }
+              : undefined,
+        };
         const result = await syncCatalogTokens(
           action.catalog.sources,
           (url) => catalogService.fetchUrl(url),
@@ -222,6 +235,8 @@ function createActionProcessor() {
           version,
           locked: true,
         };
+        const next: CatalogPaneState = { catalog: synced };
+        catalogUndoPushRef.current?.('Sync catalog', prev, next);
         await saveCatalogAndRefresh(synced, setState);
         break;
       }
@@ -452,6 +467,14 @@ function createActionProcessor() {
 
       case 'RESTORE_CATALOG_STATE': {
         setState({ type: 'SET_CATALOG', catalog: action.catalog });
+        if (action.deleteVersionOnRestore) {
+          await catalogService.deleteCatalog(
+            action.deleteVersionOnRestore.name,
+            action.deleteVersionOnRestore.version,
+          );
+          const refs = await catalogService.listCatalogs();
+          setState({ type: 'SET_CATALOG_REFS', refs });
+        }
         break;
       }
 
@@ -533,11 +556,12 @@ export const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useReducer(appStateReducer, initialAppState);
   const queueRef = useRef<ActionQueue | null>(null);
+  const catalogUndoPushRef = useRef<CatalogUndoPush | null>(null);
 
   const dispatch = useCallback((action: AppAction) => {
     if (!queueRef.current) {
       log.info('initializing ActionQueue');
-      const processor = createActionProcessor();
+      const processor = createActionProcessor(catalogUndoPushRef);
       const queue = new ActionQueue(processor);
       queue.onStateUpdate = (update) => setState(update);
       queue.onQueueStatus = (status) =>
@@ -556,7 +580,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           <CatalogsStateContext.Provider value={state.catalogs}>
             <TemplatesStateContext.Provider value={state.templates}>
               <ThemesStateContext.Provider value={state.themes}>
-                <UndoProvider>{children}</UndoProvider>
+                <UndoProvider catalogUndoPushRef={catalogUndoPushRef}>{children}</UndoProvider>
               </ThemesStateContext.Provider>
             </TemplatesStateContext.Provider>
           </CatalogsStateContext.Provider>

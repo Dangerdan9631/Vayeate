@@ -73,6 +73,9 @@ export function ThemesPage() {
               onSetColorRefsChecked={vm.setColorRefsChecked}
               selectedColorsDisplay={vm.selectedColorsDisplay}
               onSetSelectedColors={vm.setSelectedColorsToHex}
+              onColorPickerOpen={vm.openColorPicker}
+              onSetSelectedColorsPreview={vm.setSelectedColorsPreview}
+              onColorPickerClose={vm.closeColorPicker}
             />
           )}
           {vm.theme && vm.theme.templateRef && (

@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type MutableRefObject,
   type ReactNode,
 } from 'react';
 import type { AppAction } from '../../actions/action-types';
@@ -41,8 +42,9 @@ interface TemplatePaneState {
   template: Template | null;
 }
 
-interface CatalogPaneState {
+export interface CatalogPaneState {
   catalog: Catalog | null;
+  undoMetadata?: { deleteVersionOnRestore?: { name: string; version: string } };
 }
 
 function docIdTheme(ref: ThemesState['selectedRef']): string {
@@ -77,7 +79,15 @@ export function useUndoStack(): UndoStackValue {
   return ctx;
 }
 
-export function UndoProvider({ children }: { children: ReactNode }) {
+export type CatalogUndoPush = (label: string, prev: CatalogPaneState, next: CatalogPaneState) => void;
+
+export function UndoProvider({
+  children,
+  catalogUndoPushRef,
+}: {
+  children: ReactNode;
+  catalogUndoPushRef?: MutableRefObject<CatalogUndoPush | null>;
+}) {
   const dispatch = useAppDispatch();
   const activeTab = useActiveTab();
   const themesState = useThemesState();
@@ -105,9 +115,24 @@ export function UndoProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const themeId = docIdTheme(themesState.selectedRef);
+    const paneState = themePaneStateFromThemesState(themesState);
+    const stack = themeStackRef.current;
+    const currentBase = stack.base as ThemePaneState;
+    const stackState = stack.getState();
+
     if (themeId !== lastThemeIdRef.current) {
       lastThemeIdRef.current = themeId;
-      themeStackRef.current.clearAndSetBase(themePaneStateFromThemesState(themesState));
+      stack.clearAndSetBase(paneState);
+      setVersion((v) => v + 1);
+    } else if (
+      themeId &&
+      paneState.theme &&
+      paneState.checkedColorRefs.length > 0 &&
+      currentBase.checkedColorRefs.length === 0 &&
+      stackState.frames.length === 0
+    ) {
+      // Base was set when theme loaded before selections were applied (race); fix before any edits
+      stack.setBase(paneState);
       setVersion((v) => v + 1);
     }
   }, [docIdTheme(themesState.selectedRef), themesState]);
@@ -144,6 +169,16 @@ export function UndoProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  useEffect(() => {
+    if (!catalogUndoPushRef) return;
+    catalogUndoPushRef.current = (label: string, prev: CatalogPaneState, next: CatalogPaneState) => {
+      push('catalogs', label, prev, next);
+    };
+    return () => {
+      catalogUndoPushRef.current = null;
+    };
+  }, [catalogUndoPushRef, push]);
+
   const undo = useCallback(() => {
     if (activeTab === 'themes') {
       const stack = themeStackRef.current;
@@ -172,10 +207,12 @@ export function UndoProvider({ children }: { children: ReactNode }) {
       const stack = catalogStackRef.current;
       const state = stack.undo();
       if (state !== null) {
+        const s = state as CatalogPaneState;
         dispatch({
           type: 'RESTORE_CATALOG_STATE',
-          catalog: (state as CatalogPaneState).catalog,
-        });
+          catalog: s.catalog,
+          deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
+        } as AppAction);
         setVersion((v) => v + 1);
       }
     }
@@ -209,10 +246,12 @@ export function UndoProvider({ children }: { children: ReactNode }) {
       const stack = catalogStackRef.current;
       const state = stack.redo();
       if (state !== null) {
+        const s = state as CatalogPaneState;
         dispatch({
           type: 'RESTORE_CATALOG_STATE',
-          catalog: (state as CatalogPaneState).catalog,
-        });
+          catalog: s.catalog,
+          deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
+        } as AppAction);
         setVersion((v) => v + 1);
       }
     }
@@ -247,10 +286,12 @@ export function UndoProvider({ children }: { children: ReactNode }) {
         const stack = catalogStackRef.current;
         const state = stack.goTo(index);
         if (state !== null) {
+          const s = state as CatalogPaneState;
           dispatch({
             type: 'RESTORE_CATALOG_STATE',
-            catalog: (state as CatalogPaneState).catalog,
-          });
+            catalog: s.catalog,
+            deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
+          } as AppAction);
           setVersion((v) => v + 1);
         }
       }

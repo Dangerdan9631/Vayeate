@@ -743,6 +743,55 @@ export function useThemeViewModel() {
     [theme, checkedColorRefsArray, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
   );
 
+  /** Returns current theme-pane state snapshot for color-picker undo (revert all changes when picker closes). */
+  const openColorPicker = useCallback((): ThemePaneState => {
+    return themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray);
+  }, [theme, checkedColorRefsArray, checkedContrastRefsArray]);
+
+  /** Applies hex to selected variables and saves; does not push undo. Use while color picker is open. */
+  const setSelectedColorsPreview = useCallback(
+    (hex: string) => {
+      if (!theme || checkedColorRefs.size === 0) return;
+      const normalized = normalizeHex(hex);
+      if (!normalized) return;
+      let workingAssignments = theme.colorAssignments;
+      if (hueAdjustment !== 0) {
+        workingAssignments = applyHueToAssignmentsFiltered(
+          theme.colorAssignments,
+          hueAdjustment / 100,
+          checkedColorRefs,
+          { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
+        );
+        setHueAdjustment(0);
+      }
+      const newAssignments = workingAssignments.map((a) => {
+        if (!checkedColorRefs.has(a.colorRef)) return a;
+        let next = { ...a };
+        if (applyHueToDark) {
+          next = { ...next, dark: { value: normalized } };
+        }
+        if (applyHueToLight) {
+          next = { ...next, light: { value: normalized } };
+        }
+        return next;
+      });
+      const base = getBaseInPlace(theme);
+      const nextTheme = { ...base, colorAssignments: newAssignments };
+      dispatch({ type: 'SAVE_THEME', theme: nextTheme });
+    },
+    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, dispatch],
+  );
+
+  /** Pushes one undo entry (snapshot → current) and ensures save. Call when color picker closes. */
+  const closeColorPicker = useCallback(
+    (snapshot: ThemePaneState) => {
+      const current = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray);
+      undoStack.push('themes', 'Palette color change', snapshot, current);
+      if (theme) dispatch({ type: 'SAVE_THEME', theme });
+    },
+    [theme, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
+  );
+
   const setSelectedColorsToHex = useCallback(
     (hex: string) => {
       if (!theme || checkedColorRefs.size === 0) return;
@@ -849,6 +898,9 @@ export function useThemeViewModel() {
     displayColorAssignments,
     commitHueAdjustment,
     selectedColorsDisplay,
+    openColorPicker,
+    setSelectedColorsPreview,
+    closeColorPicker,
     setSelectedColorsToHex,
     checkedColorRefs,
     checkedContrastRefs,

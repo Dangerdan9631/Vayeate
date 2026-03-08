@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
+import { useUndoStack } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { catalogService } from '../services/catalog-service';
@@ -21,8 +22,18 @@ const log = createLogger('TemplateVM');
 
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
+  const undoStack = useUndoStack();
   const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
   const { catalogRefs } = useCatalogsState();
+
+  const pushTemplateUndoAndSave = useCallback(
+    (label: string, nextTemplate: Template) => {
+      if (!template) return;
+      undoStack.push('templates', label, { template }, { template: nextTemplate });
+      dispatch({ type: 'SAVE_TEMPLATE', template: nextTemplate });
+    },
+    [template, undoStack, dispatch],
+  );
 
   useEffect(() => {
     log.debug('initial mount → LOAD_TEMPLATE_REFS + LOAD_CATALOG_REFS');
@@ -248,7 +259,7 @@ export function useTemplateViewModel() {
     }
     log.debug('lockTemplate', template.name, `v${template.version}`);
     const updated: Template = { ...template, locked: true };
-    dispatch({ type: 'SAVE_TEMPLATE', template: updated });
+    pushTemplateUndoAndSave('Lock template', updated);
   }, [dispatch, template, canLock]);
 
   // --- Catalog inclusion ---
@@ -303,9 +314,9 @@ export function useTemplateViewModel() {
         semanticTokenModifiers,
         semanticTokenLanguages,
       };
-      dispatch({ type: 'SAVE_TEMPLATE', template: updated });
+      pushTemplateUndoAndSave('Enable catalog', updated);
     },
-    [dispatch, template, catalogVersionsByName],
+    [template, pushTemplateUndoAndSave, catalogVersionsByName],
   );
 
   const changeCatalogVersion = useCallback(
@@ -332,9 +343,9 @@ export function useTemplateViewModel() {
         semanticTokenModifiers,
         semanticTokenLanguages,
       };
-      dispatch({ type: 'SAVE_TEMPLATE', template: updated });
+      pushTemplateUndoAndSave('Change catalog version', updated);
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const updateAllCatalogsToLatest = useCallback(
@@ -363,9 +374,9 @@ export function useTemplateViewModel() {
         semanticTokenModifiers,
         semanticTokenLanguages,
       };
-      dispatch({ type: 'SAVE_TEMPLATE', template: updated });
+      pushTemplateUndoAndSave('Update all catalogs', updated);
     },
-    [dispatch, template, isLatestVersion, catalogVersionsByName],
+    [template, pushTemplateUndoAndSave, isLatestVersion, catalogVersionsByName],
   );
 
   // --- Mapping updates ---
@@ -385,7 +396,7 @@ export function useTemplateViewModel() {
         const newMappings = base.mappings.filter(
           (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
         );
-        dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+        pushTemplateUndoAndSave('Mapping', { ...base, mappings: newMappings });
         return;
       }
 
@@ -394,9 +405,9 @@ export function useTemplateViewModel() {
           ? { ...m, colorVariableRef: colorRef }
           : m,
       );
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+      pushTemplateUndoAndSave('Mapping', { ...base, mappings: newMappings });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const updateMappingContrastRef = useCallback(
@@ -409,9 +420,9 @@ export function useTemplateViewModel() {
           ? { ...m, contrastVariableRef: contrastRef }
           : m,
       );
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+      pushTemplateUndoAndSave('Mapping', { ...base, mappings: newMappings });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const updateMappingGroupRef = useCallback(
@@ -445,9 +456,9 @@ export function useTemplateViewModel() {
         if (m.token.key === tokenKey) return { ...m, groupRef };
         return m;
       });
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+      pushTemplateUndoAndSave('Mapping group', { ...base, mappings: newMappings });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const addSemanticVariantMapping = useCallback(
@@ -484,17 +495,14 @@ export function useTemplateViewModel() {
         language && language.trim() !== ''
           ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
           : (base.semanticTokenLanguages ?? []);
-      dispatch({
-        type: 'SAVE_TEMPLATE',
-        template: {
-          ...base,
-          mappings: [...base.mappings, newMapping],
-          semanticTokenModifiers: newModifiers,
-          semanticTokenLanguages: newLanguages,
-        },
+      pushTemplateUndoAndSave('Add variant', {
+        ...base,
+        mappings: [...base.mappings, newMapping],
+        semanticTokenModifiers: newModifiers,
+        semanticTokenLanguages: newLanguages,
       });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const updateSemanticVariantKey = useCallback(
@@ -525,17 +533,14 @@ export function useTemplateViewModel() {
         language && language.trim() !== ''
           ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
           : (base.semanticTokenLanguages ?? []);
-      dispatch({
-        type: 'SAVE_TEMPLATE',
-        template: {
-          ...base,
-          mappings: newMappings,
-          semanticTokenModifiers: newModifiers,
-          semanticTokenLanguages: newLanguages,
-        },
+      pushTemplateUndoAndSave('Variant key', {
+        ...base,
+        mappings: newMappings,
+        semanticTokenModifiers: newModifiers,
+        semanticTokenLanguages: newLanguages,
       });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const removeMapping = useCallback(
@@ -546,9 +551,9 @@ export function useTemplateViewModel() {
       const newMappings = base.mappings.filter(
         (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
       );
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, mappings: newMappings } });
+      pushTemplateUndoAndSave('Remove mapping', { ...base, mappings: newMappings });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   // --- Variable CRUD ---
@@ -562,9 +567,9 @@ export function useTemplateViewModel() {
         ...base.colorVariables,
         { key, groupRef: groupRef ?? null },
       ];
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, colorVariables: newVars } });
+      pushTemplateUndoAndSave('Add color variable', { ...base, colorVariables: newVars });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const removeColorVariable = useCallback(
@@ -577,9 +582,9 @@ export function useTemplateViewModel() {
       log.debug('removeColorVariable', key);
       const base = getBaseForEdit(template);
       const newVars = base.colorVariables.filter((v) => v.key !== key);
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, colorVariables: newVars } });
+      pushTemplateUndoAndSave('Remove color variable', { ...base, colorVariables: newVars });
     },
-    [dispatch, template, referencedColorVarKeys],
+    [template, pushTemplateUndoAndSave, referencedColorVarKeys],
   );
 
   const addContrastVariable = useCallback(
@@ -591,9 +596,9 @@ export function useTemplateViewModel() {
         ...base.contrastVariables,
         { key, comparisonSourceRef: null, groupRef: groupRef ?? null },
       ];
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, contrastVariables: newVars } });
+      pushTemplateUndoAndSave('Add contrast variable', { ...base, contrastVariables: newVars });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const removeContrastVariable = useCallback(
@@ -606,9 +611,9 @@ export function useTemplateViewModel() {
       log.debug('removeContrastVariable', key);
       const base = getBaseForEdit(template);
       const newVars = base.contrastVariables.filter((v) => v.key !== key);
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, contrastVariables: newVars } });
+      pushTemplateUndoAndSave('Remove contrast variable', { ...base, contrastVariables: newVars });
     },
-    [dispatch, template, referencedContrastVarKeys],
+    [template, pushTemplateUndoAndSave, referencedContrastVarKeys],
   );
 
   const updateContrastComparisonSource = useCallback(
@@ -619,9 +624,9 @@ export function useTemplateViewModel() {
       const newVars = base.contrastVariables.map((v) =>
         v.key === key ? { ...v, comparisonSourceRef } : v,
       );
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, contrastVariables: newVars } });
+      pushTemplateUndoAndSave('Contrast comparison', { ...base, contrastVariables: newVars });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const updateColorVariableGroupRef = useCallback(
@@ -632,9 +637,9 @@ export function useTemplateViewModel() {
       const newVars = base.colorVariables.map((v) =>
         v.key === key ? { ...v, groupRef } : v,
       );
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, colorVariables: newVars } });
+      pushTemplateUndoAndSave('Variable group', { ...base, colorVariables: newVars });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const updateContrastVariableGroupRef = useCallback(
@@ -645,9 +650,9 @@ export function useTemplateViewModel() {
       const newVars = base.contrastVariables.map((v) =>
         v.key === key ? { ...v, groupRef } : v,
       );
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, contrastVariables: newVars } });
+      pushTemplateUndoAndSave('Variable group', { ...base, contrastVariables: newVars });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   // --- Group CRUD ---
@@ -668,9 +673,9 @@ export function useTemplateViewModel() {
       log.debug('addGroup', trimmed);
       const base = getBaseForEdit(template);
       const newGroups = [...(base.groups ?? []), trimmed];
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, groups: newGroups } });
+      pushTemplateUndoAndSave('Add group', { ...base, groups: newGroups });
     },
-    [dispatch, template],
+    [template, pushTemplateUndoAndSave],
   );
 
   const removeGroup = useCallback(
@@ -683,9 +688,9 @@ export function useTemplateViewModel() {
       log.debug('removeGroup', name);
       const base = getBaseForEdit(template);
       const newGroups = (base.groups ?? []).filter((g) => g !== name);
-      dispatch({ type: 'SAVE_TEMPLATE', template: { ...base, groups: newGroups } });
+      pushTemplateUndoAndSave('Remove group', { ...base, groups: newGroups });
     },
-    [dispatch, template, groupNamesInUse],
+    [template, pushTemplateUndoAndSave, groupNamesInUse],
   );
 
   return {
