@@ -304,3 +304,161 @@ describe('mergeAssignmentsFromTemplate', () => {
     expect(merged.themeBackgroundColorVariableRef).toBe('primary');
   });
 });
+
+describe('useThemeViewModel hue adjustment', () => {
+  const themeWithColors: Theme = {
+    name: 'hue-theme',
+    version: '1.0.0',
+    templateRef: { name: 'tpl', version: '1.0.0' },
+    idePrimaryColorVariableRef: null,
+    idePrimaryColorContrastVariableRef: null,
+    themeBackgroundColorVariableRef: null,
+    colorAssignments: [
+      { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
+    ],
+    contrastAssignments: [
+      { contrastVariableRef: 'textContrast', dark: { value: 4.5, comparisonMethod: 'greaterThan' as const, min: null, max: null }, light: null, useDarkForLight: true },
+    ],
+  };
+
+  const templateForHue: Template = {
+    name: 'tpl',
+    version: '1.0.0',
+    locked: false,
+    catalogRefs: [],
+    mappings: [],
+    colorVariables: [{ key: 'primary', groupRef: null }],
+    contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary', groupRef: null }],
+    groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
+  };
+
+  beforeEach(() => {
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(null),
+      saveTemplate: () => Promise.resolve(),
+      loadTemplate: () => Promise.resolve(templateForHue),
+      listTemplates: () => Promise.resolve([]),
+      deleteTemplate: () => Promise.resolve(),
+      createTheme: () => Promise.resolve(themeWithColors),
+      saveTheme: () => Promise.resolve(),
+      loadTheme: () => Promise.resolve(themeWithColors),
+      listThemes: () => Promise.resolve([{ name: 'hue-theme', version: '1.0.0' }]),
+      deleteTheme: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+  });
+
+  it('exposes hueAdjustment 0 and displayColorAssignments equal to theme when hue is 0', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    expect(result.current.hueAdjustment).toBe(0);
+    expect(result.current.theme).not.toBeNull();
+    expect(result.current.displayColorAssignments).toEqual(result.current.theme!.colorAssignments);
+  });
+
+  it('displayColorAssignments reflects hue shift when hueAdjustment is non-zero', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalDark = result.current.theme!.colorAssignments[0].dark!.value;
+    await act(async () => {
+      result.current.setHueAdjustment(50);
+    });
+    expect(result.current.hueAdjustment).toBe(50);
+    expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(originalDark);
+  });
+
+  it('revertHueAdjustment resets hue to 0', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(30);
+    });
+    expect(result.current.hueAdjustment).toBe(30);
+    await act(async () => {
+      result.current.revertHueAdjustment();
+    });
+    expect(result.current.hueAdjustment).toBe(0);
+  });
+
+  it('commitHueAdjustment persists shifted colors and resets hue', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalDark = result.current.theme!.colorAssignments[0].dark!.value;
+    await act(async () => {
+      result.current.setHueAdjustment(25);
+    });
+    await act(async () => {
+      result.current.commitHueAdjustment();
+    });
+    expect(result.current.hueAdjustment).toBe(0);
+    expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
+  });
+
+  it('updateColorAssignmentDark when hue non-zero commits then applies edit', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(10);
+    });
+    await act(async () => {
+      result.current.updateColorAssignmentDark('primary', '#0000ff');
+    });
+    expect(result.current.hueAdjustment).toBe(0);
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
+  });
+
+  it('updateContrastAssignmentDark does not reset hue', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(20);
+    });
+    await act(async () => {
+      result.current.updateContrastAssignmentDark('textContrast', 'value', 5);
+    });
+    expect(result.current.hueAdjustment).toBe(20);
+  });
+});

@@ -133,6 +133,21 @@ export function hslToRgb(hsl: Hsl): Rgb {
   };
 }
 
+/**
+ * Shift hue of a hex color. shift in [-1, 1] (e.g. slider value / 100); ±1 is a full rotation.
+ * Invalid hex is returned unchanged.
+ */
+export function applyHueShift(hex: string, shift: number): string {
+  try {
+    const rgb = hexToRgb(hex);
+    const hsl = rgbToHsl(rgb);
+    const h = ((hsl.h + shift) % 1 + 1) % 1;
+    return rgbToHex(hslToRgb({ ...hsl, h }));
+  } catch {
+    return hex;
+  }
+}
+
 /** Adjust foreground to have at least target contrast vs background. */
 function adjustBrightnessMin(foreground: string, background: string, target: number): string {
   const fg = normalizeHex(foreground);

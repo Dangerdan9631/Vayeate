@@ -3,6 +3,7 @@ import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { templateService } from '../services/template-service';
+import { applyHueShift } from '../core/color';
 import type {
   ColorAssignment,
   ColorVariableKey,
@@ -18,6 +19,14 @@ import type {
 } from '../model/schemas';
 
 const log = createLogger('ThemeVM');
+
+function applyHueToAssignments(assignments: readonly ColorAssignment[], shift: number): ColorAssignment[] {
+  return assignments.map((a) => ({
+    ...a,
+    dark: a.dark ? { value: applyHueShift(a.dark.value, shift) } : null,
+    light: a.light ? { value: applyHueShift(a.light.value, shift) } : null,
+  }));
+}
 
 export function useThemeViewModel() {
   const dispatch = useAppDispatch();
@@ -91,6 +100,13 @@ export function useThemeViewModel() {
   const selectedTemplateVersion = theme?.templateRef?.version ?? null;
 
   const [loadedTemplate, setLoadedTemplate] = useState<Template | null>(null);
+  const [hueAdjustment, setHueAdjustment] = useState(0);
+
+  const displayColorAssignments = useMemo(() => {
+    if (!theme) return [];
+    if (hueAdjustment === 0) return theme.colorAssignments;
+    return applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+  }, [theme, hueAdjustment]);
 
   useEffect(() => {
     if (!selectedTemplateName || !selectedTemplateVersion) {
@@ -312,6 +328,19 @@ export function useThemeViewModel() {
     [dispatch, theme],
   );
 
+  const commitHueAdjustment = useCallback(() => {
+    if (!theme || hueAdjustment === 0) return;
+    log.debug('commitHueAdjustment', hueAdjustment);
+    const base = getBaseInPlace(theme);
+    const newAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+    dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+    setHueAdjustment(0);
+  }, [dispatch, theme, hueAdjustment]);
+
+  const revertHueAdjustment = useCallback(() => {
+    setHueAdjustment(0);
+  }, []);
+
   // --- Color assignment updates (no version bump) ---
 
   const updateColorAssignmentDark = useCallback(
@@ -319,14 +348,19 @@ export function useThemeViewModel() {
       if (!theme) return;
       log.debug('updateColorAssignmentDark', colorRef, value);
       const base = getBaseInPlace(theme);
-      const newAssignments = base.colorAssignments.map((a) =>
+      let workingAssignments = base.colorAssignments;
+      if (hueAdjustment !== 0) {
+        workingAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+        setHueAdjustment(0);
+      }
+      const newAssignments = workingAssignments.map((a) =>
         a.colorRef === colorRef
           ? { ...a, dark: value !== null ? { value } : null }
           : a,
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme],
+    [dispatch, theme, hueAdjustment],
   );
 
   const updateColorAssignmentLight = useCallback(
@@ -334,14 +368,19 @@ export function useThemeViewModel() {
       if (!theme) return;
       log.debug('updateColorAssignmentLight', colorRef, value);
       const base = getBaseInPlace(theme);
-      const newAssignments = base.colorAssignments.map((a) =>
+      let workingAssignments = base.colorAssignments;
+      if (hueAdjustment !== 0) {
+        workingAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+        setHueAdjustment(0);
+      }
+      const newAssignments = workingAssignments.map((a) =>
         a.colorRef === colorRef
           ? { ...a, light: value !== null ? { value } : null }
           : a,
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme],
+    [dispatch, theme, hueAdjustment],
   );
 
   const updateColorAssignmentUseDarkForLight = useCallback(
@@ -349,12 +388,17 @@ export function useThemeViewModel() {
       if (!theme) return;
       log.debug('updateColorAssignmentUseDarkForLight', colorRef, useDark);
       const base = getBaseInPlace(theme);
-      const newAssignments = base.colorAssignments.map((a) =>
+      let workingAssignments = base.colorAssignments;
+      if (hueAdjustment !== 0) {
+        workingAssignments = applyHueToAssignments(theme.colorAssignments, hueAdjustment / 100);
+        setHueAdjustment(0);
+      }
+      const newAssignments = workingAssignments.map((a) =>
         a.colorRef === colorRef ? { ...a, useDarkForLight: useDark } : a,
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme],
+    [dispatch, theme, hueAdjustment],
   );
 
   // --- Contrast assignment updates (no version bump) ---
@@ -437,6 +481,11 @@ export function useThemeViewModel() {
     generateResult,
     colorVariableKeys,
     templateMappings,
+    hueAdjustment,
+    setHueAdjustment,
+    displayColorAssignments,
+    commitHueAdjustment,
+    revertHueAdjustment,
     selectTheme,
     selectName,
     openCreateDialog,

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   contrastRatio,
   adjustColorToMeetContrast,
+  applyHueShift,
   luminance,
   normalizeHex,
 } from './color';
@@ -44,6 +45,31 @@ describe('luminance', () => {
   });
   it('white is 1', () => {
     expect(luminance('#ffffff')).toBe(1);
+  });
+});
+
+describe('applyHueShift', () => {
+  it('full positive shift (+1) returns same hue as original (red stays red)', () => {
+    const red = '#ff0000';
+    expect(applyHueShift(red, 1)).toBe(red);
+  });
+  it('full negative shift (-1) returns same hue as original (red stays red)', () => {
+    const red = '#ff0000';
+    expect(applyHueShift(red, -1)).toBe(red);
+  });
+  it('zero shift leaves color unchanged', () => {
+    const hex = '#3a7b42';
+    expect(applyHueShift(hex, 0)).toBe(hex);
+  });
+  it('shifts hue for non-gray colors', () => {
+    const red = '#ff0000';
+    const shifted = applyHueShift(red, 1 / 6);
+    expect(shifted).not.toBe(red);
+    expect(shifted).toMatch(/^#[0-9a-f]{6}$/i);
+  });
+  it('returns invalid hex unchanged', () => {
+    expect(applyHueShift('not-a-hex', 0.5)).toBe('not-a-hex');
+    expect(applyHueShift('', 0.5)).toBe('');
   });
 });
 

@@ -1304,6 +1304,112 @@ body {
   flex-shrink: 0;
 }
 
+/* ── Theme Palette card (hue slider) ────────────────────────── */
+
+.theme-palette-card h2 {
+  margin-bottom: 12px;
+}
+
+.theme-palette-hue-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.theme-palette-hue-label {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  margin: 0;
+}
+
+.theme-palette-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.theme-palette-btn {
+  padding: 4px 12px;
+  font-size: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.theme-palette-btn:hover {
+  background: #f3f4f6;
+}
+
+.theme-palette-slider-wrap {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  border-radius: 6px;
+  /* Two full hue rotations: -100..0 (left half), 0..100 (right half); 0 = red at center */
+  background: linear-gradient(
+    to right,
+    hsl(0, 100%, 50%) 0%,
+    hsl(60, 100%, 50%) 8.33%,
+    hsl(120, 100%, 50%) 16.67%,
+    hsl(180, 100%, 50%) 25%,
+    hsl(240, 100%, 50%) 33.33%,
+    hsl(300, 100%, 50%) 41.67%,
+    hsl(0, 100%, 50%) 50%,
+    hsl(60, 100%, 50%) 58.33%,
+    hsl(120, 100%, 50%) 66.67%,
+    hsl(180, 100%, 50%) 75%,
+    hsl(240, 100%, 50%) 83.33%,
+    hsl(300, 100%, 50%) 91.67%,
+    hsl(0, 100%, 50%) 100%
+  );
+}
+
+.theme-palette-hue-slider {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.theme-palette-hue-slider::-webkit-slider-runnable-track {
+  background: transparent;
+}
+
+.theme-palette-hue-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.theme-palette-hue-slider::-moz-range-track {
+  background: transparent;
+}
+
+.theme-palette-hue-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
 /* ── Theme color assignment rows ───────────────────────────── */
 
 .theme-color-row {

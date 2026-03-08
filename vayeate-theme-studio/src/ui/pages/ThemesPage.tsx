@@ -2,6 +2,7 @@ import { useThemeViewModel } from '../../viewmodel/use-theme-viewmodel';
 import { CreateThemeDialog } from '../components/CreateThemeDialog';
 import { EditorPreviewsCard } from '../components/EditorPreviewsCard';
 import { ThemeDetailsCard } from '../components/ThemeDetailsCard';
+import { ThemePaletteCard } from '../components/ThemePaletteCard';
 import { ThemeVariablesCard } from '../components/ThemeVariablesCard';
 import { ThemesCard } from '../components/ThemesCard';
 
@@ -56,8 +57,16 @@ export function ThemesPage() {
             />
           )}
           {vm.theme && vm.theme.templateRef && (
+            <ThemePaletteCard
+              hueAdjustment={vm.hueAdjustment}
+              onHueChange={vm.setHueAdjustment}
+              onCommit={vm.commitHueAdjustment}
+              onRevert={vm.revertHueAdjustment}
+            />
+          )}
+          {vm.theme && vm.theme.templateRef && (
             <ThemeVariablesCard
-              colorAssignments={vm.theme.colorAssignments}
+              colorAssignments={vm.displayColorAssignments}
               contrastAssignments={vm.theme.contrastAssignments}
               colorVariables={vm.colorVariablesFromTemplate}
               contrastVariables={vm.contrastVariablesFromTemplate}
@@ -76,7 +85,7 @@ export function ThemesPage() {
         <div className="themes-right-col">
           {vm.theme && vm.theme.templateRef && (
             <EditorPreviewsCard
-              colorAssignments={vm.theme.colorAssignments}
+              colorAssignments={vm.displayColorAssignments}
               contrastAssignments={vm.theme.contrastAssignments}
               contrastVariables={vm.contrastVariablesFromTemplate}
               colorVariableKeys={vm.colorVariableKeys}
