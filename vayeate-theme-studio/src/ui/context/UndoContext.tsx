@@ -184,26 +184,41 @@ export function UndoProvider({
   const undo = useCallback(() => {
     if (activeTab === 'themes') {
       const stack = themeStackRef.current;
+      const stackState = stack.getState();
+      const currentState = stack.stateAt(stackState.currentIndex) as ThemePaneState;
       const state = stack.undo();
       if (state !== null) {
         const s = state as ThemePaneState;
+        const deleteThemeVersionOnRestore =
+          currentState.theme && s.theme && currentState.theme.version !== s.theme.version
+            ? { name: currentState.theme.name, version: currentState.theme.version }
+            : undefined;
         dispatch({
           type: 'RESTORE_THEME_STATE',
           theme: s.theme ?? undefined,
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
           hueAdjustment: s.hueAdjustment,
+          deleteThemeVersionOnRestore,
         } as AppAction);
         setVersion((v) => v + 1);
       }
     } else if (activeTab === 'templates') {
       const stack = templateStackRef.current;
+      const stackState = stack.getState();
+      const currentState = stack.stateAt(stackState.currentIndex) as TemplatePaneState;
       const state = stack.undo();
       if (state !== null) {
+        const s = state as TemplatePaneState;
+        const deleteTemplateVersionOnRestore =
+          currentState.template && s.template && currentState.template.version !== s.template.version
+            ? { name: currentState.template.name, version: currentState.template.version }
+            : undefined;
         dispatch({
           type: 'RESTORE_TEMPLATE_STATE',
-          template: (state as TemplatePaneState).template,
-        });
+          template: s.template,
+          deleteTemplateVersionOnRestore,
+        } as AppAction);
         setVersion((v) => v + 1);
       }
     } else if (activeTab === 'catalogs') {
@@ -265,26 +280,47 @@ export function UndoProvider({
     (pane: PaneId, index: number) => {
       if (pane === 'themes') {
         const stack = themeStackRef.current;
+        const stackState = stack.getState();
+        const currentState = stack.stateAt(stackState.currentIndex) as ThemePaneState;
         const state = stack.goTo(index);
         if (state !== null) {
           const s = state as ThemePaneState;
+          const deleteThemeVersionOnRestore =
+            index < stackState.currentIndex &&
+            currentState.theme &&
+            s.theme &&
+            currentState.theme.version !== s.theme.version
+              ? { name: currentState.theme.name, version: currentState.theme.version }
+              : undefined;
           dispatch({
             type: 'RESTORE_THEME_STATE',
             theme: s.theme ?? undefined,
             checkedColorRefs: s.checkedColorRefs,
             checkedContrastRefs: s.checkedContrastRefs,
             hueAdjustment: s.hueAdjustment,
+            deleteThemeVersionOnRestore,
           } as AppAction);
           setVersion((v) => v + 1);
         }
       } else if (pane === 'templates') {
         const stack = templateStackRef.current;
+        const stackState = stack.getState();
+        const currentState = stack.stateAt(stackState.currentIndex) as TemplatePaneState;
         const state = stack.goTo(index);
         if (state !== null) {
+          const s = state as TemplatePaneState;
+          const deleteTemplateVersionOnRestore =
+            index < stackState.currentIndex &&
+            currentState.template &&
+            s.template &&
+            currentState.template.version !== s.template.version
+              ? { name: currentState.template.name, version: currentState.template.version }
+              : undefined;
           dispatch({
             type: 'RESTORE_TEMPLATE_STATE',
-            template: (state as TemplatePaneState).template,
-          });
+            template: s.template,
+            deleteTemplateVersionOnRestore,
+          } as AppAction);
           setVersion((v) => v + 1);
         }
       } else if (pane === 'catalogs') {

@@ -30,11 +30,10 @@ export type AppAction =
   | { type: 'CLOSE_THEME_CREATE_DIALOG' }
   | { type: 'CREATE_THEME'; params: { name: string } }
   | { type: 'SAVE_THEME'; theme: Theme }
-  | { type: 'END_HUE_DRAG_RESULT'; theme: Theme }
   | { type: 'THEME_PANE_SELECTIONS_CHANGED'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
-  | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number }
+  | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number; deleteThemeVersionOnRestore?: { name: string; version: string } }
   | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }
-  | { type: 'RESTORE_TEMPLATE_STATE'; template: Template | null }
+  | { type: 'RESTORE_TEMPLATE_STATE'; template: Template | null; deleteTemplateVersionOnRestore?: { name: string; version: string } }
   | { type: 'RESTORE_CATALOG_STATE'; catalog: Catalog | null; deleteVersionOnRestore?: { name: string; version: string } }
   | { type: 'DELETE_THEME_VERSION'; name: string; version: string }
   | { type: 'DISMISS_THEME_SAVE_ERROR' }

@@ -415,7 +415,7 @@ describe('useThemeViewModel hue adjustment', () => {
     expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(originalDark);
   });
 
-  it('endHueDrag after moving slider persists shifted colors and resets hue', async () => {
+  it('endHueDrag leaves theme and hue unchanged', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -436,10 +436,9 @@ describe('useThemeViewModel hue adjustment', () => {
     });
     await act(async () => {
       result.current.endHueDrag();
-      await new Promise((r) => setTimeout(r, 350));
     });
-    expect(result.current.hueAdjustment).toBe(0);
-    expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
+    expect(result.current.hueAdjustment).toBe(25);
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe(originalDark);
   });
 
   it('updateColorAssignmentDark when hue non-zero bakes hue then applies edit', async () => {
@@ -467,7 +466,7 @@ describe('useThemeViewModel hue adjustment', () => {
     expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
   });
 
-  it('updateContrastAssignmentDark does not reset hue', async () => {
+  it('updateContrastAssignmentDark recenters hue', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -485,7 +484,7 @@ describe('useThemeViewModel hue adjustment', () => {
     await act(async () => {
       result.current.updateContrastAssignmentDark('textContrast', 'value', 5);
     });
-    expect(result.current.hueAdjustment).toBe(20);
+    expect(result.current.hueAdjustment).toBe(0);
   });
 
   it('exposes applyHueToDark and applyHueToLight defaulting to true', async () => {
@@ -547,7 +546,7 @@ describe('useThemeViewModel hue adjustment', () => {
     expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(result.current.theme!.colorAssignments[0].dark!.value);
   });
 
-  it('endHueDrag respects applyToDark and applyToLight', async () => {
+  it('endHueDrag leaves theme and hue unchanged regardless of applyToDark/applyToLight', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -573,13 +572,13 @@ describe('useThemeViewModel hue adjustment', () => {
     });
     await act(async () => {
       result.current.endHueDrag();
-      await new Promise((r) => setTimeout(r, 350));
     });
-    expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
+    expect(result.current.hueAdjustment).toBe(25);
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe(originalDark);
     expect(result.current.theme!.colorAssignments[0].light!.value).toBe(originalLight);
   });
 
-  it('recenterHue resets slider to 0 without changing theme', async () => {
+  it('recenterHue bakes hue into theme and resets slider so displayed colors stay the same', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -588,7 +587,6 @@ describe('useThemeViewModel hue adjustment', () => {
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
     });
-    const originalDark = result.current.theme!.colorAssignments[0].dark!.value;
     await act(async () => {
       result.current.setHueAdjustment(40);
     });
@@ -596,14 +594,15 @@ describe('useThemeViewModel hue adjustment', () => {
       await new Promise((r) => setTimeout(r, 50));
     });
     expect(result.current.hueAdjustment).toBe(40);
+    const displayedDarkBefore = result.current.displayColorAssignments[0].dark!.value;
     await act(async () => {
       result.current.recenterHue();
     });
     await act(async () => {
-      await new Promise((r) => setTimeout(r, 50));
+      await new Promise((r) => setTimeout(r, 250));
     });
     expect(result.current.hueAdjustment).toBe(0);
-    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe(originalDark);
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe(displayedDarkBefore);
   });
 });
 

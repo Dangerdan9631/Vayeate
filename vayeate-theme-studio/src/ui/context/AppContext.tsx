@@ -437,27 +437,6 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
       }
 
-      case 'END_HUE_DRAG_RESULT': {
-        log.debug('END_HUE_DRAG_RESULT', action.theme.name);
-        setState({ type: 'SET_THEME_AND_HUE', theme: action.theme, hueAdjustment: 0 });
-        setState({ type: 'SET_THEME_SAVE_ERROR', error: null });
-        pendingThemeToSave = action.theme;
-        if (saveThemeTimeoutId !== null) clearTimeout(saveThemeTimeoutId);
-        saveThemeTimeoutId = setTimeout(() => {
-          saveThemeTimeoutId = null;
-          const theme = pendingThemeToSave;
-          pendingThemeToSave = null;
-          if (theme) {
-            themeService.saveTheme(theme).catch((err) => {
-              const message = err instanceof Error ? err.message : String(err);
-              log.error('SAVE_THEME persist failed', err);
-              setState({ type: 'SET_THEME_SAVE_ERROR', error: message });
-            });
-          }
-        }, SAVE_THEME_DEBOUNCE_MS);
-        break;
-      }
-
       case 'THEME_PANE_SELECTIONS_CHANGED': {
         setState({
           type: 'SET_THEME_PANE_SELECTIONS',
@@ -478,8 +457,37 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
             checkedContrastRefs: action.checkedContrastRefs,
           });
         }
+        if (action.theme !== undefined && action.theme !== null) {
+          setState({
+            type: 'SET_SELECTED_THEME_REF',
+            ref: { name: action.theme.name, version: action.theme.version },
+          });
+        }
         if (action.hueAdjustment !== undefined) {
           setState({ type: 'SET_THEME_HUE_ADJUSTMENT', value: action.hueAdjustment });
+        }
+        if (action.theme !== undefined && action.theme !== null) {
+          if (saveThemeTimeoutId !== null) {
+            clearTimeout(saveThemeTimeoutId);
+            saveThemeTimeoutId = null;
+          }
+          pendingThemeToSave = null;
+          setState({ type: 'SET_THEME_SAVE_ERROR', error: null });
+          try {
+            await themeService.saveTheme(action.theme);
+          } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            log.error('RESTORE_THEME_STATE persist failed', err);
+            setState({ type: 'SET_THEME_SAVE_ERROR', error: message });
+          }
+          await refreshThemeRefsOnly(setState);
+        }
+        if (action.deleteThemeVersionOnRestore) {
+          await themeService.deleteTheme(
+            action.deleteThemeVersionOnRestore.name,
+            action.deleteThemeVersionOnRestore.version,
+          );
+          await refreshThemeRefsOnly(setState);
         }
         break;
       }
@@ -491,6 +499,27 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
 
       case 'RESTORE_TEMPLATE_STATE': {
         setState({ type: 'SET_TEMPLATE', template: action.template });
+        if (action.template !== null) {
+          setState({
+            type: 'SET_SELECTED_TEMPLATE_REF',
+            ref: { name: action.template.name, version: action.template.version },
+          });
+        }
+        if (action.template !== null) {
+          try {
+            await saveTemplateAndRefresh(action.template, setState);
+          } catch (err) {
+            log.error('RESTORE_TEMPLATE_STATE persist failed', err);
+          }
+        }
+        if (action.deleteTemplateVersionOnRestore) {
+          await templateService.deleteTemplate(
+            action.deleteTemplateVersionOnRestore.name,
+            action.deleteTemplateVersionOnRestore.version,
+          );
+          const tRefs = await templateService.listTemplates();
+          setState({ type: 'SET_TEMPLATE_REFS', refs: tRefs });
+        }
         break;
       }
 
