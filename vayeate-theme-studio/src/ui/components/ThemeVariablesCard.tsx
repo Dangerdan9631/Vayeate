@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type {
   ColorAssignment,
   ColorVariable,
@@ -7,10 +7,9 @@ import type {
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../model/schemas';
+import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
-
-type TriState = 'all' | 'none' | 'some';
 
 interface ThemeVariablesCardProps {
   colorAssignments: readonly ColorAssignment[];
@@ -38,48 +37,6 @@ interface ThemeVariablesCardProps {
   onUpdateContrastDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastUseDark: (contrastRef: string, useDark: boolean) => void;
-}
-
-function TriStateCheckbox({
-  state,
-  onChange,
-  onClickCapture,
-  ariaLabel,
-  className,
-}: {
-  state: TriState;
-  onChange: (checked: boolean) => void;
-  onClickCapture?: (e: React.MouseEvent) => void;
-  ariaLabel: string;
-  className?: string;
-}) {
-  const ref = useRef<HTMLInputElement>(null);
-  const checked = state === 'all';
-  const indeterminate = state === 'some';
-
-  useEffect(() => {
-    if (ref.current) ref.current.indeterminate = indeterminate;
-  }, [indeterminate]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (indeterminate) {
-      onChange(true);
-    } else {
-      onChange(e.target.checked);
-    }
-  };
-
-  return (
-    <input
-      ref={ref}
-      type="checkbox"
-      className={className}
-      checked={checked}
-      onChange={handleChange}
-      onClick={onClickCapture}
-      aria-label={ariaLabel}
-    />
-  );
 }
 
 const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] = [

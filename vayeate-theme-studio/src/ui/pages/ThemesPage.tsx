@@ -65,6 +65,9 @@ export function ThemesPage() {
               colorAssignments={vm.displayColorAssignments}
               colorVariables={vm.colorVariablesFromTemplate}
               groups={vm.groupsFromTemplate}
+              checkedColorRefs={vm.checkedColorRefs}
+              onSetColorGroupChecked={vm.setColorGroupChecked}
+              onSetColorRefsChecked={vm.setColorRefsChecked}
             />
           )}
           {vm.theme && vm.theme.templateRef && (

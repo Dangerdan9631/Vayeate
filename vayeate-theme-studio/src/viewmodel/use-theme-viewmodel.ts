@@ -580,6 +580,18 @@ export function useThemeViewModel() {
     [theme, contrastVariablesFromTemplate],
   );
 
+  const setColorRefsChecked = useCallback(
+    (refs: string[], checked: boolean) => {
+      if (!theme || refs.length === 0) return;
+      setCheckedColorRefs((prev) => {
+        const next = new Set(prev);
+        refs.forEach((r) => (checked ? next.add(r) : next.delete(r)));
+        return next;
+      });
+    },
+    [theme],
+  );
+
   const colorSectionState = useMemo(() => {
     if (!theme?.colorAssignments.length) return 'all' as const;
     const refs = theme.colorAssignments.map((a) => a.colorRef);
@@ -659,6 +671,7 @@ export function useThemeViewModel() {
     setAllVariablesChecked,
     setColorGroupChecked,
     setContrastGroupChecked,
+    setColorRefsChecked,
     colorSectionState,
     contrastSectionState,
     cardState,

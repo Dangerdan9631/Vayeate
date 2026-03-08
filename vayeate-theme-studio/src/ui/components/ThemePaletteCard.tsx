@@ -1,12 +1,18 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../model/schemas';
 import { clusterColors } from '../../core/color-clustering';
+import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
 
 const CLUSTER_K_MIN = 1;
 const CLUSTER_K_MAX = 12;
 const CLUSTER_K_DEFAULT = 5;
+
+function normalizeHex(hex: string): string {
+  const s = hex.trim().toLowerCase();
+  return s.startsWith('#') ? s : `#${s}`;
+}
 
 interface ThemePaletteCardProps {
   hueAdjustment: number;
@@ -16,6 +22,9 @@ interface ThemePaletteCardProps {
   colorAssignments: readonly ColorAssignment[];
   colorVariables: readonly ColorVariable[];
   groups: readonly string[];
+  checkedColorRefs: ReadonlySet<string>;
+  onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
+  onSetColorRefsChecked: (refs: string[], checked: boolean) => void;
 }
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
@@ -65,6 +74,35 @@ function collectHexForGroup(assignments: readonly ColorAssignment[]): string[] {
   return hexes;
 }
 
+/** Map normalized hex -> color refs that use that hex in their assignment. */
+function buildHexToColorRefs(assignments: readonly ColorAssignment[]): Map<string, string[]> {
+  const map = new Map<string, string[]>();
+  for (const a of assignments) {
+    const add = (hex: string | null) => {
+      if (!hex) return;
+      const key = normalizeHex(hex);
+      let list = map.get(key);
+      if (!list) {
+        list = [];
+        map.set(key, list);
+      }
+      if (!list.includes(a.colorRef)) list.push(a.colorRef);
+    };
+    add(a.dark?.value ?? null);
+    if (!a.useDarkForLight) add(a.light?.value ?? null);
+  }
+  return map;
+}
+
+function swatchState(refs: string[], checkedColorRefs: ReadonlySet<string>): TriState {
+  if (refs.length === 0) return 'none';
+  const all = refs.every((r) => checkedColorRefs.has(r));
+  const none = refs.every((r) => !checkedColorRefs.has(r));
+  if (all) return 'all';
+  if (none) return 'none';
+  return 'some';
+}
+
 export function ThemePaletteCard({
   hueAdjustment,
   onHueChange,
@@ -73,6 +111,9 @@ export function ThemePaletteCard({
   colorAssignments,
   colorVariables,
   groups: _groups,
+  checkedColorRefs,
+  onSetColorGroupChecked,
+  onSetColorRefsChecked,
 }: ThemePaletteCardProps) {
   const showCommitRevert = hueAdjustment !== 0;
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
@@ -83,6 +124,11 @@ export function ThemePaletteCard({
   );
   const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
 
+  const hexToRefs = useMemo(
+    () => buildHexToColorRefs(colorAssignments),
+    [colorAssignments],
+  );
+
   const clustersByGroup = useMemo(() => {
     const map = new Map<string, ReturnType<typeof clusterColors>>();
     for (const groupKey of groupKeysInOrder) {
@@ -92,6 +138,21 @@ export function ThemePaletteCard({
     }
     return map;
   }, [byGroup, groupKeysInOrder, clusterCountK]);
+
+  const copyHexToClipboard = useCallback((hex: string) => {
+    navigator.clipboard.writeText(normalizeHex(hex));
+  }, []);
+
+  const handleSwatchClick = useCallback(
+    (hex: string) => {
+      const refs = hexToRefs.get(normalizeHex(hex)) ?? [];
+      if (refs.length === 0) return;
+      const state = swatchState(refs, checkedColorRefs);
+      const nextChecked = state !== 'all';
+      onSetColorRefsChecked(refs, nextChecked);
+    },
+    [hexToRefs, checkedColorRefs, onSetColorRefsChecked],
+  );
 
   return (
     <div className="catalog-details-card placeholder theme-palette-card">
@@ -156,31 +217,102 @@ export function ThemePaletteCard({
           {groupKeysInOrder.map((groupKey) => {
             const clusters = clustersByGroup.get(groupKey) ?? [];
             if (clusters.length === 0) return null;
+            const groupAssignments = byGroup.get(groupKey) ?? [];
+            const refsInGroup = groupAssignments.map((a) => a.colorRef);
+            const groupState: TriState =
+              refsInGroup.length === 0
+                ? 'none'
+                : refsInGroup.every((r) => checkedColorRefs.has(r))
+                  ? 'all'
+                  : refsInGroup.every((r) => !checkedColorRefs.has(r))
+                    ? 'none'
+                    : 'some';
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
-            const renderClusterColumn = (cluster: ReturnType<typeof clusterColors>[0], key: string) => (
-              <div key={key} className="theme-palette-cluster-column">
-                <div
-                  className="theme-palette-swatch theme-palette-swatch-primary"
-                  style={{ backgroundColor: cluster.representative }}
-                  title={cluster.representative}
-                  aria-label={`Primary ${cluster.representative}`}
-                />
-                <div className="theme-palette-member-swatches">
-                  {cluster.members.map((hex, midx) => (
-                    <div
-                      key={midx}
-                      className="theme-palette-swatch theme-palette-swatch-member"
-                      style={{ backgroundColor: hex }}
-                      title={hex}
-                      aria-label={hex}
-                    />
-                  ))}
+            const renderClusterColumn = (cluster: ReturnType<typeof clusterColors>[0], key: string) => {
+              const primaryRefs = hexToRefs.get(normalizeHex(cluster.representative)) ?? [];
+              const primaryState = swatchState(primaryRefs, checkedColorRefs);
+              const primaryBorderClass =
+                primaryState === 'all'
+                  ? 'theme-palette-swatch-checked'
+                  : primaryState === 'some'
+                    ? 'theme-palette-swatch-partial'
+                    : 'theme-palette-swatch-unchecked';
+              return (
+                <div key={key} className="theme-palette-cluster-column">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    className={`theme-palette-swatch theme-palette-swatch-primary ${primaryBorderClass}`}
+                    style={{ backgroundColor: cluster.representative }}
+                    title={`${normalizeHex(cluster.representative)} — click to toggle variables, right-click to copy`}
+                    aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, right-click to copy.`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSwatchClick(cluster.representative);
+                    }}
+                    onContextMenu={(e) => {
+                      e.preventDefault();
+                      copyHexToClipboard(cluster.representative);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleSwatchClick(cluster.representative);
+                      }
+                    }}
+                  />
+                  <div className="theme-palette-member-swatches">
+                    {cluster.members.map((hex, midx) => {
+                      const memberRefs = hexToRefs.get(normalizeHex(hex)) ?? [];
+                      const memberState = swatchState(memberRefs, checkedColorRefs);
+                      const memberBorderClass =
+                        memberState === 'all'
+                          ? 'theme-palette-swatch-checked'
+                          : memberState === 'some'
+                            ? 'theme-palette-swatch-partial'
+                            : 'theme-palette-swatch-unchecked';
+                      return (
+                        <div
+                          key={midx}
+                          role="button"
+                          tabIndex={0}
+                          className={`theme-palette-swatch theme-palette-swatch-member ${memberBorderClass}`}
+                          style={{ backgroundColor: hex }}
+                          title={`${normalizeHex(hex)} — click to toggle variables, right-click to copy`}
+                          aria-label={`${normalizeHex(hex)}, ${memberState} selected. Click to toggle, right-click to copy.`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleSwatchClick(hex);
+                          }}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            copyHexToClipboard(hex);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleSwatchClick(hex);
+                            }
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            );
+              );
+            };
             return (
               <div key={groupKey} className="theme-palette-group-block">
-                <div className="theme-palette-group-label-inline">{groupLabel}</div>
+                <div className="theme-palette-group-header">
+                  <TriStateCheckbox
+                    state={groupState}
+                    onChange={(checked) => onSetColorGroupChecked(groupKey, checked)}
+                    onClickCapture={(e) => e.stopPropagation()}
+                    ariaLabel={`Select all in group: ${groupLabel}`}
+                    className="theme-palette-group-checkbox"
+                  />
+                  <span className="theme-palette-group-label-inline">{groupLabel}</span>
+                </div>
                 <div className="theme-palette-group-swatches-row">
                   {clusters.map((cluster, idx) =>
                     renderClusterColumn(cluster, String(idx)),

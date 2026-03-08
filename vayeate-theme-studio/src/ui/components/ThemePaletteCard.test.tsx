@@ -7,6 +7,9 @@ const defaultPaletteProps = {
   colorAssignments: [] as const,
   colorVariables: [] as const,
   groups: [] as const,
+  checkedColorRefs: new Set<string>(),
+  onSetColorGroupChecked: vi.fn(),
+  onSetColorRefsChecked: vi.fn(),
 };
 
 function renderCard(overrides: Record<string, unknown> = {}) {
@@ -83,7 +86,7 @@ describe('ThemePaletteCard', () => {
     expect(screen.getByText('5')).toBeInTheDocument();
   });
 
-  it('shows palette section and primary swatches when one group has colors', () => {
+  it('shows palette section and swatches when one group has colors', () => {
     renderCard({
       colorAssignments: [
         { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#ff0000' }, useDarkForLight: true },
@@ -96,8 +99,8 @@ describe('ThemePaletteCard', () => {
       groups: ['g1'],
     });
     expect(screen.getByText('g1')).toBeInTheDocument();
-    const primaries = screen.getAllByLabelText(/^Primary /);
-    expect(primaries.length).toBeGreaterThanOrEqual(1);
+    const swatches = screen.getAllByRole('button', { name: /#ff0000/i });
+    expect(swatches.length).toBeGreaterThanOrEqual(1);
   });
 
   it('changing k slider updates displayed value', () => {
@@ -106,5 +109,86 @@ describe('ThemePaletteCard', () => {
     fireEvent.change(kSlider, { target: { value: '8' } });
     expect(kSlider).toHaveValue('8');
     expect(screen.getByText('8')).toBeInTheDocument();
+  });
+
+  it('renders group checkbox linked to Variables card state and calls onSetColorGroupChecked when toggled', async () => {
+    const user = userEvent.setup();
+    const onSetColorGroupChecked = vi.fn();
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#ff0000' }, useDarkForLight: true },
+        { colorRef: 'b', dark: { value: '#00ff00' }, light: null, useDarkForLight: true },
+      ],
+      colorVariables: [
+        { key: 'a', groupRef: 'g1' },
+        { key: 'b', groupRef: 'g1' },
+      ],
+      groups: ['g1'],
+      checkedColorRefs: new Set(['a', 'b']),
+      onSetColorGroupChecked,
+    });
+    const groupCheckbox = screen.getByRole('checkbox', { name: 'Select all in group: g1' });
+    expect(groupCheckbox).toBeInTheDocument();
+    expect(groupCheckbox).toBeChecked();
+    await user.click(groupCheckbox);
+    expect(onSetColorGroupChecked).toHaveBeenCalledWith('g1', false);
+  });
+
+  it('copies hex to clipboard when primary swatch is right-clicked', () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#ff0000' }, useDarkForLight: true },
+      ],
+      colorVariables: [{ key: 'a', groupRef: 'g1' }],
+      groups: ['g1'],
+      checkedColorRefs: new Set(['a']),
+      onSetColorGroupChecked: vi.fn(),
+      onSetColorRefsChecked: vi.fn(),
+    });
+    const primarySwatch = screen.getByRole('button', { name: /#ff0000/i });
+    fireEvent.contextMenu(primarySwatch);
+    expect(writeText).toHaveBeenCalledWith('#ff0000');
+  });
+
+  it('copies hex to clipboard when member swatch is right-clicked', () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true });
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#aabbcc' }, light: { value: '#aabbcc' }, useDarkForLight: true },
+        { colorRef: 'b', dark: { value: '#ddeeff' }, light: null, useDarkForLight: true },
+      ],
+      colorVariables: [
+        { key: 'a', groupRef: 'g1' },
+        { key: 'b', groupRef: 'g1' },
+      ],
+      groups: ['g1'],
+      checkedColorRefs: new Set(['a', 'b']),
+      onSetColorGroupChecked: vi.fn(),
+      onSetColorRefsChecked: vi.fn(),
+    });
+    const copyDdeeff = screen.getByRole('button', { name: /#ddeeff/i });
+    fireEvent.contextMenu(copyDdeeff);
+    expect(writeText).toHaveBeenCalledWith('#ddeeff');
+  });
+
+  it('calls onSetColorRefsChecked when swatch is clicked to toggle variables', async () => {
+    const user = userEvent.setup();
+    const onSetColorRefsChecked = vi.fn();
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#ff0000' }, useDarkForLight: true },
+      ],
+      colorVariables: [{ key: 'a', groupRef: 'g1' }],
+      groups: ['g1'],
+      checkedColorRefs: new Set(['a']),
+      onSetColorGroupChecked: vi.fn(),
+      onSetColorRefsChecked,
+    });
+    const primarySwatch = screen.getByRole('button', { name: /#ff0000/i });
+    await user.click(primarySwatch);
+    expect(onSetColorRefsChecked).toHaveBeenCalledWith(['a'], false);
   });
 });

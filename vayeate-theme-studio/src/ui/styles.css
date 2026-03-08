@@ -1582,6 +1582,17 @@ body {
   gap: 2px;
 }
 
+.theme-palette-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.theme-palette-group-checkbox {
+  flex-shrink: 0;
+}
+
 .theme-palette-group-swatches-row {
   display: flex;
   flex-wrap: wrap;
@@ -1609,8 +1620,21 @@ body {
 
 .theme-palette-swatch {
   border-radius: 3px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 2px solid;
   flex-shrink: 0;
+  cursor: pointer;
+}
+
+.theme-palette-swatch-checked {
+  border-color: black;
+}
+
+.theme-palette-swatch-partial {
+  border-color: grey;
+}
+
+.theme-palette-swatch-unchecked {
+  border-color: white;
 }
 
 .theme-palette-swatch-primary {
