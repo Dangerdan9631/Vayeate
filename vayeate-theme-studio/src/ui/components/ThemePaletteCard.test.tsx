@@ -10,6 +10,10 @@ const defaultPaletteProps = {
   checkedColorRefs: new Set<string>(),
   onSetColorGroupChecked: vi.fn(),
   onSetColorRefsChecked: vi.fn(),
+  applyToDark: true,
+  applyToLight: true,
+  onApplyToDarkChange: vi.fn(),
+  onApplyToLightChange: vi.fn(),
 };
 
 function renderCard(overrides: Record<string, unknown> = {}) {
@@ -190,5 +194,65 @@ describe('ThemePaletteCard', () => {
     const primarySwatch = screen.getByRole('button', { name: /#ff0000/i });
     await user.click(primarySwatch);
     expect(onSetColorRefsChecked).toHaveBeenCalledWith(['a'], false);
+  });
+
+  it('renders cluster variant checkbox with light/dark icon and toggles cluster by dark/light', async () => {
+    const user = userEvent.setup();
+    renderCard();
+    const clusterVariant = screen.getByRole('checkbox', {
+      name: 'Cluster by dark theme colors',
+    });
+    expect(clusterVariant).toBeInTheDocument();
+    expect(clusterVariant).toBeChecked();
+    await user.click(clusterVariant);
+    expect(screen.getByRole('checkbox', { name: 'Cluster by light theme colors' })).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Cluster by light theme colors' })).not.toBeChecked();
+  });
+
+  it('clusters by dark only when cluster variant is dark (default)', () => {
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#00ff00' }, useDarkForLight: false },
+        { colorRef: 'b', dark: { value: '#0000ff' }, light: { value: '#ffff00' }, useDarkForLight: false },
+      ],
+      colorVariables: [
+        { key: 'a', groupRef: 'g1' },
+        { key: 'b', groupRef: 'g1' },
+      ],
+      groups: ['g1'],
+    });
+    const redSwatch = screen.getByRole('button', { name: /#ff0000/i });
+    expect(redSwatch).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /#0000ff/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /#00ff00/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /#ffff00/i })).not.toBeInTheDocument();
+  });
+
+  it('renders apply-to-dark and apply-to-light checkboxes with correct icons, state, and tooltips', () => {
+    renderCard({ applyToDark: true, applyToLight: false });
+    const applyDark = screen.getByRole('checkbox', { name: 'Apply adjustments to dark theme colors' });
+    const applyLight = screen.getByRole('checkbox', { name: 'Apply adjustments to light theme colors' });
+    expect(applyDark).toBeInTheDocument();
+    expect(applyLight).toBeInTheDocument();
+    expect(applyDark).toBeChecked();
+    expect(applyLight).not.toBeChecked();
+    expect(screen.getByTitle('Apply hue adjustments to dark theme colors. Currently on.')).toBeInTheDocument();
+    expect(screen.getByTitle('Apply hue adjustments to light theme colors. Currently off.')).toBeInTheDocument();
+  });
+
+  it('calls onApplyToDarkChange and onApplyToLightChange when apply checkboxes are toggled', async () => {
+    const user = userEvent.setup();
+    const onApplyToDarkChange = vi.fn();
+    const onApplyToLightChange = vi.fn();
+    renderCard({
+      applyToDark: true,
+      applyToLight: true,
+      onApplyToDarkChange,
+      onApplyToLightChange,
+    });
+    await user.click(screen.getByRole('checkbox', { name: 'Apply adjustments to dark theme colors' }));
+    expect(onApplyToDarkChange).toHaveBeenCalledWith(false);
+    await user.click(screen.getByRole('checkbox', { name: 'Apply adjustments to light theme colors' }));
+    expect(onApplyToLightChange).toHaveBeenCalledWith(false);
   });
 });

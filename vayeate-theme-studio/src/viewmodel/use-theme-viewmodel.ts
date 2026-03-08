@@ -26,16 +26,23 @@ function applyHueToAssignmentsFiltered(
   assignments: readonly ColorAssignment[],
   shift: number,
   checkedRefs: ReadonlySet<string>,
+  options: { applyToDark: boolean; applyToLight: boolean },
 ): ColorAssignment[] {
-  return assignments.map((a) =>
-    checkedRefs.has(a.colorRef)
-      ? {
-          ...a,
-          dark: a.dark ? { value: applyHueShift(a.dark.value, shift) } : null,
-          light: a.light ? { value: applyHueShift(a.light.value, shift) } : null,
-        }
-      : a,
-  );
+  const { applyToDark, applyToLight } = options;
+  return assignments.map((a) => {
+    if (!checkedRefs.has(a.colorRef)) return a;
+    return {
+      ...a,
+      dark:
+        applyToDark && a.dark
+          ? { value: applyHueShift(a.dark.value, shift) }
+          : a.dark,
+      light:
+        applyToLight && !a.useDarkForLight && a.light
+          ? { value: applyHueShift(a.light.value, shift) }
+          : a.light,
+    };
+  });
 }
 
 export function useThemeViewModel() {
@@ -111,6 +118,8 @@ export function useThemeViewModel() {
 
   const [loadedTemplate, setLoadedTemplate] = useState<Template | null>(null);
   const [hueAdjustment, setHueAdjustment] = useState(0);
+  const [applyHueToDark, setApplyHueToDark] = useState(true);
+  const [applyHueToLight, setApplyHueToLight] = useState(true);
   const [checkedColorRefs, setCheckedColorRefs] = useState<Set<string>>(new Set());
   const [checkedContrastRefs, setCheckedContrastRefs] = useState<Set<string>>(new Set());
 
@@ -131,8 +140,9 @@ export function useThemeViewModel() {
       theme.colorAssignments,
       hueAdjustment / 100,
       checkedColorRefs,
+      { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
     );
-  }, [theme, hueAdjustment, checkedColorRefs]);
+  }, [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight]);
 
   useEffect(() => {
     if (!selectedTemplateName || !selectedTemplateVersion) {
@@ -362,10 +372,11 @@ export function useThemeViewModel() {
       theme.colorAssignments,
       hueAdjustment / 100,
       checkedColorRefs,
+      { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
     );
     dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     setHueAdjustment(0);
-  }, [dispatch, theme, hueAdjustment, checkedColorRefs]);
+  }, [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight]);
 
   const revertHueAdjustment = useCallback(() => {
     setHueAdjustment(0);
@@ -384,6 +395,7 @@ export function useThemeViewModel() {
           theme.colorAssignments,
           hueAdjustment / 100,
           checkedColorRefs,
+          { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
         );
         setHueAdjustment(0);
       }
@@ -394,7 +406,7 @@ export function useThemeViewModel() {
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs],
+    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
   );
 
   const updateColorAssignmentLight = useCallback(
@@ -408,6 +420,7 @@ export function useThemeViewModel() {
           theme.colorAssignments,
           hueAdjustment / 100,
           checkedColorRefs,
+          { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
         );
         setHueAdjustment(0);
       }
@@ -418,7 +431,7 @@ export function useThemeViewModel() {
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs],
+    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
   );
 
   const updateColorAssignmentUseDarkForLight = useCallback(
@@ -432,6 +445,7 @@ export function useThemeViewModel() {
           theme.colorAssignments,
           hueAdjustment / 100,
           checkedColorRefs,
+          { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
         );
         setHueAdjustment(0);
       }
@@ -440,7 +454,7 @@ export function useThemeViewModel() {
       );
       dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs],
+    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
   );
 
   // --- Contrast assignment updates (no version bump) ---
@@ -659,6 +673,10 @@ export function useThemeViewModel() {
     templateMappings,
     hueAdjustment,
     setHueAdjustment,
+    applyHueToDark,
+    applyHueToLight,
+    setApplyHueToDark,
+    setApplyHueToLight,
     displayColorAssignments,
     commitHueAdjustment,
     revertHueAdjustment,

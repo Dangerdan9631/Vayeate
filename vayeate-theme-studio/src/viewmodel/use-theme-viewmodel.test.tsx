@@ -461,6 +461,154 @@ describe('useThemeViewModel hue adjustment', () => {
     });
     expect(result.current.hueAdjustment).toBe(20);
   });
+
+  it('exposes applyHueToDark and applyHueToLight defaulting to true', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    expect(result.current.applyHueToDark).toBe(true);
+    expect(result.current.applyHueToLight).toBe(true);
+  });
+
+  it('displayColorAssignments does not shift dark when applyHueToDark is false', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalDark = result.current.theme!.colorAssignments[0].dark!.value;
+    await act(async () => {
+      result.current.setApplyHueToDark(false);
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(50);
+    });
+    expect(result.current.displayColorAssignments[0].dark!.value).toBe(originalDark);
+    expect(result.current.displayColorAssignments[0].light!.value).not.toBe(result.current.theme!.colorAssignments[0].light!.value);
+  });
+
+  it('displayColorAssignments does not shift light when applyHueToLight is false', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalLight = result.current.theme!.colorAssignments[0].light!.value;
+    await act(async () => {
+      result.current.setApplyHueToLight(false);
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(50);
+    });
+    expect(result.current.displayColorAssignments[0].light!.value).toBe(originalLight);
+    expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(result.current.theme!.colorAssignments[0].dark!.value);
+  });
+
+  it('commitHueAdjustment respects applyToDark and applyToLight', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const originalDark = result.current.theme!.colorAssignments[0].dark!.value;
+    const originalLight = result.current.theme!.colorAssignments[0].light!.value;
+    await act(async () => {
+      result.current.setApplyHueToDark(true);
+      result.current.setApplyHueToLight(false);
+    });
+    await act(async () => {
+      result.current.setHueAdjustment(25);
+    });
+    await act(async () => {
+      result.current.commitHueAdjustment();
+    });
+    expect(result.current.theme!.colorAssignments[0].dark!.value).not.toBe(originalDark);
+    expect(result.current.theme!.colorAssignments[0].light!.value).toBe(originalLight);
+  });
+});
+
+describe('useThemeViewModel hue adjustment with useDarkForLight', () => {
+  const themeWithUseDark: Theme = {
+    name: 'use-dark-theme',
+    version: '1.0.0',
+    templateRef: { name: 'tpl', version: '1.0.0' },
+    idePrimaryColorVariableRef: null,
+    idePrimaryColorContrastVariableRef: null,
+    themeBackgroundColorVariableRef: null,
+    colorAssignments: [
+      { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
+      { colorRef: 'secondary', dark: { value: '#00ff00' }, light: { value: '#00cc00' }, useDarkForLight: true },
+    ],
+    contrastAssignments: [
+      { contrastVariableRef: 'textContrast', dark: { value: 4.5, comparisonMethod: 'greaterThan' as const, min: null, max: null }, light: null, useDarkForLight: true },
+    ],
+  };
+
+  const templateForUseDark: Template = {
+    name: 'tpl',
+    version: '1.0.0',
+    locked: false,
+    catalogRefs: [],
+    mappings: [],
+    colorVariables: [{ key: 'primary', groupRef: null }, { key: 'secondary', groupRef: null }],
+    contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary', groupRef: null }],
+    groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
+  };
+
+  beforeEach(() => {
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(null),
+      saveTemplate: () => Promise.resolve(),
+      loadTemplate: () => Promise.resolve(templateForUseDark),
+      listTemplates: () => Promise.resolve([]),
+      deleteTemplate: () => Promise.resolve(),
+      createTheme: () => Promise.resolve(themeWithUseDark),
+      saveTheme: () => Promise.resolve(),
+      loadTheme: () => Promise.resolve(themeWithUseDark),
+      listThemes: () => Promise.resolve([{ name: 'use-dark-theme', version: '1.0.0' }]),
+      deleteTheme: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+  });
+
+  it('displayColorAssignments does not shift light for assignment with useDarkForLight when applyToLight true', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'use-dark-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    const primaryLight = result.current.theme!.colorAssignments[0].light!.value;
+    const secondaryLight = result.current.theme!.colorAssignments[1].light!.value;
+    await act(async () => {
+      result.current.setHueAdjustment(50);
+    });
+    expect(result.current.displayColorAssignments[0].light!.value).not.toBe(primaryLight);
+    expect(result.current.displayColorAssignments[1].light!.value).toBe(secondaryLight);
+  });
 });
 
 describe('useThemeViewModel variable selection', () => {

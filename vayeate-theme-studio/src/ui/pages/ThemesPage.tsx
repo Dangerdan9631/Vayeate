@@ -62,6 +62,10 @@ export function ThemesPage() {
               onHueChange={vm.setHueAdjustment}
               onCommit={vm.commitHueAdjustment}
               onRevert={vm.revertHueAdjustment}
+              applyToDark={vm.applyHueToDark}
+              applyToLight={vm.applyHueToLight}
+              onApplyToDarkChange={vm.setApplyHueToDark}
+              onApplyToLightChange={vm.setApplyHueToLight}
               colorAssignments={vm.displayColorAssignments}
               colorVariables={vm.colorVariablesFromTemplate}
               groups={vm.groupsFromTemplate}

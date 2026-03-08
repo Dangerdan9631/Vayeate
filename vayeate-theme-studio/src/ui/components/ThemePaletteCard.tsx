@@ -19,6 +19,10 @@ interface ThemePaletteCardProps {
   onHueChange: (value: number) => void;
   onCommit: () => void;
   onRevert: () => void;
+  applyToDark: boolean;
+  applyToLight: boolean;
+  onApplyToDarkChange: (checked: boolean) => void;
+  onApplyToLightChange: (checked: boolean) => void;
   colorAssignments: readonly ColorAssignment[];
   colorVariables: readonly ColorVariable[];
   groups: readonly string[];
@@ -52,22 +56,29 @@ function buildColorAssignmentsByGroup(
   return byGroup;
 }
 
-function collectHexForGroup(assignments: readonly ColorAssignment[]): string[] {
+function collectHexForGroupVariant(
+  assignments: readonly ColorAssignment[],
+  variant: 'light' | 'dark',
+): string[] {
   const hexes: string[] = [];
   const seen = new Set<string>();
   for (const a of assignments) {
-    if (a.dark?.value) {
-      const h = a.dark.value.toLowerCase();
-      if (!seen.has(h)) {
-        seen.add(h);
-        hexes.push(a.dark.value);
+    if (variant === 'dark') {
+      if (a.dark?.value) {
+        const h = a.dark.value.toLowerCase();
+        if (!seen.has(h)) {
+          seen.add(h);
+          hexes.push(a.dark.value);
+        }
       }
-    }
-    if (!a.useDarkForLight && a.light?.value) {
-      const h = a.light.value.toLowerCase();
-      if (!seen.has(h)) {
-        seen.add(h);
-        hexes.push(a.light.value);
+    } else {
+      const lightHex = a.useDarkForLight ? a.dark?.value : a.light?.value;
+      if (lightHex) {
+        const h = lightHex.toLowerCase();
+        if (!seen.has(h)) {
+          seen.add(h);
+          hexes.push(lightHex);
+        }
       }
     }
   }
@@ -108,6 +119,10 @@ export function ThemePaletteCard({
   onHueChange,
   onCommit,
   onRevert,
+  applyToDark,
+  applyToLight,
+  onApplyToDarkChange,
+  onApplyToLightChange,
   colorAssignments,
   colorVariables,
   groups: _groups,
@@ -117,6 +132,7 @@ export function ThemePaletteCard({
 }: ThemePaletteCardProps) {
   const showCommitRevert = hueAdjustment !== 0;
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
+  const [clusterByDark, setClusterByDark] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
   const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -139,13 +155,14 @@ export function ThemePaletteCard({
 
   const clustersByGroup = useMemo(() => {
     const map = new Map<string, ReturnType<typeof clusterColors>>();
+    const variant = clusterByDark ? 'dark' : 'light';
     for (const groupKey of groupKeysInOrder) {
       const groupAssignments = byGroup.get(groupKey) ?? [];
-      const hexes = collectHexForGroup(groupAssignments);
+      const hexes = collectHexForGroupVariant(groupAssignments, variant);
       map.set(groupKey, clusterColors(hexes, { maxClusters: clusterCountK }));
     }
     return map;
-  }, [byGroup, groupKeysInOrder, clusterCountK]);
+  }, [byGroup, groupKeysInOrder, clusterCountK, clusterByDark]);
 
   const copyHexToClipboard = useCallback((hex: string) => {
     const normalized = normalizeHex(hex);
@@ -177,6 +194,40 @@ export function ThemePaletteCard({
         </div>
       )}
       <h2>Theme Palette</h2>
+      <div className="theme-palette-apply-row">
+        <label
+          className="theme-palette-apply-checkbox theme-icon-checkbox"
+          title={
+            applyToDark
+              ? 'Apply hue adjustments to dark theme colors. Currently on.'
+              : 'Apply hue adjustments to dark theme colors. Currently off.'
+          }
+        >
+          <input
+            type="checkbox"
+            checked={applyToDark}
+            onChange={(e) => onApplyToDarkChange(e.target.checked)}
+            aria-label="Apply adjustments to dark theme colors"
+          />
+          <span className="material-symbols-outlined" aria-hidden>dark_mode</span>
+        </label>
+        <label
+          className="theme-palette-apply-checkbox theme-icon-checkbox"
+          title={
+            applyToLight
+              ? 'Apply hue adjustments to light theme colors. Currently on.'
+              : 'Apply hue adjustments to light theme colors. Currently off.'
+          }
+        >
+          <input
+            type="checkbox"
+            checked={applyToLight}
+            onChange={(e) => onApplyToLightChange(e.target.checked)}
+            aria-label="Apply adjustments to light theme colors"
+          />
+          <span className="material-symbols-outlined" aria-hidden>light_mode</span>
+        </label>
+      </div>
       <div className="theme-palette-hue-row">
         <label htmlFor="theme-palette-hue-slider" className="theme-palette-hue-label">
           Hue Adjustment
@@ -230,6 +281,24 @@ export function ThemePaletteCard({
           />
         </div>
         <span className="theme-palette-k-value" aria-hidden>{clusterCountK}</span>
+        <label
+          className="theme-palette-cluster-variant-checkbox theme-icon-checkbox"
+          title={
+            clusterByDark
+              ? 'Swatches show colors from the dark theme. Click to show light theme colors.'
+              : 'Swatches show colors from the light theme. Click to show dark theme colors.'
+          }
+        >
+          <input
+            type="checkbox"
+            checked={clusterByDark}
+            onChange={(e) => setClusterByDark(e.target.checked)}
+            aria-label={clusterByDark ? 'Cluster by dark theme colors' : 'Cluster by light theme colors'}
+          />
+          <span className="material-symbols-outlined" aria-hidden>
+            {clusterByDark ? 'dark_mode' : 'light_mode'}
+          </span>
+        </label>
       </div>
 
       <div className="theme-palette-scroll">
@@ -264,7 +333,11 @@ export function ThemePaletteCard({
                     tabIndex={0}
                     className={`theme-palette-swatch theme-palette-swatch-primary ${primaryBorderClass}`}
                     style={{ backgroundColor: cluster.representative }}
-                    title={`${normalizeHex(cluster.representative)} — click to toggle variables, right-click to copy`}
+                    title={
+                      primaryRefs.length > 0
+                        ? `${normalizeHex(cluster.representative)} — click to toggle variables, right-click to copy\n${primaryRefs.join('\n')}`
+                        : `${normalizeHex(cluster.representative)} — click to toggle variables, right-click to copy`
+                    }
                     aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, right-click to copy.`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -298,7 +371,11 @@ export function ThemePaletteCard({
                           tabIndex={0}
                           className={`theme-palette-swatch theme-palette-swatch-member ${memberBorderClass}`}
                           style={{ backgroundColor: hex }}
-                          title={`${normalizeHex(hex)} — click to toggle variables, right-click to copy`}
+                          title={
+                            memberRefs.length > 0
+                              ? `${normalizeHex(hex)} — click to toggle variables, right-click to copy\n${memberRefs.join('\n')}`
+                              : `${normalizeHex(hex)} — click to toggle variables, right-click to copy`
+                          }
                           aria-label={`${normalizeHex(hex)}, ${memberState} selected. Click to toggle, right-click to copy.`}
                           onClick={(e) => {
                             e.preventDefault();

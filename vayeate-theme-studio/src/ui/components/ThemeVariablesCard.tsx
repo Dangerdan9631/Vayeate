@@ -364,13 +364,21 @@ function ColorAssignmentRow({
           setPendingLightPicker(null);
         }}
       />
-      <label className="theme-use-dark-check" title="Use dark value for light theme">
-        <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
+      <label
+        className="theme-use-dark-check theme-icon-checkbox"
+        title={
+          assignment.useDarkForLight
+            ? 'Use dark value for light theme. Currently on.'
+            : 'Use dark value for light theme. Currently off. Click to use the same value for light as dark.'
+        }
+      >
         <input
           type="checkbox"
           checked={assignment.useDarkForLight}
           onChange={(e) => onUpdateUseDark(assignment.colorRef, e.target.checked)}
+          aria-label="Use dark value for light theme"
         />
+        <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
       </label>
     </div>
   );
@@ -612,13 +620,21 @@ function ContrastAssignmentRow({
             {variable?.comparisonSourceRef ?? '—'}
           </span>
         </span>
-        <label className="theme-use-dark-check" title="Use dark value for light theme">
-          <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
+        <label
+          className="theme-use-dark-check theme-icon-checkbox"
+          title={
+            assignment.useDarkForLight
+              ? 'Use dark value for light theme. Currently on.'
+              : 'Use dark value for light theme. Currently off. Click to use the same value for light as dark.'
+          }
+        >
           <input
             type="checkbox"
             checked={assignment.useDarkForLight}
             onChange={(e) => onUpdateUseDark(ref, e.target.checked)}
+            aria-label="Use dark value for light theme"
           />
+          <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
         </label>
       </div>
 
