@@ -5,13 +5,24 @@ import { useAppState } from '../ui/context/useAppState';
 import { useThemeViewModel, mergeAssignmentsFromTemplate } from './use-theme-viewmodel';
 import type { Theme, Template } from '../model/schemas';
 
+const previewTokenRefsNull = {
+  idePrimaryTokenRef: null,
+  themeBackgroundTokenRef: null,
+  lineNumberBackgroundTokenRef: null,
+  lineNumberForegroundTokenRef: null,
+  ideTabTokenRef: null,
+  ideTabBarBackgroundTokenRef: null,
+  ideTabBarForegroundTokenRef: null,
+  editorPreviewScrollbarBackgroundTokenRef: null,
+  editorPreviewScrollbarForegroundTokenRef: null,
+  editorPreviewSelectionBackgroundTokenRef: null,
+};
+
 const mockTheme: Theme = {
   name: 'test-theme',
   version: '1.0.0',
   templateRef: null,
-  idePrimaryColorVariableRef: null,
-  idePrimaryColorContrastVariableRef: null,
-  themeBackgroundColorVariableRef: null,
+  ...previewTokenRefsNull,
   colorAssignments: [],
   contrastAssignments: [],
 };
@@ -186,9 +197,7 @@ describe('mergeAssignmentsFromTemplate', () => {
     name: 'my-theme',
     version: '2.0.0',
     templateRef: null,
-    idePrimaryColorVariableRef: null,
-    idePrimaryColorContrastVariableRef: null,
-    themeBackgroundColorVariableRef: null,
+    ...previewTokenRefsNull,
     colorAssignments: [],
     contrastAssignments: [],
   };
@@ -198,7 +207,10 @@ describe('mergeAssignmentsFromTemplate', () => {
     version: '1.0.0',
     locked: true,
     catalogRefs: [],
-    mappings: [],
+    mappings: [
+      { token: { key: 'editor.background', type: 'theme' }, colorVariableRef: 'primary', contrastVariableRef: null, groupRef: null },
+      { token: { key: 'editor.foreground', type: 'theme' }, colorVariableRef: 'secondary', contrastVariableRef: null, groupRef: null },
+    ],
     colorVariables: [
       { key: 'primary', groupRef: null },
       { key: 'secondary', groupRef: null },
@@ -244,64 +256,40 @@ describe('mergeAssignmentsFromTemplate', () => {
     expect(merged.contrastAssignments[0].contrastVariableRef).toBe('textContrast');
   });
 
-  it('clears idePrimaryColorVariableRef if it no longer exists in template', () => {
-    const themeWithPrimary: Theme = {
+  it('clears idePrimaryTokenRef if it is not a theme token in template', () => {
+    const themeWithToken: Theme = {
       ...baseTheme,
-      idePrimaryColorVariableRef: 'removed',
+      idePrimaryTokenRef: 'removed',
     };
-    const merged = mergeAssignmentsFromTemplate(themeWithPrimary, template);
-    expect(merged.idePrimaryColorVariableRef).toBeNull();
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.idePrimaryTokenRef).toBeNull();
   });
 
-  it('preserves idePrimaryColorVariableRef if it still exists in template', () => {
-    const themeWithPrimary: Theme = {
+  it('preserves idePrimaryTokenRef if it is a theme token in template', () => {
+    const themeWithToken: Theme = {
       ...baseTheme,
-      idePrimaryColorVariableRef: 'primary',
-      colorAssignments: [
-        { colorRef: 'primary', dark: null, light: null, useDarkForLight: false },
-      ],
+      idePrimaryTokenRef: 'editor.background',
     };
-    const merged = mergeAssignmentsFromTemplate(themeWithPrimary, template);
-    expect(merged.idePrimaryColorVariableRef).toBe('primary');
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.idePrimaryTokenRef).toBe('editor.background');
   });
 
-  it('clears idePrimaryColorContrastVariableRef if it no longer exists in template', () => {
-    const themeWithContrast: Theme = {
+  it('clears themeBackgroundTokenRef if it is not a theme token in template', () => {
+    const themeWithToken: Theme = {
       ...baseTheme,
-      idePrimaryColorContrastVariableRef: 'removed',
+      themeBackgroundTokenRef: 'removed',
     };
-    const merged = mergeAssignmentsFromTemplate(themeWithContrast, template);
-    expect(merged.idePrimaryColorContrastVariableRef).toBeNull();
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.themeBackgroundTokenRef).toBeNull();
   });
 
-  it('preserves idePrimaryColorContrastVariableRef if it still exists in template', () => {
-    const themeWithContrast: Theme = {
+  it('preserves themeBackgroundTokenRef if it is a theme token in template', () => {
+    const themeWithToken: Theme = {
       ...baseTheme,
-      idePrimaryColorContrastVariableRef: 'textContrast',
+      themeBackgroundTokenRef: 'editor.foreground',
     };
-    const merged = mergeAssignmentsFromTemplate(themeWithContrast, template);
-    expect(merged.idePrimaryColorContrastVariableRef).toBe('textContrast');
-  });
-
-  it('clears themeBackgroundColorVariableRef if it no longer exists in template', () => {
-    const themeWithBg: Theme = {
-      ...baseTheme,
-      themeBackgroundColorVariableRef: 'removed',
-    };
-    const merged = mergeAssignmentsFromTemplate(themeWithBg, template);
-    expect(merged.themeBackgroundColorVariableRef).toBeNull();
-  });
-
-  it('preserves themeBackgroundColorVariableRef if it still exists in template', () => {
-    const themeWithBg: Theme = {
-      ...baseTheme,
-      themeBackgroundColorVariableRef: 'primary',
-      colorAssignments: [
-        { colorRef: 'primary', dark: null, light: null, useDarkForLight: false },
-      ],
-    };
-    const merged = mergeAssignmentsFromTemplate(themeWithBg, template);
-    expect(merged.themeBackgroundColorVariableRef).toBe('primary');
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.themeBackgroundTokenRef).toBe('editor.foreground');
   });
 });
 
@@ -310,9 +298,7 @@ describe('useThemeViewModel hue adjustment', () => {
     name: 'hue-theme',
     version: '1.0.0',
     templateRef: { name: 'tpl', version: '1.0.0' },
-    idePrimaryColorVariableRef: null,
-    idePrimaryColorContrastVariableRef: null,
-    themeBackgroundColorVariableRef: null,
+    ...previewTokenRefsNull,
     colorAssignments: [
       { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
     ],
@@ -546,9 +532,7 @@ describe('useThemeViewModel hue adjustment with useDarkForLight', () => {
     name: 'use-dark-theme',
     version: '1.0.0',
     templateRef: { name: 'tpl', version: '1.0.0' },
-    idePrimaryColorVariableRef: null,
-    idePrimaryColorContrastVariableRef: null,
-    themeBackgroundColorVariableRef: null,
+    ...previewTokenRefsNull,
     colorAssignments: [
       { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
       { colorRef: 'secondary', dark: { value: '#00ff00' }, light: { value: '#00cc00' }, useDarkForLight: true },
@@ -616,9 +600,7 @@ describe('useThemeViewModel variable selection', () => {
     name: 'sel-theme',
     version: '1.0.0',
     templateRef: { name: 'tpl', version: '1.0.0' },
-    idePrimaryColorVariableRef: null,
-    idePrimaryColorContrastVariableRef: null,
-    themeBackgroundColorVariableRef: null,
+    ...previewTokenRefsNull,
     colorAssignments: [
       { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
       { colorRef: 'secondary', dark: { value: '#00ff00' }, light: { value: '#00cc00' }, useDarkForLight: false },

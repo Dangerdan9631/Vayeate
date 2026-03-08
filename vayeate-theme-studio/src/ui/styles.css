@@ -1903,13 +1903,26 @@ body {
   min-height: 0;
 }
 
+.theme-preview-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .theme-preview-fields-row {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 12px 24px;
   align-items: flex-end;
-  margin-bottom: 12px;
+}
+
+.theme-preview-fields-row-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  align-items: flex-end;
 }
 
 .theme-preview-fields-row .theme-preview-field {
@@ -1918,6 +1931,94 @@ body {
   align-items: center;
   gap: 8px;
   margin-bottom: 0;
+}
+
+.theme-preview-field-pair {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.theme-preview-field-pair .field-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.theme-preview-field-inline {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+}
+
+.theme-preview-field-inline .field-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.theme-preview-token-select-wrap {
+  position: relative;
+}
+
+.theme-preview-token-select-inline {
+  position: relative;
+}
+
+.theme-preview-token-select-btn {
+  text-align: left;
+  min-width: 140px;
+}
+
+.theme-preview-token-dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  max-height: 260px;
+}
+
+.theme-preview-token-filter {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.theme-preview-token-filter:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+.theme-preview-token-clear {
+  align-self: flex-start;
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.theme-preview-token-clear:hover {
+  background: #f3f4f6;
+}
+
+.theme-preview-token-list {
+  overflow-y: auto;
+  max-height: 180px;
+}
+
+.theme-preview-token-option {
+  cursor: pointer;
+}
+
+.theme-preview-token-empty {
+  padding: 8px;
+  font-size: 13px;
+  color: #6b7280;
 }
 
 .theme-preview-columns {
@@ -1980,6 +2081,13 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.theme-preview-sticky-bar-tab {
+  flex: 0 1 auto;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin: 0 -2px 0 0;
 }
 
 .theme-preview-sample-dropdown-wrap {
@@ -2048,6 +2156,30 @@ body {
   padding-bottom: 12px;
 }
 
+.theme-preview-code-wrap {
+  display: flex;
+  flex-direction: row;
+  min-height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.theme-preview-line-numbers {
+  flex-shrink: 0;
+  min-width: 2.5em;
+  padding: 12px 8px 12px 12px;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: right;
+  user-select: none;
+}
+
+.theme-preview-line-number {
+  display: block;
+  min-height: 1.5em;
+}
+
 .theme-preview-block {
   display: flex;
   flex-direction: column;
@@ -2079,6 +2211,11 @@ body {
 
 .theme-preview-line {
   display: block;
+}
+
+/* Use configured selection background when user selects text in the preview (alpha respected via variable). */
+.theme-preview-col .theme-preview-code ::selection {
+  background-color: var(--theme-preview-selection-bg, #264f78);
 }
 
 .theme-preview-placeholder {

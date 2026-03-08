@@ -13,9 +13,8 @@ describe('createThemeWithParams', () => {
     expect(theme.name).toBe('my-theme');
     expect(theme.version).toBe('1.0.0');
     expect(theme.templateRef).toBeNull();
-    expect(theme.idePrimaryColorVariableRef).toBeNull();
-    expect(theme.idePrimaryColorContrastVariableRef).toBeNull();
-    expect(theme.themeBackgroundColorVariableRef).toBeNull();
+    expect(theme.idePrimaryTokenRef).toBeNull();
+    expect(theme.themeBackgroundTokenRef).toBeNull();
     expect(theme.colorAssignments).toEqual([]);
     expect(theme.contrastAssignments).toEqual([]);
   });

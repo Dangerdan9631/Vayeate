@@ -79,9 +79,7 @@ export function resolveColor(
   let color = colorForRef(theme.colorAssignments, colorRef, mode);
   if (!color) return null;
 
-  const contrastRef =
-    mapping.contrastVariableRef ??
-    (mapping.colorVariableRef === theme.idePrimaryColorVariableRef ? theme.idePrimaryColorContrastVariableRef ?? null : null);
+  const contrastRef = mapping.contrastVariableRef ?? null;
   if (
     contrastRef &&
     template.contrastVariables.length > 0 &&

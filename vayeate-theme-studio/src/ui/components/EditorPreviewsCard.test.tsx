@@ -29,16 +29,29 @@ function makeProps(overrides: Partial<{
     ],
     contrastAssignments: overrides.contrastAssignments ?? [],
     contrastVariables: overrides.contrastVariables ?? [],
-    colorVariableKeys: ['editorBg'],
-    idePrimaryColorRef: null as string | null,
-    onChangeIdePrimaryColorRef: vi.fn(),
-    idePrimaryColorContrastRef: null as string | null,
-    onChangeIdePrimaryColorContrastRef: vi.fn(),
-    themeBackgroundColorRef: null as string | null,
-    onChangeThemeBackgroundColorRef: vi.fn(),
     mappings: overrides.mappings ?? [
       { token: { key: 'keyword.control', type: 'textmate token' }, colorVariableRef: 'keywordColor', contrastVariableRef: null, groupRef: null },
     ],
+    idePrimaryTokenRef: null as string | null,
+    onChangeIdePrimaryTokenRef: vi.fn(),
+    themeBackgroundTokenRef: null as string | null,
+    onChangeThemeBackgroundTokenRef: vi.fn(),
+    lineNumberBackgroundTokenRef: null as string | null,
+    onChangeLineNumberBackgroundTokenRef: vi.fn(),
+    lineNumberForegroundTokenRef: null as string | null,
+    onChangeLineNumberForegroundTokenRef: vi.fn(),
+    ideTabTokenRef: null as string | null,
+    onChangeIdeTabTokenRef: vi.fn(),
+    ideTabBarBackgroundTokenRef: null as string | null,
+    onChangeIdeTabBarBackgroundTokenRef: vi.fn(),
+    ideTabBarForegroundTokenRef: null as string | null,
+    onChangeIdeTabBarForegroundTokenRef: vi.fn(),
+    editorPreviewScrollbarBackgroundTokenRef: null as string | null,
+    onChangeEditorPreviewScrollbarBackgroundTokenRef: vi.fn(),
+    editorPreviewScrollbarForegroundTokenRef: null as string | null,
+    onChangeEditorPreviewScrollbarForegroundTokenRef: vi.fn(),
+    editorPreviewSelectionBackgroundTokenRef: null as string | null,
+    onChangeEditorPreviewSelectionBackgroundTokenRef: vi.fn(),
   };
 }
 
@@ -61,12 +74,12 @@ describe('EditorPreviewsCard', () => {
     vi.mocked(previewService.loadPreviews).mockResolvedValue([mockPreview]);
   });
 
-  it('renders IDE Primary Color, IDE Primary Contrast, and Theme Background selectors', () => {
+  it('renders IDE Primary, theme background, line number, and other token selectors', () => {
     render(<EditorPreviewsCard {...makeProps()} />);
     expect(screen.getByText('Editor Previews')).toBeInTheDocument();
-    expect(screen.getByLabelText(/IDE Primary Color Variable/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/IDE Primary Contrast Variable/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Theme Background Color Variable/i)).toBeInTheDocument();
+    expect(screen.getByText('IDE Primary')).toBeInTheDocument();
+    expect(screen.getByText('Line number bg')).toBeInTheDocument();
+    expect(screen.getByText('Theme background')).toBeInTheDocument();
   });
 
   it('renders Dark and Light preview columns', () => {

@@ -205,3 +205,46 @@ export function resolveTokenColor(
   }
   return null;
 }
+
+/**
+ * Resolve the color for a theme token key using its mapping's color and contrast variable.
+ * Returns the resolved dark or light hex, or fallback if tokenKey is null or no theme mapping is found.
+ */
+export function resolveColorForThemeTokenKey(
+  tokenKey: string | null,
+  mappings: readonly Mapping[],
+  colorAssignments: readonly ColorAssignment[],
+  contrastAssignments: readonly ContrastAssignment[],
+  contrastVariables: readonly ContrastVariable[],
+  mode: 'dark' | 'light',
+  fallback: string,
+): string {
+  if (!tokenKey) return fallback;
+  const m = mappings.find(
+    (x) => x.token.key === tokenKey && x.token.type === 'theme' && x.colorVariableRef != null,
+  );
+  if (!m) return fallback;
+
+  const colorRef = m.colorVariableRef!;
+  let color = colorForRef(colorAssignments, colorRef, mode);
+  if (!color) return fallback;
+
+  const contrastRef = m.contrastVariableRef;
+  if (contrastRef && contrastVariables.length > 0 && contrastAssignments.length > 0) {
+    const cv = contrastVariables.find((v) => v.key === contrastRef);
+    const sourceRef = cv?.comparisonSourceRef ?? null;
+    if (sourceRef) {
+      const sourceColor = colorForRef(colorAssignments, sourceRef, mode);
+      const contrastVal = contrastValueForRef(contrastAssignments, contrastRef, mode);
+      if (sourceColor && contrastVal) {
+        color = adjustColorToMeetContrast(color, sourceColor, {
+          comparisonMethod: contrastVal.comparisonMethod,
+          value: contrastVal.value,
+          min: contrastVal.min,
+          max: contrastVal.max,
+        });
+      }
+    }
+  }
+  return color;
+}

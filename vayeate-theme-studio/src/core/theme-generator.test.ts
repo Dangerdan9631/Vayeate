@@ -7,9 +7,16 @@ function theme(overrides: Partial<Theme> = {}): Theme {
     name: 'test',
     version: '1.0.0',
     templateRef: null,
-    idePrimaryColorVariableRef: null,
-    idePrimaryColorContrastVariableRef: null,
-    themeBackgroundColorVariableRef: null,
+    idePrimaryTokenRef: null,
+    themeBackgroundTokenRef: null,
+    lineNumberBackgroundTokenRef: null,
+    lineNumberForegroundTokenRef: null,
+    ideTabTokenRef: null,
+    ideTabBarBackgroundTokenRef: null,
+    ideTabBarForegroundTokenRef: null,
+    editorPreviewScrollbarBackgroundTokenRef: null,
+    editorPreviewScrollbarForegroundTokenRef: null,
+    editorPreviewSelectionBackgroundTokenRef: null,
     colorAssignments: [
       { colorRef: 'fg', dark: { value: '#d4d4d4' }, light: { value: '#1f1f1f' }, useDarkForLight: false },
       { colorRef: 'comment', dark: { value: '#6a9955' }, light: { value: '#008000' }, useDarkForLight: false },
@@ -82,33 +89,6 @@ describe('resolveColor', () => {
     expect(resolveColor(t, tpl, tpl.mappings[0], 'dark')).toBeNull();
   });
 
-  it('applies idePrimaryColorContrastVariableRef when mapping uses IDE primary color and has no contrast ref', () => {
-    const t = theme({
-      idePrimaryColorVariableRef: 'fg',
-      idePrimaryColorContrastVariableRef: 'textContrast',
-      colorAssignments: [
-        { colorRef: 'fg', dark: { value: '#555555' }, light: { value: '#888888' }, useDarkForLight: false },
-        { colorRef: 'editorBg', dark: { value: '#1e1e1e' }, light: { value: '#ffffff' }, useDarkForLight: false },
-      ],
-      contrastAssignments: [
-        {
-          contrastVariableRef: 'textContrast',
-          dark: { value: 4.5, comparisonMethod: 'greaterThan', min: null, max: null },
-          light: null,
-          useDarkForLight: false,
-        },
-      ],
-    });
-    const tpl = template(
-      [mapping('editor.foreground', 'theme', 'fg', null)],
-      {
-        contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'editorBg', groupRef: null }],
-      },
-    );
-    const result = resolveColor(t, tpl, tpl.mappings[0], 'dark');
-    expect(result).not.toBe('#555555');
-    expect(result).toBeTruthy();
-  });
 });
 
 describe('generateTheme', () => {

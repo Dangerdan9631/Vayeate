@@ -7,8 +7,8 @@ import type {
   Mapping,
 } from '../../model/schemas';
 import type { TokenizedPreview } from '../../core/tokenizer';
-import { adjustColorToMeetContrast, contrastRatio } from '../../core/color';
-import { buildScopeColorMap, resolveTokenColor, resolveTokenEntry } from '../../core/scope-resolver';
+import { contrastRatio } from '../../core/color';
+import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../core/scope-resolver';
 import { previewService } from '../../services/preview-service';
 
 /** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
@@ -52,14 +52,27 @@ interface EditorPreviewsCardProps {
   colorAssignments: readonly ColorAssignment[];
   contrastAssignments: readonly ContrastAssignment[];
   contrastVariables: readonly ContrastVariable[];
-  colorVariableKeys: string[];
-  idePrimaryColorRef: string | null;
-  onChangeIdePrimaryColorRef: (ref: string | null) => void;
-  idePrimaryColorContrastRef: string | null;
-  onChangeIdePrimaryColorContrastRef: (ref: string | null) => void;
-  themeBackgroundColorRef: string | null;
-  onChangeThemeBackgroundColorRef: (ref: string | null) => void;
   mappings: readonly Mapping[];
+  idePrimaryTokenRef: string | null;
+  onChangeIdePrimaryTokenRef: (tokenKey: string | null) => void;
+  themeBackgroundTokenRef: string | null;
+  onChangeThemeBackgroundTokenRef: (tokenKey: string | null) => void;
+  lineNumberBackgroundTokenRef: string | null;
+  onChangeLineNumberBackgroundTokenRef: (tokenKey: string | null) => void;
+  lineNumberForegroundTokenRef: string | null;
+  onChangeLineNumberForegroundTokenRef: (tokenKey: string | null) => void;
+  ideTabTokenRef: string | null;
+  onChangeIdeTabTokenRef: (tokenKey: string | null) => void;
+  ideTabBarBackgroundTokenRef: string | null;
+  onChangeIdeTabBarBackgroundTokenRef: (tokenKey: string | null) => void;
+  ideTabBarForegroundTokenRef: string | null;
+  onChangeIdeTabBarForegroundTokenRef: (tokenKey: string | null) => void;
+  editorPreviewScrollbarBackgroundTokenRef: string | null;
+  onChangeEditorPreviewScrollbarBackgroundTokenRef: (tokenKey: string | null) => void;
+  editorPreviewScrollbarForegroundTokenRef: string | null;
+  onChangeEditorPreviewScrollbarForegroundTokenRef: (tokenKey: string | null) => void;
+  editorPreviewSelectionBackgroundTokenRef: string | null;
+  onChangeEditorPreviewSelectionBackgroundTokenRef: (tokenKey: string | null) => void;
 }
 
 function colorForRef(
@@ -73,35 +86,6 @@ function colorForRef(
   if (!a) return fallback;
   if (mode === 'dark') return a.dark?.value ?? fallback;
   return a.useDarkForLight ? (a.dark?.value ?? fallback) : (a.light?.value ?? fallback);
-}
-
-/** Resolve IDE primary color, optionally applying the given contrast variable. */
-function resolveIdePrimaryColor(
-  colorAssignments: readonly ColorAssignment[],
-  contrastAssignments: readonly ContrastAssignment[],
-  contrastVariables: readonly ContrastVariable[],
-  colorRef: string | null,
-  contrastRef: string | null,
-  mode: 'dark' | 'light',
-  fallback: string,
-): string {
-  const base = colorForRef(colorAssignments, colorRef, mode, fallback);
-  if (!contrastRef || !colorRef) return base;
-  const cv = contrastVariables.find((v) => v.key === contrastRef);
-  const sourceRef = cv?.comparisonSourceRef ?? null;
-  if (!sourceRef) return base;
-  const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastRef);
-  if (!a) return base;
-  const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
-  if (!val) return base;
-  const sourceColor = colorForRef(colorAssignments, sourceRef, mode, fallback);
-  const opts = {
-    comparisonMethod: val.comparisonMethod,
-    value: val.value,
-    min: val.min ?? null,
-    max: val.max ?? null,
-  };
-  return adjustColorToMeetContrast(base, sourceColor, opts);
 }
 
 /** Get contrast assignment params for a contrast variable and mode, or null. */
@@ -122,18 +106,124 @@ function contrastParamsForRef(
   };
 }
 
+interface FilterableTokenSelectProps {
+  label: string;
+  value: string | null;
+  onChange: (tokenKey: string | null) => void;
+  options: string[];
+}
+
+function FilterableTokenSelect({ label, value, onChange, options }: FilterableTokenSelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [filter, setFilter] = useState('');
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handle = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener('mousedown', handle);
+    return () => document.removeEventListener('mousedown', handle);
+  }, [isOpen]);
+
+  const filtered = useMemo(() => {
+    if (!filter.trim()) return options;
+    const q = filter.trim().toLowerCase();
+    return options.filter((k) => k.toLowerCase().includes(q));
+  }, [options, filter]);
+
+  return (
+    <div className="theme-preview-token-select-wrap" ref={wrapRef}>
+      <label className="field-row theme-preview-field">
+        <span className="field-label">{label}</span>
+        <span className="theme-preview-field-inline theme-preview-token-select-inline">
+          <button
+            type="button"
+            className="field-select theme-preview-token-select-btn"
+            onClick={() => setIsOpen((o) => !o)}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-label={label}
+          >
+            {value ?? '— token —'}
+          </button>
+          {isOpen && (
+            <div className="mappings-filter-dropdown theme-preview-token-dropdown" role="listbox">
+              <input
+                type="text"
+                className="theme-preview-token-filter"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                placeholder="Type to filter…"
+                aria-label="Filter tokens"
+                autoFocus
+              />
+              <button
+                type="button"
+                className="theme-preview-token-clear"
+                onClick={() => {
+                  onChange(null);
+                  setIsOpen(false);
+                  setFilter('');
+                }}
+              >
+                Clear
+              </button>
+              <div className="theme-preview-token-list">
+                {filtered.length === 0 ? (
+                  <div className="theme-preview-token-empty">No matching tokens</div>
+                ) : (
+                  filtered.map((k) => (
+                    <div
+                      key={k}
+                      role="option"
+                      aria-selected={value === k}
+                      className="mappings-filter-check theme-preview-token-option"
+                      onClick={() => {
+                        onChange(k);
+                        setIsOpen(false);
+                        setFilter('');
+                      }}
+                    >
+                      {k}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </span>
+      </label>
+    </div>
+  );
+}
+
 export function EditorPreviewsCard({
   colorAssignments,
   contrastAssignments,
   contrastVariables,
-  colorVariableKeys,
-  idePrimaryColorRef,
-  onChangeIdePrimaryColorRef,
-  idePrimaryColorContrastRef,
-  onChangeIdePrimaryColorContrastRef,
-  themeBackgroundColorRef,
-  onChangeThemeBackgroundColorRef,
   mappings,
+  idePrimaryTokenRef,
+  onChangeIdePrimaryTokenRef,
+  themeBackgroundTokenRef,
+  onChangeThemeBackgroundTokenRef,
+  lineNumberBackgroundTokenRef,
+  onChangeLineNumberBackgroundTokenRef,
+  lineNumberForegroundTokenRef,
+  onChangeLineNumberForegroundTokenRef,
+  ideTabTokenRef,
+  onChangeIdeTabTokenRef,
+  ideTabBarBackgroundTokenRef,
+  onChangeIdeTabBarBackgroundTokenRef,
+  ideTabBarForegroundTokenRef,
+  onChangeIdeTabBarForegroundTokenRef,
+  editorPreviewScrollbarBackgroundTokenRef,
+  onChangeEditorPreviewScrollbarBackgroundTokenRef,
+  editorPreviewScrollbarForegroundTokenRef,
+  onChangeEditorPreviewScrollbarForegroundTokenRef,
+  editorPreviewSelectionBackgroundTokenRef,
+  onChangeEditorPreviewSelectionBackgroundTokenRef,
 }: EditorPreviewsCardProps) {
   const [previews, setPreviews] = useState<TokenizedPreview[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -155,6 +245,16 @@ export function EditorPreviewsCard({
     () =>
       buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables),
     [mappings, colorAssignments, contrastAssignments, contrastVariables],
+  );
+
+  const themeTokenKeys = useMemo(
+    () =>
+      [...new Set(
+        mappings
+          .filter((m) => m.token.type === 'theme' && m.colorVariableRef != null)
+          .map((m) => m.token.key),
+      )].sort((a, b) => a.localeCompare(b)),
+    [mappings],
   );
 
   const resolvedPreviews = useMemo((): ResolvedPreview[] => {
@@ -234,28 +334,29 @@ export function EditorPreviewsCard({
     }));
   }, [previews, scopeColorMap, colorAssignments, contrastAssignments, contrastVariables]);
 
-  const darkColumnBg = resolveIdePrimaryColor(
-    colorAssignments,
-    contrastAssignments,
-    contrastVariables,
-    idePrimaryColorRef,
-    idePrimaryColorContrastRef,
-    'dark',
-    '#1e1e1e',
-  );
-  const lightColumnBg = resolveIdePrimaryColor(
-    colorAssignments,
-    contrastAssignments,
-    contrastVariables,
-    idePrimaryColorRef,
-    idePrimaryColorContrastRef,
-    'light',
-    '#ffffff',
-  );
-  const darkCodeBg = colorForRef(colorAssignments, themeBackgroundColorRef, 'dark', '#1e1e1e');
-  const lightCodeBg = colorForRef(colorAssignments, themeBackgroundColorRef, 'light', '#ffffff');
+  const darkColumnBg = resolveColorForThemeTokenKey(idePrimaryTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#1e1e1e');
+  const lightColumnBg = resolveColorForThemeTokenKey(idePrimaryTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
+  const darkCodeBg = resolveColorForThemeTokenKey(themeBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#1e1e1e');
+  const lightCodeBg = resolveColorForThemeTokenKey(themeBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
   const darkTextColor = textColorForBackground(darkColumnBg);
   const lightTextColor = textColorForBackground(lightColumnBg);
+
+  const darkLineNumBg = resolveColorForThemeTokenKey(lineNumberBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#252526');
+  const lightLineNumBg = resolveColorForThemeTokenKey(lineNumberBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#f3f3f3');
+  const darkLineNumFg = resolveColorForThemeTokenKey(lineNumberForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#858585');
+  const lightLineNumFg = resolveColorForThemeTokenKey(lineNumberForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#237893');
+  const darkIdeTabColor = resolveColorForThemeTokenKey(ideTabTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#2d2d30');
+  const lightIdeTabColor = resolveColorForThemeTokenKey(ideTabTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
+  const darkIdeTabBarBg = resolveColorForThemeTokenKey(ideTabBarBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#252526');
+  const lightIdeTabBarBg = resolveColorForThemeTokenKey(ideTabBarBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#f3f3f3');
+  const darkIdeTabBarFg = resolveColorForThemeTokenKey(ideTabBarForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#cccccc');
+  const lightIdeTabBarFg = resolveColorForThemeTokenKey(ideTabBarForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#333333');
+  const darkScrollbarBg = resolveColorForThemeTokenKey(editorPreviewScrollbarBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#1e1e1e');
+  const lightScrollbarBg = resolveColorForThemeTokenKey(editorPreviewScrollbarBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
+  const darkScrollbarFg = resolveColorForThemeTokenKey(editorPreviewScrollbarForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#79797966');
+  const lightScrollbarFg = resolveColorForThemeTokenKey(editorPreviewScrollbarForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#79797966');
+  const darkSelectionBg = resolveColorForThemeTokenKey(editorPreviewSelectionBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#264f78');
+  const lightSelectionBg = resolveColorForThemeTokenKey(editorPreviewSelectionBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#add6ff');
 
   const darkScrollRef = useRef<HTMLDivElement | null>(null);
   const lightScrollRef = useRef<HTMLDivElement | null>(null);
@@ -343,52 +444,77 @@ export function EditorPreviewsCard({
     <div className="tokens-card theme-previews-card">
       <h2>Editor Previews</h2>
 
-      <div className="theme-preview-fields-row">
-        <label className="field-row theme-preview-field">
-          <span className="field-label">IDE Primary Color Variable</span>
-          <select
-            className="field-select"
-            value={idePrimaryColorRef ?? ''}
-            onChange={(e) => onChangeIdePrimaryColorRef(e.target.value || null)}
-          >
-            <option value="">— select —</option>
-            {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
-              <option key={key} value={key}>
-                {key}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="field-row theme-preview-field">
-          <span className="field-label">IDE Primary Contrast Variable</span>
-          <select
-            className="field-select"
-            value={idePrimaryColorContrastRef ?? ''}
-            onChange={(e) => onChangeIdePrimaryColorContrastRef(e.target.value || null)}
-          >
-            <option value="">— select —</option>
-            {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
-              <option key={v.key} value={v.key}>
-                {v.key}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="field-row theme-preview-field">
-          <span className="field-label">Theme Background Color Variable</span>
-          <select
-            className="field-select"
-            value={themeBackgroundColorRef ?? ''}
-            onChange={(e) => onChangeThemeBackgroundColorRef(e.target.value || null)}
-          >
-            <option value="">— select —</option>
-            {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
-              <option key={key} value={key}>
-                {key}
-              </option>
-            ))}
-          </select>
-        </label>
+      <div className="theme-preview-fields">
+        <div className="theme-preview-fields-row theme-preview-fields-row-4">
+          <FilterableTokenSelect
+            label="IDE Primary"
+            value={idePrimaryTokenRef}
+            onChange={onChangeIdePrimaryTokenRef}
+            options={themeTokenKeys}
+          />
+          <FilterableTokenSelect
+            label="Theme background"
+            value={themeBackgroundTokenRef}
+            onChange={onChangeThemeBackgroundTokenRef}
+            options={themeTokenKeys}
+          />
+        </div>
+        <div className="theme-preview-fields-row theme-preview-fields-row-4">
+          <FilterableTokenSelect
+            label="Line number bg"
+            value={lineNumberBackgroundTokenRef}
+            onChange={onChangeLineNumberBackgroundTokenRef}
+            options={themeTokenKeys}
+          />
+          <FilterableTokenSelect
+            label="Line number fg"
+            value={lineNumberForegroundTokenRef}
+            onChange={onChangeLineNumberForegroundTokenRef}
+            options={themeTokenKeys}
+          />
+        </div>
+        <div className="theme-preview-fields-row theme-preview-fields-row-4">
+          <FilterableTokenSelect
+            label="IDE Tab Color"
+            value={ideTabTokenRef}
+            onChange={onChangeIdeTabTokenRef}
+            options={themeTokenKeys}
+          />
+          <FilterableTokenSelect
+            label="IDE Tab Bar Bg"
+            value={ideTabBarBackgroundTokenRef}
+            onChange={onChangeIdeTabBarBackgroundTokenRef}
+            options={themeTokenKeys}
+          />
+        </div>
+        <div className="theme-preview-fields-row theme-preview-fields-row-4">
+          <FilterableTokenSelect
+            label="IDE Tab Bar Fg"
+            value={ideTabBarForegroundTokenRef}
+            onChange={onChangeIdeTabBarForegroundTokenRef}
+            options={themeTokenKeys}
+          />
+          <FilterableTokenSelect
+            label="Scrollbar bg"
+            value={editorPreviewScrollbarBackgroundTokenRef}
+            onChange={onChangeEditorPreviewScrollbarBackgroundTokenRef}
+            options={themeTokenKeys}
+          />
+        </div>
+        <div className="theme-preview-fields-row theme-preview-fields-row-4">
+          <FilterableTokenSelect
+            label="Scrollbar fg"
+            value={editorPreviewScrollbarForegroundTokenRef}
+            onChange={onChangeEditorPreviewScrollbarForegroundTokenRef}
+            options={themeTokenKeys}
+          />
+          <FilterableTokenSelect
+            label="Selection bg"
+            value={editorPreviewSelectionBackgroundTokenRef}
+            onChange={onChangeEditorPreviewSelectionBackgroundTokenRef}
+            options={themeTokenKeys}
+          />
+        </div>
       </div>
 
       {loadError && (
@@ -398,21 +524,32 @@ export function EditorPreviewsCard({
       )}
 
       <div className="theme-preview-columns">
-        <div className="theme-preview-col" style={{ backgroundColor: darkColumnBg, color: darkTextColor }}>
+        <div
+          className="theme-preview-col"
+          style={{
+            backgroundColor: darkColumnBg,
+            color: darkTextColor,
+            ['--theme-preview-selection-bg' as string]: darkSelectionBg,
+          }}
+        >
           <h3 className="theme-preview-heading">Dark</h3>
           {previews.length > 0 && (
             <div
               className="theme-preview-sticky-bar"
-              style={{ backgroundColor: darkColumnBg, color: darkTextColor }}
+              style={{ backgroundColor: darkIdeTabBarBg, color: darkIdeTabBarFg }}
               ref={sampleDropdownRef}
             >
-              <span className="theme-preview-sticky-bar-label">
+              <span
+                className="theme-preview-sticky-bar-label theme-preview-sticky-bar-tab"
+                style={{ backgroundColor: darkIdeTabColor, color: darkTextColor }}
+              >
                 {currentPreview ? currentPreview.language : ''}
               </span>
               <div className="theme-preview-sample-dropdown-wrap">
                 <button
                   type="button"
                   className="theme-preview-sample-dropdown-btn"
+                  style={{ backgroundColor: darkIdeTabBarBg, color: darkIdeTabBarFg, borderColor: darkIdeTabBarFg }}
                   onClick={() => setSampleDropdownOpen((v) => !v)}
                   aria-expanded={sampleDropdownOpen}
                   aria-haspopup="listbox"
@@ -442,6 +579,7 @@ export function EditorPreviewsCard({
             ref={darkScrollRef}
             className="theme-preview-column-inner"
             onScroll={handleDarkScroll}
+            style={{ scrollbarColor: `${darkScrollbarFg} ${darkScrollbarBg}` }}
           >
             {previews.length === 0 ? (
               <div className="theme-preview-block">
@@ -454,22 +592,31 @@ export function EditorPreviewsCard({
                 const preview = previews[idx];
                 const resolved = resolvedPreviews[idx];
                 const key = `${preview.language}/${preview.fileName}`;
+                const lines = resolved?.lines ?? [];
                 return (
                   <div key={key} className="theme-preview-block">
                     <div className="theme-preview-block-label">
                       {preview.language}
                     </div>
-                    <pre
-                      className="theme-preview-code"
-                      style={{ backgroundColor: darkCodeBg }}
-                    >
-                      <code>
-                        <ResolvedPreviewLines
-                          lines={resolved?.lines ?? []}
-                          mode="dark"
-                        />
-                      </code>
-                    </pre>
+                    <div className="theme-preview-code-wrap">
+                      <div
+                        className="theme-preview-line-numbers"
+                        style={{ backgroundColor: darkLineNumBg, color: darkLineNumFg }}
+                        aria-hidden
+                      >
+                        {lines.map((_, i) => (
+                          <div key={i} className="theme-preview-line-number">{i + 1}</div>
+                        ))}
+                      </div>
+                      <pre
+                        className="theme-preview-code"
+                        style={{ backgroundColor: darkCodeBg }}
+                      >
+                        <code>
+                          <ResolvedPreviewLines lines={lines} mode="dark" />
+                        </code>
+                      </pre>
+                    </div>
                   </div>
                 );
               })
@@ -482,6 +629,7 @@ export function EditorPreviewsCard({
                   const preview = previews[virtualItem.index];
                   const resolved = resolvedPreviews[virtualItem.index];
                   const key = `${preview.language}/${preview.fileName}`;
+                  const lines = resolved?.lines ?? [];
                   return (
                     <div
                       key={key}
@@ -499,17 +647,25 @@ export function EditorPreviewsCard({
                       <div className="theme-preview-block-label">
                         {preview.language}
                       </div>
-                      <pre
-                        className="theme-preview-code"
-                        style={{ backgroundColor: darkCodeBg }}
-                      >
-                        <code>
-                          <ResolvedPreviewLines
-                            lines={resolved?.lines ?? []}
-                            mode="dark"
-                          />
-                        </code>
-                      </pre>
+                      <div className="theme-preview-code-wrap">
+                        <div
+                          className="theme-preview-line-numbers"
+                          style={{ backgroundColor: darkLineNumBg, color: darkLineNumFg }}
+                          aria-hidden
+                        >
+                          {lines.map((_, i) => (
+                            <div key={i} className="theme-preview-line-number">{i + 1}</div>
+                          ))}
+                        </div>
+                        <pre
+                          className="theme-preview-code"
+                          style={{ backgroundColor: darkCodeBg }}
+                        >
+                          <code>
+                            <ResolvedPreviewLines lines={lines} mode="dark" />
+                          </code>
+                        </pre>
+                      </div>
                     </div>
                   );
                 })}
@@ -517,14 +673,24 @@ export function EditorPreviewsCard({
             )}
           </div>
         </div>
-        <div className="theme-preview-col" style={{ backgroundColor: lightColumnBg, color: lightTextColor }}>
+        <div
+          className="theme-preview-col"
+          style={{
+            backgroundColor: lightColumnBg,
+            color: lightTextColor,
+            ['--theme-preview-selection-bg' as string]: lightSelectionBg,
+          }}
+        >
           <h3 className="theme-preview-heading">Light</h3>
           {previews.length > 0 && (
             <div
               className="theme-preview-sticky-bar"
-              style={{ backgroundColor: lightColumnBg, color: lightTextColor }}
+              style={{ backgroundColor: lightIdeTabBarBg, color: lightIdeTabBarFg }}
             >
-              <span className="theme-preview-sticky-bar-label">
+              <span
+                className="theme-preview-sticky-bar-label theme-preview-sticky-bar-tab"
+                style={{ backgroundColor: lightIdeTabColor, color: lightTextColor }}
+              >
                 {currentPreview ? currentPreview.language : ''}
               </span>
             </div>
@@ -533,6 +699,7 @@ export function EditorPreviewsCard({
             ref={lightScrollRef}
             className="theme-preview-column-inner"
             onScroll={handleLightScroll}
+            style={{ scrollbarColor: `${lightScrollbarFg} ${lightScrollbarBg}` }}
           >
             {previews.length === 0 ? (
               <div className="theme-preview-block">
@@ -545,22 +712,31 @@ export function EditorPreviewsCard({
                 const preview = previews[idx];
                 const resolved = resolvedPreviews[idx];
                 const key = `${preview.language}/${preview.fileName}`;
+                const lines = resolved?.lines ?? [];
                 return (
                   <div key={key} className="theme-preview-block">
                     <div className="theme-preview-block-label">
                       {preview.language}
                     </div>
-                    <pre
-                      className="theme-preview-code"
-                      style={{ backgroundColor: lightCodeBg }}
-                    >
-                      <code>
-                        <ResolvedPreviewLines
-                          lines={resolved?.lines ?? []}
-                          mode="light"
-                        />
-                      </code>
-                    </pre>
+                    <div className="theme-preview-code-wrap">
+                      <div
+                        className="theme-preview-line-numbers"
+                        style={{ backgroundColor: lightLineNumBg, color: lightLineNumFg }}
+                        aria-hidden
+                      >
+                        {lines.map((_, i) => (
+                          <div key={i} className="theme-preview-line-number">{i + 1}</div>
+                        ))}
+                      </div>
+                      <pre
+                        className="theme-preview-code"
+                        style={{ backgroundColor: lightCodeBg }}
+                      >
+                        <code>
+                          <ResolvedPreviewLines lines={lines} mode="light" />
+                        </code>
+                      </pre>
+                    </div>
                   </div>
                 );
               })
@@ -573,6 +749,7 @@ export function EditorPreviewsCard({
                   const preview = previews[virtualItem.index];
                   const resolved = resolvedPreviews[virtualItem.index];
                   const key = `${preview.language}/${preview.fileName}`;
+                  const lines = resolved?.lines ?? [];
                   return (
                     <div
                       key={key}
@@ -588,17 +765,25 @@ export function EditorPreviewsCard({
                       <div className="theme-preview-block-label">
                         {preview.language}
                       </div>
-                      <pre
-                        className="theme-preview-code"
-                        style={{ backgroundColor: lightCodeBg }}
-                      >
-                        <code>
-                          <ResolvedPreviewLines
-                            lines={resolved?.lines ?? []}
-                            mode="light"
-                          />
-                        </code>
-                      </pre>
+                      <div className="theme-preview-code-wrap">
+                        <div
+                          className="theme-preview-line-numbers"
+                          style={{ backgroundColor: lightLineNumBg, color: lightLineNumFg }}
+                          aria-hidden
+                        >
+                          {lines.map((_, i) => (
+                            <div key={i} className="theme-preview-line-number">{i + 1}</div>
+                          ))}
+                        </div>
+                        <pre
+                          className="theme-preview-code"
+                          style={{ backgroundColor: lightCodeBg }}
+                        >
+                          <code>
+                            <ResolvedPreviewLines lines={lines} mode="light" />
+                          </code>
+                        </pre>
+                      </div>
                     </div>
                   );
                 })}

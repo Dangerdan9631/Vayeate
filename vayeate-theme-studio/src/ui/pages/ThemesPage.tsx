@@ -110,14 +110,27 @@ export function ThemesPage() {
               colorAssignments={vm.displayColorAssignments}
               contrastAssignments={vm.theme.contrastAssignments}
               contrastVariables={vm.contrastVariablesFromTemplate}
-              colorVariableKeys={vm.colorVariableKeys}
-              idePrimaryColorRef={vm.theme.idePrimaryColorVariableRef}
-              onChangeIdePrimaryColorRef={vm.changeIdePrimaryColorRef}
-              idePrimaryColorContrastRef={vm.theme.idePrimaryColorContrastVariableRef ?? null}
-              onChangeIdePrimaryColorContrastRef={vm.changeIdePrimaryColorContrastRef}
-              themeBackgroundColorRef={vm.theme.themeBackgroundColorVariableRef}
-              onChangeThemeBackgroundColorRef={vm.changeThemeBackgroundColorRef}
               mappings={vm.templateMappings}
+              idePrimaryTokenRef={vm.theme.idePrimaryTokenRef ?? null}
+              onChangeIdePrimaryTokenRef={vm.changeIdePrimaryTokenRef}
+              themeBackgroundTokenRef={vm.theme.themeBackgroundTokenRef ?? null}
+              onChangeThemeBackgroundTokenRef={vm.changeThemeBackgroundTokenRef}
+              lineNumberBackgroundTokenRef={vm.theme.lineNumberBackgroundTokenRef ?? null}
+              onChangeLineNumberBackgroundTokenRef={vm.changeLineNumberBackgroundTokenRef}
+              lineNumberForegroundTokenRef={vm.theme.lineNumberForegroundTokenRef ?? null}
+              onChangeLineNumberForegroundTokenRef={vm.changeLineNumberForegroundTokenRef}
+              ideTabTokenRef={vm.theme.ideTabTokenRef ?? null}
+              onChangeIdeTabTokenRef={vm.changeIdeTabTokenRef}
+              ideTabBarBackgroundTokenRef={vm.theme.ideTabBarBackgroundTokenRef ?? null}
+              onChangeIdeTabBarBackgroundTokenRef={vm.changeIdeTabBarBackgroundTokenRef}
+              ideTabBarForegroundTokenRef={vm.theme.ideTabBarForegroundTokenRef ?? null}
+              onChangeIdeTabBarForegroundTokenRef={vm.changeIdeTabBarForegroundTokenRef}
+              editorPreviewScrollbarBackgroundTokenRef={vm.theme.editorPreviewScrollbarBackgroundTokenRef ?? null}
+              onChangeEditorPreviewScrollbarBackgroundTokenRef={vm.changeEditorPreviewScrollbarBackgroundTokenRef}
+              editorPreviewScrollbarForegroundTokenRef={vm.theme.editorPreviewScrollbarForegroundTokenRef ?? null}
+              onChangeEditorPreviewScrollbarForegroundTokenRef={vm.changeEditorPreviewScrollbarForegroundTokenRef}
+              editorPreviewSelectionBackgroundTokenRef={vm.theme.editorPreviewSelectionBackgroundTokenRef ?? null}
+              onChangeEditorPreviewSelectionBackgroundTokenRef={vm.changeEditorPreviewSelectionBackgroundTokenRef}
             />
           )}
         </div>

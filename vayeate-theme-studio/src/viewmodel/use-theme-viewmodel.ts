@@ -6,16 +6,15 @@ import { templateService } from '../services/template-service';
 import { applyHueShift } from '../core/color';
 import type {
   ColorAssignment,
-  ColorVariableKey,
   ContrastAssignment,
   ContrastAssignmentValue,
   ContrastComparisonMethod,
   ContrastVariable,
-  ContrastVariableKey,
   Template,
   TemplateReference,
   Theme,
   ThemeReference,
+  TokenKey,
 } from '../model/schemas';
 
 const log = createLogger('ThemeVM');
@@ -330,36 +329,87 @@ export function useThemeViewModel() {
     [dispatch, theme],
   );
 
-  // --- IDE primary color (no version bump) ---
+  // --- Preview token refs (no version bump) ---
 
-  const changeIdePrimaryColorRef = useCallback(
-    (ref: ColorVariableKey | null) => {
+  const changeIdePrimaryTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeIdePrimaryColorRef', ref);
+      log.debug('changeIdePrimaryTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, idePrimaryColorVariableRef: ref } });
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, idePrimaryTokenRef: tokenKey } });
     },
     [dispatch, theme],
   );
-
-  const changeIdePrimaryColorContrastRef = useCallback(
-    (ref: ContrastVariableKey | null) => {
+  const changeThemeBackgroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeIdePrimaryColorContrastRef', ref);
+      log.debug('changeThemeBackgroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, idePrimaryColorContrastVariableRef: ref } });
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, themeBackgroundTokenRef: tokenKey } });
     },
     [dispatch, theme],
   );
-
-  // --- Theme background color (no version bump) ---
-
-  const changeThemeBackgroundColorRef = useCallback(
-    (ref: ColorVariableKey | null) => {
+  const changeLineNumberBackgroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeThemeBackgroundColorRef', ref);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, themeBackgroundColorVariableRef: ref } });
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, lineNumberBackgroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeLineNumberForegroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, lineNumberForegroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeIdeTabTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideTabTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeIdeTabBarBackgroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideTabBarBackgroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeIdeTabBarForegroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideTabBarForegroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeEditorPreviewScrollbarBackgroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewScrollbarBackgroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeEditorPreviewScrollbarForegroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewScrollbarForegroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeEditorPreviewSelectionBackgroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewSelectionBackgroundTokenRef: tokenKey } });
     },
     [dispatch, theme],
   );
@@ -703,9 +753,16 @@ export function useThemeViewModel() {
     bumpVersion,
     changeTemplate,
     changeTemplateVersion,
-    changeIdePrimaryColorRef,
-    changeIdePrimaryColorContrastRef,
-    changeThemeBackgroundColorRef,
+    changeIdePrimaryTokenRef,
+    changeThemeBackgroundTokenRef,
+    changeLineNumberBackgroundTokenRef,
+    changeLineNumberForegroundTokenRef,
+    changeIdeTabTokenRef,
+    changeIdeTabBarBackgroundTokenRef,
+    changeIdeTabBarForegroundTokenRef,
+    changeEditorPreviewScrollbarBackgroundTokenRef,
+    changeEditorPreviewScrollbarForegroundTokenRef,
+    changeEditorPreviewSelectionBackgroundTokenRef,
     updateColorAssignmentDark,
     updateColorAssignmentLight,
     updateColorAssignmentUseDarkForLight,
@@ -744,27 +801,38 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     return { contrastVariableRef: v.key, light: null, dark: null, useDarkForLight: false };
   });
 
-  const idePrimaryColorVariableRef = theme.idePrimaryColorVariableRef &&
-    newColorAssignments.some((a) => a.colorRef === theme.idePrimaryColorVariableRef)
-    ? theme.idePrimaryColorVariableRef
-    : null;
+  const themeTokenKeys = [...new Set(
+    template.mappings
+      .filter((m) => m.token.type === 'theme' && m.colorVariableRef != null)
+      .map((m) => m.token.key),
+  )].sort();
+  const validTokenRef = (tokenRef: string | null | undefined) =>
+    tokenRef != null && themeTokenKeys.includes(tokenRef) ? tokenRef : null;
 
-  const idePrimaryColorContrastVariableRef = theme.idePrimaryColorContrastVariableRef != null &&
-    template.contrastVariables.some((v) => v.key === theme.idePrimaryColorContrastVariableRef)
-    ? theme.idePrimaryColorContrastVariableRef
-    : null;
-
-  const themeBackgroundColorVariableRef = theme.themeBackgroundColorVariableRef &&
-    newColorAssignments.some((a) => a.colorRef === theme.themeBackgroundColorVariableRef)
-    ? theme.themeBackgroundColorVariableRef
-    : null;
+  const idePrimaryTokenRef = validTokenRef(theme.idePrimaryTokenRef);
+  const themeBackgroundTokenRef = validTokenRef(theme.themeBackgroundTokenRef);
+  const lineNumberBackgroundTokenRef = validTokenRef(theme.lineNumberBackgroundTokenRef);
+  const lineNumberForegroundTokenRef = validTokenRef(theme.lineNumberForegroundTokenRef);
+  const ideTabTokenRef = validTokenRef(theme.ideTabTokenRef);
+  const ideTabBarBackgroundTokenRef = validTokenRef(theme.ideTabBarBackgroundTokenRef);
+  const ideTabBarForegroundTokenRef = validTokenRef(theme.ideTabBarForegroundTokenRef);
+  const editorPreviewScrollbarBackgroundTokenRef = validTokenRef(theme.editorPreviewScrollbarBackgroundTokenRef);
+  const editorPreviewScrollbarForegroundTokenRef = validTokenRef(theme.editorPreviewScrollbarForegroundTokenRef);
+  const editorPreviewSelectionBackgroundTokenRef = validTokenRef(theme.editorPreviewSelectionBackgroundTokenRef);
 
   return {
     ...theme,
     templateRef,
-    idePrimaryColorVariableRef,
-    idePrimaryColorContrastVariableRef,
-    themeBackgroundColorVariableRef,
+    idePrimaryTokenRef,
+    themeBackgroundTokenRef,
+    lineNumberBackgroundTokenRef,
+    lineNumberForegroundTokenRef,
+    ideTabTokenRef,
+    ideTabBarBackgroundTokenRef,
+    ideTabBarForegroundTokenRef,
+    editorPreviewScrollbarBackgroundTokenRef,
+    editorPreviewScrollbarForegroundTokenRef,
+    editorPreviewSelectionBackgroundTokenRef,
     colorAssignments: newColorAssignments,
     contrastAssignments: newContrastAssignments,
   };
