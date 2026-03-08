@@ -34,6 +34,12 @@ const electronAPI = {
     ipcRenderer.invoke('theme:generate', themeName, themeVersion, templateName, templateVersion),
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
   loadPreviews: () => ipcRenderer.invoke('preview:loadAll'),
+  /** All screen sources + bounds for full-screen color picker (multi-monitor, no feedback). */
+  eyedropperGetScreenSourcesWithBounds: () =>
+    ipcRenderer.invoke('eyedropper:getScreenSourcesWithBounds') as Promise<{
+      sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
+      fullBounds: { x: number; y: number; width: number; height: number };
+    }>,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

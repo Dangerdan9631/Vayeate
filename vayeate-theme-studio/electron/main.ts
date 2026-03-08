@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, net } from 'electron';
+import { app, BrowserWindow, desktopCapturer, ipcMain, net, screen } from 'electron';
 import { mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -183,6 +183,53 @@ app.whenReady().then(async () => {
     const refs = await themeRepo.listThemes();
     console.debug(TAG, 'IPC theme:list →', refs.length, 'ref(s)');
     return refs;
+  });
+
+  /** All screen sources with display bounds for multi-monitor color picker. */
+  ipcMain.handle('eyedropper:getScreenSourcesWithBounds', async () => {
+    const [sources, displays] = await Promise.all([
+      desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 0, height: 0 } }),
+      Promise.resolve(screen.getAllDisplays()),
+    ]);
+    const byDisplayId = new Map<string, (typeof displays)[0]>();
+    for (const d of displays) byDisplayId.set(String(d.id), d);
+    const result: Array<{ sourceId: string; x: number; y: number; width: number; height: number }> = [];
+    const usedDisplayIndex = new Set<number>();
+    for (const src of sources) {
+      let bounds: { x: number; y: number; width: number; height: number } | undefined;
+      if (src.display_id != null) {
+        const display = byDisplayId.get(String(src.display_id));
+        if (display?.bounds) bounds = display.bounds;
+      }
+      if (bounds == null) {
+        const idx = displays.findIndex((_, i) => !usedDisplayIndex.has(i));
+        if (idx >= 0) {
+          usedDisplayIndex.add(idx);
+          bounds = displays[idx].bounds;
+        } else {
+          bounds = { x: 0, y: 0, width: 1920, height: 1080 };
+        }
+      } else if (src.display_id != null) {
+        const display = byDisplayId.get(String(src.display_id));
+        if (display) usedDisplayIndex.add(displays.indexOf(display));
+      }
+      result.push({
+        sourceId: src.id,
+        x: bounds.x,
+        y: bounds.y,
+        width: bounds.width,
+        height: bounds.height,
+      });
+    }
+    if (result.length === 0) return { sources: [], fullBounds: { x: 0, y: 0, width: 0, height: 0 } };
+    const minX = Math.min(...result.map((r) => r.x));
+    const minY = Math.min(...result.map((r) => r.y));
+    const maxX = Math.max(...result.map((r) => r.x + r.width));
+    const maxY = Math.max(...result.map((r) => r.y + r.height));
+    return {
+      sources: result,
+      fullBounds: { x: minX, y: minY, width: maxX - minX, height: maxY - minY },
+    };
   });
 
   ipcMain.handle('theme:delete', async (_event, name: string, version: string) => {

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ThemeVariablesCard } from './ThemeVariablesCard';
 import type {
   ColorAssignment,
@@ -8,6 +8,9 @@ import type {
   ContrastAssignment,
   ContrastVariable,
 } from '../../model/schemas';
+import { isEyedropperSupported } from '../utils/eyedropper';
+
+vi.mock('../utils/eyedropper');
 
 const colorAssignments: ColorAssignment[] = [
   { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
@@ -170,5 +173,39 @@ describe('ThemeVariablesCard', () => {
     const groupCheckboxes = screen.getAllByRole('checkbox', { name: 'Select all in group: Ungrouped' });
     await user.click(groupCheckboxes[1]);
     expect(onSetContrastGroupChecked).toHaveBeenCalledWith('__ungrouped__', expect.any(Boolean));
+  });
+
+  describe('eyedropper (Pick from screen)', () => {
+    beforeEach(() => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(false);
+    });
+
+    it('does not render eyedropper buttons when eyedropper is not supported', () => {
+      render(<ThemeVariablesCard {...makeProps()} />);
+      expect(screen.queryByRole('button', { name: 'Pick dark color from screen' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Pick light color from screen' })).not.toBeInTheDocument();
+    });
+
+    it('renders dark and light eyedropper buttons per color row when supported', () => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(true);
+      render(<ThemeVariablesCard {...makeProps()} />);
+      expect(screen.getByRole('button', { name: 'Pick dark color from screen' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Pick light color from screen' })).toBeInTheDocument();
+    });
+
+    it('disables light eyedropper button when useDarkForLight is true', () => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(true);
+      const assignments: ColorAssignment[] = [
+        { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: true },
+      ];
+      render(
+        <ThemeVariablesCard
+          {...makeProps()}
+          colorAssignments={assignments}
+        />,
+      );
+      expect(screen.getByRole('button', { name: 'Pick dark color from screen' })).not.toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Pick light color from screen' })).toBeDisabled();
+    });
   });
 });

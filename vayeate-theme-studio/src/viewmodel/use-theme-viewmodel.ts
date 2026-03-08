@@ -21,6 +21,16 @@ const log = createLogger('ThemeVM');
 
 const UNGROUPED_KEY = '__ungrouped__';
 
+export type SelectedColorsDisplay =
+  | { kind: 'none' }
+  | { kind: 'single'; hex: string }
+  | { kind: 'mixed' };
+
+function normalizeHex(hex: string): string {
+  const s = (hex ?? '').trim().toLowerCase();
+  return s.startsWith('#') ? s : s ? `#${s}` : '';
+}
+
 function applyHueToAssignmentsFiltered(
   assignments: readonly ColorAssignment[],
   shift: number,
@@ -121,6 +131,7 @@ export function useThemeViewModel() {
   const [applyHueToLight, setApplyHueToLight] = useState(true);
   const [checkedColorRefs, setCheckedColorRefs] = useState<Set<string>>(new Set());
   const [checkedContrastRefs, setCheckedContrastRefs] = useState<Set<string>>(new Set());
+  const [palettePickerRevertSnapshot, setPalettePickerRevertSnapshot] = useState<ColorAssignment[] | null>(null);
 
   useEffect(() => {
     if (!theme) {
@@ -142,6 +153,27 @@ export function useThemeViewModel() {
       { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
     );
   }, [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight]);
+
+  const selectedColorsDisplay = useMemo((): SelectedColorsDisplay => {
+    if (!theme || checkedColorRefs.size === 0) return { kind: 'none' };
+    const assignments = displayColorAssignments;
+    const effectiveHexes: string[] = [];
+    for (const a of assignments) {
+      if (!checkedColorRefs.has(a.colorRef)) continue;
+      if (applyHueToDark) {
+        const v = a.dark?.value;
+        effectiveHexes.push(normalizeHex(v ?? ''));
+      }
+      if (applyHueToLight) {
+        const v = a.useDarkForLight ? a.dark?.value : a.light?.value;
+        effectiveHexes.push(normalizeHex(v ?? ''));
+      }
+    }
+    if (effectiveHexes.length === 0) return { kind: 'none' };
+    const first = effectiveHexes[0];
+    const allSame = effectiveHexes.every((h) => h === first);
+    return allSame ? { kind: 'single', hex: first || '#808080' } : { kind: 'mixed' };
+  }, [theme, checkedColorRefs, displayColorAssignments, applyHueToDark, applyHueToLight]);
 
   useEffect(() => {
     if (!selectedTemplateName || !selectedTemplateVersion) {
@@ -340,12 +372,30 @@ export function useThemeViewModel() {
     },
     [dispatch, theme],
   );
+  const changeIdeForegroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      log.debug('changeIdeForegroundTokenRef', tokenKey);
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideForegroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
   const changeThemeBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       log.debug('changeThemeBackgroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
       dispatch({ type: 'SAVE_THEME', theme: { ...base, themeBackgroundTokenRef: tokenKey } });
+    },
+    [dispatch, theme],
+  );
+  const changeThemeForegroundTokenRef = useCallback(
+    (tokenKey: TokenKey | null) => {
+      if (!theme) return;
+      log.debug('changeThemeForegroundTokenRef', tokenKey);
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, themeForegroundTokenRef: tokenKey } });
     },
     [dispatch, theme],
   );
@@ -417,6 +467,7 @@ export function useThemeViewModel() {
   const commitHueAdjustment = useCallback(() => {
     if (!theme || hueAdjustment === 0) return;
     log.debug('commitHueAdjustment', hueAdjustment);
+    setPalettePickerRevertSnapshot(null);
     const base = getBaseInPlace(theme);
     const newAssignments = applyHueToAssignmentsFiltered(
       theme.colorAssignments,
@@ -438,6 +489,7 @@ export function useThemeViewModel() {
     (colorRef: string, value: string | null) => {
       if (!theme) return;
       log.debug('updateColorAssignmentDark', colorRef, value);
+      setPalettePickerRevertSnapshot(null);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -463,6 +515,7 @@ export function useThemeViewModel() {
     (colorRef: string, value: string | null) => {
       if (!theme) return;
       log.debug('updateColorAssignmentLight', colorRef, value);
+      setPalettePickerRevertSnapshot(null);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -488,6 +541,7 @@ export function useThemeViewModel() {
     (colorRef: string, useDark: boolean) => {
       if (!theme) return;
       log.debug('updateColorAssignmentUseDarkForLight', colorRef, useDark);
+      setPalettePickerRevertSnapshot(null);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -656,6 +710,51 @@ export function useThemeViewModel() {
     [theme],
   );
 
+  const setSelectedColorsToHex = useCallback(
+    (hex: string) => {
+      if (!theme || checkedColorRefs.size === 0) return;
+      const normalized = normalizeHex(hex);
+      if (!normalized) return;
+      let workingAssignments = theme.colorAssignments;
+      if (hueAdjustment !== 0) {
+        workingAssignments = applyHueToAssignmentsFiltered(
+          theme.colorAssignments,
+          hueAdjustment / 100,
+          checkedColorRefs,
+          { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
+        );
+        setHueAdjustment(0);
+      }
+      setPalettePickerRevertSnapshot([...workingAssignments]);
+      const newAssignments = workingAssignments.map((a) => {
+        if (!checkedColorRefs.has(a.colorRef)) return a;
+        let next = { ...a };
+        if (applyHueToDark) {
+          next = { ...next, dark: { value: normalized } };
+        }
+        if (applyHueToLight) {
+          next = { ...next, light: { value: normalized } };
+        }
+        return next;
+      });
+      const base = getBaseInPlace(theme);
+      dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+    },
+    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
+  );
+
+  const capturePalettePickerState = useCallback(() => {
+    if (theme) setPalettePickerRevertSnapshot([...theme.colorAssignments]);
+  }, [theme]);
+
+  const revertPalettePicker = useCallback(() => {
+    if (palettePickerRevertSnapshot == null) return;
+    if (!theme) return;
+    const base = getBaseInPlace(theme);
+    dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: palettePickerRevertSnapshot } });
+    setPalettePickerRevertSnapshot(null);
+  }, [dispatch, theme, palettePickerRevertSnapshot]);
+
   const colorSectionState = useMemo(() => {
     if (!theme?.colorAssignments.length) return 'all' as const;
     const refs = theme.colorAssignments.map((a) => a.colorRef);
@@ -730,6 +829,11 @@ export function useThemeViewModel() {
     displayColorAssignments,
     commitHueAdjustment,
     revertHueAdjustment,
+    selectedColorsDisplay,
+    canRevertPalettePicker: palettePickerRevertSnapshot != null,
+    capturePalettePickerState,
+    setSelectedColorsToHex,
+    revertPalettePicker,
     checkedColorRefs,
     checkedContrastRefs,
     toggleColorChecked,
@@ -754,7 +858,9 @@ export function useThemeViewModel() {
     changeTemplate,
     changeTemplateVersion,
     changeIdePrimaryTokenRef,
+    changeIdeForegroundTokenRef,
     changeThemeBackgroundTokenRef,
+    changeThemeForegroundTokenRef,
     changeLineNumberBackgroundTokenRef,
     changeLineNumberForegroundTokenRef,
     changeIdeTabTokenRef,
@@ -810,7 +916,9 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     tokenRef != null && themeTokenKeys.includes(tokenRef) ? tokenRef : null;
 
   const idePrimaryTokenRef = validTokenRef(theme.idePrimaryTokenRef);
+  const ideForegroundTokenRef = validTokenRef(theme.ideForegroundTokenRef);
   const themeBackgroundTokenRef = validTokenRef(theme.themeBackgroundTokenRef);
+  const themeForegroundTokenRef = validTokenRef(theme.themeForegroundTokenRef);
   const lineNumberBackgroundTokenRef = validTokenRef(theme.lineNumberBackgroundTokenRef);
   const lineNumberForegroundTokenRef = validTokenRef(theme.lineNumberForegroundTokenRef);
   const ideTabTokenRef = validTokenRef(theme.ideTabTokenRef);
@@ -824,7 +932,9 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     ...theme,
     templateRef,
     idePrimaryTokenRef,
+    ideForegroundTokenRef,
     themeBackgroundTokenRef,
+    themeForegroundTokenRef,
     lineNumberBackgroundTokenRef,
     lineNumberForegroundTokenRef,
     ideTabTokenRef,

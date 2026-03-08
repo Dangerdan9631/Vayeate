@@ -92,3 +92,8 @@ Run the install-extension script
 ```shell
 npm run install-extension
 ```
+
+Diff Editor
+Editor Chrome
+Editor Window
+Terminal

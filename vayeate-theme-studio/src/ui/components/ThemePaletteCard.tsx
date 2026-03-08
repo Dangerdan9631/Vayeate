@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../model/schemas';
 import { clusterColors } from '../../core/color-clustering';
+import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
+import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
@@ -29,6 +31,11 @@ interface ThemePaletteCardProps {
   checkedColorRefs: ReadonlySet<string>;
   onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
   onSetColorRefsChecked: (refs: string[], checked: boolean) => void;
+  selectedColorsDisplay: SelectedColorsDisplay;
+  onSetSelectedColors: (hex: string) => void;
+  canRevertPalettePicker: boolean;
+  onPalettePickerOpen?: () => void;
+  onRevertPalettePicker: () => void;
 }
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
@@ -129,12 +136,20 @@ export function ThemePaletteCard({
   checkedColorRefs,
   onSetColorGroupChecked,
   onSetColorRefsChecked,
+  selectedColorsDisplay,
+  onSetSelectedColors,
+  canRevertPalettePicker,
+  onPalettePickerOpen,
+  onRevertPalettePicker,
 }: ThemePaletteCardProps) {
   const showCommitRevert = hueAdjustment !== 0;
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
   const [clusterByDark, setClusterByDark] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
+  const [colorPickerValue, setColorPickerValue] = useState('#808080');
+  const [pendingHex, setPendingHex] = useState<string | null>(null);
   const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const paletteColorInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     return () => {
@@ -176,8 +191,8 @@ export function ThemePaletteCard({
   }, []);
 
   const handleSwatchClick = useCallback(
-    (hex: string) => {
-      const refs = hexToRefs.get(normalizeHex(hex)) ?? [];
+    (hex: string, refsInGroup: ReadonlySet<string>) => {
+      const refs = (hexToRefs.get(normalizeHex(hex)) ?? []).filter((r) => refsInGroup.has(r));
       if (refs.length === 0) return;
       const state = swatchState(refs, checkedColorRefs);
       const nextChecked = state !== 'all';
@@ -193,40 +208,153 @@ export function ThemePaletteCard({
           Copied {copiedHex}
         </div>
       )}
-      <h2>Theme Palette</h2>
-      <div className="theme-palette-apply-row">
-        <label
-          className="theme-palette-apply-checkbox theme-icon-checkbox"
-          title={
-            applyToDark
-              ? 'Apply hue adjustments to dark theme colors. Currently on.'
-              : 'Apply hue adjustments to dark theme colors. Currently off.'
-          }
-        >
+      <div className="theme-palette-header-row">
+        <div className="theme-palette-header-left">
+          <h2>Theme Palette</h2>
+          <label
+            className="theme-palette-apply-checkbox theme-icon-checkbox"
+            title={
+              applyToDark
+                ? 'Apply hue adjustments to dark theme colors. Currently on.'
+                : 'Apply hue adjustments to dark theme colors. Currently off.'
+            }
+          >
+            <input
+              type="checkbox"
+              checked={applyToDark}
+              onChange={(e) => onApplyToDarkChange(e.target.checked)}
+              aria-label="Apply adjustments to dark theme colors"
+            />
+            <span className="material-symbols-outlined" aria-hidden>dark_mode</span>
+          </label>
+          <label
+            className="theme-palette-apply-checkbox theme-icon-checkbox"
+            title={
+              applyToLight
+                ? 'Apply hue adjustments to light theme colors. Currently on.'
+                : 'Apply hue adjustments to light theme colors. Currently off.'
+            }
+          >
+            <input
+              type="checkbox"
+              checked={applyToLight}
+              onChange={(e) => onApplyToLightChange(e.target.checked)}
+              aria-label="Apply adjustments to light theme colors"
+            />
+            <span className="material-symbols-outlined" aria-hidden>light_mode</span>
+          </label>
+        </div>
+        <div className="theme-palette-color-controls">
           <input
-            type="checkbox"
-            checked={applyToDark}
-            onChange={(e) => onApplyToDarkChange(e.target.checked)}
-            aria-label="Apply adjustments to dark theme colors"
+            type="text"
+            className="field-input theme-color-hex theme-palette-hex-inline"
+            placeholder="#000000"
+            readOnly={selectedColorsDisplay.kind === 'mixed'}
+            value={
+              selectedColorsDisplay.kind === 'mixed'
+                ? '------'
+                : pendingHex !== null
+                  ? pendingHex
+                  : selectedColorsDisplay.kind === 'single'
+                    ? selectedColorsDisplay.hex
+                    : ''
+            }
+            onChange={(e) => setPendingHex(e.target.value)}
+            onBlur={(e) => {
+              if (selectedColorsDisplay.kind === 'mixed') return;
+              const v = e.target.value.trim();
+              if (v && /^#?[0-9a-fA-F]{6}$/.test(v.replace(/^#/, ''))) {
+                const normalized = v.startsWith('#') ? v : `#${v}`;
+                onSetSelectedColors(normalized);
+                setColorPickerValue(normalized);
+                setPendingHex(null);
+              } else {
+                setPendingHex(null);
+              }
+            }}
+            aria-label="Hex color"
           />
-          <span className="material-symbols-outlined" aria-hidden>dark_mode</span>
-        </label>
-        <label
-          className="theme-palette-apply-checkbox theme-icon-checkbox"
-          title={
-            applyToLight
-              ? 'Apply hue adjustments to light theme colors. Currently on.'
-              : 'Apply hue adjustments to light theme colors. Currently off.'
-          }
-        >
-          <input
-            type="checkbox"
-            checked={applyToLight}
-            onChange={(e) => onApplyToLightChange(e.target.checked)}
-            aria-label="Apply adjustments to light theme colors"
-          />
-          <span className="material-symbols-outlined" aria-hidden>light_mode</span>
-        </label>
+          <div className="theme-palette-color-swatch-wrap">
+            <input
+              ref={paletteColorInputRef}
+              type="color"
+              className="theme-palette-color-input-native"
+              value={
+                pendingHex !== null && /^#?[0-9a-fA-F]{6}$/.test(pendingHex.replace(/^#/, ''))
+                  ? (pendingHex.startsWith('#') ? pendingHex : `#${pendingHex}`).slice(0, 7)
+                  : (colorPickerValue.startsWith('#') ? colorPickerValue : `#${colorPickerValue}`).slice(0, 7)
+              }
+              onChange={(e) => {
+                const v = e.target.value;
+                setColorPickerValue(v);
+                setPendingHex(v);
+                onSetSelectedColors(v);
+              }}
+              disabled={selectedColorsDisplay.kind === 'none'}
+              aria-label="Color"
+            />
+            <button
+              type="button"
+              className={`theme-palette-color-swatch theme-palette-color-swatch--${selectedColorsDisplay.kind}`}
+              title={
+                selectedColorsDisplay.kind === 'none'
+                  ? 'Select palette swatches to set color'
+                  : selectedColorsDisplay.kind === 'mixed'
+                    ? 'Selected variables have different colors. Click to set all to one color.'
+                    : 'Click to open color picker for selected variables'
+              }
+              disabled={selectedColorsDisplay.kind === 'none'}
+              onClick={() => {
+                if (selectedColorsDisplay.kind === 'none') return;
+                onPalettePickerOpen?.();
+                setColorPickerValue(
+                  selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
+                );
+                setPendingHex(null);
+                paletteColorInputRef.current?.click();
+              }}
+              aria-label={
+                selectedColorsDisplay.kind === 'none'
+                  ? 'Select palette swatches to set color'
+                  : 'Open color picker for selected variables'
+              }
+              style={
+                selectedColorsDisplay.kind === 'single'
+                  ? { backgroundColor: selectedColorsDisplay.hex }
+                  : undefined
+              }
+            />
+          </div>
+          {isEyedropperSupported() && (
+            <button
+              type="button"
+              className="theme-palette-btn theme-eyedropper-btn"
+              disabled={selectedColorsDisplay.kind === 'none'}
+              onClick={async () => {
+                if (selectedColorsDisplay.kind === 'none') return;
+                const hex = await pickColorFromScreen();
+                if (hex) {
+                  setColorPickerValue(hex);
+                  setPendingHex(null);
+                  onSetSelectedColors(hex);
+                }
+              }}
+              title="Pick color from anywhere on screen"
+              aria-label="Pick color from screen"
+            >
+              <span className="material-symbols-outlined" aria-hidden>colorize</span>
+            </button>
+          )}
+          <button
+            type="button"
+            className="theme-palette-btn theme-palette-revert-color-btn"
+            disabled={!canRevertPalettePicker}
+            onClick={onRevertPalettePicker}
+            aria-label="Revert last palette color change"
+          >
+            Revert
+          </button>
+        </div>
       </div>
       <div className="theme-palette-hue-row">
         <label htmlFor="theme-palette-hue-slider" className="theme-palette-hue-label">
@@ -308,6 +436,7 @@ export function ThemePaletteCard({
             if (clusters.length === 0) return null;
             const groupAssignments = byGroup.get(groupKey) ?? [];
             const refsInGroup = groupAssignments.map((a) => a.colorRef);
+            const refsInGroupSet = new Set(refsInGroup);
             const groupState: TriState =
               refsInGroup.length === 0
                 ? 'none'
@@ -318,7 +447,8 @@ export function ThemePaletteCard({
                     : 'some';
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
             const renderClusterColumn = (cluster: ReturnType<typeof clusterColors>[0], key: string) => {
-              const primaryRefs = hexToRefs.get(normalizeHex(cluster.representative)) ?? [];
+              const primaryRefsAll = hexToRefs.get(normalizeHex(cluster.representative)) ?? [];
+              const primaryRefs = primaryRefsAll.filter((r) => refsInGroupSet.has(r));
               const primaryState = swatchState(primaryRefs, checkedColorRefs);
               const primaryBorderClass =
                 primaryState === 'all'
@@ -341,7 +471,7 @@ export function ThemePaletteCard({
                     aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, right-click to copy.`}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleSwatchClick(cluster.representative);
+                      handleSwatchClick(cluster.representative, refsInGroupSet);
                     }}
                     onContextMenu={(e) => {
                       e.preventDefault();
@@ -350,13 +480,14 @@ export function ThemePaletteCard({
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleSwatchClick(cluster.representative);
+                        handleSwatchClick(cluster.representative, refsInGroupSet);
                       }
                     }}
                   />
                   <div className="theme-palette-member-swatches">
                     {cluster.members.map((hex, midx) => {
-                      const memberRefs = hexToRefs.get(normalizeHex(hex)) ?? [];
+                      const memberRefsAll = hexToRefs.get(normalizeHex(hex)) ?? [];
+                      const memberRefs = memberRefsAll.filter((r) => refsInGroupSet.has(r));
                       const memberState = swatchState(memberRefs, checkedColorRefs);
                       const memberBorderClass =
                         memberState === 'all'
@@ -379,7 +510,7 @@ export function ThemePaletteCard({
                           aria-label={`${normalizeHex(hex)}, ${memberState} selected. Click to toggle, right-click to copy.`}
                           onClick={(e) => {
                             e.preventDefault();
-                            handleSwatchClick(hex);
+                            handleSwatchClick(hex, refsInGroupSet);
                           }}
                           onContextMenu={(e) => {
                             e.preventDefault();
@@ -388,7 +519,7 @@ export function ThemePaletteCard({
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                               e.preventDefault();
-                              handleSwatchClick(hex);
+                              handleSwatchClick(hex, refsInGroupSet);
                             }
                           }}
                         />

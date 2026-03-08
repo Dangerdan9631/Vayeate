@@ -6,7 +6,9 @@
     "version": "1.0.11"
   },
   "idePrimaryTokenRef": "menu.background",
+  "ideForegroundTokenRef": "tab.activeForeground",
   "themeBackgroundTokenRef": "editor.background",
+  "themeForegroundTokenRef": "editor.foreground",
   "lineNumberBackgroundTokenRef": "editorGutter.background",
   "lineNumberForegroundTokenRef": "editorLineNumber.foreground",
   "ideTabTokenRef": "tab.activeBackground",

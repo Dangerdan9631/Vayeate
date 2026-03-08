@@ -27,26 +27,9 @@ type ResolvedPreview = { previewKey: string; lines: ResolvedLine[] };
 
 const DEFAULT_DARK_FG = '#d4d4d4';
 const DEFAULT_LIGHT_FG = '#1f1f1f';
-
-/** Returns black or white for readable text on the given hex background (relative luminance). */
-function textColorForBackground(hex: string): string {
-  const m = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.exec(hex);
-  if (!m) return '#ffffff';
-  let r: number, g: number, b: number;
-  const raw = m[1];
-  const rgbPart = raw.length === 8 ? raw.slice(0, 6) : raw;
-  if (rgbPart.length === 3) {
-    r = parseInt(rgbPart[0] + rgbPart[0], 16) / 255;
-    g = parseInt(rgbPart[1] + rgbPart[1], 16) / 255;
-    b = parseInt(rgbPart[2] + rgbPart[2], 16) / 255;
-  } else {
-    r = parseInt(rgbPart.slice(0, 2), 16) / 255;
-    g = parseInt(rgbPart.slice(2, 4), 16) / 255;
-    b = parseInt(rgbPart.slice(4, 6), 16) / 255;
-  }
-  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  return luminance > 0.5 ? '#000000' : '#ffffff';
-}
+/** Text color for preview card chrome (heading, tab label) — not editor content. */
+const CARD_CHROME_DARK = '#cccccc';
+const CARD_CHROME_LIGHT = '#333333';
 
 interface EditorPreviewsCardProps {
   colorAssignments: readonly ColorAssignment[];
@@ -55,8 +38,12 @@ interface EditorPreviewsCardProps {
   mappings: readonly Mapping[];
   idePrimaryTokenRef: string | null;
   onChangeIdePrimaryTokenRef: (tokenKey: string | null) => void;
+  ideForegroundTokenRef: string | null;
+  onChangeIdeForegroundTokenRef: (tokenKey: string | null) => void;
   themeBackgroundTokenRef: string | null;
   onChangeThemeBackgroundTokenRef: (tokenKey: string | null) => void;
+  themeForegroundTokenRef: string | null;
+  onChangeThemeForegroundTokenRef: (tokenKey: string | null) => void;
   lineNumberBackgroundTokenRef: string | null;
   onChangeLineNumberBackgroundTokenRef: (tokenKey: string | null) => void;
   lineNumberForegroundTokenRef: string | null;
@@ -135,7 +122,7 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
 
   return (
     <div className="theme-preview-token-select-wrap" ref={wrapRef}>
-      <label className="field-row theme-preview-field">
+      <label className="field-row theme-preview-field theme-preview-field-stacked">
         <span className="field-label">{label}</span>
         <span className="theme-preview-field-inline theme-preview-token-select-inline">
           <button
@@ -206,8 +193,12 @@ export function EditorPreviewsCard({
   mappings,
   idePrimaryTokenRef,
   onChangeIdePrimaryTokenRef,
+  ideForegroundTokenRef,
+  onChangeIdeForegroundTokenRef,
   themeBackgroundTokenRef,
   onChangeThemeBackgroundTokenRef,
+  themeForegroundTokenRef,
+  onChangeThemeForegroundTokenRef,
   lineNumberBackgroundTokenRef,
   onChangeLineNumberBackgroundTokenRef,
   lineNumberForegroundTokenRef,
@@ -246,6 +237,10 @@ export function EditorPreviewsCard({
       buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables),
     [mappings, colorAssignments, contrastAssignments, contrastVariables],
   );
+
+  /** Editor foreground: default text color for code in the preview blocks only (not card chrome). */
+  const defaultEditorFgDark = resolveColorForThemeTokenKey(themeForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', DEFAULT_DARK_FG);
+  const defaultEditorFgLight = resolveColorForThemeTokenKey(themeForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', DEFAULT_LIGHT_FG);
 
   const themeTokenKeys = useMemo(
     () =>
@@ -316,31 +311,30 @@ export function EditorPreviewsCard({
             };
             return {
               text: token.text,
-              darkColor: entry.darkColor ?? DEFAULT_DARK_FG,
-              lightColor: entry.lightColor ?? DEFAULT_LIGHT_FG,
+              darkColor: entry.darkColor ?? defaultEditorFgDark,
+              lightColor: entry.lightColor ?? defaultEditorFgLight,
               titleDark: buildTitle('dark'),
               titleLight: buildTitle('light'),
             };
           }
           return {
             text: token.text,
-            darkColor: resolveTokenColor(token.scopes, scopeColorMap, 'dark') ?? DEFAULT_DARK_FG,
-            lightColor: resolveTokenColor(token.scopes, scopeColorMap, 'light') ?? DEFAULT_LIGHT_FG,
+            darkColor: resolveTokenColor(token.scopes, scopeColorMap, 'dark') ?? defaultEditorFgDark,
+            lightColor: resolveTokenColor(token.scopes, scopeColorMap, 'light') ?? defaultEditorFgLight,
             titleDark: scopeLabel,
             titleLight: scopeLabel,
           };
         }),
       })),
     }));
-  }, [previews, scopeColorMap, colorAssignments, contrastAssignments, contrastVariables]);
+  }, [previews, scopeColorMap, colorAssignments, contrastAssignments, contrastVariables, defaultEditorFgDark, defaultEditorFgLight]);
 
   const darkColumnBg = resolveColorForThemeTokenKey(idePrimaryTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#1e1e1e');
   const lightColumnBg = resolveColorForThemeTokenKey(idePrimaryTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
+  const darkIdeFgColor = resolveColorForThemeTokenKey(ideForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', CARD_CHROME_DARK);
+  const lightIdeFgColor = resolveColorForThemeTokenKey(ideForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', CARD_CHROME_LIGHT);
   const darkCodeBg = resolveColorForThemeTokenKey(themeBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#1e1e1e');
   const lightCodeBg = resolveColorForThemeTokenKey(themeBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
-  const darkTextColor = textColorForBackground(darkColumnBg);
-  const lightTextColor = textColorForBackground(lightColumnBg);
-
   const darkLineNumBg = resolveColorForThemeTokenKey(lineNumberBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#252526');
   const lightLineNumBg = resolveColorForThemeTokenKey(lineNumberBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#f3f3f3');
   const darkLineNumFg = resolveColorForThemeTokenKey(lineNumberForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#858585');
@@ -444,77 +438,79 @@ export function EditorPreviewsCard({
     <div className="tokens-card theme-previews-card">
       <h2>Editor Previews</h2>
 
-      <div className="theme-preview-fields">
-        <div className="theme-preview-fields-row theme-preview-fields-row-4">
-          <FilterableTokenSelect
-            label="IDE Primary"
-            value={idePrimaryTokenRef}
-            onChange={onChangeIdePrimaryTokenRef}
-            options={themeTokenKeys}
-          />
-          <FilterableTokenSelect
-            label="Theme background"
-            value={themeBackgroundTokenRef}
-            onChange={onChangeThemeBackgroundTokenRef}
-            options={themeTokenKeys}
-          />
-        </div>
-        <div className="theme-preview-fields-row theme-preview-fields-row-4">
-          <FilterableTokenSelect
-            label="Line number bg"
-            value={lineNumberBackgroundTokenRef}
-            onChange={onChangeLineNumberBackgroundTokenRef}
-            options={themeTokenKeys}
-          />
-          <FilterableTokenSelect
-            label="Line number fg"
-            value={lineNumberForegroundTokenRef}
-            onChange={onChangeLineNumberForegroundTokenRef}
-            options={themeTokenKeys}
-          />
-        </div>
-        <div className="theme-preview-fields-row theme-preview-fields-row-4">
-          <FilterableTokenSelect
-            label="IDE Tab Color"
-            value={ideTabTokenRef}
-            onChange={onChangeIdeTabTokenRef}
-            options={themeTokenKeys}
-          />
-          <FilterableTokenSelect
-            label="IDE Tab Bar Bg"
-            value={ideTabBarBackgroundTokenRef}
-            onChange={onChangeIdeTabBarBackgroundTokenRef}
-            options={themeTokenKeys}
-          />
-        </div>
-        <div className="theme-preview-fields-row theme-preview-fields-row-4">
-          <FilterableTokenSelect
-            label="IDE Tab Bar Fg"
-            value={ideTabBarForegroundTokenRef}
-            onChange={onChangeIdeTabBarForegroundTokenRef}
-            options={themeTokenKeys}
-          />
-          <FilterableTokenSelect
-            label="Scrollbar bg"
-            value={editorPreviewScrollbarBackgroundTokenRef}
-            onChange={onChangeEditorPreviewScrollbarBackgroundTokenRef}
-            options={themeTokenKeys}
-          />
-        </div>
-        <div className="theme-preview-fields-row theme-preview-fields-row-4">
-          <FilterableTokenSelect
-            label="Scrollbar fg"
-            value={editorPreviewScrollbarForegroundTokenRef}
-            onChange={onChangeEditorPreviewScrollbarForegroundTokenRef}
-            options={themeTokenKeys}
-          />
-          <FilterableTokenSelect
-            label="Selection bg"
-            value={editorPreviewSelectionBackgroundTokenRef}
-            onChange={onChangeEditorPreviewSelectionBackgroundTokenRef}
-            options={themeTokenKeys}
-          />
-        </div>
+      <div className="theme-preview-fields theme-preview-fields-grid">
+        <FilterableTokenSelect
+          label="IDE Foreground"
+          value={ideForegroundTokenRef}
+          onChange={onChangeIdeForegroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="IDE Background"
+          value={idePrimaryTokenRef}
+          onChange={onChangeIdePrimaryTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Editor Foreground"
+          value={themeForegroundTokenRef}
+          onChange={onChangeThemeForegroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Editor Background"
+          value={themeBackgroundTokenRef}
+          onChange={onChangeThemeBackgroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Line Number Foreground"
+          value={lineNumberForegroundTokenRef}
+          onChange={onChangeLineNumberForegroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Line Number Background"
+          value={lineNumberBackgroundTokenRef}
+          onChange={onChangeLineNumberBackgroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Scrollbar Foreground"
+          value={editorPreviewScrollbarForegroundTokenRef}
+          onChange={onChangeEditorPreviewScrollbarForegroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Scrollbar Background"
+          value={editorPreviewScrollbarBackgroundTokenRef}
+          onChange={onChangeEditorPreviewScrollbarBackgroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="IDE Current Tab Color"
+          value={ideTabTokenRef}
+          onChange={onChangeIdeTabTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="IDE Tab Bar Foreground"
+          value={ideTabBarForegroundTokenRef}
+          onChange={onChangeIdeTabBarForegroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="IDE Tab Bar Background"
+          value={ideTabBarBackgroundTokenRef}
+          onChange={onChangeIdeTabBarBackgroundTokenRef}
+          options={themeTokenKeys}
+        />
+        <FilterableTokenSelect
+          label="Selection Background"
+          value={editorPreviewSelectionBackgroundTokenRef}
+          onChange={onChangeEditorPreviewSelectionBackgroundTokenRef}
+          options={themeTokenKeys}
+        />
       </div>
 
       {loadError && (
@@ -528,7 +524,7 @@ export function EditorPreviewsCard({
           className="theme-preview-col"
           style={{
             backgroundColor: darkColumnBg,
-            color: darkTextColor,
+            color: darkIdeFgColor,
             ['--theme-preview-selection-bg' as string]: darkSelectionBg,
           }}
         >
@@ -541,9 +537,11 @@ export function EditorPreviewsCard({
             >
               <span
                 className="theme-preview-sticky-bar-label theme-preview-sticky-bar-tab"
-                style={{ backgroundColor: darkIdeTabColor, color: darkTextColor }}
+                style={{ backgroundColor: darkIdeTabColor, color: darkIdeFgColor }}
               >
+                <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-left" aria-hidden>description</span>
                 {currentPreview ? currentPreview.language : ''}
+                <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-close" aria-hidden>close</span>
               </span>
               <div className="theme-preview-sample-dropdown-wrap">
                 <button
@@ -677,7 +675,7 @@ export function EditorPreviewsCard({
           className="theme-preview-col"
           style={{
             backgroundColor: lightColumnBg,
-            color: lightTextColor,
+            color: lightIdeFgColor,
             ['--theme-preview-selection-bg' as string]: lightSelectionBg,
           }}
         >
@@ -689,9 +687,11 @@ export function EditorPreviewsCard({
             >
               <span
                 className="theme-preview-sticky-bar-label theme-preview-sticky-bar-tab"
-                style={{ backgroundColor: lightIdeTabColor, color: lightTextColor }}
+                style={{ backgroundColor: lightIdeTabColor, color: lightIdeFgColor }}
               >
+                <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-left" aria-hidden>description</span>
                 {currentPreview ? currentPreview.language : ''}
+                <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-close" aria-hidden>close</span>
               </span>
             </div>
           )}

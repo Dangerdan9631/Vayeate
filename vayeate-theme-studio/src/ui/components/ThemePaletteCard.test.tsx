@@ -1,7 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ThemePaletteCard } from './ThemePaletteCard';
+import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
+
+vi.mock('../utils/eyedropper');
 
 const defaultPaletteProps = {
   colorAssignments: [] as const,
@@ -14,6 +17,10 @@ const defaultPaletteProps = {
   applyToLight: true,
   onApplyToDarkChange: vi.fn(),
   onApplyToLightChange: vi.fn(),
+  selectedColorsDisplay: { kind: 'none' as const },
+  onSetSelectedColors: vi.fn(),
+  canRevertPalettePicker: false,
+  onRevertPalettePicker: vi.fn(),
 };
 
 function renderCard(overrides: Record<string, unknown> = {}) {
@@ -254,5 +261,95 @@ describe('ThemePaletteCard', () => {
     expect(onApplyToDarkChange).toHaveBeenCalledWith(false);
     await user.click(screen.getByRole('checkbox', { name: 'Apply adjustments to light theme colors' }));
     expect(onApplyToLightChange).toHaveBeenCalledWith(false);
+  });
+
+  it('renders color swatch disabled when selectedColorsDisplay is none', () => {
+    renderCard({ selectedColorsDisplay: { kind: 'none' } });
+    const swatch = screen.getByRole('button', { name: 'Select palette swatches to set color' });
+    expect(swatch).toBeDisabled();
+  });
+
+  it('renders color swatch with filled color when selectedColorsDisplay is single', () => {
+    renderCard({ selectedColorsDisplay: { kind: 'single', hex: '#aabbcc' } });
+    const swatch = screen.getByRole('button', { name: 'Open color picker for selected variables' });
+    expect(swatch).toHaveStyle({ backgroundColor: '#aabbcc' });
+    expect(swatch).not.toBeDisabled();
+  });
+
+  it('renders Revert palette button disabled when canRevertPalettePicker is false', () => {
+    renderCard({ canRevertPalettePicker: false });
+    const revertBtn = screen.getByRole('button', { name: 'Revert last palette color change' });
+    expect(revertBtn).toBeDisabled();
+  });
+
+  it('calls onRevertPalettePicker when Revert palette button is clicked and can revert', async () => {
+    const user = userEvent.setup();
+    const onRevertPalettePicker = vi.fn();
+    renderCard({ canRevertPalettePicker: true, onRevertPalettePicker });
+    await user.click(screen.getByRole('button', { name: 'Revert last palette color change' }));
+    expect(onRevertPalettePicker).toHaveBeenCalledTimes(1);
+  });
+
+  it('opens color picker directly when swatch is clicked and selection is not none', async () => {
+    const user = userEvent.setup();
+    renderCard({ selectedColorsDisplay: { kind: 'single', hex: '#ff0000' } });
+    const colorInput = screen.getByLabelText('Color');
+    expect(colorInput).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Open color picker for selected variables' }));
+    expect(colorInput).toHaveValue('#ff0000');
+  });
+
+  it('calls onSetSelectedColors with hex when hex input is blurred with valid value', async () => {
+    const user = userEvent.setup();
+    const onSetSelectedColors = vi.fn();
+    renderCard({
+      selectedColorsDisplay: { kind: 'single', hex: '#ff0000' },
+      onSetSelectedColors,
+    });
+    const hexInput = screen.getByRole('textbox', { name: 'Hex color' });
+    await user.clear(hexInput);
+    await user.type(hexInput, '#00ff00');
+    await user.tab();
+    expect(onSetSelectedColors).toHaveBeenCalledWith('#00ff00');
+  });
+
+  describe('eyedropper (Pick from screen)', () => {
+    beforeEach(() => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(false);
+    });
+
+    it('does not render Pick from screen button when eyedropper is not supported', () => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(false);
+      renderCard({ selectedColorsDisplay: { kind: 'single', hex: '#ff0000' } });
+      expect(screen.queryByRole('button', { name: 'Pick color from screen' })).not.toBeInTheDocument();
+    });
+
+    it('renders Pick from screen button disabled when supported and no selection', () => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(true);
+      renderCard({ selectedColorsDisplay: { kind: 'none' } });
+      const btn = screen.getByRole('button', { name: 'Pick color from screen' });
+      expect(btn).toBeDisabled();
+    });
+
+    it('renders Pick from screen button enabled when supported and single selection', () => {
+      vi.mocked(isEyedropperSupported).mockReturnValue(true);
+      renderCard({ selectedColorsDisplay: { kind: 'single', hex: '#ff0000' } });
+      const btn = screen.getByRole('button', { name: 'Pick color from screen' });
+      expect(btn).not.toBeDisabled();
+    });
+
+    it('calls onSetSelectedColors with picked hex when Pick from screen returns a color', async () => {
+      const user = userEvent.setup();
+      vi.mocked(isEyedropperSupported).mockReturnValue(true);
+      vi.mocked(pickColorFromScreen).mockResolvedValue('#aabbcc');
+      const onSetSelectedColors = vi.fn();
+      renderCard({
+        selectedColorsDisplay: { kind: 'single', hex: '#ff0000' },
+        onSetSelectedColors,
+      });
+      await user.click(screen.getByRole('button', { name: 'Pick color from screen' }));
+      expect(pickColorFromScreen).toHaveBeenCalled();
+      expect(onSetSelectedColors).toHaveBeenCalledWith('#aabbcc');
+    });
   });
 });

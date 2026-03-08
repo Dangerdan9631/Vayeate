@@ -29,6 +29,11 @@ declare global {
       ) => Promise<{ darkPath: string; lightPath: string }>;
       fetchUrl: (url: string) => Promise<string>;
       loadPreviews: () => Promise<TokenizedPreview[]>;
+      /** All screen sources + bounds for full-screen color picker (multi-monitor). */
+      eyedropperGetScreenSourcesWithBounds?: () => Promise<{
+        sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
+        fullBounds: { x: number; y: number; width: number; height: number };
+      }>;
     };
   }
 }

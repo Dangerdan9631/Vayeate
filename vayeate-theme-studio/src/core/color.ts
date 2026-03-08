@@ -57,14 +57,28 @@ export function hexToRgb(hex: string): Rgb {
   };
 }
 
+/** Clamp a single channel to sRGB [0, 1]. Handles NaN/Infinity. */
+function clampChannel(value: number): number {
+  if (Number.isFinite(value)) return Math.max(0, Math.min(1, value));
+  return 0;
+}
+
+/** Clamp RGB to sRGB gamut so hex output never clips out of range. */
+function clampRgbToSrgb(rgb: Rgb): Rgb {
+  return {
+    r: clampChannel(rgb.r),
+    g: clampChannel(rgb.g),
+    b: clampChannel(rgb.b),
+  };
+}
+
 export function rgbToHex(rgb: Rgb): string {
-  const toHex = (value: number) => {
-    const clamped = Math.max(0, Math.min(1, value));
-    return Math.round(clamped * 255)
+  const clamped = clampRgbToSrgb(rgb);
+  const toHex = (value: number) =>
+    Math.round(value * 255)
       .toString(16)
       .padStart(2, '0');
-  };
-  return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
+  return `#${toHex(clamped.r)}${toHex(clamped.g)}${toHex(clamped.b)}`;
 }
 
 function toLinear(c: number): number {
@@ -343,5 +357,11 @@ export function adjustColorToMeetContrast(
     );
   }
 
-  return result;
+  /* Ensure result stays in sRGB; contrast math can push values outside [0,1]. */
+  try {
+    const rgb = hexToRgb(result);
+    return rgbToHex(clampRgbToSrgb(rgb));
+  } catch {
+    return result;
+  }
 }

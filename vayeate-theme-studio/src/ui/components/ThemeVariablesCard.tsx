@@ -7,6 +7,7 @@ import type {
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../model/schemas';
+import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
@@ -289,7 +290,9 @@ function ColorAssignmentRow({
     assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
 
   return (
-    <div className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''}`}>
+    <div
+      className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''} ${isEyedropperSupported() ? 'theme-color-row--has-eyedropper' : ''}`}
+    >
       <label className="theme-var-check-wrap" title="Include in palette adjustments">
         <input
           type="checkbox"
@@ -334,6 +337,26 @@ function ColorAssignmentRow({
           setPendingDarkPicker(null);
         }}
       />
+      {isEyedropperSupported() && (
+        <button
+          type="button"
+          className="theme-eyedropper-btn"
+          title="Pick color from screen (dark)"
+          aria-label="Pick dark color from screen"
+          onClick={async () => {
+            const hex = await pickColorFromScreen();
+            if (hex) {
+              let v = hex;
+              if (darkValue.length === 9) v = hex + darkValue.slice(7, 9);
+              onUpdateDark(assignment.colorRef, v);
+              setPendingDarkPicker(null);
+              setPendingDarkHex(null);
+            }
+          }}
+        >
+          <span className="material-symbols-outlined" aria-hidden>colorize</span>
+        </button>
+      )}
       <input
         className="field-input theme-color-hex"
         type="text"
@@ -364,6 +387,28 @@ function ColorAssignmentRow({
           setPendingLightPicker(null);
         }}
       />
+      {isEyedropperSupported() && (
+        <button
+          type="button"
+          className="theme-eyedropper-btn"
+          disabled={assignment.useDarkForLight}
+          title="Pick color from screen (light)"
+          aria-label="Pick light color from screen"
+          onClick={async () => {
+            if (assignment.useDarkForLight) return;
+            const hex = await pickColorFromScreen();
+            if (hex) {
+              let v = hex;
+              if (lightValue.length === 9) v = hex + lightValue.slice(7, 9);
+              onUpdateLight(assignment.colorRef, v);
+              setPendingLightPicker(null);
+              setPendingLightHex(null);
+            }
+          }}
+        >
+          <span className="material-symbols-outlined" aria-hidden>colorize</span>
+        </button>
+      )}
       <label
         className="theme-use-dark-check theme-icon-checkbox"
         title={

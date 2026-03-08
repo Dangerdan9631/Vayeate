@@ -34,8 +34,12 @@ function makeProps(overrides: Partial<{
     ],
     idePrimaryTokenRef: null as string | null,
     onChangeIdePrimaryTokenRef: vi.fn(),
+    ideForegroundTokenRef: null as string | null,
+    onChangeIdeForegroundTokenRef: vi.fn(),
     themeBackgroundTokenRef: null as string | null,
     onChangeThemeBackgroundTokenRef: vi.fn(),
+    themeForegroundTokenRef: null as string | null,
+    onChangeThemeForegroundTokenRef: vi.fn(),
     lineNumberBackgroundTokenRef: null as string | null,
     onChangeLineNumberBackgroundTokenRef: vi.fn(),
     lineNumberForegroundTokenRef: null as string | null,
@@ -74,12 +78,16 @@ describe('EditorPreviewsCard', () => {
     vi.mocked(previewService.loadPreviews).mockResolvedValue([mockPreview]);
   });
 
-  it('renders IDE Primary, theme background, line number, and other token selectors', () => {
+  it('renders IDE Foreground, IDE Background, Editor Foreground, Editor Background, and other token selectors', () => {
     render(<EditorPreviewsCard {...makeProps()} />);
     expect(screen.getByText('Editor Previews')).toBeInTheDocument();
-    expect(screen.getByText('IDE Primary')).toBeInTheDocument();
-    expect(screen.getByText('Line number bg')).toBeInTheDocument();
-    expect(screen.getByText('Theme background')).toBeInTheDocument();
+    expect(screen.getByText('IDE Foreground')).toBeInTheDocument();
+    expect(screen.getByText('IDE Background')).toBeInTheDocument();
+    expect(screen.getByText('Editor Foreground')).toBeInTheDocument();
+    expect(screen.getByText('Editor Background')).toBeInTheDocument();
+    expect(screen.getByText('Line Number Foreground')).toBeInTheDocument();
+    expect(screen.getByText('IDE Current Tab Color')).toBeInTheDocument();
+    expect(screen.getByText('Selection Background')).toBeInTheDocument();
   });
 
   it('renders Dark and Light preview columns', () => {

@@ -7,7 +7,9 @@ import type { Theme, Template } from '../model/schemas';
 
 const previewTokenRefsNull = {
   idePrimaryTokenRef: null,
+  ideForegroundTokenRef: null,
   themeBackgroundTokenRef: null,
+  themeForegroundTokenRef: null,
   lineNumberBackgroundTokenRef: null,
   lineNumberForegroundTokenRef: null,
   ideTabTokenRef: null,
@@ -290,6 +292,42 @@ describe('mergeAssignmentsFromTemplate', () => {
     };
     const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
     expect(merged.themeBackgroundTokenRef).toBe('editor.foreground');
+  });
+
+  it('clears themeForegroundTokenRef if it is not a theme token in template', () => {
+    const themeWithToken: Theme = {
+      ...baseTheme,
+      themeForegroundTokenRef: 'removed',
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.themeForegroundTokenRef).toBeNull();
+  });
+
+  it('preserves themeForegroundTokenRef if it is a theme token in template', () => {
+    const themeWithToken: Theme = {
+      ...baseTheme,
+      themeForegroundTokenRef: 'editor.foreground',
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.themeForegroundTokenRef).toBe('editor.foreground');
+  });
+
+  it('clears ideForegroundTokenRef if it is not a theme token in template', () => {
+    const themeWithToken: Theme = {
+      ...baseTheme,
+      ideForegroundTokenRef: 'removed',
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.ideForegroundTokenRef).toBeNull();
+  });
+
+  it('preserves ideForegroundTokenRef if it is a theme token in template', () => {
+    const themeWithToken: Theme = {
+      ...baseTheme,
+      ideForegroundTokenRef: 'editor.foreground',
+    };
+    const merged = mergeAssignmentsFromTemplate(themeWithToken, template);
+    expect(merged.ideForegroundTokenRef).toBe('editor.foreground');
   });
 });
 
@@ -742,5 +780,193 @@ describe('useThemeViewModel variable selection', () => {
     });
     expect(result.current.checkedColorRefs.has('primary')).toBe(true);
     expect(result.current.checkedColorRefs.has('secondary')).toBe(true);
+  });
+});
+
+describe('useThemeViewModel palette color picker and revert', () => {
+  const themeWithTwoColors: Theme = {
+    name: 'pal-theme',
+    version: '1.0.0',
+    templateRef: { name: 'tpl', version: '1.0.0' },
+    ...previewTokenRefsNull,
+    colorAssignments: [
+      { colorRef: 'primary', dark: { value: '#ff0000' }, light: { value: '#cc0000' }, useDarkForLight: false },
+      { colorRef: 'secondary', dark: { value: '#00ff00' }, light: { value: '#00cc00' }, useDarkForLight: false },
+    ],
+    contrastAssignments: [
+      { contrastVariableRef: 'textContrast', dark: { value: 4.5, comparisonMethod: 'greaterThan' as const, min: null, max: null }, light: null, useDarkForLight: true },
+    ],
+  };
+
+  const templateForPal: Template = {
+    name: 'tpl',
+    version: '1.0.0',
+    locked: false,
+    catalogRefs: [],
+    mappings: [],
+    colorVariables: [{ key: 'primary', groupRef: null }, { key: 'secondary', groupRef: null }],
+    contrastVariables: [{ key: 'textContrast', comparisonSourceRef: 'primary', groupRef: null }],
+    groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
+  };
+
+  beforeEach(() => {
+    (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      createCatalog: () => Promise.resolve(null),
+      saveCatalog: () => Promise.resolve(),
+      loadCatalog: () => Promise.resolve(null),
+      listCatalogs: () => Promise.resolve([]),
+      deleteCatalog: () => Promise.resolve(),
+      createTemplate: () => Promise.resolve(null),
+      saveTemplate: () => Promise.resolve(),
+      loadTemplate: () => Promise.resolve(templateForPal),
+      listTemplates: () => Promise.resolve([]),
+      deleteTemplate: () => Promise.resolve(),
+      createTheme: () => Promise.resolve(themeWithTwoColors),
+      saveTheme: () => Promise.resolve(),
+      loadTheme: () => Promise.resolve(themeWithTwoColors),
+      listThemes: () => Promise.resolve([{ name: 'pal-theme', version: '1.0.0' }]),
+      deleteTheme: () => Promise.resolve(),
+      fetchUrl: () => Promise.resolve(''),
+    };
+  });
+
+  it('selectedColorsDisplay is none when no refs checked', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setColorGroupChecked('__ungrouped__', false);
+    });
+    expect(result.current.selectedColorsDisplay).toEqual({ kind: 'none' });
+  });
+
+  it('selectedColorsDisplay is single when one ref checked and only dark applied', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.setApplyHueToLight(false);
+      result.current.setColorRefsChecked(['secondary'], false);
+    });
+    expect(result.current.checkedColorRefs.has('primary')).toBe(true);
+    expect(result.current.checkedColorRefs.has('secondary')).toBe(false);
+    expect(result.current.selectedColorsDisplay).toEqual({ kind: 'single', hex: '#ff0000' });
+  });
+
+  it('selectedColorsDisplay is mixed when multiple refs checked with different colors', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    expect(result.current.checkedColorRefs.size).toBe(2);
+    expect(result.current.selectedColorsDisplay).toEqual({ kind: 'mixed' });
+  });
+
+  it('setSelectedColorsToHex updates dark for all checked refs and enables revert', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    expect(result.current.canRevertPalettePicker).toBe(false);
+    await act(async () => {
+      result.current.capturePalettePickerState();
+    });
+    await act(async () => {
+      result.current.setSelectedColorsToHex('#0000ff');
+    });
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
+    expect(result.current.theme!.colorAssignments[1].dark!.value).toBe('#0000ff');
+    expect(result.current.canRevertPalettePicker).toBe(true);
+  });
+
+  it('revertPalettePicker restores colorAssignments and disables revert', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.capturePalettePickerState();
+    });
+    await act(async () => {
+      result.current.setSelectedColorsToHex('#0000ff');
+    });
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
+    await act(async () => {
+      result.current.revertPalettePicker();
+    });
+    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#ff0000');
+    expect(result.current.theme!.colorAssignments[1].dark!.value).toBe('#00ff00');
+    expect(result.current.canRevertPalettePicker).toBe(false);
+  });
+
+  it('canRevertPalettePicker becomes false after updateColorAssignmentDark', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.capturePalettePickerState();
+    });
+    await act(async () => {
+      result.current.setSelectedColorsToHex('#0000ff');
+    });
+    expect(result.current.canRevertPalettePicker).toBe(true);
+    await act(async () => {
+      result.current.updateColorAssignmentDark('primary', '#111111');
+    });
+    expect(result.current.canRevertPalettePicker).toBe(false);
+  });
+
+  it('canRevertPalettePicker becomes false after commitHueAdjustment', async () => {
+    const { Wrapper, getDispatch } = harness();
+    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
+    await act(async () => {
+      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+    });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 150));
+    });
+    await act(async () => {
+      result.current.capturePalettePickerState();
+    });
+    await act(async () => {
+      result.current.setSelectedColorsToHex('#0000ff');
+    });
+    expect(result.current.canRevertPalettePicker).toBe(true);
+    await act(async () => {
+      result.current.setHueAdjustment(20);
+    });
+    await act(async () => {
+      result.current.commitHueAdjustment();
+    });
+    expect(result.current.canRevertPalettePicker).toBe(false);
   });
 });

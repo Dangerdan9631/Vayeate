@@ -72,6 +72,11 @@ export function ThemesPage() {
               checkedColorRefs={vm.checkedColorRefs}
               onSetColorGroupChecked={vm.setColorGroupChecked}
               onSetColorRefsChecked={vm.setColorRefsChecked}
+              selectedColorsDisplay={vm.selectedColorsDisplay}
+              onSetSelectedColors={vm.setSelectedColorsToHex}
+              canRevertPalettePicker={vm.canRevertPalettePicker}
+              onPalettePickerOpen={vm.capturePalettePickerState}
+              onRevertPalettePicker={vm.revertPalettePicker}
             />
           )}
           {vm.theme && vm.theme.templateRef && (
@@ -113,8 +118,12 @@ export function ThemesPage() {
               mappings={vm.templateMappings}
               idePrimaryTokenRef={vm.theme.idePrimaryTokenRef ?? null}
               onChangeIdePrimaryTokenRef={vm.changeIdePrimaryTokenRef}
+              ideForegroundTokenRef={vm.theme.ideForegroundTokenRef ?? null}
+              onChangeIdeForegroundTokenRef={vm.changeIdeForegroundTokenRef}
               themeBackgroundTokenRef={vm.theme.themeBackgroundTokenRef ?? null}
               onChangeThemeBackgroundTokenRef={vm.changeThemeBackgroundTokenRef}
+              themeForegroundTokenRef={vm.theme.themeForegroundTokenRef ?? null}
+              onChangeThemeForegroundTokenRef={vm.changeThemeForegroundTokenRef}
               lineNumberBackgroundTokenRef={vm.theme.lineNumberBackgroundTokenRef ?? null}
               onChangeLineNumberBackgroundTokenRef={vm.changeLineNumberBackgroundTokenRef}
               lineNumberForegroundTokenRef={vm.theme.lineNumberForegroundTokenRef ?? null}
