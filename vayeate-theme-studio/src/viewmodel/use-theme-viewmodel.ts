@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
+import { useUndoStack } from '../ui/context/UndoContext';
+import type { ThemePaneState } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { templateService } from '../services/template-service';
@@ -54,10 +56,32 @@ function applyHueToAssignmentsFiltered(
   });
 }
 
+function themePaneStateFromState(
+  theme: Theme | null,
+  checkedColorRefs: string[],
+  checkedContrastRefs: string[],
+): ThemePaneState {
+  return { theme, checkedColorRefs, checkedContrastRefs };
+}
+
 export function useThemeViewModel() {
   const dispatch = useAppDispatch();
-  const { themeRefs, selectedRef, theme, isCreating, createDialogOpen, generateResult, saveError } = useThemesState();
+  const undoStack = useUndoStack();
+  const {
+    themeRefs,
+    selectedRef,
+    theme,
+    checkedColorRefs: checkedColorRefsArray,
+    checkedContrastRefs: checkedContrastRefsArray,
+    isCreating,
+    createDialogOpen,
+    generateResult,
+    saveError,
+  } = useThemesState();
   const { templateRefs } = useTemplatesState();
+
+  const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
+  const checkedContrastRefs = useMemo(() => new Set(checkedContrastRefsArray), [checkedContrastRefsArray]);
 
   useEffect(() => {
     log.debug('initial mount → LOAD_THEME_REFS + LOAD_TEMPLATE_REFS');
@@ -129,19 +153,6 @@ export function useThemeViewModel() {
   const [hueAdjustment, setHueAdjustment] = useState(0);
   const [applyHueToDark, setApplyHueToDark] = useState(true);
   const [applyHueToLight, setApplyHueToLight] = useState(true);
-  const [checkedColorRefs, setCheckedColorRefs] = useState<Set<string>>(new Set());
-  const [checkedContrastRefs, setCheckedContrastRefs] = useState<Set<string>>(new Set());
-  const [palettePickerRevertSnapshot, setPalettePickerRevertSnapshot] = useState<ColorAssignment[] | null>(null);
-
-  useEffect(() => {
-    if (!theme) {
-      setCheckedColorRefs(new Set());
-      setCheckedContrastRefs(new Set());
-      return;
-    }
-    setCheckedColorRefs(new Set(theme.colorAssignments.map((a) => a.colorRef)));
-    setCheckedContrastRefs(new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef)));
-  }, [theme]);
 
   const displayColorAssignments = useMemo(() => {
     if (!theme) return [];
@@ -254,6 +265,28 @@ export function useThemeViewModel() {
     return { ...t, version: nextPatchVersion(t.version) };
   }
 
+  /** Push theme-pane undo frame and dispatch SAVE_THEME (for user-initiated theme changes). */
+  const pushThemeUndoAndSave = useCallback(
+    (label: string, nextTheme: Theme) => {
+      const prev = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray);
+      const next = themePaneStateFromState(nextTheme, checkedColorRefsArray, checkedContrastRefsArray);
+      undoStack.push('themes', label, prev, next);
+      dispatch({ type: 'SAVE_THEME', theme: nextTheme });
+    },
+    [theme, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
+  );
+
+  /** Push theme-pane undo frame and dispatch THEME_PANE_SELECTIONS_CHANGED (for selection changes). */
+  const pushSelectionUndoAndDispatch = useCallback(
+    (label: string, nextColorRefs: string[], nextContrastRefs: string[]) => {
+      const prev = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray);
+      const next = themePaneStateFromState(theme, nextColorRefs, nextContrastRefs);
+      undoStack.push('themes', label, prev, next);
+      dispatch({ type: 'THEME_PANE_SELECTIONS_CHANGED', checkedColorRefs: nextColorRefs, checkedContrastRefs: nextContrastRefs });
+    },
+    [theme, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
+  );
+
   // --- Actions ---
 
   const selectTheme = useCallback(
@@ -322,8 +355,8 @@ export function useThemeViewModel() {
     if (!theme) return;
     log.debug('bumpVersion', theme.name, `v${theme.version} → v${nextPatchVersion(theme.version)}`);
     const bumped = getBaseWithVersionBump(theme);
-    dispatch({ type: 'SAVE_THEME', theme: bumped });
-  }, [dispatch, theme]);
+    pushThemeUndoAndSave('Bump version', bumped);
+  }, [theme, pushThemeUndoAndSave]);
 
   // --- Template selection ---
 
@@ -341,9 +374,9 @@ export function useThemeViewModel() {
 
       const base = theme.templateRef ? getBaseWithVersionBump(theme) : getBaseInPlace(theme);
       const merged = mergeAssignmentsFromTemplate(base, template);
-      dispatch({ type: 'SAVE_THEME', theme: merged });
+      pushThemeUndoAndSave('Change template', merged);
     },
-    [dispatch, theme, templateVersionsByName],
+    [theme, templateVersionsByName, pushThemeUndoAndSave],
   );
 
   const changeTemplateVersion = useCallback(
@@ -356,9 +389,9 @@ export function useThemeViewModel() {
 
       const base = getBaseWithVersionBump(theme);
       const merged = mergeAssignmentsFromTemplate(base, template);
-      dispatch({ type: 'SAVE_THEME', theme: merged });
+      pushThemeUndoAndSave('Change template version', merged);
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
 
   // --- Preview token refs (no version bump) ---
@@ -368,122 +401,121 @@ export function useThemeViewModel() {
       if (!theme) return;
       log.debug('changeIdePrimaryTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, idePrimaryTokenRef: tokenKey } });
+      pushThemeUndoAndSave('IDE primary token', { ...base, idePrimaryTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeIdeForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       log.debug('changeIdeForegroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideForegroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('IDE foreground token', { ...base, ideForegroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeThemeBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       log.debug('changeThemeBackgroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, themeBackgroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Theme background token', { ...base, themeBackgroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeThemeForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       log.debug('changeThemeForegroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, themeForegroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Theme foreground token', { ...base, themeForegroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeLineNumberBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, lineNumberBackgroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Line number background token', { ...base, lineNumberBackgroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeLineNumberForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, lineNumberForegroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Line number foreground token', { ...base, lineNumberForegroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeIdeTabTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideTabTokenRef: tokenKey } });
+      pushThemeUndoAndSave('IDE tab token', { ...base, ideTabTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeIdeTabBarBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideTabBarBackgroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('IDE tab bar background token', { ...base, ideTabBarBackgroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeIdeTabBarForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, ideTabBarForegroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('IDE tab bar foreground token', { ...base, ideTabBarForegroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeEditorPreviewScrollbarBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewScrollbarBackgroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Editor preview scrollbar background token', { ...base, editorPreviewScrollbarBackgroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeEditorPreviewScrollbarForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewScrollbarForegroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Editor preview scrollbar foreground token', { ...base, editorPreviewScrollbarForegroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeEditorPreviewSelectionBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewSelectionBackgroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Editor preview selection background token', { ...base, editorPreviewSelectionBackgroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeEditorPreviewMenuForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewMenuForegroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Editor preview menu foreground token', { ...base, editorPreviewMenuForegroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
   const changeEditorPreviewMenuBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, editorPreviewMenuBackgroundTokenRef: tokenKey } });
+      pushThemeUndoAndSave('Editor preview menu background token', { ...base, editorPreviewMenuBackgroundTokenRef: tokenKey });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
 
   const commitHueAdjustment = useCallback(() => {
     if (!theme || hueAdjustment === 0) return;
     log.debug('commitHueAdjustment', hueAdjustment);
-    setPalettePickerRevertSnapshot(null);
     const base = getBaseInPlace(theme);
     const newAssignments = applyHueToAssignmentsFiltered(
       theme.colorAssignments,
@@ -491,13 +523,9 @@ export function useThemeViewModel() {
       checkedColorRefs,
       { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
     );
-    dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+    pushThemeUndoAndSave('Hue adjustment', { ...base, colorAssignments: newAssignments });
     setHueAdjustment(0);
-  }, [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight]);
-
-  const revertHueAdjustment = useCallback(() => {
-    setHueAdjustment(0);
-  }, []);
+  }, [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, pushThemeUndoAndSave]);
 
   // --- Color assignment updates (no version bump) ---
 
@@ -505,7 +533,6 @@ export function useThemeViewModel() {
     (colorRef: string, value: string | null) => {
       if (!theme) return;
       log.debug('updateColorAssignmentDark', colorRef, value);
-      setPalettePickerRevertSnapshot(null);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -522,16 +549,15 @@ export function useThemeViewModel() {
           ? { ...a, dark: value !== null ? { value } : null }
           : a,
       );
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+      pushThemeUndoAndSave('Color variable', { ...base, colorAssignments: newAssignments });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
+    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, pushThemeUndoAndSave],
   );
 
   const updateColorAssignmentLight = useCallback(
     (colorRef: string, value: string | null) => {
       if (!theme) return;
       log.debug('updateColorAssignmentLight', colorRef, value);
-      setPalettePickerRevertSnapshot(null);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -548,16 +574,15 @@ export function useThemeViewModel() {
           ? { ...a, light: value !== null ? { value } : null }
           : a,
       );
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+      pushThemeUndoAndSave('Color variable', { ...base, colorAssignments: newAssignments });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
+    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, pushThemeUndoAndSave],
   );
 
   const updateColorAssignmentUseDarkForLight = useCallback(
     (colorRef: string, useDark: boolean) => {
       if (!theme) return;
       log.debug('updateColorAssignmentUseDarkForLight', colorRef, useDark);
-      setPalettePickerRevertSnapshot(null);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -572,9 +597,9 @@ export function useThemeViewModel() {
       const newAssignments = workingAssignments.map((a) =>
         a.colorRef === colorRef ? { ...a, useDarkForLight: useDark } : a,
       );
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+      pushThemeUndoAndSave('Color variable', { ...base, colorAssignments: newAssignments });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
+    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, pushThemeUndoAndSave],
   );
 
   // --- Contrast assignment updates (no version bump) ---
@@ -589,9 +614,9 @@ export function useThemeViewModel() {
         const dark = a.dark ?? { value: 1, comparisonMethod: 'greaterThan' as const, min: null, max: null };
         return { ...a, dark: { ...dark, [field]: value } };
       });
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, contrastAssignments: newAssignments } });
+      pushThemeUndoAndSave('Contrast variable', { ...base, contrastAssignments: newAssignments });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
 
   const updateContrastAssignmentLight = useCallback(
@@ -604,9 +629,9 @@ export function useThemeViewModel() {
         const light = a.light ?? { value: 1, comparisonMethod: 'greaterThan' as const, min: null, max: null };
         return { ...a, light: { ...light, [field]: value } };
       });
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, contrastAssignments: newAssignments } });
+      pushThemeUndoAndSave('Contrast variable', { ...base, contrastAssignments: newAssignments });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
 
   const updateContrastAssignmentUseDarkForLight = useCallback(
@@ -617,59 +642,57 @@ export function useThemeViewModel() {
       const newAssignments = base.contrastAssignments.map((a) =>
         a.contrastVariableRef === contrastRef ? { ...a, useDarkForLight: useDark } : a,
       );
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, contrastAssignments: newAssignments } });
+      pushThemeUndoAndSave('Contrast variable', { ...base, contrastAssignments: newAssignments });
     },
-    [dispatch, theme],
+    [theme, pushThemeUndoAndSave],
   );
 
-  const toggleColorChecked = useCallback((ref: string) => {
-    setCheckedColorRefs((prev) => {
-      const next = new Set(prev);
+  const toggleColorChecked = useCallback(
+    (ref: string) => {
+      const next = new Set(checkedColorRefsArray);
       if (next.has(ref)) next.delete(ref);
       else next.add(ref);
-      return next;
-    });
-  }, []);
+      pushSelectionUndoAndDispatch('Select variables', [...next], checkedContrastRefsArray);
+    },
+    [checkedColorRefsArray, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
+  );
 
-  const toggleContrastChecked = useCallback((ref: string) => {
-    setCheckedContrastRefs((prev) => {
-      const next = new Set(prev);
+  const toggleContrastChecked = useCallback(
+    (ref: string) => {
+      const next = new Set(checkedContrastRefsArray);
       if (next.has(ref)) next.delete(ref);
       else next.add(ref);
-      return next;
-    });
-  }, []);
+      pushSelectionUndoAndDispatch('Select variables', checkedColorRefsArray, [...next]);
+    },
+    [checkedColorRefsArray, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
+  );
 
-  const setAllColorChecked = useCallback((checked: boolean) => {
-    setCheckedColorRefs((prev) => {
-      if (!theme) return prev;
-      return checked
-        ? new Set(theme.colorAssignments.map((a) => a.colorRef))
-        : new Set();
-    });
-  }, [theme]);
+  const setAllColorChecked = useCallback(
+    (checked: boolean) => {
+      if (!theme) return;
+      const nextColor = checked ? theme.colorAssignments.map((a) => a.colorRef) : [];
+      pushSelectionUndoAndDispatch(checked ? 'Select all variables' : 'Clear selection', nextColor, checkedContrastRefsArray);
+    },
+    [theme, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
+  );
 
-  const setAllContrastChecked = useCallback((checked: boolean) => {
-    setCheckedContrastRefs((prev) => {
-      if (!theme) return prev;
-      return checked
-        ? new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef))
-        : new Set();
-    });
-  }, [theme]);
+  const setAllContrastChecked = useCallback(
+    (checked: boolean) => {
+      if (!theme) return;
+      const nextContrast = checked ? theme.contrastAssignments.map((a) => a.contrastVariableRef) : [];
+      pushSelectionUndoAndDispatch(checked ? 'Select all variables' : 'Clear selection', checkedColorRefsArray, nextContrast);
+    },
+    [theme, checkedColorRefsArray, pushSelectionUndoAndDispatch],
+  );
 
   const setAllVariablesChecked = useCallback(
     (checked: boolean) => {
       if (!theme) return;
-      if (checked) {
-        setCheckedColorRefs(new Set(theme.colorAssignments.map((a) => a.colorRef)));
-        setCheckedContrastRefs(new Set(theme.contrastAssignments.map((a) => a.contrastVariableRef)));
-      } else {
-        setCheckedColorRefs(new Set());
-        setCheckedContrastRefs(new Set());
-      }
+      const nextColor = checked ? theme.colorAssignments.map((a) => a.colorRef) : [];
+      const nextContrast = checked ? theme.contrastAssignments.map((a) => a.contrastVariableRef) : [];
+      pushSelectionUndoAndDispatch(checked ? 'Select all variables' : 'Clear selection', nextColor, nextContrast);
     },
-    [theme],
+    [theme, pushSelectionUndoAndDispatch],
   );
 
   const setColorGroupChecked = useCallback(
@@ -684,13 +707,11 @@ export function useThemeViewModel() {
           return k === groupKey;
         })
         .map((a) => a.colorRef);
-      setCheckedColorRefs((prev) => {
-        const next = new Set(prev);
-        refsInGroup.forEach((r) => (checked ? next.add(r) : next.delete(r)));
-        return next;
-      });
+      const next = new Set(checkedColorRefsArray);
+      refsInGroup.forEach((r) => (checked ? next.add(r) : next.delete(r)));
+      pushSelectionUndoAndDispatch('Select variables', [...next], checkedContrastRefsArray);
     },
-    [theme, colorVariablesFromTemplate],
+    [theme, colorVariablesFromTemplate, checkedColorRefsArray, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
   );
 
   const setContrastGroupChecked = useCallback(
@@ -705,25 +726,21 @@ export function useThemeViewModel() {
           return k === groupKey;
         })
         .map((a) => a.contrastVariableRef);
-      setCheckedContrastRefs((prev) => {
-        const next = new Set(prev);
-        refsInGroup.forEach((r) => (checked ? next.add(r) : next.delete(r)));
-        return next;
-      });
+      const next = new Set(checkedContrastRefsArray);
+      refsInGroup.forEach((r) => (checked ? next.add(r) : next.delete(r)));
+      pushSelectionUndoAndDispatch('Select variables', checkedColorRefsArray, [...next]);
     },
-    [theme, contrastVariablesFromTemplate],
+    [theme, contrastVariablesFromTemplate, checkedColorRefsArray, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
   );
 
   const setColorRefsChecked = useCallback(
     (refs: string[], checked: boolean) => {
       if (!theme || refs.length === 0) return;
-      setCheckedColorRefs((prev) => {
-        const next = new Set(prev);
-        refs.forEach((r) => (checked ? next.add(r) : next.delete(r)));
-        return next;
-      });
+      const next = new Set(checkedColorRefsArray);
+      refs.forEach((r) => (checked ? next.add(r) : next.delete(r)));
+      pushSelectionUndoAndDispatch('Select variables', [...next], checkedContrastRefsArray);
     },
-    [theme],
+    [theme, checkedColorRefsArray, checkedContrastRefsArray, pushSelectionUndoAndDispatch],
   );
 
   const setSelectedColorsToHex = useCallback(
@@ -741,7 +758,6 @@ export function useThemeViewModel() {
         );
         setHueAdjustment(0);
       }
-      setPalettePickerRevertSnapshot([...workingAssignments]);
       const newAssignments = workingAssignments.map((a) => {
         if (!checkedColorRefs.has(a.colorRef)) return a;
         let next = { ...a };
@@ -754,22 +770,10 @@ export function useThemeViewModel() {
         return next;
       });
       const base = getBaseInPlace(theme);
-      dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: newAssignments } });
+      pushThemeUndoAndSave('Palette color change', { ...base, colorAssignments: newAssignments });
     },
-    [dispatch, theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
+    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, pushThemeUndoAndSave],
   );
-
-  const capturePalettePickerState = useCallback(() => {
-    if (theme) setPalettePickerRevertSnapshot([...theme.colorAssignments]);
-  }, [theme]);
-
-  const revertPalettePicker = useCallback(() => {
-    if (palettePickerRevertSnapshot == null) return;
-    if (!theme) return;
-    const base = getBaseInPlace(theme);
-    dispatch({ type: 'SAVE_THEME', theme: { ...base, colorAssignments: palettePickerRevertSnapshot } });
-    setPalettePickerRevertSnapshot(null);
-  }, [dispatch, theme, palettePickerRevertSnapshot]);
 
   const colorSectionState = useMemo(() => {
     if (!theme?.colorAssignments.length) return 'all' as const;
@@ -844,12 +848,8 @@ export function useThemeViewModel() {
     setApplyHueToLight,
     displayColorAssignments,
     commitHueAdjustment,
-    revertHueAdjustment,
     selectedColorsDisplay,
-    canRevertPalettePicker: palettePickerRevertSnapshot != null,
-    capturePalettePickerState,
     setSelectedColorsToHex,
-    revertPalettePicker,
     checkedColorRefs,
     checkedContrastRefs,
     toggleColorChecked,

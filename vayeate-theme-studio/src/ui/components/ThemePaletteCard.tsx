@@ -20,7 +20,6 @@ interface ThemePaletteCardProps {
   hueAdjustment: number;
   onHueChange: (value: number) => void;
   onCommit: () => void;
-  onRevert: () => void;
   applyToDark: boolean;
   applyToLight: boolean;
   onApplyToDarkChange: (checked: boolean) => void;
@@ -33,9 +32,6 @@ interface ThemePaletteCardProps {
   onSetColorRefsChecked: (refs: string[], checked: boolean) => void;
   selectedColorsDisplay: SelectedColorsDisplay;
   onSetSelectedColors: (hex: string) => void;
-  canRevertPalettePicker: boolean;
-  onPalettePickerOpen?: () => void;
-  onRevertPalettePicker: () => void;
 }
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
@@ -125,7 +121,6 @@ export function ThemePaletteCard({
   hueAdjustment,
   onHueChange,
   onCommit,
-  onRevert,
   applyToDark,
   applyToLight,
   onApplyToDarkChange,
@@ -138,11 +133,8 @@ export function ThemePaletteCard({
   onSetColorRefsChecked,
   selectedColorsDisplay,
   onSetSelectedColors,
-  canRevertPalettePicker,
-  onPalettePickerOpen,
-  onRevertPalettePicker,
 }: ThemePaletteCardProps) {
-  const showCommitRevert = hueAdjustment !== 0;
+  const showCommit = hueAdjustment !== 0;
   const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
   const [clusterByDark, setClusterByDark] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
@@ -306,7 +298,6 @@ export function ThemePaletteCard({
               disabled={selectedColorsDisplay.kind === 'none'}
               onClick={() => {
                 if (selectedColorsDisplay.kind === 'none') return;
-                onPalettePickerOpen?.();
                 setColorPickerValue(
                   selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
                 );
@@ -345,26 +336,14 @@ export function ThemePaletteCard({
               <span className="material-symbols-outlined" aria-hidden>colorize</span>
             </button>
           )}
-          <button
-            type="button"
-            className="theme-palette-btn theme-palette-revert-color-btn"
-            disabled={!canRevertPalettePicker}
-            onClick={onRevertPalettePicker}
-            aria-label="Revert last palette color change"
-          >
-            Revert
-          </button>
         </div>
       </div>
       <div className="theme-palette-hue-row">
         <label htmlFor="theme-palette-hue-slider" className="theme-palette-hue-label">
           Hue Adjustment
         </label>
-        {showCommitRevert && (
+        {showCommit && (
           <div className="theme-palette-actions">
-            <button type="button" className="theme-palette-btn" onClick={onRevert} aria-label="Revert hue adjustment">
-              Revert
-            </button>
             <button type="button" className="theme-palette-btn" onClick={onCommit} aria-label="Commit hue adjustment">
               Commit
             </button>

@@ -40,6 +40,12 @@ const electronAPI = {
       sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
       fullBounds: { x: number; y: number; width: number; height: number };
     }>,
+  closeWindow: () => ipcRenderer.invoke('window:close'),
+  minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
+  maximizeWindow: () => ipcRenderer.invoke('window:maximize'),
+  reloadWindow: () => ipcRenderer.invoke('window:reload'),
+  reloadWindowForce: () => ipcRenderer.invoke('window:reloadForce'),
+  toggleDevTools: () => ipcRenderer.invoke('window:toggleDevTools'),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

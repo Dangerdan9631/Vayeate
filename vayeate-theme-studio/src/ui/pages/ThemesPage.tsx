@@ -61,7 +61,6 @@ export function ThemesPage() {
               hueAdjustment={vm.hueAdjustment}
               onHueChange={vm.setHueAdjustment}
               onCommit={vm.commitHueAdjustment}
-              onRevert={vm.revertHueAdjustment}
               applyToDark={vm.applyHueToDark}
               applyToLight={vm.applyHueToLight}
               onApplyToDarkChange={vm.setApplyHueToDark}
@@ -74,9 +73,6 @@ export function ThemesPage() {
               onSetColorRefsChecked={vm.setColorRefsChecked}
               selectedColorsDisplay={vm.selectedColorsDisplay}
               onSetSelectedColors={vm.setSelectedColorsToHex}
-              canRevertPalettePicker={vm.canRevertPalettePicker}
-              onPalettePickerOpen={vm.capturePalettePickerState}
-              onRevertPalettePicker={vm.revertPalettePicker}
             />
           )}
           {vm.theme && vm.theme.templateRef && (

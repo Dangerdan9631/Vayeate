@@ -19,8 +19,6 @@ const defaultPaletteProps = {
   onApplyToLightChange: vi.fn(),
   selectedColorsDisplay: { kind: 'none' as const },
   onSetSelectedColors: vi.fn(),
-  canRevertPalettePicker: false,
-  onRevertPalettePicker: vi.fn(),
 };
 
 function renderCard(overrides: Record<string, unknown> = {}) {
@@ -29,7 +27,6 @@ function renderCard(overrides: Record<string, unknown> = {}) {
       hueAdjustment={0}
       onHueChange={vi.fn()}
       onCommit={vi.fn()}
-      onRevert={vi.fn()}
       {...defaultPaletteProps}
       {...overrides}
     />,
@@ -52,16 +49,14 @@ describe('ThemePaletteCard', () => {
     expect(slider).toHaveValue('0');
   });
 
-  it('does not show Commit or Revert when hueAdjustment is 0', () => {
+  it('does not show Commit when hueAdjustment is 0', () => {
     renderCard();
     expect(screen.queryByRole('button', { name: 'Commit' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Revert' })).not.toBeInTheDocument();
   });
 
-  it('shows Commit and Revert when hueAdjustment is non-zero', () => {
+  it('shows Commit when hueAdjustment is non-zero', () => {
     renderCard({ hueAdjustment: 50 });
     expect(screen.getByRole('button', { name: 'Commit hue adjustment' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Revert hue adjustment' })).toBeInTheDocument();
   });
 
   it('calls onHueChange when slider value changes', () => {
@@ -70,14 +65,6 @@ describe('ThemePaletteCard', () => {
     const slider = screen.getByRole('slider', { name: 'Hue adjustment' });
     fireEvent.change(slider, { target: { value: '50' } });
     expect(onHueChange).toHaveBeenCalledWith(50);
-  });
-
-  it('calls onRevert when Revert is clicked', async () => {
-    const user = userEvent.setup();
-    const onRevert = vi.fn();
-    renderCard({ hueAdjustment: 30, onRevert });
-    await user.click(screen.getByRole('button', { name: 'Revert hue adjustment' }));
-    expect(onRevert).toHaveBeenCalledTimes(1);
   });
 
   it('calls onCommit when Commit is clicked', async () => {
@@ -274,20 +261,6 @@ describe('ThemePaletteCard', () => {
     const swatch = screen.getByRole('button', { name: 'Open color picker for selected variables' });
     expect(swatch).toHaveStyle({ backgroundColor: '#aabbcc' });
     expect(swatch).not.toBeDisabled();
-  });
-
-  it('renders Revert palette button disabled when canRevertPalettePicker is false', () => {
-    renderCard({ canRevertPalettePicker: false });
-    const revertBtn = screen.getByRole('button', { name: 'Revert last palette color change' });
-    expect(revertBtn).toBeDisabled();
-  });
-
-  it('calls onRevertPalettePicker when Revert palette button is clicked and can revert', async () => {
-    const user = userEvent.setup();
-    const onRevertPalettePicker = vi.fn();
-    renderCard({ canRevertPalettePicker: true, onRevertPalettePicker });
-    await user.click(screen.getByRole('button', { name: 'Revert last palette color change' }));
-    expect(onRevertPalettePicker).toHaveBeenCalledTimes(1);
   });
 
   it('opens color picker directly when swatch is clicked and selection is not none', async () => {

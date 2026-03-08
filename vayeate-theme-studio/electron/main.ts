@@ -23,6 +23,9 @@ const TAG = '[Main]';
 /** Project root themes directory (vayeate-theme-studio/../themes). */
 const THEMES_OUTPUT_DIR = join(__dirname, '..', '..', 'themes');
 
+/** App icon path (repo root images/icon.png) for window and dock/taskbar. */
+const APP_ICON_PATH = join(__dirname, '..', '..', 'images', 'icon.png');
+
 let mainWindow: BrowserWindow | null = null;
 
 function getCatalogRepository() {
@@ -46,6 +49,8 @@ function createWindow(): void {
     width: 1024,
     height: 768,
     show: false,
+    frame: false,
+    icon: APP_ICON_PATH,
     webPreferences: {
       preload: join(__dirname, 'preload.mjs'),
       contextIsolation: true,
@@ -53,6 +58,7 @@ function createWindow(): void {
     },
   });
 
+  mainWindow.setMenu(null);
   mainWindow.maximize();
   mainWindow.show();
 
@@ -280,6 +286,37 @@ app.whenReady().then(async () => {
     const text = await response.text();
     console.debug(TAG, 'IPC net:fetch →', text.length, 'chars');
     return text;
+  });
+
+  ipcMain.handle('window:close', () => {
+    mainWindow?.close();
+  });
+
+  ipcMain.handle('window:minimize', () => {
+    mainWindow?.minimize();
+  });
+
+  ipcMain.handle('window:maximize', () => {
+    if (mainWindow?.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow?.maximize();
+    }
+  });
+
+  ipcMain.handle('window:reload', () => {
+    mainWindow?.reload();
+  });
+
+  ipcMain.handle('window:reloadForce', async () => {
+    if (mainWindow) {
+      await mainWindow.webContents.session.clearCache();
+      mainWindow.reload();
+    }
+  });
+
+  ipcMain.handle('window:toggleDevTools', () => {
+    mainWindow?.webContents.toggleDevTools();
   });
 
   createWindow();

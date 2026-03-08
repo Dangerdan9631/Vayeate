@@ -27,6 +27,7 @@ import {
   TemplatesStateContext,
   ThemesStateContext,
 } from './slice-contexts';
+import { UndoProvider } from './UndoContext';
 
 const log = createLogger('AppContext');
 
@@ -361,6 +362,11 @@ function createActionProcessor() {
           ? `${loadedTheme.colorAssignments.length} color, ${loadedTheme.contrastAssignments.length} contrast`
           : '(not found)');
         setState({ type: 'SET_THEME', theme: loadedTheme });
+        setState({
+          type: 'SET_THEME_PANE_SELECTIONS',
+          checkedColorRefs: loadedTheme ? loadedTheme.colorAssignments.map((a) => a.colorRef) : [],
+          checkedContrastRefs: loadedTheme ? loadedTheme.contrastAssignments.map((a) => a.contrastVariableRef) : [],
+        });
         break;
       }
 
@@ -384,6 +390,11 @@ function createActionProcessor() {
           await refreshThemeRefsOnly(setState);
           setState({ type: 'SET_THEME', theme: newTheme });
           setState({ type: 'SET_SELECTED_THEME_REF', ref: { name: newTheme.name, version: newTheme.version } });
+          setState({
+            type: 'SET_THEME_PANE_SELECTIONS',
+            checkedColorRefs: newTheme.colorAssignments.map((a) => a.colorRef),
+            checkedContrastRefs: newTheme.contrastAssignments.map((a) => a.contrastVariableRef),
+          });
         } finally {
           setState({ type: 'SET_THEME_IS_CREATING', value: false });
         }
@@ -411,6 +422,39 @@ function createActionProcessor() {
         break;
       }
 
+      case 'THEME_PANE_SELECTIONS_CHANGED': {
+        setState({
+          type: 'SET_THEME_PANE_SELECTIONS',
+          checkedColorRefs: action.checkedColorRefs,
+          checkedContrastRefs: action.checkedContrastRefs,
+        });
+        break;
+      }
+
+      case 'RESTORE_THEME_STATE': {
+        if (action.theme !== undefined) {
+          setState({ type: 'SET_THEME', theme: action.theme });
+        }
+        if (action.checkedColorRefs !== undefined && action.checkedContrastRefs !== undefined) {
+          setState({
+            type: 'SET_THEME_PANE_SELECTIONS',
+            checkedColorRefs: action.checkedColorRefs,
+            checkedContrastRefs: action.checkedContrastRefs,
+          });
+        }
+        break;
+      }
+
+      case 'RESTORE_TEMPLATE_STATE': {
+        setState({ type: 'SET_TEMPLATE', template: action.template });
+        break;
+      }
+
+      case 'RESTORE_CATALOG_STATE': {
+        setState({ type: 'SET_CATALOG', catalog: action.catalog });
+        break;
+      }
+
       case 'DELETE_THEME_VERSION': {
         log.debug('DELETE_THEME_VERSION', action.name, `v${action.version}`);
         await themeService.deleteTheme(action.name, action.version);
@@ -430,10 +474,18 @@ function createActionProcessor() {
           setState({ type: 'SET_SELECTED_THEME_REF', ref: nextTh });
           const loadedNextTh = await themeService.loadTheme(nextTh.name, nextTh.version);
           setState({ type: 'SET_THEME', theme: loadedNextTh });
+          if (loadedNextTh) {
+            setState({
+              type: 'SET_THEME_PANE_SELECTIONS',
+              checkedColorRefs: loadedNextTh.colorAssignments.map((a) => a.colorRef),
+              checkedContrastRefs: loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
+            });
+          }
         } else {
           log.debug('DELETE_THEME_VERSION no remaining versions, clearing selection');
           setState({ type: 'SET_SELECTED_THEME_REF', ref: null });
           setState({ type: 'SET_THEME', theme: null });
+          setState({ type: 'SET_THEME_PANE_SELECTIONS', checkedColorRefs: [], checkedContrastRefs: [] });
         }
         break;
       }
@@ -504,7 +556,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           <CatalogsStateContext.Provider value={state.catalogs}>
             <TemplatesStateContext.Provider value={state.templates}>
               <ThemesStateContext.Provider value={state.themes}>
-                {children}
+                <UndoProvider>{children}</UndoProvider>
               </ThemesStateContext.Provider>
             </TemplatesStateContext.Provider>
           </CatalogsStateContext.Provider>

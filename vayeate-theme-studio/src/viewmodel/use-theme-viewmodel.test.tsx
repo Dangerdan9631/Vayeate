@@ -412,25 +412,6 @@ describe('useThemeViewModel hue adjustment', () => {
     expect(result.current.displayColorAssignments[0].dark!.value).not.toBe(originalDark);
   });
 
-  it('revertHueAdjustment resets hue to 0', async () => {
-    const { Wrapper, getDispatch } = harness();
-    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
-    await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
-    });
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 150));
-    });
-    await act(async () => {
-      result.current.setHueAdjustment(30);
-    });
-    expect(result.current.hueAdjustment).toBe(30);
-    await act(async () => {
-      result.current.revertHueAdjustment();
-    });
-    expect(result.current.hueAdjustment).toBe(0);
-  });
-
   it('commitHueAdjustment persists shifted colors and resets hue', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
@@ -785,7 +766,7 @@ describe('useThemeViewModel variable selection', () => {
   });
 });
 
-describe('useThemeViewModel palette color picker and revert', () => {
+describe('useThemeViewModel palette color picker', () => {
   const themeWithTwoColors: Theme = {
     name: 'pal-theme',
     version: '1.0.0',
@@ -880,7 +861,7 @@ describe('useThemeViewModel palette color picker and revert', () => {
     expect(result.current.selectedColorsDisplay).toEqual({ kind: 'mixed' });
   });
 
-  it('setSelectedColorsToHex updates dark for all checked refs and enables revert', async () => {
+  it('setSelectedColorsToHex updates dark for all checked refs', async () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
@@ -888,87 +869,11 @@ describe('useThemeViewModel palette color picker and revert', () => {
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
-    });
-    expect(result.current.canRevertPalettePicker).toBe(false);
-    await act(async () => {
-      result.current.capturePalettePickerState();
     });
     await act(async () => {
       result.current.setSelectedColorsToHex('#0000ff');
     });
     expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
     expect(result.current.theme!.colorAssignments[1].dark!.value).toBe('#0000ff');
-    expect(result.current.canRevertPalettePicker).toBe(true);
-  });
-
-  it('revertPalettePicker restores colorAssignments and disables revert', async () => {
-    const { Wrapper, getDispatch } = harness();
-    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
-    await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
-    });
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 150));
-    });
-    await act(async () => {
-      result.current.capturePalettePickerState();
-    });
-    await act(async () => {
-      result.current.setSelectedColorsToHex('#0000ff');
-    });
-    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#0000ff');
-    await act(async () => {
-      result.current.revertPalettePicker();
-    });
-    expect(result.current.theme!.colorAssignments[0].dark!.value).toBe('#ff0000');
-    expect(result.current.theme!.colorAssignments[1].dark!.value).toBe('#00ff00');
-    expect(result.current.canRevertPalettePicker).toBe(false);
-  });
-
-  it('canRevertPalettePicker becomes false after updateColorAssignmentDark', async () => {
-    const { Wrapper, getDispatch } = harness();
-    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
-    await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
-    });
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 150));
-    });
-    await act(async () => {
-      result.current.capturePalettePickerState();
-    });
-    await act(async () => {
-      result.current.setSelectedColorsToHex('#0000ff');
-    });
-    expect(result.current.canRevertPalettePicker).toBe(true);
-    await act(async () => {
-      result.current.updateColorAssignmentDark('primary', '#111111');
-    });
-    expect(result.current.canRevertPalettePicker).toBe(false);
-  });
-
-  it('canRevertPalettePicker becomes false after commitHueAdjustment', async () => {
-    const { Wrapper, getDispatch } = harness();
-    const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
-    await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
-    });
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 150));
-    });
-    await act(async () => {
-      result.current.capturePalettePickerState();
-    });
-    await act(async () => {
-      result.current.setSelectedColorsToHex('#0000ff');
-    });
-    expect(result.current.canRevertPalettePicker).toBe(true);
-    await act(async () => {
-      result.current.setHueAdjustment(20);
-    });
-    await act(async () => {
-      result.current.commitHueAdjustment();
-    });
-    expect(result.current.canRevertPalettePicker).toBe(false);
   });
 });

@@ -34,6 +34,12 @@ declare global {
         sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
         fullBounds: { x: number; y: number; width: number; height: number };
       }>;
+      closeWindow?: () => Promise<void>;
+      minimizeWindow?: () => Promise<void>;
+      maximizeWindow?: () => Promise<void>;
+      reloadWindow?: () => Promise<void>;
+      reloadWindowForce?: () => Promise<void>;
+      toggleDevTools?: () => Promise<void>;
     };
   }
 }

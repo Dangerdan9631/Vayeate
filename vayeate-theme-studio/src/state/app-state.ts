@@ -29,6 +29,10 @@ export interface ThemesState {
   themeRefs: ThemeReference[];
   selectedRef: ThemeReference | null;
   theme: Theme | null;
+  /** Checked color variable refs for palette/undo (theme pane selection). */
+  checkedColorRefs: string[];
+  /** Checked contrast variable refs for theme pane selection. */
+  checkedContrastRefs: string[];
   isCreating: boolean;
   createDialogOpen: boolean;
   generateResult: GenerateResult | null;
@@ -68,6 +72,8 @@ export const initialAppState: AppState = {
     themeRefs: [],
     selectedRef: null,
     theme: null,
+    checkedColorRefs: [],
+    checkedContrastRefs: [],
     isCreating: false,
     createDialogOpen: false,
     generateResult: null,
@@ -94,6 +100,7 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_REFS'; refs: ThemeReference[] }
   | { type: 'SET_SELECTED_THEME_REF'; ref: ThemeReference | null }
   | { type: 'SET_THEME'; theme: Theme | null }
+  | { type: 'SET_THEME_PANE_SELECTIONS'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
   | { type: 'SET_THEME_IS_CREATING'; value: boolean }
   | { type: 'SET_THEME_CREATE_DIALOG_OPEN'; value: boolean }
   | { type: 'SET_GENERATE_RESULT'; result: GenerateResult | null }
@@ -131,6 +138,15 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, selectedRef: update.ref } };
     case 'SET_THEME':
       return { ...state, themes: { ...state.themes, theme: update.theme } };
+    case 'SET_THEME_PANE_SELECTIONS':
+      return {
+        ...state,
+        themes: {
+          ...state.themes,
+          checkedColorRefs: update.checkedColorRefs,
+          checkedContrastRefs: update.checkedContrastRefs,
+        },
+      };
     case 'SET_THEME_IS_CREATING':
       return { ...state, themes: { ...state.themes, isCreating: update.value } };
     case 'SET_THEME_CREATE_DIALOG_OPEN':
@@ -174,6 +190,8 @@ function updatePayloadSummary(update: AppStateUpdate): string {
       return update.ref ? `${update.ref.name} v${update.ref.version}` : '(none)';
     case 'SET_THEME':
       return update.theme ? `${update.theme.name} v${update.theme.version} (${update.theme.colorAssignments.length} color, ${update.theme.contrastAssignments.length} contrast)` : '(none)';
+    case 'SET_THEME_PANE_SELECTIONS':
+      return `colors=${update.checkedColorRefs.length} contrast=${update.checkedContrastRefs.length}`;
     case 'SET_THEME_IS_CREATING':
     case 'SET_THEME_CREATE_DIALOG_OPEN':
       return String(update.value);
