@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { EditorPreviewsCard } from './EditorPreviewsCard';
 import type {
@@ -81,7 +82,37 @@ describe('EditorPreviewsCard', () => {
 
   it('shows all preview blocks after load', async () => {
     render(<EditorPreviewsCard {...makeProps()} />);
-    const labels = await screen.findAllByText('typescript / example.ts');
+    const labels = await screen.findAllByText('typescript');
     expect(labels.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('shows sticky bar with current sample name when previews are loaded', async () => {
+    const { container } = render(<EditorPreviewsCard {...makeProps()} />);
+    await screen.findAllByText('typescript');
+    const stickyLabels = container.querySelectorAll('.theme-preview-sticky-bar-label');
+    expect(stickyLabels).toHaveLength(2);
+  });
+
+  it('opens sample dropdown when Show sample list button is clicked', async () => {
+    const user = userEvent.setup();
+    render(<EditorPreviewsCard {...makeProps()} />);
+    await screen.findByLabelText('Show sample list');
+    await user.click(screen.getByLabelText('Show sample list'));
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'typescript' })).toBeInTheDocument();
+  });
+
+  it('closes dropdown and scrolls to sample when a sample is selected', async () => {
+    const user = userEvent.setup();
+    vi.mocked(previewService.loadPreviews).mockResolvedValue([
+      mockPreview,
+      { ...mockPreview, language: 'javascript', fileName: 'other.js', lines: mockPreview.lines },
+    ]);
+    render(<EditorPreviewsCard {...makeProps()} />);
+    await screen.findByLabelText('Show sample list');
+    await user.click(screen.getByLabelText('Show sample list'));
+    const option = await screen.findByRole('option', { name: 'javascript' });
+    await user.click(option);
+    expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
 });

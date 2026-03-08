@@ -260,11 +260,15 @@ export function EditorPreviewsCard({
   const darkScrollRef = useRef<HTMLDivElement | null>(null);
   const lightScrollRef = useRef<HTMLDivElement | null>(null);
   const isSyncingScrollRef = useRef(false);
+  const [sampleDropdownOpen, setSampleDropdownOpen] = useState(false);
+  const sampleDropdownRef = useRef<HTMLDivElement | null>(null);
+  /** Track scroll position so sticky bar label updates reliably when the user scrolls. */
+  const [scrollTop, setScrollTop] = useState(0);
 
   const virtualizer = useVirtualizer({
     count: previews.length,
     getScrollElement: () => darkScrollRef.current,
-    estimateSize: () => 200,
+    estimateSize: () => 212,
     overscan: 2,
   });
   const virtualItems = virtualizer.getVirtualItems();
@@ -275,10 +279,43 @@ export function EditorPreviewsCard({
       ? previews.map((_, i) => i).slice(0, 10)
       : null;
 
+  /** Index of the sample at the top of the scroll view (for sticky bar label). Use the item that contains scrollTop, or the last item that starts before scrollTop (e.g. when in padding between items). */
+  const currentSampleIndex = (() => {
+    const containing = virtualItems.find((item) => scrollTop >= item.start && scrollTop < item.end);
+    if (containing != null) return containing.index;
+    const lastBefore = virtualItems.filter((item) => item.start <= scrollTop).pop();
+    return lastBefore?.index ?? virtualItems[0]?.index ?? fallbackIndices?.[0] ?? 0;
+  })();
+  const currentPreview = previews[currentSampleIndex];
+
+  useEffect(() => {
+    if (!sampleDropdownOpen) return;
+    function handleClickOutside(e: MouseEvent) {
+      const el = sampleDropdownRef.current;
+      if (el && !el.contains(e.target as Node)) setSampleDropdownOpen(false);
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [sampleDropdownOpen]);
+
+  const scrollToSample = (index: number) => {
+    virtualizer.scrollToIndex(index, { align: 'start' });
+    isSyncingScrollRef.current = true;
+    requestAnimationFrame(() => {
+      const dark = darkScrollRef.current;
+      const light = lightScrollRef.current;
+      if (dark) setScrollTop(dark.scrollTop);
+      if (dark && light) light.scrollTop = dark.scrollTop;
+      isSyncingScrollRef.current = false;
+    });
+    setSampleDropdownOpen(false);
+  };
+
   const handleDarkScroll = () => {
-    if (isSyncingScrollRef.current) return;
     const el = darkScrollRef.current;
     const other = lightScrollRef.current;
+    if (el) setScrollTop(el.scrollTop);
+    if (isSyncingScrollRef.current) return;
     if (!el || !other) return;
     isSyncingScrollRef.current = true;
     other.scrollTop = el.scrollTop;
@@ -289,9 +326,10 @@ export function EditorPreviewsCard({
   };
 
   const handleLightScroll = () => {
-    if (isSyncingScrollRef.current) return;
     const el = lightScrollRef.current;
     const other = darkScrollRef.current;
+    if (other) setScrollTop(other.scrollTop);
+    if (isSyncingScrollRef.current) return;
     if (!el || !other) return;
     isSyncingScrollRef.current = true;
     other.scrollTop = el.scrollTop;
@@ -305,53 +343,53 @@ export function EditorPreviewsCard({
     <div className="tokens-card theme-previews-card">
       <h2>Editor Previews</h2>
 
-      <label className="field-row">
-        <span className="field-label">IDE Primary Color Variable</span>
-        <select
-          className="field-select"
-          value={idePrimaryColorRef ?? ''}
-          onChange={(e) => onChangeIdePrimaryColorRef(e.target.value || null)}
-        >
-          <option value="">— select —</option>
-          {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
-            <option key={key} value={key}>
-              {key}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label className="field-row">
-        <span className="field-label">IDE Primary Contrast Variable</span>
-        <select
-          className="field-select"
-          value={idePrimaryColorContrastRef ?? ''}
-          onChange={(e) => onChangeIdePrimaryColorContrastRef(e.target.value || null)}
-        >
-          <option value="">— select —</option>
-          {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
-            <option key={v.key} value={v.key}>
-              {v.key}
-            </option>
-          ))}
-        </select>
-      </label>
-
-      <label className="field-row">
-        <span className="field-label">Theme Background Color Variable</span>
-        <select
-          className="field-select"
-          value={themeBackgroundColorRef ?? ''}
-          onChange={(e) => onChangeThemeBackgroundColorRef(e.target.value || null)}
-        >
-          <option value="">— select —</option>
-          {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
-            <option key={key} value={key}>
-              {key}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="theme-preview-fields-row">
+        <label className="field-row theme-preview-field">
+          <span className="field-label">IDE Primary Color Variable</span>
+          <select
+            className="field-select"
+            value={idePrimaryColorRef ?? ''}
+            onChange={(e) => onChangeIdePrimaryColorRef(e.target.value || null)}
+          >
+            <option value="">— select —</option>
+            {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field-row theme-preview-field">
+          <span className="field-label">IDE Primary Contrast Variable</span>
+          <select
+            className="field-select"
+            value={idePrimaryColorContrastRef ?? ''}
+            onChange={(e) => onChangeIdePrimaryColorContrastRef(e.target.value || null)}
+          >
+            <option value="">— select —</option>
+            {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
+              <option key={v.key} value={v.key}>
+                {v.key}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="field-row theme-preview-field">
+          <span className="field-label">Theme Background Color Variable</span>
+          <select
+            className="field-select"
+            value={themeBackgroundColorRef ?? ''}
+            onChange={(e) => onChangeThemeBackgroundColorRef(e.target.value || null)}
+          >
+            <option value="">— select —</option>
+            {[...colorVariableKeys].sort((a, b) => a.localeCompare(b)).map((key) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       {loadError && (
         <p className="theme-preview-error" role="alert">
@@ -362,6 +400,44 @@ export function EditorPreviewsCard({
       <div className="theme-preview-columns">
         <div className="theme-preview-col" style={{ backgroundColor: darkColumnBg, color: darkTextColor }}>
           <h3 className="theme-preview-heading">Dark</h3>
+          {previews.length > 0 && (
+            <div
+              className="theme-preview-sticky-bar"
+              style={{ backgroundColor: darkColumnBg, color: darkTextColor }}
+              ref={sampleDropdownRef}
+            >
+              <span className="theme-preview-sticky-bar-label">
+                {currentPreview ? currentPreview.language : ''}
+              </span>
+              <div className="theme-preview-sample-dropdown-wrap">
+                <button
+                  type="button"
+                  className="theme-preview-sample-dropdown-btn"
+                  onClick={() => setSampleDropdownOpen((v) => !v)}
+                  aria-expanded={sampleDropdownOpen}
+                  aria-haspopup="listbox"
+                  aria-label="Show sample list"
+                >
+                  <span className="material-symbols-outlined" aria-hidden>list</span>
+                </button>
+                {sampleDropdownOpen && (
+                  <div className="theme-preview-sample-dropdown" role="listbox">
+                    {previews.map((p, i) => (
+                      <button
+                        key={`${p.language}/${p.fileName}`}
+                        type="button"
+                        role="option"
+                        className="theme-preview-sample-dropdown-item"
+                        onClick={() => scrollToSample(i)}
+                      >
+                        {p.language}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
           <div
             ref={darkScrollRef}
             className="theme-preview-column-inner"
@@ -381,7 +457,7 @@ export function EditorPreviewsCard({
                 return (
                   <div key={key} className="theme-preview-block">
                     <div className="theme-preview-block-label">
-                      {preview.language} / {preview.fileName}
+                      {preview.language}
                     </div>
                     <pre
                       className="theme-preview-code"
@@ -421,7 +497,7 @@ export function EditorPreviewsCard({
                       }}
                     >
                       <div className="theme-preview-block-label">
-                        {preview.language} / {preview.fileName}
+                        {preview.language}
                       </div>
                       <pre
                         className="theme-preview-code"
@@ -443,6 +519,16 @@ export function EditorPreviewsCard({
         </div>
         <div className="theme-preview-col" style={{ backgroundColor: lightColumnBg, color: lightTextColor }}>
           <h3 className="theme-preview-heading">Light</h3>
+          {previews.length > 0 && (
+            <div
+              className="theme-preview-sticky-bar"
+              style={{ backgroundColor: lightColumnBg, color: lightTextColor }}
+            >
+              <span className="theme-preview-sticky-bar-label">
+                {currentPreview ? currentPreview.language : ''}
+              </span>
+            </div>
+          )}
           <div
             ref={lightScrollRef}
             className="theme-preview-column-inner"
@@ -462,7 +548,7 @@ export function EditorPreviewsCard({
                 return (
                   <div key={key} className="theme-preview-block">
                     <div className="theme-preview-block-label">
-                      {preview.language} / {preview.fileName}
+                      {preview.language}
                     </div>
                     <pre
                       className="theme-preview-code"
@@ -500,7 +586,7 @@ export function EditorPreviewsCard({
                       }}
                     >
                       <div className="theme-preview-block-label">
-                        {preview.language} / {preview.fileName}
+                        {preview.language}
                       </div>
                       <pre
                         className="theme-preview-code"
