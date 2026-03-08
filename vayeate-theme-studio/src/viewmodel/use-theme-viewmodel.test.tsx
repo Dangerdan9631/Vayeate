@@ -132,6 +132,8 @@ describe('useThemeViewModel', () => {
       ],
       contrastVariables: [],
       groups: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
     };
 
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
@@ -205,6 +207,8 @@ describe('mergeAssignmentsFromTemplate', () => {
       { key: 'textContrast', comparisonSourceRef: 'primary', groupRef: null },
     ],
     groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
   };
 
   it('adds new color assignments for template variables', () => {

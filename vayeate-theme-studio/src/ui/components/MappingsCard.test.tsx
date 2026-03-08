@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import { MappingsCard } from './MappingsCard';
 import type { Mapping, TokenType } from '../../model/schemas';
@@ -105,5 +104,57 @@ describe('MappingsCard', () => {
     expect(addButtons.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('button', { name: /modifiers/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /language/i })).toBeInTheDocument();
+  });
+
+  it('shows virtual * block when semanticVariant is provided even with no semantic token mappings', () => {
+    render(
+      <MappingsCard
+        {...defaultProps}
+        mappingsByType={{
+          theme: [],
+          'textmate token': [],
+          'semantic token': [],
+        }}
+        semanticVariant={{
+          semanticTokenModifiers: [],
+          semanticTokenLanguages: [],
+          onAddSemanticVariant: vi.fn(),
+          onUpdateSemanticVariantKey: vi.fn(),
+        }}
+      />,
+    );
+    expect(screen.getByText('Semantic Tokens')).toBeInTheDocument();
+    expect(screen.getByTitle('*')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /add semantic token variant/i })).toBeInTheDocument();
+  });
+
+  it('shows group dropdown for * variants (e.g. *.readonly)', () => {
+    render(
+      <MappingsCard
+        {...defaultProps}
+        mappingsByType={{
+          theme: [],
+          'textmate token': [],
+          'semantic token': [
+            mapping('*.readonly', 'semantic token', { groupRef: 'g1' }),
+          ],
+        }}
+        groups={['g1', 'g2']}
+        semanticVariant={{
+          semanticTokenModifiers: ['readonly'],
+          semanticTokenLanguages: [],
+          onAddSemanticVariant: vi.fn(),
+          onUpdateSemanticVariantKey: vi.fn(),
+        }}
+      />,
+    );
+    expect(screen.getAllByTitle('*').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByTitle('*.readonly')).toBeInTheDocument();
+    const groupSelects = screen.getAllByTitle('Group');
+    expect(groupSelects.length).toBeGreaterThanOrEqual(1);
+    const variantWrapper = document.querySelector('.mapping-variant-wrapper');
+    expect(variantWrapper).toBeInTheDocument();
+    const groupSelectInVariant = variantWrapper?.querySelector('select[title="Group"]');
+    expect(groupSelectInVariant).toBeInTheDocument();
   });
 });

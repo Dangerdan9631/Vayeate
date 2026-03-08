@@ -3,7 +3,7 @@ import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/conte
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { createLogger } from '../utils/logger';
 import { catalogService } from '../services/catalog-service';
-import { formatSemanticSelector, parseSemanticSelector } from '../core/semantic-token';
+import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../core/semantic-token';
 import type {
   CatalogReference,
   ColorVariable,
@@ -451,7 +451,7 @@ export function useTemplateViewModel() {
   );
 
   const addSemanticVariantMapping = useCallback(
-    (type: string, modifiers: string[], language: string | null) => {
+    (type: string, modifiers: string[], language: string | null, defaultGroupRef?: string | null) => {
       if (!template) return;
       const base = getBaseForEdit(template);
       const baseMapping = base.mappings.find(
@@ -469,11 +469,15 @@ export function useTemplateViewModel() {
         if (existing) return;
       }
       log.debug('addSemanticVariantMapping', key);
+      const groupRef =
+        type === SEMANTIC_WILDCARD_TYPE && defaultGroupRef !== undefined
+          ? defaultGroupRef
+          : (baseMapping?.groupRef ?? null);
       const newMapping: Mapping = {
         token: { key, type: 'semantic token' },
         colorVariableRef: null,
         contrastVariableRef: null,
-        groupRef: baseMapping?.groupRef ?? null,
+        groupRef,
       };
       const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
       const newLanguages =
@@ -869,7 +873,8 @@ export function computeOrphanKeys(
     if (m.token.type === 'semantic token' && typesSet && modifiersSet && languagesSet) {
       try {
         const parsed = parseSemanticSelector(m.token.key);
-        const typeOk = typesSet.has(parsed.type);
+        const typeOk =
+          parsed.type === SEMANTIC_WILDCARD_TYPE || typesSet.has(parsed.type);
         const modOk = parsed.modifiers.every((mod) => modifiersSet.has(mod));
         const langOk = !parsed.language || languagesSet.has(parsed.language);
         if (typeOk && modOk && langOk) continue;

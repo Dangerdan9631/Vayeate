@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { formatSemanticSelector, parseSemanticSelector } from '../../core/semantic-token';
+import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../core/semantic-token';
 import type {
   ColorVariable,
   ColorVariableKey,
@@ -14,12 +14,25 @@ const UNGROUPED_KEY = '__ungrouped__';
 /** Placeholder modifier prefix for empty variant rows; filter out for display and when updating. */
 const EMPTY_VARIANT_MODIFIER_PREFIX = 'empty-';
 
+/** Virtual base for "*" (display-only; never persisted). */
+const VIRTUAL_STAR_BASE: Mapping = {
+  token: { key: SEMANTIC_WILDCARD_TYPE, type: 'semantic token' },
+  colorVariableRef: null,
+  contrastVariableRef: null,
+  groupRef: null,
+};
+
 const DISPLAYED_TOKEN_TYPES: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 
 export interface SemanticVariantProps {
   semanticTokenModifiers: readonly string[];
   semanticTokenLanguages: readonly string[];
-  onAddSemanticVariant: (type: string, modifiers: string[], language: string | null) => void;
+  onAddSemanticVariant: (
+    type: string,
+    modifiers: string[],
+    language: string | null,
+    defaultGroupRef?: string | null,
+  ) => void;
   onUpdateSemanticVariantKey: (
     oldKey: string,
     modifiers: string[],
@@ -64,6 +77,7 @@ function buildSemanticBlocks(mappings: Mapping[]): SemanticBlock[] {
   const variantsByType = new Map<string, Mapping[]>();
   for (const m of mappings) {
     if (m.token.type !== 'semantic token') continue;
+    if (m.token.key === SEMANTIC_WILDCARD_TYPE) continue;
     let parsed: { type: string; modifiers: string[]; language: string | null };
     try {
       parsed = parseSemanticSelector(m.token.key);
@@ -88,10 +102,15 @@ function buildSemanticBlocks(mappings: Mapping[]): SemanticBlock[] {
     const variants = (variantsByType.get(type) ?? []).slice().sort((a, b) => a.token.key.localeCompare(b.token.key));
     blocks.push({ base, variants });
   }
+  const starVariants = (variantsByType.get(SEMANTIC_WILDCARD_TYPE) ?? [])
+    .slice()
+    .sort((a, b) => a.token.key.localeCompare(b.token.key));
+  blocks.push({ base: VIRTUAL_STAR_BASE, variants: starVariants });
   return blocks;
 }
 
 function GroupSection({
+  groupKey,
   groupLabel,
   byType,
   groups,
@@ -105,6 +124,7 @@ function GroupSection({
   semanticVariant,
   onRemoveMapping,
 }: {
+  groupKey: string;
   groupLabel: string;
   byType: Record<TokenType, Mapping[]>;
   groups: readonly string[];
@@ -123,6 +143,7 @@ function GroupSection({
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
 }) {
+  const sectionGroupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
   const [collapsed, setCollapsed] = useState(false);
   const totalInGroup = DISPLAYED_TOKEN_TYPES.reduce((sum, tt) => sum + byType[tt].length, 0);
 
@@ -142,12 +163,16 @@ function GroupSection({
       {!collapsed && (
         <div className="tree-children">
           {DISPLAYED_TOKEN_TYPES.map((tt) => {
-            if (byType[tt].length === 0) return null;
+            const hasMappings = byType[tt].length > 0;
+            const showSemanticWithVirtual =
+              tt === 'semantic token' && semanticVariant !== undefined;
+            if (!hasMappings && !showSemanticWithVirtual) return null;
             return (
               <MappingTypeSection
                 key={tt}
                 tokenType={tt}
                 mappings={byType[tt]}
+                sectionGroupRef={sectionGroupRef}
                 groups={groups}
                 colorVariables={colorVariables}
                 contrastVariables={contrastVariables}
@@ -170,6 +195,7 @@ function GroupSection({
 function MappingTypeSection({
   tokenType,
   mappings,
+  sectionGroupRef,
   groups,
   colorVariables,
   contrastVariables,
@@ -183,6 +209,7 @@ function MappingTypeSection({
 }: {
   tokenType: TokenType;
   mappings: Mapping[];
+  sectionGroupRef: string | null;
   groups: readonly string[];
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
@@ -228,6 +255,7 @@ function MappingTypeSection({
                 key={base.token.key}
                 base={base}
                 variants={variants}
+                sectionGroupRef={sectionGroupRef}
                 groups={groups}
                 colorVariables={colorVariables}
                 contrastVariables={contrastVariables}
@@ -325,9 +353,6 @@ function MappingTypeSection({
               );
             })
           )}
-          {mappings.length === 0 && (
-            <div className="empty-hint">No mappings for this type.</div>
-          )}
         </div>
       )}
     </div>
@@ -337,6 +362,7 @@ function MappingTypeSection({
 function SemanticBlockRows({
   base,
   variants,
+  sectionGroupRef,
   groups,
   colorVariables,
   contrastVariables,
@@ -350,6 +376,7 @@ function SemanticBlockRows({
 }: {
   base: Mapping;
   variants: Mapping[];
+  sectionGroupRef: string | null;
   groups: readonly string[];
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
@@ -367,8 +394,9 @@ function SemanticBlockRows({
   onRemoveMapping: (tokenKey: string, tokenType: TokenType) => void;
 }) {
   const baseKey = `${base.token.type}::${base.token.key}`;
-  const isBaseOrphan = orphanKeys.has(baseKey);
-  const isBaseBlockingLock = !base.colorVariableRef;
+  const isVirtualStarBase = base.token.key === SEMANTIC_WILDCARD_TYPE;
+  const isBaseOrphan = !isVirtualStarBase && orphanKeys.has(baseKey);
+  const isBaseBlockingLock = !isVirtualStarBase && !base.colorVariableRef;
   const type = base.token.key;
 
   const [openModifierKey, setOpenModifierKey] = useState<string | null>(null);
@@ -389,26 +417,46 @@ function SemanticBlockRows({
   return (
     <div className="mapping-semantic-block">
       <div
-        className={`mapping-row mapping-row-base ${isBaseOrphan ? 'mapping-orphan' : ''} ${isBaseBlockingLock ? 'mapping-blocking-lock' : ''}`}
+        className={`mapping-row mapping-row-base ${isVirtualStarBase ? 'mapping-row-virtual-star ' : ''}${isBaseOrphan ? 'mapping-orphan' : ''} ${isBaseBlockingLock ? 'mapping-blocking-lock' : ''}`}
       >
-        <select
-          className="field-select mapping-var-select mapping-col-group"
-          value={base.groupRef ?? ''}
-          disabled={!canEdit}
-          onChange={(e) =>
-            onUpdateGroupRef(base.token.key, base.token.type, e.target.value || null)
-          }
-          title="Group"
-        >
-          <option value="">Ungrouped</option>
-          {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
-          ))}
-        </select>
+        {isVirtualStarBase ? (
+          <select
+            className="field-select mapping-var-select mapping-col-group mapping-col-group-virtual"
+            value={sectionGroupRef ?? ''}
+            disabled
+            title="Group (virtual * base)"
+            aria-label="Group for wildcard variants"
+          >
+            <option value="">Ungrouped</option>
+            {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <select
+            className="field-select mapping-var-select mapping-col-group"
+            value={base.groupRef ?? ''}
+            disabled={!canEdit}
+            onChange={(e) =>
+              onUpdateGroupRef(base.token.key, base.token.type, e.target.value || null)
+            }
+            title="Group"
+          >
+            <option value="">Ungrouped</option>
+            {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        )}
         <div className="mapping-col-name">
-          <span className="mapping-token-name" title={base.token.key}>
+          <span
+            className={`mapping-token-name${isVirtualStarBase ? ' mapping-token-name-virtual' : ''}`}
+            title={base.token.key}
+          >
             {base.token.key}
           </span>
           {isBaseOrphan && (
@@ -420,51 +468,67 @@ function SemanticBlockRows({
             </span>
           )}
         </div>
-        <select
-          className="field-select mapping-var-select mapping-col-color"
-          value={base.colorVariableRef ?? ''}
-          disabled={!canEdit}
-          onChange={(e) =>
-            onUpdateColorRef(
-              base.token.key,
-              base.token.type,
-              e.target.value || null,
-              isBaseOrphan,
-            )
-          }
-        >
-          <option value="">— color —</option>
-          {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
-            <option key={v.key} value={v.key}>
-              {v.key}
-            </option>
-          ))}
-        </select>
-        <select
-          className="field-select mapping-var-select mapping-col-contrast"
-          value={base.contrastVariableRef ?? ''}
-          disabled={!canEdit}
-          onChange={(e) =>
-            onUpdateContrastRef(
-              base.token.key,
-              base.token.type,
-              e.target.value || null,
-            )
-          }
-        >
-          <option value="">— contrast —</option>
-          {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
-            <option key={v.key} value={v.key}>
-              {v.key}
-            </option>
-          ))}
-        </select>
+        {isVirtualStarBase ? (
+          <>
+            <div className="mapping-col-color" aria-hidden="true" />
+            <div className="mapping-col-contrast" aria-hidden="true" />
+          </>
+        ) : (
+          <>
+            <select
+              className="field-select mapping-var-select mapping-col-color"
+              value={base.colorVariableRef ?? ''}
+              disabled={!canEdit}
+              onChange={(e) =>
+                onUpdateColorRef(
+                  base.token.key,
+                  base.token.type,
+                  e.target.value || null,
+                  isBaseOrphan,
+                )
+              }
+            >
+              <option value="">— color —</option>
+              {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
+                <option key={v.key} value={v.key}>
+                  {v.key}
+                </option>
+              ))}
+            </select>
+            <select
+              className="field-select mapping-var-select mapping-col-contrast"
+              value={base.contrastVariableRef ?? ''}
+              disabled={!canEdit}
+              onChange={(e) =>
+                onUpdateContrastRef(
+                  base.token.key,
+                  base.token.type,
+                  e.target.value || null,
+                )
+              }
+            >
+              <option value="">— contrast —</option>
+              {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
+                <option key={v.key} value={v.key}>
+                  {v.key}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
         {canEdit && semanticVariant && (
           <div className="mapping-row-add-variant-wrap mapping-col-action">
             <button
               type="button"
               className="mapping-row-add-variant-btn"
-              onClick={() => semanticVariant.onAddSemanticVariant(type, [], null)}
+              onClick={() =>
+                semanticVariant.onAddSemanticVariant(
+                  type,
+                  [],
+                  null,
+                  type === SEMANTIC_WILDCARD_TYPE ? sectionGroupRef : undefined,
+                )
+              }
               title="Add variant"
               aria-label="Add semantic token variant"
             >
@@ -477,6 +541,8 @@ function SemanticBlockRows({
         <SemanticVariantRow
           key={`${base.token.key}::v::${idx}`}
           mapping={m}
+          groups={groups}
+          onUpdateGroupRef={onUpdateGroupRef}
           colorVariables={colorVariables}
           contrastVariables={contrastVariables}
           orphanKeys={orphanKeys}
@@ -497,6 +563,8 @@ function SemanticBlockRows({
 
 function SemanticVariantRow({
   mapping,
+  groups,
+  onUpdateGroupRef,
   colorVariables,
   contrastVariables,
   orphanKeys,
@@ -511,6 +579,8 @@ function SemanticVariantRow({
   onRemoveMapping,
 }: {
   mapping: Mapping;
+  groups: readonly string[];
+  onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
   orphanKeys: Set<string>;
@@ -538,6 +608,7 @@ function SemanticVariantRow({
   } catch {
     parsed = { type: '', modifiers: [], language: null };
   }
+  const isStarVariant = parsed.type === SEMANTIC_WILDCARD_TYPE;
   const displayModifiers = parsed.modifiers.filter(
     (m) => !m.startsWith(EMPTY_VARIANT_MODIFIER_PREFIX),
   );
@@ -603,13 +674,33 @@ function SemanticVariantRow({
 
   return (
     <div
-      className={`mapping-variant-wrapper ${isOrphan ? 'mapping-orphan' : ''} ${isBlockingLock ? 'mapping-blocking-lock' : ''}`}
+      className={`mapping-variant-wrapper ${isStarVariant ? 'mapping-variant-wrapper-star ' : ''}${isOrphan ? 'mapping-orphan' : ''} ${isBlockingLock ? 'mapping-blocking-lock' : ''}`}
     >
       <div className="mapping-variant-label" title={mapping.token.key}>
         {mapping.token.key}
       </div>
       <div className="mapping-variant-controls-row">
-        <div className="mapping-variant-indent-and-name">
+        {isStarVariant && (
+          <select
+            className="field-select mapping-var-select mapping-col-group"
+            value={mapping.groupRef ?? ''}
+            disabled={!canEdit}
+            onChange={(e) =>
+              onUpdateGroupRef(mapping.token.key, mapping.token.type, e.target.value || null)
+            }
+            title="Group"
+          >
+            <option value="">Ungrouped</option>
+            {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+        )}
+        <div
+          className={`mapping-variant-indent-and-name ${isStarVariant ? 'mapping-variant-star-modifiers-col' : ''}`}
+        >
           <div className="mapping-variant-multiselect-wrap" ref={modifierDropdownRef}>
             <button
               type="button"
@@ -819,6 +910,13 @@ export function MappingsCard({
   ) as Record<TokenType, Mapping[]>;
 
   const byGroup = buildByGroup(filteredMappingsByType);
+  if (semanticVariant && !byGroup.has(UNGROUPED_KEY)) {
+    byGroup.set(UNGROUPED_KEY, {
+      theme: [],
+      'textmate token': [],
+      'semantic token': [],
+    } as Record<TokenType, Mapping[]>);
+  }
   const groupKeysInOrder = sortedGroupKeys(byGroup);
 
   const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | null>(null);
@@ -951,6 +1049,7 @@ export function MappingsCard({
         return (
           <GroupSection
             key={groupKey}
+            groupKey={groupKey}
             groupLabel={groupLabel}
             byType={byType}
             groups={groups}

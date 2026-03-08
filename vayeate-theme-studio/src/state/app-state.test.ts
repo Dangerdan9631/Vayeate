@@ -29,6 +29,8 @@ const sampleTemplate: Template = {
   colorVariables: [],
   contrastVariables: [],
   groups: [],
+  semanticTokenModifiers: [],
+  semanticTokenLanguages: [],
 };
 
 const sampleTemplateRef: TemplateReference = { name: 'test-template', version: '1.0.0' };

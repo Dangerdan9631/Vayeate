@@ -233,6 +233,15 @@
       "colorVariableRef": "a",
       "contrastVariableRef": null,
       "groupRef": "vs-code-semantic-token-registry"
+    },
+    {
+      "token": {
+        "key": "*.abstract",
+        "type": "semantic token"
+      },
+      "colorVariableRef": "a",
+      "contrastVariableRef": null,
+      "groupRef": "vs-code-semantic-token-registry"
     }
   ],
   "colorVariables": [

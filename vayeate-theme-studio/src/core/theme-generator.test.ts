@@ -32,6 +32,8 @@ function template(mappings: Mapping[], overrides: Partial<Template> = {}): Templ
     ],
     contrastVariables: [],
     groups: [],
+    semanticTokenModifiers: [],
+    semanticTokenLanguages: [],
     ...overrides,
   };
 }

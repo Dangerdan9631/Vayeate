@@ -6,6 +6,9 @@
 
 const SEGMENT_REGEX = /^[a-zA-Z*][a-zA-Z0-9_*-]*$/;
 
+/** Virtual semantic token type "*" (wildcard); not a catalog type, used for e.g. *.readonly. */
+export const SEMANTIC_WILDCARD_TYPE = '*';
+
 export interface ParsedSemanticSelector {
   type: string;
   modifiers: string[];
