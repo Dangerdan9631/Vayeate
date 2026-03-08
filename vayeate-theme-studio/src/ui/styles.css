@@ -1368,6 +1368,12 @@ body {
 
 /* ── Theme Palette card (hue slider) ────────────────────────── */
 
+.themes-left-col .theme-palette-card {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
 .theme-palette-card h2 {
   margin-bottom: 12px;
 }
