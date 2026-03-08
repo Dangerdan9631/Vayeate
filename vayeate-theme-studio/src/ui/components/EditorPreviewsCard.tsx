@@ -361,12 +361,15 @@ export function EditorPreviewsCard({
   const lightSelectionBg = resolveColorForThemeTokenKey(editorPreviewSelectionBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#add6ff');
   const darkMenuFg = resolveColorForThemeTokenKey(editorPreviewMenuForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#cccccc');
   const darkMenuBg = resolveColorForThemeTokenKey(editorPreviewMenuBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#2d2d2d');
+  const lightMenuFg = resolveColorForThemeTokenKey(editorPreviewMenuForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#333333');
+  const lightMenuBg = resolveColorForThemeTokenKey(editorPreviewMenuBackgroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
 
   const darkScrollRef = useRef<HTMLDivElement | null>(null);
   const lightScrollRef = useRef<HTMLDivElement | null>(null);
   const isSyncingScrollRef = useRef(false);
   const [sampleDropdownOpen, setSampleDropdownOpen] = useState(false);
   const sampleDropdownRef = useRef<HTMLDivElement | null>(null);
+  const lightSampleDropdownRef = useRef<HTMLDivElement | null>(null);
   /** Track scroll position so sticky bar label updates reliably when the user scrolls. */
   const [scrollTop, setScrollTop] = useState(0);
 
@@ -408,8 +411,12 @@ export function EditorPreviewsCard({
   useEffect(() => {
     if (!sampleDropdownOpen) return;
     function handleClickOutside(e: MouseEvent) {
-      const el = sampleDropdownRef.current;
-      if (el && !el.contains(e.target as Node)) setSampleDropdownOpen(false);
+      const target = e.target as Node;
+      const darkEl = sampleDropdownRef.current;
+      const lightEl = lightSampleDropdownRef.current;
+      const insideDark = darkEl?.contains(target);
+      const insideLight = lightEl?.contains(target);
+      if (!insideDark && !insideLight) setSampleDropdownOpen(false);
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -621,7 +628,11 @@ export function EditorPreviewsCard({
             ref={darkScrollRef}
             className="theme-preview-column-inner"
             onScroll={handleDarkScroll}
-            style={{ scrollbarColor: `${darkScrollbarFg} ${darkScrollbarBg}` }}
+            style={{
+              scrollbarColor: `${darkScrollbarFg} ${darkScrollbarBg}`,
+              ['--preview-scrollbar-bg' as string]: darkScrollbarBg,
+              ['--preview-scrollbar-fg' as string]: darkScrollbarFg,
+            }}
           >
             {previews.length === 0 ? (
               <div className="theme-preview-block">
@@ -728,6 +739,7 @@ export function EditorPreviewsCard({
             <div
               className="theme-preview-sticky-bar"
               style={{ backgroundColor: lightIdeTabBarBg, color: lightIdeTabBarFg }}
+              ref={lightSampleDropdownRef}
             >
               <span
                 className="theme-preview-sticky-bar-label theme-preview-sticky-bar-tab"
@@ -737,13 +749,53 @@ export function EditorPreviewsCard({
                 {currentPreview ? previewLabelByIndex(currentPreview) : ''}
                 <span className="material-symbols-outlined theme-preview-tab-icon theme-preview-tab-icon-close" aria-hidden>close</span>
               </span>
+              <div className="theme-preview-sample-dropdown-wrap">
+                <button
+                  type="button"
+                  className="theme-preview-sample-dropdown-btn"
+                  style={{ backgroundColor: lightIdeTabBarBg, color: lightIdeTabBarFg, borderColor: lightIdeTabBarFg }}
+                  onClick={() => setSampleDropdownOpen((v) => !v)}
+                  aria-expanded={sampleDropdownOpen}
+                  aria-haspopup="listbox"
+                  aria-label="Show sample list"
+                >
+                  <span className="material-symbols-outlined" aria-hidden>list</span>
+                </button>
+                {sampleDropdownOpen && (
+                  <div
+                    className="theme-preview-sample-dropdown"
+                    role="listbox"
+                    style={{
+                      backgroundColor: lightMenuBg,
+                      color: lightMenuFg,
+                      scrollbarColor: `${lightMenuFg} ${lightMenuBg}`,
+                    }}
+                  >
+                    {previews.map((p, i) => (
+                      <button
+                        key={`${p.language}/${p.fileName}`}
+                        type="button"
+                        role="option"
+                        className="theme-preview-sample-dropdown-item"
+                        onClick={() => scrollToSample(i)}
+                      >
+                        {previewLabelByIndex(p)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
           <div
             ref={lightScrollRef}
             className="theme-preview-column-inner"
             onScroll={handleLightScroll}
-            style={{ scrollbarColor: `${lightScrollbarFg} ${lightScrollbarBg}` }}
+            style={{
+              scrollbarColor: `${lightScrollbarFg} ${lightScrollbarBg}`,
+              ['--preview-scrollbar-bg' as string]: lightScrollbarBg,
+              ['--preview-scrollbar-fg' as string]: lightScrollbarFg,
+            }}
           >
             {previews.length === 0 ? (
               <div className="theme-preview-block">

@@ -149,7 +149,7 @@
     {
       "colorRef": "editorBg",
       "light": {
-        "value": "#dfdbdb"
+        "value": "#dedbdf"
       },
       "dark": {
         "value": "#282e35"
@@ -159,7 +159,7 @@
     {
       "colorRef": "editorFg",
       "light": {
-        "value": "#c1c8cd"
+        "value": "#c1cdc2"
       },
       "dark": {
         "value": "#8d959d"
@@ -169,7 +169,7 @@
     {
       "colorRef": "editorLineHighlightBg",
       "light": {
-        "value": "#93989f33"
+        "value": "#939f96"
       },
       "dark": {
         "value": "#2f363f"
@@ -179,7 +179,7 @@
     {
       "colorRef": "editorSelectionBg",
       "light": {
-        "value": "#34516d33"
+        "value": "#346d3e"
       },
       "dark": {
         "value": "#34516d"
@@ -189,7 +189,7 @@
     {
       "colorRef": "editorLineNumberFg",
       "light": {
-        "value": "#dfdbdb"
+        "value": "#dedbdf"
       },
       "dark": {
         "value": "#679acc"
@@ -239,7 +239,7 @@
     {
       "colorRef": "editorGutterBg",
       "light": {
-        "value": "#5f758c"
+        "value": "#5f8c68"
       },
       "dark": {
         "value": "#1b3046"

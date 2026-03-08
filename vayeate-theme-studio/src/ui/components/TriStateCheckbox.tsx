@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback } from 'react';
 
 export type TriState = 'all' | 'none' | 'some';
 
@@ -10,6 +10,10 @@ interface TriStateCheckboxProps {
   className?: string;
 }
 
+const ICON_ALL = 'check_box';
+const ICON_SOME = 'indeterminate_check_box';
+const ICON_NONE = 'check_box_outline_blank';
+
 export function TriStateCheckbox({
   state,
   onChange,
@@ -17,31 +21,50 @@ export function TriStateCheckbox({
   ariaLabel,
   className,
 }: TriStateCheckboxProps) {
-  const ref = useRef<HTMLInputElement>(null);
-  const checked = state === 'all';
-  const indeterminate = state === 'some';
+  const icon =
+    state === 'all' ? ICON_ALL : state === 'some' ? ICON_SOME : ICON_NONE;
+  const ariaChecked =
+    state === 'all' ? true : state === 'some' ? ('mixed' as const) : false;
 
-  useEffect(() => {
-    if (ref.current) ref.current.indeterminate = indeterminate;
-  }, [indeterminate]);
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      onClickCapture?.(e);
+      if (state === 'some') {
+        onChange(true);
+      } else {
+        onChange(state !== 'all');
+      }
+    },
+    [state, onChange, onClickCapture],
+  );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (indeterminate) {
-      onChange(true);
-    } else {
-      onChange(e.target.checked);
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (state === 'some') {
+          onChange(true);
+        } else {
+          onChange(state !== 'all');
+        }
+      }
+    },
+    [state, onChange],
+  );
 
   return (
-    <input
-      ref={ref}
-      type="checkbox"
-      className={className}
-      checked={checked}
-      onChange={handleChange}
-      onClick={onClickCapture}
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={ariaChecked}
       aria-label={ariaLabel}
-    />
+      className={`checkbox-icon-btn ${className ?? ''}`.trim()}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
+      <span className="material-symbols-outlined" aria-hidden>
+        {icon}
+      </span>
+    </button>
   );
 }

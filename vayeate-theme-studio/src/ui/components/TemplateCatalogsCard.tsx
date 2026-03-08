@@ -55,11 +55,21 @@ export function TemplateCatalogsCard({
         return (
           <div key={name} className="template-catalog-row">
             <label className="template-catalog-check">
-              <input
-                type="checkbox"
-                checked={included}
-                onChange={(e) => onToggleCatalog(name, e.target.checked)}
-              />
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={included}
+                aria-label={`Include catalog ${name}`}
+                className="checkbox-icon-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onToggleCatalog(name, !included);
+                }}
+              >
+                <span className="material-symbols-outlined" aria-hidden>
+                  {included ? 'check_box' : 'check_box_outline_blank'}
+                </span>
+              </button>
               <span className="template-catalog-name">{name}</span>
               {hasUpdate && (
                 <span

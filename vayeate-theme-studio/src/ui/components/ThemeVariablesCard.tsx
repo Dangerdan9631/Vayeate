@@ -293,15 +293,25 @@ function ColorAssignmentRow({
     <div
       className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''} ${isEyedropperSupported() ? 'theme-color-row--has-eyedropper' : ''}`}
     >
-      <label className="theme-var-check-wrap" title="Include in palette adjustments">
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={() => onToggleChecked(assignment.colorRef)}
-          aria-label={`Include ${assignment.colorRef} in palette adjustments`}
-          className="theme-var-check"
-        />
-      </label>
+      <button
+        type="button"
+        role="checkbox"
+        aria-checked={checked}
+        aria-label={`Include ${assignment.colorRef} in palette adjustments`}
+        title="Include in palette adjustments"
+        className="theme-var-check-wrap checkbox-icon-btn"
+        onClick={() => onToggleChecked(assignment.colorRef)}
+        onKeyDown={(e) => {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            onToggleChecked(assignment.colorRef);
+          }
+        }}
+      >
+        <span className="material-symbols-outlined" aria-hidden>
+          {checked ? 'check_box' : 'check_box_outline_blank'}
+        </span>
+      </button>
       <span
         className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
         title={assignment.colorRef}
@@ -639,15 +649,25 @@ function ContrastAssignmentRow({
   return (
     <div className={`theme-contrast-block ${isOrphan ? 'theme-row-orphan' : ''}`}>
       <div className="theme-contrast-row1">
-        <label className="theme-var-check-wrap" title="Include in palette adjustments">
-          <input
-            type="checkbox"
-            checked={checked}
-            onChange={() => onToggleChecked(ref)}
-            aria-label={`Include ${ref} in palette adjustments`}
-            className="theme-var-check"
-          />
-        </label>
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={checked}
+          aria-label={`Include ${ref} in palette adjustments`}
+          title="Include in palette adjustments"
+          className="theme-var-check-wrap checkbox-icon-btn"
+          onClick={() => onToggleChecked(ref)}
+          onKeyDown={(e) => {
+            if (e.key === ' ' || e.key === 'Enter') {
+              e.preventDefault();
+              onToggleChecked(ref);
+            }
+          }}
+        >
+          <span className="material-symbols-outlined" aria-hidden>
+            {checked ? 'check_box' : 'check_box_outline_blank'}
+          </span>
+        </button>
         <span
           className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
           title={ref}

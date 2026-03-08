@@ -8,6 +8,7 @@ import { ContentArea } from './components/ContentArea';
 import { MenuBar } from './components/MenuBar';
 import { Ribbon } from './components/Ribbon';
 import { StatusBar } from './components/StatusBar';
+import { StyledTooltip } from './components/StyledTooltip';
 import type { TabId } from './tabs';
 
 function AppShell() {
@@ -55,6 +56,7 @@ function AppShell() {
 
   return (
     <div className="app-shell">
+      <StyledTooltip />
       <MenuBar />
       <div className="layout">
         <Ribbon activeTab={visibleTab} onTabChange={onTabChange} />

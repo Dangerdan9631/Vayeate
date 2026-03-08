@@ -718,11 +718,21 @@ function SemanticVariantRow({
             <div className="mapping-variant-dropdown" role="listbox">
               {modifierList.map((mod) => (
                 <label key={mod} className="mappings-filter-check">
-                  <input
-                    type="checkbox"
-                    checked={pendingModifiers.includes(mod)}
-                    onChange={() => toggleModifier(mod)}
-                  />
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={pendingModifiers.includes(mod)}
+                    aria-label={`Include modifier ${mod}`}
+                    className="checkbox-icon-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleModifier(mod);
+                    }}
+                  >
+                    <span className="material-symbols-outlined" aria-hidden>
+                      {pendingModifiers.includes(mod) ? 'check_box' : 'check_box_outline_blank'}
+                    </span>
+                  </button>
                   <span>{mod}</span>
                 </label>
               ))}
@@ -746,20 +756,40 @@ function SemanticVariantRow({
             {languageOpen && (
               <div className="mapping-variant-dropdown" role="listbox">
                 <label className="mappings-filter-check">
-                  <input
-                    type="checkbox"
-                    checked={parsed.language === null}
-                    onChange={() => setLanguage(null)}
-                  />
+                  <button
+                    type="button"
+                    role="checkbox"
+                    aria-checked={parsed.language === null}
+                    aria-label="No specific language"
+                    className="checkbox-icon-btn"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setLanguage(null);
+                    }}
+                  >
+                    <span className="material-symbols-outlined" aria-hidden>
+                      {parsed.language === null ? 'check_box' : 'check_box_outline_blank'}
+                    </span>
+                  </button>
                   <span>—</span>
                 </label>
                 {languageList.map((lang) => (
                   <label key={lang} className="mappings-filter-check">
-                    <input
-                      type="checkbox"
-                      checked={parsed.language === lang}
-                      onChange={() => setLanguage(lang)}
-                    />
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={parsed.language === lang}
+                      aria-label={`Language: ${lang}`}
+                      className="checkbox-icon-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setLanguage(lang);
+                      }}
+                    >
+                      <span className="material-symbols-outlined" aria-hidden>
+                        {parsed.language === lang ? 'check_box' : 'check_box_outline_blank'}
+                      </span>
+                    </button>
                     <span>{lang}</span>
                   </label>
                 ))}
@@ -995,11 +1025,21 @@ export function MappingsCard({
               ) : (
                 [...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
                   <label key={v.key} className="mappings-filter-check">
-                    <input
-                      type="checkbox"
-                      checked={selectedColorKeys.includes(v.key)}
-                      onChange={() => toggleColorKey(v.key)}
-                    />
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selectedColorKeys.includes(v.key)}
+                      aria-label={`Filter by color variable ${v.key}`}
+                      className="checkbox-icon-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleColorKey(v.key);
+                      }}
+                    >
+                      <span className="material-symbols-outlined" aria-hidden>
+                        {selectedColorKeys.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}
+                      </span>
+                    </button>
                     <span>{v.key}</span>
                   </label>
                 ))
@@ -1030,11 +1070,21 @@ export function MappingsCard({
               ) : (
                 [...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
                   <label key={v.key} className="mappings-filter-check">
-                    <input
-                      type="checkbox"
-                      checked={selectedContrastKeys.includes(v.key)}
-                      onChange={() => toggleContrastKey(v.key)}
-                    />
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selectedContrastKeys.includes(v.key)}
+                      aria-label={`Filter by contrast variable ${v.key}`}
+                      className="checkbox-icon-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleContrastKey(v.key);
+                      }}
+                    >
+                      <span className="material-symbols-outlined" aria-hidden>
+                        {selectedContrastKeys.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}
+                      </span>
+                    </button>
                     <span>{v.key}</span>
                   </label>
                 ))

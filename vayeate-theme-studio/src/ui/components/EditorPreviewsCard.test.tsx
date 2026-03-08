@@ -123,10 +123,11 @@ describe('EditorPreviewsCard', () => {
   it('opens sample dropdown when Show sample list button is clicked', async () => {
     const user = userEvent.setup();
     render(<EditorPreviewsCard {...makeProps()} />);
-    await screen.findByLabelText('Show sample list');
-    await user.click(screen.getByLabelText('Show sample list'));
-    expect(screen.getByRole('listbox')).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'typescript' })).toBeInTheDocument();
+    const buttons = await screen.findAllByLabelText('Show sample list');
+    await user.click(buttons[0]);
+    const listboxes = screen.getAllByRole('listbox');
+    expect(listboxes.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('option', { name: 'typescript' }).length).toBeGreaterThanOrEqual(1);
   });
 
   it('closes dropdown and scrolls to sample when a sample is selected', async () => {
@@ -136,10 +137,10 @@ describe('EditorPreviewsCard', () => {
       { ...mockPreview, language: 'javascript', fileName: 'other.js', lines: mockPreview.lines },
     ]);
     render(<EditorPreviewsCard {...makeProps()} />);
-    await screen.findByLabelText('Show sample list');
-    await user.click(screen.getByLabelText('Show sample list'));
-    const option = await screen.findByRole('option', { name: 'javascript' });
-    await user.click(option);
+    const buttons = await screen.findAllByLabelText('Show sample list');
+    await user.click(buttons[0]);
+    const options = await screen.findAllByRole('option', { name: 'javascript' });
+    await user.click(options[0]);
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
   });
 });
