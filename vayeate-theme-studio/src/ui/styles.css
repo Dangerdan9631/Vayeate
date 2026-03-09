@@ -1962,6 +1962,21 @@ body {
   background: var(--hover);
 }
 
+.theme-palette-hue-ref-input {
+  width: 72px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-alt);
+  color: var(--text-body);
+}
+
+.theme-palette-hue-ref-input::placeholder {
+  color: var(--text-muted);
+}
+
 .theme-eyedropper-btn {
   display: inline-flex;
   align-items: center;
@@ -1997,23 +2012,8 @@ body {
   height: 24px;
   border-radius: 6px;
   flex-shrink: 0;
-  /* Two full hue rotations: -100..0 (left half), 0..100 (right half); 0 = red at center */
-  background: linear-gradient(
-    to right,
-    hsl(0, 100%, 50%) 0%,
-    hsl(60, 100%, 50%) 8.33%,
-    hsl(120, 100%, 50%) 16.67%,
-    hsl(180, 100%, 50%) 25%,
-    hsl(240, 100%, 50%) 33.33%,
-    hsl(300, 100%, 50%) 41.67%,
-    hsl(0, 100%, 50%) 50%,
-    hsl(60, 100%, 50%) 58.33%,
-    hsl(120, 100%, 50%) 66.67%,
-    hsl(180, 100%, 50%) 75%,
-    hsl(240, 100%, 50%) 83.33%,
-    hsl(300, 100%, 50%) 91.67%,
-    hsl(0, 100%, 50%) 100%
-  );
+  /* Background set by injected <style> in ThemePaletteCard (rainbow from hue ref); grey fallback until JS runs. */
+  background: #808080;
 }
 
 .theme-palette-hue-slider {

@@ -466,6 +466,9 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         if (action.hueAdjustment !== undefined) {
           setState({ type: 'SET_THEME_HUE_ADJUSTMENT', value: action.hueAdjustment });
         }
+        if (action.hueReferenceHex !== undefined) {
+          setState({ type: 'SET_THEME_HUE_REFERENCE_HEX', value: action.hueReferenceHex });
+        }
         if (action.theme !== undefined && action.theme !== null) {
           if (saveThemeTimeoutId !== null) {
             clearTimeout(saveThemeTimeoutId);
@@ -494,6 +497,11 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
 
       case 'SET_THEME_HUE_ADJUSTMENT': {
         setState({ type: 'SET_THEME_HUE_ADJUSTMENT', value: action.value });
+        break;
+      }
+
+      case 'SET_THEME_HUE_REFERENCE_HEX': {
+        setState({ type: 'SET_THEME_HUE_REFERENCE_HEX', value: action.value });
         break;
       }
 

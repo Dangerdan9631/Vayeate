@@ -1,10 +1,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../model/schemas';
 import { clusterColors } from '../../core/color-clustering';
+import { hexToHue, hslToRgb, rgbToHex } from '../../core/color';
 import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../context/UndoContext';
 import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
+
+/** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */
+function hueSliderGradientFromRefHex(refHex: string): string {
+  const refHue = hexToHue(refHex);
+  const stops: string[] = [];
+  for (let i = 0; i <= 12; i++) {
+    const p = i / 12;
+    const h = ((refHue + (p - 0.5) * 2) % 1 + 1) % 1;
+    const pos = Math.round(p * 100);
+    const hex = rgbToHex(hslToRgb({ h, s: 1, l: 0.5 }));
+    stops.push(`${hex} ${pos}%`);
+  }
+  return `linear-gradient(to right, ${stops.join(', ')})`;
+}
 
 const UNGROUPED_KEY = '__ungrouped__';
 
@@ -12,14 +27,27 @@ const CLUSTER_K_MIN = 1;
 const CLUSTER_K_MAX = 12;
 const CLUSTER_K_DEFAULT = 5;
 
+/** Delay (ms) before treating a primary swatch click as single-click; allows double-click to be detected. */
+const PRIMARY_SINGLE_CLICK_DELAY_MS = 300;
+
 function normalizeHex(hex: string): string {
   const s = hex.trim().toLowerCase();
   return s.startsWith('#') ? s : `#${s}`;
 }
 
+/** If input looks like a valid hex (3 or 6 digits), return normalized hex for gradient; else null. */
+function validRefHexForGradient(input: string): string | null {
+  const s = input.trim().toLowerCase().replace(/^#/, '');
+  if (!/^[0-9a-f]+$/.test(s) || (s.length !== 3 && s.length !== 6)) return null;
+  const expanded = s.length === 3 ? s.split('').map((c) => c + c).join('') : s;
+  return `#${expanded}`;
+}
+
 interface ThemePaletteCardProps {
   hueAdjustment: number;
+  hueReferenceHex: string;
   onHueChange: (value: number) => void;
+  onHueReferenceChange: (hex: string) => void;
   onRecenter: () => void;
   onHueDragStart?: () => void;
   onHueDragEnd?: () => void;
@@ -126,7 +154,9 @@ function swatchState(refs: string[], checkedColorRefs: ReadonlySet<string>): Tri
 
 export function ThemePaletteCard({
   hueAdjustment,
+  hueReferenceHex,
   onHueChange,
+  onHueReferenceChange,
   onRecenter,
   onHueDragStart,
   onHueDragEnd,
@@ -146,8 +176,42 @@ export function ThemePaletteCard({
   onSetSelectedColorsPreview,
   onColorPickerClose,
 }: ThemePaletteCardProps) {
-  const showRecenter = hueAdjustment !== 0;
+  const [hueRefInputValue, setHueRefInputValue] = useState(hueReferenceHex);
   const isHueDraggingRef = useRef(false);
+  const hueSliderStyleRef = useRef<HTMLStyleElement | null>(null);
+
+  const hueSliderGradientValue = hueSliderGradientFromRefHex(
+    validRefHexForGradient(hueRefInputValue) ?? hueReferenceHex,
+  );
+
+  useEffect(() => {
+    setHueRefInputValue(hueReferenceHex);
+  }, [hueReferenceHex]);
+
+  useEffect(() => {
+    const styleEl = hueSliderStyleRef.current;
+    if (styleEl) {
+      styleEl.textContent = `.theme-palette-slider-wrap{background:${hueSliderGradientValue} !important}#theme-palette-hue-slider::-webkit-slider-runnable-track{background:${hueSliderGradientValue} !important}#theme-palette-hue-slider::-moz-range-track{background:${hueSliderGradientValue} !important}`;
+    }
+  }, [hueSliderGradientValue]);
+
+  const handleHueRefBlur = useCallback(() => {
+    const normalized = normalizeHex(hueRefInputValue) || '#FF0000';
+    if (normalized !== hueReferenceHex) {
+      onHueReferenceChange(normalized);
+    } else {
+      setHueRefInputValue(normalized);
+    }
+  }, [hueRefInputValue, hueReferenceHex, onHueReferenceChange]);
+
+  const handleHueRefKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        (e.target as HTMLInputElement).blur();
+      }
+    },
+    [],
+  );
 
   const handleHuePointerUp = useCallback(() => {
     if (!isHueDraggingRef.current) return;
@@ -172,10 +236,22 @@ export function ThemePaletteCard({
   const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const paletteColorInputRef = useRef<HTMLInputElement | null>(null);
   const colorPickerSnapshotRef = useRef<ThemePaneState | null>(null);
+  const primaryClickPendingRef = useRef<{
+    timeoutId: ReturnType<typeof setTimeout>;
+    clusterKey: string;
+    stateAtFirstClick: TriState;
+    allRefsInCluster: string[];
+    primaryHex: string;
+    refsInGroupSet: ReadonlySet<string>;
+  } | null>(null);
 
   useEffect(() => {
     return () => {
       if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+      if (primaryClickPendingRef.current) {
+        clearTimeout(primaryClickPendingRef.current.timeoutId);
+        primaryClickPendingRef.current = null;
+      }
     };
   }, []);
 
@@ -385,15 +461,24 @@ export function ThemePaletteCard({
         <label htmlFor="theme-palette-hue-slider" className="theme-palette-hue-label">
           Hue Adjustment
         </label>
-        {showRecenter && (
-          <div className="theme-palette-actions">
-            <button type="button" className="theme-palette-btn" onClick={onRecenter} aria-label="Recenter hue slider to 0">
-              Recenter
-            </button>
-          </div>
-        )}
+        <div className="theme-palette-actions">
+          <button type="button" className="theme-palette-btn" onClick={onRecenter} aria-label="Recenter hue slider to 0">
+            Recenter
+          </button>
+          <input
+            type="text"
+            className="theme-palette-hue-ref-input"
+            value={hueRefInputValue}
+            onChange={(e) => setHueRefInputValue(e.target.value)}
+            onBlur={handleHueRefBlur}
+            onKeyDown={handleHueRefKeyDown}
+            aria-label="Hue reference color (hex)"
+            placeholder="#FF0000"
+          />
+        </div>
       </div>
       <div className="theme-palette-slider-wrap">
+        <style ref={hueSliderStyleRef} />
         <input
           id="theme-palette-hue-slider"
           type="range"
@@ -476,12 +561,50 @@ export function ThemePaletteCard({
               const primaryRefsAll = hexToRefs.get(normalizeHex(cluster.representative)) ?? [];
               const primaryRefs = primaryRefsAll.filter((r) => refsInGroupSet.has(r));
               const primaryState = swatchState(primaryRefs, checkedColorRefs);
+              const allRefsInClusterSet = new Set(primaryRefs);
+              for (const hex of cluster.members) {
+                const refs = hexToRefs.get(normalizeHex(hex)) ?? [];
+                for (const r of refs) if (refsInGroupSet.has(r)) allRefsInClusterSet.add(r);
+              }
+              const allRefsInCluster = [...allRefsInClusterSet];
+              const clusterKey = `${groupKey}|${normalizeHex(cluster.representative)}`;
               const primaryBorderClass =
                 primaryState === 'all'
                   ? 'theme-palette-swatch-checked'
                   : primaryState === 'some'
                     ? 'theme-palette-swatch-partial'
                     : 'theme-palette-swatch-unchecked';
+
+              const handlePrimaryActivate = () => {
+                const stateAtFirstClick = primaryState;
+                const pending = primaryClickPendingRef.current;
+                if (pending && pending.clusterKey === clusterKey) {
+                  clearTimeout(pending.timeoutId);
+                  primaryClickPendingRef.current = null;
+                  const checked = stateAtFirstClick === 'none' ? false : true;
+                  onSetColorRefsChecked(pending.allRefsInCluster, checked);
+                  return;
+                }
+                if (pending) {
+                  clearTimeout(pending.timeoutId);
+                  primaryClickPendingRef.current = null;
+                }
+                const timeoutId = setTimeout(() => {
+                  if (primaryClickPendingRef.current?.clusterKey === clusterKey) {
+                    handleSwatchClick(cluster.representative, refsInGroupSet);
+                    primaryClickPendingRef.current = null;
+                  }
+                }, PRIMARY_SINGLE_CLICK_DELAY_MS);
+                primaryClickPendingRef.current = {
+                  timeoutId,
+                  clusterKey,
+                  stateAtFirstClick,
+                  allRefsInCluster,
+                  primaryHex: cluster.representative,
+                  refsInGroupSet,
+                };
+              };
+
               return (
                 <div key={key} className="theme-palette-cluster-column">
                   <div
@@ -491,13 +614,13 @@ export function ThemePaletteCard({
                     style={{ backgroundColor: cluster.representative }}
                     title={
                       primaryRefs.length > 0
-                        ? `${normalizeHex(cluster.representative)} — click to toggle variables, right-click to copy\n${primaryRefs.join('\n')}`
-                        : `${normalizeHex(cluster.representative)} — click to toggle variables, right-click to copy`
+                        ? `${normalizeHex(cluster.representative)} — click to toggle variables, double-click to select cluster, right-click to copy\n${primaryRefs.join('\n')}`
+                        : `${normalizeHex(cluster.representative)} — click to toggle variables, double-click to select cluster, right-click to copy`
                     }
-                    aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, right-click to copy.`}
+                    aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, double-click to select cluster, right-click to copy.`}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleSwatchClick(cluster.representative, refsInGroupSet);
+                      handlePrimaryActivate();
                     }}
                     onContextMenu={(e) => {
                       e.preventDefault();
@@ -506,7 +629,7 @@ export function ThemePaletteCard({
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        handleSwatchClick(cluster.representative, refsInGroupSet);
+                        handlePrimaryActivate();
                       }
                     }}
                   />

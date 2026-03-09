@@ -59,7 +59,9 @@ export function ThemesPage() {
           {vm.theme && vm.theme.templateRef && (
             <ThemePaletteCard
               hueAdjustment={vm.hueAdjustment}
+              hueReferenceHex={vm.hueReferenceHex}
               onHueChange={vm.setHueAdjustment}
+              onHueReferenceChange={vm.setHueReferenceHex}
               onRecenter={vm.recenterHue}
               onHueDragStart={vm.startHueDrag}
               onHueDragEnd={vm.endHueDrag}

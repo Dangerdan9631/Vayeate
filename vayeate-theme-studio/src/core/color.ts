@@ -148,6 +148,19 @@ export function hslToRgb(hsl: Hsl): Rgb {
 }
 
 /**
+ * Return hue of a hex color in [0, 1]. Uses rgbToHsl; grays return 0. Invalid hex returns 0.
+ */
+export function hexToHue(hex: string): number {
+  try {
+    const rgb = hexToRgb(hex);
+    const hsl = rgbToHsl(rgb);
+    return hsl.h;
+  } catch {
+    return 0;
+  }
+}
+
+/**
  * Shift hue of a hex color. shift in [-1, 1] (e.g. slider value / 100); ±1 is a full rotation.
  * Invalid hex is returned unchanged.
  */

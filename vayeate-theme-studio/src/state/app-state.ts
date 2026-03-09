@@ -35,6 +35,8 @@ export interface ThemesState {
   checkedContrastRefs: string[];
   /** Hue adjustment slider value for undo/redo; 0 = centered. */
   hueAdjustment: number;
+  /** Reference hex for hue slider 0 point; default #FF0000. */
+  hueReferenceHex: string;
   isCreating: boolean;
   createDialogOpen: boolean;
   generateResult: GenerateResult | null;
@@ -77,6 +79,7 @@ export const initialAppState: AppState = {
     checkedColorRefs: [],
     checkedContrastRefs: [],
     hueAdjustment: 0,
+    hueReferenceHex: '#FF0000',
     isCreating: false,
     createDialogOpen: false,
     generateResult: null,
@@ -106,6 +109,7 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_AND_HUE'; theme: Theme | null; hueAdjustment: number }
   | { type: 'SET_THEME_PANE_SELECTIONS'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
   | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }
+  | { type: 'SET_THEME_HUE_REFERENCE_HEX'; value: string }
   | { type: 'SET_THEME_IS_CREATING'; value: boolean }
   | { type: 'SET_THEME_CREATE_DIALOG_OPEN'; value: boolean }
   | { type: 'SET_GENERATE_RESULT'; result: GenerateResult | null }
@@ -166,6 +170,8 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       };
     case 'SET_THEME_HUE_ADJUSTMENT':
       return { ...state, themes: { ...state.themes, hueAdjustment: update.value } };
+    case 'SET_THEME_HUE_REFERENCE_HEX':
+      return { ...state, themes: { ...state.themes, hueReferenceHex: update.value } };
     case 'SET_THEME_IS_CREATING':
       return { ...state, themes: { ...state.themes, isCreating: update.value } };
     case 'SET_THEME_CREATE_DIALOG_OPEN':
@@ -215,6 +221,8 @@ function updatePayloadSummary(update: AppStateUpdate): string {
       return `colors=${update.checkedColorRefs.length} contrast=${update.checkedContrastRefs.length}`;
     case 'SET_THEME_HUE_ADJUSTMENT':
       return String(update.value);
+    case 'SET_THEME_HUE_REFERENCE_HEX':
+      return update.value;
     case 'SET_THEME_IS_CREATING':
     case 'SET_THEME_CREATE_DIALOG_OPEN':
       return String(update.value);

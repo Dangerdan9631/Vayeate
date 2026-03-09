@@ -29,6 +29,7 @@ export interface ThemePaneState {
   checkedColorRefs: string[];
   checkedContrastRefs: string[];
   hueAdjustment: number;
+  hueReferenceHex: string;
 }
 
 function themePaneStateFromThemesState(t: ThemesState): ThemePaneState {
@@ -37,6 +38,7 @@ function themePaneStateFromThemesState(t: ThemesState): ThemePaneState {
     checkedColorRefs: t.checkedColorRefs,
     checkedContrastRefs: t.checkedContrastRefs,
     hueAdjustment: t.hueAdjustment ?? 0,
+    hueReferenceHex: t.hueReferenceHex ?? '#FF0000',
   };
 }
 
@@ -100,7 +102,7 @@ export function UndoProvider({
 
   const themeStackRef = useRef(
     createUndoStack<ThemePaneState>(
-      { theme: null, checkedColorRefs: [], checkedContrastRefs: [], hueAdjustment: 0 },
+      { theme: null, checkedColorRefs: [], checkedContrastRefs: [], hueAdjustment: 0, hueReferenceHex: '#FF0000' },
       MAX_FRAMES,
     ),
   );
@@ -199,6 +201,7 @@ export function UndoProvider({
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
           hueAdjustment: s.hueAdjustment,
+          hueReferenceHex: s.hueReferenceHex,
           deleteThemeVersionOnRestore,
         } as AppAction);
         setVersion((v) => v + 1);
@@ -248,6 +251,7 @@ export function UndoProvider({
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
           hueAdjustment: s.hueAdjustment,
+          hueReferenceHex: s.hueReferenceHex,
         } as AppAction);
         setVersion((v) => v + 1);
       }
@@ -298,6 +302,7 @@ export function UndoProvider({
             checkedColorRefs: s.checkedColorRefs,
             checkedContrastRefs: s.checkedContrastRefs,
             hueAdjustment: s.hueAdjustment,
+            hueReferenceHex: s.hueReferenceHex,
             deleteThemeVersionOnRestore,
           } as AppAction);
           setVersion((v) => v + 1);

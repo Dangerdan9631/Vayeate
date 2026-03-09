@@ -31,8 +31,9 @@ export type AppAction =
   | { type: 'CREATE_THEME'; params: { name: string } }
   | { type: 'SAVE_THEME'; theme: Theme }
   | { type: 'THEME_PANE_SELECTIONS_CHANGED'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
-  | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number; deleteThemeVersionOnRestore?: { name: string; version: string } }
+  | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number; hueReferenceHex?: string; deleteThemeVersionOnRestore?: { name: string; version: string } }
   | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }
+  | { type: 'SET_THEME_HUE_REFERENCE_HEX'; value: string }
   | { type: 'RESTORE_TEMPLATE_STATE'; template: Template | null; deleteTemplateVersionOnRestore?: { name: string; version: string } }
   | { type: 'RESTORE_CATALOG_STATE'; catalog: Catalog | null; deleteVersionOnRestore?: { name: string; version: string } }
   | { type: 'DELETE_THEME_VERSION'; name: string; version: string }

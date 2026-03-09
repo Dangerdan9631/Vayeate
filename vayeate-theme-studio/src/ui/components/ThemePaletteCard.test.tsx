@@ -25,7 +25,9 @@ function renderCard(overrides: Record<string, unknown> = {}) {
   return render(
     <ThemePaletteCard
       hueAdjustment={0}
+      hueReferenceHex="#FF0000"
       onHueChange={vi.fn()}
+      onHueReferenceChange={vi.fn()}
       onRecenter={vi.fn()}
       {...defaultPaletteProps}
       {...overrides}
@@ -49,14 +51,16 @@ describe('ThemePaletteCard', () => {
     expect(slider).toHaveValue('0');
   });
 
-  it('does not show Recenter when hueAdjustment is 0', () => {
+  it('always shows Recenter button', () => {
     renderCard();
-    expect(screen.queryByRole('button', { name: 'Recenter hue slider to 0' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Recenter hue slider to 0' })).toBeInTheDocument();
   });
 
-  it('shows Recenter when hueAdjustment is non-zero', () => {
-    renderCard({ hueAdjustment: 50 });
-    expect(screen.getByRole('button', { name: 'Recenter hue slider to 0' })).toBeInTheDocument();
+  it('shows hue reference hex input with default value', () => {
+    renderCard({ hueReferenceHex: '#FF0000' });
+    const input = screen.getByLabelText('Hue reference color (hex)');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveValue('#FF0000');
   });
 
   it('calls onHueChange when slider value changes', () => {
@@ -172,8 +176,8 @@ describe('ThemePaletteCard', () => {
     expect(writeText).toHaveBeenCalledWith('#ddeeff');
   });
 
-  it('calls onSetColorRefsChecked when swatch is clicked to toggle variables', async () => {
-    const user = userEvent.setup();
+  it('calls onSetColorRefsChecked when swatch is clicked to toggle variables', () => {
+    vi.useFakeTimers();
     const onSetColorRefsChecked = vi.fn();
     renderCard({
       colorAssignments: [
@@ -186,7 +190,48 @@ describe('ThemePaletteCard', () => {
       onSetColorRefsChecked,
     });
     const primarySwatch = screen.getByRole('button', { name: /#ff0000/i });
-    await user.click(primarySwatch);
+    fireEvent.click(primarySwatch);
+    expect(onSetColorRefsChecked).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(350);
+    expect(onSetColorRefsChecked).toHaveBeenCalledWith(['a'], false);
+    vi.useRealTimers();
+  });
+
+  it('double-click on primary when selected selects all refs in cluster', () => {
+    const onSetColorRefsChecked = vi.fn();
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#ff0000' }, useDarkForLight: true },
+      ],
+      colorVariables: [{ key: 'a', groupRef: 'g1' }],
+      groups: ['g1'],
+      checkedColorRefs: new Set(['a']),
+      onSetColorGroupChecked: vi.fn(),
+      onSetColorRefsChecked,
+    });
+    const primarySwatch = screen.getByRole('button', { name: /#ff0000/i });
+    fireEvent.click(primarySwatch);
+    fireEvent.click(primarySwatch);
+    expect(onSetColorRefsChecked).toHaveBeenCalledTimes(1);
+    expect(onSetColorRefsChecked).toHaveBeenCalledWith(['a'], true);
+  });
+
+  it('double-click on primary when unselected unselects all refs in cluster', () => {
+    const onSetColorRefsChecked = vi.fn();
+    renderCard({
+      colorAssignments: [
+        { colorRef: 'a', dark: { value: '#ff0000' }, light: { value: '#ff0000' }, useDarkForLight: true },
+      ],
+      colorVariables: [{ key: 'a', groupRef: 'g1' }],
+      groups: ['g1'],
+      checkedColorRefs: new Set<string>(),
+      onSetColorGroupChecked: vi.fn(),
+      onSetColorRefsChecked,
+    });
+    const primarySwatch = screen.getByRole('button', { name: /#ff0000/i });
+    fireEvent.click(primarySwatch);
+    fireEvent.click(primarySwatch);
+    expect(onSetColorRefsChecked).toHaveBeenCalledTimes(1);
     expect(onSetColorRefsChecked).toHaveBeenCalledWith(['a'], false);
   });
 
