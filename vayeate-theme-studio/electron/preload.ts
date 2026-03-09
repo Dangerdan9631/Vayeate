@@ -46,6 +46,11 @@ const electronAPI = {
   reloadWindow: () => ipcRenderer.invoke('window:reload'),
   reloadWindowForce: () => ipcRenderer.invoke('window:reloadForce'),
   toggleDevTools: () => ipcRenderer.invoke('window:toggleDevTools'),
+  undoSave: (pane: 'themes' | 'templates' | 'catalogs', docId: string, payload: string) =>
+    ipcRenderer.invoke('undo:save', pane, docId, payload),
+  undoLoad: (pane: 'themes' | 'templates' | 'catalogs', docId: string) =>
+    ipcRenderer.invoke('undo:load', pane, docId) as Promise<string | null>,
+  undoClearAll: () => ipcRenderer.invoke('undo:clearAll'),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

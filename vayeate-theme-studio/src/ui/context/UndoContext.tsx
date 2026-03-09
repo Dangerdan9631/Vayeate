@@ -11,8 +11,15 @@ import {
 } from 'react';
 import type { AppAction } from '../../actions/action-types';
 import type { Catalog, Template, Theme } from '../../model/schemas';
-import { createUndoStack, type UndoFrame, type UndoStackState } from '../../utils/undo-stack';
+import {
+  createUndoStack,
+  createFromSerializedState,
+  type SerializedUndoState,
+  type UndoFrame,
+  type UndoStackState,
+} from '../../utils/undo-stack';
 import type { CatalogsState, TemplatesState, ThemesState } from '../../state/app-state';
+import { undoStackService, type UndoPane } from '../../services/undo-stack-service';
 import {
   useActiveTab,
   useAppDispatch,
@@ -113,51 +120,118 @@ export function UndoProvider({
     createUndoStack<CatalogPaneState>({ catalog: null }, MAX_FRAMES),
   );
 
-  const lastThemeIdRef = useRef<string>(docIdTheme(themesState.selectedRef));
-  const lastTemplateIdRef = useRef<string>(docIdTemplate(templatesState.selectedRef));
-  const lastCatalogIdRef = useRef<string>(docIdCatalog(catalogsState.selectedRef));
+  function getDocIdForPane(pane: PaneId): string {
+    if (pane === 'themes') return docIdTheme(themesState.selectedRef);
+    if (pane === 'templates') return docIdTemplate(templatesState.selectedRef);
+    return docIdCatalog(catalogsState.selectedRef);
+  }
+
+  const lastContextRef = useRef<{ pane: PaneId; docId: string } | undefined>(undefined);
+  const latestContextRef = useRef<{ pane: PaneId; docId: string }>({ pane: activeTab, docId: getDocIdForPane(activeTab) });
+  latestContextRef.current = { pane: activeTab, docId: getDocIdForPane(activeTab) };
 
   useEffect(() => {
-    const themeId = docIdTheme(themesState.selectedRef);
-    const paneState = themePaneStateFromThemesState(themesState);
-    const stack = themeStackRef.current;
-    const currentBase = stack.base as ThemePaneState;
-    const stackState = stack.getState();
+    const current: { pane: PaneId; docId: string } = {
+      pane: activeTab,
+      docId: getDocIdForPane(activeTab),
+    };
+    const previous = lastContextRef.current;
+    const loadingFor = current;
 
-    if (themeId !== lastThemeIdRef.current) {
-      lastThemeIdRef.current = themeId;
-      stack.clearAndSetBase(paneState);
-      setVersion((v) => v + 1);
-    } else if (
-      themeId &&
-      paneState.theme &&
-      paneState.checkedColorRefs.length > 0 &&
-      currentBase.checkedColorRefs.length === 0 &&
-      stackState.frames.length === 0
-    ) {
-      // Base was set when theme loaded before selections were applied (race); fix before any edits
-      stack.setBase(paneState);
-      setVersion((v) => v + 1);
-    }
-  }, [docIdTheme(themesState.selectedRef), themesState]);
+    const run = async (): Promise<{ raw: string | null } | null> => {
+      if (previous !== undefined && previous.pane === current.pane && previous.docId === current.docId) {
+        return null;
+      }
+      if (previous !== undefined && previous.docId) {
+        const stack =
+          previous.pane === 'themes'
+            ? themeStackRef.current
+            : previous.pane === 'templates'
+              ? templateStackRef.current
+              : catalogStackRef.current;
+        const serialized = (stack as { getSerializableState(): SerializedUndoState<object> }).getSerializableState();
+        await undoStackService.save(previous.pane as UndoPane, previous.docId, JSON.stringify(serialized));
+      }
 
-  useEffect(() => {
-    const templateId = docIdTemplate(templatesState.selectedRef);
-    if (templateId !== lastTemplateIdRef.current) {
-      lastTemplateIdRef.current = templateId;
-      templateStackRef.current.clearAndSetBase({ template: templatesState.template });
-      setVersion((v) => v + 1);
-    }
-  }, [docIdTemplate(templatesState.selectedRef), templatesState.template]);
+      const raw = await undoStackService.load(current.pane as UndoPane, current.docId);
+      return { raw };
+    };
 
-  useEffect(() => {
-    const catalogId = docIdCatalog(catalogsState.selectedRef);
-    if (catalogId !== lastCatalogIdRef.current) {
-      lastCatalogIdRef.current = catalogId;
-      catalogStackRef.current.clearAndSetBase({ catalog: catalogsState.catalog });
+    let cancelled = false;
+    run().then((result) => {
+      if (cancelled || result === null) return;
+      const now = latestContextRef.current;
+      if (now.pane !== loadingFor.pane || now.docId !== loadingFor.docId) return;
+
+      const { raw } = result;
+      if (raw !== null) {
+        try {
+          const parsed = JSON.parse(raw) as SerializedUndoState<object>;
+          if (loadingFor.pane === 'themes') {
+            themeStackRef.current = createFromSerializedState(
+              parsed as SerializedUndoState<ThemePaneState>,
+              MAX_FRAMES,
+            );
+          } else if (loadingFor.pane === 'templates') {
+            templateStackRef.current = createFromSerializedState(
+              parsed as SerializedUndoState<TemplatePaneState>,
+              MAX_FRAMES,
+            );
+          } else {
+            catalogStackRef.current = createFromSerializedState(
+              parsed as SerializedUndoState<CatalogPaneState>,
+              MAX_FRAMES,
+            );
+          }
+        } catch {
+          // Invalid JSON: apply fresh stack below
+        }
+      }
+      if (raw === null) {
+        if (loadingFor.pane === 'themes') {
+          const paneState = themePaneStateFromThemesState(themesState);
+          themeStackRef.current = createUndoStack<ThemePaneState>(paneState, MAX_FRAMES);
+        } else if (loadingFor.pane === 'templates') {
+          templateStackRef.current = createUndoStack<TemplatePaneState>(
+            { template: templatesState.template },
+            MAX_FRAMES,
+          );
+        } else {
+          catalogStackRef.current = createUndoStack<CatalogPaneState>(
+            { catalog: catalogsState.catalog },
+            MAX_FRAMES,
+          );
+        }
+      }
+
+      lastContextRef.current = loadingFor;
       setVersion((v) => v + 1);
-    }
-  }, [docIdCatalog(catalogsState.selectedRef), catalogsState.catalog]);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    activeTab,
+    docIdTheme(themesState.selectedRef),
+    docIdTemplate(templatesState.selectedRef),
+    docIdCatalog(catalogsState.selectedRef),
+    themesState,
+    templatesState.template,
+    catalogsState.catalog,
+  ]);
+
+  function persistStackForPane(pane: PaneId): void {
+    const docId = getDocIdForPane(pane);
+    if (!docId) return;
+    const stack =
+      pane === 'themes'
+        ? themeStackRef.current
+        : pane === 'templates'
+          ? templateStackRef.current
+          : catalogStackRef.current;
+    const serialized = (stack as { getSerializableState(): SerializedUndoState<object> }).getSerializableState();
+    void undoStackService.save(pane as UndoPane, docId, JSON.stringify(serialized));
+  }
 
   const push = useCallback(
     (pane: PaneId, label: string, prev: unknown, next: unknown) => {
@@ -169,8 +243,9 @@ export function UndoProvider({
         catalogStackRef.current.push(label, prev as CatalogPaneState, next as CatalogPaneState);
       }
       setVersion((v) => v + 1);
+      persistStackForPane(pane);
     },
-    [],
+    [themesState.selectedRef, templatesState.selectedRef, catalogsState.selectedRef],
   );
 
   useEffect(() => {
@@ -205,6 +280,7 @@ export function UndoProvider({
           deleteThemeVersionOnRestore,
         } as AppAction);
         setVersion((v) => v + 1);
+        persistStackForPane('themes');
       }
     } else if (activeTab === 'templates') {
       const stack = templateStackRef.current;
@@ -223,6 +299,7 @@ export function UndoProvider({
           deleteTemplateVersionOnRestore,
         } as AppAction);
         setVersion((v) => v + 1);
+        persistStackForPane('templates');
       }
     } else if (activeTab === 'catalogs') {
       const stack = catalogStackRef.current;
@@ -235,6 +312,7 @@ export function UndoProvider({
           deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
         } as AppAction);
         setVersion((v) => v + 1);
+        persistStackForPane('catalogs');
       }
     }
   }, [activeTab, dispatch]);
@@ -254,6 +332,7 @@ export function UndoProvider({
           hueReferenceHex: s.hueReferenceHex,
         } as AppAction);
         setVersion((v) => v + 1);
+        persistStackForPane('themes');
       }
     } else if (activeTab === 'templates') {
       const stack = templateStackRef.current;
@@ -264,6 +343,7 @@ export function UndoProvider({
           template: (state as TemplatePaneState).template,
         });
         setVersion((v) => v + 1);
+        persistStackForPane('templates');
       }
     } else if (activeTab === 'catalogs') {
       const stack = catalogStackRef.current;
@@ -276,6 +356,7 @@ export function UndoProvider({
           deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
         } as AppAction);
         setVersion((v) => v + 1);
+        persistStackForPane('catalogs');
       }
     }
   }, [activeTab, dispatch]);
@@ -306,6 +387,7 @@ export function UndoProvider({
             deleteThemeVersionOnRestore,
           } as AppAction);
           setVersion((v) => v + 1);
+          persistStackForPane('themes');
         }
       } else if (pane === 'templates') {
         const stack = templateStackRef.current;
@@ -327,6 +409,7 @@ export function UndoProvider({
             deleteTemplateVersionOnRestore,
           } as AppAction);
           setVersion((v) => v + 1);
+          persistStackForPane('templates');
         }
       } else if (pane === 'catalogs') {
         const stack = catalogStackRef.current;
@@ -339,6 +422,7 @@ export function UndoProvider({
             deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
           } as AppAction);
           setVersion((v) => v + 1);
+          persistStackForPane('catalogs');
         }
       }
     },

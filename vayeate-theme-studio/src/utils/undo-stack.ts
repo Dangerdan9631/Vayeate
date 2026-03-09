@@ -36,10 +36,21 @@ export interface UndoStackState {
   currentIndex: number;
 }
 
+/** Serializable snapshot of an undo stack for persistence. */
+export interface SerializedUndoState<T extends object> {
+  base: T;
+  patches: Array<{ label: string; patch: Partial<T> }>;
+  currentIndex: number;
+}
+
 export function createUndoStack<T extends object>(initialBase: T, maxFrames: number = DEFAULT_MAX_FRAMES) {
   let base = initialBase;
   let patches: Array<{ label: string; patch: Partial<T> }> = [];
   let currentIndex = -1;
+
+  function getSerializableState(): SerializedUndoState<T> {
+    return { base: { ...base } as T, patches: patches.map((p) => ({ label: p.label, patch: { ...p.patch } as Partial<T> })), currentIndex };
+  }
 
   function stateAt(i: number): T {
     if (i < -1) return stateAt(-1);
@@ -123,7 +134,44 @@ export function createUndoStack<T extends object>(initialBase: T, maxFrames: num
     goTo,
     clearAndSetBase,
     getState,
+    getSerializableState,
   };
+}
+
+/** Internal: hydrate a stack created with createUndoStack from serialized state. */
+function hydrateUndoStack<T extends object>(
+  stack: ReturnType<typeof createUndoStack<T>>,
+  serialized: SerializedUndoState<T>,
+): void {
+  if (serialized.patches.length === 0) return;
+  const internal = stack as unknown as {
+    push(label: string, prev: T, next: T): void;
+    getState(): UndoStackState;
+    goTo(index: number): T | null;
+  };
+  let prev = serialized.base;
+  for (let i = 0; i < serialized.patches.length; i++) {
+    const { label, patch } = serialized.patches[i];
+    const next = merge(prev, patch as Partial<T>) as T;
+    internal.push(label, prev, next);
+    prev = next;
+  }
+  const state = internal.getState();
+  if (serialized.currentIndex >= -1 && serialized.currentIndex < state.frames.length) {
+    internal.goTo(serialized.currentIndex);
+  }
+}
+
+/**
+ * Creates an undo stack from a previously serialized state (e.g. loaded from disk).
+ */
+export function createFromSerializedState<T extends object>(
+  serialized: SerializedUndoState<T>,
+  maxFrames: number = DEFAULT_MAX_FRAMES,
+): ReturnType<typeof createUndoStack<T>> {
+  const stack = createUndoStack(serialized.base, maxFrames);
+  hydrateUndoStack(stack, serialized);
+  return stack;
 }
 
 export type UndoStack<T extends object> = ReturnType<typeof createUndoStack<T>>;

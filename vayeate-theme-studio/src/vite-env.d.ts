@@ -40,6 +40,9 @@ declare global {
       reloadWindow?: () => Promise<void>;
       reloadWindowForce?: () => Promise<void>;
       toggleDevTools?: () => Promise<void>;
+      undoSave?: (pane: 'themes' | 'templates' | 'catalogs', docId: string, payload: string) => Promise<void>;
+      undoLoad?: (pane: 'themes' | 'templates' | 'catalogs', docId: string) => Promise<string | null>;
+      undoClearAll?: () => Promise<void>;
     };
   }
 }

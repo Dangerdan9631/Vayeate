@@ -1,5 +1,6 @@
 import { app, BrowserWindow, desktopCapturer, ipcMain, net, screen } from 'electron';
-import { mkdir } from 'node:fs/promises';
+import { rmSync, mkdirSync } from 'node:fs';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +26,16 @@ const THEMES_OUTPUT_DIR = join(__dirname, '..', '..', 'themes');
 
 /** App icon path (repo root images/icon.png) for window and dock/taskbar. */
 const APP_ICON_PATH = join(__dirname, '..', '..', 'images', 'icon.png');
+
+/** Undo stacks persisted under data/.undo; cleared on every app start. */
+function getUndoStacksDir(): string {
+  return join(DATA_DIR, '.undo');
+}
+
+/** Sanitize docId (name@version) for use in filenames. */
+function sanitizeDocId(docId: string): string {
+  return docId.replace(/[\\/:*?"<>|+]/g, '_');
+}
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -82,6 +93,10 @@ app.whenReady().then(async () => {
   await mkdir(join(DATA_DIR, 'catalogs'), { recursive: true });
   await mkdir(join(DATA_DIR, 'templates'), { recursive: true });
   await mkdir(join(DATA_DIR, 'themes'), { recursive: true });
+
+  const undoStacksDir = getUndoStacksDir();
+  rmSync(undoStacksDir, { recursive: true, force: true });
+  mkdirSync(undoStacksDir, { recursive: true });
 
   const repo = getCatalogRepository();
   const templateRepo = getTemplateRepository();
@@ -242,6 +257,28 @@ app.whenReady().then(async () => {
     console.debug(TAG, 'IPC theme:delete', name, `v${version}`);
     await themeRepo.deleteTheme(name, version);
     console.debug(TAG, 'IPC theme:delete complete');
+  });
+
+  type UndoPane = 'themes' | 'templates' | 'catalogs';
+  ipcMain.handle('undo:save', async (_event, pane: UndoPane, docId: string, payload: string) => {
+    if (!docId) return;
+    const dir = join(undoStacksDir, pane);
+    await mkdir(dir, { recursive: true });
+    const file = join(dir, `${sanitizeDocId(docId)}.json`);
+    await writeFile(file, payload, 'utf-8');
+  });
+  ipcMain.handle('undo:load', async (_event, pane: UndoPane, docId: string): Promise<string | null> => {
+    if (!docId) return null;
+    const file = join(undoStacksDir, pane, `${sanitizeDocId(docId)}.json`);
+    try {
+      return await readFile(file, 'utf-8');
+    } catch {
+      return null;
+    }
+  });
+  ipcMain.handle('undo:clearAll', () => {
+    rmSync(undoStacksDir, { recursive: true, force: true });
+    mkdirSync(undoStacksDir, { recursive: true });
   });
 
   ipcMain.handle('theme:generate', async (

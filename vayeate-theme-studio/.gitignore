@@ -1,3 +1,6 @@
+# Undo stack persistence (session-only, cleared on app start)
+data/.undo/
+
 # Dependencies
 node_modules/
 
