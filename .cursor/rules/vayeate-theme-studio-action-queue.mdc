@@ -6,39 +6,80 @@ alwaysApply: false
 
 # Action Queue Pattern
 
-All user-triggered mutations flow through the ActionQueue for predictable, sequential processing.
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the processor delegates to controllers, which compose fine-grained operations.
+
+## Event Naming
+
+Every action type is a UI event of the form `<CONTROL>_<ACTION>`. Examples:
+
+- `CATALOG_PAGE_ON_LOAD`
+- `CATALOG_SYNC_BUTTON_ON_CLICK`
+- `HUE_ADJUSTMENT_SLIDER_ON_DELTA`
+
+Each UI interaction dispatches exactly one such event. The control name identifies the UI element (page, button, slider, etc.); the action suffix is one of the allowed actions for that control type (see below).
 
 ## Flow
 
-1. Component calls `dispatch({ type: 'CREATE_CATALOG' })`
-2. ActionQueue.enqueue() pushes to FIFO queue
-3. Processor runs when idle; awaits each action before starting next
-4. Processor calls services (async IPC), then `setState(update)` for reducer
-5. State updates trigger re-renders; ViewModels derive display data
+1. Component dispatches one event per interaction: `dispatch({ type: 'CATALOG_SYNC_BUTTON_ON_CLICK', ... })`
+2. ActionQueue.enqueue() pushes the event to a FIFO queue
+3. Processor runs when idle; awaits each action before starting the next
+4. The **processor** (in AppContext) **handles the event by invoking the appropriate controller**. It does not implement business logic itself
+5. **Controllers** compose one or more **operations** to fulfill the app action for that UI event
+6. **Operations** perform a single responsibility: set state (via `setState`), persist state (e.g. via services/IPC), or add to the undo stack
+7. State updates trigger re-renders; ViewModels derive display data
+
+```mermaid
+flowchart LR
+  UI[UI Component] -->|"dispatch(CONTROL_ACTION)"| Queue[ActionQueue]
+  Queue -->|"process"| Context[AppContext processor]
+  Context -->|"invoke"| Controller[Controller]
+  Controller -->|"calls"| Op1[Operation 1]
+  Controller -->|"calls"| Op2[Operation 2]
+  Op1 --> State[setState / persist / undo]
+  Op2 --> State
+```
+
+## Control Types and Actions
+
+Use these action suffixes for each control type when naming events:
+
+- **Page**: ON_LOAD
+- **Button**: ON_CLICK, ON_HOVER
+- **CheckBox**: ON_TOGGLE
+- **Slider**: ON_DELTA, ON_COMMIT
+- **TextField / Input**: ON_CHANGE, ON_BLUR, ON_SUBMIT
+- **Select / Dropdown**: ON_SELECT
+- **Dialog / Modal**: ON_OPEN, ON_CLOSE
+- **List / Table**: ON_SELECT, ON_LOAD
+- **Tab**: ON_SELECT
 
 ## Adding a New Action
 
 ```typescript
-// 1. action-types.ts
+// 1. action-types.ts - Use CONTROL_ACTION naming
 export type AppAction =
   | { type: 'SET_ACTIVE_TAB'; tabId: TabId }
-  | { type: 'CREATE_CATALOG' }
-  | { type: 'MY_NEW_ACTION'; payload: string };  // Add here
+  | { type: 'CATALOG_SYNC_BUTTON_ON_CLICK'; catalog: Catalog }
+  | { type: 'MY_PAGE_MY_BUTTON_ON_CLICK'; payload: string };  // Add here
 
-// 2. app-state.ts - Add reducer case
-case 'MY_NEW_ACTION_RESULT':
+// 2. app-state.ts - Add reducer case for state updates produced by operations
+case 'MY_FIELD_SET':
   return { ...state, myField: update.payload };
 
-// 3. AppContext.tsx - Add processor case
-case 'MY_NEW_ACTION': {
-  const result = await myService.doSomething(action.payload);
-  setState({ type: 'MY_NEW_ACTION_RESULT', payload: result });
+// 3. AppContext.tsx - Processor delegates to controller
+case 'MY_PAGE_MY_BUTTON_ON_CLICK': {
+  await myController.handleMyButtonClick(action.payload, setState);
   break;
 }
 ```
 
+The controller invokes operations (e.g. load data, setState, persist). The processor does not call services or setState directly for this event.
+
 ## Rules
 
 - Actions are serializable; no functions or class instances
-- Processor must call `setState` with `AppStateUpdate`, not mutate state directly
-- Use `AppStateUpdate` for state changes (separate from `AppAction` - actions are user intent, updates are state mutations)
+- Action types use the `<CONTROL>_<ACTION>` naming convention (see Control Types and Actions)
+- Processor handles events by invoking controllers; it does not implement business logic inline
+- Controllers compose operations; operations perform setState, persist, or undo
+- Processor must call `setState` only via the updates produced by operations (invoked through controllers), not mutate state directly
+- Use `AppStateUpdate` for state changes (separate from `AppAction` — actions are user intent / UI events, updates are state mutations)
