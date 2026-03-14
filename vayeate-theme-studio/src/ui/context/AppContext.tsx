@@ -45,8 +45,8 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         await catalogController.loadCatalogRefs(setState);
         break;
 
-      case 'CATALOG_LOAD_FOR_DISPLAY':
-        await catalogController.loadCatalogForDisplay(setState, action.name, action.version);
+      case 'TEMPLATE_PAGE_ON_ENSURE_CATALOGS_FOR_DISPLAY':
+        await catalogController.loadCatalogsForDisplay(setState, action.refs);
         break;
 
       case 'CATALOG_LIST_ON_SELECT':

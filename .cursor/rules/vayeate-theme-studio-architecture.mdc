@@ -43,12 +43,12 @@ UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
 - `electron/preload.ts` - contextBridge exposes `electronAPI`
 - `src/ui/context/AppContext.tsx` - AppProvider, useAppState, wires ActionQueue to reducer; processor invokes controllers
 - `src/actions/action-queue.ts` - FIFO queue, sequential async processing
-- `src/actions/action-types.ts` - Discriminated union `AppAction` (UI events only)
+- `src/actions/action-types.ts` - Discriminated unions `AppAction` (legacy) and `AppActionV2`. The `AppActionV2` union is the canonical list of all app action event names.
 - `src/controllers/` - Controllers composed of operations; invoked by AppContext processor
 
 ## Conventions
 
-- **New UI events**: Use `<CONTROL>_<ACTION>` (see Action Queue rule for control/action list). Add to `AppAction` in action-types.ts. In the processor, invoke a controller; controller uses operations for setState, persist, undo. Add reducer cases in app-state.ts for the state updates produced by operations.
+- **New UI events**: Use `<CONTROL>_<ACTION>` (see Action Queue rule for control/action list). Add to `AppAction` in action-types.ts. In the processor, invoke a controller; controller uses operations for setState, persist, undo. Add reducer cases in app-state.ts for the state updates produced by operations. For **AppActionV2**, add the new union member in action-types.ts with payload types from `src/model/schemas.ts` where applicable. Use the add-app-action skill when adding a new action.
 - **New ViewModels**: Create hook in viewmodel/, consume `useAppState()`, return derived data
 - **Renderer → Main**: Use services/*; never import from data/ or controllers/ in renderer code (except for controller invocation from the processor)
 - **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir

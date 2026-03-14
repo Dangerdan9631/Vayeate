@@ -49,6 +49,15 @@ export async function loadCatalogForDisplay(
   await loadCatalogForDisplayOp(setState, name, version);
 }
 
+export async function loadCatalogsForDisplay(
+  setState: SetState,
+  refs: Array<{ name: string; version: string }>,
+): Promise<void> {
+  for (const ref of refs) {
+    await loadCatalogForDisplayOp(setState, ref.name, ref.version);
+  }
+}
+
 export async function selectCatalogAndLoad(
   setState: SetState,
   name: string,

@@ -1,0 +1,18 @@
+{
+  "name": "test3",
+  "version": "1.0.0",
+  "type": "manual",
+  "locked": true,
+  "sources": [],
+  "tokens": [],
+  "semanticTokenTypes": [
+    "type"
+  ],
+  "semanticTokenModifiers": [
+    "mod1",
+    "mod2"
+  ],
+  "semanticTokenLanguages": [
+    "lang"
+  ]
+}

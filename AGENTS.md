@@ -47,6 +47,7 @@ Use this file to route an AI coding agent to the right instruction files, archit
 | Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `vayeate-theme-studio/src/core/theme-exporter.ts`, `.github/skills/safe-change-validation.md` |
 | Repo-level documentation or process updates | `.github/copilot-instructions.md` | `AGENTS.md`, `.github/agent-docs/conventions.md`, `.github/agents/task-completion-hook.md` |
 | Unknown / mixed task | `AGENTS.md` | `.github/copilot-instructions.md`, relevant `.github/skills/*.md`, then target module files |
+| Adding or changing app actions / action types | `vayeate-theme-studio/src/actions/action-types.ts` (canonical list = `AppActionV2` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
 
 ## Skills index
 

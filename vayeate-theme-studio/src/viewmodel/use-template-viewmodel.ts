@@ -127,11 +127,12 @@ export function useTemplateViewModel() {
 
   const ensureCatalogsLoadedForTemplate = useCallback(() => {
     if (!template) return;
-    for (const ref of template.catalogRefs) {
+    const refsToLoad = template.catalogRefs.filter((ref) => {
       const key = `${ref.name}@${ref.version}`;
-      if (!loadedForDisplay[key]) {
-        dispatch({ type: 'CATALOG_LOAD_FOR_DISPLAY', name: ref.name, version: ref.version });
-      }
+      return !loadedForDisplay[key];
+    });
+    if (refsToLoad.length > 0) {
+      dispatch({ type: 'TEMPLATE_PAGE_ON_ENSURE_CATALOGS_FOR_DISPLAY', refs: refsToLoad });
     }
   }, [template, loadedForDisplay, dispatch]);
 

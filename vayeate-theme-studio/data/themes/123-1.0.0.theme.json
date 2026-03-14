@@ -1,0 +1,52 @@
+{
+  "name": "123",
+  "version": "1.0.0",
+  "templateRef": {
+    "name": "test",
+    "version": "1.0.1"
+  },
+  "idePrimaryTokenRef": null,
+  "ideForegroundTokenRef": null,
+  "themeBackgroundTokenRef": null,
+  "themeForegroundTokenRef": null,
+  "lineNumberBackgroundTokenRef": null,
+  "lineNumberForegroundTokenRef": null,
+  "ideTabTokenRef": null,
+  "ideTabBarBackgroundTokenRef": null,
+  "ideTabBarForegroundTokenRef": null,
+  "editorPreviewScrollbarBackgroundTokenRef": null,
+  "editorPreviewScrollbarForegroundTokenRef": null,
+  "editorPreviewSelectionBackgroundTokenRef": null,
+  "editorPreviewMenuForegroundTokenRef": null,
+  "editorPreviewMenuBackgroundTokenRef": null,
+  "colorAssignments": [
+    {
+      "colorRef": "abc",
+      "light": {
+        "value": "#b92fbc"
+      },
+      "dark": {
+        "value": "#e60000"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "def",
+      "light": {
+        "value": "#058a38"
+      },
+      "dark": {
+        "value": "#ea6666"
+      },
+      "useDarkForLight": false
+    }
+  ],
+  "contrastAssignments": [
+    {
+      "contrastVariableRef": "c1",
+      "light": null,
+      "dark": null,
+      "useDarkForLight": false
+    }
+  ]
+}
