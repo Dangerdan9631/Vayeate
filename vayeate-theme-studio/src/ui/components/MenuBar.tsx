@@ -7,7 +7,7 @@ export function MenuBar() {
   const dispatch = useAppDispatch();
   const dispatchV2 = useAppDispatchV2();
   const { theme, toggleColorScheme } = useColorScheme();
-  const { undo, redo, goTo, canUndo, canRedo, frames, currentIndex, activePane } = useUndoStack();
+  const { undo, redo, canUndo, canRedo, frames, currentId, goTo } = useUndoStack();
   const [fileOpen, setFileOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -62,25 +62,21 @@ export function MenuBar() {
   }, [viewOpen]);
 
   const handleUndo = useCallback(() => {
-    dispatchV2({ type: 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK' });
     undo();
     setEditOpen(false);
-  }, [dispatchV2, undo]);
+  }, [undo]);
 
   const handleRedo = useCallback(() => {
-    dispatchV2({ type: 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK' });
     redo();
     setEditOpen(false);
-  }, [dispatchV2, redo]);
+  }, [redo]);
 
   const handleHistoryClick = useCallback(
-    (index: number) => {
-      const target = `${activePane}:${index}`;
-      dispatchV2({ type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK', target });
-      goTo(activePane, index);
+    (frameId: string) => {
+      goTo(frameId);
       setHistoryOpen(false);
     },
-    [dispatchV2, goTo, activePane],
+    [goTo],
   );
 
   const handleExit = useCallback(() => {
@@ -258,16 +254,16 @@ export function MenuBar() {
                 <div className="menu-edit-history-list" role="group" aria-label="History">
                   {frames.map((frame) => (
                     <button
-                      key={frame.index}
+                      key={frame.id}
                       type="button"
                       role="menuitem"
-                      className={`menu-edit-history-item ${frame.index === currentIndex ? 'menu-edit-history-current' : ''}`}
-                      onClick={() => handleHistoryClick(frame.index)}
+                      className={`menu-edit-history-item ${frame.id === currentId ? 'menu-edit-history-current' : ''}`}
+                      onClick={() => handleHistoryClick(frame.id)}
                     >
-                      {frame.index === currentIndex && (
+                      {frame.id === currentId && (
                         <span className="material-symbols-outlined menu-edit-history-check" aria-hidden>check</span>
                       )}
-                      <span className="menu-edit-history-label-text">{frame.label}</span>
+                      <span className="menu-edit-history-label-text">{frame.description}</span>
                     </button>
                   ))}
                 </div>

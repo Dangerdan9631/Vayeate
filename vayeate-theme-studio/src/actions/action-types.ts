@@ -68,7 +68,7 @@ export type AppActionV2 =
   | { type: 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK' }
   | { type: 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK' }
   | { type: 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK' }
-  | { type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK'; target: string }
+  | { type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK'; frameId: string }
   | { type: 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK' }
   | { type: 'APP_VIEW_MENU_FORCE_RELOAD_BUTTON_ON_CLICK' }
   | { type: 'APP_VIEW_MENU_TOGGLE_DEV_TOOLS_BUTTON_ON_CLICK' }

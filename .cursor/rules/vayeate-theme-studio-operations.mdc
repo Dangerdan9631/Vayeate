@@ -12,6 +12,7 @@ Operations are fine-grained units that perform a **single atomic action**: one l
 
 - **Single atomic action**: Each operation does one logical thing. Name and implement it so that it cannot be meaningfully split into smaller operations that would be invoked separately.
 - **Single entity or batch**: An operation may act on a single entity (e.g. save one catalog) or on a batch of entities when the change is inherently one logical action (e.g. update a set of tokens that are always applied together). Use a batch only when the updates are inseparable in the domain.
+- **No operation calls another operation**: Operations are fine-grained and single-responsibility. An operation must not invoke another operation; only controllers compose multiple operations (e.g. the load application controller invokes `clearPersistedUndo` and any other operations needed for bootstrap).
 
 ## Coupling
 

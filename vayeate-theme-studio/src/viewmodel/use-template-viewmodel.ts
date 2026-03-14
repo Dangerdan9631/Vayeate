@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppDispatchV2, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
-import { useUndoStack } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { catalogService } from '../services/catalog-service';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../core/semantic-token';
@@ -22,7 +21,6 @@ let templatePageLoadDispatched = false;
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
   const dispatchV2 = useAppDispatchV2();
-  const undoStack = useUndoStack();
   const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
   const { catalogRefs, loadedForDisplay } = useCatalogsState();
 
@@ -34,12 +32,11 @@ export function useTemplateViewModel() {
   }, [dispatch, dispatchV2]);
 
   const pushTemplateUndoAndSave = useCallback(
-    (label: string, nextTemplate: Template) => {
+    (_label: string, nextTemplate: Template) => {
       if (!template) return;
-      undoStack.push('templates', label, { template }, { template: nextTemplate });
       dispatch({ type: 'TEMPLATE_SAVE_BUTTON_ON_CLICK', template: nextTemplate });
     },
-    [template, undoStack, dispatch],
+    [template, dispatch],
   );
 
   const templateNames = useMemo(() => {

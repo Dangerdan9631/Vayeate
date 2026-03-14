@@ -3,7 +3,7 @@ import type { ColorAssignment, ColorVariable } from '../../model/schemas';
 import { clusterColors } from '../../core/color-clustering';
 import { hexToHue, hslToRgb, rgbToHex } from '../../core/color';
 import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
-import type { ThemePaneState } from '../context/UndoContext';
+import type { ThemePaneState } from '../../model/theme-pane-state';
 import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 

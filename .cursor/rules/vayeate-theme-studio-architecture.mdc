@@ -34,7 +34,8 @@ UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
 
 - UI events use `<CONTROL>_<ACTION>` naming (e.g. `CATALOG_PAGE_ON_LOAD`, `CATALOG_SYNC_BUTTON_ON_CLICK`).
 - The processor handles each event by invoking the appropriate controller.
-- Controllers invoke one or more operations; operations perform setState, persist (e.g. via services/IPC), or undo.
+- Controllers compose one or more operations; only controllers may call multiple operations (e.g. load application controller invokes `clearPersistedUndo` on app load). Operations do not call other operations; they have a single responsibility and are composed by controllers.
+- Operations perform setState, persist (e.g. via services/IPC), or undo.
 - For main-process work: Controller/operations use services; main IPC delegates to controllers; controllers call data layer.
 
 ## File Structure

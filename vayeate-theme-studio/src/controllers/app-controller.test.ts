@@ -8,11 +8,11 @@ describe('app-controller', () => {
     setState = vi.fn();
   });
 
-  it('loadApplication calls loadApplication operation and resolves', async () => {
+  it('loadApplication composes operations and resolves', async () => {
     await expect(loadApplication(setState)).resolves.toBeUndefined();
   });
 
-  it('unloadApplication calls unloadApplication operation and resolves', async () => {
+  it('unloadApplication composes operations and resolves', async () => {
     await expect(unloadApplication(setState)).resolves.toBeUndefined();
   });
 });

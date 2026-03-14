@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useReducer,
-  useRef,
-  type MutableRefObject,
-  type ReactNode,
-} from 'react';
+import { createContext, useCallback, useReducer, useRef, type ReactNode } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
 import { ActionQueueV2 } from '../../actions/action-queue-v2';
 import type { AppAction, AppActionV2 } from '../../actions/action-types';
@@ -23,9 +16,10 @@ import {
   TemplatesStateContext,
   ThemesStateContext,
 } from './slice-contexts';
-import { UndoProvider, type CatalogUndoPush } from './UndoContext';
+import { UndoProvider } from './UndoContext';
 import * as appController from '../../controllers/app-controller';
 import * as catalogController from '../../controllers/catalog-controller';
+import * as undoController from '../../controllers/undo-controller';
 import * as tabController from '../../controllers/tab-controller';
 import * as templateController from '../../controllers/template-controller';
 import * as themeController from '../../controllers/theme-controller';
@@ -37,7 +31,7 @@ const logV2 = createLogger('ActionProcessorV2');
 
 type SetState = (update: AppStateUpdate) => void;
 
-function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoPush | null>) {
+function createActionProcessor() {
   return async (action: AppAction, setState: SetState): Promise<void> => {
     log.debug('action', action);
     switch (action.type) {
@@ -86,11 +80,7 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'CATALOG_SYNC_BUTTON_ON_CLICK':
-        await catalogController.syncCatalog(
-          setState,
-          action.catalog,
-          catalogUndoPushRef.current,
-        );
+        await catalogController.syncCatalog(setState, action.catalog);
         break;
 
       case 'CATALOG_REVERT_BUTTON_ON_CLICK':
@@ -246,7 +236,9 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
   };
 }
 
-export function createActionProcessorV2(): (
+type GetState = () => AppState;
+
+export function createActionProcessorV2(getState: GetState): (
   action: AppActionV2,
   setState: SetState
 ) => Promise<void> {
@@ -266,19 +258,13 @@ export function createActionProcessorV2(): (
         // Request main process to quit the app (may trigger APP_APP_ON_CLOSE).
         break;
       case 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK':
-        // Pop the last undo entry and apply its inverse (restore prior state).
-        // Recompute derived state (e.g. catalog/template/theme refs) if affected.
-        // Update UI state so the restored state is reflected.
+        await undoController.performUndo(setState, getState);
         break;
       case 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK':
-        // Pop the last redo entry and re-apply the reverted change.
-        // Recompute derived state if affected.
-        // Update UI state to reflect the redone state.
+        await undoController.performRedo(setState, getState);
         break;
       case 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK':
-        // Resolve the target (e.g. catalog/template/theme by name/version).
-        // Load the target entity and set it as selected.
-        // Update UI state so the history target is shown.
+        await undoController.performHistoryGoTo(setState, getState, action.frameId);
         break;
       case 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK':
         await windowController.reloadWindow();
@@ -921,13 +907,15 @@ export const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useReducer(appStateReducer, initialAppState);
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const getState = useCallback(() => stateRef.current, []);
   const queueRef = useRef<ActionQueue | null>(null);
   const queueV2Ref = useRef<ActionQueueV2 | null>(null);
-  const catalogUndoPushRef = useRef<CatalogUndoPush | null>(null);
 
   const dispatch = useCallback((action: AppAction) => {
     if (!queueRef.current) {
-      const processor = createActionProcessor(catalogUndoPushRef);
+      const processor = createActionProcessor();
       const queue = new ActionQueue(processor);
       queue.onStateUpdate = (update) => setState(update);
       queue.onQueueStatus = (status) =>
@@ -943,14 +931,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const dispatchV2 = useCallback((action: AppActionV2) => {
     if (!queueV2Ref.current) {
-      const processor = createActionProcessorV2();
+      const processor = createActionProcessorV2(getState);
       const queue = new ActionQueueV2(processor);
       queue.onStateUpdate = (update) => setState(update);
       queue.onQueueStatus = () => {};
       queueV2Ref.current = queue;
     }
     queueV2Ref.current.enqueue(action);
-  }, []);
+  }, [getState]);
 
   const value: AppContextValue = { state, dispatch, dispatchV2 };
 
@@ -962,7 +950,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           <CatalogsStateContext.Provider value={state.catalogs}>
             <TemplatesStateContext.Provider value={state.templates}>
               <ThemesStateContext.Provider value={state.themes}>
-                <UndoProvider catalogUndoPushRef={catalogUndoPushRef}>
+                <UndoProvider setState={setState}>
                   {children}
                 </UndoProvider>
               </ThemesStateContext.Provider>

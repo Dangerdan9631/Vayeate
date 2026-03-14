@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ThemePaneState } from '../model/theme-pane-state';
 import { useAppDispatch, useAppDispatchV2, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
-import { useUndoStack } from '../ui/context/UndoContext';
-import type { ThemePaneState } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { templateService } from '../services/template-service';
 import { applyHueShift } from '../core/color';
@@ -69,7 +68,6 @@ function themePaneStateFromState(
 export function useThemeViewModel() {
   const dispatch = useAppDispatch();
   const dispatchV2 = useAppDispatchV2();
-  const undoStack = useUndoStack();
   const {
     themeRefs,
     selectedRef,
@@ -307,26 +305,18 @@ export function useThemeViewModel() {
 
   /** Push theme-pane undo frame and dispatch THEME_SAVE_BUTTON_ON_CLICK (for user-initiated theme changes). */
   const pushThemeUndoAndSave = useCallback(
-    (label: string, nextTheme: Theme, nextHueAdjustment: number = hueAdjustment) => {
-      const prev = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex);
-      const nextRefHex =
-        nextHueAdjustment === 0 && hueAdjustment !== 0 ? applyHueShift(hueReferenceHex, hueAdjustment / 100) : hueReferenceHex;
-      const next = themePaneStateFromState(nextTheme, checkedColorRefsArray, checkedContrastRefsArray, nextHueAdjustment, nextRefHex);
-      undoStack.push('themes', label, prev, next);
+    (_label: string, nextTheme: Theme, _nextHueAdjustment: number = hueAdjustment) => {
       dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme: nextTheme });
     },
-    [theme, hueAdjustment, hueReferenceHex, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
+    [dispatch],
   );
 
-  /** Push theme-pane undo frame and dispatch THEME_PANE_SELECTIONS_CHANGED (for selection changes). */
+  /** Dispatch THEME_PANE_SELECTIONS_CHANGED (for selection changes). */
   const pushSelectionUndoAndDispatch = useCallback(
-    (label: string, nextColorRefs: string[], nextContrastRefs: string[]) => {
-      const prev = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex);
-      const next = themePaneStateFromState(theme, nextColorRefs, nextContrastRefs, hueAdjustment, hueReferenceHex);
-      undoStack.push('themes', label, prev, next);
+    (_label: string, nextColorRefs: string[], nextContrastRefs: string[]) => {
       dispatch({ type: 'THEME_PANE_ON_SELECT', checkedColorRefs: nextColorRefs, checkedContrastRefs: nextContrastRefs });
     },
-    [theme, hueAdjustment, hueReferenceHex, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
+    [dispatch],
   );
 
   // --- Actions ---
@@ -873,14 +863,12 @@ export function useThemeViewModel() {
     [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, dispatch, dispatchV2],
   );
 
-  /** Pushes one undo entry (snapshot → current) and ensures save. Call when color picker closes. */
+  /** Ensures save when color picker closes. */
   const closeColorPicker = useCallback(
-    (snapshot: ThemePaneState) => {
-      const current = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex);
-      undoStack.push('themes', 'Palette color change', snapshot, current);
+    (_snapshot: ThemePaneState) => {
       if (theme) dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme });
     },
-    [theme, hueAdjustment, hueReferenceHex, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
+    [theme, dispatch],
   );
 
   const setSelectedColorsToHex = useCallback(

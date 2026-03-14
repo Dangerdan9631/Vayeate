@@ -17,7 +17,7 @@ Read before implementing:
 
 ## What to do
 
-1. **Decide scope and coupling**: Choose single-entity vs batch. Ensure all changes in the operation are inherently coupled (no partial execution). If two updates can be done independently, use two operations.
+1. **Decide scope and coupling**: Choose single-entity vs batch. Ensure all changes in the operation are inherently coupled (no partial execution). If two updates can be done independently, use two operations. Do not implement an operation that calls another operation; only controllers compose multiple operations.
 
 2. **Add or edit the operation**: Place the operation in the appropriate file under `vayeate-theme-studio/src/operations/`: `theme-operations.ts`, `catalog-operations.ts`, or `template-operations.ts`. If the change warrants a new domain, add a new `<domain>-operations.ts` and follow existing patterns (e.g. `SetState`, service calls).
 

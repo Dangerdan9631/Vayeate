@@ -75,7 +75,7 @@ function getUndoStacksDir(): string {
 
 /** UndoManagerV2 stacks: data/.undo/v2; one JSON file per stack. */
 function getUndoV2Dir(): string {
-  return join(getUndoStacksDir(), 'v2');
+  return getUndoStacksDir();
 }
 
 /** Sanitize docId (name@version) or stackId for use in filenames. */

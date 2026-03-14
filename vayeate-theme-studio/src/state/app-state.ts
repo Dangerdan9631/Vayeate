@@ -47,12 +47,20 @@ export interface QueueStatusState {
   queueLength: number;
 }
 
+/** Current undo stack ID for the history menu; null when no stack is active. */
+export interface UndoStackIdState {
+  currentUndoStackId: string | null;
+  /** Bump to trigger history list refetch after undo/redo/goto. */
+  undoListVersion: number;
+}
+
 export interface AppState {
   activeTab: TabId;
   catalogs: CatalogsState;
   templates: TemplatesState;
   themes: ThemesState;
   queueStatus: QueueStatusState;
+  undoStackId: UndoStackIdState;
 }
 
 export const initialAppState: AppState = {
@@ -89,6 +97,10 @@ export const initialAppState: AppState = {
     isProcessing: false,
     queueLength: 0,
   },
+  undoStackId: {
+    currentUndoStackId: null,
+    undoListVersion: 0,
+  },
 };
 
 export type AppStateUpdate =
@@ -115,7 +127,9 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_CREATE_DIALOG_OPEN'; value: boolean }
   | { type: 'SET_GENERATE_RESULT'; result: GenerateResult | null }
   | { type: 'SET_THEME_SAVE_ERROR'; error: string | null }
-  | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number };
+  | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number }
+  | { type: 'SET_CURRENT_UNDO_STACK_ID'; stackId: string | null }
+  | { type: 'SET_UNDO_LIST_VERSION'; value: number };
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
   switch (update.type) {
@@ -192,6 +206,10 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, saveError: update.error } };
     case 'SET_QUEUE_STATUS':
       return { ...state, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } };
+    case 'SET_CURRENT_UNDO_STACK_ID':
+      return { ...state, undoStackId: { ...state.undoStackId, currentUndoStackId: update.stackId } };
+    case 'SET_UNDO_LIST_VERSION':
+      return { ...state, undoStackId: { ...state.undoStackId, undoListVersion: update.value } };
     default:
       return state;
   }

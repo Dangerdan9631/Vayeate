@@ -14,8 +14,6 @@ import {
   listCatalogRefs,
   createCatalog as createCatalogOperation,
   type SetState,
-  type CatalogUndoPush,
-  type CatalogPaneState,
 } from '../operations/catalog-operations';
 
 export interface CreateCatalogParams {
@@ -139,25 +137,8 @@ export async function deleteCatalogVersion(
   }
 }
 
-export async function syncCatalog(
-  setState: SetState,
-  catalog: Catalog,
-  catalogUndoPush: CatalogUndoPush | null,
-): Promise<void> {
+export async function syncCatalog(setState: SetState, catalog: Catalog): Promise<void> {
   const synced = await syncCatalogOp(catalog);
-  const prev: CatalogPaneState = {
-    catalog,
-    undoMetadata: !catalog.locked
-      ? {
-          deleteVersionOnRestore: {
-            name: catalog.name,
-            version: nextPatchVersion(catalog.version),
-          },
-        }
-      : undefined,
-  };
-  const next: CatalogPaneState = { catalog: synced };
-  catalogUndoPush?.('Sync catalog', prev, next);
   await saveCatalogOp(synced);
   await refreshRefsAndSelect(setState, synced.name, synced.version);
 }
