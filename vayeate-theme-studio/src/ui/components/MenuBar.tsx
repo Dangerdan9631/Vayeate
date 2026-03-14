@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme } from '../context/ColorSchemeContext';
 import { useUndoStack } from '../context/UndoContext';
+import { useAppDispatch } from '../context/slice-contexts';
 
 export function MenuBar() {
+  const dispatch = useAppDispatch();
   const { theme, toggleColorScheme } = useColorScheme();
   const { undo, redo, goTo, canUndo, canRedo, frames, currentIndex, activePane } = useUndoStack();
   const [fileOpen, setFileOpen] = useState(false);
@@ -82,19 +84,19 @@ export function MenuBar() {
   }, []);
 
   const handleReload = useCallback(() => {
-    window.electronAPI?.reloadWindow?.();
+    dispatch({ type: 'VIEW_MENU_RELOAD_ON_CLICK' });
     setViewOpen(false);
-  }, []);
+  }, [dispatch]);
 
   const handleForceReload = useCallback(() => {
-    window.electronAPI?.reloadWindowForce?.();
+    dispatch({ type: 'VIEW_MENU_FORCE_RELOAD_ON_CLICK' });
     setViewOpen(false);
-  }, []);
+  }, [dispatch]);
 
   const handleToggleDevTools = useCallback(() => {
-    window.electronAPI?.toggleDevTools?.();
+    dispatch({ type: 'VIEW_MENU_TOGGLE_DEV_TOOLS_ON_CLICK' });
     setViewOpen(false);
-  }, []);
+  }, [dispatch]);
 
   const handleMinimize = useCallback(() => {
     window.electronAPI?.minimizeWindow?.();

@@ -26,6 +26,7 @@ import * as catalogController from '../../controllers/catalog-controller';
 import * as tabController from '../../controllers/tab-controller';
 import * as templateController from '../../controllers/template-controller';
 import * as themeController from '../../controllers/theme-controller';
+import * as windowController from '../../controllers/window-controller';
 import { createLogger } from '../../utils/logger';
 
 const log = createLogger('ActionProcessor');
@@ -223,6 +224,18 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
           action.templateName,
           action.templateVersion,
         );
+        break;
+
+      case 'VIEW_MENU_RELOAD_ON_CLICK':
+        await windowController.handleViewMenuReload();
+        break;
+
+      case 'VIEW_MENU_FORCE_RELOAD_ON_CLICK':
+        await windowController.handleViewMenuForceReload();
+        break;
+
+      case 'VIEW_MENU_TOGGLE_DEV_TOOLS_ON_CLICK':
+        await windowController.handleViewMenuToggleDevTools();
         break;
     }
   };

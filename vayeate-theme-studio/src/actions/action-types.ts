@@ -34,4 +34,7 @@ export type AppAction =
   | { type: 'UNDO_PANEL_ON_RESTORE_CATALOG'; catalog: Catalog | null; deleteVersionOnRestore?: { name: string; version: string } }
   | { type: 'THEME_VERSION_DELETE_BUTTON_ON_CLICK'; name: string; version: string }
   | { type: 'THEME_SAVE_ERROR_DIALOG_ON_CLOSE' }
-  | { type: 'THEME_GENERATE_BUTTON_ON_CLICK'; themeName: string; themeVersion: string; templateName: string; templateVersion: string };
+  | { type: 'THEME_GENERATE_BUTTON_ON_CLICK'; themeName: string; themeVersion: string; templateName: string; templateVersion: string }
+  | { type: 'VIEW_MENU_RELOAD_ON_CLICK' }
+  | { type: 'VIEW_MENU_FORCE_RELOAD_ON_CLICK' }
+  | { type: 'VIEW_MENU_TOGGLE_DEV_TOOLS_ON_CLICK' };
