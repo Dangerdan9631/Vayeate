@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
 import { useUndoStack } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
-import { createLogger } from '../utils/logger';
 import { catalogService } from '../services/catalog-service';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../core/semantic-token';
 import type {
@@ -18,13 +17,19 @@ import type {
   TokenType,
 } from '../model/schemas';
 
-const log = createLogger('TemplateVM');
+let templatePageLoadDispatched = false;
 
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
   const undoStack = useUndoStack();
   const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
   const { catalogRefs, loadedForDisplay } = useCatalogsState();
+
+  useEffect(() => {
+    if (templatePageLoadDispatched) return;
+    templatePageLoadDispatched = true;
+    dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+  }, [dispatch]);
 
   const pushTemplateUndoAndSave = useCallback(
     (label: string, nextTemplate: Template) => {
@@ -34,12 +39,6 @@ export function useTemplateViewModel() {
     },
     [template, undoStack, dispatch],
   );
-
-  useEffect(() => {
-    log.debug('initial mount → TEMPLATE_PAGE_ON_LOAD + CATALOG_PAGE_ON_LOAD');
-    dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
-    dispatch({ type: 'CATALOG_PAGE_ON_LOAD' });
-  }, [dispatch]);
 
   const templateNames = useMemo(() => {
     const names = new Set(templateRefs.map((r) => r.name));
@@ -226,7 +225,6 @@ export function useTemplateViewModel() {
 
   const selectTemplate = useCallback(
     (name: string, version: string) => {
-      log.debug('selectTemplate', name, `v${version}`);
       dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name, version });
     },
     [dispatch],
@@ -236,28 +234,23 @@ export function useTemplateViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        log.debug('selectName', name, '→ highest version', `v${best.version}`);
         dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name: best.name, version: best.version });
       } else {
-        log.warn('selectName', name, '→ no versions found');
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    log.debug('openCreateDialog');
     dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    log.debug('closeCreateDialog');
     dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_CLOSE' });
   }, [dispatch]);
 
   const createTemplate = useCallback(
     (params: { name: string }) => {
-      log.debug('createTemplate', params.name);
       dispatch({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params });
     },
     [dispatch],
@@ -265,7 +258,6 @@ export function useTemplateViewModel() {
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      log.debug('deleteVersion', name, `v${version}`);
       dispatch({ type: 'TEMPLATE_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
     },
     [dispatch],
@@ -273,10 +265,8 @@ export function useTemplateViewModel() {
 
   const lockTemplate = useCallback(() => {
     if (!template || !canLock) {
-      log.warn('lockTemplate skipped');
       return;
     }
-    log.debug('lockTemplate', template.name, `v${template.version}`);
     const updated: Template = { ...template, locked: true };
     pushTemplateUndoAndSave('Lock template', updated);
   }, [dispatch, template, canLock]);
@@ -286,8 +276,6 @@ export function useTemplateViewModel() {
   const toggleCatalog = useCallback(
     async (catalogName: string, include: boolean) => {
       if (!template) return;
-      log.debug('toggleCatalog', catalogName, include ? 'include' : 'exclude');
-
       const base = getBaseForEdit(template);
       let newCatalogRefs: CatalogReference[];
 
@@ -341,8 +329,6 @@ export function useTemplateViewModel() {
   const changeCatalogVersion = useCallback(
     async (catalogName: string, newVersion: string) => {
       if (!template) return;
-      log.debug('changeCatalogVersion', catalogName, `v${newVersion}`);
-
       const base = getBaseForEdit(template);
       const newCatalogRefs = base.catalogRefs.map((r) =>
         r.name === catalogName ? { ...r, version: newVersion } : r,
@@ -370,8 +356,6 @@ export function useTemplateViewModel() {
   const updateAllCatalogsToLatest = useCallback(
     async () => {
       if (!template || !isLatestVersion) return;
-      log.debug('updateAllCatalogsToLatest');
-
       const base = getBaseForEdit(template);
       const newCatalogRefs: CatalogReference[] = base.catalogRefs.map((ref) => {
         const versions = catalogVersionsByName[ref.name];
@@ -408,7 +392,6 @@ export function useTemplateViewModel() {
       isOrphan?: boolean,
     ) => {
       if (!template) return;
-      log.debug('updateMappingColorRef', tokenKey, tokenType, colorRef, isOrphan);
       const base = getBaseForEdit(template);
 
       if (colorRef === null && isOrphan) {
@@ -432,7 +415,6 @@ export function useTemplateViewModel() {
   const updateMappingContrastRef = useCallback(
     (tokenKey: string, tokenType: TokenType, contrastRef: ContrastVariableKey | null) => {
       if (!template) return;
-      log.debug('updateMappingContrastRef', tokenKey, tokenType, contrastRef);
       const base = getBaseForEdit(template);
       const newMappings = base.mappings.map((m) =>
         m.token.key === tokenKey && m.token.type === tokenType
@@ -447,7 +429,6 @@ export function useTemplateViewModel() {
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
       if (!template) return;
-      log.debug('updateMappingGroupRef', tokenKey, tokenType, groupRef);
       const base = getBaseForEdit(template);
       let semanticBaseType: string | null = null;
       if (tokenType === 'semantic token') {
@@ -498,7 +479,6 @@ export function useTemplateViewModel() {
         );
         if (existing) return;
       }
-      log.debug('addSemanticVariantMapping', key);
       const groupRef =
         type === SEMANTIC_WILDCARD_TYPE && defaultGroupRef !== undefined
           ? defaultGroupRef
@@ -540,7 +520,6 @@ export function useTemplateViewModel() {
         (m) => m.token.type === 'semantic token' && m.token.key === newKey,
       );
       if (existing) return;
-      log.debug('updateSemanticVariantKey', oldKey, '->', newKey);
       const base = getBaseForEdit(template);
       const newMappings = base.mappings.map((m) =>
         m.token.type === 'semantic token' && m.token.key === oldKey
@@ -565,7 +544,6 @@ export function useTemplateViewModel() {
   const removeMapping = useCallback(
     (tokenKey: string, tokenType: TokenType) => {
       if (!template) return;
-      log.debug('removeMapping', tokenKey, tokenType);
       const base = getBaseForEdit(template);
       const newMappings = base.mappings.filter(
         (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
@@ -580,7 +558,6 @@ export function useTemplateViewModel() {
   const addColorVariable = useCallback(
     (key: string, groupRef?: string | null) => {
       if (!template) return;
-      log.debug('addColorVariable', key, groupRef ?? null);
       const base = getBaseForEdit(template);
       const newVars: ColorVariable[] = [
         ...base.colorVariables,
@@ -595,10 +572,8 @@ export function useTemplateViewModel() {
     (key: string) => {
       if (!template) return;
       if (referencedColorVarKeys.has(key)) {
-        log.warn('removeColorVariable blocked: variable is referenced', key);
         return;
       }
-      log.debug('removeColorVariable', key);
       const base = getBaseForEdit(template);
       const newVars = base.colorVariables.filter((v) => v.key !== key);
       pushTemplateUndoAndSave('Remove color variable', { ...base, colorVariables: newVars });
@@ -609,7 +584,6 @@ export function useTemplateViewModel() {
   const addContrastVariable = useCallback(
     (key: string, groupRef?: string | null) => {
       if (!template) return;
-      log.debug('addContrastVariable', key, groupRef ?? null);
       const base = getBaseForEdit(template);
       const newVars: ContrastVariable[] = [
         ...base.contrastVariables,
@@ -624,10 +598,8 @@ export function useTemplateViewModel() {
     (key: string) => {
       if (!template) return;
       if (referencedContrastVarKeys.has(key)) {
-        log.warn('removeContrastVariable blocked: variable is referenced', key);
         return;
       }
-      log.debug('removeContrastVariable', key);
       const base = getBaseForEdit(template);
       const newVars = base.contrastVariables.filter((v) => v.key !== key);
       pushTemplateUndoAndSave('Remove contrast variable', { ...base, contrastVariables: newVars });
@@ -638,7 +610,6 @@ export function useTemplateViewModel() {
   const updateContrastComparisonSource = useCallback(
     (key: string, comparisonSourceRef: ColorVariableKey | null) => {
       if (!template) return;
-      log.debug('updateContrastComparisonSource', key, comparisonSourceRef);
       const base = getBaseForEdit(template);
       const newVars = base.contrastVariables.map((v) =>
         v.key === key ? { ...v, comparisonSourceRef } : v,
@@ -651,7 +622,6 @@ export function useTemplateViewModel() {
   const updateColorVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
       if (!template) return;
-      log.debug('updateColorVariableGroupRef', key, groupRef);
       const base = getBaseForEdit(template);
       const newVars = base.colorVariables.map((v) =>
         v.key === key ? { ...v, groupRef } : v,
@@ -664,7 +634,6 @@ export function useTemplateViewModel() {
   const updateContrastVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
       if (!template) return;
-      log.debug('updateContrastVariableGroupRef', key, groupRef);
       const base = getBaseForEdit(template);
       const newVars = base.contrastVariables.map((v) =>
         v.key === key ? { ...v, groupRef } : v,
@@ -681,15 +650,12 @@ export function useTemplateViewModel() {
       if (!template) return;
       const trimmed = name.trim();
       if (!trimmed) {
-        log.warn('addGroup skipped: empty name');
         return;
       }
       const existing = template.groups ?? [];
       if (existing.includes(trimmed)) {
-        log.warn('addGroup skipped: duplicate name', trimmed);
         return;
       }
-      log.debug('addGroup', trimmed);
       const base = getBaseForEdit(template);
       const newGroups = [...(base.groups ?? []), trimmed];
       pushTemplateUndoAndSave('Add group', { ...base, groups: newGroups });
@@ -701,10 +667,8 @@ export function useTemplateViewModel() {
     (name: string) => {
       if (!template) return;
       if (groupNamesInUse.has(name)) {
-        log.warn('removeGroup blocked: group has mappings or variables', name);
         return;
       }
-      log.debug('removeGroup', name);
       const base = getBaseForEdit(template);
       const newGroups = (base.groups ?? []).filter((g) => g !== name);
       pushTemplateUndoAndSave('Remove group', { ...base, groups: newGroups });

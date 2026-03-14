@@ -1,8 +1,5 @@
 import type { Source, Token, TokenType } from '../model/schemas';
-import { createLogger } from '../utils/logger';
 import { parseSemanticSelector } from '../core/semantic-token';
-
-const log = createLogger('CatalogSync');
 
 const BACKTICK_RE = /`([^`]+)`/g;
 const CODE_TAG_RE = /<code>([^<]+)<\/code>/gi;
@@ -81,8 +78,6 @@ function extractCandidates(text: string): string[] {
 
 function parseDefaultSource(text: string, tokenType: TokenType): Token[] {
   const candidates = extractCandidates(text);
-  log.debug('extracted', candidates.length, 'candidate(s) from source text');
-
   const filtered = candidates.filter((c) => filterByTokenType(c, tokenType));
 
   const unique = [...new Set(filtered)].sort();
@@ -100,7 +95,6 @@ function parseColorRegistrySource(text: string, tokenType: TokenType): Token[] {
     }
   }
   const unique = [...new Set(keys)].sort();
-  log.debug('extracted', unique.length, 'token(s) from color-registry source');
   return unique.map((key) => ({ key, type: tokenType }));
 }
 
@@ -119,7 +113,6 @@ function parseTextmateGrammarSource(xmlText: string): Token[] {
   }
   const filtered = [...scopes].filter((scope) => filterByTokenType(scope, 'textmate token'));
   const unique = [...new Set(filtered)].sort();
-  log.debug('extracted', unique.length, 'token(s) from textmate-xml source');
   return unique.map((key) => ({ key, type: 'textmate token' }));
 }
 
@@ -151,12 +144,10 @@ function parseTextmateJsonSource(jsonText: string): Token[] {
     const data = JSON.parse(jsonText) as unknown;
     collectScopeNamesFromJson(data, scopes);
   } catch {
-    log.debug('textmate-json: failed to parse JSON');
     return [];
   }
   const filtered = [...scopes].filter((scope) => filterByTokenType(scope, 'textmate token'));
   const unique = [...new Set(filtered)].sort();
-  log.debug('extracted', unique.length, 'token(s) from textmate-json source');
   return unique.map((key) => ({ key, type: 'textmate token' }));
 }
 
@@ -235,7 +226,6 @@ export async function syncCatalogTokens(
   sources: readonly Source[],
   fetchText: FetchText = defaultFetchText,
 ): Promise<SyncCatalogResult> {
-  log.debug('starting sync', `(${sources.length} source(s))`);
   const allTokens: Token[] = [];
   let registryTypes: string[] = [];
   let registryModifiers: string[] = [];
@@ -263,67 +253,45 @@ export async function syncCatalogTokens(
 
     switch (source.type) {
       case 'default': {
-        log.debug('fetching source', source.url, `tokenType=${source.tokenType}`);
         const text = await fetchText(source.url);
-        log.debug('fetched', source.url, `(${text.length} chars)`);
         const tokens = parseDefaultSource(text, source.tokenType);
-        log.debug('parsed', source.url, `→ ${tokens.length} token(s)`);
         allTokens.push(...tokens);
         break;
       }
       case 'color-registry': {
-        log.debug('fetching source', source.url, `tokenType=${source.tokenType}`);
         const text = await fetchText(source.url);
-        log.debug('fetched', source.url, `(${text.length} chars)`);
         const tokens = parseColorRegistrySource(text, source.tokenType);
-        log.debug('parsed', source.url, `→ ${tokens.length} token(s)`);
         allTokens.push(...tokens);
         break;
       }
       case 'color-registry-set': {
-        log.debug('fetching manifest', source.url);
         const manifestText = await fetchText(source.url);
         const paths = parseExportStarFromPaths(manifestText);
-        log.debug('manifest exports', paths.length, 'path(s)');
         const urls = [...new Set(paths.map((p) => resolveExportUrl(p, source.url)))];
         for (const url of urls) {
           const text = await fetchText(url);
           const tokens = parseColorRegistrySource(text, 'theme');
-          log.debug('parsed', url, `→ ${tokens.length} token(s)`);
           allTokens.push(...tokens);
         }
         break;
       }
       case 'semantic-token-registry': {
-        log.debug('fetching source', source.url, 'semantic-token-registry');
         const text = await fetchText(source.url);
-        log.debug('fetched', source.url, `(${text.length} chars)`);
         const parsed = parseSemanticTokenRegistrySource(text);
         registryTypes = [...new Set([...registryTypes, ...parsed.types])].sort();
         registryModifiers = [...new Set([...registryModifiers, ...parsed.modifiers])].sort();
         registryLanguages = [...new Set([...registryLanguages, ...parsed.languages])].sort();
-        log.debug(
-          'parsed',
-          source.url,
-          `→ ${parsed.types.length} type(s), ${parsed.modifiers.length} modifier(s), ${parsed.languages.length} language(s)`,
-        );
         break;
       }
       case 'textmate-xml': {
-        log.debug('fetching source', source.url, 'textmate-xml');
         const text = await fetchText(source.url);
-        log.debug('fetched', source.url, `(${text.length} chars)`);
         const tokens = parseTextmateGrammarSource(text);
-        log.debug('parsed', source.url, `→ ${tokens.length} token(s)`);
         allTokens.push(...tokens);
         break;
       }
       case 'textmate-json': {
-        log.debug('fetching source', source.url, 'textmate-json');
         const text = await fetchText(source.url);
-        log.debug('fetched', source.url, `(${text.length} chars)`);
         const tokens = parseTextmateJsonSource(text);
-        log.debug('parsed', source.url, `→ ${tokens.length} token(s)`);
         allTokens.push(...tokens);
         break;
       }
@@ -341,13 +309,6 @@ export async function syncCatalogTokens(
       deduped.push(token);
     }
   }
-
-  const duplicateCount = allTokens.length - deduped.length;
-  if (duplicateCount > 0) {
-    log.debug('deduplication removed', duplicateCount, 'duplicate(s)');
-  }
-
-  log.debug('sync complete', `→ ${deduped.length} unique token(s)`);
 
   const sortedTokens = deduped.sort((a, b) => {
     const typeCmp = a.type.localeCompare(b.type);

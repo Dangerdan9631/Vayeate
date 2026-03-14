@@ -3,9 +3,6 @@ import type { AppStateUpdate } from '../state/app-state';
 import { catalogService } from '../services/catalog-service';
 import { syncCatalogTokens } from '../services/catalog-sync';
 import { compareVersions, nextPatchVersion } from '../utils/version';
-import { createLogger } from '../utils/logger';
-
-const log = createLogger('CatalogOperations');
 
 export type SetState = (update: AppStateUpdate) => void;
 
@@ -30,7 +27,6 @@ export function setCatalog(setState: SetState, catalog: Catalog | null): void {
 
 export async function loadCatalogRefs(setState: SetState): Promise<CatalogReference[]> {
   const refs = await catalogService.listCatalogs();
-  log.debug('loaded', refs.length, 'catalog ref(s)');
   setState({ type: 'SET_CATALOG_REFS', refs });
   return refs;
 }
@@ -40,7 +36,6 @@ export async function createCatalog(
   params: { name: string; type: 'manual' | 'remote' },
 ): Promise<Catalog> {
   const catalog = await catalogService.createCatalog(params);
-  log.debug('created catalog', catalog.name, `v${catalog.version}`);
   return catalog;
 }
 
@@ -50,7 +45,6 @@ export async function loadCatalog(
   version: string,
 ): Promise<Catalog | null> {
   const loaded = await catalogService.loadCatalog(name, version);
-  log.debug('loaded catalog', loaded ? `${loaded.tokens.length} token(s)` : '(not found)');
   setState({ type: 'SET_CATALOG', catalog: loaded });
   return loaded;
 }
@@ -61,7 +55,6 @@ export async function loadCatalogForDisplay(
   version: string,
 ): Promise<Catalog | null> {
   const loaded = await catalogService.loadCatalog(name, version);
-  log.debug('loadCatalogForDisplay', name, version, loaded ? `${loaded.tokens.length} token(s)` : '(not found)');
   setState({ type: 'SET_LOADED_CATALOG_FOR_DISPLAY', name, version, catalog: loaded });
   return loaded;
 }
@@ -71,25 +64,19 @@ export async function refreshRefsAndSelect(
   selectName?: string,
   selectVersion?: string,
 ): Promise<void> {
-  log.debug('refreshRefsAndSelect', selectName, selectVersion);
   const refs = await catalogService.listCatalogs();
-  log.debug('loaded', refs.length, 'catalog ref(s)');
   setState({ type: 'SET_CATALOG_REFS', refs });
 
   if (selectName && selectVersion) {
     const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
     if (match) {
-      log.debug('selecting', match.name, match.version);
       setState({ type: 'SET_SELECTED_REF', ref: match });
       await loadCatalog(setState, match.name, match.version);
-    } else {
-      log.debug('no matching ref for', selectName, selectVersion);
     }
   }
 }
 
 export async function saveCatalogAndRefresh(catalog: Catalog, setState: SetState): Promise<void> {
-  log.debug('saveCatalogAndRefresh', catalog.name, catalog.version);
   await catalogService.saveCatalog(catalog);
   await refreshRefsAndSelect(setState, catalog.name, catalog.version);
 }
@@ -99,7 +86,6 @@ export async function deleteCatalogVersion(
   name: string,
   version: string,
 ): Promise<void> {
-  log.debug('deleteCatalogVersion', name, `v${version}`);
   await catalogService.deleteCatalog(name, version);
   const refs = await catalogService.listCatalogs();
   setState({ type: 'SET_CATALOG_REFS', refs });
@@ -113,11 +99,9 @@ export async function deleteCatalogVersion(
   const next = lower.length > 0 ? lower[lower.length - 1] : higher.length > 0 ? higher[0] : null;
 
   if (next) {
-    log.debug('deleteCatalogVersion fallback to', next.name, `v${next.version}`);
     setState({ type: 'SET_SELECTED_REF', ref: next });
     await loadCatalog(setState, next.name, next.version);
   } else {
-    log.debug('deleteCatalogVersion no remaining versions, clearing selection');
     setState({ type: 'SET_SELECTED_REF', ref: null });
     setState({ type: 'SET_CATALOG', catalog: null });
   }
@@ -128,13 +112,6 @@ export async function syncCatalogAndSave(
   catalog: Catalog,
   catalogUndoPush: CatalogUndoPush | null,
 ): Promise<void> {
-  log.debug(
-    'syncCatalogAndSave',
-    catalog.name,
-    catalog.version,
-    `locked=${catalog.locked}`,
-    `(${catalog.sources.length} source(s))`,
-  );
   const prev: CatalogPaneState = {
     catalog,
     undoMetadata: !catalog.locked
@@ -148,12 +125,6 @@ export async function syncCatalogAndSave(
   };
   const result = await syncCatalogTokens(catalog.sources, (url) => catalogService.fetchUrl(url));
   const version = catalog.locked ? nextPatchVersion(catalog.version) : catalog.version;
-  log.debug(
-    'sync produced',
-    result.tokens.length,
-    `token(s),`,
-    catalog.locked ? `bumping to v${version}` : `saving to current v${version}`,
-  );
   const synced: Catalog = {
     ...catalog,
     tokens: result.tokens,
@@ -173,10 +144,8 @@ export async function revertCatalogToVersion(
   name: string,
   version: string,
 ): Promise<void> {
-  log.debug('revertCatalogToVersion', name, `v${version}`);
   const snapshot = await catalogService.loadCatalog(name, version);
   if (!snapshot) {
-    log.warn('revertCatalogToVersion snapshot not found for', name, `v${version}`);
     return;
   }
 
@@ -194,7 +163,6 @@ export async function revertCatalogToVersion(
   }
 
   const newVersion = highest ? nextPatchVersion(highest.version) : nextPatchVersion(version);
-  log.debug('revertCatalogToVersion creating reverted catalog at', `v${newVersion}`);
   const reverted: Catalog = {
     ...snapshot,
     version: newVersion,

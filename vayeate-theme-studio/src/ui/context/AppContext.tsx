@@ -23,20 +23,21 @@ import {
 } from './slice-contexts';
 import { UndoProvider, type CatalogUndoPush } from './UndoContext';
 import * as catalogController from '../../controllers/catalog-controller';
+import * as tabController from '../../controllers/tab-controller';
 import * as templateController from '../../controllers/template-controller';
 import * as themeController from '../../controllers/theme-controller';
 import { createLogger } from '../../utils/logger';
 
-const log = createLogger('AppContext');
+const log = createLogger('ActionProcessor');
 
 type SetState = (update: AppStateUpdate) => void;
 
 function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoPush | null>) {
   return async (action: AppAction, setState: SetState): Promise<void> => {
+    log.debug('action', action);
     switch (action.type) {
       case 'TAB_BAR_ON_SELECT':
-        log.debug('TAB_BAR_ON_SELECT', action.tabId);
-        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
+        tabController.handleTabBarOnSelect(setState, action.tabId);
         break;
 
       case 'CATALOG_PAGE_ON_LOAD':
@@ -241,7 +242,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const dispatch = useCallback((action: AppAction) => {
     if (!queueRef.current) {
-      log.info('initializing ActionQueue');
       const processor = createActionProcessor(catalogUndoPushRef);
       const queue = new ActionQueue(processor);
       queue.onStateUpdate = (update) => setState(update);

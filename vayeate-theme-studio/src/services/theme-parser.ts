@@ -1,7 +1,4 @@
 import type { Token, TokenType } from '../model/schemas';
-import { createLogger } from '../utils/logger';
-
-const log = createLogger('ThemeParser');
 
 interface ThemeJson {
   colors?: Record<string, unknown>;
@@ -41,7 +38,6 @@ export function parseThemeJson(text: string): BulkParseResult {
     for (const key of Object.keys(theme.colors)) {
       tokens.push({ key, type: 'theme' });
     }
-    log.debug('parsed', Object.keys(theme.colors).length, 'theme color key(s)');
   }
 
   if (Array.isArray(theme.tokenColors)) {
@@ -53,14 +49,12 @@ export function parseThemeJson(text: string): BulkParseResult {
         tokens.push({ key: scope, type: 'textmate token' });
       }
     }
-    log.debug('parsed tokenColors →', tokens.filter((t) => t.type === 'textmate token').length, 'scope(s)');
   }
 
   if (theme.semanticTokenColors && typeof theme.semanticTokenColors === 'object') {
     for (const key of Object.keys(theme.semanticTokenColors)) {
       tokens.push({ key, type: 'semantic token' });
     }
-    log.debug('parsed', Object.keys(theme.semanticTokenColors).length, 'semantic token key(s)');
   }
 
   const seen = new Set<string>();
@@ -75,8 +69,6 @@ export function parseThemeJson(text: string): BulkParseResult {
   for (const t of deduped) {
     counts[t.type]++;
   }
-
-  log.debug('parseThemeJson total:', deduped.length, 'unique token(s)', counts);
 
   return { tokens: deduped, counts };
 }

@@ -2,9 +2,6 @@ import type { Theme, ThemeReference } from '../model/schemas';
 import type { AppStateUpdate } from '../state/app-state';
 import { themeService } from '../services/theme-service';
 import { compareVersions } from '../utils/version';
-import { createLogger } from '../utils/logger';
-
-const log = createLogger('ThemeOperations');
 
 export type SetState = (update: AppStateUpdate) => void;
 
@@ -57,7 +54,6 @@ export function setGenerateResult(
 
 export async function loadThemeRefs(setState: SetState): Promise<ThemeReference[]> {
   const refs = await themeService.listThemes();
-  log.debug('loaded', refs.length, 'theme ref(s)');
   setState({ type: 'SET_THEME_REFS', refs });
   return refs;
 }
@@ -67,7 +63,6 @@ export async function createTheme(
   params: { name: string },
 ): Promise<Theme> {
   const theme = await themeService.createTheme(params);
-  log.debug('created theme', theme.name, `v${theme.version}`);
   return theme;
 }
 
@@ -77,12 +72,6 @@ export async function loadTheme(
   version: string,
 ): Promise<Theme | null> {
   const loaded = await themeService.loadTheme(name, version);
-  log.debug(
-    'loaded theme',
-    loaded
-      ? `${loaded.colorAssignments.length} color, ${loaded.contrastAssignments.length} contrast`
-      : '(not found)',
-  );
   setState({ type: 'SET_THEME', theme: loaded });
   if (loaded) {
     setThemePaneSelections(
@@ -95,7 +84,6 @@ export async function loadTheme(
 }
 
 export async function refreshThemeRefsOnly(setState: SetState): Promise<ThemeReference[]> {
-  log.debug('refreshThemeRefsOnly');
   return loadThemeRefs(setState);
 }
 
@@ -113,7 +101,6 @@ export async function deleteThemeVersion(
   name: string,
   version: string,
 ): Promise<void> {
-  log.debug('deleteThemeVersion', name, `v${version}`);
   await themeService.deleteTheme(name, version);
   const refs = await themeService.listThemes();
   setState({ type: 'SET_THEME_REFS', refs });
@@ -128,7 +115,6 @@ export async function deleteThemeVersion(
     lowerTh.length > 0 ? lowerTh[lowerTh.length - 1] : higherTh.length > 0 ? higherTh[0] : null;
 
   if (nextTh) {
-    log.debug('deleteThemeVersion fallback to', nextTh.name, `v${nextTh.version}`);
     setState({ type: 'SET_SELECTED_THEME_REF', ref: nextTh });
     const loadedNextTh = await themeService.loadTheme(nextTh.name, nextTh.version);
     setState({ type: 'SET_THEME', theme: loadedNextTh });
@@ -140,7 +126,6 @@ export async function deleteThemeVersion(
       );
     }
   } else {
-    log.debug('deleteThemeVersion no remaining versions, clearing selection');
     setState({ type: 'SET_SELECTED_THEME_REF', ref: null });
     setState({ type: 'SET_THEME', theme: null });
     setThemePaneSelections(setState, [], []);
@@ -187,7 +172,6 @@ export async function restoreThemeState(
       await themeService.saveTheme(params.theme);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      log.error('restoreThemeState persist failed', err);
       setThemeSaveError(setState, message);
     }
     await refreshThemeRefsOnly(setState);
@@ -208,7 +192,6 @@ export async function generateTheme(
   templateName: string,
   templateVersion: string,
 ): Promise<void> {
-  log.debug('generateTheme', themeName, templateName);
   setGenerateResult(setState, null);
   try {
     const { darkPath, lightPath } = await themeService.generateTheme(
@@ -223,7 +206,6 @@ export async function generateTheme(
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    log.warn('generateTheme failed', message);
     setGenerateResult(setState, { success: false, message });
   }
 }

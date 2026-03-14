@@ -15,9 +15,6 @@ import {
   type SetState,
   type CatalogUndoPush,
 } from '../operations/catalog-operations';
-import { createLogger } from '../utils/logger';
-
-const log = createLogger('CatalogController');
 
 export interface CreateCatalogParams {
   name: string;
@@ -25,7 +22,6 @@ export interface CreateCatalogParams {
 }
 
 export function createCatalogWithParams(params: CreateCatalogParams): Catalog {
-  log.debug('createCatalogWithParams', params.name, params.type);
   return {
     name: params.name,
     version: '1.0.0',
@@ -40,7 +36,6 @@ export function createCatalogWithParams(params: CreateCatalogParams): Catalog {
 }
 
 export async function handleCatalogPageOnLoad(setState: SetState): Promise<void> {
-  log.debug('handleCatalogPageOnLoad');
   await loadCatalogRefs(setState);
 }
 
@@ -57,7 +52,6 @@ export async function handleCatalogListOnSelect(
   name: string,
   version: string,
 ): Promise<void> {
-  log.debug('handleCatalogListOnSelect', name, `v${version}`);
   const ref = { name, version };
   setSelectedRef(setState, ref);
   await loadCatalog(setState, name, version);
@@ -75,7 +69,6 @@ export async function handleCreateFormOnSubmit(
   setState: SetState,
   params: { name: string; type: 'manual' | 'remote' },
 ): Promise<void> {
-  log.debug('handleCreateFormOnSubmit', params);
   setState({ type: 'SET_IS_CREATING', value: true });
   setState({ type: 'SET_CREATE_DIALOG_OPEN', value: false });
   try {
@@ -92,7 +85,6 @@ export async function handleSaveButtonOnClick(
   setState: SetState,
   catalog: Catalog,
 ): Promise<void> {
-  log.debug('handleSaveButtonOnClick', catalog.name, catalog.version);
   await saveCatalogAndRefresh(catalog, setState);
 }
 

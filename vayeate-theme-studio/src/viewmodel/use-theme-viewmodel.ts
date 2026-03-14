@@ -3,7 +3,6 @@ import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context
 import { useUndoStack } from '../ui/context/UndoContext';
 import type { ThemePaneState } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
-import { createLogger } from '../utils/logger';
 import { templateService } from '../services/template-service';
 import { applyHueShift } from '../core/color';
 import { resolveColorForThemeTokenKey } from '../core/scope-resolver';
@@ -20,9 +19,9 @@ import type {
   TokenKey,
 } from '../model/schemas';
 
-const log = createLogger('ThemeVM');
-
 const UNGROUPED_KEY = '__ungrouped__';
+
+let themePageLoadDispatched = false;
 
 export type SelectedColorsDisplay =
   | { kind: 'none' }
@@ -89,9 +88,9 @@ export function useThemeViewModel() {
   const checkedContrastRefs = useMemo(() => new Set(checkedContrastRefsArray), [checkedContrastRefsArray]);
 
   useEffect(() => {
-    log.debug('initial mount → LOAD_THEME_REFS + LOAD_TEMPLATE_REFS');
+    if (themePageLoadDispatched) return;
+    themePageLoadDispatched = true;
     dispatch({ type: 'THEME_PAGE_ON_LOAD' });
-    dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
   }, [dispatch]);
 
   const themeNames = useMemo(() => {
@@ -329,7 +328,6 @@ export function useThemeViewModel() {
 
   const selectTheme = useCallback(
     (name: string, version: string) => {
-      log.debug('selectTheme', name, `v${version}`);
       dispatch({ type: 'THEME_LIST_ON_SELECT', name, version });
     },
     [dispatch],
@@ -339,28 +337,23 @@ export function useThemeViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        log.debug('selectName', name, '→ highest version', `v${best.version}`);
         dispatch({ type: 'THEME_LIST_ON_SELECT', name: best.name, version: best.version });
       } else {
-        log.warn('selectName', name, '→ no versions found');
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    log.debug('openCreateDialog');
     dispatch({ type: 'THEME_CREATE_DIALOG_ON_OPEN' });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    log.debug('closeCreateDialog');
     dispatch({ type: 'THEME_CREATE_DIALOG_ON_CLOSE' });
   }, [dispatch]);
 
   const createTheme = useCallback(
     (params: { name: string }) => {
-      log.debug('createTheme', params.name);
       dispatch({ type: 'THEME_CREATE_FORM_ON_SUBMIT', params });
     },
     [dispatch],
@@ -368,7 +361,6 @@ export function useThemeViewModel() {
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      log.debug('deleteVersion', name, `v${version}`);
       dispatch({ type: 'THEME_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
     },
     [dispatch],
@@ -376,10 +368,8 @@ export function useThemeViewModel() {
 
   const generateTheme = useCallback(() => {
     if (!canGenerate || !theme?.templateRef) {
-      log.warn('generateTheme skipped: not all variables assigned or no template');
       return;
     }
-    log.debug('generateTheme', theme.name, theme.templateRef.name);
     dispatch({
       type: 'THEME_GENERATE_BUTTON_ON_CLICK',
       themeName: theme.name,
@@ -391,7 +381,6 @@ export function useThemeViewModel() {
 
   const bumpVersion = useCallback(() => {
     if (!theme) return;
-    log.debug('bumpVersion', theme.name, `v${theme.version} → v${nextPatchVersion(theme.version)}`);
     const bumped = getBaseWithVersionBump(theme);
     dispatchHueRecenterWithRefUpdate();
     pushThemeUndoAndSave('Bump version', bumped, 0);
@@ -402,8 +391,6 @@ export function useThemeViewModel() {
   const changeTemplate = useCallback(
     async (templateName: string) => {
       if (!theme) return;
-      log.debug('changeTemplate', templateName);
-
       const versions = templateVersionsByName[templateName];
       if (!versions || versions.length === 0) return;
       const highestVersion = versions[0].version;
@@ -422,8 +409,6 @@ export function useThemeViewModel() {
   const changeTemplateVersion = useCallback(
     async (version: string) => {
       if (!theme || !theme.templateRef) return;
-      log.debug('changeTemplateVersion', theme.templateRef.name, `v${version}`);
-
       const template = await templateService.loadTemplate(theme.templateRef.name, version);
       if (!template) return;
 
@@ -440,7 +425,6 @@ export function useThemeViewModel() {
   const changeIdePrimaryTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeIdePrimaryTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
       dispatchHueRecenterWithRefUpdate();
       pushThemeUndoAndSave('IDE primary token', { ...base, idePrimaryTokenRef: tokenKey }, 0);
@@ -450,7 +434,6 @@ export function useThemeViewModel() {
   const changeIdeForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeIdeForegroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
       dispatchHueRecenterWithRefUpdate();
       pushThemeUndoAndSave('IDE foreground token', { ...base, ideForegroundTokenRef: tokenKey }, 0);
@@ -460,7 +443,6 @@ export function useThemeViewModel() {
   const changeThemeBackgroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeThemeBackgroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
       dispatchHueRecenterWithRefUpdate();
       pushThemeUndoAndSave('Theme background token', { ...base, themeBackgroundTokenRef: tokenKey }, 0);
@@ -470,7 +452,6 @@ export function useThemeViewModel() {
   const changeThemeForegroundTokenRef = useCallback(
     (tokenKey: TokenKey | null) => {
       if (!theme) return;
-      log.debug('changeThemeForegroundTokenRef', tokenKey);
       const base = getBaseInPlace(theme);
       dispatchHueRecenterWithRefUpdate();
       pushThemeUndoAndSave('Theme foreground token', { ...base, themeForegroundTokenRef: tokenKey }, 0);
@@ -623,7 +604,6 @@ export function useThemeViewModel() {
   const updateColorAssignmentDark = useCallback(
     (colorRef: string, value: string | null) => {
       if (!theme) return;
-      log.debug('updateColorAssignmentDark', colorRef, value);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -648,7 +628,6 @@ export function useThemeViewModel() {
   const updateColorAssignmentLight = useCallback(
     (colorRef: string, value: string | null) => {
       if (!theme) return;
-      log.debug('updateColorAssignmentLight', colorRef, value);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -673,7 +652,6 @@ export function useThemeViewModel() {
   const updateColorAssignmentUseDarkForLight = useCallback(
     (colorRef: string, useDark: boolean) => {
       if (!theme) return;
-      log.debug('updateColorAssignmentUseDarkForLight', colorRef, useDark);
       const base = getBaseInPlace(theme);
       let workingAssignments = base.colorAssignments;
       if (hueAdjustment !== 0) {
@@ -698,7 +676,6 @@ export function useThemeViewModel() {
   const updateContrastAssignmentDark = useCallback(
     (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
       if (!theme) return;
-      log.debug('updateContrastAssignmentDark', contrastRef, field, value);
       const base = getBaseInPlace(theme);
       const newAssignments = base.contrastAssignments.map((a) => {
         if (a.contrastVariableRef !== contrastRef) return a;
@@ -714,7 +691,6 @@ export function useThemeViewModel() {
   const updateContrastAssignmentLight = useCallback(
     (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
       if (!theme) return;
-      log.debug('updateContrastAssignmentLight', contrastRef, field, value);
       const base = getBaseInPlace(theme);
       const newAssignments = base.contrastAssignments.map((a) => {
         if (a.contrastVariableRef !== contrastRef) return a;
@@ -730,7 +706,6 @@ export function useThemeViewModel() {
   const updateContrastAssignmentUseDarkForLight = useCallback(
     (contrastRef: string, useDark: boolean) => {
       if (!theme) return;
-      log.debug('updateContrastAssignmentUseDarkForLight', contrastRef, useDark);
       const base = getBaseInPlace(theme);
       const newAssignments = base.contrastAssignments.map((a) =>
         a.contrastVariableRef === contrastRef ? { ...a, useDarkForLight: useDark } : a,

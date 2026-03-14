@@ -2,18 +2,18 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../utils/version';
 import { nextPatchVersion } from '../utils/version';
-import { createLogger } from '../utils/logger';
 import type { Catalog, CatalogReference, Source, Token, TokenType } from '../model/schemas';
 import { mergeSemanticSelectorInto } from '../core/semantic-token';
 
-const log = createLogger('CatalogVM');
+let catalogPageLoadDispatched = false;
 
 export function useCatalogViewModel() {
   const dispatch = useAppDispatch();
   const { catalogRefs, selectedRef, catalog, isCreating, createDialogOpen } = useCatalogsState();
 
   useEffect(() => {
-    log.debug('initial mount → CATALOG_PAGE_ON_LOAD');
+    if (catalogPageLoadDispatched) return;
+    catalogPageLoadDispatched = true;
     dispatch({ type: 'CATALOG_PAGE_ON_LOAD' });
   }, [dispatch]);
 
@@ -73,7 +73,6 @@ export function useCatalogViewModel() {
 
   const selectCatalog = useCallback(
     (name: string, version: string) => {
-      log.debug('selectCatalog', name, `v${version}`);
       dispatch({ type: 'CATALOG_LIST_ON_SELECT', name, version });
     },
     [dispatch],
@@ -83,28 +82,22 @@ export function useCatalogViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        log.debug('selectName', name, '→ highest version', `v${best.version}`);
         dispatch({ type: 'CATALOG_LIST_ON_SELECT', name: best.name, version: best.version });
-      } else {
-        log.warn('selectName', name, '→ no versions found');
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    log.debug('openCreateDialog');
     dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_OPEN' });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    log.debug('closeCreateDialog');
     dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_CLOSE' });
   }, [dispatch]);
 
   const createCatalog = useCallback(
     (params: { name: string; type: 'manual' | 'remote' }) => {
-      log.debug('createCatalog', params.name, params.type);
       dispatch({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params });
     },
     [dispatch],
@@ -112,7 +105,6 @@ export function useCatalogViewModel() {
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      log.debug('deleteVersion', name, `v${version}`);
       dispatch({ type: 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
     },
     [dispatch],
@@ -121,10 +113,8 @@ export function useCatalogViewModel() {
   const updateSources = useCallback(
     (sources: Source[]) => {
       if (!catalog) {
-        log.warn('updateSources called with no catalog loaded');
         return;
       }
-      log.debug('updateSources', catalog.name, `${sources.length} source(s)`);
       const updated: Catalog = {
         ...catalog,
         sources,
@@ -138,36 +128,27 @@ export function useCatalogViewModel() {
 
   const lockCatalog = useCallback(() => {
     if (!catalog || catalog.type !== 'manual' || catalog.locked) {
-      log.warn('lockCatalog skipped:', !catalog ? 'no catalog' : catalog.locked ? 'already locked' : `type=${catalog.type}`);
       return;
     }
-    log.debug('lockCatalog', catalog.name, `v${catalog.version}`);
     const updated: Catalog = { ...catalog, locked: true };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+    dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
   }, [dispatch, catalog]);
 
   const syncCatalog = useCallback(() => {
     if (!catalog) {
-      log.warn('syncCatalog called with no catalog loaded');
       return;
     }
     if (catalog.type !== 'remote') {
-      log.warn('syncCatalog called on non-remote catalog', catalog.type);
       return;
     }
-    log.debug('syncCatalog dispatching', catalog.name, `v${catalog.version}`,
-      `(${catalog.sources.length} source(s))`);
     dispatch({ type: 'CATALOG_SYNC_BUTTON_ON_CLICK', catalog });
   }, [dispatch, catalog]);
 
   const addToken = useCallback(
     (key: string, tokenType: TokenType) => {
       if (!catalog) {
-        log.warn('addToken called with no catalog loaded');
         return;
       }
-      log.debug('addToken', key, tokenType, 'to', catalog.name);
-
       if (tokenType === 'semantic token') {
         const current = {
           types: catalog.semanticTokenTypes ?? [],
@@ -205,10 +186,8 @@ export function useCatalogViewModel() {
   const removeToken = useCallback(
     (key: string, tokenType: TokenType) => {
       if (!catalog) {
-        log.warn('removeToken called with no catalog loaded');
         return;
       }
-      log.debug('removeToken', key, tokenType, 'from', catalog.name);
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -224,10 +203,8 @@ export function useCatalogViewModel() {
   const updateTokenKey = useCallback(
     (oldKey: string, newKey: string, tokenType: TokenType) => {
       if (!catalog) {
-        log.warn('updateTokenKey called with no catalog loaded');
         return;
       }
-      log.debug('updateTokenKey', oldKey, '→', newKey, tokenType, 'in', catalog.name);
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -245,17 +222,13 @@ export function useCatalogViewModel() {
   const bulkAddTokens = useCallback(
     (newTokens: Token[]) => {
       if (!catalog) {
-        log.warn('bulkAddTokens called with no catalog loaded');
         return;
       }
       const existingKeys = new Set(catalog.tokens.map((t) => `${t.type}::${t.key}`));
       const unique = newTokens.filter((t) => !existingKeys.has(`${t.type}::${t.key}`));
       if (unique.length === 0) {
-        log.debug('bulkAddTokens: all tokens already exist, nothing to add');
         return;
       }
-      log.debug('bulkAddTokens', unique.length, 'new token(s) to', catalog.name,
-        `(${newTokens.length - unique.length} duplicate(s) skipped)`);
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -271,7 +244,6 @@ export function useCatalogViewModel() {
   const addSemanticFromSelector = useCallback(
     (selector: string) => {
       if (!catalog) {
-        log.warn('addSemanticFromSelector called with no catalog loaded');
         return;
       }
       const current = {
@@ -333,7 +305,6 @@ export function useCatalogViewModel() {
 
   const revertToVersion = useCallback(
     (name: string, version: string) => {
-      log.debug('revertToVersion', name, `v${version}`);
       dispatch({ type: 'CATALOG_REVERT_BUTTON_ON_CLICK', name, version });
     },
     [dispatch],
