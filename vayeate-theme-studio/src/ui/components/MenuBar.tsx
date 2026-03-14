@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme } from '../context/ColorSchemeContext';
 import { useUndoStack } from '../context/UndoContext';
-import { useAppDispatch } from '../context/slice-contexts';
+import { useAppDispatch, useAppDispatchV2 } from '../context/slice-contexts';
 
 export function MenuBar() {
   const dispatch = useAppDispatch();
+  const dispatchV2 = useAppDispatchV2();
   const { theme, toggleColorScheme } = useColorScheme();
   const { undo, redo, goTo, canUndo, canRedo, frames, currentIndex, activePane } = useUndoStack();
   const [fileOpen, setFileOpen] = useState(false);
@@ -61,59 +62,79 @@ export function MenuBar() {
   }, [viewOpen]);
 
   const handleUndo = useCallback(() => {
+    dispatchV2({ type: 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK' });
     undo();
     setEditOpen(false);
-  }, [undo]);
+  }, [dispatchV2, undo]);
 
   const handleRedo = useCallback(() => {
+    dispatchV2({ type: 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK' });
     redo();
     setEditOpen(false);
-  }, [redo]);
+  }, [dispatchV2, redo]);
 
   const handleHistoryClick = useCallback(
     (index: number) => {
+      const target = `${activePane}:${index}`;
+      dispatchV2({ type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK', target });
       goTo(activePane, index);
       setHistoryOpen(false);
     },
-    [goTo, activePane],
+    [dispatchV2, goTo, activePane],
   );
 
   const handleExit = useCallback(() => {
+    dispatchV2({ type: 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK' });
     window.electronAPI?.closeWindow?.();
     setFileOpen(false);
-  }, []);
+  }, [dispatchV2]);
 
   const handleReload = useCallback(() => {
     dispatch({ type: 'VIEW_MENU_RELOAD_ON_CLICK' });
+    dispatchV2({ type: 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK' });
     setViewOpen(false);
-  }, [dispatch]);
+  }, [dispatch, dispatchV2]);
 
   const handleForceReload = useCallback(() => {
     dispatch({ type: 'VIEW_MENU_FORCE_RELOAD_ON_CLICK' });
+    dispatchV2({ type: 'APP_VIEW_MENU_FORCE_RELOAD_BUTTON_ON_CLICK' });
     setViewOpen(false);
-  }, [dispatch]);
+  }, [dispatch, dispatchV2]);
 
   const handleToggleDevTools = useCallback(() => {
     dispatch({ type: 'VIEW_MENU_TOGGLE_DEV_TOOLS_ON_CLICK' });
+    dispatchV2({ type: 'APP_VIEW_MENU_TOGGLE_DEV_TOOLS_BUTTON_ON_CLICK' });
     setViewOpen(false);
-  }, [dispatch]);
+  }, [dispatch, dispatchV2]);
 
   const handleMinimize = useCallback(() => {
+    dispatchV2({ type: 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK' });
     window.electronAPI?.minimizeWindow?.();
-  }, []);
+  }, [dispatchV2]);
 
   const handleMaximize = useCallback(() => {
+    dispatchV2({ type: 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK' });
     window.electronAPI?.maximizeWindow?.();
-  }, []);
+  }, [dispatchV2]);
 
   const handleClose = useCallback(() => {
+    dispatchV2({ type: 'APP_BAR_CLOSE_BUTTON_ON_CLICK' });
     window.electronAPI?.closeWindow?.();
-  }, []);
+  }, [dispatchV2]);
+
+  const handleThemeToggle = useCallback(() => {
+    dispatchV2({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: theme !== 'light' });
+    toggleColorScheme();
+  }, [dispatchV2, theme, toggleColorScheme]);
+
+  const handleTitleBarDrag = useCallback(() => {
+    dispatchV2({ type: 'APP_BAR_TITLE_BAR_ON_DRAG' });
+  }, [dispatchV2]);
 
   return (
     <header className="menu-bar">
       <div className="menu-title-row">
-        <div className="menu-title-block">
+        <div className="menu-title-block" onMouseDown={handleTitleBarDrag} role="presentation">
           <img src="/icon.png" alt="" className="menu-title-icon" width={20} height={20} />
           <span className="menu-title">Vayeate Theme Studio</span>
         </div>
@@ -121,7 +142,7 @@ export function MenuBar() {
           <button
             type="button"
             className="menu-theme-toggle"
-            onClick={toggleColorScheme}
+            onClick={handleThemeToggle}
             aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
           >
             <span className="material-symbols-outlined" aria-hidden>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../model/schemas';
+import { useAppDispatchV2 } from '../context/slice-contexts';
+import type { ColorVariable, ColorVariableKey, ContrastVariable, ContrastVariableKey } from '../../model/schemas';
 import { colorVariableKeySchema, contrastVariableKeySchema } from '../../model/schemas';
 
 const UNGROUPED_KEY = '__ungrouped__';
@@ -57,6 +58,7 @@ function ColorGroupSubsection({
   onAdd,
   onRemove,
   onUpdateGroupRef,
+  onNewKeyChange,
 }: {
   groupLabel: string;
   groupRef: string | null;
@@ -67,6 +69,7 @@ function ColorGroupSubsection({
   onAdd: (key: string, groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
+  onNewKeyChange?: (value: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [newKey, setNewKey] = useState('');
@@ -93,7 +96,11 @@ function ColorGroupSubsection({
                 type="text"
                 placeholder="new variable…"
                 value={newKey}
-                onChange={(e) => setNewKey(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setNewKey(value);
+                  onNewKeyChange?.(value);
+                }}
               />
               <button
                 type="button"
@@ -158,6 +165,7 @@ function ColorVariablesSection({
   onAdd,
   onRemove,
   onUpdateGroupRef,
+  onNewKeyChange,
 }: {
   colorVariables: readonly ColorVariable[];
   groups: readonly string[];
@@ -166,6 +174,7 @@ function ColorVariablesSection({
   onAdd: (key: string, groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
+  onNewKeyChange?: (value: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const byGroup = buildByGroup(colorVariables);
@@ -204,6 +213,7 @@ function ColorVariablesSection({
                 onAdd={onAdd}
                 onRemove={onRemove}
                 onUpdateGroupRef={onUpdateGroupRef}
+                onNewKeyChange={onNewKeyChange}
               />
             );
           })}
@@ -424,6 +434,7 @@ export function VariablesCard({
   onUpdateContrastVariableGroupRef,
   onUpdateContrastComparisonSource,
 }: VariablesCardProps) {
+  const dispatchV2 = useAppDispatchV2();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredColorVariables = colorVariables
@@ -442,7 +453,11 @@ export function VariablesCard({
         className="card-search-input"
         placeholder="Search…"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          setSearchQuery(value);
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_SEARCH_TEXT_ON_CHANGE', value });
+        }}
         aria-label="Search variables"
       />
       <ColorVariablesSection
@@ -450,9 +465,21 @@ export function VariablesCard({
         groups={groups}
         referencedKeys={referencedColorVarKeys}
         canEdit={canEdit}
-        onAdd={onAddColorVariable}
-        onRemove={onRemoveColorVariable}
-        onUpdateGroupRef={onUpdateColorVariableGroupRef}
+        onAdd={(key, groupRef) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK' });
+          onAddColorVariable(key, groupRef);
+        }}
+        onRemove={(key) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK', key });
+          onRemoveColorVariable(key);
+        }}
+        onUpdateGroupRef={(key, groupRef) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT', value: groupRef ?? '' });
+          onUpdateColorVariableGroupRef(key, groupRef);
+        }}
+        onNewKeyChange={(value) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE', value });
+        }}
       />
       <ContrastVariablesSection
         contrastVariables={filteredContrastVariables}
@@ -460,10 +487,22 @@ export function VariablesCard({
         groups={groups}
         referencedKeys={referencedContrastVarKeys}
         canEdit={canEdit}
-        onAdd={onAddContrastVariable}
-        onRemove={onRemoveContrastVariable}
-        onUpdateGroupRef={onUpdateContrastVariableGroupRef}
-        onUpdateComparisonSource={onUpdateContrastComparisonSource}
+        onAdd={(key, groupRef) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK' });
+          onAddContrastVariable(key, groupRef);
+        }}
+        onRemove={(key) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK', key });
+          onRemoveContrastVariable(key);
+        }}
+        onUpdateGroupRef={(key, groupRef) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT', value: groupRef ?? '' });
+          onUpdateContrastVariableGroupRef(key, groupRef);
+        }}
+        onUpdateComparisonSource={(key, ref) => {
+          dispatchV2({ type: 'TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT', value: key as ContrastVariableKey });
+          onUpdateContrastComparisonSource(key, ref);
+        }}
       />
     </div>
   );

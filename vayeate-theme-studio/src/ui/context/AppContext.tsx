@@ -24,6 +24,7 @@ import {
   ThemesStateContext,
 } from './slice-contexts';
 import { UndoProvider, type CatalogUndoPush } from './UndoContext';
+import * as appController from '../../controllers/app-controller';
 import * as catalogController from '../../controllers/catalog-controller';
 import * as tabController from '../../controllers/tab-controller';
 import * as templateController from '../../controllers/template-controller';
@@ -249,17 +250,17 @@ export function createActionProcessorV2(): (
   action: AppActionV2,
   setState: SetState
 ) => Promise<void> {
-  return async (action: AppActionV2, _setState: SetState): Promise<void> => {
+  return async (action: AppActionV2, setState: SetState): Promise<void> => {
     logV2.debug('action', action);
     switch (action.type) {
       case 'APP_APP_ON_LOAD':
         // Load or restore persisted app preferences (e.g. window size, last tab).
         // Initialize refs and any lazy state needed for the current tab.
-        // Update UI state so the correct tab and data are shown.
+        await appController.loadApplication(setState);
         break;
       case 'APP_APP_ON_CLOSE':
         // Persist app state (preferences, window bounds) to disk if needed.
-        // No in-memory state to derive; window is closing.
+        await appController.unloadApplication(setState);
         break;
       case 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK':
         // Request main process to quit the app (may trigger APP_APP_ON_CLOSE).
@@ -280,13 +281,13 @@ export function createActionProcessorV2(): (
         // Update UI state so the history target is shown.
         break;
       case 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK':
-        // Invoke main process to reload the window (no state change in processor).
+        await windowController.reloadWindow();
         break;
       case 'APP_VIEW_MENU_FORCE_RELOAD_BUTTON_ON_CLICK':
-        // Invoke main process to force reload (e.g. clear cache then reload).
+        await windowController.forceReloadWindow();
         break;
       case 'APP_VIEW_MENU_TOGGLE_DEV_TOOLS_BUTTON_ON_CLICK':
-        // Invoke main process to toggle dev tools visibility.
+        await windowController.toggleDevTools();
         break;
       case 'APP_RIBBON_TAB_BUTTON_ON_CLICK':
         // Set active tab in app state to the clicked tab.
@@ -298,16 +299,16 @@ export function createActionProcessorV2(): (
         // Update UI state so the theme checkbox and bar reflect the new value.
         break;
       case 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK':
-        // Invoke main process to minimize the window.
+        await windowController.minimizeWindow();
         break;
       case 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK':
-        // Invoke main process to maximize or restore the window.
+        await windowController.maximizeWindow();
         break;
       case 'APP_BAR_CLOSE_BUTTON_ON_CLICK':
-        // Invoke main process to close the window (or quit if last window).
+        await windowController.closeWindow();
         break;
       case 'APP_BAR_TITLE_BAR_ON_DRAG':
-        // Delegate to main process to start a window drag (no app state change).
+        await windowController.dragWindow();
         break;
       case 'CATALOG_PAGE_ON_LOAD':
         // Read catalog refs from disk (or service) and load into memory.

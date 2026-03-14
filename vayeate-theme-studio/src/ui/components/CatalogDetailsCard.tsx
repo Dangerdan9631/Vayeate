@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAppDispatchV2 } from '../context/slice-contexts';
 import type { Catalog, Source, SourceType, TokenType } from '../../model/schemas';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
@@ -45,6 +46,7 @@ export function CatalogDetailsCard({
   onUpdateSources,
   onRevert,
 }: CatalogDetailsCardProps) {
+  const dispatchV2 = useAppDispatchV2();
   const [newUrl, setNewUrl] = useState('');
   const [newTokenType, setNewTokenType] = useState<TokenType>('theme');
   const [newSourceType, setNewSourceType] = useState<SourceType>('default');
@@ -114,7 +116,10 @@ export function CatalogDetailsCard({
                   onChange={(e) => setEditingSourceUrl(e.target.value)}
                   onBlur={(e) => {
                     const v = e.target.value.trim();
-                    if (v !== source.url) handleUpdateSource(i, { ...source, url: v });
+                    if (v !== source.url) {
+                      dispatchV2({ type: 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_CHANGE', value: v });
+                      handleUpdateSource(i, { ...source, url: v });
+                    }
                     setEditingSourceIndex(null);
                   }}
                 />
@@ -122,12 +127,11 @@ export function CatalogDetailsCard({
                   className="field-select source-select"
                   value={source.tokenType}
                   disabled={!isLatestVersion}
-                  onChange={(e) =>
-                    handleUpdateSource(i, {
-                      ...source,
-                      tokenType: e.target.value as TokenType,
-                    })
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value as TokenType;
+                    dispatchV2({ type: 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT', value });
+                    handleUpdateSource(i, { ...source, tokenType: value });
+                  }}
                 >
                   {getTokenTypeOptions(source.type).map((t) => (
                     <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
@@ -137,12 +141,11 @@ export function CatalogDetailsCard({
                   className="field-select source-select"
                   value={source.type}
                   disabled={!isLatestVersion}
-                  onChange={(e) =>
-                    handleUpdateSource(i, {
-                      ...source,
-                      type: e.target.value as SourceType,
-                    })
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value as SourceType;
+                    dispatchV2({ type: 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT', value });
+                    handleUpdateSource(i, { ...source, type: value });
+                  }}
                 >
                   {getSourceTypeOptions(source.tokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -152,7 +155,10 @@ export function CatalogDetailsCard({
                   type="button"
                   className="btn-icon btn-danger-icon"
                   disabled={!isLatestVersion}
-                  onClick={() => handleRemoveSource(i)}
+                  onClick={() => {
+                    dispatchV2({ type: 'CATALOG_DETAILS_SOURCE_REMOVE_BUTTON_ON_CLICK', sourceIndex: i });
+                    handleRemoveSource(i);
+                  }}
                   aria-label="Remove source"
                 >
                   <span className="material-symbols-outlined">close</span>
@@ -166,7 +172,11 @@ export function CatalogDetailsCard({
                   type="text"
                   value={newUrl}
                   placeholder="https://..."
-                  onChange={(e) => setNewUrl(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setNewUrl(value);
+                    dispatchV2({ type: 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE', value });
+                  }}
                 />
                 <select
                   className="field-select source-select"
@@ -174,6 +184,7 @@ export function CatalogDetailsCard({
                   onChange={(e) => {
                     const tokenType = e.target.value as TokenType;
                     setNewTokenType(tokenType);
+                    dispatchV2({ type: 'CATALOG_DETAILS_NEW_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT', value: tokenType });
                     if (
                       tokenType !== 'theme' &&
                       (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
@@ -201,7 +212,11 @@ export function CatalogDetailsCard({
                 <select
                   className="field-select source-select"
                   value={newSourceType}
-                  onChange={(e) => setNewSourceType(e.target.value as SourceType)}
+                  onChange={(e) => {
+                    const value = e.target.value as SourceType;
+                    setNewSourceType(value);
+                    dispatchV2({ type: 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT', value });
+                  }}
                 >
                   {getSourceTypeOptions(newTokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -210,7 +225,10 @@ export function CatalogDetailsCard({
                 <button
                   type="button"
                   className="btn-icon btn-add-icon"
-                  onClick={handleAddSource}
+                  onClick={() => {
+                    dispatchV2({ type: 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK' });
+                    handleAddSource();
+                  }}
                   aria-label="Add source"
                 >
                   <span className="material-symbols-outlined">add</span>
@@ -231,7 +249,14 @@ export function CatalogDetailsCard({
           </button>
         )}
         {catalog.type === 'manual' && !catalog.locked && isLatestVersion && (
-          <button type="button" className="btn-secondary" onClick={onLock}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              dispatchV2({ type: 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK' });
+              onLock();
+            }}
+          >
             Lock
           </button>
         )}

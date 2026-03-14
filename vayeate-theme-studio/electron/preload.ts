@@ -43,6 +43,8 @@ const electronAPI = {
   closeWindow: () => ipcRenderer.invoke('window:close'),
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),
   maximizeWindow: () => ipcRenderer.invoke('window:maximize'),
+  restoreWindow: () => ipcRenderer.invoke('window:restore'),
+  dragWindow: () => ipcRenderer.invoke('window:drag'),
   reloadWindow: () => ipcRenderer.invoke('window:reload'),
   reloadWindowForce: () => ipcRenderer.invoke('window:reloadForce'),
   toggleDevTools: () => ipcRenderer.invoke('window:toggleDevTools'),
@@ -61,6 +63,11 @@ const electronAPI = {
   undoLoad: (pane: 'themes' | 'templates' | 'catalogs', docId: string) =>
     ipcRenderer.invoke('undo:load', pane, docId) as Promise<string | null>,
   undoClearAll: () => ipcRenderer.invoke('undo:clearAll'),
+  undoV2Save: (stackId: string, payload: string) =>
+    ipcRenderer.invoke('undoV2:save', stackId, payload),
+  undoV2Load: (stackId: string) =>
+    ipcRenderer.invoke('undoV2:load', stackId) as Promise<string | null>,
+  undoV2ClearPersisted: () => ipcRenderer.invoke('undoV2:clearPersisted'),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

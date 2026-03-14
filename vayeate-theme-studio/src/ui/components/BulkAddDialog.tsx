@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useAppDispatchV2 } from '../context/slice-contexts';
 import { parseThemeJson, type BulkParseResult } from '../../services/theme-parser';
 import type { Token } from '../../model/schemas';
 
@@ -9,7 +10,12 @@ interface BulkAddDialogProps {
 }
 
 export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDialogProps) {
+  const dispatchV2 = useAppDispatchV2();
   const [text, setText] = useState('');
+
+  useEffect(() => {
+    dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_DIALOG_ON_OPEN' });
+  }, [dispatchV2]);
 
   const parseResult = useMemo((): { result: BulkParseResult; newCount: number } | { error: string } | null => {
     const trimmed = text.trim();
@@ -46,7 +52,11 @@ export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDia
           rows={12}
           value={text}
           placeholder='{"colors": { ... }, "tokenColors": [ ... ], "semanticTokenColors": { ... }}'
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setText(value);
+            dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE', value });
+          }}
         />
 
         {isError && (
@@ -66,14 +76,24 @@ export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDia
         )}
 
         <div className="dialog-actions">
-          <button type="button" className="btn-secondary" onClick={onCancel}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK' });
+              onCancel();
+            }}
+          >
             Cancel
           </button>
           <button
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={handleSubmit}
+            onClick={() => {
+              dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK' });
+              handleSubmit();
+            }}
           >
             Add {parsed ? parsed.newCount : 0} token{parsed?.newCount !== 1 ? 's' : ''}
           </button>

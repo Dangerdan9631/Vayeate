@@ -1,5 +1,15 @@
 # Directive Update Report
 
+## Update: Agent instructions from transcripts (2ac39977, 21b56a15, 1a1f6e79)
+
+**Source:** Three agent transcripts (Emit All AppActionV2, DispatcherV2 plumbing, ActionProcessorV2 + comment style).
+
+**Applied:** `.cursor/rules/vayeate-theme-studio-action-queue.mdc` — Added two sections after AppActionV2 and canonical event list: **V2 pipeline and dual dispatch** (ActionQueueV2, dispatchV2, dual dispatch with schema payloads, useAppDispatchV2 no-op outside AppProvider for tests) and **ActionProcessorV2 case comments** (high-level pseudocode: what to persist/do, what to derive, which state to update, conditional flows).
+
+**Not changed:** Architecture rule, add-app-action skill, AGENTS.md (no routing change).
+
+---
+
 ## Backfill: 9ed086a9 UI Scaffold
 
 # Directive Review

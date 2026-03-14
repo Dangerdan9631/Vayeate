@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { Catalog, Token, TokenType } from '../../model/schemas';
+import { useAppDispatchV2 } from '../context/slice-contexts';
+import type { Catalog, Token, TokenKey, TokenType } from '../../model/schemas';
 import { tokenKeySchema } from '../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../core/semantic-token';
 
@@ -31,6 +32,7 @@ function TokenTypeSection({
   onAdd,
   onRemove,
   onUpdateKey,
+  onNewKeyChange,
 }: {
   tokenType: TokenType;
   tokens: Token[];
@@ -38,6 +40,7 @@ function TokenTypeSection({
   onAdd: (key: string) => void;
   onRemove: (key: string) => void;
   onUpdateKey: (oldKey: string, newKey: string) => void;
+  onNewKeyChange?: (value: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [newKey, setNewKey] = useState('');
@@ -98,7 +101,11 @@ function TokenTypeSection({
                 type="text"
                 placeholder="new key…"
                 value={newKey}
-                onChange={(e) => setNewKey(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setNewKey(value);
+                  onNewKeyChange?.(value);
+                }}
               />
               <button
                 type="button"
@@ -346,6 +353,7 @@ export function TokensCard({
   onSetSemanticModifiers,
   onSetSemanticLanguages,
 }: TokensCardProps) {
+  const dispatchV2 = useAppDispatchV2();
   const canEdit = catalog.type === 'manual' && isLatestVersion;
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -363,7 +371,14 @@ export function TokensCard({
       <div className="tokens-card-header">
         <h2>Tokens</h2>
         {canEdit && (
-          <button type="button" className="btn-secondary btn-sm" onClick={onBulkAdd}>
+          <button
+            type="button"
+            className="btn-secondary btn-sm"
+            onClick={() => {
+              dispatchV2({ type: 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK' });
+              onBulkAdd();
+            }}
+          >
             Bulk Add
           </button>
         )}
@@ -373,7 +388,11 @@ export function TokensCard({
         className="card-search-input"
         placeholder="Search…"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          setSearchQuery(value);
+          dispatchV2({ type: 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE', value });
+        }}
         aria-label="Search tokens"
       />
       {TOKEN_LIST_SECTIONS.map((tt) => (
@@ -382,9 +401,21 @@ export function TokensCard({
           tokenType={tt}
           tokens={filteredTokensByType[tt]}
           isManual={canEdit}
-          onAdd={(key) => onAddToken(key, tt)}
-          onRemove={(key) => onRemoveToken(key, tt)}
-          onUpdateKey={(oldKey, newKey) => onUpdateTokenKey(oldKey, newKey, tt)}
+          onAdd={(key) => {
+            dispatchV2({ type: 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK' });
+            onAddToken(key, tt);
+          }}
+          onRemove={(key) => {
+            dispatchV2({ type: 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK', key: key as TokenKey });
+            onRemoveToken(key, tt);
+          }}
+          onUpdateKey={(oldKey, newKey) => {
+            dispatchV2({ type: 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE', value: newKey, key: oldKey as TokenKey });
+            onUpdateTokenKey(oldKey, newKey, tt);
+          }}
+          onNewKeyChange={(value) => {
+            dispatchV2({ type: 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE', value });
+          }}
         />
       ))}
       <SemanticTokenCatalogSection

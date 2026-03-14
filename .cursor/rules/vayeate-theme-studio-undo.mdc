@@ -1,0 +1,37 @@
+---
+description: How the undo stack works and how to utilize it when making app changes.
+globs: vayeate-theme-studio/src/**/*
+alwaysApply: false
+---
+
+# Theme Studio Undo Stack
+
+When editing code that mutates state or the file system, follow how the undo stack is supposed to work and how to utilize it.
+
+## How the undo stack is supposed to work
+
+- The undo manager holds its own state with a HashMap of history stacks. Each stack is keyed by context (`getOrCreate(stackId)`). One stack per app page, per catalog version, per template version, per theme version.
+- Each stack has a max size (configurable in code; default 20), a double-linked list of frames, and a current-frame pointer.
+- Each frame has a short description (1–5 words, guidance only), a globally unique chronologically sortable ID, a list of `apply` actions (redo), and a list of `undo` actions (undo). Actions are fine-grained (single value change); the list is applied or reverted atomically as one logical step.
+- Stack operations: **push** (add frame; drop all frames above current), **goto(id)** (apply or revert frames one at a time to reach the frame with the given id), **undo**, **redo**, **list** (identifiers and descriptions of all frames plus current pointer).
+
+## Persistence and limits
+
+- Stacks are persisted as JSON files in a `.undo` directory under the app data dir; one file per stack, key = filename (sanitized).
+- A method clears all persisted undo files; it is invoked on app load and unload (via an operation called from the load/unload app controller).
+- **In-memory**: Configurable max stacks (default 5) kept in memory (LRU); others loaded from disk when requested. Per-stack in-memory frame cap (e.g. 20); older frames trimmed from memory but kept on disk.
+- **On-disk**: Separate per-stack limit (default 999 frames). Full stack + current pointer written on each change; when undo/goto needs frames not in memory, they are loaded from disk.
+
+## How to utilize it when making app changes
+
+When adding or changing code that performs undoable work:
+
+1. **Use the stack for the current context** via `getOrCreate(stackId)`.
+2. **Push a frame** when committing an undoable action: provide the frame description and the lists of apply and undo actions.
+3. **Keep actions fine-grained**: one value change per action; the whole list is one logical undo/redo step.
+4. **App state**: undo actions hold the previous value; apply actions hold what to redo.
+5. **File system changes**: undo app state first, then persist that state to disk. For file deletions: persist file contents before deleting; the undo action must recreate the file with those contents.
+
+## Full design reference
+
+For the full UndoManagerV2 design (e.g. when implementing or refactoring the manager itself), use the undo-manager-v2 skill (`.cursor/skills/undo-manager-v2/SKILL.md`).

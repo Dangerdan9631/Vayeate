@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
+import { useAppDispatch, useAppDispatchV2, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
 import { useUndoStack } from '../ui/context/UndoContext';
 import type { ThemePaneState } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
@@ -68,6 +68,7 @@ function themePaneStateFromState(
 
 export function useThemeViewModel() {
   const dispatch = useAppDispatch();
+  const dispatchV2 = useAppDispatchV2();
   const undoStack = useUndoStack();
   const {
     themeRefs,
@@ -91,7 +92,8 @@ export function useThemeViewModel() {
     if (themePageLoadDispatched) return;
     themePageLoadDispatched = true;
     dispatch({ type: 'THEME_PAGE_ON_LOAD' });
-  }, [dispatch]);
+    dispatchV2({ type: 'THEME_PAGE_ON_LOAD' });
+  }, [dispatch, dispatchV2]);
 
   const themeNames = useMemo(() => {
     const names = new Set(themeRefs.map((r) => r.name));
@@ -241,7 +243,8 @@ export function useThemeViewModel() {
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
     dispatch({ type: 'HUE_REFERENCE_INPUT_ON_CHANGE', value: normalized });
-  }, [theme, loadedTemplate, selectedRef, dispatch]);
+    dispatchV2({ type: 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE', value: normalized });
+  }, [theme, loadedTemplate, selectedRef, dispatch, dispatchV2]);
 
   const colorVariablesFromTemplate = useMemo(
     () => loadedTemplate?.colorVariables ?? [],
@@ -297,8 +300,10 @@ export function useThemeViewModel() {
   const dispatchHueRecenterWithRefUpdate = useCallback(() => {
     const nextRefHex = applyHueShift(hueReferenceHex, hueAdjustment / 100);
     dispatch({ type: 'HUE_REFERENCE_INPUT_ON_CHANGE', value: nextRefHex });
+    dispatchV2({ type: 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_COMMIT', value: nextRefHex });
     dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value: 0 });
-  }, [hueReferenceHex, hueAdjustment, dispatch]);
+    dispatchV2({ type: 'THEME_PALETTE_HUE_SLIDER_ON_DELTA', value: 0 });
+  }, [hueReferenceHex, hueAdjustment, dispatch, dispatchV2]);
 
   /** Push theme-pane undo frame and dispatch THEME_SAVE_BUTTON_ON_CLICK (for user-initiated theme changes). */
   const pushThemeUndoAndSave = useCallback(
@@ -329,8 +334,9 @@ export function useThemeViewModel() {
   const selectTheme = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'THEME_LIST_ON_SELECT', name, version });
+      dispatchV2({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const selectName = useCallback(
@@ -338,32 +344,37 @@ export function useThemeViewModel() {
       const best = highestVersionForName(name);
       if (best) {
         dispatch({ type: 'THEME_LIST_ON_SELECT', name: best.name, version: best.version });
-      } else {
+        dispatchV2({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: best.name, version: best.version });
       }
     },
-    [dispatch, highestVersionForName],
+    [dispatch, dispatchV2, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
     dispatch({ type: 'THEME_CREATE_DIALOG_ON_OPEN' });
-  }, [dispatch]);
+    dispatchV2({ type: 'THEME_THEMES_CREATE_BUTTON_ON_CLICK' });
+    dispatchV2({ type: 'THEME_CREATE_DIALOG_ON_OPEN' });
+  }, [dispatch, dispatchV2]);
 
   const closeCreateDialog = useCallback(() => {
     dispatch({ type: 'THEME_CREATE_DIALOG_ON_CLOSE' });
-  }, [dispatch]);
+    dispatchV2({ type: 'THEME_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+  }, [dispatch, dispatchV2]);
 
   const createTheme = useCallback(
     (params: { name: string }) => {
       dispatch({ type: 'THEME_CREATE_FORM_ON_SUBMIT', params });
+      dispatchV2({ type: 'THEME_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'THEME_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
+      dispatchV2({ type: 'THEME_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const generateTheme = useCallback(() => {
@@ -377,7 +388,14 @@ export function useThemeViewModel() {
       templateName: theme.templateRef.name,
       templateVersion: theme.templateRef.version,
     });
-  }, [canGenerate, dispatch, theme]);
+    dispatchV2({
+      type: 'THEME_DETAILS_GENERATE_BUTTON_ON_CLICK',
+      themeName: theme.name,
+      themeVersion: theme.version,
+      templateName: theme.templateRef.name,
+      templateVersion: theme.templateRef.version,
+    });
+  }, [canGenerate, dispatch, dispatchV2, theme]);
 
   const bumpVersion = useCallback(() => {
     if (!theme) return;
@@ -552,17 +570,20 @@ export function useThemeViewModel() {
   const setHueAdjustment = useCallback(
     (value: number) => {
       dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value });
+      dispatchV2({ type: 'THEME_PALETTE_HUE_SLIDER_ON_DELTA', value });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const setHueReferenceHex = useCallback(
     (hex: string) => {
       const normalized = normalizeHex(hex) || '#FF0000';
       dispatch({ type: 'HUE_REFERENCE_INPUT_ON_CHANGE', value: normalized });
+      dispatchV2({ type: 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE', value: normalized });
       dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value: 0 });
+      dispatchV2({ type: 'THEME_PALETTE_HUE_SLIDER_ON_DELTA', value: 0 });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const startHueDrag = useCallback(() => {
@@ -832,6 +853,7 @@ export function useThemeViewModel() {
           { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
         );
         dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value: 0 });
+        dispatchV2({ type: 'THEME_PALETTE_HUE_SLIDER_ON_DELTA', value: 0 });
       }
       const newAssignments = workingAssignments.map((a) => {
         if (!checkedColorRefs.has(a.colorRef)) return a;
@@ -848,7 +870,7 @@ export function useThemeViewModel() {
       const nextTheme = { ...base, colorAssignments: newAssignments };
       dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme: nextTheme });
     },
-    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, dispatch],
+    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, dispatch, dispatchV2],
   );
 
   /** Pushes one undo entry (snapshot → current) and ensures save. Call when color picker closes. */
@@ -1021,7 +1043,8 @@ export function useThemeViewModel() {
     saveError,
     dismissSaveError: useCallback(() => {
       dispatch({ type: 'THEME_SAVE_ERROR_DIALOG_ON_CLOSE' });
-    }, [dispatch]),
+      dispatchV2({ type: 'THEME_PAGE_SAVE_ERROR_DISMISS_BUTTON_ON_CLICK' });
+    }, [dispatch, dispatchV2]),
   };
 }
 

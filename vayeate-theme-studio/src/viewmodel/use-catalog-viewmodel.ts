@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useCatalogsState } from '../ui/context/slice-contexts';
+import { useAppDispatch, useAppDispatchV2, useCatalogsState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../utils/version';
 import { nextPatchVersion } from '../utils/version';
 import type { Catalog, CatalogReference, Source, Token, TokenType } from '../model/schemas';
@@ -9,13 +9,15 @@ let catalogPageLoadDispatched = false;
 
 export function useCatalogViewModel() {
   const dispatch = useAppDispatch();
+  const dispatchV2 = useAppDispatchV2();
   const { catalogRefs, selectedRef, catalog, isCreating, createDialogOpen } = useCatalogsState();
 
   useEffect(() => {
     if (catalogPageLoadDispatched) return;
     catalogPageLoadDispatched = true;
     dispatch({ type: 'CATALOG_PAGE_ON_LOAD' });
-  }, [dispatch]);
+    dispatchV2({ type: 'CATALOG_PAGE_ON_LOAD' });
+  }, [dispatch, dispatchV2]);
 
   const catalogNames = useMemo(() => {
     const names = new Set(catalogRefs.map((r) => r.name));
@@ -74,8 +76,9 @@ export function useCatalogViewModel() {
   const selectCatalog = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'CATALOG_LIST_ON_SELECT', name, version });
+      dispatchV2({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const selectName = useCallback(
@@ -83,31 +86,37 @@ export function useCatalogViewModel() {
       const best = highestVersionForName(name);
       if (best) {
         dispatch({ type: 'CATALOG_LIST_ON_SELECT', name: best.name, version: best.version });
+        dispatchV2({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: best.name, version: best.version });
       }
     },
-    [dispatch, highestVersionForName],
+    [dispatch, dispatchV2, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
     dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_OPEN' });
-  }, [dispatch]);
+    dispatchV2({ type: 'CATALOG_CATALOGS_CREATE_BUTTON_ON_CLICK' });
+    dispatchV2({ type: 'CATALOG_CREATE_DIALOG_ON_OPEN' });
+  }, [dispatch, dispatchV2]);
 
   const closeCreateDialog = useCallback(() => {
     dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_CLOSE' });
-  }, [dispatch]);
+    dispatchV2({ type: 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+  }, [dispatch, dispatchV2]);
 
   const createCatalog = useCallback(
     (params: { name: string; type: 'manual' | 'remote' }) => {
       dispatch({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params });
+      dispatchV2({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
+      dispatchV2({ type: 'CATALOG_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const updateSources = useCallback(
@@ -142,7 +151,8 @@ export function useCatalogViewModel() {
       return;
     }
     dispatch({ type: 'CATALOG_SYNC_BUTTON_ON_CLICK', catalog });
-  }, [dispatch, catalog]);
+    dispatchV2({ type: 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK', catalog });
+  }, [dispatch, dispatchV2, catalog]);
 
   const addToken = useCallback(
     (key: string, tokenType: TokenType) => {
@@ -306,8 +316,9 @@ export function useCatalogViewModel() {
   const revertToVersion = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'CATALOG_REVERT_BUTTON_ON_CLICK', name, version });
+      dispatchV2({ type: 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   return {

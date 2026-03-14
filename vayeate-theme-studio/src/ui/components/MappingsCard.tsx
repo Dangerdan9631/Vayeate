@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAppDispatchV2 } from '../context/slice-contexts';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../core/semantic-token';
 import type {
   ColorVariable,
@@ -923,6 +924,7 @@ export function MappingsCard({
   semanticVariant,
   onRemoveMapping,
 }: MappingsCardProps) {
+  const dispatchV2 = useAppDispatchV2();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColorKeys, setSelectedColorKeys] = useState<string[]>([]);
   const [selectedContrastKeys, setSelectedContrastKeys] = useState<string[]>([]);
@@ -979,15 +981,19 @@ export function MappingsCard({
   }, [openFilter]);
 
   function toggleColorKey(key: string) {
-    setSelectedColorKeys((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-    );
+    setSelectedColorKeys((prev) => {
+      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      dispatchV2({ type: 'TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ColorVariableKey[] });
+      return next;
+    });
   }
 
   function toggleContrastKey(key: string) {
-    setSelectedContrastKeys((prev) =>
-      prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-    );
+    setSelectedContrastKeys((prev) => {
+      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+      dispatchV2({ type: 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ContrastVariableKey[] });
+      return next;
+    });
   }
 
   return (
@@ -999,7 +1005,11 @@ export function MappingsCard({
           className="mappings-filter-search"
           placeholder="Search…"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearchQuery(value);
+            dispatchV2({ type: 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE', value });
+          }}
           aria-label="Search mappings"
         />
         <div className="mappings-filter-dropdown-wrap" ref={colorDropdownRef}>

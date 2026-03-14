@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAppDispatchV2 } from '../context/slice-contexts';
 
 interface GroupsCardProps {
   groups: readonly string[];
@@ -15,6 +16,7 @@ export function GroupsCard({
   onAddGroup,
   onRemoveGroup,
 }: GroupsCardProps) {
+  const dispatchV2 = useAppDispatchV2();
   const [newName, setNewName] = useState('');
 
   const trimmed = newName.trim();
@@ -22,6 +24,7 @@ export function GroupsCard({
 
   function handleAdd() {
     if (!canAdd) return;
+    dispatchV2({ type: 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK' });
     onAddGroup(trimmed);
     setNewName('');
   }
@@ -36,7 +39,11 @@ export function GroupsCard({
             type="text"
             placeholder="Group name…"
             value={newName}
-            onChange={(e) => setNewName(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setNewName(value);
+              dispatchV2({ type: 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE', value });
+            }}
             onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           />
           <button
@@ -65,7 +72,10 @@ export function GroupsCard({
                   className="btn-icon btn-danger-icon"
                   title={inUse ? 'Cannot remove: group has mappings or variables' : 'Remove group'}
                   disabled={inUse}
-                  onClick={() => onRemoveGroup(name)}
+                  onClick={() => {
+                    dispatchV2({ type: 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK', groupId: name });
+                    onRemoveGroup(name);
+                  }}
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>

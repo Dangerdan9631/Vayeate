@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAppDispatchV2 } from '../context/slice-contexts';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
@@ -8,6 +9,7 @@ interface CreateTemplateDialogProps {
 }
 
 export function CreateTemplateDialog({ onCancel, onCreate }: CreateTemplateDialogProps) {
+  const dispatchV2 = useAppDispatchV2();
   const [name, setName] = useState('');
 
   const nameValid = name.length > 0 && NAME_REGEX.test(name);
@@ -30,7 +32,11 @@ export function CreateTemplateDialog({ onCancel, onCreate }: CreateTemplateDialo
             type="text"
             value={name}
             placeholder="my-template"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setName(value);
+              dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value });
+            }}
           />
         </label>
         {name.length > 0 && !nameValid && (
@@ -38,7 +44,14 @@ export function CreateTemplateDialog({ onCancel, onCreate }: CreateTemplateDialo
         )}
 
         <div className="dialog-actions">
-          <button type="button" className="btn-secondary" onClick={onCancel}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => {
+              dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+              onCancel();
+            }}
+          >
             Cancel
           </button>
           <button

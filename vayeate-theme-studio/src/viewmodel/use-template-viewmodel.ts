@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
+import { useAppDispatch, useAppDispatchV2, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
 import { useUndoStack } from '../ui/context/UndoContext';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import { catalogService } from '../services/catalog-service';
@@ -21,6 +21,7 @@ let templatePageLoadDispatched = false;
 
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
+  const dispatchV2 = useAppDispatchV2();
   const undoStack = useUndoStack();
   const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
   const { catalogRefs, loadedForDisplay } = useCatalogsState();
@@ -29,7 +30,8 @@ export function useTemplateViewModel() {
     if (templatePageLoadDispatched) return;
     templatePageLoadDispatched = true;
     dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
-  }, [dispatch]);
+    dispatchV2({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+  }, [dispatch, dispatchV2]);
 
   const pushTemplateUndoAndSave = useCallback(
     (label: string, nextTemplate: Template) => {
@@ -227,8 +229,9 @@ export function useTemplateViewModel() {
   const selectTemplate = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name, version });
+      dispatchV2({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const selectName = useCallback(
@@ -236,32 +239,37 @@ export function useTemplateViewModel() {
       const best = highestVersionForName(name);
       if (best) {
         dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name: best.name, version: best.version });
-      } else {
+        dispatchV2({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: best.name, version: best.version });
       }
     },
-    [dispatch, highestVersionForName],
+    [dispatch, dispatchV2, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
     dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
-  }, [dispatch]);
+    dispatchV2({ type: 'TEMPLATE_TEMPLATES_CREATE_BUTTON_ON_CLICK' });
+    dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
+  }, [dispatch, dispatchV2]);
 
   const closeCreateDialog = useCallback(() => {
     dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_CLOSE' });
-  }, [dispatch]);
+    dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+  }, [dispatch, dispatchV2]);
 
   const createTemplate = useCallback(
     (params: { name: string }) => {
       dispatch({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params });
+      dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
       dispatch({ type: 'TEMPLATE_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
+      dispatchV2({ type: 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch],
+    [dispatch, dispatchV2],
   );
 
   const lockTemplate = useCallback(() => {

@@ -37,6 +37,8 @@ declare global {
       closeWindow?: () => Promise<void>;
       minimizeWindow?: () => Promise<void>;
       maximizeWindow?: () => Promise<void>;
+      restoreWindow?: () => Promise<void>;
+      dragWindow?: () => Promise<void>;
       reloadWindow?: () => Promise<void>;
       reloadWindowForce?: () => Promise<void>;
       toggleDevTools?: () => Promise<void>;
@@ -47,6 +49,9 @@ declare global {
       undoSave?: (pane: 'themes' | 'templates' | 'catalogs', docId: string, payload: string) => Promise<void>;
       undoLoad?: (pane: 'themes' | 'templates' | 'catalogs', docId: string) => Promise<string | null>;
       undoClearAll?: () => Promise<void>;
+      undoV2Save?: (stackId: string, payload: string) => Promise<void>;
+      undoV2Load?: (stackId: string) => Promise<string | null>;
+      undoV2ClearPersisted?: () => Promise<void>;
     };
   }
 }

@@ -73,7 +73,12 @@ function getUndoStacksDir(): string {
   return join(DATA_DIR, '.undo');
 }
 
-/** Sanitize docId (name@version) for use in filenames. */
+/** UndoManagerV2 stacks: data/.undo/v2; one JSON file per stack. */
+function getUndoV2Dir(): string {
+  return join(getUndoStacksDir(), 'v2');
+}
+
+/** Sanitize docId (name@version) or stackId for use in filenames. */
 function sanitizeDocId(docId: string): string {
   return docId.replace(/[\\/:*?"<>|+]/g, '_');
 }
@@ -276,6 +281,27 @@ app.whenReady().then(async () => {
     mkdirSync(undoStacksDir, { recursive: true });
   });
 
+  const undoV2Dir = getUndoV2Dir();
+  ipcMain.handle('undoV2:save', async (_event, stackId: string, payload: string) => {
+    if (!stackId) return;
+    await mkdir(undoV2Dir, { recursive: true });
+    const file = join(undoV2Dir, `${sanitizeDocId(stackId)}.json`);
+    await writeFile(file, payload, 'utf-8');
+  });
+  ipcMain.handle('undoV2:load', async (_event, stackId: string): Promise<string | null> => {
+    if (!stackId) return null;
+    const file = join(undoV2Dir, `${sanitizeDocId(stackId)}.json`);
+    try {
+      return await readFile(file, 'utf-8');
+    } catch {
+      return null;
+    }
+  });
+  ipcMain.handle('undoV2:clearPersisted', () => {
+    rmSync(undoV2Dir, { recursive: true, force: true });
+    mkdirSync(undoV2Dir, { recursive: true });
+  });
+
   ipcMain.handle('theme:generate', async (
     _event,
     themeName: string,
@@ -324,11 +350,15 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.handle('window:maximize', () => {
-    if (mainWindow?.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow?.maximize();
-    }
+    mainWindow?.maximize();
+  });
+
+  ipcMain.handle('window:restore', () => {
+    mainWindow?.unmaximize();
+  });
+
+  ipcMain.handle('window:drag', () => {
+    // No-op; actual dragging typically uses -webkit-app-region: drag in CSS.
   });
 
   ipcMain.handle('window:reload', () => {

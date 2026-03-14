@@ -1,3 +1,4 @@
+import { useAppDispatchV2 } from '../context/slice-contexts';
 import type { CatalogReference } from '../../model/schemas';
 
 interface TemplateCatalogsCardProps {
@@ -21,6 +22,7 @@ export function TemplateCatalogsCard({
   onChangeCatalogVersion,
   onUpdateAll,
 }: TemplateCatalogsCardProps) {
+  const dispatchV2 = useAppDispatchV2();
   const showUpdateAll =
     isLatestVersion && includedCatalogNamesWithUpdates.length > 0;
 
@@ -32,7 +34,10 @@ export function TemplateCatalogsCard({
           <button
             type="button"
             className="btn btn-primary btn-sm"
-            onClick={onUpdateAll}
+            onClick={() => {
+              dispatchV2({ type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' });
+              onUpdateAll();
+            }}
           >
             Update All
           </button>
@@ -63,6 +68,7 @@ export function TemplateCatalogsCard({
                 className="checkbox-icon-btn"
                 onClick={(e) => {
                   e.preventDefault();
+                  dispatchV2({ type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE', checked: !included });
                   onToggleCatalog(name, !included);
                 }}
               >
@@ -85,7 +91,11 @@ export function TemplateCatalogsCard({
               <select
                 className="field-select template-catalog-version"
                 value={selectedVersion}
-                onChange={(e) => onChangeCatalogVersion(name, e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  dispatchV2({ type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT', value });
+                  onChangeCatalogVersion(name, value);
+                }}
               >
                 {versions.map((ref) => (
                   <option key={ref.version} value={ref.version}>

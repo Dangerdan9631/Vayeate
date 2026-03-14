@@ -22,10 +22,11 @@ export function useAppDispatch(): (action: AppAction) => void {
   return dispatch;
 }
 
+/** Returns dispatchV2 when inside AppProvider; otherwise a no-op so components can be tested in isolation. */
 export function useAppDispatchV2(): (action: AppActionV2) => void {
   const dispatchV2 = useContext(AppDispatchV2Context);
   if (!dispatchV2) {
-    throw new Error('useAppDispatchV2 must be used within AppProvider');
+    return () => {};
   }
   return dispatchV2;
 }
