@@ -1,18 +1,18 @@
 import type { Theme } from '../model/schemas';
+import { compareVersions } from '../utils/version';
+import { themeService } from '../services/theme-service';
 import {
-  loadThemeRefs,
+  loadThemeRefs as loadThemeRefsOp,
   loadTheme,
   setSelectedThemeRef,
   setTheme,
-  setThemePaneSelections,
-  setThemeHueAdjustment,
-  setThemeHueReferenceHex,
+  setThemePaneSelections as setThemePaneSelectionsOp,
+  setThemeHueAdjustment as setThemeHueAdjustmentOp,
+  setThemeHueReferenceHex as setThemeHueReferenceHexOp,
   setThemeSaveError,
-  refreshThemeRefsOnly,
-  persistTheme,
-  deleteThemeVersion,
-  restoreThemeState,
-  generateTheme,
+  setGenerateResult,
+  saveTheme as saveThemeOp,
+  deleteTheme as deleteThemeOp,
   createTheme as createThemeOperation,
   type SetState,
   type RestoreThemeStateParams,
@@ -51,11 +51,11 @@ export function createThemeWithParams(params: CreateThemeParams): Theme {
   };
 }
 
-export async function handleThemePageOnLoad(setState: SetState): Promise<void> {
-  await loadThemeRefs(setState);
+export async function loadThemeRefs(setState: SetState): Promise<void> {
+  await loadThemeRefsOp(setState);
 }
 
-export async function handleThemeListOnSelect(
+export async function selectThemeAndLoad(
   setState: SetState,
   name: string,
   version: string,
@@ -64,15 +64,15 @@ export async function handleThemeListOnSelect(
   await loadTheme(setState, name, version);
 }
 
-export function handleCreateDialogOnOpen(setState: SetState): void {
+export function openThemeCreateDialog(setState: SetState): void {
   setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: true });
 }
 
-export function handleCreateDialogOnClose(setState: SetState): void {
+export function closeThemeCreateDialog(setState: SetState): void {
   setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
 }
 
-export async function handleCreateFormOnSubmit(
+export async function createTheme(
   setState: SetState,
   params: { name: string },
 ): Promise<void> {
@@ -80,10 +80,10 @@ export async function handleCreateFormOnSubmit(
   setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
   try {
     const newTheme = await createThemeOperation(setState, params);
-    await refreshThemeRefsOnly(setState);
+    await loadThemeRefsOp(setState);
     setTheme(setState, newTheme);
     setSelectedThemeRef(setState, { name: newTheme.name, version: newTheme.version });
-    setThemePaneSelections(
+    setThemePaneSelectionsOp(
       setState,
       newTheme.colorAssignments.map((a) => a.colorRef),
       newTheme.contrastAssignments.map((a) => a.contrastVariableRef),
@@ -93,7 +93,7 @@ export async function handleCreateFormOnSubmit(
   }
 }
 
-export function handleSaveButtonOnClick(setState: SetState, theme: Theme): void {
+export function saveTheme(setState: SetState, theme: Theme): void {
   setTheme(setState, theme, true);
   setThemeSaveError(setState, null);
   pendingThemeToSave = theme;
@@ -103,20 +103,23 @@ export function handleSaveButtonOnClick(setState: SetState, theme: Theme): void 
     const toSave = pendingThemeToSave;
     pendingThemeToSave = null;
     if (toSave) {
-      persistTheme(setState, toSave).catch(() => {});
+      saveThemeOp(toSave).catch((err) => {
+        const message = err instanceof Error ? err.message : String(err);
+        setThemeSaveError(setState, message);
+      });
     }
   }, SAVE_THEME_DEBOUNCE_MS);
 }
 
-export function handleThemePaneOnSelect(
+export function setThemePaneSelections(
   setState: SetState,
   checkedColorRefs: string[],
   checkedContrastRefs: string[],
 ): void {
-  setThemePaneSelections(setState, checkedColorRefs, checkedContrastRefs);
+  setThemePaneSelectionsOp(setState, checkedColorRefs, checkedContrastRefs);
 }
 
-export async function handleUndoPanelRestoreTheme(
+export async function restoreThemeState(
   setState: SetState,
   params: RestoreThemeStateParams,
 ): Promise<void> {
@@ -127,35 +130,112 @@ export async function handleUndoPanelRestoreTheme(
     }
     pendingThemeToSave = null;
   }
-  await restoreThemeState(setState, params);
+  if (params.theme !== undefined) {
+    setTheme(setState, params.theme);
+  }
+  if (
+    params.checkedColorRefs !== undefined &&
+    params.checkedContrastRefs !== undefined
+  ) {
+    setThemePaneSelectionsOp(setState, params.checkedColorRefs, params.checkedContrastRefs);
+  }
+  if (params.theme !== undefined && params.theme !== null) {
+    setSelectedThemeRef(setState, {
+      name: params.theme.name,
+      version: params.theme.version,
+    });
+  }
+  if (params.hueAdjustment !== undefined) {
+    setThemeHueAdjustmentOp(setState, params.hueAdjustment);
+  }
+  if (params.hueReferenceHex !== undefined) {
+    setThemeHueReferenceHexOp(setState, params.hueReferenceHex);
+  }
+  if (params.theme !== undefined && params.theme !== null) {
+    setThemeSaveError(setState, null);
+    try {
+      await saveThemeOp(params.theme);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setThemeSaveError(setState, message);
+    }
+    await loadThemeRefsOp(setState);
+  }
+  if (params.deleteThemeVersionOnRestore) {
+    await deleteThemeOp(
+      params.deleteThemeVersionOnRestore.name,
+      params.deleteThemeVersionOnRestore.version,
+    );
+    await loadThemeRefsOp(setState);
+  }
 }
 
-export function handleHueAdjustmentSliderOnDelta(setState: SetState, value: number): void {
-  setThemeHueAdjustment(setState, value);
+export function setThemeHueAdjustment(setState: SetState, value: number): void {
+  setThemeHueAdjustmentOp(setState, value);
 }
 
-export function handleHueReferenceInputOnChange(setState: SetState, value: string): void {
-  setThemeHueReferenceHex(setState, value);
+export function setThemeHueReferenceHex(setState: SetState, value: string): void {
+  setThemeHueReferenceHexOp(setState, value);
 }
 
-export async function handleVersionDeleteButtonOnClick(
+export async function deleteThemeVersion(
   setState: SetState,
   name: string,
   version: string,
 ): Promise<void> {
-  await deleteThemeVersion(setState, name, version);
+  await deleteThemeOp(name, version);
+  const refs = await loadThemeRefsOp(setState);
+
+  const sameThName = refs
+    .filter((r) => r.name === name)
+    .sort((a, b) => compareVersions(a.version, b.version));
+  const lowerTh = sameThName.filter((r) => compareVersions(r.version, version) < 0);
+  const higherTh = sameThName.filter((r) => compareVersions(r.version, version) > 0);
+  const nextTh =
+    lowerTh.length > 0 ? lowerTh[lowerTh.length - 1] : higherTh.length > 0 ? higherTh[0] : null;
+
+  if (nextTh) {
+    setSelectedThemeRef(setState, nextTh);
+    const loadedNextTh = await loadTheme(setState, nextTh.name, nextTh.version);
+    if (loadedNextTh) {
+      setThemePaneSelectionsOp(
+        setState,
+        loadedNextTh.colorAssignments.map((a) => a.colorRef),
+        loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
+      );
+    }
+  } else {
+    setSelectedThemeRef(setState, null);
+    setTheme(setState, null);
+    setThemePaneSelectionsOp(setState, [], []);
+  }
 }
 
-export function handleSaveErrorDialogOnClose(setState: SetState): void {
+export function clearThemeSaveError(setState: SetState): void {
   setThemeSaveError(setState, null);
 }
 
-export async function handleGenerateButtonOnClick(
+export async function generateTheme(
   setState: SetState,
   themeName: string,
   themeVersion: string,
   templateName: string,
   templateVersion: string,
 ): Promise<void> {
-  await generateTheme(setState, themeName, themeVersion, templateName, templateVersion);
+  setGenerateResult(setState, null);
+  try {
+    const { darkPath, lightPath } = await themeService.generateTheme(
+      themeName,
+      themeVersion,
+      templateName,
+      templateVersion,
+    );
+    setGenerateResult(setState, {
+      success: true,
+      message: `Generated ${darkPath} and ${lightPath}`,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setGenerateResult(setState, { success: false, message });
+  }
 }

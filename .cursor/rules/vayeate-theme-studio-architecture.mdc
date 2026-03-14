@@ -53,5 +53,6 @@ UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
 - **Renderer → Main**: Use services/*; never import from data/ or controllers/ in renderer code (except for controller invocation from the processor)
 - **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`
+- **Controller function names**: Name controller functions by the **action executed** (e.g. `setActiveTab`, `loadThemeRefs`, `saveCatalog`), not by the UI event or control (e.g. `handleTabBarOnSelect`, `handleSaveButtonOnClick`). Controllers stay decoupled from the UI; the processor maps UI events to controller functions.
 
 For the canonical list of control types and their actions, see the Action Queue rule (`.cursor/rules/vayeate-theme-studio-action-queue.mdc`).

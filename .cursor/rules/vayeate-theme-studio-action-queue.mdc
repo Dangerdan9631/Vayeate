@@ -66,14 +66,14 @@ export type AppAction =
 case 'MY_FIELD_SET':
   return { ...state, myField: update.payload };
 
-// 3. AppContext.tsx - Processor delegates to controller
+// 3. AppContext.tsx - Processor delegates to controller (name controller function by the action, not the UI event)
 case 'MY_PAGE_MY_BUTTON_ON_CLICK': {
-  await myController.handleMyButtonClick(action.payload, setState);
+  await myController.doMyAction(action.payload, setState);
   break;
 }
 ```
 
-The controller invokes operations (e.g. load data, setState, persist). The processor does not call services or setState directly for this event.
+The controller invokes operations (e.g. load data, setState, persist). The processor does not call services or setState directly for this event. When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`).
 
 ## Rules
 
@@ -83,3 +83,4 @@ The controller invokes operations (e.g. load data, setState, persist). The proce
 - Controllers compose operations; operations perform setState, persist, or undo
 - Processor must call `setState` only via the updates produced by operations (invoked through controllers), not mutate state directly
 - Use `AppStateUpdate` for state changes (separate from `AppAction` — actions are user intent / UI events, updates are state mutations)
+- When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`)

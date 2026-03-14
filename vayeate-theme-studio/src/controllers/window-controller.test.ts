@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  handleViewMenuReload,
-  handleViewMenuForceReload,
-  handleViewMenuToggleDevTools,
+  reloadWindow,
+  forceReloadWindow,
+  toggleDevTools,
 } from './window-controller';
 
 describe('window-controller', () => {
@@ -25,18 +25,18 @@ describe('window-controller', () => {
     delete (window as unknown as { electronAPI?: unknown }).electronAPI;
   });
 
-  it('handleViewMenuReload calls window reload', async () => {
-    await handleViewMenuReload();
+  it('reloadWindow calls window reload', async () => {
+    await reloadWindow();
     expect(reloadMock).toHaveBeenCalledTimes(1);
   });
 
-  it('handleViewMenuForceReload calls window force reload', async () => {
-    await handleViewMenuForceReload();
+  it('forceReloadWindow calls window force reload', async () => {
+    await forceReloadWindow();
     expect(reloadForceMock).toHaveBeenCalledTimes(1);
   });
 
-  it('handleViewMenuToggleDevTools calls toggleDevTools', async () => {
-    await handleViewMenuToggleDevTools();
+  it('toggleDevTools calls toggleDevTools', async () => {
+    await toggleDevTools();
     expect(toggleDevToolsMock).toHaveBeenCalledTimes(1);
   });
 });

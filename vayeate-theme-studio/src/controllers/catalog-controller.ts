@@ -1,19 +1,21 @@
 import type { Catalog, CatalogType } from '../model/schemas';
+import { compareVersions, nextPatchVersion } from '../utils/version';
 import {
-  loadCatalogRefs,
-  loadCatalogForDisplay,
+  loadCatalogRefs as loadCatalogRefsOp,
+  loadCatalogForDisplay as loadCatalogForDisplayOp,
   setSelectedRef,
   loadCatalog,
   setCatalog,
-  refreshRefsAndSelect,
-  saveCatalogAndRefresh,
-  deleteCatalogVersion,
-  syncCatalogAndSave,
-  revertCatalogToVersion,
-  restoreCatalogState,
+  refreshCatalogRefs,
+  saveCatalog as saveCatalogOp,
+  deleteCatalog as deleteCatalogOp,
+  syncCatalog as syncCatalogOp,
+  loadCatalogSnapshot,
+  listCatalogRefs,
   createCatalog as createCatalogOperation,
   type SetState,
   type CatalogUndoPush,
+  type CatalogPaneState,
 } from '../operations/catalog-operations';
 
 export interface CreateCatalogParams {
@@ -35,19 +37,19 @@ export function createCatalogWithParams(params: CreateCatalogParams): Catalog {
   };
 }
 
-export async function handleCatalogPageOnLoad(setState: SetState): Promise<void> {
-  await loadCatalogRefs(setState);
+export async function loadCatalogRefs(setState: SetState): Promise<void> {
+  await loadCatalogRefsOp(setState);
 }
 
-export async function handleCatalogLoadForDisplay(
+export async function loadCatalogForDisplay(
   setState: SetState,
   name: string,
   version: string,
 ): Promise<void> {
-  await loadCatalogForDisplay(setState, name, version);
+  await loadCatalogForDisplayOp(setState, name, version);
 }
 
-export async function handleCatalogListOnSelect(
+export async function selectCatalogAndLoad(
   setState: SetState,
   name: string,
   version: string,
@@ -57,15 +59,30 @@ export async function handleCatalogListOnSelect(
   await loadCatalog(setState, name, version);
 }
 
-export function handleCreateDialogOnOpen(setState: SetState): void {
+export function openCatalogCreateDialog(setState: SetState): void {
   setState({ type: 'SET_CREATE_DIALOG_OPEN', value: true });
 }
 
-export function handleCreateDialogOnClose(setState: SetState): void {
+export function closeCatalogCreateDialog(setState: SetState): void {
   setState({ type: 'SET_CREATE_DIALOG_OPEN', value: false });
 }
 
-export async function handleCreateFormOnSubmit(
+async function refreshRefsAndSelect(
+  setState: SetState,
+  selectName?: string,
+  selectVersion?: string,
+): Promise<void> {
+  const refs = await refreshCatalogRefs(setState);
+  if (selectName && selectVersion) {
+    const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
+    if (match) {
+      setSelectedRef(setState, match);
+      await loadCatalog(setState, match.name, match.version);
+    }
+  }
+}
+
+export async function createCatalog(
   setState: SetState,
   params: { name: string; type: 'manual' | 'remote' },
 ): Promise<void> {
@@ -73,7 +90,7 @@ export async function handleCreateFormOnSubmit(
   setState({ type: 'SET_CREATE_DIALOG_OPEN', value: false });
   try {
     const catalog = await createCatalogOperation(setState, params);
-    await refreshRefsAndSelect(setState, catalog.name, catalog.version);
+    await refreshCatalogRefs(setState);
     setCatalog(setState, catalog);
     setSelectedRef(setState, { name: catalog.name, version: catalog.version });
   } finally {
@@ -81,41 +98,100 @@ export async function handleCreateFormOnSubmit(
   }
 }
 
-export async function handleSaveButtonOnClick(
+export async function saveCatalog(
   setState: SetState,
   catalog: Catalog,
 ): Promise<void> {
-  await saveCatalogAndRefresh(catalog, setState);
+  await saveCatalogOp(catalog);
+  await refreshRefsAndSelect(setState, catalog.name, catalog.version);
 }
 
-export async function handleVersionDeleteButtonOnClick(
+export async function deleteCatalogVersion(
   setState: SetState,
   name: string,
   version: string,
 ): Promise<void> {
-  await deleteCatalogVersion(setState, name, version);
+  await deleteCatalogOp(name, version);
+  const refs = await refreshCatalogRefs(setState);
+
+  const sameNameRefs = refs
+    .filter((r) => r.name === name)
+    .sort((a, b) => compareVersions(a.version, b.version));
+  const lower = sameNameRefs.filter((r) => compareVersions(r.version, version) < 0);
+  const higher = sameNameRefs.filter((r) => compareVersions(r.version, version) > 0);
+  const next = lower.length > 0 ? lower[lower.length - 1] : higher.length > 0 ? higher[0] : null;
+
+  if (next) {
+    setSelectedRef(setState, next);
+    await loadCatalog(setState, next.name, next.version);
+  } else {
+    setSelectedRef(setState, null);
+    setCatalog(setState, null);
+  }
 }
 
-export async function handleSyncButtonOnClick(
+export async function syncCatalog(
   setState: SetState,
   catalog: Catalog,
   catalogUndoPush: CatalogUndoPush | null,
 ): Promise<void> {
-  await syncCatalogAndSave(setState, catalog, catalogUndoPush);
+  const synced = await syncCatalogOp(catalog);
+  const prev: CatalogPaneState = {
+    catalog,
+    undoMetadata: !catalog.locked
+      ? {
+          deleteVersionOnRestore: {
+            name: catalog.name,
+            version: nextPatchVersion(catalog.version),
+          },
+        }
+      : undefined,
+  };
+  const next: CatalogPaneState = { catalog: synced };
+  catalogUndoPush?.('Sync catalog', prev, next);
+  await saveCatalogOp(synced);
+  await refreshRefsAndSelect(setState, synced.name, synced.version);
 }
 
-export async function handleRevertButtonOnClick(
+export async function revertCatalogToVersion(
   setState: SetState,
   name: string,
   version: string,
 ): Promise<void> {
-  await revertCatalogToVersion(setState, name, version);
+  const snapshot = await loadCatalogSnapshot(name, version);
+  if (!snapshot) return;
+
+  const refs = await listCatalogRefs();
+  const sameNameRefs = refs
+    .filter((r) => r.name === name)
+    .sort((a, b) => compareVersions(a.version, b.version));
+  const highest = sameNameRefs.length > 0 ? sameNameRefs[sameNameRefs.length - 1] : null;
+
+  if (highest) {
+    const highestCatalog = await loadCatalogSnapshot(highest.name, highest.version);
+    if (highestCatalog && !highestCatalog.locked) {
+      await saveCatalogOp({ ...highestCatalog, locked: true });
+    }
+  }
+
+  const newVersion = highest ? nextPatchVersion(highest.version) : nextPatchVersion(version);
+  const reverted: Catalog = {
+    ...snapshot,
+    version: newVersion,
+    locked: false,
+  };
+  await saveCatalogOp(reverted);
+  await refreshRefsAndSelect(setState, reverted.name, reverted.version);
 }
 
-export async function handleUndoPanelRestoreCatalog(
+export async function restoreCatalogState(
   setState: SetState,
   catalog: Catalog | null,
   deleteVersionOnRestore?: { name: string; version: string },
 ): Promise<void> {
-  await restoreCatalogState(setState, catalog, deleteVersionOnRestore);
+  setCatalog(setState, catalog);
+  if (deleteVersionOnRestore) {
+    await deleteCatalogOp(deleteVersionOnRestore.name, deleteVersionOnRestore.version);
+    await refreshCatalogRefs(setState);
+  }
 }

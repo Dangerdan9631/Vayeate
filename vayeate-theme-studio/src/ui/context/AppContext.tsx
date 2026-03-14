@@ -38,19 +38,19 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
     log.debug('action', action);
     switch (action.type) {
       case 'TAB_BAR_ON_SELECT':
-        tabController.handleTabBarOnSelect(setState, action.tabId);
+        tabController.setActiveTab(setState, action.tabId);
         break;
 
       case 'CATALOG_PAGE_ON_LOAD':
-        await catalogController.handleCatalogPageOnLoad(setState);
+        await catalogController.loadCatalogRefs(setState);
         break;
 
       case 'CATALOG_LOAD_FOR_DISPLAY':
-        await catalogController.handleCatalogLoadForDisplay(setState, action.name, action.version);
+        await catalogController.loadCatalogForDisplay(setState, action.name, action.version);
         break;
 
       case 'CATALOG_LIST_ON_SELECT':
-        await catalogController.handleCatalogListOnSelect(
+        await catalogController.selectCatalogAndLoad(
           setState,
           action.name,
           action.version,
@@ -58,23 +58,23 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'CATALOG_CREATE_DIALOG_ON_OPEN':
-        catalogController.handleCreateDialogOnOpen(setState);
+        catalogController.openCatalogCreateDialog(setState);
         break;
 
       case 'CATALOG_CREATE_DIALOG_ON_CLOSE':
-        catalogController.handleCreateDialogOnClose(setState);
+        catalogController.closeCatalogCreateDialog(setState);
         break;
 
       case 'CATALOG_CREATE_FORM_ON_SUBMIT':
-        await catalogController.handleCreateFormOnSubmit(setState, action.params);
+        await catalogController.createCatalog(setState, action.params);
         break;
 
       case 'CATALOG_SAVE_BUTTON_ON_CLICK':
-        await catalogController.handleSaveButtonOnClick(setState, action.catalog);
+        await catalogController.saveCatalog(setState, action.catalog);
         break;
 
       case 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK':
-        await catalogController.handleVersionDeleteButtonOnClick(
+        await catalogController.deleteCatalogVersion(
           setState,
           action.name,
           action.version,
@@ -82,7 +82,7 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'CATALOG_SYNC_BUTTON_ON_CLICK':
-        await catalogController.handleSyncButtonOnClick(
+        await catalogController.syncCatalog(
           setState,
           action.catalog,
           catalogUndoPushRef.current,
@@ -90,7 +90,7 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'CATALOG_REVERT_BUTTON_ON_CLICK':
-        await catalogController.handleRevertButtonOnClick(
+        await catalogController.revertCatalogToVersion(
           setState,
           action.name,
           action.version,
@@ -98,11 +98,12 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'TEMPLATE_PAGE_ON_LOAD':
-        await templateController.handleTemplatePageOnLoad(setState);
+        await templateController.loadTemplateRefs(setState);
+        await catalogController.loadCatalogRefs(setState);
         break;
 
       case 'TEMPLATE_LIST_ON_SELECT':
-        await templateController.handleTemplateListOnSelect(
+        await templateController.selectTemplateAndLoad(
           setState,
           action.name,
           action.version,
@@ -110,23 +111,23 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'TEMPLATE_CREATE_DIALOG_ON_OPEN':
-        templateController.handleCreateDialogOnOpen(setState);
+        templateController.openTemplateCreateDialog(setState);
         break;
 
       case 'TEMPLATE_CREATE_DIALOG_ON_CLOSE':
-        templateController.handleCreateDialogOnClose(setState);
+        templateController.closeTemplateCreateDialog(setState);
         break;
 
       case 'TEMPLATE_CREATE_FORM_ON_SUBMIT':
-        await templateController.handleCreateFormOnSubmit(setState, action.params);
+        await templateController.createTemplate(setState, action.params);
         break;
 
       case 'TEMPLATE_SAVE_BUTTON_ON_CLICK':
-        await templateController.handleSaveButtonOnClick(setState, action.template);
+        await templateController.saveTemplate(setState, action.template);
         break;
 
       case 'TEMPLATE_VERSION_DELETE_BUTTON_ON_CLICK':
-        await templateController.handleVersionDeleteButtonOnClick(
+        await templateController.deleteTemplateVersion(
           setState,
           action.name,
           action.version,
@@ -134,11 +135,11 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'THEME_PAGE_ON_LOAD':
-        await themeController.handleThemePageOnLoad(setState);
+        await themeController.loadThemeRefs(setState);
         break;
 
       case 'THEME_LIST_ON_SELECT':
-        await themeController.handleThemeListOnSelect(
+        await themeController.selectThemeAndLoad(
           setState,
           action.name,
           action.version,
@@ -146,23 +147,23 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'THEME_CREATE_DIALOG_ON_OPEN':
-        themeController.handleCreateDialogOnOpen(setState);
+        themeController.openThemeCreateDialog(setState);
         break;
 
       case 'THEME_CREATE_DIALOG_ON_CLOSE':
-        themeController.handleCreateDialogOnClose(setState);
+        themeController.closeThemeCreateDialog(setState);
         break;
 
       case 'THEME_CREATE_FORM_ON_SUBMIT':
-        await themeController.handleCreateFormOnSubmit(setState, action.params);
+        await themeController.createTheme(setState, action.params);
         break;
 
       case 'THEME_SAVE_BUTTON_ON_CLICK':
-        themeController.handleSaveButtonOnClick(setState, action.theme);
+        themeController.saveTheme(setState, action.theme);
         break;
 
       case 'THEME_PANE_ON_SELECT':
-        themeController.handleThemePaneOnSelect(
+        themeController.setThemePaneSelections(
           setState,
           action.checkedColorRefs,
           action.checkedContrastRefs,
@@ -170,7 +171,7 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'UNDO_PANEL_ON_RESTORE_THEME':
-        await themeController.handleUndoPanelRestoreTheme(setState, {
+        await themeController.restoreThemeState(setState, {
           theme: action.theme,
           checkedColorRefs: action.checkedColorRefs,
           checkedContrastRefs: action.checkedContrastRefs,
@@ -181,15 +182,15 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'HUE_ADJUSTMENT_SLIDER_ON_DELTA':
-        themeController.handleHueAdjustmentSliderOnDelta(setState, action.value);
+        themeController.setThemeHueAdjustment(setState, action.value);
         break;
 
       case 'HUE_REFERENCE_INPUT_ON_CHANGE':
-        themeController.handleHueReferenceInputOnChange(setState, action.value);
+        themeController.setThemeHueReferenceHex(setState, action.value);
         break;
 
       case 'UNDO_PANEL_ON_RESTORE_TEMPLATE':
-        await templateController.handleUndoPanelRestoreTemplate(
+        await templateController.restoreTemplateState(
           setState,
           action.template,
           action.deleteTemplateVersionOnRestore,
@@ -197,7 +198,7 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'UNDO_PANEL_ON_RESTORE_CATALOG':
-        await catalogController.handleUndoPanelRestoreCatalog(
+        await catalogController.restoreCatalogState(
           setState,
           action.catalog,
           action.deleteVersionOnRestore,
@@ -205,7 +206,7 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'THEME_VERSION_DELETE_BUTTON_ON_CLICK':
-        await themeController.handleVersionDeleteButtonOnClick(
+        await themeController.deleteThemeVersion(
           setState,
           action.name,
           action.version,
@@ -213,11 +214,11 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'THEME_SAVE_ERROR_DIALOG_ON_CLOSE':
-        themeController.handleSaveErrorDialogOnClose(setState);
+        themeController.clearThemeSaveError(setState);
         break;
 
       case 'THEME_GENERATE_BUTTON_ON_CLICK':
-        await themeController.handleGenerateButtonOnClick(
+        await themeController.generateTheme(
           setState,
           action.themeName,
           action.themeVersion,
@@ -227,15 +228,15 @@ function createActionProcessor(catalogUndoPushRef: MutableRefObject<CatalogUndoP
         break;
 
       case 'VIEW_MENU_RELOAD_ON_CLICK':
-        await windowController.handleViewMenuReload();
+        await windowController.reloadWindow();
         break;
 
       case 'VIEW_MENU_FORCE_RELOAD_ON_CLICK':
-        await windowController.handleViewMenuForceReload();
+        await windowController.forceReloadWindow();
         break;
 
       case 'VIEW_MENU_TOGGLE_DEV_TOOLS_ON_CLICK':
-        await windowController.handleViewMenuToggleDevTools();
+        await windowController.toggleDevTools();
         break;
     }
   };

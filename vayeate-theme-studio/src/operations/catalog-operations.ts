@@ -2,7 +2,7 @@ import type { Catalog, CatalogReference } from '../model/schemas';
 import type { AppStateUpdate } from '../state/app-state';
 import { catalogService } from '../services/catalog-service';
 import { syncCatalogTokens } from '../services/catalog-sync';
-import { compareVersions, nextPatchVersion } from '../utils/version';
+import { nextPatchVersion } from '../utils/version';
 
 export type SetState = (update: AppStateUpdate) => void;
 
@@ -59,73 +59,31 @@ export async function loadCatalogForDisplay(
   return loaded;
 }
 
-export async function refreshRefsAndSelect(
-  setState: SetState,
-  selectName?: string,
-  selectVersion?: string,
-): Promise<void> {
+/** List catalogs and set refs in state. Single responsibility: refresh ref list. */
+export async function refreshCatalogRefs(setState: SetState): Promise<CatalogReference[]> {
   const refs = await catalogService.listCatalogs();
   setState({ type: 'SET_CATALOG_REFS', refs });
-
-  if (selectName && selectVersion) {
-    const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
-    if (match) {
-      setState({ type: 'SET_SELECTED_REF', ref: match });
-      await loadCatalog(setState, match.name, match.version);
-    }
-  }
+  return refs;
 }
 
-export async function saveCatalogAndRefresh(catalog: Catalog, setState: SetState): Promise<void> {
+/** Persist catalog to disk only. Single responsibility: save. */
+export async function saveCatalog(catalog: Catalog): Promise<void> {
   await catalogService.saveCatalog(catalog);
-  await refreshRefsAndSelect(setState, catalog.name, catalog.version);
 }
 
-export async function deleteCatalogVersion(
-  setState: SetState,
-  name: string,
-  version: string,
-): Promise<void> {
+/** Delete one catalog version from disk. Single responsibility: delete. */
+export async function deleteCatalog(name: string, version: string): Promise<void> {
   await catalogService.deleteCatalog(name, version);
-  const refs = await catalogService.listCatalogs();
-  setState({ type: 'SET_CATALOG_REFS', refs });
-
-  const sameNameRefs = refs
-    .filter((r) => r.name === name)
-    .sort((a, b) => compareVersions(a.version, b.version));
-
-  const lower = sameNameRefs.filter((r) => compareVersions(r.version, version) < 0);
-  const higher = sameNameRefs.filter((r) => compareVersions(r.version, version) > 0);
-  const next = lower.length > 0 ? lower[lower.length - 1] : higher.length > 0 ? higher[0] : null;
-
-  if (next) {
-    setState({ type: 'SET_SELECTED_REF', ref: next });
-    await loadCatalog(setState, next.name, next.version);
-  } else {
-    setState({ type: 'SET_SELECTED_REF', ref: null });
-    setState({ type: 'SET_CATALOG', catalog: null });
-  }
 }
 
-export async function syncCatalogAndSave(
-  setState: SetState,
+/** Sync tokens from sources and return updated catalog. No setState, no save. Single responsibility: sync. */
+export async function syncCatalog(
   catalog: Catalog,
-  catalogUndoPush: CatalogUndoPush | null,
-): Promise<void> {
-  const prev: CatalogPaneState = {
-    catalog,
-    undoMetadata: !catalog.locked
-      ? {
-          deleteVersionOnRestore: {
-            name: catalog.name,
-            version: nextPatchVersion(catalog.version),
-          },
-        }
-      : undefined,
-  };
-  const result = await syncCatalogTokens(catalog.sources, (url) => catalogService.fetchUrl(url));
+  fetchUrl: (url: string) => Promise<string> = (url) => catalogService.fetchUrl(url),
+): Promise<Catalog> {
+  const result = await syncCatalogTokens(catalog.sources, fetchUrl);
   const version = catalog.locked ? nextPatchVersion(catalog.version) : catalog.version;
-  const synced: Catalog = {
+  return {
     ...catalog,
     tokens: result.tokens,
     semanticTokenTypes: result.semanticTokenTypes,
@@ -134,55 +92,17 @@ export async function syncCatalogAndSave(
     version,
     locked: true,
   };
-  const next: CatalogPaneState = { catalog: synced };
-  catalogUndoPush?.('Sync catalog', prev, next);
-  await saveCatalogAndRefresh(synced, setState);
 }
 
-export async function revertCatalogToVersion(
-  setState: SetState,
+/** Load catalog from disk without updating state. Single responsibility: read. */
+export async function loadCatalogSnapshot(
   name: string,
   version: string,
-): Promise<void> {
-  const snapshot = await catalogService.loadCatalog(name, version);
-  if (!snapshot) {
-    return;
-  }
-
-  const refs = await catalogService.listCatalogs();
-  const sameNameRefs = refs
-    .filter((r) => r.name === name)
-    .sort((a, b) => compareVersions(a.version, b.version));
-  const highest = sameNameRefs.length > 0 ? sameNameRefs[sameNameRefs.length - 1] : null;
-
-  if (highest) {
-    const highestCatalog = await catalogService.loadCatalog(highest.name, highest.version);
-    if (highestCatalog && !highestCatalog.locked) {
-      await catalogService.saveCatalog({ ...highestCatalog, locked: true });
-    }
-  }
-
-  const newVersion = highest ? nextPatchVersion(highest.version) : nextPatchVersion(version);
-  const reverted: Catalog = {
-    ...snapshot,
-    version: newVersion,
-    locked: false,
-  };
-  await saveCatalogAndRefresh(reverted, setState);
+): Promise<Catalog | null> {
+  return catalogService.loadCatalog(name, version);
 }
 
-export async function restoreCatalogState(
-  setState: SetState,
-  catalog: Catalog | null,
-  deleteVersionOnRestore?: { name: string; version: string },
-): Promise<void> {
-  setState({ type: 'SET_CATALOG', catalog });
-  if (deleteVersionOnRestore) {
-    await catalogService.deleteCatalog(
-      deleteVersionOnRestore.name,
-      deleteVersionOnRestore.version,
-    );
-    const refs = await catalogService.listCatalogs();
-    setState({ type: 'SET_CATALOG_REFS', refs });
-  }
+/** List catalog refs from disk without updating state. Single responsibility: read. */
+export async function listCatalogRefs(): Promise<CatalogReference[]> {
+  return catalogService.listCatalogs();
 }

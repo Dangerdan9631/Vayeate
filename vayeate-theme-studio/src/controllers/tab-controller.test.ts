@@ -1,13 +1,13 @@
 import type { AppStateUpdate } from '../state/app-state';
-import { handleTabBarOnSelect } from './tab-controller';
+import { setActiveTab } from './tab-controller';
 
 describe('tab-controller', () => {
-  describe('handleTabBarOnSelect', () => {
+  describe('setActiveTab', () => {
     it('calls setState with SET_ACTIVE_TAB for the given tabId', () => {
       const updates: AppStateUpdate[] = [];
       const setState = (update: AppStateUpdate) => updates.push(update);
 
-      handleTabBarOnSelect(setState, 'themes');
+      setActiveTab(setState, 'themes');
 
       expect(updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'themes' }]);
     });
@@ -15,11 +15,11 @@ describe('tab-controller', () => {
     it('works for each tab id', () => {
       const setState = vi.fn<(u: AppStateUpdate) => void>();
 
-      handleTabBarOnSelect(setState, 'catalogs');
+      setActiveTab(setState, 'catalogs');
       expect(setState).toHaveBeenCalledWith({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
 
       setState.mockClear();
-      handleTabBarOnSelect(setState, 'templates');
+      setActiveTab(setState, 'templates');
       expect(setState).toHaveBeenCalledWith({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
     });
   });

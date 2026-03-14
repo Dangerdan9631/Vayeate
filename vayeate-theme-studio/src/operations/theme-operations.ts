@@ -1,7 +1,6 @@
 import type { Theme, ThemeReference } from '../model/schemas';
 import type { AppStateUpdate } from '../state/app-state';
 import { themeService } from '../services/theme-service';
-import { compareVersions } from '../utils/version';
 
 export type SetState = (update: AppStateUpdate) => void;
 
@@ -83,53 +82,14 @@ export async function loadTheme(
   return loaded;
 }
 
-export async function refreshThemeRefsOnly(setState: SetState): Promise<ThemeReference[]> {
-  return loadThemeRefs(setState);
+/** Persist theme to disk only. Single responsibility: save. */
+export async function saveTheme(theme: Theme): Promise<void> {
+  await themeService.saveTheme(theme);
 }
 
-export async function persistTheme(setState: SetState, theme: Theme): Promise<void> {
-  try {
-    await themeService.saveTheme(theme);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    setThemeSaveError(setState, message);
-  }
-}
-
-export async function deleteThemeVersion(
-  setState: SetState,
-  name: string,
-  version: string,
-): Promise<void> {
+/** Delete one theme version from disk. Single responsibility: delete. */
+export async function deleteTheme(name: string, version: string): Promise<void> {
   await themeService.deleteTheme(name, version);
-  const refs = await themeService.listThemes();
-  setState({ type: 'SET_THEME_REFS', refs });
-
-  const sameThName = refs
-    .filter((r) => r.name === name)
-    .sort((a, b) => compareVersions(a.version, b.version));
-
-  const lowerTh = sameThName.filter((r) => compareVersions(r.version, version) < 0);
-  const higherTh = sameThName.filter((r) => compareVersions(r.version, version) > 0);
-  const nextTh =
-    lowerTh.length > 0 ? lowerTh[lowerTh.length - 1] : higherTh.length > 0 ? higherTh[0] : null;
-
-  if (nextTh) {
-    setState({ type: 'SET_SELECTED_THEME_REF', ref: nextTh });
-    const loadedNextTh = await themeService.loadTheme(nextTh.name, nextTh.version);
-    setState({ type: 'SET_THEME', theme: loadedNextTh });
-    if (loadedNextTh) {
-      setThemePaneSelections(
-        setState,
-        loadedNextTh.colorAssignments.map((a) => a.colorRef),
-        loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
-      );
-    }
-  } else {
-    setState({ type: 'SET_SELECTED_THEME_REF', ref: null });
-    setState({ type: 'SET_THEME', theme: null });
-    setThemePaneSelections(setState, [], []);
-  }
 }
 
 export interface RestoreThemeStateParams {
@@ -141,71 +101,3 @@ export interface RestoreThemeStateParams {
   deleteThemeVersionOnRestore?: { name: string; version: string };
 }
 
-export async function restoreThemeState(
-  setState: SetState,
-  params: RestoreThemeStateParams,
-): Promise<void> {
-  if (params.theme !== undefined) {
-    setState({ type: 'SET_THEME', theme: params.theme });
-  }
-  if (
-    params.checkedColorRefs !== undefined &&
-    params.checkedContrastRefs !== undefined
-  ) {
-    setThemePaneSelections(setState, params.checkedColorRefs, params.checkedContrastRefs);
-  }
-  if (params.theme !== undefined && params.theme !== null) {
-    setState({
-      type: 'SET_SELECTED_THEME_REF',
-      ref: { name: params.theme.name, version: params.theme.version },
-    });
-  }
-  if (params.hueAdjustment !== undefined) {
-    setThemeHueAdjustment(setState, params.hueAdjustment);
-  }
-  if (params.hueReferenceHex !== undefined) {
-    setThemeHueReferenceHex(setState, params.hueReferenceHex);
-  }
-  if (params.theme !== undefined && params.theme !== null) {
-    setThemeSaveError(setState, null);
-    try {
-      await themeService.saveTheme(params.theme);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      setThemeSaveError(setState, message);
-    }
-    await refreshThemeRefsOnly(setState);
-  }
-  if (params.deleteThemeVersionOnRestore) {
-    await themeService.deleteTheme(
-      params.deleteThemeVersionOnRestore.name,
-      params.deleteThemeVersionOnRestore.version,
-    );
-    await refreshThemeRefsOnly(setState);
-  }
-}
-
-export async function generateTheme(
-  setState: SetState,
-  themeName: string,
-  themeVersion: string,
-  templateName: string,
-  templateVersion: string,
-): Promise<void> {
-  setGenerateResult(setState, null);
-  try {
-    const { darkPath, lightPath } = await themeService.generateTheme(
-      themeName,
-      themeVersion,
-      templateName,
-      templateVersion,
-    );
-    setGenerateResult(setState, {
-      success: true,
-      message: `Generated ${darkPath} and ${lightPath}`,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    setGenerateResult(setState, { success: false, message });
-  }
-}
