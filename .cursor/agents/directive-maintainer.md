@@ -1,5 +1,6 @@
 ---
 name: directive-maintainer
+model: inherit
 description: Reviews rules, skills, AGENTS.md, and subagents against current session deltas and proposes durable instruction updates with minimal churn.
 ---
 

@@ -114,7 +114,7 @@ describe('useThemeViewModel', () => {
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_THEME', params: { name: 'test-theme' } });
+      getDispatch()?.({ type: 'THEME_CREATE_FORM_ON_SUBMIT', params: { name: 'test-theme' } });
     });
 
     await act(async () => {
@@ -175,7 +175,7 @@ describe('useThemeViewModel', () => {
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'test-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'test-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -385,7 +385,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -399,7 +399,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -419,7 +419,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -445,7 +445,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -470,7 +470,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -491,7 +491,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -504,7 +504,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -527,7 +527,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -550,7 +550,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -582,7 +582,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -659,7 +659,7 @@ describe('useThemeViewModel hue adjustment with useDarkForLight', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'use-dark-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'use-dark-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -727,7 +727,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -741,7 +741,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -762,7 +762,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -796,7 +796,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -817,7 +817,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -889,7 +889,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -904,7 +904,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -922,7 +922,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -935,7 +935,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_THEME', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: 'THEME_LIST_ON_SELECT', name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));

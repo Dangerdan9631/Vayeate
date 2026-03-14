@@ -8,6 +8,8 @@ export interface CatalogsState {
   catalogRefs: CatalogReference[];
   selectedRef: CatalogReference | null;
   catalog: Catalog | null;
+  /** Catalogs loaded for display (e.g. template page); key = `${name}@${version}` */
+  loadedForDisplay: Record<string, Catalog>;
   isCreating: boolean;
   createDialogOpen: boolean;
 }
@@ -62,6 +64,7 @@ export const initialAppState: AppState = {
     catalogRefs: [],
     selectedRef: null,
     catalog: null,
+    loadedForDisplay: {},
     isCreating: false,
     createDialogOpen: false,
   },
@@ -96,6 +99,7 @@ export type AppStateUpdate =
   | { type: 'SET_CATALOG_REFS'; refs: CatalogReference[] }
   | { type: 'SET_SELECTED_REF'; ref: CatalogReference | null }
   | { type: 'SET_CATALOG'; catalog: Catalog | null }
+  | { type: 'SET_LOADED_CATALOG_FOR_DISPLAY'; name: string; version: string; catalog: Catalog | null }
   | { type: 'SET_IS_CREATING'; value: boolean }
   | { type: 'SET_CREATE_DIALOG_OPEN'; value: boolean }
   | { type: 'SET_TEMPLATE_REFS'; refs: TemplateReference[] }
@@ -127,6 +131,16 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, catalogs: { ...state.catalogs, selectedRef: update.ref } };
     case 'SET_CATALOG':
       return { ...state, catalogs: { ...state.catalogs, catalog: update.catalog } };
+    case 'SET_LOADED_CATALOG_FOR_DISPLAY': {
+      const key = `${update.name}@${update.version}`;
+      const loadedForDisplay = { ...state.catalogs.loadedForDisplay };
+      if (update.catalog === null) {
+        delete loadedForDisplay[key];
+      } else {
+        loadedForDisplay[key] = update.catalog;
+      }
+      return { ...state, catalogs: { ...state.catalogs, loadedForDisplay } };
+    }
     case 'SET_IS_CREATING':
       return { ...state, catalogs: { ...state.catalogs, isCreating: update.value } };
     case 'SET_CREATE_DIALOG_OPEN':
@@ -197,6 +211,8 @@ function updatePayloadSummary(update: AppStateUpdate): string {
       return update.ref ? `${update.ref.name} v${update.ref.version}` : '(none)';
     case 'SET_CATALOG':
       return update.catalog ? `${update.catalog.name} v${update.catalog.version} (${update.catalog.tokens.length} tokens)` : '(none)';
+    case 'SET_LOADED_CATALOG_FOR_DISPLAY':
+      return `${update.name}@${update.version}` + (update.catalog ? ` (${update.catalog.tokens.length} tokens)` : ' (clear)');
     case 'SET_IS_CREATING':
     case 'SET_CREATE_DIALOG_OPEN':
       return String(update.value);

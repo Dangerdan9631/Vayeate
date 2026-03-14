@@ -65,10 +65,11 @@ export function StyledTooltip() {
       setState(null);
     }
 
-    /** Find element with tooltip text: nearest ancestor (or self) with title or aria-label. */
+    /** Find element with tooltip text: nearest ancestor (or self) with title or aria-label. Skip menu bar so menu buttons have no tooltips. */
     function findTooltipSource(el: HTMLElement | null): { el: HTMLElement; text: string; hasTitle: boolean } | null {
       let current: HTMLElement | null = el;
       while (current && current !== document.body) {
+        if (current.closest('.menu-bar')) return null;
         const title = current.getAttribute('title');
         const aria = current.getAttribute('aria-label');
         if (title != null && title.trim()) {

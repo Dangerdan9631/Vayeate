@@ -90,8 +90,8 @@ export function useThemeViewModel() {
 
   useEffect(() => {
     log.debug('initial mount → LOAD_THEME_REFS + LOAD_TEMPLATE_REFS');
-    dispatch({ type: 'LOAD_THEME_REFS' });
-    dispatch({ type: 'LOAD_TEMPLATE_REFS' });
+    dispatch({ type: 'THEME_PAGE_ON_LOAD' });
+    dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
   }, [dispatch]);
 
   const themeNames = useMemo(() => {
@@ -217,7 +217,7 @@ export function useThemeViewModel() {
 
     const base = getBaseInPlace(theme);
     const merged = mergeAssignmentsFromTemplate(base, loadedTemplate);
-    dispatch({ type: 'SAVE_THEME', theme: merged });
+    dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme: merged });
   }, [theme, loadedTemplate, dispatch]);
 
   // When a theme is loaded (selection changes), set hue reference to the resolved IDE Background color for the preview.
@@ -241,7 +241,7 @@ export function useThemeViewModel() {
       '#1e1e1e',
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
-    dispatch({ type: 'SET_THEME_HUE_REFERENCE_HEX', value: normalized });
+    dispatch({ type: 'HUE_REFERENCE_INPUT_ON_CHANGE', value: normalized });
   }, [theme, loadedTemplate, selectedRef, dispatch]);
 
   const colorVariablesFromTemplate = useMemo(
@@ -297,11 +297,11 @@ export function useThemeViewModel() {
   /** When recentering: update ref to shifted value and set hue to 0. */
   const dispatchHueRecenterWithRefUpdate = useCallback(() => {
     const nextRefHex = applyHueShift(hueReferenceHex, hueAdjustment / 100);
-    dispatch({ type: 'SET_THEME_HUE_REFERENCE_HEX', value: nextRefHex });
-    dispatch({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
+    dispatch({ type: 'HUE_REFERENCE_INPUT_ON_CHANGE', value: nextRefHex });
+    dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value: 0 });
   }, [hueReferenceHex, hueAdjustment, dispatch]);
 
-  /** Push theme-pane undo frame and dispatch SAVE_THEME (for user-initiated theme changes). */
+  /** Push theme-pane undo frame and dispatch THEME_SAVE_BUTTON_ON_CLICK (for user-initiated theme changes). */
   const pushThemeUndoAndSave = useCallback(
     (label: string, nextTheme: Theme, nextHueAdjustment: number = hueAdjustment) => {
       const prev = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex);
@@ -309,7 +309,7 @@ export function useThemeViewModel() {
         nextHueAdjustment === 0 && hueAdjustment !== 0 ? applyHueShift(hueReferenceHex, hueAdjustment / 100) : hueReferenceHex;
       const next = themePaneStateFromState(nextTheme, checkedColorRefsArray, checkedContrastRefsArray, nextHueAdjustment, nextRefHex);
       undoStack.push('themes', label, prev, next);
-      dispatch({ type: 'SAVE_THEME', theme: nextTheme });
+      dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme: nextTheme });
     },
     [theme, hueAdjustment, hueReferenceHex, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
   );
@@ -320,7 +320,7 @@ export function useThemeViewModel() {
       const prev = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex);
       const next = themePaneStateFromState(theme, nextColorRefs, nextContrastRefs, hueAdjustment, hueReferenceHex);
       undoStack.push('themes', label, prev, next);
-      dispatch({ type: 'THEME_PANE_SELECTIONS_CHANGED', checkedColorRefs: nextColorRefs, checkedContrastRefs: nextContrastRefs });
+      dispatch({ type: 'THEME_PANE_ON_SELECT', checkedColorRefs: nextColorRefs, checkedContrastRefs: nextContrastRefs });
     },
     [theme, hueAdjustment, hueReferenceHex, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
   );
@@ -330,7 +330,7 @@ export function useThemeViewModel() {
   const selectTheme = useCallback(
     (name: string, version: string) => {
       log.debug('selectTheme', name, `v${version}`);
-      dispatch({ type: 'SELECT_THEME', name, version });
+      dispatch({ type: 'THEME_LIST_ON_SELECT', name, version });
     },
     [dispatch],
   );
@@ -340,7 +340,7 @@ export function useThemeViewModel() {
       const best = highestVersionForName(name);
       if (best) {
         log.debug('selectName', name, '→ highest version', `v${best.version}`);
-        dispatch({ type: 'SELECT_THEME', name: best.name, version: best.version });
+        dispatch({ type: 'THEME_LIST_ON_SELECT', name: best.name, version: best.version });
       } else {
         log.warn('selectName', name, '→ no versions found');
       }
@@ -350,18 +350,18 @@ export function useThemeViewModel() {
 
   const openCreateDialog = useCallback(() => {
     log.debug('openCreateDialog');
-    dispatch({ type: 'OPEN_THEME_CREATE_DIALOG' });
+    dispatch({ type: 'THEME_CREATE_DIALOG_ON_OPEN' });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
     log.debug('closeCreateDialog');
-    dispatch({ type: 'CLOSE_THEME_CREATE_DIALOG' });
+    dispatch({ type: 'THEME_CREATE_DIALOG_ON_CLOSE' });
   }, [dispatch]);
 
   const createTheme = useCallback(
     (params: { name: string }) => {
       log.debug('createTheme', params.name);
-      dispatch({ type: 'CREATE_THEME', params });
+      dispatch({ type: 'THEME_CREATE_FORM_ON_SUBMIT', params });
     },
     [dispatch],
   );
@@ -369,7 +369,7 @@ export function useThemeViewModel() {
   const deleteVersion = useCallback(
     (name: string, version: string) => {
       log.debug('deleteVersion', name, `v${version}`);
-      dispatch({ type: 'DELETE_THEME_VERSION', name, version });
+      dispatch({ type: 'THEME_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
     },
     [dispatch],
   );
@@ -381,7 +381,7 @@ export function useThemeViewModel() {
     }
     log.debug('generateTheme', theme.name, theme.templateRef.name);
     dispatch({
-      type: 'GENERATE_THEME',
+      type: 'THEME_GENERATE_BUTTON_ON_CLICK',
       themeName: theme.name,
       themeVersion: theme.version,
       templateName: theme.templateRef.name,
@@ -570,7 +570,7 @@ export function useThemeViewModel() {
 
   const setHueAdjustment = useCallback(
     (value: number) => {
-      dispatch({ type: 'SET_THEME_HUE_ADJUSTMENT', value });
+      dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value });
     },
     [dispatch],
   );
@@ -578,8 +578,8 @@ export function useThemeViewModel() {
   const setHueReferenceHex = useCallback(
     (hex: string) => {
       const normalized = normalizeHex(hex) || '#FF0000';
-      dispatch({ type: 'SET_THEME_HUE_REFERENCE_HEX', value: normalized });
-      dispatch({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
+      dispatch({ type: 'HUE_REFERENCE_INPUT_ON_CHANGE', value: normalized });
+      dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value: 0 });
     },
     [dispatch],
   );
@@ -856,7 +856,7 @@ export function useThemeViewModel() {
           checkedColorRefs,
           { applyToDark: applyHueToDark, applyToLight: applyHueToLight },
         );
-        dispatch({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
+        dispatch({ type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA', value: 0 });
       }
       const newAssignments = workingAssignments.map((a) => {
         if (!checkedColorRefs.has(a.colorRef)) return a;
@@ -871,7 +871,7 @@ export function useThemeViewModel() {
       });
       const base = getBaseInPlace(theme);
       const nextTheme = { ...base, colorAssignments: newAssignments };
-      dispatch({ type: 'SAVE_THEME', theme: nextTheme });
+      dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme: nextTheme });
     },
     [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight, dispatch],
   );
@@ -881,7 +881,7 @@ export function useThemeViewModel() {
     (snapshot: ThemePaneState) => {
       const current = themePaneStateFromState(theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex);
       undoStack.push('themes', 'Palette color change', snapshot, current);
-      if (theme) dispatch({ type: 'SAVE_THEME', theme });
+      if (theme) dispatch({ type: 'THEME_SAVE_BUTTON_ON_CLICK', theme });
     },
     [theme, hueAdjustment, hueReferenceHex, checkedColorRefsArray, checkedContrastRefsArray, undoStack, dispatch],
   );
@@ -1045,7 +1045,7 @@ export function useThemeViewModel() {
     updateContrastAssignmentUseDarkForLight,
     saveError,
     dismissSaveError: useCallback(() => {
-      dispatch({ type: 'DISMISS_THEME_SAVE_ERROR' });
+      dispatch({ type: 'THEME_SAVE_ERROR_DIALOG_ON_CLOSE' });
     }, [dispatch]),
   };
 }

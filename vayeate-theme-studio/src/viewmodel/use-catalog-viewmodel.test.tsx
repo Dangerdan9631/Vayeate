@@ -81,7 +81,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_CATALOG', params: { name: 'test-catalog', type: 'manual' } });
+      getDispatch()?.({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params: { name: 'test-catalog', type: 'manual' } });
     });
 
     await act(async () => {
@@ -111,7 +111,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_CATALOG', params: { name: 'foo', type: 'manual' } });
+      getDispatch()?.({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params: { name: 'foo', type: 'manual' } });
     });
 
     expect(result.current.isCreating).toBe(true);
@@ -154,7 +154,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_CATALOG', name: 'remote-cat', version: '1.0.0' });
+      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'remote-cat', version: '1.0.0' });
     });
 
     await act(async () => {
@@ -199,7 +199,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_CATALOG', name: 'sem-cat', version: '1.0.0' });
+      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -248,7 +248,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_CATALOG', name: 'sem-cat', version: '1.0.0' });
+      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -293,7 +293,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_CATALOG', name: 'sem-cat', version: '1.0.0' });
+      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));

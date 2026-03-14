@@ -49,7 +49,7 @@ function AppShell() {
   const onTabChange = useCallback(
     (tabId: TabId) => {
       setVisibleTab(tabId);
-      dispatch({ type: 'SET_ACTIVE_TAB', tabId });
+      dispatch({ type: 'TAB_BAR_ON_SELECT', tabId });
     },
     [dispatch],
   );

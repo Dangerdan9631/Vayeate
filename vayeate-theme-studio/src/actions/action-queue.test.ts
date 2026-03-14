@@ -11,7 +11,7 @@ describe('ActionQueue', () => {
         updates.push(update);
         setState(update);
       };
-      if (action.type === 'SET_ACTIVE_TAB') {
+      if (action.type === 'TAB_BAR_ON_SELECT') {
         captureSetState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
       received.push({ action, updates });
@@ -20,22 +20,22 @@ describe('ActionQueue', () => {
     const queue = new ActionQueue(processor);
     queue.onStateUpdate = () => {};
 
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'themes' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'themes' });
 
     await new Promise((r) => setTimeout(r, 50));
 
     expect(received).toHaveLength(2);
-    expect(received[0].action).toEqual({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
+    expect(received[0].action).toEqual({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
     expect(received[0].updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'templates' }]);
-    expect(received[1].action).toEqual({ type: 'SET_ACTIVE_TAB', tabId: 'themes' });
+    expect(received[1].action).toEqual({ type: 'TAB_BAR_ON_SELECT', tabId: 'themes' });
     expect(received[1].updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'themes' }]);
   });
 
   it('processes next action only after previous processor completes', async () => {
     const order: string[] = [];
     const processor: ActionProcessor = async (action, setState) => {
-      if (action.type === 'SET_ACTIVE_TAB') {
+      if (action.type === 'TAB_BAR_ON_SELECT') {
         order.push(`start-${action.tabId as string}`);
         await new Promise((r) => setTimeout(r, 20));
         order.push(`end-${action.tabId as string}`);
@@ -46,8 +46,8 @@ describe('ActionQueue', () => {
     const queue = new ActionQueue(processor);
     queue.onStateUpdate = () => {};
 
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'catalogs' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
 
     await new Promise((r) => setTimeout(r, 60));
 
@@ -58,7 +58,7 @@ describe('ActionQueue', () => {
     const statuses: QueueStatus[] = [];
     const processor: ActionProcessor = async (action, setState) => {
       await new Promise((r) => setTimeout(r, 10));
-      if (action.type === 'SET_ACTIVE_TAB') {
+      if (action.type === 'TAB_BAR_ON_SELECT') {
         setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
     };
@@ -67,8 +67,8 @@ describe('ActionQueue', () => {
     queue.onStateUpdate = () => {};
     queue.onQueueStatus = (s) => statuses.push({ ...s });
 
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'catalogs' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
 
     await new Promise((r) => setTimeout(r, 80));
 
@@ -81,7 +81,7 @@ describe('ActionQueue', () => {
   it('calls onStateUpdate when processor calls setState', async () => {
     const updates: AppStateUpdate[] = [];
     const processor: ActionProcessor = async (action, setState) => {
-      if (action.type === 'SET_ACTIVE_TAB') {
+      if (action.type === 'TAB_BAR_ON_SELECT') {
         setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
     };
@@ -89,7 +89,7 @@ describe('ActionQueue', () => {
     const queue = new ActionQueue(processor);
     queue.onStateUpdate = (u) => updates.push(u);
 
-    queue.enqueue({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
+    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'catalogs' });
 
     await new Promise((r) => setTimeout(r, 20));
 

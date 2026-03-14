@@ -91,7 +91,7 @@ describe('useTemplateViewModel', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_TEMPLATE', params: { name: 'test-template' } });
+      getDispatch()?.({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params: { name: 'test-template' } });
     });
 
     await act(async () => {
@@ -189,7 +189,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_TEMPLATE', params: { name: 'test-template' } });
+      getDispatch()?.({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -238,7 +238,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -282,7 +282,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -335,7 +335,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -394,7 +394,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -443,7 +443,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -488,7 +488,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -535,7 +535,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -582,7 +582,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -628,7 +628,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -696,7 +696,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_TEMPLATE', params: { name: 'test-template' } });
+      getDispatch()?.({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -758,7 +758,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CREATE_TEMPLATE', params: { name: 'test-template' } });
+      getDispatch()?.({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -824,7 +824,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -873,7 +873,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -922,7 +922,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -982,7 +982,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1042,7 +1042,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1105,7 +1105,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1165,7 +1165,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1226,7 +1226,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1289,7 +1289,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1349,7 +1349,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1391,7 +1391,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1481,7 +1481,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'SELECT_TEMPLATE', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));

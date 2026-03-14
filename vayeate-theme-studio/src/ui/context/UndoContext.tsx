@@ -271,7 +271,7 @@ export function UndoProvider({
             ? { name: currentState.theme.name, version: currentState.theme.version }
             : undefined;
         dispatch({
-          type: 'RESTORE_THEME_STATE',
+          type: 'UNDO_PANEL_ON_RESTORE_THEME',
           theme: s.theme ?? undefined,
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
@@ -294,7 +294,7 @@ export function UndoProvider({
             ? { name: currentState.template.name, version: currentState.template.version }
             : undefined;
         dispatch({
-          type: 'RESTORE_TEMPLATE_STATE',
+          type: 'UNDO_PANEL_ON_RESTORE_TEMPLATE',
           template: s.template,
           deleteTemplateVersionOnRestore,
         } as AppAction);
@@ -307,7 +307,7 @@ export function UndoProvider({
       if (state !== null) {
         const s = state as CatalogPaneState;
         dispatch({
-          type: 'RESTORE_CATALOG_STATE',
+          type: 'UNDO_PANEL_ON_RESTORE_CATALOG',
           catalog: s.catalog,
           deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
         } as AppAction);
@@ -324,7 +324,7 @@ export function UndoProvider({
       if (state !== null) {
         const s = state as ThemePaneState;
         dispatch({
-          type: 'RESTORE_THEME_STATE',
+          type: 'UNDO_PANEL_ON_RESTORE_THEME',
           theme: s.theme ?? undefined,
           checkedColorRefs: s.checkedColorRefs,
           checkedContrastRefs: s.checkedContrastRefs,
@@ -339,7 +339,7 @@ export function UndoProvider({
       const state = stack.redo();
       if (state !== null) {
         dispatch({
-          type: 'RESTORE_TEMPLATE_STATE',
+          type: 'UNDO_PANEL_ON_RESTORE_TEMPLATE',
           template: (state as TemplatePaneState).template,
         });
         setVersion((v) => v + 1);
@@ -351,7 +351,7 @@ export function UndoProvider({
       if (state !== null) {
         const s = state as CatalogPaneState;
         dispatch({
-          type: 'RESTORE_CATALOG_STATE',
+          type: 'UNDO_PANEL_ON_RESTORE_CATALOG',
           catalog: s.catalog,
           deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
         } as AppAction);
@@ -378,7 +378,7 @@ export function UndoProvider({
               ? { name: currentState.theme.name, version: currentState.theme.version }
               : undefined;
           dispatch({
-            type: 'RESTORE_THEME_STATE',
+            type: 'UNDO_PANEL_ON_RESTORE_THEME',
             theme: s.theme ?? undefined,
             checkedColorRefs: s.checkedColorRefs,
             checkedContrastRefs: s.checkedContrastRefs,
@@ -404,7 +404,7 @@ export function UndoProvider({
               ? { name: currentState.template.name, version: currentState.template.version }
               : undefined;
           dispatch({
-            type: 'RESTORE_TEMPLATE_STATE',
+            type: 'UNDO_PANEL_ON_RESTORE_TEMPLATE',
             template: s.template,
             deleteTemplateVersionOnRestore,
           } as AppAction);
@@ -417,7 +417,7 @@ export function UndoProvider({
         if (state !== null) {
           const s = state as CatalogPaneState;
           dispatch({
-            type: 'RESTORE_CATALOG_STATE',
+            type: 'UNDO_PANEL_ON_RESTORE_CATALOG',
             catalog: s.catalog,
             deleteVersionOnRestore: s.undoMetadata?.deleteVersionOnRestore,
           } as AppAction);

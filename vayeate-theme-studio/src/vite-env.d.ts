@@ -40,6 +40,10 @@ declare global {
       reloadWindow?: () => Promise<void>;
       reloadWindowForce?: () => Promise<void>;
       toggleDevTools?: () => Promise<void>;
+      /** Subscribe to main process logs so they appear in the renderer DevTools console. */
+      onMainLog?: (callback: (level: 'debug' | 'info' | 'warn' | 'error', args: string[]) => void) => void;
+      /** Send renderer logs to main process so they appear in the IDE/terminal console. */
+      sendLog?: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => void;
       undoSave?: (pane: 'themes' | 'templates' | 'catalogs', docId: string, payload: string) => Promise<void>;
       undoLoad?: (pane: 'themes' | 'templates' | 'catalogs', docId: string) => Promise<string | null>;
       undoClearAll?: () => Promise<void>;

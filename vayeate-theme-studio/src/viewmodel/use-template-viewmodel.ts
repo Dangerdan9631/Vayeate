@@ -24,21 +24,21 @@ export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
   const undoStack = useUndoStack();
   const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
-  const { catalogRefs } = useCatalogsState();
+  const { catalogRefs, loadedForDisplay } = useCatalogsState();
 
   const pushTemplateUndoAndSave = useCallback(
     (label: string, nextTemplate: Template) => {
       if (!template) return;
       undoStack.push('templates', label, { template }, { template: nextTemplate });
-      dispatch({ type: 'SAVE_TEMPLATE', template: nextTemplate });
+      dispatch({ type: 'TEMPLATE_SAVE_BUTTON_ON_CLICK', template: nextTemplate });
     },
     [template, undoStack, dispatch],
   );
 
   useEffect(() => {
-    log.debug('initial mount → LOAD_TEMPLATE_REFS + LOAD_CATALOG_REFS');
-    dispatch({ type: 'LOAD_TEMPLATE_REFS' });
-    dispatch({ type: 'LOAD_CATALOG_REFS' });
+    log.debug('initial mount → TEMPLATE_PAGE_ON_LOAD + CATALOG_PAGE_ON_LOAD');
+    dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+    dispatch({ type: 'CATALOG_PAGE_ON_LOAD' });
   }, [dispatch]);
 
   const templateNames = useMemo(() => {
@@ -116,6 +116,25 @@ export function useTemplateViewModel() {
     }
     return names;
   }, [template, catalogVersionsByName]);
+
+  /** Catalogs loaded for display (e.g. template page orphan keys); key = `${name}@${version}` */
+  const loadedCatalogsForTemplateRefs = useMemo(() => {
+    if (!template || template.catalogRefs.length === 0) return [];
+    return template.catalogRefs.map((ref) => {
+      const key = `${ref.name}@${ref.version}`;
+      return loadedForDisplay[key] ?? null;
+    });
+  }, [template, loadedForDisplay]);
+
+  const ensureCatalogsLoadedForTemplate = useCallback(() => {
+    if (!template) return;
+    for (const ref of template.catalogRefs) {
+      const key = `${ref.name}@${ref.version}`;
+      if (!loadedForDisplay[key]) {
+        dispatch({ type: 'CATALOG_LOAD_FOR_DISPLAY', name: ref.name, version: ref.version });
+      }
+    }
+  }, [template, loadedForDisplay, dispatch]);
 
   // --- Mapping helpers ---
 
@@ -208,7 +227,7 @@ export function useTemplateViewModel() {
   const selectTemplate = useCallback(
     (name: string, version: string) => {
       log.debug('selectTemplate', name, `v${version}`);
-      dispatch({ type: 'SELECT_TEMPLATE', name, version });
+      dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name, version });
     },
     [dispatch],
   );
@@ -218,7 +237,7 @@ export function useTemplateViewModel() {
       const best = highestVersionForName(name);
       if (best) {
         log.debug('selectName', name, '→ highest version', `v${best.version}`);
-        dispatch({ type: 'SELECT_TEMPLATE', name: best.name, version: best.version });
+        dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name: best.name, version: best.version });
       } else {
         log.warn('selectName', name, '→ no versions found');
       }
@@ -228,18 +247,18 @@ export function useTemplateViewModel() {
 
   const openCreateDialog = useCallback(() => {
     log.debug('openCreateDialog');
-    dispatch({ type: 'OPEN_TEMPLATE_CREATE_DIALOG' });
+    dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
     log.debug('closeCreateDialog');
-    dispatch({ type: 'CLOSE_TEMPLATE_CREATE_DIALOG' });
+    dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_CLOSE' });
   }, [dispatch]);
 
   const createTemplate = useCallback(
     (params: { name: string }) => {
       log.debug('createTemplate', params.name);
-      dispatch({ type: 'CREATE_TEMPLATE', params });
+      dispatch({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params });
     },
     [dispatch],
   );
@@ -247,7 +266,7 @@ export function useTemplateViewModel() {
   const deleteVersion = useCallback(
     (name: string, version: string) => {
       log.debug('deleteVersion', name, `v${version}`);
-      dispatch({ type: 'DELETE_TEMPLATE_VERSION', name, version });
+      dispatch({ type: 'TEMPLATE_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
     },
     [dispatch],
   );
@@ -708,6 +727,8 @@ export function useTemplateViewModel() {
     catalogVersionsByName,
     includedCatalogMap,
     includedCatalogNamesWithUpdates,
+    loadedCatalogsForTemplateRefs,
+    ensureCatalogsLoadedForTemplate,
     mappingsByType,
     mappingCountsByType,
     colorVariableKeys,

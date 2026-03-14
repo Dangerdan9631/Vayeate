@@ -21,6 +21,45 @@ import type { Catalog, Template, Theme } from '../src/model/schemas';
 
 const TAG = '[Main]';
 
+type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+/** Serialize log args for IPC so main process logs appear in renderer DevTools console. */
+function forwardMainLog(level: LogLevel, ...args: unknown[]): void {
+  const win = mainWindow;
+  if (win != null && !win.webContents.isDestroyed()) {
+    const serialized = args.map((a) =>
+      a instanceof Error ? a.message : (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a)),
+    );
+    win.webContents.send('main-log', level, serialized);
+  }
+}
+
+/** Wrap console so main process logs also go to the renderer (DevTools) and use console.log for debug so the IDE console shows all levels. */
+function installMainLogForwarding(): void {
+  const orig = {
+    debug: console.log.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+  };
+  console.debug = (...args: unknown[]) => {
+    orig.debug(...args);
+    forwardMainLog('debug', ...args);
+  };
+  console.info = (...args: unknown[]) => {
+    orig.info(...args);
+    forwardMainLog('info', ...args);
+  };
+  console.warn = (...args: unknown[]) => {
+    orig.warn(...args);
+    forwardMainLog('warn', ...args);
+  };
+  console.error = (...args: unknown[]) => {
+    orig.error(...args);
+    forwardMainLog('error', ...args);
+  };
+}
+
 /** Project root themes directory (vayeate-theme-studio/../themes). */
 const THEMES_OUTPUT_DIR = join(__dirname, '..', '..', 'themes');
 
@@ -357,6 +396,23 @@ app.whenReady().then(async () => {
   });
 
   createWindow();
+  installMainLogForwarding();
+
+  ipcMain.on('renderer-log', (_event, level: LogLevel, tag: string, args: string[]) => {
+    const prefix = `[${tag}]`;
+    switch (level) {
+      case 'debug':
+      case 'info':
+        console.log(prefix, ...args);
+        break;
+      case 'warn':
+        console.warn(prefix, ...args);
+        break;
+      case 'error':
+        console.error(prefix, ...args);
+        break;
+    }
+  });
 
   app.on('activate', () => {
     console.debug(TAG, 'app activate');

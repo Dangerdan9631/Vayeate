@@ -46,6 +46,16 @@ const electronAPI = {
   reloadWindow: () => ipcRenderer.invoke('window:reload'),
   reloadWindowForce: () => ipcRenderer.invoke('window:reloadForce'),
   toggleDevTools: () => ipcRenderer.invoke('window:toggleDevTools'),
+  /** Subscribe to main process logs so they appear in the renderer DevTools console. */
+  onMainLog: (callback: (level: 'debug' | 'info' | 'warn' | 'error', args: string[]) => void) => {
+    ipcRenderer.on('main-log', (_event, level: 'debug' | 'info' | 'warn' | 'error', args: string[]) =>
+      callback(level, args),
+    );
+  },
+  /** Send renderer logs to main process so they appear in the IDE/terminal console. */
+  sendLog: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => {
+    ipcRenderer.send('renderer-log', level, tag, args);
+  },
   undoSave: (pane: 'themes' | 'templates' | 'catalogs', docId: string, payload: string) =>
     ipcRenderer.invoke('undo:save', pane, docId, payload),
   undoLoad: (pane: 'themes' | 'templates' | 'catalogs', docId: string) =>

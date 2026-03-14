@@ -240,7 +240,6 @@ export function MenuBar() {
                       role="menuitem"
                       className={`menu-edit-history-item ${frame.index === currentIndex ? 'menu-edit-history-current' : ''}`}
                       onClick={() => handleHistoryClick(frame.index)}
-                      title={frame.label}
                     >
                       {frame.index === currentIndex && (
                         <span className="material-symbols-outlined menu-edit-history-check" aria-hidden>check</span>

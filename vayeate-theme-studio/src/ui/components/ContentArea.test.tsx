@@ -110,7 +110,7 @@ describe('ContentArea', () => {
 
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
-      ref.current!.dispatch({ type: 'SELECT_THEME', name: 'test-theme', version: '1.0.0' });
+      ref.current!.dispatch({ type: 'THEME_LIST_ON_SELECT', name: 'test-theme', version: '1.0.0' });
       await new Promise((r) => setTimeout(r, 150));
     });
     expect(ref.current!.state.themes.selectedRef).toEqual({ name: 'test-theme', version: '1.0.0' });

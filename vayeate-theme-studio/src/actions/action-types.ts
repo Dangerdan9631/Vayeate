@@ -1,41 +1,37 @@
 import type { TabId } from '../ui/tabs';
-import type { Catalog, Source, Template, Theme, TokenType } from '../model/schemas';
+import type { Catalog, Template, Theme } from '../model/schemas';
 
 export type AppAction =
-  | { type: 'SET_ACTIVE_TAB'; tabId: TabId }
-  | { type: 'LOAD_CATALOG_REFS' }
-  | { type: 'SELECT_CATALOG'; name: string; version: string }
-  | { type: 'OPEN_CREATE_DIALOG' }
-  | { type: 'CLOSE_CREATE_DIALOG' }
-  | { type: 'CREATE_CATALOG'; params: { name: string; type: 'manual' | 'remote' } }
-  | { type: 'SAVE_CATALOG'; catalog: Catalog }
-  | { type: 'DELETE_VERSION'; name: string; version: string }
-  | { type: 'UPDATE_CATALOG_SOURCES'; sources: Source[] }
-  | { type: 'LOCK_CATALOG' }
-  | { type: 'SYNC_CATALOG'; catalog: Catalog }
-  | { type: 'ADD_TOKEN'; key: string; tokenType: TokenType }
-  | { type: 'REMOVE_TOKEN'; key: string; tokenType: TokenType }
-  | { type: 'UPDATE_TOKEN_KEY'; oldKey: string; newKey: string; tokenType: TokenType }
-  | { type: 'REVERT_TO_VERSION'; name: string; version: string }
-  | { type: 'LOAD_TEMPLATE_REFS' }
-  | { type: 'SELECT_TEMPLATE'; name: string; version: string }
-  | { type: 'OPEN_TEMPLATE_CREATE_DIALOG' }
-  | { type: 'CLOSE_TEMPLATE_CREATE_DIALOG' }
-  | { type: 'CREATE_TEMPLATE'; params: { name: string } }
-  | { type: 'SAVE_TEMPLATE'; template: Template }
-  | { type: 'DELETE_TEMPLATE_VERSION'; name: string; version: string }
-  | { type: 'LOAD_THEME_REFS' }
-  | { type: 'SELECT_THEME'; name: string; version: string }
-  | { type: 'OPEN_THEME_CREATE_DIALOG' }
-  | { type: 'CLOSE_THEME_CREATE_DIALOG' }
-  | { type: 'CREATE_THEME'; params: { name: string } }
-  | { type: 'SAVE_THEME'; theme: Theme }
-  | { type: 'THEME_PANE_SELECTIONS_CHANGED'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
-  | { type: 'RESTORE_THEME_STATE'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number; hueReferenceHex?: string; deleteThemeVersionOnRestore?: { name: string; version: string } }
-  | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }
-  | { type: 'SET_THEME_HUE_REFERENCE_HEX'; value: string }
-  | { type: 'RESTORE_TEMPLATE_STATE'; template: Template | null; deleteTemplateVersionOnRestore?: { name: string; version: string } }
-  | { type: 'RESTORE_CATALOG_STATE'; catalog: Catalog | null; deleteVersionOnRestore?: { name: string; version: string } }
-  | { type: 'DELETE_THEME_VERSION'; name: string; version: string }
-  | { type: 'DISMISS_THEME_SAVE_ERROR' }
-  | { type: 'GENERATE_THEME'; themeName: string; themeVersion: string; templateName: string; templateVersion: string };
+  | { type: 'TAB_BAR_ON_SELECT'; tabId: TabId }
+  | { type: 'CATALOG_PAGE_ON_LOAD' }
+  | { type: 'CATALOG_LOAD_FOR_DISPLAY'; name: string; version: string }
+  | { type: 'CATALOG_LIST_ON_SELECT'; name: string; version: string }
+  | { type: 'CATALOG_CREATE_DIALOG_ON_OPEN' }
+  | { type: 'CATALOG_CREATE_DIALOG_ON_CLOSE' }
+  | { type: 'CATALOG_CREATE_FORM_ON_SUBMIT'; params: { name: string; type: 'manual' | 'remote' } }
+  | { type: 'CATALOG_SAVE_BUTTON_ON_CLICK'; catalog: Catalog }
+  | { type: 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK'; name: string; version: string }
+  | { type: 'CATALOG_SYNC_BUTTON_ON_CLICK'; catalog: Catalog }
+  | { type: 'CATALOG_REVERT_BUTTON_ON_CLICK'; name: string; version: string }
+  | { type: 'TEMPLATE_PAGE_ON_LOAD' }
+  | { type: 'TEMPLATE_LIST_ON_SELECT'; name: string; version: string }
+  | { type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' }
+  | { type: 'TEMPLATE_CREATE_DIALOG_ON_CLOSE' }
+  | { type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT'; params: { name: string } }
+  | { type: 'TEMPLATE_SAVE_BUTTON_ON_CLICK'; template: Template }
+  | { type: 'TEMPLATE_VERSION_DELETE_BUTTON_ON_CLICK'; name: string; version: string }
+  | { type: 'THEME_PAGE_ON_LOAD' }
+  | { type: 'THEME_LIST_ON_SELECT'; name: string; version: string }
+  | { type: 'THEME_CREATE_DIALOG_ON_OPEN' }
+  | { type: 'THEME_CREATE_DIALOG_ON_CLOSE' }
+  | { type: 'THEME_CREATE_FORM_ON_SUBMIT'; params: { name: string } }
+  | { type: 'THEME_SAVE_BUTTON_ON_CLICK'; theme: Theme }
+  | { type: 'THEME_PANE_ON_SELECT'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
+  | { type: 'UNDO_PANEL_ON_RESTORE_THEME'; theme?: Theme | null; checkedColorRefs?: string[]; checkedContrastRefs?: string[]; hueAdjustment?: number; hueReferenceHex?: string; deleteThemeVersionOnRestore?: { name: string; version: string } }
+  | { type: 'HUE_ADJUSTMENT_SLIDER_ON_DELTA'; value: number }
+  | { type: 'HUE_REFERENCE_INPUT_ON_CHANGE'; value: string }
+  | { type: 'UNDO_PANEL_ON_RESTORE_TEMPLATE'; template: Template | null; deleteTemplateVersionOnRestore?: { name: string; version: string } }
+  | { type: 'UNDO_PANEL_ON_RESTORE_CATALOG'; catalog: Catalog | null; deleteVersionOnRestore?: { name: string; version: string } }
+  | { type: 'THEME_VERSION_DELETE_BUTTON_ON_CLICK'; name: string; version: string }
+  | { type: 'THEME_SAVE_ERROR_DIALOG_ON_CLOSE' }
+  | { type: 'THEME_GENERATE_BUTTON_ON_CLICK'; themeName: string; themeVersion: string; templateName: string; templateVersion: string };
