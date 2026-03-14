@@ -1,7 +1,7 @@
 /**
  * UndoManagerV2: HashMap of history stacks keyed by stack id.
  * Each stack is a double-linked list of frames with a current-frame pointer.
- * Frames have apply (redo) and undo action lists; an executor runs them.
+ * Frames have a list of undo actions (discriminated union); a processor applies or reverts each action via a switch on action.type.
  * Supports persistence (one JSON file per stack in .undo), LRU in-memory cap,
  * and in-memory frame trim with full history on disk.
  */
@@ -15,21 +15,30 @@ export function createFrameId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 }
 
+/** Placeholder undo action; apply and revert are no-ops. */
+export interface UndoActionNoop {
+  type: 'NOOP';
+}
+
+/** Discriminated union of undo actions. Each action has a type and the data needed to apply and revert. */
+export type UndoAction = UndoActionNoop;
+
 export interface UndoFrame {
   id: string;
   description: string;
-  applyActions: object[];
-  undoActions: object[];
+  /** Single list; apply runs in order, revert runs in reverse order. */
+  actions: UndoAction[];
 }
 
-export interface UndoExecutor {
-  apply(actions: object[]): void;
-  undo(actions: object[]): void;
+/** Processor that applies or reverts a single action; implementation switches on action.type. */
+export interface UndoProcessor {
+  applyProcessor(action: UndoAction): void;
+  revertProcessor(action: UndoAction): void;
 }
 
 export interface UndoStackOptions {
   maxSize?: number;
-  executor: UndoExecutor;
+  processor: UndoProcessor;
   /** Used by manager for persistence callbacks. */
   stackId?: string;
   /** Called after push/undo/redo/goto so manager can persist. */
@@ -80,10 +89,22 @@ interface FrameNode {
   next: FrameNode | null;
 }
 
+function runApply(processor: UndoProcessor, actions: UndoAction[]): void {
+  for (const action of actions) {
+    processor.applyProcessor(action);
+  }
+}
+
+function runRevert(processor: UndoProcessor, actions: UndoAction[]): void {
+  for (let i = actions.length - 1; i >= 0; i--) {
+    processor.revertProcessor(actions[i]);
+  }
+}
+
 export function createStack(options: UndoStackOptions): UndoStack {
   const maxSize = options.maxSize ?? DEFAULT_MAX_SIZE;
   const diskMaxFrames = options.diskMaxFrames ?? DEFAULT_DISK_MAX_FRAMES;
-  const executor = options.executor;
+  const processor = options.processor;
   const onAfterChange = options.onAfterChange;
 
   let head: FrameNode | null = null;
@@ -168,14 +189,14 @@ export function createStack(options: UndoStackOptions): UndoStack {
 
     undo(): boolean {
       if (current !== null) {
-        executor.undo(current.frame.undoActions);
+        runRevert(processor, current.frame.actions);
         current = current.prev;
         notifyChange();
         return true;
       }
       if (trimmedFrames.length === 0) return false;
       const popped = trimmedFrames.pop()!;
-      executor.undo(popped.undoActions);
+      runRevert(processor, popped.actions);
       const newNode: FrameNode = { frame: popped, prev: null, next: head };
       if (head) head.prev = newNode;
       else tail = newNode;
@@ -196,14 +217,14 @@ export function createStack(options: UndoStackOptions): UndoStack {
     redo(): boolean {
       if (!current) {
         if (!head) return false;
-        executor.apply(head.frame.applyActions);
+        runApply(processor, head.frame.actions);
         current = head;
         notifyChange();
         return true;
       }
       if (!current.next) return false;
       const next = current.next;
-      executor.apply(next.frame.applyActions);
+      runApply(processor, next.frame.actions);
       current = next;
       notifyChange();
       return true;
@@ -215,15 +236,15 @@ export function createStack(options: UndoStackOptions): UndoStack {
         const idx = trimmedFrames.findIndex((f) => f.id === id);
         if (idx >= 0) {
           while (current !== null) {
-            executor.undo(current.frame.undoActions);
+            runRevert(processor, current.frame.actions);
             current = current.prev;
           }
           for (let i = trimmedFrames.length - 1; i > idx; i--) {
             const f = trimmedFrames[i];
-            executor.undo(f.undoActions);
+            runRevert(processor, f.actions);
           }
           const frame = trimmedFrames[idx];
-          executor.undo(frame.undoActions);
+          runRevert(processor, frame.actions);
           const newNode: FrameNode = { frame, prev: null, next: head };
           if (head) head.prev = newNode;
           else tail = newNode;
@@ -248,18 +269,18 @@ export function createStack(options: UndoStackOptions): UndoStack {
       if (currentIndex === targetIndex) return true;
       if (targetIndex < currentIndex) {
         while (current && current.frame.id !== id) {
-          executor.undo(current.frame.undoActions);
+          runRevert(processor, current.frame.actions);
           current = current.prev;
         }
       } else {
         let n = current ? current.next : head;
         while (n && n.frame.id !== id) {
-          executor.apply(n.frame.applyActions);
+          runApply(processor, n.frame.actions);
           current = n;
           n = n.next;
         }
         if (n) {
-          executor.apply(n.frame.applyActions);
+          runApply(processor, n.frame.actions);
           current = n;
         }
       }
@@ -392,8 +413,8 @@ export function createUndoManagerV2(initialOptions?: UndoManagerOptions): UndoMa
         touchLru(stackId);
         return stack;
       }
-      if (!options?.executor) {
-        throw new Error('UndoManagerV2.getOrCreate: executor is required when creating a new stack');
+      if (!options?.processor) {
+        throw new Error('UndoManagerV2.getOrCreate: processor is required when creating a new stack');
       }
       let frames: UndoFrame[] = [];
       let currentId: string | null = null;

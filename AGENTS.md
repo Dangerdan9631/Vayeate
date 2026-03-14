@@ -51,6 +51,7 @@ Use this file to route an AI coding agent to the right instruction files, archit
 | Adding or modifying Theme Studio operations | `.cursor/rules/vayeate-theme-studio-operations.mdc` | `.cursor/skills/add-or-modify-operation/SKILL.md`, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | App changes that mutate state or files (undoable work) | `.cursor/rules/vayeate-theme-studio-undo.mdc` | Existing operations/controllers/viewmodels, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/ui/context/UndoContext.tsx` when implementing or migrating |
+| Adding a new undo action type | `.cursor/skills/define-undo-action/SKILL.md` | `vayeate-theme-studio/src/utils/undo-manager-v2.ts`, `.cursor/rules/vayeate-theme-studio-undo.mdc` |
 
 ## Skills index
 
@@ -62,6 +63,7 @@ Cursor skills (vayeate-theme-studio):
 
 - `.cursor/skills/add-app-action/SKILL.md`
 - `.cursor/skills/add-or-modify-operation/SKILL.md`
+- `.cursor/skills/define-undo-action/SKILL.md`
 - `.cursor/skills/undo-manager-v2/SKILL.md`
 
 ## High-level architecture map

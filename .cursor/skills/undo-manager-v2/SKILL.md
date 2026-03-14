@@ -48,15 +48,18 @@ Read before implementing:
 
 - **Description**: Short (1–5 words, guidance only).
 - **Identifier**: Globally unique and chronologically sortable — order between any two frames is derivable from IDs.
-- **Apply actions**: List of actions that redo the frame (details necessary to re-apply the change).
-- **Undo actions**: List of actions that undo the frame (typically the value that existed before the action was executed).
-- Actions are fine-grained (single value change). The list of actions as a whole is applied or reverted atomically as one logical step.
+- **Actions**: Undo actions are a **discriminated union** (see Undo rule). Each action has a `type`; apply and revert are handled by a **processor** with **applyProcessor(action)** and **revertProcessor(action)** that **switch on `action.type`** and contain the logic to apply or revert. Each action carries the data it needs; that data differs per action type. The list is iterated in order when applying and in reverse order when reverting. Actions are fine-grained (single value change). The list as a whole is applied or reverted atomically as one logical step.
 
 ### Actions
 
 - Support **app state** and **file system**.
 - **App state**: Apply/undo actions describe state deltas as usual.
 - **File system**: Undo app state first, then persist that undone state to disk. For file deletions: persist file contents before the delete; the undo action recreates the file with those contents.
+
+### Adding a new undo action type
+
+- Add a member to the **UndoAction** union in `vayeate-theme-studio/src/utils/undo-manager-v2.ts` (the canonical list).
+- In the processor implementation used when creating the stack, add a case in both **applyProcessor** and **revertProcessor** for that type. Use the define-undo-action skill (`.cursor/skills/define-undo-action/SKILL.md`) for the full procedure.
 
 ### Stack operations
 
