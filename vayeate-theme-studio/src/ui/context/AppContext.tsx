@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
+import { ActionQueueV2 } from '../../actions/action-queue-v2';
 import type { AppAction, AppActionV2 } from '../../actions/action-types';
 import type { AppState } from '../../state/app-state';
 import {
@@ -17,6 +18,7 @@ import {
 import {
   ActiveTabContext,
   AppDispatchContext,
+  AppDispatchV2Context,
   CatalogsStateContext,
   TemplatesStateContext,
   ThemesStateContext,
@@ -911,6 +913,7 @@ export function createActionProcessorV2(): (
 export interface AppContextValue {
   state: AppState;
   dispatch: (action: AppAction) => void;
+  dispatchV2: (action: AppActionV2) => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);
@@ -918,6 +921,7 @@ export const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useReducer(appStateReducer, initialAppState);
   const queueRef = useRef<ActionQueue | null>(null);
+  const queueV2Ref = useRef<ActionQueueV2 | null>(null);
   const catalogUndoPushRef = useRef<CatalogUndoPush | null>(null);
 
   const dispatch = useCallback((action: AppAction) => {
@@ -936,12 +940,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
     queueRef.current.enqueue(action);
   }, []);
 
-  const value: AppContextValue = { state, dispatch };
+  const dispatchV2 = useCallback((action: AppActionV2) => {
+    if (!queueV2Ref.current) {
+      const processor = createActionProcessorV2();
+      const queue = new ActionQueueV2(processor);
+      queue.onStateUpdate = (update) => setState(update);
+      queue.onQueueStatus = () => {};
+      queueV2Ref.current = queue;
+    }
+    queueV2Ref.current.enqueue(action);
+  }, []);
+
+  const value: AppContextValue = { state, dispatch, dispatchV2 };
 
   return (
     <AppContext.Provider value={value}>
       <AppDispatchContext.Provider value={dispatch}>
-        <ActiveTabContext.Provider value={state.activeTab}>
+        <AppDispatchV2Context.Provider value={dispatchV2}>
+          <ActiveTabContext.Provider value={state.activeTab}>
           <CatalogsStateContext.Provider value={state.catalogs}>
             <TemplatesStateContext.Provider value={state.templates}>
               <ThemesStateContext.Provider value={state.themes}>
@@ -952,7 +968,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             </TemplatesStateContext.Provider>
           </CatalogsStateContext.Provider>
         </ActiveTabContext.Provider>
-      </AppDispatchContext.Provider>
-    </AppContext.Provider>
-  );
+      </AppDispatchV2Context.Provider>
+    </AppDispatchContext.Provider>
+  </AppContext.Provider>
+);
 }
