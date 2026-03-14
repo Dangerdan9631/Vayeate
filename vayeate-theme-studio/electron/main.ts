@@ -23,14 +23,18 @@ const TAG = '[Main]';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-/** Serialize log args for IPC so main process logs appear in renderer DevTools console. */
+/** Serialize log args for IPC so main process logs appear in renderer DevTools console. No-op if window is closed/destroyed. */
 function forwardMainLog(level: LogLevel, ...args: unknown[]): void {
   const win = mainWindow;
-  if (win != null && !win.webContents.isDestroyed()) {
+  if (win == null) return;
+  try {
+    if (win.webContents.isDestroyed()) return;
     const serialized = args.map((a) =>
       a instanceof Error ? a.message : (typeof a === 'object' && a !== null ? JSON.stringify(a) : String(a)),
     );
     win.webContents.send('main-log', level, serialized);
+  } catch {
+    // Window can be destroyed during close; ignore "Object has been destroyed" and similar
   }
 }
 
