@@ -1,5 +1,5 @@
 import { app, BrowserWindow, desktopCapturer, ipcMain, net, screen } from 'electron';
-import { rmSync, mkdirSync } from 'node:fs';
+import { rmSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -283,6 +283,20 @@ app.whenReady().then(async () => {
   });
 
   const undoV2Dir = getUndoV2Dir();
+  const configPath = join(DATA_DIR, 'config.json');
+  ipcMain.on('config:loadSync', (event) => {
+    try {
+      event.returnValue = existsSync(configPath)
+        ? JSON.parse(readFileSync(configPath, 'utf-8'))
+        : null;
+    } catch {
+      event.returnValue = null;
+    }
+  });
+  ipcMain.handle('config:save', async (_event, config: { colorScheme?: string }) => {
+    await writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
+  });
+
   ipcMain.handle('undoV2:save', async (_event, stackId: string, payload: string) => {
     if (!stackId) return;
     await mkdir(undoV2Dir, { recursive: true });

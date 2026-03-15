@@ -9,15 +9,7 @@ import {
 import { AppContext } from './AppContext';
 import { AppDispatchContext } from './slice-contexts';
 
-const STORAGE_KEY = 'vayeate-theme-studio-color-scheme';
-
 export type ColorScheme = 'light' | 'dark';
-
-function readStoredScheme(): ColorScheme {
-  if (typeof localStorage === 'undefined') return 'light';
-  const v = localStorage.getItem(STORAGE_KEY);
-  return v === 'dark' ? 'dark' : 'light';
-}
 
 function applyTheme(theme: ColorScheme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -35,7 +27,7 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const dispatch = useContext(AppDispatchContext);
 
   // Local state is only used when AppContext is not available (e.g., in unit tests).
-  const [localScheme, setLocalScheme] = useState<ColorScheme>(() => readStoredScheme());
+  const [localScheme, setLocalScheme] = useState<ColorScheme>('light');
 
   const scheme: ColorScheme = appCtx ? appCtx.state.ui.colorScheme : localScheme;
 
@@ -45,13 +37,12 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
 
   const toggleColorScheme = useCallback(() => {
     if (dispatch) {
-      // In the full app: dispatch the action; the handler updates UiState + localStorage.
+      // In the full app: dispatch the action; the handler updates UiState + persists to disk.
       dispatch({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: scheme !== 'light' });
     } else {
-      // Standalone (no AppContext/dispatch) – update local state and localStorage directly.
+      // Standalone (no AppContext/dispatch) – update local state and apply theme directly (no persistence).
       setLocalScheme((prev) => {
         const next = prev === 'light' ? 'dark' : 'light';
-        localStorage.setItem(STORAGE_KEY, next);
         applyTheme(next);
         return next;
       });

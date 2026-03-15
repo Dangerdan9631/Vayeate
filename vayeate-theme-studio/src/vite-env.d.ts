@@ -57,7 +57,9 @@ declare global {
       undoV2Save?: (stackId: string, payload: string) => Promise<void>;
       undoV2Load?: (stackId: string) => Promise<string | null>;
       undoV2ClearPersisted?: () => Promise<void>;
+      saveConfig?: (config: { colorScheme?: string }) => Promise<void>;
     };
+    electronInitialColorScheme?: 'light' | 'dark';
   }
 }
 

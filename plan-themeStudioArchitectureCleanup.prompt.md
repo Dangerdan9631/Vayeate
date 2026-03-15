@@ -126,7 +126,7 @@ app/
    - **Form text no-ops** (`TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE`, `TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE`): Add state fields to track form input values; handler calls controller to set them
    - **Color picker/eyedropper button clicks** (6 actions): Handler sets an "open picker" state flag; component reads flag to show/hide picker
    - **Text on-change without commit** (8 actions): Handler stores draft value in state for potential validation display
-   - **ColorScheme toggle** (`APP_BAR_THEME_CHECKBOX_ON_TOGGLE`): Move color scheme state from `ColorSchemeContext` local state into `AppState`; handler calls controller to toggle and persist; `applyTheme()` runs as a side effect of state change; remove or simplify `ColorSchemeContext`
+   - **ColorScheme toggle** (`APP_BAR_THEME_CHECKBOX_ON_TOGGLE`): ~~localStorage removed (hotfix: persists to `data/config.json` via `config:save`/`config:loadSync` IPC; `ColorSchemeContext` standalone mode no longer persists).~~ Remaining: extract direct `window.electronAPI?.saveConfig` call in handler into `gateway/services/config-service.ts` → `domain/operations/app-operations/saveColorScheme.ts` → controller → handler calls controller. Remove or simplify `ColorSchemeContext` standalone fallback.
 
 3. **Update components to dispatch new action types** — for each split action, update the dispatching component to use the correct specific action type
 
@@ -237,7 +237,7 @@ app/
 ### Steps
 
 1. **Identify component-local state** that should be centralized:
-   - `ColorSchemeContext` — theme preference (light/dark)
+   - `ColorSchemeContext` — theme preference (light/dark); ~~localStorage replaced with `data/config.json` IPC (hotfix)~~; remaining: simplify or remove standalone fallback mode
    - Template group name input (currently local in GroupsCard)
    - Template variable name input (currently local in component)
    - Any other local `useState` that represents a form field the user can submit
@@ -414,11 +414,11 @@ Phase 7: Documentation ──── depends on all ────────┘
 - All agent docs in `.github/`, `.cursor/`, `vayeate-theme-studio/docs/`
 - Undo system completion
 - Form state centralization
-- ColorScheme migration
+- ColorScheme migration (localStorage → disk IPC hotfix done; proper layering in Phase 2)
 
 **Excluded:**
 - Root extension packaging (`package.json`, `themes/` generation pipeline)
-- Electron main process (`electron/main.ts`, `electron/preload.ts`) — no structural changes
+- Electron main process (`electron/main.ts`, `electron/preload.ts`) — minimal `config:save`/`config:loadSync` IPC added as hotfix for localStorage removal; no further structural changes
 - Domain business logic changes (color math, theme generation, catalog sync)
 - New features — this is purely restructuring + completing existing scaffolding
 - UI redesign — component appearance stays the same

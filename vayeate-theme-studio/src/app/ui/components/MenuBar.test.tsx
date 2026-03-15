@@ -34,12 +34,14 @@ beforeEach(() => {
     toggleDevTools: () => {},
     minimizeWindow: () => {},
     maximizeWindow: () => {},
+    saveConfig: () => Promise.resolve(),
   };
-  localStorage.removeItem('vayeate-theme-studio-color-scheme');
+  delete (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme;
 });
 
 afterEach(() => {
   delete (window as unknown as { electronAPI?: unknown }).electronAPI;
+  delete (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme;
 });
 
 describe('MenuBar', () => {
@@ -57,16 +59,28 @@ describe('MenuBar', () => {
   });
 
   it('shows dark_mode icon when in dark mode', () => {
-    localStorage.setItem('vayeate-theme-studio-color-scheme', 'dark');
+    (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme = 'dark';
     render(<MenuBarWithProviders />);
     const icon = document.querySelector('.menu-theme-toggle .material-symbols-outlined');
     expect(icon).toHaveTextContent('dark_mode');
   });
 
-  // TODO: Re-enable when localStorage is removed from the color scheme toggle flow.
-  // This test is flaky because the toggle dispatches through the async ActionQueue,
-  // and the state update races with the assertion even with waitFor.
-  // it('toggles theme when theme button is clicked', async () => { ... });
+  it('toggles theme when theme button is clicked', async () => {
+    render(<MenuBarWithProviders />);
+    const toggle = screen.getByRole('button', { name: 'Switch to dark mode' });
+    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('light_mode');
+
+    await act(async () => {
+      toggle.click();
+    });
+    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('dark_mode');
+    expect(screen.getByRole('button', { name: 'Switch to light mode' })).toBeInTheDocument();
+
+    await act(async () => {
+      screen.getByRole('button', { name: 'Switch to light mode' }).click();
+    });
+    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('light_mode');
+  });
 
   it('renders File, Edit, History, View menus', () => {
     render(<MenuBarWithProviders />);

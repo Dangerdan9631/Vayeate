@@ -1,5 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+const _rawConfig = ipcRenderer.sendSync('config:loadSync') as { colorScheme?: string } | null;
+const initialColorScheme: 'light' | 'dark' =
+  _rawConfig?.colorScheme === 'dark' ? 'dark' : 'light';
+
 const electronAPI = {
   saveCatalog: (catalog: unknown) => ipcRenderer.invoke('catalog:save', catalog),
   loadCatalog: (name: string, version: string) =>
@@ -94,6 +98,8 @@ const electronAPI = {
   undoV2Load: (stackId: string) =>
     ipcRenderer.invoke('undoV2:load', stackId) as Promise<string | null>,
   undoV2ClearPersisted: () => ipcRenderer.invoke('undoV2:clearPersisted'),
+  saveConfig: (config: { colorScheme?: string }) => ipcRenderer.invoke('config:save', config),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);
+contextBridge.exposeInMainWorld('electronInitialColorScheme', initialColorScheme);
