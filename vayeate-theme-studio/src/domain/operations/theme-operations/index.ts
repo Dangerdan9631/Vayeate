@@ -20,3 +20,5 @@ export { createTheme } from './createTheme';
 export { loadTheme } from './loadTheme';
 export { saveTheme } from './saveTheme';
 export { deleteTheme } from './deleteTheme';
+export { generateTheme } from './generateTheme';
+export { loadPreviews } from './loadPreviews';

@@ -2,7 +2,7 @@ import type { Theme } from '../../../model/schemas';
 import type { ColorVariableKey } from '../../../model/schemas';
 import { setTheme, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { normalizeHexVar } from './_helpers';
+import { normalizeHexVar } from './shared-flows';
 import { saveTheme } from './saveTheme';
 
 export function setColorVariableDark(

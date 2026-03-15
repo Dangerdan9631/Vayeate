@@ -5,7 +5,7 @@ import {
   type SetState,
 } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { templateService } from '../../../gateway/services/template-service';
+import { loadTemplateSnapshot } from '../../operations/template-operations';
 
 export async function setVariablesSelectByGroup(
   setState: SetState,
@@ -16,7 +16,7 @@ export async function setVariablesSelectByGroup(
   const state = getState();
   const theme = state.themes.theme;
   if (!theme?.templateRef || groupId == null) return;
-  const template = await templateService.loadTemplate(
+  const template = await loadTemplateSnapshot(
     theme.templateRef.name,
     theme.templateRef.version,
   );

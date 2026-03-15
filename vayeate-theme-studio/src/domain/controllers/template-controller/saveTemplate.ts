@@ -1,7 +1,7 @@
 import type { Template } from '../../../model/schemas';
 import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
-import { refreshRefsAndSelect } from './_helpers';
+import { refreshRefsAndSelect } from './shared-flows';
 
 export async function saveTemplate(
   setState: SetState,

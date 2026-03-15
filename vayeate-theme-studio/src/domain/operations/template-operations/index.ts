@@ -13,6 +13,7 @@ export { setTemplateAddVariableName } from './setTemplateAddVariableName';
 export { loadTemplateRefs } from './loadTemplateRefs';
 export { createTemplate } from './createTemplate';
 export { loadTemplate } from './loadTemplate';
+export { loadTemplateSnapshot } from './loadTemplateSnapshot';
 export { refreshTemplateRefs } from './refreshTemplateRefs';
 export { saveTemplate } from './saveTemplate';
 export { deleteTemplate } from './deleteTemplate';

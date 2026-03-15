@@ -1,7 +1,7 @@
 import type { Theme } from '../../../model/schemas';
 import { setTheme, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { normalizeHexForPalette, applyHueToAssignmentsFiltered } from './_helpers';
+import { normalizeHexForPalette, applyHueToAssignmentsFiltered } from './shared-flows';
 
 export function setAssignColorPreview(
   setState: SetState,

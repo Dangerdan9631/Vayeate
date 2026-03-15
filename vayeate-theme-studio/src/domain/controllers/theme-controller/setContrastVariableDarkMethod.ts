@@ -3,7 +3,7 @@ import type { ContrastVariableKey } from '../../../model/schemas';
 import type { ContrastComparisonMethod } from '../../../model/schemas';
 import { setTheme, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { updateContrastAssignment } from './_helpers';
+import { updateContrastAssignment } from './shared-flows';
 import { saveTheme } from './saveTheme';
 
 export function setContrastVariableDarkMethod(

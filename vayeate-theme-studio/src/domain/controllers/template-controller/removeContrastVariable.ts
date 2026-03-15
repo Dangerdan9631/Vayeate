@@ -5,7 +5,7 @@ import {
   getBaseForEdit,
   referencedContrastVarKeysFromTemplate,
   refreshRefsAndSelect,
-} from './_helpers';
+} from './shared-flows';
 
 export async function removeContrastVariable(
   setState: SetState,

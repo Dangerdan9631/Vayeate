@@ -12,6 +12,12 @@
 - Use explicit types for domain-critical structures.
 - Keep generation and serialization deterministic.
 
+## Controller/operation boundary conventions
+
+- Controllers must compose operations and validations only. Never import from `gateway/services/` or `gateway/data/` inside a controller.
+- When a controller needs a service call, extract or reuse an operation in `domain/operations/<domain>-operations/`.
+- Shared helper flows used by multiple files in the same controller domain belong in `<domain>-controller/shared-flows.ts`.
+
 ## Testing conventions
 
 - Add tests when generation/parity/catalog rules change.

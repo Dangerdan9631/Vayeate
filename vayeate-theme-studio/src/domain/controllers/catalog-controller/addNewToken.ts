@@ -8,7 +8,7 @@ import {
   type SetState,
 } from '../../operations/catalog-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { catalogWithVersionBump, refreshRefsAndSelect } from './_helpers';
+import { catalogWithVersionBump, refreshRefsAndSelect } from './shared-flows';
 
 export async function addNewToken(
   setState: SetState,

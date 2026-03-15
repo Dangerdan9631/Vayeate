@@ -1,17 +1,17 @@
 import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { catalogService } from '../../../gateway/services/catalog-service';
+import { loadCatalogSnapshot } from '../../operations/catalog-operations';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../utils/template-catalog-merge';
-import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';
+import { getBaseForEdit, refreshRefsAndSelect } from './shared-flows';
 
 async function loadCatalogData(refs: readonly { name: string; version: string }[]): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
   for (const ref of refs) {
-    const catalog = await catalogService.loadCatalog(ref.name, ref.version);
+    const catalog = await loadCatalogSnapshot(ref.name, ref.version);
     if (catalog) {
       catalogData.push({
         ref,

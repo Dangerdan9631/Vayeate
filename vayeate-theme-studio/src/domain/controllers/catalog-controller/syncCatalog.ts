@@ -5,7 +5,7 @@ import {
   syncCatalog as syncCatalogOp,
   type SetState,
 } from '../../operations/catalog-operations';
-import { refreshRefsAndSelect } from './_helpers';
+import { refreshRefsAndSelect } from './shared-flows';
 
 export async function syncCatalog(setState: SetState, setStoreState: SetStoreState, catalog: Catalog): Promise<void> {
   const synced = await syncCatalogOp(catalog);

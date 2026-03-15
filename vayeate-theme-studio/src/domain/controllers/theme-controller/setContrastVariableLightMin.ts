@@ -2,7 +2,7 @@ import type { Theme } from '../../../model/schemas';
 import type { ContrastVariableKey } from '../../../model/schemas';
 import { setTheme, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { parseContrastValue, updateContrastAssignment } from './_helpers';
+import { parseContrastValue, updateContrastAssignment } from './shared-flows';
 import { saveTheme } from './saveTheme';
 
 export function setContrastVariableLightMin(

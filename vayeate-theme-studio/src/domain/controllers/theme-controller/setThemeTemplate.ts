@@ -1,7 +1,7 @@
 import type { TemplateName, Version } from '../../../model/schemas';
 import { setTheme, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { templateService } from '../../../gateway/services/template-service';
+import { loadTemplateSnapshot } from '../../operations/template-operations';
 import { mergeAssignmentsFromTemplate } from '../../utils/theme-template-merge';
 import { saveTheme } from './saveTheme';
 
@@ -14,7 +14,7 @@ export async function setThemeTemplate(
   const state = getState();
   const theme = state.themes.theme;
   if (!theme) return;
-  const template = await templateService.loadTemplate(name, version);
+  const template = await loadTemplateSnapshot(name, version);
   if (!template) return;
   const merged = mergeAssignmentsFromTemplate(theme, template);
   setTheme(setState, merged);

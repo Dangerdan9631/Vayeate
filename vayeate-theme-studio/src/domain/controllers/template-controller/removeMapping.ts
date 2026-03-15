@@ -2,7 +2,7 @@ import type { TokenType } from '../../../model/schemas';
 import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';
+import { getBaseForEdit, refreshRefsAndSelect } from './shared-flows';
 
 export async function removeMapping(
   setState: SetState,

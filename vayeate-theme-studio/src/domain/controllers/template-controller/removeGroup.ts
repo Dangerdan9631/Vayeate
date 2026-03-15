@@ -1,7 +1,7 @@
 import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { getBaseForEdit, groupNamesInUseFromTemplate, refreshRefsAndSelect } from './_helpers';
+import { getBaseForEdit, groupNamesInUseFromTemplate, refreshRefsAndSelect } from './shared-flows';
 
 export async function removeGroup(
   setState: SetState,

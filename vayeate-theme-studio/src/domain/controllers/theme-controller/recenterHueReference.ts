@@ -5,7 +5,7 @@ import {
   type SetState,
 } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { applyHueToAssignmentsFiltered } from './_helpers';
+import { applyHueToAssignmentsFiltered } from './shared-flows';
 import { saveTheme } from './saveTheme';
 
 export function recenterHueReference(setState: SetState, getState: GetState): void {

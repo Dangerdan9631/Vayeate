@@ -10,7 +10,10 @@
 
 - App root: `vayeate-theme-studio/`
 - **Model** (`src/model/`): Zod schemas and types. No dependencies on app, domain, or gateway. Files: schemas.ts, theme.ts, template.ts, catalog.ts, preview-types.ts, semantic-token.ts, etc.
-- **Domain** (`src/domain/`; must not depend on `src/app/`): controllers, core, operations, state, utils. May depend on model and gateway.
+- **Domain** (`src/domain/`; must not depend on `src/app/`): controllers, core, operations, state, utils.
+  - **`domain/operations/`**: wraps gateway/services calls + setState. May depend on model, state, and `gateway/services`. Must NOT depend on `gateway/data`, controllers, or app.
+  - **`domain/controllers/`**: compose operations + validations only. Must NOT depend on gateway (directly). Must NOT import from `gateway/services/` or `gateway/data/`.
+  - Shared helper flows within a controller domain live in `<domain>-controller/shared-flows.ts` (not `_helpers.ts`).
 - **Gateway** (`src/gateway/`; must not depend on `src/domain/`): data (repositories) and services (IPC). gateway/data and gateway/services depend only on model and do not depend on each other.
 - **App** (`src/app/`): UI, viewmodels, actions. Must not depend on gateway; uses state and domain only.
 - Core (domain): undo only.

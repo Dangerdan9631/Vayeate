@@ -7,7 +7,7 @@ import {
   type SetState,
 } from '../../operations/theme-operations';
 import { setCurrentUndoStackId } from '../../operations/undo-operations';
-import { templateService } from '../../../gateway/services/template-service';
+import { loadTemplateSnapshot } from '../../operations/template-operations';
 import { mergeAssignmentsFromTemplate } from '../../utils/theme-template-merge';
 import { themeStackId } from './themeStackId';
 import { saveTheme } from './saveTheme';
@@ -28,7 +28,7 @@ export async function selectThemeAndLoad(
   }
   let templateForTheme: import('../../../model/schemas').Template | null = null;
   if (loaded?.templateRef) {
-    const template = await templateService.loadTemplate(
+    const template = await loadTemplateSnapshot(
       loaded.templateRef.name,
       loaded.templateRef.version,
     );

@@ -7,7 +7,7 @@ import {
   listCatalogRefs,
   type SetState,
 } from '../../operations/catalog-operations';
-import { refreshRefsAndSelect } from './_helpers';
+import { refreshRefsAndSelect } from './shared-flows';
 
 export async function revertCatalogToVersion(
   setState: SetState,

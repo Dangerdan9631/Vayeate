@@ -5,7 +5,7 @@ import {
   type SetState,
 } from '../../operations/catalog-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { refreshRefsAndSelect } from './_helpers';
+import { refreshRefsAndSelect } from './shared-flows';
 
 export async function lockCatalog(setState: SetState, setStoreState: SetStoreState, getState: GetState): Promise<void> {
   const catalog = getState().catalogs.catalog;
