@@ -5,7 +5,7 @@ import { useAppDispatch } from '../context/slice-contexts';
 
 export function MenuBar() {
   const dispatch = useAppDispatch();
-  const { theme, toggleColorScheme } = useColorScheme();
+  const { theme } = useColorScheme();
   const { undo, redo, canUndo, canRedo, frames, currentId, goTo } = useUndoStack();
   const [fileOpen, setFileOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -112,8 +112,7 @@ export function MenuBar() {
 
   const handleThemeToggle = useCallback(() => {
     dispatch({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: theme !== 'light' });
-    toggleColorScheme();
-  }, [dispatch, theme, toggleColorScheme]);
+  }, [dispatch, theme]);
 
   const handleTitleBarDrag = useCallback(() => {
     dispatch({ type: 'APP_BAR_TITLE_BAR_ON_DRAG' });

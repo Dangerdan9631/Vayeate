@@ -297,7 +297,7 @@ export function useTemplateViewModel() {
       isOrphan?: boolean,
     ) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT',
+        type: 'TEMPLATE_MAPPING_EXISTING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT',
         value: colorRef as ColorVariableKey,
         tokenKey,
         tokenType,
@@ -310,7 +310,7 @@ export function useTemplateViewModel() {
   const updateMappingContrastRef = useCallback(
     (tokenKey: string, tokenType: TokenType, contrastRef: ContrastVariableKey | null) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT',
+        type: 'TEMPLATE_MAPPING_EXISTING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT',
         value: contrastRef,
         tokenKey,
         tokenType,
@@ -322,7 +322,7 @@ export function useTemplateViewModel() {
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_TOKEN_GROUP_LIST_ON_COMMIT',
+        type: 'TEMPLATE_MAPPING_EXISTING_TOKEN_GROUP_LIST_ON_COMMIT',
         value: groupRef ?? '',
         tokenKey,
         tokenType,
@@ -335,7 +335,6 @@ export function useTemplateViewModel() {
     (semanticType: string, modifiers: string[], language: string | null, defaultGroupRef?: string | null) => {
       dispatch({
         type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK',
-        tokenKey: semanticType,
         semanticType,
         modifiers,
         language,
@@ -352,7 +351,6 @@ export function useTemplateViewModel() {
         tokenKey: oldKey,
         modifiers,
         language,
-        value: '',
       });
     },
     [dispatch],
@@ -362,7 +360,6 @@ export function useTemplateViewModel() {
     (tokenKey: string, tokenType: TokenType) => {
       dispatch({
         type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK',
-        variantId: tokenKey,
         tokenKey,
         tokenType,
       });

@@ -13,6 +13,8 @@ export { setThemePreviewVariableFilterText } from './setThemePreviewVariableFilt
 export { setThemePreviewVariableFilterClear } from './setThemePreviewVariableFilterClear';
 export { setThemePreviewSelectedSampleKey } from './setThemePreviewSelectedSampleKey';
 export { setGenerateResult } from './setGenerateResult';
+export { setThemeOpenPickerContext } from './setThemeOpenPickerContext';
+export { setThemeVariableDraftText } from './setThemeVariableDraftText';
 export { loadThemeRefs } from './loadThemeRefs';
 export { createTheme } from './createTheme';
 export { loadTheme } from './loadTheme';

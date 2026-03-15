@@ -412,7 +412,7 @@ export function TokensCard({
           }}
           onUpdateKey={(oldKey, newKey) => {
             dispatch({
-              type: 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE',
+              type: 'CATALOG_TOKENS_EXISTING_TOKEN_KEY_TEXT_ON_COMMIT',
               value: newKey,
               key: oldKey as TokenKey,
               tokenType: tt,

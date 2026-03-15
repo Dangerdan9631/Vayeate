@@ -39,6 +39,8 @@ export type AppStateUpdate =
   | { type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER'; values: ContrastVariableKey[] }
   | { type: 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION'; value: string }
   | { type: 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT'; value: string }
+  | { type: 'SET_TEMPLATE_ADD_GROUP_NAME'; value: string }
+  | { type: 'SET_TEMPLATE_ADD_VARIABLE_NAME'; value: string }
   | { type: 'SET_SELECTED_THEME_REF'; ref: ThemeReference | null }
   | { type: 'SET_THEME'; theme: Theme | null; preserveHue?: boolean }
   | { type: 'SET_THEME_AND_HUE'; theme: Theme | null; hueAdjustment: number }
@@ -56,6 +58,8 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY'; value: string }
   | { type: 'SET_THEME_EDITOR_PREVIEWS'; previews: TokenizedPreview[] }
   | { type: 'SET_THEME_LOADED_TEMPLATE'; template: Template | null }
+  | { type: 'SET_THEME_OPEN_PICKER_CONTEXT'; context: string | null }
+  | { type: 'SET_THEME_VARIABLE_DRAFT_TEXT'; key: string; value: string }
   | { type: 'SET_CURRENT_UNDO_STACK_ID'; stackId: string | null }
   | { type: 'SET_UNDO_LIST_VERSION'; value: number };
 
@@ -117,6 +121,10 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, templates: { ...state.templates, mappingTokenGroupSelection: update.value } };
     case 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT':
       return { ...state, templates: { ...state.templates, variablesSearchText: update.value } };
+    case 'SET_TEMPLATE_ADD_GROUP_NAME':
+      return { ...state, templates: { ...state.templates, addGroupName: update.value } };
+    case 'SET_TEMPLATE_ADD_VARIABLE_NAME':
+      return { ...state, templates: { ...state.templates, addVariableName: update.value } };
     case 'SET_SELECTED_THEME_REF':
       return { ...state, themes: { ...state.themes, selectedRef: update.ref, hueAdjustment: 0 } };
     case 'SET_THEME':
@@ -168,6 +176,10 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, editorPreviews: update.previews } };
     case 'SET_THEME_LOADED_TEMPLATE':
       return { ...state, themes: { ...state.themes, loadedTemplateForTheme: update.template } };
+    case 'SET_THEME_OPEN_PICKER_CONTEXT':
+      return { ...state, themes: { ...state.themes, openPickerContext: update.context } };
+    case 'SET_THEME_VARIABLE_DRAFT_TEXT':
+      return { ...state, themes: { ...state.themes, variableDraftTexts: { ...state.themes.variableDraftTexts, [update.key]: update.value } } };
     case 'SET_CURRENT_UNDO_STACK_ID':
       return { ...state, undoStackId: { ...state.undoStackId, currentUndoStackId: update.stackId } };
     case 'SET_UNDO_LIST_VERSION':

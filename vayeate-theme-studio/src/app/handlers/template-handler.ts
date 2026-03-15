@@ -1,4 +1,8 @@
 import * as templateController from '../../domain/controllers/template-controller';
+import {
+  setTemplateAddGroupName,
+  setTemplateAddVariableName,
+} from '../../domain/operations/template-operations';
 import type { ActionHandler, HandlerDeps, TemplateAction } from './handler-types';
 
 export const handleTemplateAction: ActionHandler<TemplateAction> = async (
@@ -66,169 +70,140 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
     case 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT':
       templateController.setMappingContrastVariableFilter(setState, action.values);
       break;
-    case 'TEMPLATE_MAPPING_TOKEN_GROUP_LIST_ON_COMMIT':
-      if (action.tokenKey != null && action.tokenType != null) {
-        await templateController.setMappingGroupRef(
-          setState,
-          setStoreState,
-          getState,
-          action.tokenKey,
-          action.tokenType,
-          action.value || null,
-        );
-      } else {
-        templateController.setMappingTokenGroupSelection(setState, action.value);
-      }
-      // Update UI state so the mapping editor shows the selected group's tokens.
+    case 'TEMPLATE_MAPPING_EXISTING_TOKEN_GROUP_LIST_ON_COMMIT':
+      await templateController.setMappingGroupRef(
+        setState,
+        setStoreState,
+        getState,
+        action.tokenKey,
+        action.tokenType,
+        action.value || null,
+      );
       break;
-    case 'TEMPLATE_MAPPING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT':
-      if (action.tokenKey != null && action.tokenType != null) {
-        await templateController.setMappingColorRef(
-          setState,
-          setStoreState,
-          getState,
-          action.tokenKey,
-          action.tokenType,
-          action.value,
-          action.isOrphan,
-        );
-      }
+    case 'TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION_ON_COMMIT':
+      templateController.setMappingTokenGroupSelection(setState, action.value);
       break;
-    case 'TEMPLATE_MAPPING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT':
-      if (action.tokenKey != null && action.tokenType != null) {
-        await templateController.setMappingContrastRef(
-          setState,
-          setStoreState,
-          getState,
-          action.tokenKey,
-          action.tokenType,
-          action.value,
-        );
-      }
+    case 'TEMPLATE_MAPPING_EXISTING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT':
+      await templateController.setMappingColorRef(
+        setState,
+        setStoreState,
+        getState,
+        action.tokenKey,
+        action.tokenType,
+        action.value,
+        action.isOrphan,
+      );
       break;
-    case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK': {
-      const semanticType = action.tokenKey ?? action.semanticType ?? '';
-      const modifiers = action.modifiers ?? [];
-      const language = action.language ?? null;
-      if (semanticType) {
-        await templateController.addSemanticVariant(
-          setState,
-          setStoreState,
-          getState,
-          semanticType,
-          modifiers,
-          language,
-          action.defaultGroupRef,
-        );
-      }
+    case 'TEMPLATE_MAPPING_EXISTING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT':
+      await templateController.setMappingContrastRef(
+        setState,
+        setStoreState,
+        getState,
+        action.tokenKey,
+        action.tokenType,
+        action.value,
+      );
       break;
-    }
+    case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK':
+      await templateController.addSemanticVariant(
+        setState,
+        setStoreState,
+        getState,
+        action.semanticType,
+        action.modifiers,
+        action.language,
+        action.defaultGroupRef,
+      );
+      break;
     case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_MODIFIER_LIST_ON_COMMIT':
-      if (action.tokenKey != null && (action.modifiers != null || action.value !== undefined)) {
-        await templateController.updateSemanticVariantKey(
-          setState,
-          setStoreState,
-          getState,
-          action.tokenKey,
-          action.modifiers ?? (action.value ? [action.value] : []),
-          action.language ?? null,
-        );
-      }
+      await templateController.updateSemanticVariantKey(
+        setState,
+        setStoreState,
+        getState,
+        action.tokenKey,
+        action.modifiers,
+        action.language,
+      );
       break;
     case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_LANGUAGE_LIST_ON_COMMIT':
-      if (action.tokenKey != null) {
-        await templateController.updateSemanticVariantKey(
-          setState,
-          setStoreState,
-          getState,
-          action.tokenKey,
-          action.modifiers ?? [],
-          action.value ?? null,
-        );
-      }
+      await templateController.updateSemanticVariantKey(
+        setState,
+        setStoreState,
+        getState,
+        action.tokenKey,
+        action.modifiers,
+        action.value ?? null,
+      );
       break;
     case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK':
-      if (action.tokenKey != null || action.variantId != null) {
-        await templateController.removeMapping(
-          setState,
-          setStoreState,
-          getState,
-          action.tokenKey ?? action.variantId ?? '',
-          action.tokenType ?? 'semantic token',
-        );
-      }
+      await templateController.removeMapping(
+        setState,
+        setStoreState,
+        getState,
+        action.tokenKey,
+        action.tokenType,
+      );
       break;
     case 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE':
-      // No-op: UI keeps local state; name passed on ADD_BUTTON.
+      setTemplateAddGroupName(setState, action.value);
       break;
     case 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK':
-      if (action.name != null && action.name.trim()) {
-        await templateController.addGroup(setState, setStoreState, getState, action.name.trim());
-      }
+      await templateController.addGroup(setState, setStoreState, getState, action.name);
       break;
     case 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK':
-      if (action.groupId != null) {
-        await templateController.removeGroup(setState, setStoreState, getState, action.groupId);
-      }
+      await templateController.removeGroup(setState, setStoreState, getState, action.groupId);
       break;
     case 'TEMPLATE_VARIABLES_SEARCH_TEXT_ON_CHANGE':
       templateController.setVariablesSearchText(setState, action.value);
       break;
     case 'TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE':
-      // No-op: UI keeps local state; key/groupRef passed on ADD_BUTTON.
+      setTemplateAddVariableName(setState, action.value);
       break;
     case 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK':
-      if (action.key != null && action.key.trim()) {
-        if (action.variableKind === 'contrast') {
-          await templateController.addContrastVariable(
-            setState,
-            setStoreState,
-            getState,
-            action.key.trim(),
-            action.groupRef ?? null,
-          );
-        } else {
-          await templateController.addColorVariable(
-            setState,
-            setStoreState,
-            getState,
-            action.key.trim(),
-            action.groupRef ?? null,
-          );
-        }
+      if (action.variableKind === 'contrast') {
+        await templateController.addContrastVariable(
+          setState,
+          setStoreState,
+          getState,
+          action.key.trim(),
+          action.groupRef,
+        );
+      } else {
+        await templateController.addColorVariable(
+          setState,
+          setStoreState,
+          getState,
+          action.key.trim(),
+          action.groupRef,
+        );
       }
       break;
     case 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT':
-      if (action.variableKey != null) {
-        await templateController.updateVariableGroupRef(
-          setState,
-          setStoreState,
-          getState,
-          action.variableKey,
-          action.value || null,
-        );
+      await templateController.updateVariableGroupRef(
+        setState,
+        setStoreState,
+        getState,
+        action.variableKey,
+        action.value || null,
+      );
+      break;
+    case 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK': {
+      const t = getState().templates.template;
+      if (t?.colorVariables.some((v) => v.key === action.key)) {
+        await templateController.removeColorVariable(setState, setStoreState, getState, action.key);
+      } else {
+        await templateController.removeContrastVariable(setState, setStoreState, getState, action.key);
       }
       break;
-    case 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK':
-      if (action.key != null) {
-        const t = getState().templates.template;
-        if (t?.colorVariables.some((v) => v.key === action.key)) {
-          await templateController.removeColorVariable(setState, setStoreState, getState, action.key);
-        } else {
-          await templateController.removeContrastVariable(setState, setStoreState, getState, action.key);
-        }
-      }
-      break;
+    }
     case 'TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT':
-      if (action.contrastVariableKey != null) {
-        await templateController.updateContrastComparisonSource(
-          setState,
-          setStoreState,
-          getState,
-          action.contrastVariableKey,
-          action.value,
-        );
-      }
+      await templateController.updateContrastComparisonSource(
+        setState,
+        setStoreState,
+        getState,
+        action.contrastVariableKey,
+        action.value,
+      );
       break;
   }
 };

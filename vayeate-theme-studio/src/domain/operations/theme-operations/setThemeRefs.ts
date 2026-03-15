@@ -1,5 +1,5 @@
 import type { ThemeReference } from '../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import type { SetStoreState } from '../../state/store-state-reducer';
 
 export function setThemeRefs(setStoreState: SetStoreState, refs: ThemeReference[]): void {
   setStoreState({

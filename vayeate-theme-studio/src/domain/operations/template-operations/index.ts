@@ -8,6 +8,8 @@ export { setTemplateMappingColorVariableFilter } from './setTemplateMappingColor
 export { setTemplateMappingContrastVariableFilter } from './setTemplateMappingContrastVariableFilter';
 export { setTemplateMappingTokenGroupSelection } from './setTemplateMappingTokenGroupSelection';
 export { setTemplateVariablesSearchText } from './setTemplateVariablesSearchText';
+export { setTemplateAddGroupName } from './setTemplateAddGroupName';
+export { setTemplateAddVariableName } from './setTemplateAddVariableName';
 export { loadTemplateRefs } from './loadTemplateRefs';
 export { createTemplate } from './createTemplate';
 export { loadTemplate } from './loadTemplate';

@@ -87,19 +87,15 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
     case 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK':
       catalogController.openBulkAddDialog(setState);
       break;
-    case 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE':
-      if (action.key != null && action.tokenType != null) {
-        await catalogController.updateTokenKey(
-          setState,
-          setStoreState,
-          getState,
-          action.key,
-          action.value,
-          action.tokenType,
-        );
-      } else {
-        setCatalogNewTokenKey(setState, action.value);
-      }
+    case 'CATALOG_TOKENS_EXISTING_TOKEN_KEY_TEXT_ON_COMMIT':
+      await catalogController.updateTokenKey(
+        setState,
+        setStoreState,
+        getState,
+        action.key,
+        action.value,
+        action.tokenType,
+      );
       break;
     case 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK':
       await catalogController.removeToken(setState, setStoreState, getState, action.key, action.tokenType);

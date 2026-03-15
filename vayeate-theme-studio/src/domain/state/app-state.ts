@@ -37,6 +37,10 @@ export interface TemplatesState {
   mappingTokenGroupSelection: string;
   /** Search filter text for template variables list. */
   variablesSearchText: string;
+  /** Draft value for the "add group" name input field (TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE). */
+  addGroupName: string;
+  /** Draft value for the "add variable" name input field (TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE). */
+  addVariableName: string;
 }
 
 export interface GenerateResult {
@@ -72,6 +76,10 @@ export interface ThemesState {
   editorPreviews: TokenizedPreview[];
   /** Template loaded for the current theme (for theme pane display). */
   loadedTemplateForTheme: Template | null;
+  /** Context key for currently open color picker overlay (e.g. 'dark:someRef', 'light:someRef', 'assign', 'hue'). null when no picker is open via action. */
+  openPickerContext: string | null;
+  /** Draft text values for in-progress variable edits (key: 'colorDark:{ref}', 'colorLight:{ref}', 'contrastDark:value:{ref}', etc.). */
+  variableDraftTexts: Record<string, string>;
 }
 
 /** Current undo stack ID for the history menu; null when no stack is active. */
@@ -130,6 +138,8 @@ export const initialAppState: AppState = {
     mappingContrastVariableFilter: [],
     mappingTokenGroupSelection: '',
     variablesSearchText: '',
+    addGroupName: '',
+    addVariableName: '',
   },
   themes: {
     selectedRef: null,
@@ -149,6 +159,8 @@ export const initialAppState: AppState = {
     selectedPreviewSampleKey: '',
     editorPreviews: [],
     loadedTemplateForTheme: null,
+    openPickerContext: null,
+    variableDraftTexts: {},
   },
   undoStackId: {
     currentUndoStackId: null,
@@ -157,6 +169,7 @@ export const initialAppState: AppState = {
   ui: {
     activeTabId: 'catalogs',
     queueStatus: { isProcessing: false, queueLength: 0 },
+    colorScheme: 'light',
   },
   store: { catalogs: {}, templates: {}, themes: {} },
   window: {

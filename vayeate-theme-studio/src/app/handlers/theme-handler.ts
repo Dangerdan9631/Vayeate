@@ -1,5 +1,9 @@
 import * as themeController from '../../domain/controllers/theme-controller';
-import { setThemeCreateFormName } from '../../domain/operations/theme-operations';
+import {
+  setThemeCreateFormName,
+  setThemeOpenPickerContext,
+  setThemeVariableDraftText,
+} from '../../domain/operations/theme-operations';
 import { setCurrentUndoStackId } from '../../domain/operations/undo-operations';
 import type { ActionHandler, HandlerDeps, ThemeAction } from './handler-types';
 
@@ -143,25 +147,24 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setPaletteClusterGroupToggled(
         setState,
         getState,
-        action.groupId ?? '',
-        action.checked ?? true,
+        action.groupId,
+        action.checked,
+      );
+      break;
+    case 'THEME_PALETTE_SWATCH_FULL_SELECT_CHECKBOX_ON_TOGGLE':
+      themeController.setPaletteFullSelection(
+        setState,
+        action.fullColorRefs,
+        action.fullContrastRefs,
       );
       break;
     case 'THEME_PALETTE_SWATCH_GROUP_SELECT_CHECKBOX_ON_TOGGLE':
-      if (action.fullColorRefs != null && action.fullContrastRefs != null) {
-        themeController.setPaletteFullSelection(
-          setState,
-          action.fullColorRefs,
-          action.fullContrastRefs,
-        );
-      } else {
-        themeController.setPaletteSwatchGroupSelection(
-          setState,
-          getState,
-          action.refs ?? [],
-          action.checked ?? true,
-        );
-      }
+      themeController.setPaletteSwatchGroupSelection(
+        setState,
+        getState,
+        action.refs,
+        action.checked,
+      );
       break;
     case 'THEME_PALETTE_PRIMARY_SWATCH_BUTTON_ON_CLICK':
       themeController.setPalettePrimarySwatch(setState, getState, action.ref);
@@ -170,14 +173,14 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setPalettePrimarySwatch(setState, getState, action.ref);
       break;
     case 'THEME_PALETTE_PRIMARY_SWATCH_BUTTON_ON_RIGHT_CLICK':
-      // Context menu handled by UI; no-op or same as primary click.
+      // Context menu handled by UI; same as primary click.
       themeController.setPalettePrimarySwatch(setState, getState, action.ref);
       break;
     case 'THEME_PALETTE_MEMBER_SWATCH_BUTTON_ON_CLICK':
       themeController.setPaletteMemberSwatch(setState, getState, action.ref);
       break;
     case 'THEME_PALETTE_MEMBER_SWATCH_BUTTON_ON_RIGHT_CLICK':
-      // Context menu handled by UI; no-op.
+      // Context menu handled by UI; no further state change needed.
       break;
     case 'THEME_VARIABLES_SELECT_ALL_CHECKBOX_ON_TOGGLE':
       themeController.setVariablesSelectAll(setState, getState, action.checked);
@@ -221,13 +224,17 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setColorUseDarkForLight(setState, getState, action.ref, action.checked);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `colorDark:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_COMMIT':
       themeController.setColorVariableDark(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_COLOR_BUTTON_ON_CLICK':
+      setThemeOpenPickerContext(setState, `dark:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
+      // Eyedropper is launched by the UI; this sets context so UI knows which ref is targeted.
+      setThemeOpenPickerContext(setState, `eyedropper:dark:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_COLOR_PICKER_ON_SELECT':
       themeController.setColorVariableFromHexPreview(
@@ -248,13 +255,16 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `colorLight:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_COMMIT':
       themeController.setColorVariableLight(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_COLOR_BUTTON_ON_CLICK':
+      setThemeOpenPickerContext(setState, `light:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
+      setThemeOpenPickerContext(setState, `eyedropper:light:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_COLOR_PICKER_ON_SELECT':
       themeController.setColorVariableFromHexPreview(
@@ -275,6 +285,7 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_VALUE_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `contrastDark:value:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_VALUE_TEXT_ON_COMMIT':
       themeController.setContrastVariableDarkValue(
@@ -293,16 +304,19 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MIN_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `contrastDark:min:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MIN_TEXT_ON_COMMIT':
       themeController.setContrastVariableDarkMin(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MAX_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `contrastDark:max:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MAX_TEXT_ON_COMMIT':
       themeController.setContrastVariableDarkMax(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_VALUE_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `contrastLight:value:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_VALUE_TEXT_ON_COMMIT':
       themeController.setContrastVariableLightValue(
@@ -321,11 +335,13 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `contrastLight:min:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_COMMIT':
       themeController.setContrastVariableLightMin(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_CHANGE':
+      setThemeVariableDraftText(setState, `contrastLight:max:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_COMMIT':
       themeController.setContrastVariableLightMax(setState, getState, action.ref, action.value);

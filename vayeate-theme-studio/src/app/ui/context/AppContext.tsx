@@ -37,7 +37,16 @@ export interface AppContextValue {
 export const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, replaceState] = useReducer(replaceStateReducer, initialAppState);
+  const [state, replaceState] = useReducer(replaceStateReducer, undefined, () => {
+    // Initialize colorScheme from localStorage to avoid a flash on startup.
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem('vayeate-theme-studio-color-scheme');
+      if (stored === 'dark') {
+        return { ...initialAppState, ui: { ...initialAppState.ui, colorScheme: 'dark' as const } };
+      }
+    }
+    return initialAppState;
+  });
   const stateRef = useRef(state);
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);

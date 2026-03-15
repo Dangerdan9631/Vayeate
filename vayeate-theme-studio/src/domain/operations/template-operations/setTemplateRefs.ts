@@ -1,5 +1,5 @@
 import type { TemplateReference } from '../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import type { SetStoreState } from '../../state/store-state-reducer';
 
 export function setTemplateRefs(setStoreState: SetStoreState, refs: TemplateReference[]): void {
   setStoreState({

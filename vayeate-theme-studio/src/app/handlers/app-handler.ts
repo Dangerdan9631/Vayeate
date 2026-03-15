@@ -42,9 +42,15 @@ export const handleAppAction: ActionHandler<AppAction> = async (
     case 'APP_RIBBON_TAB_BUTTON_ON_CLICK':
       tabController.setActiveTab(setUiState, action.tabId);
       break;
-    case 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE':
-      // No-op: UI (ColorSchemeContext) handles toggle and persistence.
+    case 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE': {
+      // action.checked = current state (true = dark), so toggle to the opposite
+      const scheme: 'light' | 'dark' = action.checked ? 'light' : 'dark';
+      setUiState({ type: 'SET_UI_COLOR_SCHEME', scheme });
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('vayeate-theme-studio-color-scheme', scheme);
+      }
       break;
+    }
     case 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK':
       await windowController.minimizeWindow(getState);
       break;

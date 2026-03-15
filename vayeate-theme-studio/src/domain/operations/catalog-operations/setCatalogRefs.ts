@@ -1,5 +1,5 @@
 import type { CatalogReference } from '../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import type { SetStoreState } from '../../state/store-state-reducer';
 
 export function setCatalogRefs(setStoreState: SetStoreState, refs: CatalogReference[]): void {
   setStoreState({
