@@ -2,17 +2,18 @@ import { ActionQueue, type ActionProcessor } from './action-queue';
 import type { AppActionV2 } from './action-types';
 import type { AppStateUpdate } from '../../domain/state/app-state';
 import type { QueueStatus } from './action-queue';
+import type { UiStateUpdate } from '../../domain/state/ui-state-reducer';
 
 describe('ActionQueue', () => {
-  it('processes actions in FIFO order and calls setState with correct updates', async () => {
-    const received: { action: AppActionV2; updates: AppStateUpdate[] }[] = [];
+  it('processes actions in FIFO order and calls setUiState with correct updates for tab clicks', async () => {
+    const received: { action: AppActionV2; uiUpdates: UiStateUpdate[] }[] = [];
     const processor: ActionProcessor = async (action) => {
-      const updates: AppStateUpdate[] = [];
-      const setState = (update: AppStateUpdate) => updates.push(update);
+      const uiUpdates: UiStateUpdate[] = [];
+      const setUiState = (update: UiStateUpdate) => uiUpdates.push(update);
       if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
-        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
+        setUiState({ type: 'SET_UI_ACTIVE_TAB_ID', tabId: action.tabId });
       }
-      received.push({ action, updates });
+      received.push({ action, uiUpdates });
     };
 
     const queue = new ActionQueue(processor);
@@ -24,9 +25,9 @@ describe('ActionQueue', () => {
 
     expect(received).toHaveLength(2);
     expect(received[0].action).toEqual({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
-    expect(received[0].updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'templates' }]);
+    expect(received[0].uiUpdates).toEqual([{ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'templates' }]);
     expect(received[1].action).toEqual({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'themes' });
-    expect(received[1].updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'themes' }]);
+    expect(received[1].uiUpdates).toEqual([{ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'themes' }]);
   });
 
   it('processes next action only after previous processor completes', async () => {
@@ -74,7 +75,7 @@ describe('ActionQueue', () => {
     const setState = (u: AppStateUpdate) => updates.push(u);
     const processor: ActionProcessor = async (action) => {
       if (action.type === 'APP_APP_ON_LOAD') {
-        setState({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
+        setState({ type: 'SET_CATALOG_REFS', refs: [] });
       }
     };
 
@@ -84,6 +85,6 @@ describe('ActionQueue', () => {
 
     await new Promise((r) => setTimeout(r, 20));
 
-    expect(updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' }]);
+    expect(updates).toEqual([{ type: 'SET_CATALOG_REFS', refs: [] }]);
   });
 });

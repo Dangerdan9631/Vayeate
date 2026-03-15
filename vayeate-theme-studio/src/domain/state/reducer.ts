@@ -1,4 +1,4 @@
-import type { AppState, GenerateResult, TabId } from './app-state';
+import type { AppState, GenerateResult } from './app-state';
 import type {
   Catalog,
   CatalogReference,
@@ -15,7 +15,6 @@ import type {
 import type { TokenizedPreview } from '../../model/preview-types';
 
 export type AppStateUpdate =
-  | { type: 'SET_ACTIVE_TAB'; tabId: TabId }
   | { type: 'SET_CATALOG_REFS'; refs: CatalogReference[] }
   | { type: 'SET_SELECTED_REF'; ref: CatalogReference | null }
   | { type: 'SET_CATALOG'; catalog: Catalog | null }
@@ -60,14 +59,11 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY'; value: string }
   | { type: 'SET_THEME_EDITOR_PREVIEWS'; previews: TokenizedPreview[] }
   | { type: 'SET_THEME_LOADED_TEMPLATE'; template: Template | null }
-  | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number }
   | { type: 'SET_CURRENT_UNDO_STACK_ID'; stackId: string | null }
   | { type: 'SET_UNDO_LIST_VERSION'; value: number };
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
   switch (update.type) {
-    case 'SET_ACTIVE_TAB':
-      return { ...state, activeTab: update.tabId };
     case 'SET_CATALOG_REFS':
       return { ...state, catalogs: { ...state.catalogs, catalogRefs: update.refs } };
     case 'SET_SELECTED_REF':
@@ -181,8 +177,6 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, editorPreviews: update.previews } };
     case 'SET_THEME_LOADED_TEMPLATE':
       return { ...state, themes: { ...state.themes, loadedTemplateForTheme: update.template } };
-    case 'SET_QUEUE_STATUS':
-      return { ...state, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } };
     case 'SET_CURRENT_UNDO_STACK_ID':
       return { ...state, undoStackId: { ...state.undoStackId, currentUndoStackId: update.stackId } };
     case 'SET_UNDO_LIST_VERSION':

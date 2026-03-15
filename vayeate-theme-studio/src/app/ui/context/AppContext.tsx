@@ -8,6 +8,7 @@ import {
   initialAppState,
   type AppStateUpdate,
 } from '../../../domain/state/app-state';
+import { uiStateReducer, type UiStateUpdate } from '../../../domain/state/ui-state-reducer';
 import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
   ActiveTabContext,
@@ -44,9 +45,12 @@ type SetState = (update: AppStateUpdate) => void;
 
 type GetState = () => AppState;
 
+type SetUiState = (update: UiStateUpdate) => void;
+
 export function createActionProcessorV2(
   getState: GetState,
-  setState: SetState
+  setState: SetState,
+  setUiState: SetUiState
 ): (action: AppActionV2) => Promise<void> {
   return async (action: AppActionV2): Promise<void> => {
     logV2.debug('action', action);
@@ -82,7 +86,7 @@ export function createActionProcessorV2(
         await windowController.toggleDevTools();
         break;
       case 'APP_RIBBON_TAB_BUTTON_ON_CLICK':
-        tabController.setActiveTab(setState, action.tabId);
+        tabController.setActiveTab(setUiState, action.tabId);
         break;
       case 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE':
         // No-op: UI (ColorSchemeContext) handles toggle and persistence.
@@ -778,6 +782,7 @@ function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
 export interface AppContextValue {
   state: AppState;
   dispatch: (action: AppActionV2) => Promise<void>;
+  setUiState: (update: UiStateUpdate) => void;
   setWindowState: (update: WindowStateUpdate) => void;
 }
 
@@ -801,6 +806,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const setWindowState = useCallback(
     (update: WindowStateUpdate) => {
       replaceState(windowStateReducer(stateRef.current, update));
+    },
+    [],
+  );
+  const setUiState = useCallback(
+    (update: UiStateUpdate) => {
+      replaceState(uiStateReducer(stateRef.current, update));
     },
     [],
   );
@@ -847,25 +858,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const dispatch = useCallback((action: AppActionV2): Promise<void> => {
     if (!queueRef.current) {
-      const processor = createActionProcessorV2(getState, setState);
+      const processor = createActionProcessorV2(getState, setState, setUiState);
       const queue = new ActionQueue(processor);
       queue.onQueueStatus = (status) =>
-        setState({
-          type: 'SET_QUEUE_STATUS',
+        setUiState({
+          type: 'SET_UI_QUEUE_STATUS',
           isProcessing: status.isProcessing,
           queueLength: status.queueLength,
         });
       queueRef.current = queue;
     }
     return queueRef.current.enqueue(action);
-  }, [getState, setState]);
+  }, [getState, setState, setUiState]);
 
-  const value: AppContextValue = { state, dispatch, setWindowState };
+  const value: AppContextValue = { state, dispatch, setUiState, setWindowState };
 
   return (
     <AppContext.Provider value={value}>
       <AppDispatchContext.Provider value={dispatch}>
-        <ActiveTabContext.Provider value={state.activeTab}>
+        <ActiveTabContext.Provider value={state.ui.activeTabId}>
           <CatalogsStateContext.Provider value={state.catalogs}>
             <TemplatesStateContext.Provider value={state.templates}>
               <ThemesStateContext.Provider value={state.themes}>

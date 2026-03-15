@@ -1,7 +1,7 @@
 import type { Catalog, CatalogReference, CatalogType, ColorVariableKey, ContrastVariableKey, SourceType, Template, TemplateReference, Theme, ThemeReference, TokenType } from '../../model/schemas';
 import type { TokenizedPreview } from '../../model/preview-types';
 
-export type TabId = 'catalogs' | 'templates' | 'themes';
+export type { TabId } from './tab-id';
 
 export interface CatalogsState {
   catalogRefs: CatalogReference[];
@@ -77,11 +77,6 @@ export interface ThemesState {
   loadedTemplateForTheme: Template | null;
 }
 
-export interface QueueStatusState {
-  isProcessing: boolean;
-  queueLength: number;
-}
-
 /** Current undo stack ID for the history menu; null when no stack is active. */
 export interface UndoStackIdState {
   currentUndoStackId: string | null;
@@ -98,11 +93,9 @@ export type { UiState } from './ui-state';
 export type { Position, Size, WindowLoadState, WindowState } from './window-state';
 
 export interface AppState {
-  activeTab: TabId;
   catalogs: CatalogsState;
   templates: TemplatesState;
   themes: ThemesState;
-  queueStatus: QueueStatusState;
   undoStackId: UndoStackIdState;
   /** Parallel state (not yet used in app/reducer). */
   ui: UiState;
@@ -113,7 +106,6 @@ export interface AppState {
 }
 
 export const initialAppState: AppState = {
-  activeTab: 'catalogs',
   catalogs: {
     catalogRefs: [],
     selectedRef: null,
@@ -164,15 +156,14 @@ export const initialAppState: AppState = {
     editorPreviews: [],
     loadedTemplateForTheme: null,
   },
-  queueStatus: {
-    isProcessing: false,
-    queueLength: 0,
-  },
   undoStackId: {
     currentUndoStackId: null,
     undoListVersion: 0,
   },
-  ui: {},
+  ui: {
+    activeTabId: 'catalogs',
+    queueStatus: { isProcessing: false, queueLength: 0 },
+  },
   store: {},
   window: {
     loadState: 'loading',

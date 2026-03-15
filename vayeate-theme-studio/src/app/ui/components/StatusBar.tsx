@@ -2,7 +2,7 @@ import { useAppState } from '../context/useAppState';
 
 export function StatusBar() {
   const { state } = useAppState();
-  const { isProcessing, queueLength } = state.queueStatus;
+  const { isProcessing, queueLength } = state.ui.queueStatus;
   const visible = isProcessing || queueLength > 0;
 
   return (

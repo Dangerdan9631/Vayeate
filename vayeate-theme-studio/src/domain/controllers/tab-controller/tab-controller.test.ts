@@ -1,27 +1,27 @@
 import { vi } from 'vitest';
-import type { AppStateUpdate } from '../../state/app-state';
+import type { UiStateUpdate } from '../../state/ui-state-reducer';
 import { setActiveTab } from '.';
 
 describe('tab-controller', () => {
   describe('setActiveTab', () => {
-    it('calls setState with SET_ACTIVE_TAB for the given tabId', () => {
-      const updates: AppStateUpdate[] = [];
-      const setState = (update: AppStateUpdate) => updates.push(update);
+    it('calls setUiState with SET_UI_ACTIVE_TAB_ID for the given tabId', () => {
+      const updates: UiStateUpdate[] = [];
+      const setUiState = (update: UiStateUpdate) => updates.push(update);
 
-      setActiveTab(setState, 'themes');
+      setActiveTab(setUiState, 'themes');
 
-      expect(updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'themes' }]);
+      expect(updates).toEqual([{ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'themes' }]);
     });
 
     it('works for each tab id', () => {
-      const setState = vi.fn<(u: AppStateUpdate) => void>();
+      const setUiState = vi.fn<(u: UiStateUpdate) => void>();
 
-      setActiveTab(setState, 'catalogs');
-      expect(setState).toHaveBeenCalledWith({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
+      setActiveTab(setUiState, 'catalogs');
+      expect(setUiState).toHaveBeenCalledWith({ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'catalogs' });
 
-      setState.mockClear();
-      setActiveTab(setState, 'templates');
-      expect(setState).toHaveBeenCalledWith({ type: 'SET_ACTIVE_TAB', tabId: 'templates' });
+      setUiState.mockClear();
+      setActiveTab(setUiState, 'templates');
+      expect(setUiState).toHaveBeenCalledWith({ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'templates' });
     });
   });
 });

@@ -1,1 +1,1 @@
-export { setActiveTab, type SetState } from './setActiveTab';
+export { setActiveTab, type SetUiState } from './setActiveTab';

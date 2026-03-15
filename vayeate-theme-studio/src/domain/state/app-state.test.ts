@@ -64,8 +64,8 @@ const sampleTheme: Theme = {
 const sampleThemeRef: ThemeReference = { name: 'test-theme', version: '1.0.0' };
 
 describe('initialAppState', () => {
-  it('has catalogs as default tab', () => {
-    expect(initialAppState.activeTab).toBe('catalogs');
+  it('has catalogs as default tab in UI state', () => {
+    expect(initialAppState.ui.activeTabId).toBe('catalogs');
   });
 
   it('has no selected catalog and is not creating', () => {
@@ -104,18 +104,13 @@ describe('initialAppState', () => {
     expect(initialAppState.themes.selectedPreviewSampleKey).toBe('');
   });
 
-  it('has idle queue status', () => {
-    expect(initialAppState.queueStatus.isProcessing).toBe(false);
-    expect(initialAppState.queueStatus.queueLength).toBe(0);
+  it('has idle queue status in UI state', () => {
+    expect(initialAppState.ui.queueStatus.isProcessing).toBe(false);
+    expect(initialAppState.ui.queueStatus.queueLength).toBe(0);
   });
 });
 
 describe('appStateReducer', () => {
-  it('handles SET_ACTIVE_TAB', () => {
-    const state = appStateReducer(initialAppState, { type: 'SET_ACTIVE_TAB', tabId: 'themes' });
-    expect(state.activeTab).toBe('themes');
-  });
-
   it('handles SET_CATALOG_REFS', () => {
     const refs = [sampleRef];
     const state = appStateReducer(initialAppState, { type: 'SET_CATALOG_REFS', refs });
@@ -140,12 +135,6 @@ describe('appStateReducer', () => {
   it('handles SET_CREATE_DIALOG_OPEN', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_CREATE_DIALOG_OPEN', value: true });
     expect(state.catalogs.createDialogOpen).toBe(true);
-  });
-
-  it('handles SET_QUEUE_STATUS', () => {
-    const state = appStateReducer(initialAppState, { type: 'SET_QUEUE_STATUS', isProcessing: true, queueLength: 3 });
-    expect(state.queueStatus.isProcessing).toBe(true);
-    expect(state.queueStatus.queueLength).toBe(3);
   });
 
   it('handles SET_TEMPLATE_REFS', () => {
@@ -275,7 +264,7 @@ describe('appStateReducer', () => {
   });
 
   it('returns state unchanged for unknown update type', () => {
-    const before: AppState = { ...initialAppState, activeTab: 'templates' };
+    const before: AppState = { ...initialAppState, ui: { ...initialAppState.ui, activeTabId: 'templates' } };
     const unknown = { type: 'UNKNOWN' } as unknown as AppStateUpdate;
     const state = appStateReducer(before, unknown);
     expect(state).toEqual(before);

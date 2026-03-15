@@ -1,4 +1,12 @@
-/** Parallel state: UI-only state (not yet used in app/reducer). */
+import type { TabId } from './tab-id';
+
+export interface QueueStatusState {
+  isProcessing: boolean;
+  queueLength: number;
+}
+
+/** Parallel state: UI-only state (active tab, queue status, etc.). */
 export interface UiState {
-  // empty for now
+  activeTabId: TabId;
+  queueStatus: QueueStatusState;
 }
