@@ -3,6 +3,7 @@ import {
   setSelectedThemeRef,
   loadTheme,
   setTheme,
+  setThemePaneSelections,
   type SetState,
 } from '../../operations/theme-operations';
 import { setCurrentUndoStackId } from '../../operations/undo-operations';
@@ -18,6 +19,13 @@ export async function selectThemeAndLoad(
 ): Promise<void> {
   setSelectedThemeRef(setState, { name, version });
   const loaded = await loadTheme(setState, name, version);
+  if (loaded) {
+    setThemePaneSelections(
+      setState,
+      loaded.colorAssignments.map((a) => a.colorRef),
+      loaded.contrastAssignments.map((a) => a.contrastVariableRef),
+    );
+  }
   let templateForTheme: import('../../../model/schemas').Template | null = null;
   if (loaded?.templateRef) {
     const template = await templateService.loadTemplate(
