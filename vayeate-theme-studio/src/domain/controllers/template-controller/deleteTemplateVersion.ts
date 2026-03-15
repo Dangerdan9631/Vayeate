@@ -1,4 +1,5 @@
 import { compareVersions } from '../../utils/version';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   deleteTemplate as deleteTemplateOp,
   setSelectedTemplateRef,
@@ -12,11 +13,12 @@ import { templateStackId } from './templateStackId';
 
 export async function deleteTemplateVersion(
   setState: SetState,
+  setStoreState: SetStoreState,
   name: string,
   version: string,
 ): Promise<void> {
   await deleteTemplateOp(name, version);
-  const refs = await refreshTemplateRefs(setState);
+  const refs = await refreshTemplateRefs(setStoreState);
 
   const sameName = refs
     .filter((r) => r.name === name)

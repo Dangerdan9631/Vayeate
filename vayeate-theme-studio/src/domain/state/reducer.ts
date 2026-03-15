@@ -15,7 +15,6 @@ import type {
 import type { TokenizedPreview } from '../../model/preview-types';
 
 export type AppStateUpdate =
-  | { type: 'SET_CATALOG_REFS'; refs: CatalogReference[] }
   | { type: 'SET_SELECTED_REF'; ref: CatalogReference | null }
   | { type: 'SET_CATALOG'; catalog: Catalog | null }
   | { type: 'SET_LOADED_CATALOG_FOR_DISPLAY'; name: string; version: string; catalog: Catalog | null }
@@ -30,7 +29,6 @@ export type AppStateUpdate =
   | { type: 'SET_CATALOG_NEW_SOURCE_TOKEN_TYPE'; value: TokenType }
   | { type: 'SET_CATALOG_NEW_SOURCE_TYPE'; value: SourceType }
   | { type: 'SET_CATALOG_NEW_TOKEN_KEY'; value: string }
-  | { type: 'SET_TEMPLATE_REFS'; refs: TemplateReference[] }
   | { type: 'SET_SELECTED_TEMPLATE_REF'; ref: TemplateReference | null }
   | { type: 'SET_TEMPLATE'; template: Template | null }
   | { type: 'SET_TEMPLATE_IS_CREATING'; value: boolean }
@@ -41,7 +39,6 @@ export type AppStateUpdate =
   | { type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER'; values: ContrastVariableKey[] }
   | { type: 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION'; value: string }
   | { type: 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT'; value: string }
-  | { type: 'SET_THEME_REFS'; refs: ThemeReference[] }
   | { type: 'SET_SELECTED_THEME_REF'; ref: ThemeReference | null }
   | { type: 'SET_THEME'; theme: Theme | null; preserveHue?: boolean }
   | { type: 'SET_THEME_AND_HUE'; theme: Theme | null; hueAdjustment: number }
@@ -64,8 +61,6 @@ export type AppStateUpdate =
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
   switch (update.type) {
-    case 'SET_CATALOG_REFS':
-      return { ...state, catalogs: { ...state.catalogs, catalogRefs: update.refs } };
     case 'SET_SELECTED_REF':
       return { ...state, catalogs: { ...state.catalogs, selectedRef: update.ref } };
     case 'SET_CATALOG':
@@ -102,8 +97,6 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, catalogs: { ...state.catalogs, newSourceType: update.value } };
     case 'SET_CATALOG_NEW_TOKEN_KEY':
       return { ...state, catalogs: { ...state.catalogs, newTokenKey: update.value } };
-    case 'SET_TEMPLATE_REFS':
-      return { ...state, templates: { ...state.templates, templateRefs: update.refs } };
     case 'SET_SELECTED_TEMPLATE_REF':
       return { ...state, templates: { ...state.templates, selectedRef: update.ref } };
     case 'SET_TEMPLATE':
@@ -124,8 +117,6 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, templates: { ...state.templates, mappingTokenGroupSelection: update.value } };
     case 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT':
       return { ...state, templates: { ...state.templates, variablesSearchText: update.value } };
-    case 'SET_THEME_REFS':
-      return { ...state, themes: { ...state.themes, themeRefs: update.refs } };
     case 'SET_SELECTED_THEME_REF':
       return { ...state, themes: { ...state.themes, selectedRef: update.ref, hueAdjustment: 0 } };
     case 'SET_THEME':

@@ -1,5 +1,6 @@
 import type { Catalog } from '../../../model/schemas';
 import { compareVersions, nextPatchVersion } from '../../utils/version';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   loadCatalogSnapshot,
   saveCatalog as saveCatalogOp,
@@ -10,6 +11,7 @@ import { refreshRefsAndSelect } from './_helpers';
 
 export async function revertCatalogToVersion(
   setState: SetState,
+  setStoreState: SetStoreState,
   name: string,
   version: string,
 ): Promise<void> {
@@ -36,5 +38,5 @@ export async function revertCatalogToVersion(
     locked: false,
   };
   await saveCatalogOp(reverted);
-  await refreshRefsAndSelect(setState, reverted.name, reverted.version);
+  await refreshRefsAndSelect(setState, setStoreState, reverted.name, reverted.version);
 }

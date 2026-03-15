@@ -1,6 +1,9 @@
 import type { CatalogReference } from '../../../model/schemas';
-import type { SetState } from './types';
+import type { SetStoreState } from '../../../state/store-state-reducer';
 
-export function setCatalogRefs(setState: SetState, refs: CatalogReference[]): void {
-  setState({ type: 'SET_CATALOG_REFS', refs });
+export function setCatalogRefs(setStoreState: SetStoreState, refs: CatalogReference[]): void {
+  setStoreState({
+    type: 'SET_STORE_CATALOG_ENTRIES',
+    entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })),
+  });
 }

@@ -2,6 +2,7 @@ import { createContext, useContext } from 'react';
 import type { AppActionV2 } from '../../actions/action-types';
 import type {
   CatalogsState,
+  StoreState,
   TemplatesState,
   ThemesState,
 } from '../../../domain/state/app-state';
@@ -12,6 +13,7 @@ export const ActiveTabContext = createContext<TabId | null>(null);
 export const CatalogsStateContext = createContext<CatalogsState | null>(null);
 export const TemplatesStateContext = createContext<TemplatesState | null>(null);
 export const ThemesStateContext = createContext<ThemesState | null>(null);
+export const StoreStateContext = createContext<StoreState | null>(null);
 
 /** Returns dispatch when inside AppProvider; otherwise a no-op so components can be tested in isolation. */
 export function useAppDispatch(): (action: AppActionV2) => Promise<void> {
@@ -52,4 +54,12 @@ export function useThemesState(): ThemesState {
     throw new Error('useThemesState must be used within AppProvider');
   }
   return slice;
+}
+
+export function useStoreState(): StoreState {
+  const store = useContext(StoreStateContext);
+  if (!store) {
+    throw new Error('useStoreState must be used within AppProvider');
+  }
+  return store;
 }

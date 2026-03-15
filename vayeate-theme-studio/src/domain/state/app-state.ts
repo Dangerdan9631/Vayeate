@@ -4,7 +4,6 @@ import type { TokenizedPreview } from '../../model/preview-types';
 export type { TabId } from './tab-id';
 
 export interface CatalogsState {
-  catalogRefs: CatalogReference[];
   selectedRef: CatalogReference | null;
   catalog: Catalog | null;
   /** Catalogs loaded for display (e.g. template page); key = `${name}@${version}` */
@@ -23,7 +22,6 @@ export interface CatalogsState {
 }
 
 export interface TemplatesState {
-  templateRefs: TemplateReference[];
   selectedRef: TemplateReference | null;
   template: Template | null;
   isCreating: boolean;
@@ -47,7 +45,6 @@ export interface GenerateResult {
 }
 
 export interface ThemesState {
-  themeRefs: ThemeReference[];
   selectedRef: ThemeReference | null;
   theme: Theme | null;
   /** Checked color variable refs for palette/undo (theme pane selection). */
@@ -107,7 +104,6 @@ export interface AppState {
 
 export const initialAppState: AppState = {
   catalogs: {
-    catalogRefs: [],
     selectedRef: null,
     catalog: null,
     loadedForDisplay: {},
@@ -124,7 +120,6 @@ export const initialAppState: AppState = {
     newTokenKey: '',
   },
   templates: {
-    templateRefs: [],
     selectedRef: null,
     template: null,
     isCreating: false,
@@ -137,7 +132,6 @@ export const initialAppState: AppState = {
     variablesSearchText: '',
   },
   themes: {
-    themeRefs: [],
     selectedRef: null,
     theme: null,
     checkedColorRefs: [],

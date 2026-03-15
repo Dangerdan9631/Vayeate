@@ -1,10 +1,13 @@
 import type { TemplateReference } from '../../../model/schemas';
 import { templateService } from '../../../gateway/services/template-service';
-import type { SetState } from './types';
+import type { SetStoreState } from '../../../state/store-state-reducer';
 
-/** List templates and set refs in state. Single responsibility: refresh ref list. */
-export async function refreshTemplateRefs(setState: SetState): Promise<TemplateReference[]> {
+/** List templates and set entries in store. Single responsibility: refresh ref list. */
+export async function refreshTemplateRefs(setStoreState: SetStoreState): Promise<TemplateReference[]> {
   const refs = await templateService.listTemplates();
-  setState({ type: 'SET_TEMPLATE_REFS', refs });
+  setStoreState({
+    type: 'SET_STORE_TEMPLATE_ENTRIES',
+    entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
+  });
   return refs;
 }

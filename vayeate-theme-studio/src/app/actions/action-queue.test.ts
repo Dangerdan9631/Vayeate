@@ -75,7 +75,7 @@ describe('ActionQueue', () => {
     const setState = (u: AppStateUpdate) => updates.push(u);
     const processor: ActionProcessor = async (action) => {
       if (action.type === 'APP_APP_ON_LOAD') {
-        setState({ type: 'SET_CATALOG_REFS', refs: [] });
+        setState({ type: 'SET_CATALOG', catalog: null });
       }
     };
 
@@ -85,6 +85,6 @@ describe('ActionQueue', () => {
 
     await new Promise((r) => setTimeout(r, 20));
 
-    expect(updates).toEqual([{ type: 'SET_CATALOG_REFS', refs: [] }]);
+    expect(updates).toEqual([{ type: 'SET_CATALOG', catalog: null }]);
   });
 });

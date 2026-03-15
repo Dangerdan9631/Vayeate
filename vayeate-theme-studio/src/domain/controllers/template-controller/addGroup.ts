@@ -1,9 +1,11 @@
+import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';
 
 export async function addGroup(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   name: string,
 ): Promise<void> {
@@ -16,5 +18,5 @@ export async function addGroup(
   const base = getBaseForEdit(template);
   const newGroups = [...(base.groups ?? []), trimmed];
   await saveTemplateOp({ ...base, groups: newGroups });
-  await refreshRefsAndSelect(setState, base.name, base.version);
+  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
 }

@@ -1,3 +1,4 @@
+import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import {
@@ -8,6 +9,7 @@ import {
 
 export async function removeContrastVariable(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   key: string,
 ): Promise<void> {
@@ -18,5 +20,5 @@ export async function removeContrastVariable(
   const base = getBaseForEdit(template);
   const newVars = base.contrastVariables.filter((v) => v.key !== key);
   await saveTemplateOp({ ...base, contrastVariables: newVars });
-  await refreshRefsAndSelect(setState, base.name, base.version);
+  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
 }

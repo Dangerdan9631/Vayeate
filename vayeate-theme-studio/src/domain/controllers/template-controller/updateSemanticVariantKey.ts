@@ -1,10 +1,12 @@
 import { formatSemanticSelector, parseSemanticSelector } from '../../utils/semantic-token';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';
 
 export async function updateSemanticVariantKey(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   oldKey: string,
   modifiers: string[],
@@ -42,5 +44,5 @@ export async function updateSemanticVariantKey(
     semanticTokenModifiers: newModifiers,
     semanticTokenLanguages: newLanguages,
   });
-  await refreshRefsAndSelect(setState, base.name, base.version);
+  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
 }

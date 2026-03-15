@@ -1,10 +1,12 @@
 import type { ColorVariable } from '../../../model/schemas';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';
 
 export async function addColorVariable(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   key: string,
   groupRef?: string | null,
@@ -17,5 +19,5 @@ export async function addColorVariable(
     { key, groupRef: groupRef ?? null },
   ];
   await saveTemplateOp({ ...base, colorVariables: newVars });
-  await refreshRefsAndSelect(setState, base.name, base.version);
+  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
 }

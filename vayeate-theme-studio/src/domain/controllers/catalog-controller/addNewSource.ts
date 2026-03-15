@@ -1,4 +1,5 @@
 import type { Catalog, Source } from '../../../model/schemas';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogNewSourceUrl,
@@ -9,7 +10,7 @@ import {
 import type { GetState } from '../../operations/undo-operations';
 import { catalogWithVersionBump, refreshRefsAndSelect } from './_helpers';
 
-export async function addNewSource(setState: SetState, getState: GetState): Promise<void> {
+export async function addNewSource(setState: SetState, setStoreState: SetStoreState, getState: GetState): Promise<void> {
   const state = getState().catalogs;
   const catalog = state.catalog;
   const url = state.newSourceUrl?.trim();
@@ -23,7 +24,7 @@ export async function addNewSource(setState: SetState, getState: GetState): Prom
   const base = catalogWithVersionBump(catalog);
   const updated: Catalog = { ...base, sources };
   await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
   setCatalogNewSourceUrl(setState, '');
   setCatalogNewSourceTokenType(setState, 'theme');
   setCatalogNewSourceType(setState, 'default');

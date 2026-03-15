@@ -15,6 +15,7 @@ import {
   ActiveTabContext,
   AppDispatchContext,
   CatalogsStateContext,
+  StoreStateContext,
   TemplatesStateContext,
   ThemesStateContext,
 } from './slice-contexts';
@@ -130,34 +131,34 @@ export function createActionProcessorV2(
         catalogController.closeCatalogCreateDialog(setState);
         break;
       case 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK':
-        await catalogController.createCatalog(setState, action.params);
+        await catalogController.createCatalog(setState, setStoreState, action.params);
         break;
       case 'CATALOG_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK':
-        await catalogController.deleteCatalogVersion(setState, action.name, action.version);
+        await catalogController.deleteCatalogVersion(setState, setStoreState, action.name, action.version);
         break;
       case 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK':
-        await catalogController.syncCatalog(setState, action.catalog);
+        await catalogController.syncCatalog(setState, setStoreState, action.catalog);
         break;
       case 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK':
-        await catalogController.lockCatalog(setState, getState);
+        await catalogController.lockCatalog(setState, setStoreState, getState);
         break;
       case 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK':
-        await catalogController.revertCatalogToVersion(setState, action.name, action.version);
+        await catalogController.revertCatalogToVersion(setState, setStoreState, action.name, action.version);
         break;
       case 'CATALOG_DETAILS_SAVE_CATALOG':
-        await catalogController.saveCatalog(setState, action.catalog);
+        await catalogController.saveCatalog(setState, setStoreState, action.catalog);
         break;
       case 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT':
-        await catalogController.updateSourceUrl(setState, getState, action.sourceIndex, action.value);
+        await catalogController.updateSourceUrl(setState, setStoreState, getState, action.sourceIndex, action.value);
         break;
       case 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT':
-        await catalogController.updateSourceTokenType(setState, getState, action.sourceIndex, action.value);
+        await catalogController.updateSourceTokenType(setState, setStoreState, getState, action.sourceIndex, action.value);
         break;
       case 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT':
-        await catalogController.updateSourceType(setState, getState, action.sourceIndex, action.value);
+        await catalogController.updateSourceType(setState, setStoreState, getState, action.sourceIndex, action.value);
         break;
       case 'CATALOG_DETAILS_SOURCE_REMOVE_BUTTON_ON_CLICK':
-        await catalogController.removeSource(setState, getState, action.sourceIndex);
+        await catalogController.removeSource(setState, setStoreState, getState, action.sourceIndex);
         break;
       case 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE':
         setCatalogNewSourceUrl(setState, action.value);
@@ -169,7 +170,7 @@ export function createActionProcessorV2(
         setCatalogNewSourceType(setState, action.value);
         break;
       case 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK':
-        await catalogController.addNewSource(setState, getState);
+        await catalogController.addNewSource(setState, setStoreState, getState);
         break;
       case 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE':
         setCatalogTokensSearchText(setState, action.value);
@@ -181,6 +182,7 @@ export function createActionProcessorV2(
         if (action.key != null && action.tokenType != null) {
           await catalogController.updateTokenKey(
             setState,
+            setStoreState,
             getState,
             action.key,
             action.value,
@@ -191,7 +193,7 @@ export function createActionProcessorV2(
         }
         break;
       case 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK':
-        await catalogController.removeToken(setState, getState, action.key, action.tokenType);
+        await catalogController.removeToken(setState, setStoreState, getState, action.key, action.tokenType);
         break;
       case 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE':
         setCatalogNewTokenKey(setState, action.value);
@@ -199,6 +201,7 @@ export function createActionProcessorV2(
       case 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK':
         await catalogController.addNewToken(
           setState,
+          setStoreState,
           getState,
           action.tokenType,
           action.key,
@@ -214,7 +217,7 @@ export function createActionProcessorV2(
         catalogController.closeBulkAddDialog(setState);
         break;
       case 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK':
-        await catalogController.bulkAddTokens(setState, getState);
+        await catalogController.bulkAddTokens(setState, setStoreState, getState);
         break;
       case 'TEMPLATE_PAGE_ON_LOAD':
         await templateController.loadTemplatePage(setState, setStoreState);
@@ -235,20 +238,21 @@ export function createActionProcessorV2(
         templateController.closeCreateDialog(setState);
         break;
       case 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK':
-        await templateController.createTemplate(setState, action.params);
+        await templateController.createTemplate(setState, setStoreState, action.params);
         break;
       case 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK':
-        await templateController.deleteTemplateVersion(setState, action.name, action.version);
+        await templateController.deleteTemplateVersion(setState, setStoreState, action.name, action.version);
         break;
       case 'TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK':
-        await templateController.lockTemplate(setState, getState);
+        await templateController.lockTemplate(setState, setStoreState, getState);
         break;
       case 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK':
-        await templateController.updateAllCatalogs(setState, getState);
+        await templateController.updateAllCatalogs(setState, setStoreState, getState);
         break;
       case 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE':
         await templateController.toggleCatalog(
           setState,
+          setStoreState,
           getState,
           action.catalogName,
           action.checked ?? true,
@@ -257,13 +261,14 @@ export function createActionProcessorV2(
       case 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT':
         await templateController.changeCatalogVersion(
           setState,
+          setStoreState,
           getState,
           action.catalogName,
           action.value,
         );
         break;
       case 'TEMPLATE_DETAILS_SAVE_TEMPLATE':
-        await templateController.saveTemplate(setState, action.template);
+        await templateController.saveTemplate(setState, setStoreState, action.template);
         break;
       case 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE':
         templateController.setMappingSearchText(setState, action.value);
@@ -278,6 +283,7 @@ export function createActionProcessorV2(
         if (action.tokenKey != null && action.tokenType != null) {
           await templateController.setMappingGroupRef(
             setState,
+            setStoreState,
             getState,
             action.tokenKey,
             action.tokenType,
@@ -292,6 +298,7 @@ export function createActionProcessorV2(
         if (action.tokenKey != null && action.tokenType != null) {
           await templateController.setMappingColorRef(
             setState,
+            setStoreState,
             getState,
             action.tokenKey,
             action.tokenType,
@@ -304,6 +311,7 @@ export function createActionProcessorV2(
         if (action.tokenKey != null && action.tokenType != null) {
           await templateController.setMappingContrastRef(
             setState,
+            setStoreState,
             getState,
             action.tokenKey,
             action.tokenType,
@@ -318,6 +326,7 @@ export function createActionProcessorV2(
         if (semanticType) {
           await templateController.addSemanticVariant(
             setState,
+            setStoreState,
             getState,
             semanticType,
             modifiers,
@@ -331,6 +340,7 @@ export function createActionProcessorV2(
         if (action.tokenKey != null && (action.modifiers != null || action.value !== undefined)) {
           await templateController.updateSemanticVariantKey(
             setState,
+            setStoreState,
             getState,
             action.tokenKey,
             action.modifiers ?? (action.value ? [action.value] : []),
@@ -342,6 +352,7 @@ export function createActionProcessorV2(
         if (action.tokenKey != null) {
           await templateController.updateSemanticVariantKey(
             setState,
+            setStoreState,
             getState,
             action.tokenKey,
             action.modifiers ?? [],
@@ -353,6 +364,7 @@ export function createActionProcessorV2(
         if (action.tokenKey != null || action.variantId != null) {
           await templateController.removeMapping(
             setState,
+            setStoreState,
             getState,
             action.tokenKey ?? action.variantId ?? '',
             action.tokenType ?? 'semantic token',
@@ -364,12 +376,12 @@ export function createActionProcessorV2(
         break;
       case 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK':
         if (action.name != null && action.name.trim()) {
-          await templateController.addGroup(setState, getState, action.name.trim());
+          await templateController.addGroup(setState, setStoreState, getState, action.name.trim());
         }
         break;
       case 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK':
         if (action.groupId != null) {
-          await templateController.removeGroup(setState, getState, action.groupId);
+          await templateController.removeGroup(setState, setStoreState, getState, action.groupId);
         }
         break;
       case 'TEMPLATE_VARIABLES_SEARCH_TEXT_ON_CHANGE':
@@ -383,6 +395,7 @@ export function createActionProcessorV2(
           if (action.variableKind === 'contrast') {
             await templateController.addContrastVariable(
               setState,
+              setStoreState,
               getState,
               action.key.trim(),
               action.groupRef ?? null,
@@ -390,6 +403,7 @@ export function createActionProcessorV2(
           } else {
             await templateController.addColorVariable(
               setState,
+              setStoreState,
               getState,
               action.key.trim(),
               action.groupRef ?? null,
@@ -401,6 +415,7 @@ export function createActionProcessorV2(
         if (action.variableKey != null) {
           await templateController.updateVariableGroupRef(
             setState,
+            setStoreState,
             getState,
             action.variableKey,
             action.value || null,
@@ -411,9 +426,9 @@ export function createActionProcessorV2(
         if (action.key != null) {
           const t = getState().templates.template;
           if (t?.colorVariables.some((v) => v.key === action.key)) {
-            await templateController.removeColorVariable(setState, getState, action.key);
+            await templateController.removeColorVariable(setState, setStoreState, getState, action.key);
           } else {
-            await templateController.removeContrastVariable(setState, getState, action.key);
+            await templateController.removeContrastVariable(setState, setStoreState, getState, action.key);
           }
         }
         break;
@@ -421,6 +436,7 @@ export function createActionProcessorV2(
         if (action.contrastVariableKey != null) {
           await templateController.updateContrastComparisonSource(
             setState,
+            setStoreState,
             getState,
             action.contrastVariableKey,
             action.value,
@@ -821,7 +837,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
   const setStoreState = useCallback(
     (update: StoreStateUpdate) => {
-      replaceState(storeStateReducer(stateRef.current, update));
+      const nextState = storeStateReducer(stateRef.current, update);
+      flushSync(() => {
+        replaceState(nextState);
+      });
     },
     [],
   );
@@ -887,15 +906,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={value}>
       <AppDispatchContext.Provider value={dispatch}>
         <ActiveTabContext.Provider value={state.ui.activeTabId}>
-          <CatalogsStateContext.Provider value={state.catalogs}>
-            <TemplatesStateContext.Provider value={state.templates}>
-              <ThemesStateContext.Provider value={state.themes}>
-                <UndoProvider setState={setState}>
-                  {children}
-                </UndoProvider>
-              </ThemesStateContext.Provider>
-            </TemplatesStateContext.Provider>
-          </CatalogsStateContext.Provider>
+          <StoreStateContext.Provider value={state.store}>
+            <CatalogsStateContext.Provider value={state.catalogs}>
+              <TemplatesStateContext.Provider value={state.templates}>
+                <ThemesStateContext.Provider value={state.themes}>
+                  <UndoProvider setState={setState}>
+                    {children}
+                  </UndoProvider>
+                </ThemesStateContext.Provider>
+              </TemplatesStateContext.Provider>
+            </CatalogsStateContext.Provider>
+          </StoreStateContext.Provider>
         </ActiveTabContext.Provider>
       </AppDispatchContext.Provider>
     </AppContext.Provider>

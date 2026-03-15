@@ -1,4 +1,5 @@
 import { compareVersions } from '../../utils/version';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   deleteCatalog as deleteCatalogOp,
   setSelectedRef,
@@ -12,11 +13,12 @@ import { catalogStackId } from './catalogStackId';
 
 export async function deleteCatalogVersion(
   setState: SetState,
+  setStoreState: SetStoreState,
   name: string,
   version: string,
 ): Promise<void> {
   await deleteCatalogOp(name, version);
-  const refs = await refreshCatalogRefs(setState);
+  const refs = await refreshCatalogRefs(setStoreState);
 
   const sameNameRefs = refs
     .filter((r) => r.name === name)

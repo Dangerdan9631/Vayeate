@@ -1,5 +1,6 @@
 import type { Catalog } from '../../../model/schemas';
 import { parseThemeJson } from '../../utils/theme-parser';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogBulkAddDialogOpen,
@@ -9,7 +10,7 @@ import {
 import type { GetState } from '../../operations/undo-operations';
 import { catalogWithVersionBump, refreshRefsAndSelect } from './_helpers';
 
-export async function bulkAddTokens(setState: SetState, getState: GetState): Promise<void> {
+export async function bulkAddTokens(setState: SetState, setStoreState: SetStoreState, getState: GetState): Promise<void> {
   const state = getState().catalogs;
   const catalog = state.catalog;
   const text = state.bulkAddText?.trim();
@@ -22,7 +23,7 @@ export async function bulkAddTokens(setState: SetState, getState: GetState): Pro
     const base = catalogWithVersionBump(catalog);
     const updated: Catalog = { ...base, tokens: [...base.tokens, ...unique] };
     await saveCatalogOp(updated);
-    await refreshRefsAndSelect(setState, updated.name, updated.version);
+    await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
   } finally {
     setCatalogBulkAddDialogOpen(setState, false);
     setCatalogBulkAddText(setState, '');

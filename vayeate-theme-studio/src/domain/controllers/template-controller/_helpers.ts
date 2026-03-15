@@ -1,5 +1,6 @@
 import type { CatalogReference, Template } from '../../../model/schemas';
 import { compareVersions, nextPatchVersion } from '../../utils/version';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   setSelectedTemplateRef,
   loadTemplate,
@@ -9,10 +10,11 @@ import {
 
 export async function refreshRefsAndSelect(
   setState: SetState,
+  setStoreState: SetStoreState,
   selectName?: string,
   selectVersion?: string,
 ): Promise<void> {
-  const refs = await refreshTemplateRefs(setState);
+  const refs = await refreshTemplateRefs(setStoreState);
   if (selectName && selectVersion) {
     const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
     if (match) {

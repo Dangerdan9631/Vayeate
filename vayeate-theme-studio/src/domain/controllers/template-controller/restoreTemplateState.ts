@@ -1,4 +1,5 @@
 import type { Template } from '../../../model/schemas';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   setTemplate,
   setSelectedTemplateRef,
@@ -10,6 +11,7 @@ import {
 
 export async function restoreTemplateState(
   setState: SetState,
+  setStoreState: SetStoreState,
   template: Template | null,
   deleteTemplateVersionOnRestore?: { name: string; version: string },
 ): Promise<void> {
@@ -24,13 +26,13 @@ export async function restoreTemplateState(
     } catch {
       // persist failed
     }
-    await refreshTemplateRefs(setState);
+    await refreshTemplateRefs(setStoreState);
   }
   if (deleteTemplateVersionOnRestore) {
     await deleteTemplateOp(
       deleteTemplateVersionOnRestore.name,
       deleteTemplateVersionOnRestore.version,
     );
-    await refreshTemplateRefs(setState);
+    await refreshTemplateRefs(setStoreState);
   }
 }

@@ -1,5 +1,6 @@
 import type { Catalog } from '../../../model/schemas';
 import { nextPatchVersion } from '../../utils/version';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   setSelectedRef,
   loadCatalog,
@@ -9,10 +10,11 @@ import {
 
 export async function refreshRefsAndSelect(
   setState: SetState,
+  setStoreState: SetStoreState,
   selectName?: string,
   selectVersion?: string,
 ): Promise<void> {
-  const refs = await refreshCatalogRefs(setState);
+  const refs = await refreshCatalogRefs(setStoreState);
   if (selectName && selectVersion) {
     const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
     if (match) {

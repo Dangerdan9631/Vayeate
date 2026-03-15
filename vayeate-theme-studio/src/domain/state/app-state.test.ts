@@ -73,7 +73,6 @@ describe('initialAppState', () => {
     expect(initialAppState.catalogs.selectedRef).toBeNull();
     expect(initialAppState.catalogs.isCreating).toBe(false);
     expect(initialAppState.catalogs.createDialogOpen).toBe(false);
-    expect(initialAppState.catalogs.catalogRefs).toEqual([]);
   });
 
   it('has no selected template and is not creating', () => {
@@ -82,7 +81,6 @@ describe('initialAppState', () => {
     expect(initialAppState.templates.isCreating).toBe(false);
     expect(initialAppState.templates.createDialogOpen).toBe(false);
     expect(initialAppState.templates.createFormName).toBe('');
-    expect(initialAppState.templates.templateRefs).toEqual([]);
     expect(initialAppState.templates.mappingSearchText).toBe('');
     expect(initialAppState.templates.mappingColorVariableFilter).toEqual([]);
     expect(initialAppState.templates.mappingContrastVariableFilter).toEqual([]);
@@ -99,7 +97,6 @@ describe('initialAppState', () => {
     expect(initialAppState.themes.generateResult).toBeNull();
     expect(initialAppState.themes.saveError).toBeNull();
     expect(initialAppState.themes.assignColorDraftText).toBe('');
-    expect(initialAppState.themes.themeRefs).toEqual([]);
     expect(initialAppState.themes.previewVariableFilterText).toBe('');
     expect(initialAppState.themes.selectedPreviewSampleKey).toBe('');
   });
@@ -111,12 +108,6 @@ describe('initialAppState', () => {
 });
 
 describe('appStateReducer', () => {
-  it('handles SET_CATALOG_REFS', () => {
-    const refs = [sampleRef];
-    const state = appStateReducer(initialAppState, { type: 'SET_CATALOG_REFS', refs });
-    expect(state.catalogs.catalogRefs).toEqual(refs);
-  });
-
   it('handles SET_SELECTED_REF', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_SELECTED_REF', ref: sampleRef });
     expect(state.catalogs.selectedRef).toEqual(sampleRef);
@@ -135,12 +126,6 @@ describe('appStateReducer', () => {
   it('handles SET_CREATE_DIALOG_OPEN', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_CREATE_DIALOG_OPEN', value: true });
     expect(state.catalogs.createDialogOpen).toBe(true);
-  });
-
-  it('handles SET_TEMPLATE_REFS', () => {
-    const refs = [sampleTemplateRef];
-    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_REFS', refs });
-    expect(state.templates.templateRefs).toEqual(refs);
   });
 
   it('handles SET_SELECTED_TEMPLATE_REF', () => {
@@ -191,12 +176,6 @@ describe('appStateReducer', () => {
   it('handles SET_TEMPLATE_VARIABLES_SEARCH_TEXT', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT', value: 'bar' });
     expect(state.templates.variablesSearchText).toBe('bar');
-  });
-
-  it('handles SET_THEME_REFS', () => {
-    const refs = [sampleThemeRef];
-    const state = appStateReducer(initialAppState, { type: 'SET_THEME_REFS', refs });
-    expect(state.themes.themeRefs).toEqual(refs);
   });
 
   it('handles SET_SELECTED_THEME_REF', () => {

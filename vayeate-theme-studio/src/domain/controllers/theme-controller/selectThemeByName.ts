@@ -1,3 +1,4 @@
+import { getThemeRefsFromStore } from '../../state/store-state';
 import { compareVersions } from '../../utils/version';
 import type { SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
@@ -9,7 +10,7 @@ export async function selectThemeByName(
   name: string,
 ): Promise<void> {
   const state = getState();
-  const refs = state.themes.themeRefs.filter((r) => r.name === name);
+  const refs = getThemeRefsFromStore(state.store).filter((r) => r.name === name);
   if (refs.length === 0) return;
   const best = refs.reduce((a, b) =>
     compareVersions(a.version, b.version) > 0 ? a : b,

@@ -1,4 +1,6 @@
 import type { CatalogReference } from '../../../model/schemas';
+import { getCatalogRefsFromStore } from '../../state/store-state';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { catalogService } from '../../../gateway/services/catalog-service';
@@ -25,9 +27,9 @@ async function loadCatalogData(refs: CatalogReference[]): Promise<CatalogDataIte
   return catalogData;
 }
 
-export async function updateAllCatalogs(setState: SetState, getState: GetState): Promise<void> {
+export async function updateAllCatalogs(setState: SetState, setStoreState: SetStoreState, getState: GetState): Promise<void> {
   const template = getState().templates.template;
-  const catalogRefs = getState().catalogs.catalogRefs;
+  const catalogRefs = getCatalogRefsFromStore(getState().store);
   if (!template) return;
   const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
   const base = getBaseForEdit(template);
@@ -52,5 +54,5 @@ export async function updateAllCatalogs(setState: SetState, getState: GetState):
     semanticTokenLanguages,
   };
   await saveTemplateOp(updated);
-  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }

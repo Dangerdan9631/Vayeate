@@ -1,3 +1,4 @@
+import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { catalogService } from '../../../gateway/services/catalog-service';
@@ -26,6 +27,7 @@ async function loadCatalogData(refs: readonly { name: string; version: string }[
 
 export async function changeCatalogVersion(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   catalogName: string,
   newVersion: string,
@@ -52,5 +54,5 @@ export async function changeCatalogVersion(
     semanticTokenLanguages,
   };
   await saveTemplateOp(updated);
-  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }

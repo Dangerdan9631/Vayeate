@@ -1,3 +1,4 @@
+import { getThemeRefsFromStore } from '../../state/store-state';
 import { compareVersions } from '../../utils/version';
 import type { SetStoreState } from '../../state/store-state-reducer';
 import {
@@ -21,7 +22,7 @@ export async function deleteThemeVersion(
 ): Promise<void> {
   await deleteThemeOp(name, version);
   await loadThemeRefsOp(setState, setStoreState);
-  const refs = getState().themes.themeRefs;
+  const refs = getThemeRefsFromStore(getState().store);
 
   const sameThName = refs
     .filter((r) => r.name === name)

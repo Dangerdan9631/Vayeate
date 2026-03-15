@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
+import { useAppDispatch, useCatalogsState, useStoreState, useTemplatesState } from '../ui/context/slice-contexts';
+import { getCatalogRefsFromStore, getTemplateRefsFromStore } from '../../domain/state/store-state';
 import { compareVersions } from '../../domain/utils/version';
 import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/utils/semantic-token';
 import type {
@@ -17,7 +18,6 @@ let templatePageLoadDispatched = false;
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
   const {
-    templateRefs,
     selectedRef,
     template,
     isCreating,
@@ -29,7 +29,10 @@ export function useTemplateViewModel() {
     mappingTokenGroupSelection,
     variablesSearchText,
   } = useTemplatesState();
-  const { catalogRefs, loadedForDisplay } = useCatalogsState();
+  const store = useStoreState();
+  const catalogRefs = useMemo(() => getCatalogRefsFromStore(store), [store]);
+  const templateRefs = useMemo(() => getTemplateRefsFromStore(store), [store]);
+  const { loadedForDisplay } = useCatalogsState();
 
   useEffect(() => {
     if (templatePageLoadDispatched) return;

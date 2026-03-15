@@ -1,6 +1,9 @@
 import type { TemplateReference } from '../../../model/schemas';
-import type { SetState } from './types';
+import type { SetStoreState } from '../../../state/store-state-reducer';
 
-export function setTemplateRefs(setState: SetState, refs: TemplateReference[]): void {
-  setState({ type: 'SET_TEMPLATE_REFS', refs });
+export function setTemplateRefs(setStoreState: SetStoreState, refs: TemplateReference[]): void {
+  setStoreState({
+    type: 'SET_STORE_TEMPLATE_ENTRIES',
+    entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
+  });
 }

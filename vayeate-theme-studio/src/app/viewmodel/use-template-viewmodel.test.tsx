@@ -699,10 +699,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      await getDispatch()?.({ type: 'TEMPLATE_PAGE_ON_LOAD' });
     });
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
+      await getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -712,7 +712,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     expect(result.current.template?.groups).toEqual([]);
 
     await act(async () => {
-      result.current.toggleCatalog('cat-a', true);
+      await result.current.toggleCatalog('cat-a', true);
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -764,17 +764,17 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      await getDispatch()?.({ type: 'TEMPLATE_PAGE_ON_LOAD' });
     });
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
+      await getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
     });
 
     await act(async () => {
-      result.current.toggleCatalog('semantic-cat', true);
+      await result.current.toggleCatalog('semantic-cat', true);
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1367,10 +1367,10 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      await getDispatch()?.({ type: 'TEMPLATE_PAGE_ON_LOAD' });
     });
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      await getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));

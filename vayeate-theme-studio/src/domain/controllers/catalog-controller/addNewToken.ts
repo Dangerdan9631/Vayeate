@@ -1,6 +1,7 @@
 import type { Catalog, Token } from '../../../model/schemas';
 import type { TokenType } from '../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../utils/semantic-token';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogNewTokenKey,
@@ -11,6 +12,7 @@ import { catalogWithVersionBump, refreshRefsAndSelect } from './_helpers';
 
 export async function addNewToken(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   tokenType: TokenType,
   key?: string,
@@ -36,7 +38,7 @@ export async function addNewToken(
       semanticTokenLanguages: merged.languages,
     };
     await saveCatalogOp(updated);
-    await refreshRefsAndSelect(setState, updated.name, updated.version);
+    await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
     setCatalogNewTokenKey(setState, '');
     return;
   }
@@ -48,6 +50,6 @@ export async function addNewToken(
     tokens: [...base.tokens, newToken],
   };
   await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
   setCatalogNewTokenKey(setState, '');
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ThemePaneState } from '../../model/theme-pane-state';
-import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
+import { useAppDispatch, useStoreState, useThemesState } from '../ui/context/slice-contexts';
+import { getTemplateRefsFromStore, getThemeRefsFromStore } from '../../domain/state/store-state';
 import { compareVersions } from '../../domain/utils/version';
 import { applyHueShift } from '../../domain/utils/color';
 import { resolveColorForThemeTokenKey } from '../../domain/utils/scope-resolver';
@@ -65,7 +66,6 @@ function themePaneStateFromState(
 export function useThemeViewModel() {
   const dispatch = useAppDispatch();
   const {
-    themeRefs,
     selectedRef,
     theme,
     checkedColorRefs: checkedColorRefsArray,
@@ -81,7 +81,9 @@ export function useThemeViewModel() {
     saveError,
     loadedTemplateForTheme: loadedTemplate,
   } = useThemesState();
-  const { templateRefs } = useTemplatesState();
+  const store = useStoreState();
+  const themeRefs = useMemo(() => getThemeRefsFromStore(store), [store]);
+  const templateRefs = useMemo(() => getTemplateRefsFromStore(store), [store]);
 
   const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
   const checkedContrastRefs = useMemo(() => new Set(checkedContrastRefsArray), [checkedContrastRefsArray]);

@@ -1,5 +1,6 @@
 import type { Catalog } from '../../../model/schemas';
 import type { SourceType } from '../../../model/schemas';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   type SetState,
@@ -9,6 +10,7 @@ import { catalogWithVersionBump, refreshRefsAndSelect } from './_helpers';
 
 export async function updateSourceType(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   sourceIndex: number,
   value: SourceType,
@@ -21,5 +23,5 @@ export async function updateSourceType(
   const base = catalogWithVersionBump(catalog);
   const updated: Catalog = { ...base, sources };
   await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }

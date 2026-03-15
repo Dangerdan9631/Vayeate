@@ -1,5 +1,6 @@
 import type { Catalog } from '../../../model/schemas';
 import type { TokenKey, TokenType } from '../../../model/schemas';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   type SetState,
@@ -9,6 +10,7 @@ import { catalogWithVersionBump, refreshRefsAndSelect } from './_helpers';
 
 export async function removeToken(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
   key: TokenKey,
   tokenType: TokenType,
@@ -21,5 +23,5 @@ export async function removeToken(
     tokens: base.tokens.filter((t) => !(t.key === key && t.type === tokenType)),
   };
   await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }
