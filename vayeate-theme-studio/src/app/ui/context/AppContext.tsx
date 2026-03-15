@@ -1,4 +1,5 @@
-import { createContext, useCallback, useReducer, useRef, type ReactNode } from 'react';
+import { createContext, useCallback, useEffect, useReducer, useRef, type ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppActionV2 } from '../../actions/action-types';
 import type { AppState } from '../../../domain/state/app-state';
@@ -7,6 +8,7 @@ import {
   initialAppState,
   type AppStateUpdate,
 } from '../../../domain/state/app-state';
+import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
   ActiveTabContext,
   AppDispatchContext,
@@ -42,11 +44,11 @@ type SetState = (update: AppStateUpdate) => void;
 
 type GetState = () => AppState;
 
-export function createActionProcessorV2(getState: GetState): (
-  action: AppActionV2,
+export function createActionProcessorV2(
+  getState: GetState,
   setState: SetState
-) => Promise<void> {
-  return async (action: AppActionV2, setState: SetState): Promise<void> => {
+): (action: AppActionV2) => Promise<void> {
+  return async (action: AppActionV2): Promise<void> => {
     logV2.debug('action', action);
     switch (action.type) {
       case 'APP_APP_ON_LOAD':
@@ -86,10 +88,10 @@ export function createActionProcessorV2(getState: GetState): (
         // No-op: UI (ColorSchemeContext) handles toggle and persistence.
         break;
       case 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK':
-        await windowController.minimizeWindow();
+        await windowController.minimizeWindow(getState);
         break;
       case 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK':
-        await windowController.maximizeWindow();
+        await windowController.maximizeWindow(getState);
         break;
       case 'APP_BAR_CLOSE_BUTTON_ON_CLICK':
         await windowController.closeWindow();
@@ -768,25 +770,85 @@ export function createActionProcessorV2(getState: GetState): (
   };
 }
 
+/** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
+function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
+  return nextState;
+}
+
 export interface AppContextValue {
   state: AppState;
-  dispatch: (action: AppActionV2) => void;
+  dispatch: (action: AppActionV2) => Promise<void>;
+  setWindowState: (update: WindowStateUpdate) => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useReducer(appStateReducer, initialAppState);
+  const [state, replaceState] = useReducer(replaceStateReducer, initialAppState);
   const stateRef = useRef(state);
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);
+
+  const setState = useCallback(
+    (update: AppStateUpdate) => {
+      const nextState = appStateReducer(stateRef.current, update);
+      flushSync(() => {
+        replaceState(nextState);
+      });
+    },
+    [],
+  );
+  const setWindowState = useCallback(
+    (update: WindowStateUpdate) => {
+      replaceState(windowStateReducer(stateRef.current, update));
+    },
+    [],
+  );
+
   const queueRef = useRef<ActionQueue | null>(null);
 
-  const dispatch = useCallback((action: AppActionV2) => {
+  useEffect(() => {
+    const api = window.electronAPI;
+    const unsubscribes: Array<() => void> = [];
+    if (api?.onWindowState) {
+      unsubscribes.push(
+        api.onWindowState((event) => {
+          switch (event) {
+            case 'minimized':
+              setWindowState({ type: 'SET_WINDOW_MINIMIZED', value: true });
+              break;
+            case 'maximized':
+              setWindowState({ type: 'SET_WINDOW_MAXIMIZED', value: true });
+              break;
+            case 'unmaximized':
+              setWindowState({ type: 'SET_WINDOW_MAXIMIZED', value: false });
+              break;
+            case 'restored':
+              setWindowState({ type: 'SET_WINDOW_MINIMIZED', value: false });
+              break;
+          }
+        }),
+      );
+    }
+    if (api?.onWindowResize) {
+      unsubscribes.push(
+        api.onWindowResize((size) => setWindowState({ type: 'SET_WINDOW_SIZE', size })),
+      );
+    }
+    if (api?.onWindowMove) {
+      unsubscribes.push(
+        api.onWindowMove((position) => setWindowState({ type: 'SET_WINDOW_POSITION', position })),
+      );
+    }
+    return () => {
+      unsubscribes.forEach((fn) => fn());
+    };
+  }, [setWindowState]);
+
+  const dispatch = useCallback((action: AppActionV2): Promise<void> => {
     if (!queueRef.current) {
-      const processor = createActionProcessorV2(getState);
+      const processor = createActionProcessorV2(getState, setState);
       const queue = new ActionQueue(processor);
-      queue.onStateUpdate = (update) => setState(update);
       queue.onQueueStatus = (status) =>
         setState({
           type: 'SET_QUEUE_STATUS',
@@ -795,10 +857,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         });
       queueRef.current = queue;
     }
-    queueRef.current.enqueue(action);
-  }, [getState]);
+    return queueRef.current.enqueue(action);
+  }, [getState, setState]);
 
-  const value: AppContextValue = { state, dispatch };
+  const value: AppContextValue = { state, dispatch, setWindowState };
 
   return (
     <AppContext.Provider value={value}>

@@ -98,11 +98,7 @@ describe('useTemplateViewModel', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
-    });
-
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 100));
+      await getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
     });
 
     expect(result.current.template).not.toBeNull();

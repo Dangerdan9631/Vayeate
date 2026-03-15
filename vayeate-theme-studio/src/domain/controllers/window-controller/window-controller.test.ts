@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { initialAppState } from '../../state/app-state';
+import type { AppState } from '../../state/app-state';
 import {
   closeWindow,
   maximizeWindow,
@@ -20,6 +22,15 @@ type WindowAPI = {
   reloadWindowForce?: () => Promise<void>;
   toggleDevTools?: () => Promise<void>;
 };
+
+function mockGetState(overrides: Partial<Pick<AppState, 'window'>> = {}): () => AppState {
+  const state: AppState = {
+    ...initialAppState,
+    ...overrides,
+    window: { ...initialAppState.window, ...overrides.window },
+  };
+  return () => state;
+}
 
 describe('window-controller', () => {
   let api: Record<keyof WindowAPI, ReturnType<typeof vi.fn>>;
@@ -47,19 +58,34 @@ describe('window-controller', () => {
     expect(api.closeWindow).toHaveBeenCalledTimes(1);
   });
 
-  it('maximizeWindow calls maximize', async () => {
-    await maximizeWindow();
+  it('maximizeWindow calls maximize when not already maximized', async () => {
+    await maximizeWindow(mockGetState({ window: { ...initialAppState.window, isMaximized: false } }));
     expect(api.maximizeWindow).toHaveBeenCalledTimes(1);
   });
 
-  it('restoreWindow calls restore', async () => {
-    await restoreWindow();
+  it('maximizeWindow does not call maximize when already maximized', async () => {
+    await maximizeWindow(mockGetState({ window: { ...initialAppState.window, isMaximized: true } }));
+    expect(api.maximizeWindow).not.toHaveBeenCalled();
+  });
+
+  it('restoreWindow calls restore when maximized', async () => {
+    await restoreWindow(mockGetState({ window: { ...initialAppState.window, isMaximized: true, isMinimized: false } }));
     expect(api.restoreWindow).toHaveBeenCalledTimes(1);
   });
 
-  it('minimizeWindow calls minimize', async () => {
-    await minimizeWindow();
+  it('restoreWindow does not call restore when not maximized or minimized', async () => {
+    await restoreWindow(mockGetState({ window: { ...initialAppState.window, isMaximized: false, isMinimized: false } }));
+    expect(api.restoreWindow).not.toHaveBeenCalled();
+  });
+
+  it('minimizeWindow calls minimize when not already minimized', async () => {
+    await minimizeWindow(mockGetState({ window: { ...initialAppState.window, isMinimized: false } }));
     expect(api.minimizeWindow).toHaveBeenCalledTimes(1);
+  });
+
+  it('minimizeWindow does not call minimize when already minimized', async () => {
+    await minimizeWindow(mockGetState({ window: { ...initialAppState.window, isMinimized: true } }));
+    expect(api.minimizeWindow).not.toHaveBeenCalled();
   });
 
   it('dragWindow calls drag', async () => {

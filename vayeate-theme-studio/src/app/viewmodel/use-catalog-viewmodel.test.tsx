@@ -85,11 +85,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-catalog', type: 'manual' } });
-    });
-
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 100));
+      await getDispatch()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-catalog', type: 'manual' } });
     });
 
     expect(result.current.catalog).not.toBeNull();
@@ -116,6 +112,7 @@ describe('useCatalogViewModel', () => {
 
     await act(async () => {
       getDispatch()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'foo', type: 'manual' } });
+      await new Promise((r) => setTimeout(r, 50));
     });
 
     expect(result.current.isCreating).toBe(true);

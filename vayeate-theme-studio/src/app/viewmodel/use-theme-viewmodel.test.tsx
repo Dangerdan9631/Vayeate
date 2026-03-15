@@ -122,11 +122,7 @@ describe('useThemeViewModel', () => {
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-theme' } });
-    });
-
-    await act(async () => {
-      await new Promise((r) => setTimeout(r, 100));
+      await getDispatch()?.({ type: 'THEME_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-theme' } });
     });
 
     expect(result.current.theme).not.toBeNull();

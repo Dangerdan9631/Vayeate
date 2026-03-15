@@ -15,6 +15,7 @@ When you change code in vayeate-theme-studio, add or update tests that cover the
 | State | `src/domain/state/*.test.ts` |
 | Actions | `src/app/actions/*.test.ts` |
 | Controllers | `src/domain/controllers/<controller>/<controller>.test.ts` (colocated in controller subdirectory) |
+| Validations | `src/domain/validations/<validations>/<validator>.test.ts` (colocated next to each validator file) |
 | Operations | `src/domain/operations/<operations>/<operations>.test.ts` (colocated in operation subdirectory) |
 | Data | `src/gateway/data/*.test.ts` |
 | Gateway/services | `src/gateway/services/*.test.ts` (when adding/changing services) |

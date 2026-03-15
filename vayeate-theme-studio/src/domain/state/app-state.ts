@@ -89,6 +89,14 @@ export interface UndoStackIdState {
   undoListVersion: number;
 }
 
+import type { StoreState } from './store-state';
+import type { UiState } from './ui-state';
+import type { WindowState } from './window-state';
+
+export type { StoreState } from './store-state';
+export type { UiState } from './ui-state';
+export type { Position, Size, WindowLoadState, WindowState } from './window-state';
+
 export interface AppState {
   activeTab: TabId;
   catalogs: CatalogsState;
@@ -96,6 +104,12 @@ export interface AppState {
   themes: ThemesState;
   queueStatus: QueueStatusState;
   undoStackId: UndoStackIdState;
+  /** Parallel state (not yet used in app/reducer). */
+  ui: UiState;
+  /** Parallel state (not yet used in app/reducer). */
+  store: StoreState;
+  /** Parallel state (not yet used in app/reducer). */
+  window: WindowState;
 }
 
 export const initialAppState: AppState = {
@@ -157,6 +171,15 @@ export const initialAppState: AppState = {
   undoStackId: {
     currentUndoStackId: null,
     undoListVersion: 0,
+  },
+  ui: {},
+  store: {},
+  window: {
+    loadState: 'loading',
+    isMinimized: false,
+    isMaximized: false,
+    size: { width: 0, height: 0 },
+    position: { x: 0, y: 0 },
   },
 };
 

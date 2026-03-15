@@ -16,9 +16,10 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 |-------|----------|----------------|
 | **UI** | `src/app/ui/` | React components, pages, styles. No business logic. Dispatches one UI event per interaction. |
 | **ViewModels** | `src/app/viewmodel/` | Custom hooks that derive display data from state. |
-| **State** | `src/domain/state/` | AppState type, reducer, initial state. |
+| **State** | `src/domain/state/` | AppState type, reducers, initial state. |
 | **Actions** | `src/app/actions/` | Action types and ActionQueue. UI events only; all mutations flow through here. |
-| **Controllers** | `src/domain/controllers/` | Invoked by AppContext processor for UI events. Compose operations into a single app action. |
+| **Controllers** | `src/domain/controllers/` | Invoked by AppContext processor for UI events. Compose validations and operations; run validations before operations. |
+| **Validations** | `src/domain/validations/` | Functions that validate input and/or app state and return a boolean. One validator per file; subdirectories per concern (e.g. window-validations). Validations must not reference other validations. Used by controllers (and optionally other app types) before invoking operations. |
 | **Operations** | `src/domain/operations/` (or within controllers) | Fine-grained units: set state, persist state, add to undo stack. Used by controllers. |
 | **Core** | `src/domain/core/` | Undo manager (UndoManagerV2) and undo processor. Used by controllers/operations for undo stacks. |
 | **Utils** | `src/domain/utils/` | Logger, version, theme generation, color, tokenizer, scope resolution, export, theme-parser, template-catalog-merge, semantic-token. |
@@ -33,8 +34,23 @@ UI dispatch(UI event) → ActionQueue.enqueue → Processor (AppContext) → Con
                                                                               ↓
                         setState / persist / undo (via operations)
                                                                               ↓
-UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
+UI ← ViewModel ← State (setState/setWindowState apply the appropriate reducer)
 ```
+
+## State and reducers
+
+- **Single app state**: There is one `AppState` value. React holds it via one `useReducer` (or equivalent) that simply replaces state with the next value; it does not interpret update types.
+- **Multiple reducers**: Each slice of state has its own reducer (e.g. `appStateReducer`, `windowStateReducer`). Each reducer has signature `(state: AppState, update: X) => AppState` and is responsible for updating only its portion of `AppState`; it still accepts and returns the whole `AppState`.
+- **Never combine**: Do not create a combined reducer or a single dispatch that routes to different reducers based on update type. There is no shared “router” or “root reducer” that chooses which reducer to call.
+- **Caller uses the right reducer**: Each caller knows what it is updating and holds the appropriate setter (e.g. `setState` for `AppStateUpdate`, `setWindowState` for `WindowStateUpdate`). The setter calls the corresponding reducer with current state and the update, then replaces app state with the result. Access to slice updates is enforced by which setter is passed (e.g. only code given `setWindowState` can apply window updates).
+
+## Validations
+
+- **Purpose**: Validations are functions that validate an input and/or read app state and return a boolean (pass/fail). They answer “can this action proceed?” (e.g. can the window be maximized?).
+- **Structure**: Same as operations and controllers—multiple subdirectories (e.g. `window-validations/`), single validator per file. Export via an index per subdirectory and from `src/domain/validations/index.ts`.
+- **No validator calls another validator**: Validations must not reference other validations; keep them independent.
+- **Who uses validations**: Controllers should run validations before invoking operations (e.g. only call `maximizeWindow` op if `canMaximizeWindow(getState)` is true). Other app types (e.g. UI, viewmodels) may also call validations if they need to guard or display state. Architectural guidance for validations is less strict than for operations (which are only composed by controllers).
+- **Signature**: Typically `(getState: () => AppState) => boolean` when they need app state; or `(input: X) => boolean` when they only validate input.
 
 - UI events use `<CONTROL>_<ACTION>` naming (e.g. `CATALOG_PAGE_ON_LOAD`, `CATALOG_SYNC_BUTTON_ON_CLICK`).
 - The processor handles each event by invoking the appropriate controller.
@@ -49,18 +65,20 @@ UI ← ViewModel ← State (reducer receives AppStateUpdate from processor)
 - `src/app/ui/context/AppContext.tsx` - AppProvider, useAppState, wires ActionQueue to reducer; processor invokes controllers
 - `src/app/actions/action-queue.ts` - FIFO queue, sequential async processing
 - `src/app/actions/action-types.ts` - Discriminated union `AppActionV2`. The `AppActionV2` union is the canonical list of all app action event names.
-- `src/domain/` - Domain layer: controllers, core, operations, state, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
+- `src/domain/` - Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
+- `src/domain/validations/` - Validators (one per file, subdirectories per concern). Controllers run validations before operations.
 - `src/model/` - Schemas and types. Must not depend on app, domain, or gateway.
 - `src/gateway/` - Data (repositories) and services (IPC). Must not depend on domain. gateway/data and gateway/services are independent.
 - `src/domain/controllers/` - Controllers composed of operations; invoked by AppContext processor
 
 ## Conventions
 
-- **New UI events**: Use `<CONTROL>_<ACTION>` (see Action Queue rule for control/action list). Add the new union member to `AppActionV2` in action-types.ts with payload types from `src/model/schemas.ts` where applicable. In the processor, invoke a controller; controller uses operations for setState, persist, undo. Add reducer cases in `src/domain/state/app-state.ts` for the state updates produced by operations. Use the add-app-action skill when adding a new action.
+- **New UI events**: Use `<CONTROL>_<ACTION>` (see Action Queue rule for control/action list). Add the new union member to `AppActionV2` in action-types.ts with payload types from `src/model/schemas.ts` where applicable. In the processor, invoke a controller; controller uses operations for setState, persist, undo. Add reducer cases in the appropriate reducer in `src/domain/state/` (e.g. `reducer.ts` for app state, `window-state-reducer.ts` for window slice). Use the add-app-action skill when adding a new action.
 - **New ViewModels**: Create hook in app/viewmodel/, consume `useAppState()`, return derived data
 - **Renderer → Main**: Use gateway/services from domain only (controllers/operations); app never imports gateway. Never import from gateway/data or domain/controllers in UI/viewmodel (except controller invocation from the processor).
 - **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`
 - **Controller function names**: Name controller functions by the **action executed** (e.g. `setActiveTab`, `loadThemeRefs`, `saveCatalog`), not by the UI event or control (e.g. `handleTabBarOnSelect`, `handleSaveButtonOnClick`). Controllers stay decoupled from the UI; the processor maps UI events to controller functions.
+- **Validations before operations**: In controllers that need guards, call the appropriate validation (e.g. `canMaximizeWindow(getState)`) before invoking the operation; skip or return early if the validation returns false. Pass `getState` (or equivalent) into the controller when it must run validations that read app state.
 
 For the canonical list of control types and their actions, see the Action Queue rule (`.cursor/rules/vayeate-theme-studio-action-queue.mdc`).

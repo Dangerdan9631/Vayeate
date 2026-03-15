@@ -125,6 +125,29 @@ function createWindow(): void {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+
+  mainWindow.on('minimize', () => {
+    mainWindow?.webContents.send('window:minimized');
+  });
+  mainWindow.on('maximize', () => {
+    mainWindow?.webContents.send('window:maximized');
+  });
+  mainWindow.on('unmaximize', () => {
+    mainWindow?.webContents.send('window:unmaximized');
+  });
+  mainWindow.on('restore', () => {
+    mainWindow?.webContents.send('window:restored');
+  });
+  mainWindow.on('resize', () => {
+    if (mainWindow == null || mainWindow.webContents.isDestroyed()) return;
+    const bounds = mainWindow.getBounds();
+    mainWindow.webContents.send('window:resized', bounds.width, bounds.height);
+  });
+  mainWindow.on('move', () => {
+    if (mainWindow == null || mainWindow.webContents.isDestroyed()) return;
+    const bounds = mainWindow.getBounds();
+    mainWindow.webContents.send('window:moved', bounds.x, bounds.y);
+  });
 }
 
 app.whenReady().then(async () => {

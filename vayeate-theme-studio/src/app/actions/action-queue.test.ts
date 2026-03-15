@@ -6,20 +6,16 @@ import type { QueueStatus } from './action-queue';
 describe('ActionQueue', () => {
   it('processes actions in FIFO order and calls setState with correct updates', async () => {
     const received: { action: AppActionV2; updates: AppStateUpdate[] }[] = [];
-    const processor: ActionProcessor = async (action, setState) => {
+    const processor: ActionProcessor = async (action) => {
       const updates: AppStateUpdate[] = [];
-      const captureSetState = (update: AppStateUpdate) => {
-        updates.push(update);
-        setState(update);
-      };
+      const setState = (update: AppStateUpdate) => updates.push(update);
       if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
-        captureSetState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
+        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
       received.push({ action, updates });
     };
 
     const queue = new ActionQueue(processor);
-    queue.onStateUpdate = () => {};
 
     queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
     queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'themes' });
@@ -35,17 +31,15 @@ describe('ActionQueue', () => {
 
   it('processes next action only after previous processor completes', async () => {
     const order: string[] = [];
-    const processor: ActionProcessor = async (action, setState) => {
+    const processor: ActionProcessor = async (action) => {
       if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
         order.push(`start-${action.tabId as string}`);
         await new Promise((r) => setTimeout(r, 20));
         order.push(`end-${action.tabId as string}`);
-        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
     };
 
     const queue = new ActionQueue(processor);
-    queue.onStateUpdate = () => {};
 
     queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'catalogs' });
     queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
@@ -57,15 +51,11 @@ describe('ActionQueue', () => {
 
   it('calls onQueueStatus with processing state and queue length', async () => {
     const statuses: QueueStatus[] = [];
-    const processor: ActionProcessor = async (action, setState) => {
+    const processor: ActionProcessor = async (_action) => {
       await new Promise((r) => setTimeout(r, 10));
-      if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
-        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
-      }
     };
 
     const queue = new ActionQueue(processor);
-    queue.onStateUpdate = () => {};
     queue.onQueueStatus = (s) => statuses.push({ ...s });
 
     queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'catalogs' });
@@ -79,16 +69,16 @@ describe('ActionQueue', () => {
     expect(hadProcessing).toBe(true);
   });
 
-  it('calls onStateUpdate when processor calls setState', async () => {
+  it('processor uses setState from closure to apply updates', async () => {
     const updates: AppStateUpdate[] = [];
-    const processor: ActionProcessor = async (action, setState) => {
+    const setState = (u: AppStateUpdate) => updates.push(u);
+    const processor: ActionProcessor = async (action) => {
       if (action.type === 'APP_APP_ON_LOAD') {
         setState({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
       }
     };
 
     const queue = new ActionQueue(processor);
-    queue.onStateUpdate = (u) => updates.push(u);
 
     queue.enqueue({ type: 'APP_APP_ON_LOAD' });
 

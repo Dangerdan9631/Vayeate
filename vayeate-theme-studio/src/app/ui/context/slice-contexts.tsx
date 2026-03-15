@@ -7,17 +7,17 @@ import type {
 } from '../../../domain/state/app-state';
 import type { TabId } from '../tabs';
 
-export const AppDispatchContext = createContext<((action: AppActionV2) => void) | null>(null);
+export const AppDispatchContext = createContext<((action: AppActionV2) => Promise<void>) | null>(null);
 export const ActiveTabContext = createContext<TabId | null>(null);
 export const CatalogsStateContext = createContext<CatalogsState | null>(null);
 export const TemplatesStateContext = createContext<TemplatesState | null>(null);
 export const ThemesStateContext = createContext<ThemesState | null>(null);
 
 /** Returns dispatch when inside AppProvider; otherwise a no-op so components can be tested in isolation. */
-export function useAppDispatch(): (action: AppActionV2) => void {
+export function useAppDispatch(): (action: AppActionV2) => Promise<void> {
   const dispatch = useContext(AppDispatchContext);
   if (!dispatch) {
-    return () => {};
+    return () => Promise.resolve();
   }
   return dispatch;
 }

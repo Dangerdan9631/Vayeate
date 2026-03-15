@@ -54,6 +54,37 @@ const electronAPI = {
       callback(level, args),
     );
   },
+  /** Subscribe to window state events from main (minimize, maximize, unmaximize, restore). Returns unsubscribe. */
+  onWindowState: (callback: (event: 'minimized' | 'maximized' | 'unmaximized' | 'restored') => void) => {
+    const onMinimized = () => callback('minimized');
+    const onMaximized = () => callback('maximized');
+    const onUnmaximized = () => callback('unmaximized');
+    const onRestored = () => callback('restored');
+    ipcRenderer.on('window:minimized', onMinimized);
+    ipcRenderer.on('window:maximized', onMaximized);
+    ipcRenderer.on('window:unmaximized', onUnmaximized);
+    ipcRenderer.on('window:restored', onRestored);
+    return () => {
+      ipcRenderer.removeListener('window:minimized', onMinimized);
+      ipcRenderer.removeListener('window:maximized', onMaximized);
+      ipcRenderer.removeListener('window:unmaximized', onUnmaximized);
+      ipcRenderer.removeListener('window:restored', onRestored);
+    };
+  },
+  /** Subscribe to window resize events from main. Returns unsubscribe. */
+  onWindowResize: (callback: (size: { width: number; height: number }) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, width: number, height: number) =>
+      callback({ width, height });
+    ipcRenderer.on('window:resized', handler);
+    return () => ipcRenderer.removeListener('window:resized', handler);
+  },
+  /** Subscribe to window move events from main. Returns unsubscribe. */
+  onWindowMove: (callback: (position: { x: number; y: number }) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, x: number, y: number) =>
+      callback({ x, y });
+    ipcRenderer.on('window:moved', handler);
+    return () => ipcRenderer.removeListener('window:moved', handler);
+  },
   /** Send renderer logs to main process so they appear in the IDE/terminal console. */
   sendLog: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => {
     ipcRenderer.send('renderer-log', level, tag, args);

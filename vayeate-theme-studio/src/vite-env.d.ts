@@ -44,6 +44,14 @@ declare global {
       toggleDevTools?: () => Promise<void>;
       /** Subscribe to main process logs so they appear in the renderer DevTools console. */
       onMainLog?: (callback: (level: 'debug' | 'info' | 'warn' | 'error', args: string[]) => void) => void;
+      /** Subscribe to window state events from main. Returns unsubscribe. */
+      onWindowState?: (
+        callback: (event: 'minimized' | 'maximized' | 'unmaximized' | 'restored') => void,
+      ) => () => void;
+      /** Subscribe to window resize events from main. Returns unsubscribe. */
+      onWindowResize?: (callback: (size: { width: number; height: number }) => void) => () => void;
+      /** Subscribe to window move events from main. Returns unsubscribe. */
+      onWindowMove?: (callback: (position: { x: number; y: number }) => void) => () => void;
       /** Send renderer logs to main process so they appear in the IDE/terminal console. */
       sendLog?: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => void;
       undoV2Save?: (stackId: string, payload: string) => Promise<void>;

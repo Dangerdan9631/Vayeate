@@ -1,5 +1,4 @@
 import type { AppActionV2 } from './action-types';
-import type { AppStateUpdate } from '../../domain/state/app-state';
 import { createLogger } from '../../domain/utils/logger';
 
 const log = createLogger('ActionQueue');
@@ -9,13 +8,15 @@ export interface QueueStatus {
   queueLength: number;
 }
 
-export type ActionProcessor = (
-  action: AppActionV2,
-  setState: (update: AppStateUpdate) => void
-) => Promise<void>;
+export type ActionProcessor = (action: AppActionV2) => Promise<void>;
+
+interface QueuedAction {
+  action: AppActionV2;
+  resolve: () => void;
+}
 
 export class ActionQueue {
-  private queue: AppActionV2[] = [];
+  private queue: QueuedAction[] = [];
   private processing = false;
   private processor: ActionProcessor;
 
@@ -23,10 +24,12 @@ export class ActionQueue {
     this.processor = processor;
   }
 
-  enqueue(action: AppActionV2): void {
-    this.queue.push(action);
-    this.emitStatus();
-    this.process();
+  enqueue(action: AppActionV2): Promise<void> {
+    return new Promise((resolve) => {
+      this.queue.push({ action, resolve });
+      this.emitStatus();
+      this.process();
+    });
   }
 
   private async process(): Promise<void> {
@@ -35,15 +38,14 @@ export class ActionQueue {
     this.emitStatus();
 
     while (this.queue.length > 0) {
-      const action = this.queue.shift()!;
+      const { action, resolve } = this.queue.shift()!;
       this.emitStatus();
-      const setState = (update: AppStateUpdate) => {
-        this.onStateUpdate(update);
-      };
       try {
-        await this.processor(action, setState);
+        await this.processor(action);
       } catch (err) {
         log.error('Error processing action:', action.type, err);
+      } finally {
+        resolve();
       }
     }
 
@@ -55,6 +57,5 @@ export class ActionQueue {
     this.onQueueStatus({ isProcessing: this.processing, queueLength: this.queue.length });
   }
 
-  onStateUpdate: (update: AppStateUpdate) => void = () => {};
   onQueueStatus: (status: QueueStatus) => void = () => {};
 }

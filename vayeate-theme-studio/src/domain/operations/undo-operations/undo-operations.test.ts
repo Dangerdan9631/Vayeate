@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AppState } from '../../state/app-state';
+import { initialAppState } from '../../state/app-state';
 import {
   clearPersistedUndo,
   performUndo,
@@ -16,62 +17,6 @@ vi.mock('../../core/undo-manager-v2', () => ({
     clearPersisted: vi.fn().mockResolvedValue(undefined),
   },
 }));
-
-const initialAppState: AppState = {
-  activeTab: 'catalogs',
-  catalogs: {
-    catalogRefs: [],
-    selectedRef: null,
-    catalog: null,
-    loadedForDisplay: {},
-    isCreating: false,
-    createDialogOpen: false,
-    createFormName: '',
-    createFormType: 'manual',
-    bulkAddDialogOpen: false,
-    bulkAddText: '',
-    tokensSearchText: '',
-    newSourceUrl: '',
-    newSourceTokenType: 'theme',
-    newSourceType: 'default',
-    newTokenKey: '',
-  },
-  templates: {
-    templateRefs: [],
-    selectedRef: null,
-    template: null,
-    isCreating: false,
-    createDialogOpen: false,
-    createFormName: '',
-    mappingSearchText: '',
-    mappingColorVariableFilter: [],
-    mappingContrastVariableFilter: [],
-    mappingTokenGroupSelection: '',
-    variablesSearchText: '',
-  },
-  themes: {
-    themeRefs: [],
-    selectedRef: null,
-    theme: null,
-    checkedColorRefs: [],
-    checkedContrastRefs: [],
-    hueAdjustment: 0,
-    hueReferenceHex: '#FF0000',
-    isCreating: false,
-    createDialogOpen: false,
-    createFormName: '',
-    generateResult: null,
-    saveError: null,
-    assignColorDraftText: '',
-    themeVariablesSearchText: '',
-    previewVariableFilterText: '',
-    selectedPreviewSampleKey: '',
-    editorPreviews: [],
-    loadedTemplateForTheme: null,
-  },
-  queueStatus: { isProcessing: false, queueLength: 0 },
-  undoStackId: { currentUndoStackId: null, undoListVersion: 0 },
-};
 
 describe('undo-operations', () => {
   let setState: ReturnType<typeof vi.fn>;

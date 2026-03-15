@@ -49,6 +49,8 @@ Use this file to route an AI coding agent to the right instruction files, archit
 | Unknown / mixed task | `AGENTS.md` | `.github/copilot-instructions.md`, relevant `.github/skills/*.md`, then target module files |
 | Adding or changing app actions / action types | `vayeate-theme-studio/src/app/actions/action-types.ts` (canonical list = `AppActionV2` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
 | Adding or modifying Theme Studio operations | `.cursor/rules/vayeate-theme-studio-operations.mdc` | `.cursor/skills/add-or-modify-operation/SKILL.md`, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
+| Adding or using validations | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “Validations”) | `vayeate-theme-studio/src/domain/validations/`, controllers that use them |
+| State / reducer structure or new state slice | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “State and reducers”) | `vayeate-theme-studio/src/domain/state/`, `vayeate-theme-studio/src/app/ui/context/AppContext.tsx` |
 | App changes that mutate state or files (undoable work) | `.cursor/rules/vayeate-theme-studio-undo.mdc` | Existing operations/controllers/viewmodels, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx` when implementing or migrating |
 | Adding a new undo action type | `.cursor/skills/define-undo-action/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `.cursor/rules/vayeate-theme-studio-undo.mdc` |
