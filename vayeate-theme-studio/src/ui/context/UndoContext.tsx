@@ -40,7 +40,7 @@ export function UndoProvider({
   children: ReactNode;
   setState: SetState;
 }) {
-  const { state, dispatchV2 } = useAppState();
+  const { state, dispatch } = useAppState();
   const currentStackId = state.undoStackId.currentUndoStackId;
   const undoListVersion = state.undoStackId.undoListVersion;
 
@@ -79,18 +79,18 @@ export function UndoProvider({
   }, [currentStackId, undoListVersion, setState]);
 
   const undo = useCallback(() => {
-    dispatchV2({ type: 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK' });
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK' });
+  }, [dispatch]);
 
   const redo = useCallback(() => {
-    dispatchV2({ type: 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK' });
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK' });
+  }, [dispatch]);
 
   const goTo = useCallback(
     (frameId: string) => {
-      dispatchV2({ type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK', frameId });
+      dispatch({ type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK', frameId });
     },
-    [dispatchV2],
+    [dispatch],
   );
 
   const value = useMemo<UndoStackValue>(

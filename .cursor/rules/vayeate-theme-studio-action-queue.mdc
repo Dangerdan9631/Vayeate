@@ -57,15 +57,10 @@ Use these action suffixes for each control type when naming events:
 
 - **Type definition**: `AppActionV2` is a discriminated union in `vayeate-theme-studio/src/actions/action-types.ts`. Each member is `{ type: '<ACTION_NAME>'; ...payload }`. **The `AppActionV2` union is the canonical list of all app action event names**; there is no separate list file.
 - **Naming convention**: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>` (e.g. `CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK`). CONTEXT: APP, CATALOG, TEMPLATE, THEME. SUBCONTEXT: card/section/dialog (e.g. DETAILS, CREATE_DIALOG). CONTROL and ACTION: BUTTON → ON_CLICK, ON_DOUBLE_CLICK, ON_RIGHT_CLICK; LIST → ON_SELECT, ON_COMMIT; CHECKBOX → ON_TOGGLE; TEXT → ON_CHANGE, ON_COMMIT; SLIDER → ON_DELTA, ON_COMMIT; COLOR_PICKER → ON_SELECT, ON_COMMIT; top-level → ON_LOAD, ON_CLOSE.
-- **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`). Keep `AppAction` (legacy) and `AppActionV2` both in action-types.ts as documented.
+- **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`).
+- **Tests**: `useAppDispatch()` returns a no-op when used outside `AppProvider`, so components that only call `dispatch` can be tested without wrapping in `AppProvider`.
 
-## V2 pipeline and dual dispatch
-
-- **V2 pipeline**: A separate `ActionQueueV2` is processed by `createActionProcessorV2` in AppContext. The app exposes `dispatchV2` via `AppDispatchV2Context` and `useAppDispatchV2()`. The V2 queue uses the same `setState` as the legacy queue; handlers are implemented in the processor switch.
-- **Dual dispatch**: Where a call site already dispatches an `AppAction` (V1) and an `AppActionV2` equivalent exists, keep the existing `dispatch(V1)` and add `dispatchV2(V2)` with the correct payload so both events are emitted. Use schema types from `src/model/schemas.ts` for payloads (e.g. `CatalogName`, `Version`, `ThemeName`, `TemplateName`).
-- **Tests**: `useAppDispatchV2()` returns a no-op when used outside `AppProvider`, so components that only call `dispatchV2` can be tested without wrapping in `AppProvider`.
-
-## ActionProcessorV2 case comments
+## Action processor case comments
 
 When adding or editing cases in `createActionProcessorV2` (in AppContext), write each case comment as **high-level pseudocode** for the implementation:
 
@@ -77,10 +72,9 @@ When adding or editing cases in `createActionProcessorV2` (in AppContext), write
 ## Adding a New Action
 
 ```typescript
-// 1. action-types.ts - Use CONTROL_ACTION naming
-export type AppAction =
-  | { type: 'SET_ACTIVE_TAB'; tabId: TabId }
-  | { type: 'CATALOG_SYNC_BUTTON_ON_CLICK'; catalog: Catalog }
+// 1. action-types.ts - Use CONTROL_ACTION naming; add to AppActionV2 union
+export type AppActionV2 =
+  | ...
   | { type: 'MY_PAGE_MY_BUTTON_ON_CLICK'; payload: string };  // Add here
 
 // 2. app-state.ts - Add reducer case for state updates produced by operations
@@ -94,7 +88,7 @@ case 'MY_PAGE_MY_BUTTON_ON_CLICK': {
 }
 ```
 
-The controller invokes operations (e.g. load data, setState, persist). The processor does not call services or setState directly for this event. When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`). For AppActionV2, add the new member to the union in action-types.ts following the naming convention above; use the add-app-action skill when adding a new action.
+The controller invokes operations (e.g. load data, setState, persist). The processor does not call services or setState directly for this event. When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`). Add the new member to the `AppActionV2` union in action-types.ts following the naming convention above; use the add-app-action skill when adding a new action.
 
 ## Rules
 
@@ -103,5 +97,5 @@ The controller invokes operations (e.g. load data, setState, persist). The proce
 - Processor handles events by invoking controllers; it does not implement business logic inline
 - Controllers compose operations; operations perform setState, persist, or undo
 - Processor must call `setState` only via the updates produced by operations (invoked through controllers), not mutate state directly
-- Use `AppStateUpdate` for state changes (separate from `AppAction` — actions are user intent / UI events, updates are state mutations)
+- Use `AppStateUpdate` for state changes (separate from `AppActionV2` — actions are user intent / UI events, updates are state mutations)
 - When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`)

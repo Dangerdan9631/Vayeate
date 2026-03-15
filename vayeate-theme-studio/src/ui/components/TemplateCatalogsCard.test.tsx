@@ -8,9 +8,6 @@ function renderCard(props: {
   includedCatalogMap?: Map<string, string>;
   isLatestVersion?: boolean;
   includedCatalogNamesWithUpdates?: string[];
-  onToggleCatalog?: (name: string, include: boolean) => void;
-  onChangeCatalogVersion?: (name: string, version: string) => void;
-  onUpdateAll?: () => void;
 }) {
   const defaultCatalogVersionsByName: Record<string, CatalogReference[]> = {
     'cat-a': [
@@ -26,9 +23,6 @@ function renderCard(props: {
       includedCatalogMap={props.includedCatalogMap ?? defaultIncludedCatalogMap}
       isLatestVersion={props.isLatestVersion ?? true}
       includedCatalogNamesWithUpdates={props.includedCatalogNamesWithUpdates ?? ['cat-a']}
-      onToggleCatalog={props.onToggleCatalog ?? (() => {})}
-      onChangeCatalogVersion={props.onChangeCatalogVersion ?? (() => {})}
-      onUpdateAll={props.onUpdateAll ?? (() => {})}
     />,
   );
 }

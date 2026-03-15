@@ -69,6 +69,9 @@ export function ThemesPage() {
               applyToLight={vm.applyHueToLight}
               onApplyToDarkChange={vm.setApplyHueToDark}
               onApplyToLightChange={vm.setApplyHueToLight}
+              clusterCountK={vm.paletteClusterCountK}
+              onClusterCountDelta={vm.onClusterCountDelta}
+              onClusterCountCommit={vm.onClusterCountCommit}
               colorAssignments={vm.displayColorAssignments}
               colorVariables={vm.colorVariablesFromTemplate}
               groups={vm.groupsFromTemplate}
@@ -93,6 +96,8 @@ export function ThemesPage() {
               orphanContrastKeys={vm.orphanContrastKeys}
               checkedColorRefs={vm.checkedColorRefs}
               checkedContrastRefs={vm.checkedContrastRefs}
+              searchValue={vm.themeVariablesSearchText}
+              onSearchChange={vm.setVariablesSearchText}
               onToggleColorChecked={vm.toggleColorChecked}
               onToggleContrastChecked={vm.toggleContrastChecked}
               onSetAllColorChecked={vm.setAllColorChecked}

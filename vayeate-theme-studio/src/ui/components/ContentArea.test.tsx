@@ -26,6 +26,10 @@ const mockTheme: Theme = {
   editorPreviewMenuBackgroundTokenRef: null,
   colorAssignments: [],
   contrastAssignments: [],
+  applyPaletteToDark: true,
+  applyPaletteToLight: true,
+  paletteClusterCountK: 5,
+  paletteClusterGroupIds: [],
 };
 
 beforeEach(() => {
@@ -110,7 +114,7 @@ describe('ContentArea', () => {
 
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
-      ref.current!.dispatch({ type: 'THEME_LIST_ON_SELECT', name: 'test-theme', version: '1.0.0' });
+      ref.current!.dispatch({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'test-theme', version: '1.0.0' });
       await new Promise((r) => setTimeout(r, 150));
     });
     expect(ref.current!.state.themes.selectedRef).toEqual({ name: 'test-theme', version: '1.0.0' });

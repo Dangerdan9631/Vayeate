@@ -55,6 +55,10 @@ const sampleTheme: Theme = {
   editorPreviewMenuBackgroundTokenRef: null,
   colorAssignments: [],
   contrastAssignments: [],
+  applyPaletteToDark: true,
+  applyPaletteToLight: true,
+  paletteClusterCountK: 5,
+  paletteClusterGroupIds: [],
 };
 
 const sampleThemeRef: ThemeReference = { name: 'test-theme', version: '1.0.0' };
@@ -77,7 +81,13 @@ describe('initialAppState', () => {
     expect(initialAppState.templates.selectedRef).toBeNull();
     expect(initialAppState.templates.isCreating).toBe(false);
     expect(initialAppState.templates.createDialogOpen).toBe(false);
+    expect(initialAppState.templates.createFormName).toBe('');
     expect(initialAppState.templates.templateRefs).toEqual([]);
+    expect(initialAppState.templates.mappingSearchText).toBe('');
+    expect(initialAppState.templates.mappingColorVariableFilter).toEqual([]);
+    expect(initialAppState.templates.mappingContrastVariableFilter).toEqual([]);
+    expect(initialAppState.templates.mappingTokenGroupSelection).toBe('');
+    expect(initialAppState.templates.variablesSearchText).toBe('');
   });
 
   it('has no selected theme and is not creating', () => {
@@ -85,9 +95,13 @@ describe('initialAppState', () => {
     expect(initialAppState.themes.selectedRef).toBeNull();
     expect(initialAppState.themes.isCreating).toBe(false);
     expect(initialAppState.themes.createDialogOpen).toBe(false);
+    expect(initialAppState.themes.createFormName).toBe('');
     expect(initialAppState.themes.generateResult).toBeNull();
     expect(initialAppState.themes.saveError).toBeNull();
+    expect(initialAppState.themes.assignColorDraftText).toBe('');
     expect(initialAppState.themes.themeRefs).toEqual([]);
+    expect(initialAppState.themes.previewVariableFilterText).toBe('');
+    expect(initialAppState.themes.selectedPreviewSampleKey).toBe('');
   });
 
   it('has idle queue status', () => {
@@ -160,6 +174,36 @@ describe('appStateReducer', () => {
     expect(state.templates.createDialogOpen).toBe(true);
   });
 
+  it('handles SET_TEMPLATE_CREATE_FORM_NAME', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_CREATE_FORM_NAME', value: 'my-template' });
+    expect(state.templates.createFormName).toBe('my-template');
+  });
+
+  it('handles SET_TEMPLATE_MAPPING_SEARCH_TEXT', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_MAPPING_SEARCH_TEXT', value: 'foo' });
+    expect(state.templates.mappingSearchText).toBe('foo');
+  });
+
+  it('handles SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER', values: ['fg', 'bg'] as import('../model/schemas').ColorVariableKey[] });
+    expect(state.templates.mappingColorVariableFilter).toEqual(['fg', 'bg']);
+  });
+
+  it('handles SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER', values: ['contrast1'] as import('../model/schemas').ContrastVariableKey[] });
+    expect(state.templates.mappingContrastVariableFilter).toEqual(['contrast1']);
+  });
+
+  it('handles SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION', value: 'group1' });
+    expect(state.templates.mappingTokenGroupSelection).toBe('group1');
+  });
+
+  it('handles SET_TEMPLATE_VARIABLES_SEARCH_TEXT', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT', value: 'bar' });
+    expect(state.templates.variablesSearchText).toBe('bar');
+  });
+
   it('handles SET_THEME_REFS', () => {
     const refs = [sampleThemeRef];
     const state = appStateReducer(initialAppState, { type: 'SET_THEME_REFS', refs });
@@ -186,6 +230,11 @@ describe('appStateReducer', () => {
     expect(state.themes.createDialogOpen).toBe(true);
   });
 
+  it('handles SET_THEME_CREATE_FORM_NAME', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_THEME_CREATE_FORM_NAME', value: 'my-theme' });
+    expect(state.themes.createFormName).toBe('my-theme');
+  });
+
   it('handles SET_GENERATE_RESULT', () => {
     const state = appStateReducer(initialAppState, {
       type: 'SET_GENERATE_RESULT',
@@ -202,6 +251,27 @@ describe('appStateReducer', () => {
     expect(state.themes.saveError).toBe('Invalid theme: validation failed');
     const cleared = appStateReducer(state, { type: 'SET_THEME_SAVE_ERROR', error: null });
     expect(cleared.themes.saveError).toBeNull();
+  });
+
+  it('handles SET_ASSIGN_COLOR_DRAFT_TEXT', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_ASSIGN_COLOR_DRAFT_TEXT', value: '#abc' });
+    expect(state.themes.assignColorDraftText).toBe('#abc');
+  });
+
+  it('handles SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', () => {
+    const state = appStateReducer(initialAppState, {
+      type: 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT',
+      value: 'filter',
+    });
+    expect(state.themes.previewVariableFilterText).toBe('filter');
+  });
+
+  it('handles SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', () => {
+    const state = appStateReducer(initialAppState, {
+      type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY',
+      value: 'sample-1',
+    });
+    expect(state.themes.selectedPreviewSampleKey).toBe('sample-1');
   });
 
   it('returns state unchanged for unknown update type', () => {

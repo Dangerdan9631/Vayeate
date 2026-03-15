@@ -1,4 +1,4 @@
-import { useAppDispatchV2 } from '../context/slice-contexts';
+import { useAppDispatch } from '../context/slice-contexts';
 import type { Theme, TemplateReference } from '../../model/schemas';
 import type { GenerateResult } from '../../state/app-state';
 
@@ -27,11 +27,11 @@ export function ThemeDetailsCard({
   generateResult,
   onDeleteVersion,
   onGenerate,
-  onBumpVersion,
+  onBumpVersion: _onBumpVersion,
   onChangeTemplate,
   onChangeTemplateVersion,
 }: ThemeDetailsCardProps) {
-  const dispatchV2 = useAppDispatchV2();
+  const dispatch = useAppDispatch();
   const versionsForTemplate = selectedTemplateName
     ? templateVersionsByName[selectedTemplateName] ?? []
     : [];
@@ -64,7 +64,7 @@ export function ThemeDetailsCard({
               const name = e.target.value;
               if (name) {
                 const version = templateVersionsByName[name]?.[0]?.version ?? '';
-                dispatchV2({ type: 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT', name, version });
+                dispatch({ type: 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT', name, version });
                 onChangeTemplate(name);
               }
             }}
@@ -88,7 +88,7 @@ export function ThemeDetailsCard({
               value={selectedTemplateVersion ?? ''}
               onChange={(e) => {
                 const version = e.target.value;
-                dispatchV2({ type: 'THEME_DETAILS_TEMPLATE_VERSION_LIST_ON_COMMIT', name: selectedTemplateName, version });
+                dispatch({ type: 'THEME_DETAILS_TEMPLATE_VERSION_LIST_ON_COMMIT', name: selectedTemplateName, version });
                 onChangeTemplateVersion(version);
               }}
             >
@@ -119,10 +119,7 @@ export function ThemeDetailsCard({
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => {
-            dispatchV2({ type: 'THEME_DETAILS_INCREMENT_VERSION_BUTTON_ON_CLICK' });
-            onBumpVersion();
-          }}
+          onClick={() => dispatch({ type: 'THEME_DETAILS_INCREMENT_VERSION_BUTTON_ON_CLICK' })}
           title="Create a new version (e.g. 1.0.0 → 1.0.1)"
         >
           Increment Version

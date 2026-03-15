@@ -44,6 +44,35 @@ export function setThemeSaveError(setState: SetState, error: string | null): voi
   setState({ type: 'SET_THEME_SAVE_ERROR', error });
 }
 
+export function setThemeCreateFormName(setState: SetState, value: string): void {
+  setState({ type: 'SET_THEME_CREATE_FORM_NAME', value });
+}
+
+/** Set draft text for the palette assign-color input (session only). */
+export function setAssignColorDraftText(setState: SetState, value: string): void {
+  setState({ type: 'SET_ASSIGN_COLOR_DRAFT_TEXT', value });
+}
+
+/** Set search filter text for the theme variables list. */
+export function setThemeVariablesSearchText(setState: SetState, value: string): void {
+  setState({ type: 'SET_THEME_VARIABLES_SEARCH_TEXT', value });
+}
+
+/** Set preview variable list filter text (THEME_PREVIEW_VARIABLE_FILTER_TEXT_ON_CHANGE). */
+export function setThemePreviewVariableFilterText(setState: SetState, value: string): void {
+  setState({ type: 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', value });
+}
+
+/** Clear preview variable list filter (THEME_PREVIEW_VARIABLE_FILTER_CLEAR_ON_CLICK). */
+export function setThemePreviewVariableFilterClear(setState: SetState): void {
+  setState({ type: 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', value: '' });
+}
+
+/** Set selected preview sample key for scrolling (THEME_PREVIEW_SAMPLE_LIST_ON_COMMIT). */
+export function setThemePreviewSelectedSampleKey(setState: SetState, value: string): void {
+  setState({ type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', value });
+}
+
 export function setGenerateResult(
   setState: SetState,
   result: { success: boolean; message: string } | null,

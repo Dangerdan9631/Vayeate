@@ -38,6 +38,10 @@ describe('createThemeRepository', () => {
     editorPreviewMenuBackgroundTokenRef: null,
     colorAssignments: [],
     contrastAssignments: [],
+    applyPaletteToDark: true,
+    applyPaletteToLight: true,
+    paletteClusterCountK: 5,
+    paletteClusterGroupIds: [],
   };
 
   it('saves and loads a theme round-trip', async () => {

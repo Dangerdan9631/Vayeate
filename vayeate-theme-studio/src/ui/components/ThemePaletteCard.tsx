@@ -25,7 +25,6 @@ const UNGROUPED_KEY = '__ungrouped__';
 
 const CLUSTER_K_MIN = 1;
 const CLUSTER_K_MAX = 12;
-const CLUSTER_K_DEFAULT = 5;
 
 /** Delay (ms) before treating a primary swatch click as single-click; allows double-click to be detected. */
 const PRIMARY_SINGLE_CLICK_DELAY_MS = 300;
@@ -55,6 +54,9 @@ interface ThemePaletteCardProps {
   applyToLight: boolean;
   onApplyToDarkChange: (checked: boolean) => void;
   onApplyToLightChange: (checked: boolean) => void;
+  clusterCountK: number;
+  onClusterCountDelta: (value: number) => void;
+  onClusterCountCommit: (value: number) => void;
   colorAssignments: readonly ColorAssignment[];
   colorVariables: readonly ColorVariable[];
   groups: readonly string[];
@@ -164,6 +166,9 @@ export function ThemePaletteCard({
   applyToLight,
   onApplyToDarkChange,
   onApplyToLightChange,
+  clusterCountK,
+  onClusterCountDelta,
+  onClusterCountCommit,
   colorAssignments,
   colorVariables,
   groups: _groups,
@@ -228,7 +233,6 @@ export function ThemePaletteCard({
       window.removeEventListener('pointercancel', handleHuePointerUp);
     };
   }, [onHueDragEnd, handleHuePointerUp]);
-  const [clusterCountK, setClusterCountK] = useState(CLUSTER_K_DEFAULT);
   const [clusterByDark, setClusterByDark] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
   const [colorPickerValue, setColorPickerValue] = useState('#808080');
@@ -512,7 +516,9 @@ export function ThemePaletteCard({
             max={CLUSTER_K_MAX}
             step={1}
             value={clusterCountK}
-            onChange={(e) => setClusterCountK(Number(e.target.value))}
+            onChange={(e) => onClusterCountDelta(Number(e.target.value))}
+            onPointerUp={() => onClusterCountCommit(clusterCountK)}
+            onMouseUp={() => onClusterCountCommit(clusterCountK)}
             aria-label="Cluster count (k)"
             aria-valuemin={CLUSTER_K_MIN}
             aria-valuemax={CLUSTER_K_MAX}

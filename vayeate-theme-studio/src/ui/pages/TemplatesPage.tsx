@@ -87,9 +87,6 @@ export function TemplatesPage() {
               includedCatalogMap={vm.includedCatalogMap}
               isLatestVersion={vm.isLatestVersion}
               includedCatalogNamesWithUpdates={vm.includedCatalogNamesWithUpdates}
-              onToggleCatalog={vm.toggleCatalog}
-              onChangeCatalogVersion={vm.changeCatalogVersion}
-              onUpdateAll={vm.updateAllCatalogsToLatest}
             />
           )}
         </div>
@@ -146,6 +143,8 @@ export function TemplatesPage() {
       </div>
       {vm.createDialogOpen && (
         <CreateTemplateDialog
+          createFormName={vm.createFormName}
+          setCreateFormName={vm.setCreateFormName}
           onCancel={vm.closeCreateDialog}
           onCreate={vm.createTemplate}
         />

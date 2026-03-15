@@ -280,6 +280,14 @@ export const themeSchema = z
     editorPreviewSelectionBackgroundContrastVariableRef: contrastVariableKeySchema.nullable().optional(),
     colorAssignments: z.array(colorAssignmentSchema).readonly(),
     contrastAssignments: z.array(contrastAssignmentSchema).readonly(),
+    /** Apply hue adjustments to dark theme colors (palette UI). */
+    applyPaletteToDark: z.boolean().optional().default(true),
+    /** Apply hue adjustments to light theme colors (palette UI). */
+    applyPaletteToLight: z.boolean().optional().default(true),
+    /** Cluster count (k) for palette swatch grouping; 1–12. */
+    paletteClusterCountK: z.number().min(1).max(12).optional().default(5),
+    /** Group IDs included in cluster view; omit or empty = all groups. */
+    paletteClusterGroupIds: z.array(z.string()).readonly().optional().default([]),
   })
   .readonly();
 export type Theme = z.infer<typeof themeSchema>;

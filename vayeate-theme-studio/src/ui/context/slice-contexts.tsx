@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { AppAction, AppActionV2 } from '../../actions/action-types';
+import type { AppActionV2 } from '../../actions/action-types';
 import type {
   CatalogsState,
   TemplatesState,
@@ -7,28 +7,19 @@ import type {
 } from '../../state/app-state';
 import type { TabId } from '../tabs';
 
-export const AppDispatchContext = createContext<((action: AppAction) => void) | null>(null);
-export const AppDispatchV2Context = createContext<((action: AppActionV2) => void) | null>(null);
+export const AppDispatchContext = createContext<((action: AppActionV2) => void) | null>(null);
 export const ActiveTabContext = createContext<TabId | null>(null);
 export const CatalogsStateContext = createContext<CatalogsState | null>(null);
 export const TemplatesStateContext = createContext<TemplatesState | null>(null);
 export const ThemesStateContext = createContext<ThemesState | null>(null);
 
-export function useAppDispatch(): (action: AppAction) => void {
+/** Returns dispatch when inside AppProvider; otherwise a no-op so components can be tested in isolation. */
+export function useAppDispatch(): (action: AppActionV2) => void {
   const dispatch = useContext(AppDispatchContext);
   if (!dispatch) {
-    throw new Error('useAppDispatch must be used within AppProvider');
-  }
-  return dispatch;
-}
-
-/** Returns dispatchV2 when inside AppProvider; otherwise a no-op so components can be tested in isolation. */
-export function useAppDispatchV2(): (action: AppActionV2) => void {
-  const dispatchV2 = useContext(AppDispatchV2Context);
-  if (!dispatchV2) {
     return () => {};
   }
-  return dispatchV2;
+  return dispatch;
 }
 
 export function useActiveTab(): TabId {

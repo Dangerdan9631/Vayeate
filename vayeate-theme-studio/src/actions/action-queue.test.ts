@@ -1,17 +1,18 @@
-import { ActionQueue, type ActionProcessor, type QueueStatus } from './action-queue';
-import type { AppAction } from './action-types';
+import { ActionQueue, type ActionProcessor } from './action-queue';
+import type { AppActionV2 } from './action-types';
 import type { AppStateUpdate } from '../state/app-state';
+import type { QueueStatus } from './action-queue';
 
 describe('ActionQueue', () => {
   it('processes actions in FIFO order and calls setState with correct updates', async () => {
-    const received: { action: AppAction; updates: AppStateUpdate[] }[] = [];
+    const received: { action: AppActionV2; updates: AppStateUpdate[] }[] = [];
     const processor: ActionProcessor = async (action, setState) => {
       const updates: AppStateUpdate[] = [];
       const captureSetState = (update: AppStateUpdate) => {
         updates.push(update);
         setState(update);
       };
-      if (action.type === 'TAB_BAR_ON_SELECT') {
+      if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
         captureSetState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
       received.push({ action, updates });
@@ -20,22 +21,22 @@ describe('ActionQueue', () => {
     const queue = new ActionQueue(processor);
     queue.onStateUpdate = () => {};
 
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'themes' });
+    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
+    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'themes' });
 
     await new Promise((r) => setTimeout(r, 50));
 
     expect(received).toHaveLength(2);
-    expect(received[0].action).toEqual({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
+    expect(received[0].action).toEqual({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
     expect(received[0].updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'templates' }]);
-    expect(received[1].action).toEqual({ type: 'TAB_BAR_ON_SELECT', tabId: 'themes' });
+    expect(received[1].action).toEqual({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'themes' });
     expect(received[1].updates).toEqual([{ type: 'SET_ACTIVE_TAB', tabId: 'themes' }]);
   });
 
   it('processes next action only after previous processor completes', async () => {
     const order: string[] = [];
     const processor: ActionProcessor = async (action, setState) => {
-      if (action.type === 'TAB_BAR_ON_SELECT') {
+      if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
         order.push(`start-${action.tabId as string}`);
         await new Promise((r) => setTimeout(r, 20));
         order.push(`end-${action.tabId as string}`);
@@ -46,8 +47,8 @@ describe('ActionQueue', () => {
     const queue = new ActionQueue(processor);
     queue.onStateUpdate = () => {};
 
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'catalogs' });
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
+    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'catalogs' });
+    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
 
     await new Promise((r) => setTimeout(r, 60));
 
@@ -58,7 +59,7 @@ describe('ActionQueue', () => {
     const statuses: QueueStatus[] = [];
     const processor: ActionProcessor = async (action, setState) => {
       await new Promise((r) => setTimeout(r, 10));
-      if (action.type === 'TAB_BAR_ON_SELECT') {
+      if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
         setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
       }
     };
@@ -67,8 +68,8 @@ describe('ActionQueue', () => {
     queue.onStateUpdate = () => {};
     queue.onQueueStatus = (s) => statuses.push({ ...s });
 
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'catalogs' });
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'templates' });
+    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'catalogs' });
+    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
 
     await new Promise((r) => setTimeout(r, 80));
 
@@ -81,15 +82,15 @@ describe('ActionQueue', () => {
   it('calls onStateUpdate when processor calls setState', async () => {
     const updates: AppStateUpdate[] = [];
     const processor: ActionProcessor = async (action, setState) => {
-      if (action.type === 'TAB_BAR_ON_SELECT') {
-        setState({ type: 'SET_ACTIVE_TAB', tabId: action.tabId });
+      if (action.type === 'APP_APP_ON_LOAD') {
+        setState({ type: 'SET_ACTIVE_TAB', tabId: 'catalogs' });
       }
     };
 
     const queue = new ActionQueue(processor);
     queue.onStateUpdate = (u) => updates.push(u);
 
-    queue.enqueue({ type: 'TAB_BAR_ON_SELECT', tabId: 'catalogs' });
+    queue.enqueue({ type: 'APP_APP_ON_LOAD' });
 
     await new Promise((r) => setTimeout(r, 20));
 

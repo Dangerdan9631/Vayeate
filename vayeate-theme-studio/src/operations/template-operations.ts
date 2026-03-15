@@ -1,4 +1,4 @@
-import type { Template, TemplateReference } from '../model/schemas';
+import type { ColorVariableKey, ContrastVariableKey, Template, TemplateReference } from '../model/schemas';
 import type { AppStateUpdate } from '../state/app-state';
 import { templateService } from '../services/template-service';
 
@@ -15,8 +15,38 @@ export function setSelectedTemplateRef(
   setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref });
 }
 
+export function setTemplateCreateFormName(setState: SetState, value: string): void {
+  setState({ type: 'SET_TEMPLATE_CREATE_FORM_NAME', value });
+}
+
 export function setTemplate(setState: SetState, template: Template | null): void {
   setState({ type: 'SET_TEMPLATE', template });
+}
+
+export function setTemplateMappingSearchText(setState: SetState, value: string): void {
+  setState({ type: 'SET_TEMPLATE_MAPPING_SEARCH_TEXT', value });
+}
+
+export function setTemplateMappingColorVariableFilter(
+  setState: SetState,
+  values: ColorVariableKey[],
+): void {
+  setState({ type: 'SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER', values });
+}
+
+export function setTemplateMappingContrastVariableFilter(
+  setState: SetState,
+  values: ContrastVariableKey[],
+): void {
+  setState({ type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER', values });
+}
+
+export function setTemplateMappingTokenGroupSelection(setState: SetState, value: string): void {
+  setState({ type: 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION', value });
+}
+
+export function setTemplateVariablesSearchText(setState: SetState, value: string): void {
+  setState({ type: 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT', value });
 }
 
 export async function loadTemplateRefs(setState: SetState): Promise<TemplateReference[]> {

@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme } from '../context/ColorSchemeContext';
 import { useUndoStack } from '../context/UndoContext';
-import { useAppDispatch, useAppDispatchV2 } from '../context/slice-contexts';
+import { useAppDispatch } from '../context/slice-contexts';
 
 export function MenuBar() {
   const dispatch = useAppDispatch();
-  const dispatchV2 = useAppDispatchV2();
   const { theme, toggleColorScheme } = useColorScheme();
   const { undo, redo, canUndo, canRedo, frames, currentId, goTo } = useUndoStack();
   const [fileOpen, setFileOpen] = useState(false);
@@ -80,52 +79,45 @@ export function MenuBar() {
   );
 
   const handleExit = useCallback(() => {
-    dispatchV2({ type: 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK' });
-    window.electronAPI?.closeWindow?.();
+    dispatch({ type: 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK' });
     setFileOpen(false);
-  }, [dispatchV2]);
+  }, [dispatch]);
 
   const handleReload = useCallback(() => {
-    dispatch({ type: 'VIEW_MENU_RELOAD_ON_CLICK' });
-    dispatchV2({ type: 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK' });
+    dispatch({ type: 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK' });
     setViewOpen(false);
-  }, [dispatch, dispatchV2]);
+  }, [dispatch]);
 
   const handleForceReload = useCallback(() => {
-    dispatch({ type: 'VIEW_MENU_FORCE_RELOAD_ON_CLICK' });
-    dispatchV2({ type: 'APP_VIEW_MENU_FORCE_RELOAD_BUTTON_ON_CLICK' });
+    dispatch({ type: 'APP_VIEW_MENU_FORCE_RELOAD_BUTTON_ON_CLICK' });
     setViewOpen(false);
-  }, [dispatch, dispatchV2]);
+  }, [dispatch]);
 
   const handleToggleDevTools = useCallback(() => {
-    dispatch({ type: 'VIEW_MENU_TOGGLE_DEV_TOOLS_ON_CLICK' });
-    dispatchV2({ type: 'APP_VIEW_MENU_TOGGLE_DEV_TOOLS_BUTTON_ON_CLICK' });
+    dispatch({ type: 'APP_VIEW_MENU_TOGGLE_DEV_TOOLS_BUTTON_ON_CLICK' });
     setViewOpen(false);
-  }, [dispatch, dispatchV2]);
+  }, [dispatch]);
 
   const handleMinimize = useCallback(() => {
-    dispatchV2({ type: 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK' });
-    window.electronAPI?.minimizeWindow?.();
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK' });
+  }, [dispatch]);
 
   const handleMaximize = useCallback(() => {
-    dispatchV2({ type: 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK' });
-    window.electronAPI?.maximizeWindow?.();
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK' });
+  }, [dispatch]);
 
   const handleClose = useCallback(() => {
-    dispatchV2({ type: 'APP_BAR_CLOSE_BUTTON_ON_CLICK' });
-    window.electronAPI?.closeWindow?.();
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_BAR_CLOSE_BUTTON_ON_CLICK' });
+  }, [dispatch]);
 
   const handleThemeToggle = useCallback(() => {
-    dispatchV2({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: theme !== 'light' });
+    dispatch({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: theme !== 'light' });
     toggleColorScheme();
-  }, [dispatchV2, theme, toggleColorScheme]);
+  }, [dispatch, theme, toggleColorScheme]);
 
   const handleTitleBarDrag = useCallback(() => {
-    dispatchV2({ type: 'APP_BAR_TITLE_BAR_ON_DRAG' });
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_BAR_TITLE_BAR_ON_DRAG' });
+  }, [dispatch]);
 
   return (
     <header className="menu-bar">

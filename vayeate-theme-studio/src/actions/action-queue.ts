@@ -1,5 +1,8 @@
-import type { AppAction } from './action-types';
+import type { AppActionV2 } from './action-types';
 import type { AppStateUpdate } from '../state/app-state';
+import { createLogger } from '../utils/logger';
+
+const log = createLogger('ActionQueue');
 
 export interface QueueStatus {
   isProcessing: boolean;
@@ -7,12 +10,12 @@ export interface QueueStatus {
 }
 
 export type ActionProcessor = (
-  action: AppAction,
+  action: AppActionV2,
   setState: (update: AppStateUpdate) => void
 ) => Promise<void>;
 
 export class ActionQueue {
-  private queue: AppAction[] = [];
+  private queue: AppActionV2[] = [];
   private processing = false;
   private processor: ActionProcessor;
 
@@ -20,7 +23,7 @@ export class ActionQueue {
     this.processor = processor;
   }
 
-  enqueue(action: AppAction): void {
+  enqueue(action: AppActionV2): void {
     this.queue.push(action);
     this.emitStatus();
     this.process();
@@ -39,8 +42,8 @@ export class ActionQueue {
       };
       try {
         await this.processor(action, setState);
-      } catch {
-        // swallow so queue continues
+      } catch (err) {
+        log.error('Error processing action:', action.type, err);
       }
     }
 

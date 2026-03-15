@@ -3,7 +3,7 @@ import './styles.css';
 import { AppProvider } from './context/AppContext';
 import { ColorSchemeProvider } from './context/ColorSchemeContext';
 import { useUndoStack } from './context/UndoContext';
-import { useActiveTab, useAppDispatch, useAppDispatchV2 } from './context/slice-contexts';
+import { useActiveTab, useAppDispatch } from './context/slice-contexts';
 import { ContentArea } from './components/ContentArea';
 import { MenuBar } from './components/MenuBar';
 import { Ribbon } from './components/Ribbon';
@@ -14,7 +14,6 @@ import type { TabId } from './tabs';
 function AppShell() {
   const activeTab = useActiveTab();
   const dispatch = useAppDispatch();
-  const dispatchV2 = useAppDispatchV2();
   const { undo, redo, canUndo, canRedo } = useUndoStack();
   const [visibleTab, setVisibleTab] = useState<TabId>(activeTab);
 
@@ -23,16 +22,16 @@ function AppShell() {
   }, [activeTab]);
 
   useEffect(() => {
-    dispatchV2({ type: 'APP_APP_ON_LOAD' });
-  }, [dispatchV2]);
+    dispatch({ type: 'APP_APP_ON_LOAD' });
+  }, [dispatch]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      dispatchV2({ type: 'APP_APP_ON_CLOSE' });
+      dispatch({ type: 'APP_APP_ON_CLOSE' });
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [dispatchV2]);
+  }, [dispatch]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,10 +61,9 @@ function AppShell() {
   const onTabChange = useCallback(
     (tabId: TabId) => {
       setVisibleTab(tabId);
-      dispatch({ type: 'TAB_BAR_ON_SELECT', tabId });
-      dispatchV2({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId });
+      dispatch({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId });
     },
-    [dispatch, dispatchV2],
+    [dispatch],
   );
 
   return (

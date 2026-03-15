@@ -1,4 +1,4 @@
-import type { Catalog, CatalogReference, CatalogType, SourceType, Template, TemplateReference, Theme, ThemeReference, TokenType } from '../model/schemas';
+import type { Catalog, CatalogReference, CatalogType, ColorVariableKey, ContrastVariableKey, SourceType, Template, TemplateReference, Theme, ThemeReference, TokenType } from '../model/schemas';
 import type { TabId } from '../ui/tabs';
 
 export interface CatalogsState {
@@ -26,6 +26,17 @@ export interface TemplatesState {
   template: Template | null;
   isCreating: boolean;
   createDialogOpen: boolean;
+  createFormName: string;
+  /** Search filter text for mappings list. */
+  mappingSearchText: string;
+  /** Selected color variable keys for mapping filter. */
+  mappingColorVariableFilter: ColorVariableKey[];
+  /** Selected contrast variable keys for mapping filter. */
+  mappingContrastVariableFilter: ContrastVariableKey[];
+  /** Selected token group for mapping editor display. */
+  mappingTokenGroupSelection: string;
+  /** Search filter text for template variables list. */
+  variablesSearchText: string;
 }
 
 export interface GenerateResult {
@@ -47,8 +58,17 @@ export interface ThemesState {
   hueReferenceHex: string;
   isCreating: boolean;
   createDialogOpen: boolean;
+  createFormName: string;
   generateResult: GenerateResult | null;
   saveError: string | null;
+  /** Draft text for assign-color input (session only; not persisted). */
+  assignColorDraftText: string;
+  /** Search filter text for theme variables list. */
+  themeVariablesSearchText: string;
+  /** Preview variable list filter text (THEME_PREVIEW_VARIABLE_FILTER_*). */
+  previewVariableFilterText: string;
+  /** Selected preview sample key for scrolling preview windows (THEME_PREVIEW_SAMPLE_*). */
+  selectedPreviewSampleKey: string;
 }
 
 export interface QueueStatusState {
@@ -97,6 +117,12 @@ export const initialAppState: AppState = {
     template: null,
     isCreating: false,
     createDialogOpen: false,
+    createFormName: '',
+    mappingSearchText: '',
+    mappingColorVariableFilter: [],
+    mappingContrastVariableFilter: [],
+    mappingTokenGroupSelection: '',
+    variablesSearchText: '',
   },
   themes: {
     themeRefs: [],
@@ -108,8 +134,13 @@ export const initialAppState: AppState = {
     hueReferenceHex: '#FF0000',
     isCreating: false,
     createDialogOpen: false,
+    createFormName: '',
     generateResult: null,
     saveError: null,
+    assignColorDraftText: '',
+    themeVariablesSearchText: '',
+    previewVariableFilterText: '',
+    selectedPreviewSampleKey: '',
   },
   queueStatus: {
     isProcessing: false,
@@ -143,6 +174,12 @@ export type AppStateUpdate =
   | { type: 'SET_TEMPLATE'; template: Template | null }
   | { type: 'SET_TEMPLATE_IS_CREATING'; value: boolean }
   | { type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN'; value: boolean }
+  | { type: 'SET_TEMPLATE_CREATE_FORM_NAME'; value: string }
+  | { type: 'SET_TEMPLATE_MAPPING_SEARCH_TEXT'; value: string }
+  | { type: 'SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER'; values: ColorVariableKey[] }
+  | { type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER'; values: ContrastVariableKey[] }
+  | { type: 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION'; value: string }
+  | { type: 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT'; value: string }
   | { type: 'SET_THEME_REFS'; refs: ThemeReference[] }
   | { type: 'SET_SELECTED_THEME_REF'; ref: ThemeReference | null }
   | { type: 'SET_THEME'; theme: Theme | null; preserveHue?: boolean }
@@ -152,8 +189,13 @@ export type AppStateUpdate =
   | { type: 'SET_THEME_HUE_REFERENCE_HEX'; value: string }
   | { type: 'SET_THEME_IS_CREATING'; value: boolean }
   | { type: 'SET_THEME_CREATE_DIALOG_OPEN'; value: boolean }
+  | { type: 'SET_THEME_CREATE_FORM_NAME'; value: string }
   | { type: 'SET_GENERATE_RESULT'; result: GenerateResult | null }
   | { type: 'SET_THEME_SAVE_ERROR'; error: string | null }
+  | { type: 'SET_ASSIGN_COLOR_DRAFT_TEXT'; value: string }
+  | { type: 'SET_THEME_VARIABLES_SEARCH_TEXT'; value: string }
+  | { type: 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT'; value: string }
+  | { type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY'; value: string }
   | { type: 'SET_QUEUE_STATUS'; isProcessing: boolean; queueLength: number }
   | { type: 'SET_CURRENT_UNDO_STACK_ID'; stackId: string | null }
   | { type: 'SET_UNDO_LIST_VERSION'; value: number };
@@ -210,6 +252,18 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, templates: { ...state.templates, isCreating: update.value } };
     case 'SET_TEMPLATE_CREATE_DIALOG_OPEN':
       return { ...state, templates: { ...state.templates, createDialogOpen: update.value } };
+    case 'SET_TEMPLATE_CREATE_FORM_NAME':
+      return { ...state, templates: { ...state.templates, createFormName: update.value } };
+    case 'SET_TEMPLATE_MAPPING_SEARCH_TEXT':
+      return { ...state, templates: { ...state.templates, mappingSearchText: update.value } };
+    case 'SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER':
+      return { ...state, templates: { ...state.templates, mappingColorVariableFilter: update.values } };
+    case 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER':
+      return { ...state, templates: { ...state.templates, mappingContrastVariableFilter: update.values } };
+    case 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION':
+      return { ...state, templates: { ...state.templates, mappingTokenGroupSelection: update.value } };
+    case 'SET_TEMPLATE_VARIABLES_SEARCH_TEXT':
+      return { ...state, templates: { ...state.templates, variablesSearchText: update.value } };
     case 'SET_THEME_REFS':
       return { ...state, themes: { ...state.themes, themeRefs: update.refs } };
     case 'SET_SELECTED_THEME_REF':
@@ -245,10 +299,20 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, themes: { ...state.themes, isCreating: update.value } };
     case 'SET_THEME_CREATE_DIALOG_OPEN':
       return { ...state, themes: { ...state.themes, createDialogOpen: update.value } };
+    case 'SET_THEME_CREATE_FORM_NAME':
+      return { ...state, themes: { ...state.themes, createFormName: update.value } };
     case 'SET_GENERATE_RESULT':
       return { ...state, themes: { ...state.themes, generateResult: update.result } };
     case 'SET_THEME_SAVE_ERROR':
       return { ...state, themes: { ...state.themes, saveError: update.error } };
+    case 'SET_ASSIGN_COLOR_DRAFT_TEXT':
+      return { ...state, themes: { ...state.themes, assignColorDraftText: update.value } };
+    case 'SET_THEME_VARIABLES_SEARCH_TEXT':
+      return { ...state, themes: { ...state.themes, themeVariablesSearchText: update.value } };
+    case 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT':
+      return { ...state, themes: { ...state.themes, previewVariableFilterText: update.value } };
+    case 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY':
+      return { ...state, themes: { ...state.themes, selectedPreviewSampleKey: update.value } };
     case 'SET_QUEUE_STATUS':
       return { ...state, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } };
     case 'SET_CURRENT_UNDO_STACK_ID':

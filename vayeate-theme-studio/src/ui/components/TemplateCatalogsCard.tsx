@@ -1,5 +1,5 @@
-import { useAppDispatchV2 } from '../context/slice-contexts';
-import type { CatalogReference } from '../../model/schemas';
+import { useAppDispatch } from '../context/slice-contexts';
+import type { CatalogName, CatalogReference } from '../../model/schemas';
 
 interface TemplateCatalogsCardProps {
   catalogNames: string[];
@@ -7,9 +7,6 @@ interface TemplateCatalogsCardProps {
   includedCatalogMap: Map<string, string>;
   isLatestVersion: boolean;
   includedCatalogNamesWithUpdates: string[];
-  onToggleCatalog: (catalogName: string, include: boolean) => void;
-  onChangeCatalogVersion: (catalogName: string, version: string) => void;
-  onUpdateAll: () => void;
 }
 
 export function TemplateCatalogsCard({
@@ -18,11 +15,8 @@ export function TemplateCatalogsCard({
   includedCatalogMap,
   isLatestVersion,
   includedCatalogNamesWithUpdates,
-  onToggleCatalog,
-  onChangeCatalogVersion,
-  onUpdateAll,
 }: TemplateCatalogsCardProps) {
-  const dispatchV2 = useAppDispatchV2();
+  const dispatch = useAppDispatch();
   const showUpdateAll =
     isLatestVersion && includedCatalogNamesWithUpdates.length > 0;
 
@@ -35,8 +29,7 @@ export function TemplateCatalogsCard({
             type="button"
             className="btn btn-primary btn-sm"
             onClick={() => {
-              dispatchV2({ type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' });
-              onUpdateAll();
+              dispatch({ type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' });
             }}
           >
             Update All
@@ -68,8 +61,11 @@ export function TemplateCatalogsCard({
                 className="checkbox-icon-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  dispatchV2({ type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE', checked: !included });
-                  onToggleCatalog(name, !included);
+                  dispatch({
+                    type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE',
+                    catalogName: name as CatalogName,
+                    checked: !included,
+                  });
                 }}
               >
                 <span className="material-symbols-outlined" aria-hidden>
@@ -93,8 +89,11 @@ export function TemplateCatalogsCard({
                 value={selectedVersion}
                 onChange={(e) => {
                   const value = e.target.value;
-                  dispatchV2({ type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT', value });
-                  onChangeCatalogVersion(name, value);
+                  dispatch({
+                    type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT',
+                    catalogName: name as CatalogName,
+                    value,
+                  });
                 }}
               >
                 {versions.map((ref) => (

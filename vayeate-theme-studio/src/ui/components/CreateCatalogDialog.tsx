@@ -1,4 +1,4 @@
-import { useAppDispatchV2, useCatalogsState } from '../context/slice-contexts';
+import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { CatalogType } from '../../model/schemas';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
@@ -9,7 +9,7 @@ interface CreateCatalogDialogProps {
 }
 
 export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCatalogDialogProps) {
-  const dispatchV2 = useAppDispatchV2();
+  const dispatch = useAppDispatch();
   const { createFormName: name, createFormType: type } = useCatalogsState();
 
   const nameValid = name.length > 0 && NAME_REGEX.test(name);
@@ -17,11 +17,11 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
 
   function handleSubmit() {
     if (!canSubmit) return;
-    dispatchV2({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name, type } });
+    dispatch({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name, type } });
   }
 
   function handleCancel() {
-    dispatchV2({ type: 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+    dispatch({ type: 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
     onCancel?.();
   }
 
@@ -38,7 +38,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
             value={name}
             placeholder="my-catalog"
             onChange={(e) =>
-              dispatchV2({ type: 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value: e.target.value })
+              dispatch({ type: 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value: e.target.value })
             }
           />
         </label>
@@ -52,7 +52,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
             className="field-select"
             value={type}
             onChange={(e) =>
-              dispatchV2({
+              dispatch({
                 type: 'CATALOG_CREATE_DIALOG_TYPE_LIST_ON_COMMIT',
                 value: e.target.value as CatalogType,
               })

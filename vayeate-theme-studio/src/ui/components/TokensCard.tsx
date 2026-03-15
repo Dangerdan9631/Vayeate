@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAppDispatchV2, useCatalogsState } from '../context/slice-contexts';
+import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { Catalog, Token, TokenKey, TokenType } from '../../model/schemas';
 import { tokenKeySchema } from '../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../core/semantic-token';
@@ -353,7 +353,7 @@ export function TokensCard({
   onSetSemanticModifiers,
   onSetSemanticLanguages,
 }: TokensCardProps) {
-  const dispatchV2 = useAppDispatchV2();
+  const dispatch = useAppDispatch();
   const tokensSearchText = useCatalogsState().tokensSearchText;
   const canEdit = catalog.type === 'manual' && isLatestVersion;
 
@@ -374,7 +374,7 @@ export function TokensCard({
           <button
             type="button"
             className="btn-secondary btn-sm"
-            onClick={() => dispatchV2({ type: 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK' })}
+            onClick={() => dispatch({ type: 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK' })}
           >
             Bulk Add
           </button>
@@ -386,7 +386,7 @@ export function TokensCard({
         placeholder="Search…"
         value={tokensSearchText}
         onChange={(e) =>
-          dispatchV2({ type: 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE', value: e.target.value })
+          dispatch({ type: 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE', value: e.target.value })
         }
         aria-label="Search tokens"
       />
@@ -397,21 +397,21 @@ export function TokensCard({
           tokens={filteredTokensByType[tt]}
           isManual={canEdit}
           onAdd={(key) => {
-            dispatchV2({
+            dispatch({
               type: 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK',
               tokenType: tt,
               key,
             });
           }}
           onRemove={(key) => {
-            dispatchV2({
+            dispatch({
               type: 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK',
               key: key as TokenKey,
               tokenType: tt,
             });
           }}
           onUpdateKey={(oldKey, newKey) => {
-            dispatchV2({
+            dispatch({
               type: 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE',
               value: newKey,
               key: oldKey as TokenKey,
@@ -419,7 +419,7 @@ export function TokensCard({
             });
           }}
           onNewKeyChange={(value) => {
-            dispatchV2({ type: 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE', value });
+            dispatch({ type: 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE', value });
           }}
         />
       ))}

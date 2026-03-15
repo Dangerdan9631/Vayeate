@@ -1,23 +1,28 @@
-import { useState } from 'react';
-import { useAppDispatchV2 } from '../context/slice-contexts';
+import { useAppDispatch } from '../context/slice-contexts';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
 interface CreateTemplateDialogProps {
+  createFormName: string;
+  setCreateFormName: (value: string) => void;
   onCancel: () => void;
   onCreate: (params: { name: string }) => void;
 }
 
-export function CreateTemplateDialog({ onCancel, onCreate }: CreateTemplateDialogProps) {
-  const dispatchV2 = useAppDispatchV2();
-  const [name, setName] = useState('');
+export function CreateTemplateDialog({
+  createFormName,
+  setCreateFormName,
+  onCancel,
+  onCreate,
+}: CreateTemplateDialogProps) {
+  const dispatch = useAppDispatch();
 
-  const nameValid = name.length > 0 && NAME_REGEX.test(name);
+  const nameValid = createFormName.length > 0 && NAME_REGEX.test(createFormName);
   const canSubmit = nameValid;
 
   function handleSubmit() {
     if (!canSubmit) return;
-    onCreate({ name });
+    onCreate({ name: createFormName });
   }
 
   return (
@@ -30,16 +35,12 @@ export function CreateTemplateDialog({ onCancel, onCreate }: CreateTemplateDialo
           <input
             className="field-input"
             type="text"
-            value={name}
+            value={createFormName}
             placeholder="my-template"
-            onChange={(e) => {
-              const value = e.target.value;
-              setName(value);
-              dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value });
-            }}
+            onChange={(e) => setCreateFormName(e.target.value)}
           />
         </label>
-        {name.length > 0 && !nameValid && (
+        {createFormName.length > 0 && !nameValid && (
           <p className="field-error">Alphanumeric characters and hyphens only.</p>
         )}
 
@@ -48,7 +49,7 @@ export function CreateTemplateDialog({ onCancel, onCreate }: CreateTemplateDialo
             type="button"
             className="btn-secondary"
             onClick={() => {
-              dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+              dispatch({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
               onCancel();
             }}
           >

@@ -26,6 +26,10 @@ function theme(overrides: Partial<Theme> = {}): Theme {
       { colorRef: 'comment', dark: { value: '#6a9955' }, light: { value: '#008000' }, useDarkForLight: false },
     ],
     contrastAssignments: [],
+    applyPaletteToDark: true,
+    applyPaletteToLight: true,
+    paletteClusterCountK: 5,
+    paletteClusterGroupIds: [],
     ...overrides,
   };
 }

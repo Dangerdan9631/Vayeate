@@ -17,6 +17,9 @@ const defaultPaletteProps = {
   applyToLight: true,
   onApplyToDarkChange: vi.fn(),
   onApplyToLightChange: vi.fn(),
+  clusterCountK: 5,
+  onClusterCountDelta: vi.fn(),
+  onClusterCountCommit: vi.fn(),
   selectedColorsDisplay: { kind: 'none' as const },
   onSetSelectedColors: vi.fn(),
 };
@@ -105,12 +108,14 @@ describe('ThemePaletteCard', () => {
     expect(swatches.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('changing k slider updates displayed value', () => {
-    renderCard();
+  it('changing k slider calls onClusterCountDelta with new value', () => {
+    const onClusterCountDelta = vi.fn();
+    renderCard({ clusterCountK: 5, onClusterCountDelta });
     const kSlider = screen.getByRole('slider', { name: 'Cluster count (k)' });
     fireEvent.change(kSlider, { target: { value: '8' } });
-    expect(kSlider).toHaveValue('8');
-    expect(screen.getByText('8')).toBeInTheDocument();
+    expect(onClusterCountDelta).toHaveBeenCalledWith(8);
+    expect(kSlider).toHaveValue('5'); // controlled by prop
+    expect(screen.getByText('5')).toBeInTheDocument();
   });
 
   it('renders group checkbox linked to Variables card state and calls onSetColorGroupChecked when toggled', async () => {

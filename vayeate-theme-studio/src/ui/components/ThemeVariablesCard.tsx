@@ -38,6 +38,9 @@ interface ThemeVariablesCardProps {
   onUpdateContrastDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
   onUpdateContrastUseDark: (contrastRef: string, useDark: boolean) => void;
+  /** When provided, search is controlled from app state (themeVariablesSearchText). */
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
 }
 
 const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] = [
@@ -866,8 +869,12 @@ export function ThemeVariablesCard({
   onUpdateContrastDark,
   onUpdateContrastLight,
   onUpdateContrastUseDark,
+  searchValue,
+  onSearchChange,
 }: ThemeVariablesCardProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [localSearch, setLocalSearch] = useState('');
+  const searchQuery = searchValue !== undefined && onSearchChange !== undefined ? searchValue : localSearch;
+  const setSearchQuery = onSearchChange ?? setLocalSearch;
 
   const filteredColorAssignments = colorAssignments
     .filter((a) => matchesSearch(a.colorRef, searchQuery))

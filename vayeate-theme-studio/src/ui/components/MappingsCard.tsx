@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppDispatchV2 } from '../context/slice-contexts';
+import { useAppDispatch } from '../context/slice-contexts';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../core/semantic-token';
 import type {
   ColorVariable,
@@ -924,7 +924,7 @@ export function MappingsCard({
   semanticVariant,
   onRemoveMapping,
 }: MappingsCardProps) {
-  const dispatchV2 = useAppDispatchV2();
+  const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedColorKeys, setSelectedColorKeys] = useState<string[]>([]);
   const [selectedContrastKeys, setSelectedContrastKeys] = useState<string[]>([]);
@@ -983,7 +983,7 @@ export function MappingsCard({
   function toggleColorKey(key: string) {
     setSelectedColorKeys((prev) => {
       const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
-      dispatchV2({ type: 'TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ColorVariableKey[] });
+      dispatch({ type: 'TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ColorVariableKey[] });
       return next;
     });
   }
@@ -991,7 +991,7 @@ export function MappingsCard({
   function toggleContrastKey(key: string) {
     setSelectedContrastKeys((prev) => {
       const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
-      dispatchV2({ type: 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ContrastVariableKey[] });
+      dispatch({ type: 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ContrastVariableKey[] });
       return next;
     });
   }
@@ -1008,7 +1008,7 @@ export function MappingsCard({
           onChange={(e) => {
             const value = e.target.value;
             setSearchQuery(value);
-            dispatchV2({ type: 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE', value });
+            dispatch({ type: 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE', value });
           }}
           aria-label="Search mappings"
         />

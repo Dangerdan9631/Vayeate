@@ -1,16 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useAppDispatchV2, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
-import { compareVersions, nextPatchVersion } from '../utils/version';
-import { catalogService } from '../services/catalog-service';
-import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../core/semantic-token';
+import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
+import { compareVersions } from '../utils/version';
+import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../core/semantic-token';
 import type {
   CatalogReference,
-  ColorVariable,
   ColorVariableKey,
-  ContrastVariable,
   ContrastVariableKey,
   Mapping,
-  Template,
   TemplateReference,
   Token,
   TokenType,
@@ -20,24 +16,26 @@ let templatePageLoadDispatched = false;
 
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
-  const dispatchV2 = useAppDispatchV2();
-  const { templateRefs, selectedRef, template, isCreating, createDialogOpen } = useTemplatesState();
+  const {
+    templateRefs,
+    selectedRef,
+    template,
+    isCreating,
+    createDialogOpen,
+    createFormName,
+    mappingSearchText,
+    mappingColorVariableFilter,
+    mappingContrastVariableFilter,
+    mappingTokenGroupSelection,
+    variablesSearchText,
+  } = useTemplatesState();
   const { catalogRefs, loadedForDisplay } = useCatalogsState();
 
   useEffect(() => {
     if (templatePageLoadDispatched) return;
     templatePageLoadDispatched = true;
     dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
-    dispatchV2({ type: 'TEMPLATE_PAGE_ON_LOAD' });
-  }, [dispatch, dispatchV2]);
-
-  const pushTemplateUndoAndSave = useCallback(
-    (_label: string, nextTemplate: Template) => {
-      if (!template) return;
-      dispatch({ type: 'TEMPLATE_SAVE_BUTTON_ON_CLICK', template: nextTemplate });
-    },
-    [template, dispatch],
-  );
+  }, [dispatch]);
 
   const templateNames = useMemo(() => {
     const names = new Set(templateRefs.map((r) => r.name));
@@ -201,183 +199,92 @@ export function useTemplateViewModel() {
     return template.mappings.every((m) => m.colorVariableRef !== null);
   }, [template, isLatestVersion]);
 
-  // --- Helpers for edit-when-locked ---
-
-  function getBaseForEdit(t: Template): Template {
-    if (t.locked) {
-      return { ...t, version: nextPatchVersion(t.version), locked: false };
-    }
-    return t;
-  }
-
   // --- Actions ---
 
   const selectTemplate = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name, version });
-      dispatchV2({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name, version });
+      dispatch({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name, version });
     },
-    [dispatch, dispatchV2],
+    [dispatch],
   );
 
   const selectName = useCallback(
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        dispatch({ type: 'TEMPLATE_LIST_ON_SELECT', name: best.name, version: best.version });
-        dispatchV2({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: best.name, version: best.version });
+        dispatch({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: best.name, version: best.version });
       }
     },
-    [dispatch, dispatchV2, highestVersionForName],
+    [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
+    dispatch({ type: 'TEMPLATE_TEMPLATES_CREATE_BUTTON_ON_CLICK' });
     dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
-    dispatchV2({ type: 'TEMPLATE_TEMPLATES_CREATE_BUTTON_ON_CLICK' });
-    dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
-  }, [dispatch, dispatchV2]);
+  }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_CLOSE' });
-    dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
-  }, [dispatch, dispatchV2]);
+    dispatch({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+  }, [dispatch]);
 
   const createTemplate = useCallback(
     (params: { name: string }) => {
-      dispatch({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params });
-      dispatchV2({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
+      dispatch({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
     },
-    [dispatch, dispatchV2],
+    [dispatch],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'TEMPLATE_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
-      dispatchV2({ type: 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
+      dispatch({ type: 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch, dispatchV2],
+    [dispatch],
   );
 
   const lockTemplate = useCallback(() => {
-    if (!template || !canLock) {
-      return;
-    }
-    const updated: Template = { ...template, locked: true };
-    pushTemplateUndoAndSave('Lock template', updated);
-  }, [dispatch, template, canLock]);
+    if (!template || !canLock) return;
+    dispatch({ type: 'TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK' });
+  }, [template, canLock, dispatch]);
 
-  // --- Catalog inclusion ---
+  const setCreateFormName = useCallback(
+    (value: string) => {
+      dispatch({ type: 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value });
+    },
+    [dispatch],
+  );
+
+  // --- Catalog inclusion (dispatch only; controller performs the mutation) ---
 
   const toggleCatalog = useCallback(
-    async (catalogName: string, include: boolean) => {
+    (catalogName: string, include: boolean) => {
       if (!template) return;
-      const base = getBaseForEdit(template);
-      let newCatalogRefs: CatalogReference[];
-
-      if (include) {
-        const versions = catalogVersionsByName[catalogName];
-        if (!versions || versions.length === 0) return;
-        const highestVersion = versions[0].version;
-        newCatalogRefs = [...base.catalogRefs, { name: catalogName, version: highestVersion }];
-      } else {
-        newCatalogRefs = base.catalogRefs.filter((r) => r.name !== catalogName);
-      }
-
-      const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-        await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
-
-      let newGroups: string[];
-      if (include) {
-        newGroups = [...(base.groups ?? [])];
-        for (const g of groupsToEnsure) {
-          if (!newGroups.includes(g)) newGroups.push(g);
-        }
-      } else {
-        const groupNamesInUseAfter = new Set<string>();
-        for (const m of newMappings) {
-          if (m.groupRef) groupNamesInUseAfter.add(m.groupRef);
-        }
-        for (const v of base.colorVariables) {
-          if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
-        }
-        for (const v of base.contrastVariables) {
-          if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
-        }
-        newGroups = (base.groups ?? []).filter(
-          (g) => g !== catalogName || groupNamesInUseAfter.has(g),
-        );
-      }
-
-      const updated: Template = {
-        ...base,
-        catalogRefs: newCatalogRefs,
-        mappings: newMappings,
-        groups: newGroups,
-        semanticTokenModifiers,
-        semanticTokenLanguages,
-      };
-      pushTemplateUndoAndSave('Enable catalog', updated);
+      dispatch({
+        type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE',
+        catalogName: catalogName as import('../model/schemas').CatalogName,
+        checked: include,
+      });
     },
-    [template, pushTemplateUndoAndSave, catalogVersionsByName],
+    [template, dispatch],
   );
 
   const changeCatalogVersion = useCallback(
-    async (catalogName: string, newVersion: string) => {
+    (catalogName: string, newVersion: string) => {
       if (!template) return;
-      const base = getBaseForEdit(template);
-      const newCatalogRefs = base.catalogRefs.map((r) =>
-        r.name === catalogName ? { ...r, version: newVersion } : r,
-      );
-
-      const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-        await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
-      const newGroups = [...(base.groups ?? [])];
-      for (const g of groupsToEnsure) {
-        if (!newGroups.includes(g)) newGroups.push(g);
-      }
-      const updated: Template = {
-        ...base,
-        catalogRefs: newCatalogRefs,
-        mappings: newMappings,
-        groups: newGroups,
-        semanticTokenModifiers,
-        semanticTokenLanguages,
-      };
-      pushTemplateUndoAndSave('Change catalog version', updated);
-    },
-    [template, pushTemplateUndoAndSave],
-  );
-
-  const updateAllCatalogsToLatest = useCallback(
-    async () => {
-      if (!template || !isLatestVersion) return;
-      const base = getBaseForEdit(template);
-      const newCatalogRefs: CatalogReference[] = base.catalogRefs.map((ref) => {
-        const versions = catalogVersionsByName[ref.name];
-        const latest = versions?.[0];
-        return latest ? { name: ref.name, version: latest.version } : ref;
+      dispatch({
+        type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT',
+        catalogName: catalogName as import('../model/schemas').CatalogName,
+        value: newVersion,
       });
-
-      const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-        await mergeMappingsFromCatalogRefs(newCatalogRefs, base.mappings);
-      const newGroups = [...(base.groups ?? [])];
-      for (const g of groupsToEnsure) {
-        if (!newGroups.includes(g)) newGroups.push(g);
-      }
-      const updated: Template = {
-        ...base,
-        catalogRefs: newCatalogRefs,
-        mappings: newMappings,
-        groups: newGroups,
-        semanticTokenModifiers,
-        semanticTokenLanguages,
-      };
-      pushTemplateUndoAndSave('Update all catalogs', updated);
     },
-    [template, pushTemplateUndoAndSave, isLatestVersion, catalogVersionsByName],
+    [template, dispatch],
   );
 
-  // --- Mapping updates ---
+  const updateAllCatalogsToLatest = useCallback(() => {
+    if (!template || !isLatestVersion) return;
+    dispatch({ type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' });
+  }, [template, isLatestVersion, dispatch]);
+
+  // --- Mapping updates (dispatch-only; processor invokes controller) ---
 
   const updateMappingColorRef = useCallback(
     (
@@ -386,289 +293,170 @@ export function useTemplateViewModel() {
       colorRef: ColorVariableKey | null,
       isOrphan?: boolean,
     ) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-
-      if (colorRef === null && isOrphan) {
-        const newMappings = base.mappings.filter(
-          (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
-        );
-        pushTemplateUndoAndSave('Mapping', { ...base, mappings: newMappings });
-        return;
-      }
-
-      const newMappings = base.mappings.map((m) =>
-        m.token.key === tokenKey && m.token.type === tokenType
-          ? { ...m, colorVariableRef: colorRef }
-          : m,
-      );
-      pushTemplateUndoAndSave('Mapping', { ...base, mappings: newMappings });
+      dispatch({
+        type: 'TEMPLATE_MAPPING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT',
+        value: colorRef as ColorVariableKey,
+        tokenKey,
+        tokenType,
+        isOrphan,
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const updateMappingContrastRef = useCallback(
     (tokenKey: string, tokenType: TokenType, contrastRef: ContrastVariableKey | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newMappings = base.mappings.map((m) =>
-        m.token.key === tokenKey && m.token.type === tokenType
-          ? { ...m, contrastVariableRef: contrastRef }
-          : m,
-      );
-      pushTemplateUndoAndSave('Mapping', { ...base, mappings: newMappings });
+      dispatch({
+        type: 'TEMPLATE_MAPPING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT',
+        value: contrastRef,
+        tokenKey,
+        tokenType,
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      let semanticBaseType: string | null = null;
-      if (tokenType === 'semantic token') {
-        try {
-          const parsed = parseSemanticSelector(tokenKey);
-          const isBase =
-            parsed.modifiers.length === 0 &&
-            (parsed.language === null || parsed.language === '');
-          if (isBase) semanticBaseType = parsed.type;
-        } catch {
-          /* not a valid semantic selector */
-        }
-      }
-      const newMappings = base.mappings.map((m) => {
-        if (m.token.type !== tokenType) return m;
-        if (tokenType === 'semantic token' && semanticBaseType !== null) {
-          try {
-            const p = parseSemanticSelector(m.token.key);
-            if (p.type === semanticBaseType) return { ...m, groupRef };
-          } catch {
-            /* ignore */
-          }
-          return m;
-        }
-        if (m.token.key === tokenKey) return { ...m, groupRef };
-        return m;
+      dispatch({
+        type: 'TEMPLATE_MAPPING_TOKEN_GROUP_LIST_ON_COMMIT',
+        value: groupRef ?? '',
+        tokenKey,
+        tokenType,
       });
-      pushTemplateUndoAndSave('Mapping group', { ...base, mappings: newMappings });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const addSemanticVariantMapping = useCallback(
-    (type: string, modifiers: string[], language: string | null, defaultGroupRef?: string | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const baseMapping = base.mappings.find(
-        (m) => m.token.type === 'semantic token' && m.token.key === type,
-      );
-      let key: string;
-      if (modifiers.length === 0 && (language === null || language.trim() === '')) {
-        key = `${type}.empty-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-      } else {
-        key = formatSemanticSelector(type, modifiers, language);
-        if (!key) return;
-        const existing = template.mappings.some(
-          (m) => m.token.type === 'semantic token' && m.token.key === key,
-        );
-        if (existing) return;
-      }
-      const groupRef =
-        type === SEMANTIC_WILDCARD_TYPE && defaultGroupRef !== undefined
-          ? defaultGroupRef
-          : (baseMapping?.groupRef ?? null);
-      const newMapping: Mapping = {
-        token: { key, type: 'semantic token' },
-        colorVariableRef: null,
-        contrastVariableRef: null,
-        groupRef,
-      };
-      const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
-      const newLanguages =
-        language && language.trim() !== ''
-          ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
-          : (base.semanticTokenLanguages ?? []);
-      pushTemplateUndoAndSave('Add variant', {
-        ...base,
-        mappings: [...base.mappings, newMapping],
-        semanticTokenModifiers: newModifiers,
-        semanticTokenLanguages: newLanguages,
+    (semanticType: string, modifiers: string[], language: string | null, defaultGroupRef?: string | null) => {
+      dispatch({
+        type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK',
+        tokenKey: semanticType,
+        semanticType,
+        modifiers,
+        language,
+        defaultGroupRef,
       });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const updateSemanticVariantKey = useCallback(
     (oldKey: string, modifiers: string[], language: string | null) => {
-      if (!template) return;
-      let parsed: { type: string; modifiers: string[]; language: string | null };
-      try {
-        parsed = parseSemanticSelector(oldKey);
-      } catch {
-        return;
-      }
-      const newKey = formatSemanticSelector(parsed.type, modifiers, language);
-      if (!newKey || newKey === oldKey) return;
-      if (newKey === parsed.type) return;
-      const existing = template.mappings.some(
-        (m) => m.token.type === 'semantic token' && m.token.key === newKey,
-      );
-      if (existing) return;
-      const base = getBaseForEdit(template);
-      const newMappings = base.mappings.map((m) =>
-        m.token.type === 'semantic token' && m.token.key === oldKey
-          ? { ...m, token: { key: newKey, type: 'semantic token' as const } }
-          : m,
-      );
-      const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
-      const newLanguages =
-        language && language.trim() !== ''
-          ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
-          : (base.semanticTokenLanguages ?? []);
-      pushTemplateUndoAndSave('Variant key', {
-        ...base,
-        mappings: newMappings,
-        semanticTokenModifiers: newModifiers,
-        semanticTokenLanguages: newLanguages,
+      dispatch({
+        type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_MODIFIER_LIST_ON_COMMIT',
+        tokenKey: oldKey,
+        modifiers,
+        language,
+        value: '',
       });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const removeMapping = useCallback(
     (tokenKey: string, tokenType: TokenType) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newMappings = base.mappings.filter(
-        (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
-      );
-      pushTemplateUndoAndSave('Remove mapping', { ...base, mappings: newMappings });
+      dispatch({
+        type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK',
+        variantId: tokenKey,
+        tokenKey,
+        tokenType,
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
-  // --- Variable CRUD ---
+  // --- Variable CRUD (dispatch-only) ---
 
   const addColorVariable = useCallback(
     (key: string, groupRef?: string | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newVars: ColorVariable[] = [
-        ...base.colorVariables,
-        { key, groupRef: groupRef ?? null },
-      ];
-      pushTemplateUndoAndSave('Add color variable', { ...base, colorVariables: newVars });
+      dispatch({
+        type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK',
+        key,
+        groupRef: groupRef ?? null,
+        variableKind: 'color',
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const removeColorVariable = useCallback(
     (key: string) => {
-      if (!template) return;
-      if (referencedColorVarKeys.has(key)) {
-        return;
-      }
-      const base = getBaseForEdit(template);
-      const newVars = base.colorVariables.filter((v) => v.key !== key);
-      pushTemplateUndoAndSave('Remove color variable', { ...base, colorVariables: newVars });
+      dispatch({ type: 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK', key });
     },
-    [template, pushTemplateUndoAndSave, referencedColorVarKeys],
+    [dispatch],
   );
 
   const addContrastVariable = useCallback(
     (key: string, groupRef?: string | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newVars: ContrastVariable[] = [
-        ...base.contrastVariables,
-        { key, comparisonSourceRef: null, groupRef: groupRef ?? null },
-      ];
-      pushTemplateUndoAndSave('Add contrast variable', { ...base, contrastVariables: newVars });
+      dispatch({
+        type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK',
+        key,
+        groupRef: groupRef ?? null,
+        variableKind: 'contrast',
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const removeContrastVariable = useCallback(
     (key: string) => {
-      if (!template) return;
-      if (referencedContrastVarKeys.has(key)) {
-        return;
-      }
-      const base = getBaseForEdit(template);
-      const newVars = base.contrastVariables.filter((v) => v.key !== key);
-      pushTemplateUndoAndSave('Remove contrast variable', { ...base, contrastVariables: newVars });
+      dispatch({ type: 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK', key });
     },
-    [template, pushTemplateUndoAndSave, referencedContrastVarKeys],
+    [dispatch],
   );
 
   const updateContrastComparisonSource = useCallback(
     (key: string, comparisonSourceRef: ColorVariableKey | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newVars = base.contrastVariables.map((v) =>
-        v.key === key ? { ...v, comparisonSourceRef } : v,
-      );
-      pushTemplateUndoAndSave('Contrast comparison', { ...base, contrastVariables: newVars });
+      dispatch({
+        type: 'TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT',
+        value: comparisonSourceRef,
+        contrastVariableKey: key as ContrastVariableKey,
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const updateColorVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newVars = base.colorVariables.map((v) =>
-        v.key === key ? { ...v, groupRef } : v,
-      );
-      pushTemplateUndoAndSave('Variable group', { ...base, colorVariables: newVars });
+      dispatch({
+        type: 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT',
+        value: groupRef ?? '',
+        variableKey: key,
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const updateContrastVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
-      if (!template) return;
-      const base = getBaseForEdit(template);
-      const newVars = base.contrastVariables.map((v) =>
-        v.key === key ? { ...v, groupRef } : v,
-      );
-      pushTemplateUndoAndSave('Variable group', { ...base, contrastVariables: newVars });
+      dispatch({
+        type: 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT',
+        value: groupRef ?? '',
+        variableKey: key,
+      });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
-  // --- Group CRUD ---
+  // --- Group CRUD (dispatch-only) ---
 
   const addGroup = useCallback(
     (name: string) => {
-      if (!template) return;
       const trimmed = name.trim();
-      if (!trimmed) {
-        return;
+      if (trimmed) {
+        dispatch({ type: 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK', name: trimmed });
       }
-      const existing = template.groups ?? [];
-      if (existing.includes(trimmed)) {
-        return;
-      }
-      const base = getBaseForEdit(template);
-      const newGroups = [...(base.groups ?? []), trimmed];
-      pushTemplateUndoAndSave('Add group', { ...base, groups: newGroups });
     },
-    [template, pushTemplateUndoAndSave],
+    [dispatch],
   );
 
   const removeGroup = useCallback(
     (name: string) => {
-      if (!template) return;
-      if (groupNamesInUse.has(name)) {
-        return;
-      }
-      const base = getBaseForEdit(template);
-      const newGroups = (base.groups ?? []).filter((g) => g !== name);
-      pushTemplateUndoAndSave('Remove group', { ...base, groups: newGroups });
+      dispatch({ type: 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK', groupId: name });
     },
-    [template, pushTemplateUndoAndSave, groupNamesInUse],
+    [dispatch],
   );
 
   return {
@@ -677,6 +465,13 @@ export function useTemplateViewModel() {
     template,
     isCreating,
     createDialogOpen,
+    createFormName,
+    setCreateFormName,
+    mappingSearchText,
+    mappingColorVariableFilter,
+    mappingContrastVariableFilter,
+    mappingTokenGroupSelection,
+    variablesSearchText,
     templateNames,
     selectedName,
     versionsForSelectedName,
@@ -723,110 +518,7 @@ export function useTemplateViewModel() {
   };
 }
 
-export interface MergeMappingsResult {
-  mappings: Mapping[];
-  groupsToEnsure: string[];
-  semanticTokenModifiers: string[];
-  semanticTokenLanguages: string[];
-}
-
-async function mergeMappingsFromCatalogRefs(
-  catalogRefs: readonly CatalogReference[],
-  existingMappings: readonly Mapping[],
-): Promise<MergeMappingsResult> {
-  const catalogTokensByRef: { ref: CatalogReference; tokens: readonly Token[] }[] = [];
-  const semanticTypesSet = new Set<string>();
-  const semanticTypeToRef = new Map<string, string>();
-  const modifiersSet = new Set<string>();
-  const languagesSet = new Set<string>();
-  for (const ref of catalogRefs) {
-    const catalog = await catalogService.loadCatalog(ref.name, ref.version);
-    if (catalog) {
-      catalogTokensByRef.push({ ref, tokens: catalog.tokens });
-      const types = catalog.semanticTokenTypes ?? [];
-      for (const t of types) {
-        semanticTypesSet.add(t);
-        if (!semanticTypeToRef.has(t)) semanticTypeToRef.set(t, ref.name);
-      }
-      (catalog.semanticTokenModifiers ?? []).forEach((m) => modifiersSet.add(m));
-      (catalog.semanticTokenLanguages ?? []).forEach((l) => languagesSet.add(l));
-    }
-  }
-
-  const allTokens = catalogTokensByRef.flatMap(({ tokens }) => tokens);
-  const catalogTokenKeys = new Set(allTokens.map((t) => `${t.type}::${t.key}`));
-  for (const type of semanticTypesSet) {
-    catalogTokenKeys.add(`semantic token::${type}`);
-  }
-
-  const existingKeys = new Set(
-    existingMappings.map((m) => `${m.token.type}::${m.token.key}`),
-  );
-
-  const newMappings: Mapping[] = [];
-  const groupsToEnsure = new Set<string>();
-
-  for (const m of existingMappings) {
-    const key = `${m.token.type}::${m.token.key}`;
-    const inCatalog = catalogTokenKeys.has(key);
-    const hasColorAssignment = m.colorVariableRef !== null;
-    if (inCatalog) {
-      newMappings.push(m);
-    } else if (hasColorAssignment) {
-      newMappings.push(m);
-    }
-  }
-
-  for (const { ref, tokens } of catalogTokensByRef) {
-    for (const token of tokens) {
-      const key = `${token.type}::${token.key}`;
-      if (!existingKeys.has(key)) {
-        newMappings.push({
-          token,
-          colorVariableRef: null,
-          contrastVariableRef: null,
-          groupRef: ref.name,
-        });
-        groupsToEnsure.add(ref.name);
-        existingKeys.add(key);
-      }
-    }
-  }
-
-  for (const type of semanticTypesSet) {
-    const key = `semantic token::${type}`;
-    if (existingKeys.has(key)) continue;
-    const groupRef = semanticTypeToRef.get(type) ?? null;
-    if (groupRef) groupsToEnsure.add(groupRef);
-    newMappings.push({
-      token: { key: type, type: 'semantic token' },
-      colorVariableRef: null,
-      contrastVariableRef: null,
-      groupRef,
-    });
-    existingKeys.add(key);
-  }
-
-  for (const m of newMappings) {
-    if (m.token.type !== 'semantic token') continue;
-    try {
-      const parsed = parseSemanticSelector(m.token.key);
-      parsed.modifiers.forEach((mod) => modifiersSet.add(mod));
-      if (parsed.language && parsed.language.trim() !== '') languagesSet.add(parsed.language);
-    } catch {
-      // skip invalid selectors
-    }
-  }
-
-  const semanticTokenModifiers = [...modifiersSet].sort();
-  const semanticTokenLanguages = [...languagesSet].sort();
-  return {
-    mappings: newMappings,
-    groupsToEnsure: [...groupsToEnsure],
-    semanticTokenModifiers,
-    semanticTokenLanguages,
-  };
-}
+export type { MergeMappingsResult } from '../services/template-catalog-merge';
 
 export interface SemanticCatalogInfo {
   semanticTokenTypes: string[];
