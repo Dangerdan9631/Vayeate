@@ -75,10 +75,10 @@ Read before implementing:
 
 ## Relationship to current code
 
-The app currently uses the legacy undo stack (`vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/ui/context/UndoContext.tsx`). UndoManagerV2 is the target design for new implementation. When implementing, this skill is the spec; existing undo-stack and UndoContext can be consulted for current behavior and migration points.
+The app currently uses the legacy undo stack (`vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx`). UndoManagerV2 is the target design for new implementation. When implementing, this skill is the spec; existing undo-stack and UndoContext can be consulted for current behavior and migration points.
 
 ## References
 
 - Undo rule (`.cursor/rules/vayeate-theme-studio-undo.mdc`)
 - Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`)
-- Current implementation: `vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/ui/context/UndoContext.tsx`
+- Current implementation: `vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx`

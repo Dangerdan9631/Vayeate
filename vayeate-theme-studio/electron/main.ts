@@ -259,28 +259,6 @@ app.whenReady().then(async () => {
     await themeRepo.deleteTheme(name, version);
   });
 
-  type UndoPane = 'themes' | 'templates' | 'catalogs';
-  ipcMain.handle('undo:save', async (_event, pane: UndoPane, docId: string, payload: string) => {
-    if (!docId) return;
-    const dir = join(undoStacksDir, pane);
-    await mkdir(dir, { recursive: true });
-    const file = join(dir, `${sanitizeDocId(docId)}.json`);
-    await writeFile(file, payload, 'utf-8');
-  });
-  ipcMain.handle('undo:load', async (_event, pane: UndoPane, docId: string): Promise<string | null> => {
-    if (!docId) return null;
-    const file = join(undoStacksDir, pane, `${sanitizeDocId(docId)}.json`);
-    try {
-      return await readFile(file, 'utf-8');
-    } catch {
-      return null;
-    }
-  });
-  ipcMain.handle('undo:clearAll', () => {
-    rmSync(undoStacksDir, { recursive: true, force: true });
-    mkdirSync(undoStacksDir, { recursive: true });
-  });
-
   const undoV2Dir = getUndoV2Dir();
   ipcMain.handle('undoV2:save', async (_event, stackId: string, payload: string) => {
     if (!stackId) return;

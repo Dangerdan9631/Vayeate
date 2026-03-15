@@ -58,11 +58,6 @@ const electronAPI = {
   sendLog: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => {
     ipcRenderer.send('renderer-log', level, tag, args);
   },
-  undoSave: (pane: 'themes' | 'templates' | 'catalogs', docId: string, payload: string) =>
-    ipcRenderer.invoke('undo:save', pane, docId, payload),
-  undoLoad: (pane: 'themes' | 'templates' | 'catalogs', docId: string) =>
-    ipcRenderer.invoke('undo:load', pane, docId) as Promise<string | null>,
-  undoClearAll: () => ipcRenderer.invoke('undo:clearAll'),
   undoV2Save: (stackId: string, payload: string) =>
     ipcRenderer.invoke('undoV2:save', stackId, payload),
   undoV2Load: (stackId: string) =>

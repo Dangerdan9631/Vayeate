@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './ui/App';
+import { App } from './app/ui/App';
 
 // Forward main process logs to this console so all Theme Studio logs appear in DevTools
 window.electronAPI?.onMainLog?.((level, args) => {

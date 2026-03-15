@@ -42,15 +42,15 @@ Use this file to route an AI coding agent to the right instruction files, archit
 |---|---|---|
 | Theme generation or contrast logic changes | `.github/skills/theme-generation.md` | `vayeate-theme-studio/src/core/theme-generator.ts`, `vayeate-theme-studio/src/core/color.ts`, `.github/agent-docs/edge-cases.md` |
 | Catalog pin/sync/drift changes | `.github/skills/catalog-sync.md` | `vayeate-theme-studio/src/services/catalog-sync.ts`, `vayeate-theme-studio/data/catalogs/`, `.github/agent-docs/functionality.md` |
-| UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `vayeate-theme-studio/src/ui/App.tsx`, `.github/agent-docs/architecture.md` |
+| UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `vayeate-theme-studio/src/app/ui/App.tsx`, `.github/agent-docs/architecture.md` |
 | Schema/model changes | `.github/agent-docs/architecture.md` | `vayeate-theme-studio/src/model/schemas.ts`, `vayeate-theme-studio/src/model/`, `.github/agent-docs/conventions.md` |
 | Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `vayeate-theme-studio/src/core/theme-exporter.ts`, `.github/skills/safe-change-validation.md` |
 | Repo-level documentation or process updates | `.github/copilot-instructions.md` | `AGENTS.md`, `.github/agent-docs/conventions.md`, `.github/agents/task-completion-hook.md` |
 | Unknown / mixed task | `AGENTS.md` | `.github/copilot-instructions.md`, relevant `.github/skills/*.md`, then target module files |
-| Adding or changing app actions / action types | `vayeate-theme-studio/src/actions/action-types.ts` (canonical list = `AppActionV2` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
+| Adding or changing app actions / action types | `vayeate-theme-studio/src/app/actions/action-types.ts` (canonical list = `AppActionV2` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
 | Adding or modifying Theme Studio operations | `.cursor/rules/vayeate-theme-studio-operations.mdc` | `.cursor/skills/add-or-modify-operation/SKILL.md`, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | App changes that mutate state or files (undoable work) | `.cursor/rules/vayeate-theme-studio-undo.mdc` | Existing operations/controllers/viewmodels, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
-| Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/ui/context/UndoContext.tsx` when implementing or migrating |
+| Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/utils/undo-stack.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx` when implementing or migrating |
 | Adding a new undo action type | `.cursor/skills/define-undo-action/SKILL.md` | `vayeate-theme-studio/src/utils/undo-manager-v2.ts`, `.cursor/rules/vayeate-theme-studio-undo.mdc` |
 
 ## Skills index
@@ -74,7 +74,7 @@ Cursor skills (vayeate-theme-studio):
   - `.vscode/launch.json`
 - Standalone Theme Studio app:
   - `vayeate-theme-studio/src/core/*`
-  - `vayeate-theme-studio/src/ui/*`
+  - `vayeate-theme-studio/src/app/ui/*`
   - `vayeate-theme-studio/src/model/*`
   - `vayeate-theme-studio/data/*`
   - `vayeate-theme-studio/src/services/catalog-sync.ts`

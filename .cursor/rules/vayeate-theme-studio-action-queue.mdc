@@ -1,6 +1,6 @@
 ---
 description: Action queue pattern for vayeate-theme-studio
-globs: vayeate-theme-studio/src/actions/**/*, vayeate-theme-studio/src/ui/context/**/*
+globs: vayeate-theme-studio/src/app/actions/**/*, vayeate-theme-studio/src/app/ui/context/**/*
 alwaysApply: false
 ---
 
@@ -55,7 +55,7 @@ Use these action suffixes for each control type when naming events:
 
 ## AppActionV2 and canonical event list
 
-- **Type definition**: `AppActionV2` is a discriminated union in `vayeate-theme-studio/src/actions/action-types.ts`. Each member is `{ type: '<ACTION_NAME>'; ...payload }`. **The `AppActionV2` union is the canonical list of all app action event names**; there is no separate list file.
+- **Type definition**: `AppActionV2` is a discriminated union in `vayeate-theme-studio/src/app/actions/action-types.ts`. Each member is `{ type: '<ACTION_NAME>'; ...payload }`. **The `AppActionV2` union is the canonical list of all app action event names**; there is no separate list file.
 - **Naming convention**: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>` (e.g. `CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK`). CONTEXT: APP, CATALOG, TEMPLATE, THEME. SUBCONTEXT: card/section/dialog (e.g. DETAILS, CREATE_DIALOG). CONTROL and ACTION: BUTTON → ON_CLICK, ON_DOUBLE_CLICK, ON_RIGHT_CLICK; LIST → ON_SELECT, ON_COMMIT; CHECKBOX → ON_TOGGLE; TEXT → ON_CHANGE, ON_COMMIT; SLIDER → ON_DELTA, ON_COMMIT; COLOR_PICKER → ON_SELECT, ON_COMMIT; top-level → ON_LOAD, ON_CLOSE.
 - **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`).
 - **Tests**: `useAppDispatch()` returns a no-op when used outside `AppProvider`, so components that only call `dispatch` can be tested without wrapping in `AppProvider`.

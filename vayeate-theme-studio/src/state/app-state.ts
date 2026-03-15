@@ -1,5 +1,5 @@
 import type { Catalog, CatalogReference, CatalogType, ColorVariableKey, ContrastVariableKey, SourceType, Template, TemplateReference, Theme, ThemeReference, TokenType } from '../model/schemas';
-import type { TabId } from '../ui/tabs';
+import type { TabId } from '../app/ui/tabs';
 
 export interface CatalogsState {
   catalogRefs: CatalogReference[];

@@ -13,11 +13,11 @@ When you change code in vayeate-theme-studio, add or update tests that cover the
 | Layer | Test location |
 |-------|----------------|
 | State | `src/state/*.test.ts` |
-| Actions | `src/actions/*.test.ts` |
+| Actions | `src/app/actions/*.test.ts` |
 | Controllers | `src/controllers/*.test.ts` |
 | Operations | `src/operations/*.test.ts` |
 | Data | `src/data/*.test.ts` |
-| Viewmodel | `src/viewmodel/*.test.tsx` |
+| Viewmodel | `src/app/viewmodel/*.test.tsx` |
 | UI (pages/components) | Colocated `*.test.tsx` next to the component |
 
 ## Guidelines
