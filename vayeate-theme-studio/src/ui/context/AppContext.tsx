@@ -19,11 +19,22 @@ import {
 import { UndoProvider } from './UndoContext';
 import * as appController from '../../controllers/app-controller';
 import * as catalogController from '../../controllers/catalog-controller';
+import {
+  setCatalogCreateFormName,
+  setCatalogCreateFormType,
+  setCatalogBulkAddText,
+  setCatalogTokensSearchText,
+  setCatalogNewSourceUrl,
+  setCatalogNewSourceTokenType,
+  setCatalogNewSourceType,
+  setCatalogNewTokenKey,
+} from '../../operations/catalog-operations';
 import * as undoController from '../../controllers/undo-controller';
 import * as tabController from '../../controllers/tab-controller';
 import * as templateController from '../../controllers/template-controller';
 import * as themeController from '../../controllers/theme-controller';
 import * as windowController from '../../controllers/window-controller';
+import { setCurrentUndoStackId } from '../../operations/undo-operations';
 import { createLogger } from '../../utils/logger';
 
 const log = createLogger('ActionProcessor');
@@ -37,58 +48,6 @@ function createActionProcessor() {
     switch (action.type) {
       case 'TAB_BAR_ON_SELECT':
         tabController.setActiveTab(setState, action.tabId);
-        break;
-
-      case 'CATALOG_PAGE_ON_LOAD':
-        await catalogController.loadCatalogRefs(setState);
-        break;
-
-      case 'TEMPLATE_PAGE_ON_ENSURE_CATALOGS_FOR_DISPLAY':
-        await catalogController.loadCatalogsForDisplay(setState, action.refs);
-        break;
-
-      case 'CATALOG_LIST_ON_SELECT':
-        await catalogController.selectCatalogAndLoad(
-          setState,
-          action.name,
-          action.version,
-        );
-        break;
-
-      case 'CATALOG_CREATE_DIALOG_ON_OPEN':
-        catalogController.openCatalogCreateDialog(setState);
-        break;
-
-      case 'CATALOG_CREATE_DIALOG_ON_CLOSE':
-        catalogController.closeCatalogCreateDialog(setState);
-        break;
-
-      case 'CATALOG_CREATE_FORM_ON_SUBMIT':
-        await catalogController.createCatalog(setState, action.params);
-        break;
-
-      case 'CATALOG_SAVE_BUTTON_ON_CLICK':
-        await catalogController.saveCatalog(setState, action.catalog);
-        break;
-
-      case 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK':
-        await catalogController.deleteCatalogVersion(
-          setState,
-          action.name,
-          action.version,
-        );
-        break;
-
-      case 'CATALOG_SYNC_BUTTON_ON_CLICK':
-        await catalogController.syncCatalog(setState, action.catalog);
-        break;
-
-      case 'CATALOG_REVERT_BUTTON_ON_CLICK':
-        await catalogController.revertCatalogToVersion(
-          setState,
-          action.name,
-          action.version,
-        );
         break;
 
       case 'TEMPLATE_PAGE_ON_LOAD':
@@ -297,135 +256,113 @@ export function createActionProcessorV2(getState: GetState): (
         await windowController.dragWindow();
         break;
       case 'CATALOG_PAGE_ON_LOAD':
-        // Read catalog refs from disk (or service) and load into memory.
-        // Set catalog list and selected catalog (e.g. first or last used) in state.
-        // Update UI state so the catalog list and details pane are populated.
+        await catalogController.loadCatalogRefs(setState);
+        setCurrentUndoStackId(setState, null);
         break;
       case 'CATALOG_CATALOGS_LIST_ON_COMMIT':
-        // Load the chosen catalog (name/version) from disk into state.
-        // Set selected catalog and ensure refs/list stay in sync.
-        // Update UI state so details and tokens reflect the selected catalog.
+        await catalogController.selectCatalogAndLoad(setState, action.name, action.version);
         break;
       case 'CATALOG_CATALOGS_CREATE_BUTTON_ON_CLICK':
-        // Set dialog-open flag and reset create-form fields in state.
-        // Update UI state to show the create-catalog dialog.
+        catalogController.openCatalogCreateDialog(setState);
         break;
       case 'CATALOG_CREATE_DIALOG_ON_OPEN':
-        // Reset create-form state (name, type) and set dialog-open flag.
-        // Update UI state to show the dialog with empty/default fields.
+        catalogController.openCatalogCreateDialog(setState);
         break;
       case 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE':
-        // Store the new name in create-form state (no persist yet).
-        // Update UI state so the text field shows the new value.
+        setCatalogCreateFormName(setState, action.value);
         break;
       case 'CATALOG_CREATE_DIALOG_TYPE_LIST_ON_COMMIT':
-        // Store the selected catalog type in create-form state.
-        // Update UI state so the list shows the selected type.
+        setCatalogCreateFormType(setState, action.value);
         break;
       case 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK':
-        // Clear create-form state and set dialog-open to false.
-        // Update UI state to hide the dialog.
+        catalogController.closeCatalogCreateDialog(setState);
         break;
       case 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK':
-        // Create the catalog on disk with the given name and type; push to undo if needed.
-        // Refresh catalog refs and set the new catalog as selected (or keep current).
-        // Update UI state: close dialog, refresh list, show new or current catalog details.
+        await catalogController.createCatalog(setState, action.params);
         break;
       case 'CATALOG_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK':
-        // Delete the catalog version on disk.
-        // Evaluate the next catalog version to be shown (e.g. another version or clear selection).
-        // Update UI state to reflect the deletion and new selection.
+        await catalogController.deleteCatalogVersion(setState, action.name, action.version);
         break;
       case 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK':
-        // Fetch from remote (or source) and write updated catalog to disk; push to undo if needed.
-        // Reload catalog into state and recompute refs.
-        // Update UI state so details and tokens reflect the synced catalog.
+        await catalogController.syncCatalog(setState, action.catalog);
         break;
       case 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK':
-        // Toggle locked flag on the catalog in state (and optionally persist).
-        // Update UI state so the lock control and editability reflect the new state.
+        await catalogController.lockCatalog(setState, getState);
         break;
       case 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK':
-        // Load the specified version from disk and write as current; push to undo if needed.
-        // Replace current catalog in state with reverted content.
-        // Update UI state so details reflect the reverted version.
+        await catalogController.revertCatalogToVersion(setState, action.name, action.version);
         break;
-      case 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_CHANGE':
-        // Store the new URL in the catalog source at the given index in state (no persist yet).
-        // Update UI state so the text field shows the new value.
+      case 'CATALOG_DETAILS_SAVE_CATALOG':
+        await catalogController.saveCatalog(setState, action.catalog);
+        break;
+      case 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT':
+        await catalogController.updateSourceUrl(setState, getState, action.sourceIndex, action.value);
         break;
       case 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT':
-        // Store the token type for the source in catalog state.
-        // Update UI state so the list shows the selected type.
+        await catalogController.updateSourceTokenType(setState, getState, action.sourceIndex, action.value);
         break;
       case 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT':
-        // Store the source type for the source in catalog state.
-        // Update UI state so the list shows the selected type.
+        await catalogController.updateSourceType(setState, getState, action.sourceIndex, action.value);
         break;
       case 'CATALOG_DETAILS_SOURCE_REMOVE_BUTTON_ON_CLICK':
-        // Remove the source at the given index from catalog state; persist catalog to disk.
-        // Recompute catalog refs if needed.
-        // Update UI state so the source list and details reflect the removal.
+        await catalogController.removeSource(setState, getState, action.sourceIndex);
         break;
       case 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE':
-        // Store the new-source URL in draft/new-source state (no add yet).
-        // Update UI state so the text field shows the value.
+        setCatalogNewSourceUrl(setState, action.value);
         break;
       case 'CATALOG_DETAILS_NEW_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT':
-        // Store the token type for the new source in draft state.
-        // Update UI state so the list shows the selected type.
+        setCatalogNewSourceTokenType(setState, action.value);
         break;
       case 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT':
-        // Store the source type for the new source in draft state.
-        // Update UI state so the list shows the selected type.
+        setCatalogNewSourceType(setState, action.value);
         break;
       case 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK':
-        // Append the new source to the catalog in state and persist to disk; push to undo if needed.
-        // Clear new-source draft fields.
-        // Update UI state so the source list includes the new source and draft is reset.
+        await catalogController.addNewSource(setState, getState);
         break;
       case 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE':
-        // Store the search text in catalog UI state (filter is derived for display).
-        // Update UI state so the tokens list is filtered by the search text.
+        setCatalogTokensSearchText(setState, action.value);
         break;
       case 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK':
-        // Set bulk-add dialog open and reset bulk-add text in state.
-        // Update UI state to show the bulk-add-tokens dialog.
+        catalogController.openBulkAddDialog(setState);
         break;
       case 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE':
-        // Update the token key in catalog state for the given key (or new-token draft).
-        // Update UI state so the text field shows the new key.
+        if (action.key != null && action.tokenType != null) {
+          await catalogController.updateTokenKey(
+            setState,
+            getState,
+            action.key,
+            action.value,
+            action.tokenType,
+          );
+        } else {
+          setCatalogNewTokenKey(setState, action.value);
+        }
         break;
       case 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK':
-        // Remove the token with the given key from catalog; persist to disk; push to undo if needed.
-        // Recompute token list/refs.
-        // Update UI state so the token is removed from the list.
+        await catalogController.removeToken(setState, getState, action.key, action.tokenType);
         break;
       case 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE':
-        // Store the new-token key in draft state (no add yet).
-        // Update UI state so the text field shows the value.
+        setCatalogNewTokenKey(setState, action.value);
         break;
       case 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK':
-        // Add a token with the current new-token key to the catalog; persist to disk; push to undo if needed.
-        // Clear new-token draft.
-        // Update UI state so the new token appears in the list and draft is reset.
+        await catalogController.addNewToken(
+          setState,
+          getState,
+          action.tokenType,
+          action.key,
+        );
         break;
       case 'CATALOG_BULK_ADD_TOKENS_DIALOG_ON_OPEN':
-        // Set bulk-add dialog open and reset bulk-add text in state.
-        // Update UI state to show the dialog with empty text.
+        catalogController.openBulkAddDialog(setState);
         break;
       case 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE':
-        // Store the bulk-add text (e.g. pasted keys) in state.
-        // Update UI state so the text area shows the value (preview/count optional).
+        setCatalogBulkAddText(setState, action.value);
         break;
       case 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK':
-        // Set bulk-add dialog closed and clear bulk-add text in state.
-        // Update UI state to hide the dialog.
+        catalogController.closeBulkAddDialog(setState);
         break;
       case 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK':
-        // Parse the bulk-add text into keys; add each token to the catalog; persist to disk; push to undo if needed.
-        // Close dialog and clear bulk-add text in state.
-        // Update UI state: hide dialog and refresh tokens list.
+        await catalogController.bulkAddTokens(setState, getState);
         break;
       case 'TEMPLATE_PAGE_ON_LOAD':
         // Read template and catalog refs from disk; load into state.

@@ -20,16 +20,6 @@ import type {
 
 export type AppAction =
   | { type: 'TAB_BAR_ON_SELECT'; tabId: TabId }
-  | { type: 'CATALOG_PAGE_ON_LOAD' }
-  | { type: 'TEMPLATE_PAGE_ON_ENSURE_CATALOGS_FOR_DISPLAY'; refs: Array<{ name: string; version: string }> }
-  | { type: 'CATALOG_LIST_ON_SELECT'; name: string; version: string }
-  | { type: 'CATALOG_CREATE_DIALOG_ON_OPEN' }
-  | { type: 'CATALOG_CREATE_DIALOG_ON_CLOSE' }
-  | { type: 'CATALOG_CREATE_FORM_ON_SUBMIT'; params: { name: string; type: 'manual' | 'remote' } }
-  | { type: 'CATALOG_SAVE_BUTTON_ON_CLICK'; catalog: Catalog }
-  | { type: 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK'; name: string; version: string }
-  | { type: 'CATALOG_SYNC_BUTTON_ON_CLICK'; catalog: Catalog }
-  | { type: 'CATALOG_REVERT_BUTTON_ON_CLICK'; name: string; version: string }
   | { type: 'TEMPLATE_PAGE_ON_LOAD' }
   | { type: 'TEMPLATE_LIST_ON_SELECT'; name: string; version: string }
   | { type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' }
@@ -91,9 +81,10 @@ export type AppActionV2 =
   | { type: 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK'; catalog: Catalog }
   | { type: 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK' }
   | { type: 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK'; name: CatalogName; version: Version }
-  | { type: 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_CHANGE'; value: string }
-  | { type: 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT'; value: TokenType }
-  | { type: 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT'; value: SourceType }
+  | { type: 'CATALOG_DETAILS_SAVE_CATALOG'; catalog: Catalog }
+  | { type: 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT'; value: string; sourceIndex: number }
+  | { type: 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT'; value: TokenType; sourceIndex: number }
+  | { type: 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT'; value: SourceType; sourceIndex: number }
   | { type: 'CATALOG_DETAILS_SOURCE_REMOVE_BUTTON_ON_CLICK'; sourceIndex: number }
   | { type: 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE'; value: string }
   | { type: 'CATALOG_DETAILS_NEW_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT'; value: TokenType }
@@ -101,10 +92,10 @@ export type AppActionV2 =
   | { type: 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK' }
   | { type: 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE'; value: string }
   | { type: 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK' }
-  | { type: 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE'; value: string; key?: TokenKey }
-  | { type: 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK'; key: TokenKey }
+  | { type: 'CATALOG_TOKENS_TOKEN_KEY_TEXT_ON_CHANGE'; value: string; key?: TokenKey; tokenType?: TokenType }
+  | { type: 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK'; key: TokenKey; tokenType: TokenType }
   | { type: 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE'; value: string }
-  | { type: 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK' }
+  | { type: 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK'; tokenType: TokenType; key?: string }
   | { type: 'CATALOG_BULK_ADD_TOKENS_DIALOG_ON_OPEN' }
   | { type: 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE'; value: string }
   | { type: 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK' }

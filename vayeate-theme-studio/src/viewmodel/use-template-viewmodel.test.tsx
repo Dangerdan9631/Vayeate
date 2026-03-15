@@ -39,25 +39,38 @@ afterEach(() => {
 });
 
 function harness() {
-  const stateRef = { current: { dispatch: null as ((a: import('../actions/action-types').AppAction) => void) | null } };
+  const stateRef = {
+    current: {
+      dispatch: null as ((a: import('../actions/action-types').AppAction) => void) | null,
+      dispatchV2: null as ((a: import('../actions/action-types').AppActionV2) => void) | null,
+    },
+  };
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <AppProvider>
       <HarnessInner ref={stateRef} />
       {children}
     </AppProvider>
   );
-  return { Wrapper, getDispatch: () => stateRef.current.dispatch };
+  return {
+    Wrapper,
+    getDispatch: () => stateRef.current.dispatch,
+    getDispatchV2: () => stateRef.current.dispatchV2,
+  };
 }
 
 const HarnessInner = React.forwardRef<
-  { dispatch: ((a: import('../actions/action-types').AppAction) => void) | null },
+  {
+    dispatch: ((a: import('../actions/action-types').AppAction) => void) | null;
+    dispatchV2: ((a: import('../actions/action-types').AppActionV2) => void) | null;
+  },
   object
 >(function HarnessInner(_, ref) {
-  const { dispatch } = useAppState();
+  const { dispatch, dispatchV2 } = useAppState();
   if (ref && typeof ref === 'object' && 'current' in ref) {
-    (ref as React.MutableRefObject<{ dispatch: ((a: import('../actions/action-types').AppAction) => void) | null }>).current = {
-      dispatch,
-    };
+    (ref as React.MutableRefObject<{
+      dispatch: ((a: import('../actions/action-types').AppAction) => void) | null;
+      dispatchV2: ((a: import('../actions/action-types').AppActionV2) => void) | null;
+    }>).current = { dispatch, dispatchV2 };
   }
   return null;
 });
@@ -87,7 +100,7 @@ describe('useTemplateViewModel', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -185,7 +198,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -234,7 +247,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -278,7 +291,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -331,7 +344,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -390,7 +403,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -439,7 +452,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -484,7 +497,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -531,7 +544,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -578,7 +591,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -624,7 +637,7 @@ describe('useTemplateViewModel groups', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -692,11 +705,11 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      getDispatchV2()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
     });
     await act(async () => {
       getDispatch()?.({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params: { name: 'test-template' } });
@@ -757,11 +770,11 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      getDispatchV2()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
     });
     await act(async () => {
       getDispatch()?.({ type: 'TEMPLATE_CREATE_FORM_ON_SUBMIT', params: { name: 'test-template' } });
@@ -826,7 +839,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -875,7 +888,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -924,7 +937,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -984,7 +997,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1044,7 +1057,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1107,7 +1120,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1167,7 +1180,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1228,7 +1241,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1291,7 +1304,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1351,11 +1364,11 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      getDispatchV2()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
     });
     await act(async () => {
       getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });
@@ -1396,7 +1409,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2: _getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
@@ -1487,11 +1500,11 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatch, getDispatchV2 } = harness();
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      getDispatchV2()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
     });
     await act(async () => {
       getDispatch()?.({ type: 'TEMPLATE_LIST_ON_SELECT', name: 'test-template', version: '1.0.0' });

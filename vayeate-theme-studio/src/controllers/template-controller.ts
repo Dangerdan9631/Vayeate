@@ -1,5 +1,6 @@
 import type { Template } from '../model/schemas';
 import { compareVersions } from '../utils/version';
+import * as catalogController from './catalog-controller';
 import {
   loadTemplateRefs as loadTemplateRefsOp,
   setSelectedTemplateRef,
@@ -42,7 +43,13 @@ export async function selectTemplateAndLoad(
 ): Promise<void> {
   const ref = { name, version };
   setSelectedTemplateRef(setState, ref);
-  await loadTemplate(setState, name, version);
+  const template = await loadTemplate(setState, name, version);
+  if (template?.catalogRefs?.length) {
+    await catalogController.loadCatalogsForDisplay(
+      setState,
+      template.catalogRefs.map((r) => ({ name: r.name, version: r.version })),
+    );
+  }
 }
 
 export function openTemplateCreateDialog(setState: SetState): void {

@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useCatalogViewModel } from '../../viewmodel/use-catalog-viewmodel';
+import { useCatalogsState } from '../context/slice-contexts';
 import { BulkAddDialog } from '../components/BulkAddDialog';
 import { CatalogDetailsCard } from '../components/CatalogDetailsCard';
 import { CatalogsCard } from '../components/CatalogsCard';
@@ -8,7 +9,7 @@ import { TokensCard } from '../components/TokensCard';
 
 export function CatalogsPage() {
   const vm = useCatalogViewModel();
-  const [bulkAddOpen, setBulkAddOpen] = useState(false);
+  const bulkAddDialogOpen = useCatalogsState().bulkAddDialogOpen;
 
   const existingTokenKeys = useMemo(() => {
     if (!vm.catalog) return new Set<string>();
@@ -41,7 +42,6 @@ export function CatalogsPage() {
               }}
               onLock={vm.lockCatalog}
               onSync={vm.syncCatalog}
-              onUpdateSources={vm.updateSources}
               onRevert={() => {
                 if (vm.selectedRef) vm.revertToVersion(vm.selectedRef.name, vm.selectedRef.version);
               }}
@@ -57,7 +57,7 @@ export function CatalogsPage() {
               onAddToken={vm.addToken}
               onRemoveToken={vm.removeToken}
               onUpdateTokenKey={vm.updateTokenKey}
-              onBulkAdd={() => setBulkAddOpen(true)}
+              onBulkAdd={() => {}}
               onAddSemanticFromSelector={vm.addSemanticFromSelector}
               onSetSemanticTypes={vm.setSemanticTypes}
               onSetSemanticModifiers={vm.setSemanticModifiers}
@@ -72,15 +72,8 @@ export function CatalogsPage() {
           onCreate={vm.createCatalog}
         />
       )}
-      {bulkAddOpen && (
-        <BulkAddDialog
-          existingTokenKeys={existingTokenKeys}
-          onCancel={() => setBulkAddOpen(false)}
-          onAdd={(tokens) => {
-            vm.bulkAddTokens(tokens);
-            setBulkAddOpen(false);
-          }}
-        />
+      {bulkAddDialogOpen && (
+        <BulkAddDialog existingTokenKeys={existingTokenKeys} />
       )}
     </>
   );

@@ -18,10 +18,6 @@ export function TemplatesPage() {
   const [orphanKeys, setOrphanKeys] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (vm.template) vm.ensureCatalogsLoadedForTemplate();
-  }, [vm.template, vm.ensureCatalogsLoadedForTemplate]);
-
-  useEffect(() => {
     if (!vm.template || vm.loadedCatalogsForTemplateRefs.length === 0) {
       setOrphanKeys(new Set());
       return;

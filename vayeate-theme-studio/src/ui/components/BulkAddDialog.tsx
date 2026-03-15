@@ -1,21 +1,15 @@
-import { useState, useMemo, useEffect } from 'react';
-import { useAppDispatchV2 } from '../context/slice-contexts';
+import { useMemo } from 'react';
+import { useAppDispatchV2, useCatalogsState } from '../context/slice-contexts';
 import { parseThemeJson, type BulkParseResult } from '../../services/theme-parser';
-import type { Token } from '../../model/schemas';
 
 interface BulkAddDialogProps {
   existingTokenKeys: Set<string>;
-  onCancel: () => void;
-  onAdd: (tokens: Token[]) => void;
+  onCancel?: () => void;
 }
 
-export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDialogProps) {
+export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProps) {
   const dispatchV2 = useAppDispatchV2();
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_DIALOG_ON_OPEN' });
-  }, [dispatchV2]);
+  const { bulkAddText: text } = useCatalogsState();
 
   const parseResult = useMemo((): { result: BulkParseResult; newCount: number } | { error: string } | null => {
     const trimmed = text.trim();
@@ -33,13 +27,13 @@ export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDia
   const parsed = parseResult !== null && 'result' in parseResult ? parseResult : null;
   const canSubmit = parsed !== null && parsed.newCount > 0;
 
-  function handleSubmit() {
-    if (!parsed) return;
-    onAdd(parsed.result.tokens);
+  function handleCancel() {
+    dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK' });
+    onCancel?.();
   }
 
   return (
-    <div className="dialog-overlay" onClick={onCancel}>
+    <div className="dialog-overlay" onClick={handleCancel}>
       <div className="dialog-content dialog-wide" onClick={(e) => e.stopPropagation()}>
         <h3>Bulk Add Tokens</h3>
         <p className="dialog-description">
@@ -52,11 +46,9 @@ export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDia
           rows={12}
           value={text}
           placeholder='{"colors": { ... }, "tokenColors": [ ... ], "semanticTokenColors": { ... }}'
-          onChange={(e) => {
-            const value = e.target.value;
-            setText(value);
-            dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE', value });
-          }}
+          onChange={(e) =>
+            dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE', value: e.target.value })
+          }
         />
 
         {isError && (
@@ -76,24 +68,14 @@ export function BulkAddDialog({ existingTokenKeys, onCancel, onAdd }: BulkAddDia
         )}
 
         <div className="dialog-actions">
-          <button
-            type="button"
-            className="btn-secondary"
-            onClick={() => {
-              dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK' });
-              onCancel();
-            }}
-          >
+          <button type="button" className="btn-secondary" onClick={handleCancel}>
             Cancel
           </button>
           <button
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={() => {
-              dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK' });
-              handleSubmit();
-            }}
+            onClick={() => dispatchV2({ type: 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK' })}
           >
             Add {parsed ? parsed.newCount : 0} token{parsed?.newCount !== 1 ? 's' : ''}
           </button>

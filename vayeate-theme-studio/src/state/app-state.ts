@@ -1,4 +1,4 @@
-import type { Catalog, CatalogReference, Template, TemplateReference, Theme, ThemeReference } from '../model/schemas';
+import type { Catalog, CatalogReference, CatalogType, SourceType, Template, TemplateReference, Theme, ThemeReference, TokenType } from '../model/schemas';
 import type { TabId } from '../ui/tabs';
 
 export interface CatalogsState {
@@ -9,6 +9,15 @@ export interface CatalogsState {
   loadedForDisplay: Record<string, Catalog>;
   isCreating: boolean;
   createDialogOpen: boolean;
+  createFormName: string;
+  createFormType: CatalogType;
+  bulkAddDialogOpen: boolean;
+  bulkAddText: string;
+  tokensSearchText: string;
+  newSourceUrl: string;
+  newSourceTokenType: TokenType;
+  newSourceType: SourceType;
+  newTokenKey: string;
 }
 
 export interface TemplatesState {
@@ -72,6 +81,15 @@ export const initialAppState: AppState = {
     loadedForDisplay: {},
     isCreating: false,
     createDialogOpen: false,
+    createFormName: '',
+    createFormType: 'manual',
+    bulkAddDialogOpen: false,
+    bulkAddText: '',
+    tokensSearchText: '',
+    newSourceUrl: '',
+    newSourceTokenType: 'theme',
+    newSourceType: 'default',
+    newTokenKey: '',
   },
   templates: {
     templateRefs: [],
@@ -111,6 +129,15 @@ export type AppStateUpdate =
   | { type: 'SET_LOADED_CATALOG_FOR_DISPLAY'; name: string; version: string; catalog: Catalog | null }
   | { type: 'SET_IS_CREATING'; value: boolean }
   | { type: 'SET_CREATE_DIALOG_OPEN'; value: boolean }
+  | { type: 'SET_CATALOG_CREATE_FORM_NAME'; value: string }
+  | { type: 'SET_CATALOG_CREATE_FORM_TYPE'; value: CatalogType }
+  | { type: 'SET_CATALOG_BULK_ADD_DIALOG_OPEN'; value: boolean }
+  | { type: 'SET_CATALOG_BULK_ADD_TEXT'; value: string }
+  | { type: 'SET_CATALOG_TOKENS_SEARCH_TEXT'; value: string }
+  | { type: 'SET_CATALOG_NEW_SOURCE_URL'; value: string }
+  | { type: 'SET_CATALOG_NEW_SOURCE_TOKEN_TYPE'; value: TokenType }
+  | { type: 'SET_CATALOG_NEW_SOURCE_TYPE'; value: SourceType }
+  | { type: 'SET_CATALOG_NEW_TOKEN_KEY'; value: string }
   | { type: 'SET_TEMPLATE_REFS'; refs: TemplateReference[] }
   | { type: 'SET_SELECTED_TEMPLATE_REF'; ref: TemplateReference | null }
   | { type: 'SET_TEMPLATE'; template: Template | null }
@@ -155,6 +182,24 @@ export function appStateReducer(state: AppState, update: AppStateUpdate): AppSta
       return { ...state, catalogs: { ...state.catalogs, isCreating: update.value } };
     case 'SET_CREATE_DIALOG_OPEN':
       return { ...state, catalogs: { ...state.catalogs, createDialogOpen: update.value } };
+    case 'SET_CATALOG_CREATE_FORM_NAME':
+      return { ...state, catalogs: { ...state.catalogs, createFormName: update.value } };
+    case 'SET_CATALOG_CREATE_FORM_TYPE':
+      return { ...state, catalogs: { ...state.catalogs, createFormType: update.value } };
+    case 'SET_CATALOG_BULK_ADD_DIALOG_OPEN':
+      return { ...state, catalogs: { ...state.catalogs, bulkAddDialogOpen: update.value } };
+    case 'SET_CATALOG_BULK_ADD_TEXT':
+      return { ...state, catalogs: { ...state.catalogs, bulkAddText: update.value } };
+    case 'SET_CATALOG_TOKENS_SEARCH_TEXT':
+      return { ...state, catalogs: { ...state.catalogs, tokensSearchText: update.value } };
+    case 'SET_CATALOG_NEW_SOURCE_URL':
+      return { ...state, catalogs: { ...state.catalogs, newSourceUrl: update.value } };
+    case 'SET_CATALOG_NEW_SOURCE_TOKEN_TYPE':
+      return { ...state, catalogs: { ...state.catalogs, newSourceTokenType: update.value } };
+    case 'SET_CATALOG_NEW_SOURCE_TYPE':
+      return { ...state, catalogs: { ...state.catalogs, newSourceType: update.value } };
+    case 'SET_CATALOG_NEW_TOKEN_KEY':
+      return { ...state, catalogs: { ...state.catalogs, newTokenKey: update.value } };
     case 'SET_TEMPLATE_REFS':
       return { ...state, templates: { ...state.templates, templateRefs: update.refs } };
     case 'SET_SELECTED_TEMPLATE_REF':

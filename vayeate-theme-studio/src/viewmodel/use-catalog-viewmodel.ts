@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useAppDispatchV2, useCatalogsState } from '../ui/context/slice-contexts';
+import { useAppDispatchV2, useCatalogsState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../utils/version';
 import { nextPatchVersion } from '../utils/version';
-import type { Catalog, CatalogReference, Source, Token, TokenType } from '../model/schemas';
+import type { Catalog, CatalogReference, Token, TokenType } from '../model/schemas';
 import { mergeSemanticSelectorInto } from '../core/semantic-token';
 
 let catalogPageLoadDispatched = false;
 
 export function useCatalogViewModel() {
-  const dispatch = useAppDispatch();
   const dispatchV2 = useAppDispatchV2();
   const { catalogRefs, selectedRef, catalog, isCreating, createDialogOpen } = useCatalogsState();
 
   useEffect(() => {
     if (catalogPageLoadDispatched) return;
     catalogPageLoadDispatched = true;
-    dispatch({ type: 'CATALOG_PAGE_ON_LOAD' });
     dispatchV2({ type: 'CATALOG_PAGE_ON_LOAD' });
-  }, [dispatch, dispatchV2]);
+  }, [dispatchV2]);
 
   const catalogNames = useMemo(() => {
     const names = new Set(catalogRefs.map((r) => r.name));
@@ -75,90 +73,56 @@ export function useCatalogViewModel() {
 
   const selectCatalog = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'CATALOG_LIST_ON_SELECT', name, version });
       dispatchV2({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name, version });
     },
-    [dispatch, dispatchV2],
+    [dispatchV2],
   );
 
   const selectName = useCallback(
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        dispatch({ type: 'CATALOG_LIST_ON_SELECT', name: best.name, version: best.version });
         dispatchV2({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: best.name, version: best.version });
       }
     },
-    [dispatch, dispatchV2, highestVersionForName],
+    [dispatchV2, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_OPEN' });
     dispatchV2({ type: 'CATALOG_CATALOGS_CREATE_BUTTON_ON_CLICK' });
     dispatchV2({ type: 'CATALOG_CREATE_DIALOG_ON_OPEN' });
-  }, [dispatch, dispatchV2]);
+  }, [dispatchV2]);
 
   const closeCreateDialog = useCallback(() => {
-    dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_CLOSE' });
     dispatchV2({ type: 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
-  }, [dispatch, dispatchV2]);
+  }, [dispatchV2]);
 
   const createCatalog = useCallback(
     (params: { name: string; type: 'manual' | 'remote' }) => {
-      dispatch({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params });
       dispatchV2({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
     },
-    [dispatch, dispatchV2],
+    [dispatchV2],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'CATALOG_VERSION_DELETE_BUTTON_ON_CLICK', name, version });
       dispatchV2({ type: 'CATALOG_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch, dispatchV2],
-  );
-
-  const updateSources = useCallback(
-    (sources: Source[]) => {
-      if (!catalog) {
-        return;
-      }
-      const updated: Catalog = {
-        ...catalog,
-        sources,
-        version: catalog.locked ? nextPatchVersion(catalog.version) : catalog.version,
-        locked: false,
-      };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
-    },
-    [dispatch, catalog],
+    [dispatchV2],
   );
 
   const lockCatalog = useCallback(() => {
-    if (!catalog || catalog.type !== 'manual' || catalog.locked) {
-      return;
-    }
-    const updated: Catalog = { ...catalog, locked: true };
-    dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
-  }, [dispatch, catalog]);
+    dispatchV2({ type: 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK' });
+  }, [dispatchV2]);
 
   const syncCatalog = useCallback(() => {
-    if (!catalog) {
-      return;
-    }
-    if (catalog.type !== 'remote') {
-      return;
-    }
-    dispatch({ type: 'CATALOG_SYNC_BUTTON_ON_CLICK', catalog });
+    if (!catalog || catalog.type !== 'remote') return;
     dispatchV2({ type: 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK', catalog });
-  }, [dispatch, dispatchV2, catalog]);
+  }, [dispatchV2, catalog]);
 
   const addToken = useCallback(
     (key: string, tokenType: TokenType) => {
-      if (!catalog) {
-        return;
-      }
+      if (!catalog) return;
       if (tokenType === 'semantic token') {
         const current = {
           types: catalog.semanticTokenTypes ?? [],
@@ -176,28 +140,22 @@ export function useCatalogViewModel() {
           semanticTokenModifiers: merged.modifiers,
           semanticTokenLanguages: merged.languages,
         };
-        dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+        dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
         return;
       }
-
       const newToken: Token = { key, type: tokenType };
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
-      const updated: Catalog = {
-        ...base,
-        tokens: [...base.tokens, newToken],
-      };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      const updated: Catalog = { ...base, tokens: [...base.tokens, newToken] };
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const removeToken = useCallback(
     (key: string, tokenType: TokenType) => {
-      if (!catalog) {
-        return;
-      }
+      if (!catalog) return;
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -205,16 +163,14 @@ export function useCatalogViewModel() {
         ...base,
         tokens: base.tokens.filter((t) => !(t.key === key && t.type === tokenType)),
       };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const updateTokenKey = useCallback(
     (oldKey: string, newKey: string, tokenType: TokenType) => {
-      if (!catalog) {
-        return;
-      }
+      if (!catalog) return;
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
@@ -224,38 +180,29 @@ export function useCatalogViewModel() {
           t.key === oldKey && t.type === tokenType ? { ...t, key: newKey } : t,
         ),
       };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const bulkAddTokens = useCallback(
     (newTokens: Token[]) => {
-      if (!catalog) {
-        return;
-      }
+      if (!catalog) return;
       const existingKeys = new Set(catalog.tokens.map((t) => `${t.type}::${t.key}`));
       const unique = newTokens.filter((t) => !existingKeys.has(`${t.type}::${t.key}`));
-      if (unique.length === 0) {
-        return;
-      }
+      if (unique.length === 0) return;
       const base = catalog.locked
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
-      const updated: Catalog = {
-        ...base,
-        tokens: [...base.tokens, ...unique],
-      };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      const updated: Catalog = { ...base, tokens: [...base.tokens, ...unique] };
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const addSemanticFromSelector = useCallback(
     (selector: string) => {
-      if (!catalog) {
-        return;
-      }
+      if (!catalog) return;
       const current = {
         types: catalog.semanticTokenTypes ?? [],
         modifiers: catalog.semanticTokenModifiers ?? [],
@@ -272,9 +219,9 @@ export function useCatalogViewModel() {
         semanticTokenModifiers: merged.modifiers,
         semanticTokenLanguages: merged.languages,
       };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const setSemanticTypes = useCallback(
@@ -284,9 +231,9 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, semanticTokenTypes: types };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const setSemanticModifiers = useCallback(
@@ -296,9 +243,9 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, semanticTokenModifiers: modifiers };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const setSemanticLanguages = useCallback(
@@ -308,17 +255,16 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, semanticTokenLanguages: languages };
-      dispatch({ type: 'CATALOG_SAVE_BUTTON_ON_CLICK', catalog: updated });
+      dispatchV2({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
     },
-    [dispatch, catalog],
+    [dispatchV2, catalog],
   );
 
   const revertToVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'CATALOG_REVERT_BUTTON_ON_CLICK', name, version });
       dispatchV2({ type: 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK', name, version });
     },
-    [dispatch, dispatchV2],
+    [dispatchV2],
   );
 
   return {
@@ -340,7 +286,6 @@ export function useCatalogViewModel() {
     closeCreateDialog,
     createCatalog,
     deleteVersion,
-    updateSources,
     lockCatalog,
     syncCatalog,
     addToken,

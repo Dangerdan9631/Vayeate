@@ -1,4 +1,6 @@
-import type { Catalog, CatalogType } from '../model/schemas';
+import type { Catalog, CatalogType, Source, SourceType, Token, TokenKey, TokenType } from '../model/schemas';
+import { mergeSemanticSelectorInto } from '../core/semantic-token';
+import { parseThemeJson } from '../services/theme-parser';
 import { compareVersions, nextPatchVersion } from '../utils/version';
 import {
   loadCatalogRefs as loadCatalogRefsOp,
@@ -13,8 +15,17 @@ import {
   loadCatalogSnapshot,
   listCatalogRefs,
   createCatalog as createCatalogOperation,
+  setCatalogCreateFormName,
+  setCatalogCreateFormType,
+  setCatalogBulkAddDialogOpen,
+  setCatalogBulkAddText,
+  setCatalogNewSourceUrl,
+  setCatalogNewSourceTokenType,
+  setCatalogNewSourceType,
+  setCatalogNewTokenKey,
   type SetState,
 } from '../operations/catalog-operations';
+import { setCurrentUndoStackId, type GetState } from '../operations/undo-operations';
 
 export interface CreateCatalogParams {
   name: string;
@@ -47,6 +58,10 @@ export async function loadCatalogForDisplay(
   await loadCatalogForDisplayOp(setState, name, version);
 }
 
+export function catalogStackId(name: string, version: string): string {
+  return `catalog:${name}:${version}`;
+}
+
 export async function loadCatalogsForDisplay(
   setState: SetState,
   refs: Array<{ name: string; version: string }>,
@@ -64,14 +79,19 @@ export async function selectCatalogAndLoad(
   const ref = { name, version };
   setSelectedRef(setState, ref);
   await loadCatalog(setState, name, version);
+  setCurrentUndoStackId(setState, catalogStackId(name, version));
 }
 
 export function openCatalogCreateDialog(setState: SetState): void {
+  setCatalogCreateFormName(setState, '');
+  setCatalogCreateFormType(setState, 'manual');
   setState({ type: 'SET_CREATE_DIALOG_OPEN', value: true });
 }
 
 export function closeCatalogCreateDialog(setState: SetState): void {
   setState({ type: 'SET_CREATE_DIALOG_OPEN', value: false });
+  setCatalogCreateFormName(setState, '');
+  setCatalogCreateFormType(setState, 'manual');
 }
 
 async function refreshRefsAndSelect(
@@ -100,6 +120,7 @@ export async function createCatalog(
     await refreshCatalogRefs(setState);
     setCatalog(setState, catalog);
     setSelectedRef(setState, { name: catalog.name, version: catalog.version });
+    setCurrentUndoStackId(setState, catalogStackId(catalog.name, catalog.version));
   } finally {
     setState({ type: 'SET_IS_CREATING', value: false });
   }
@@ -131,9 +152,11 @@ export async function deleteCatalogVersion(
   if (next) {
     setSelectedRef(setState, next);
     await loadCatalog(setState, next.name, next.version);
+    setCurrentUndoStackId(setState, catalogStackId(next.name, next.version));
   } else {
     setSelectedRef(setState, null);
     setCatalog(setState, null);
+    setCurrentUndoStackId(setState, null);
   }
 }
 
@@ -184,4 +207,213 @@ export async function restoreCatalogState(
     await deleteCatalogOp(deleteVersionOnRestore.name, deleteVersionOnRestore.version);
     await refreshCatalogRefs(setState);
   }
+}
+
+export async function lockCatalog(setState: SetState, getState: GetState): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog || catalog.type !== 'manual' || catalog.locked) return;
+  const updated: Catalog = { ...catalog, locked: true };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, catalog.name, catalog.version);
+}
+
+function catalogWithVersionBump(catalog: Catalog): Catalog {
+  return catalog.locked
+    ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
+    : catalog;
+}
+
+export async function updateSourceUrl(
+  setState: SetState,
+  getState: GetState,
+  sourceIndex: number,
+  value: string,
+): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog || sourceIndex < 0 || sourceIndex >= catalog.sources.length) return;
+  const sources = catalog.sources.map((s, i) =>
+    i === sourceIndex ? { ...s, url: value.trim() } : s,
+  );
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = { ...base, sources };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+}
+
+export async function updateSourceTokenType(
+  setState: SetState,
+  getState: GetState,
+  sourceIndex: number,
+  value: TokenType,
+): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog || sourceIndex < 0 || sourceIndex >= catalog.sources.length) return;
+  const sources = catalog.sources.map((s, i) =>
+    i === sourceIndex ? { ...s, tokenType: value } : s,
+  );
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = { ...base, sources };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+}
+
+export async function updateSourceType(
+  setState: SetState,
+  getState: GetState,
+  sourceIndex: number,
+  value: SourceType,
+): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog || sourceIndex < 0 || sourceIndex >= catalog.sources.length) return;
+  const sources = catalog.sources.map((s, i) =>
+    i === sourceIndex ? { ...s, type: value } : s,
+  );
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = { ...base, sources };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+}
+
+export async function removeSource(
+  setState: SetState,
+  getState: GetState,
+  sourceIndex: number,
+): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog || sourceIndex < 0 || sourceIndex >= catalog.sources.length) return;
+  const sources = catalog.sources.filter((_, i) => i !== sourceIndex);
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = { ...base, sources };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+}
+
+export async function addNewSource(setState: SetState, getState: GetState): Promise<void> {
+  const state = getState().catalogs;
+  const catalog = state.catalog;
+  const url = state.newSourceUrl?.trim();
+  if (!catalog || !url) return;
+  const source: Source = {
+    url,
+    type: state.newSourceType,
+    tokenType: state.newSourceTokenType,
+  };
+  const sources = [...catalog.sources, source];
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = { ...base, sources };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  setCatalogNewSourceUrl(setState, '');
+  setCatalogNewSourceTokenType(setState, 'theme');
+  setCatalogNewSourceType(setState, 'default');
+}
+
+export async function updateTokenKey(
+  setState: SetState,
+  getState: GetState,
+  oldKey: string,
+  newKey: string,
+  tokenType: TokenType,
+): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog) return;
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = {
+    ...base,
+    tokens: base.tokens.map((t) =>
+      t.key === oldKey && t.type === tokenType ? { ...t, key: newKey } : t,
+    ),
+  };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+}
+
+export async function removeToken(
+  setState: SetState,
+  getState: GetState,
+  key: TokenKey,
+  tokenType: TokenType,
+): Promise<void> {
+  const catalog = getState().catalogs.catalog;
+  if (!catalog) return;
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = {
+    ...base,
+    tokens: base.tokens.filter((t) => !(t.key === key && t.type === tokenType)),
+  };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+}
+
+export async function addNewToken(
+  setState: SetState,
+  getState: GetState,
+  tokenType: TokenType,
+  key?: string,
+): Promise<void> {
+  const state = getState().catalogs;
+  const catalog = state.catalog;
+  const tokenKey = (key ?? state.newTokenKey)?.trim();
+  if (!catalog || !tokenKey) return;
+
+  if (tokenType === 'semantic token') {
+    const current = {
+      types: catalog.semanticTokenTypes ?? [],
+      modifiers: catalog.semanticTokenModifiers ?? [],
+      languages: catalog.semanticTokenLanguages ?? [],
+    };
+    const merged = mergeSemanticSelectorInto(tokenKey, current);
+    if (!merged) return;
+    const base = catalogWithVersionBump(catalog);
+    const updated: Catalog = {
+      ...base,
+      semanticTokenTypes: merged.types,
+      semanticTokenModifiers: merged.modifiers,
+      semanticTokenLanguages: merged.languages,
+    };
+    await saveCatalogOp(updated);
+    await refreshRefsAndSelect(setState, updated.name, updated.version);
+    setCatalogNewTokenKey(setState, '');
+    return;
+  }
+
+  const newToken: Token = { key: tokenKey, type: tokenType };
+  const base = catalogWithVersionBump(catalog);
+  const updated: Catalog = {
+    ...base,
+    tokens: [...base.tokens, newToken],
+  };
+  await saveCatalogOp(updated);
+  await refreshRefsAndSelect(setState, updated.name, updated.version);
+  setCatalogNewTokenKey(setState, '');
+}
+
+export async function bulkAddTokens(setState: SetState, getState: GetState): Promise<void> {
+  const state = getState().catalogs;
+  const catalog = state.catalog;
+  const text = state.bulkAddText?.trim();
+  if (!catalog || !text) return;
+  try {
+    const result = parseThemeJson(text);
+    const existingKeys = new Set(catalog.tokens.map((t) => `${t.type}::${t.key}`));
+    const unique = result.tokens.filter((t) => !existingKeys.has(`${t.type}::${t.key}`));
+    if (unique.length === 0) return;
+    const base = catalogWithVersionBump(catalog);
+    const updated: Catalog = { ...base, tokens: [...base.tokens, ...unique] };
+    await saveCatalogOp(updated);
+    await refreshRefsAndSelect(setState, updated.name, updated.version);
+  } finally {
+    setCatalogBulkAddDialogOpen(setState, false);
+    setCatalogBulkAddText(setState, '');
+  }
+}
+
+export function openBulkAddDialog(setState: SetState): void {
+  setCatalogBulkAddDialogOpen(setState, true);
+  setCatalogBulkAddText(setState, '');
+}
+
+export function closeBulkAddDialog(setState: SetState): void {
+  setCatalogBulkAddDialogOpen(setState, false);
+  setCatalogBulkAddText(setState, '');
 }

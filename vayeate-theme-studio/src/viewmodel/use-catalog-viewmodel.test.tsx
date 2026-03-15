@@ -34,24 +34,28 @@ afterEach(() => {
 });
 
 function harness() {
-  const stateRef = { current: { dispatch: null as ((a: import('../actions/action-types').AppAction) => void) | null } };
+  const stateRef = {
+    current: {
+      dispatchV2: null as ((a: import('../actions/action-types').AppActionV2) => void) | null,
+    },
+  };
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <AppProvider>
       <HarnessInner ref={stateRef} />
       {children}
     </AppProvider>
   );
-  return { Wrapper, getDispatch: () => stateRef.current.dispatch };
+  return { Wrapper, getDispatchV2: () => stateRef.current.dispatchV2 };
 }
 
 const HarnessInner = React.forwardRef<
-  { dispatch: ((a: import('../actions/action-types').AppAction) => void) | null },
+  { dispatchV2: ((a: import('../actions/action-types').AppActionV2) => void) | null },
   object
 >(function HarnessInner(_, ref) {
-  const { dispatch } = useAppState();
+  const { dispatchV2 } = useAppState();
   if (ref && typeof ref === 'object' && 'current' in ref) {
-    (ref as React.MutableRefObject<{ dispatch: ((a: import('../actions/action-types').AppAction) => void) | null }>).current = {
-      dispatch,
+    (ref as React.MutableRefObject<{ dispatchV2: ((a: import('../actions/action-types').AppActionV2) => void) | null }>).current = {
+      dispatchV2,
     };
   }
   return null;
@@ -77,11 +81,11 @@ describe('useCatalogViewModel', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatchV2 } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params: { name: 'test-catalog', type: 'manual' } });
+      getDispatchV2()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-catalog', type: 'manual' } });
     });
 
     await act(async () => {
@@ -107,11 +111,11 @@ describe('useCatalogViewModel', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatchV2 } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CREATE_FORM_ON_SUBMIT', params: { name: 'foo', type: 'manual' } });
+      getDispatchV2()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'foo', type: 'manual' } });
     });
 
     expect(result.current.isCreating).toBe(true);
@@ -150,11 +154,11 @@ describe('useCatalogViewModel', () => {
       fetchUrl: () => Promise.resolve('`editor.background`'),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatchV2 } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'remote-cat', version: '1.0.0' });
+      getDispatchV2()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'remote-cat', version: '1.0.0' });
     });
 
     await act(async () => {
@@ -195,11 +199,11 @@ describe('useCatalogViewModel', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatchV2 } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'sem-cat', version: '1.0.0' });
+      getDispatchV2()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -244,11 +248,11 @@ describe('useCatalogViewModel', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatchV2 } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'sem-cat', version: '1.0.0' });
+      getDispatchV2()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -289,11 +293,11 @@ describe('useCatalogViewModel', () => {
       fetchUrl: () => Promise.resolve(''),
     };
 
-    const { Wrapper, getDispatch } = harness();
+    const { Wrapper, getDispatchV2 } = harness();
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_LIST_ON_SELECT', name: 'sem-cat', version: '1.0.0' });
+      getDispatchV2()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));

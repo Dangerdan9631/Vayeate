@@ -1,8 +1,14 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
+import { AppProvider } from '../context/AppContext';
 import { TokensCard } from './TokensCard';
 import type { Catalog, Token, TokenType } from '../../model/schemas';
+
+function wrap(ui: React.ReactElement) {
+  return <AppProvider>{ui}</AppProvider>;
+}
 
 function makeTokens(type: TokenType, keys: string[]): Token[] {
   return keys.map((key) => ({ key, type }));
@@ -29,15 +35,17 @@ describe('TokensCard', () => {
       'semantic token': [],
     };
     render(
-      <TokensCard
-        catalog={catalog}
-        tokensByType={tokensByType}
-        isLatestVersion={true}
-        onAddToken={vi.fn()}
-        onRemoveToken={vi.fn()}
-        onUpdateTokenKey={vi.fn()}
-        onBulkAdd={vi.fn()}
-      />,
+      wrap(
+        <TokensCard
+          catalog={catalog}
+          tokensByType={tokensByType}
+          isLatestVersion={true}
+          onAddToken={vi.fn()}
+          onRemoveToken={vi.fn()}
+          onUpdateTokenKey={vi.fn()}
+          onBulkAdd={vi.fn()}
+        />,
+      ),
     );
 
     const searchInput = screen.getByPlaceholderText('Search…');
@@ -61,19 +69,21 @@ describe('TokensCard', () => {
 
   it('shows Semantic Tokens section with add input when manual and latest', () => {
     render(
-      <TokensCard
-        catalog={catalog}
-        tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
-        isLatestVersion={true}
-        onAddToken={vi.fn()}
-        onRemoveToken={vi.fn()}
-        onUpdateTokenKey={vi.fn()}
-        onBulkAdd={vi.fn()}
-        onAddSemanticFromSelector={vi.fn()}
-        onSetSemanticTypes={vi.fn()}
-        onSetSemanticModifiers={vi.fn()}
-        onSetSemanticLanguages={vi.fn()}
-      />,
+      wrap(
+        <TokensCard
+          catalog={catalog}
+          tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
+          isLatestVersion={true}
+          onAddToken={vi.fn()}
+          onRemoveToken={vi.fn()}
+          onUpdateTokenKey={vi.fn()}
+          onBulkAdd={vi.fn()}
+          onAddSemanticFromSelector={vi.fn()}
+          onSetSemanticTypes={vi.fn()}
+          onSetSemanticModifiers={vi.fn()}
+          onSetSemanticLanguages={vi.fn()}
+        />,
+      ),
     );
     expect(screen.getByText('Semantic Tokens')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('type.modifier.modifier:language or *')).toBeInTheDocument();
@@ -87,19 +97,21 @@ describe('TokensCard', () => {
       semanticTokenLanguages: ['java'],
     };
     render(
-      <TokensCard
-        catalog={catalogWithSemantic}
-        tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
-        isLatestVersion={true}
-        onAddToken={vi.fn()}
-        onRemoveToken={vi.fn()}
-        onUpdateTokenKey={vi.fn()}
-        onBulkAdd={vi.fn()}
-        onAddSemanticFromSelector={vi.fn()}
-        onSetSemanticTypes={vi.fn()}
-        onSetSemanticModifiers={vi.fn()}
-        onSetSemanticLanguages={vi.fn()}
-      />,
+      wrap(
+        <TokensCard
+          catalog={catalogWithSemantic}
+          tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
+          isLatestVersion={true}
+          onAddToken={vi.fn()}
+          onRemoveToken={vi.fn()}
+          onUpdateTokenKey={vi.fn()}
+          onBulkAdd={vi.fn()}
+          onAddSemanticFromSelector={vi.fn()}
+          onSetSemanticTypes={vi.fn()}
+          onSetSemanticModifiers={vi.fn()}
+          onSetSemanticLanguages={vi.fn()}
+        />,
+      ),
     );
     expect(screen.getByText('tokenType:')).toBeInTheDocument();
     expect(screen.getByDisplayValue('foo')).toBeInTheDocument();
@@ -112,15 +124,17 @@ describe('TokensCard', () => {
 
   it('shows Theme Tokens, Tokens, and Semantic Tokens sections in order', () => {
     render(
-      <TokensCard
-        catalog={catalog}
-        tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
-        isLatestVersion={true}
-        onAddToken={vi.fn()}
-        onRemoveToken={vi.fn()}
-        onUpdateTokenKey={vi.fn()}
-        onBulkAdd={vi.fn()}
-      />,
+      wrap(
+        <TokensCard
+          catalog={catalog}
+          tokensByType={{ theme: [], 'textmate token': [], 'semantic token': [] }}
+          isLatestVersion={true}
+          onAddToken={vi.fn()}
+          onRemoveToken={vi.fn()}
+          onUpdateTokenKey={vi.fn()}
+          onBulkAdd={vi.fn()}
+        />,
+      ),
     );
     expect(screen.getByText('Theme Tokens')).toBeInTheDocument();
     expect(screen.getByText('Textmate Tokens')).toBeInTheDocument();

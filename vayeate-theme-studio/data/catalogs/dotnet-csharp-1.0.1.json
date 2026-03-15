@@ -1,0 +1,826 @@
+{
+  "name": "dotnet-csharp",
+  "version": "1.0.1",
+  "type": "remote",
+  "locked": false,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/dotnet/csharp-tmLanguage/refs/heads/main/grammars/csharp.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.documentation.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.entity.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.boolean.false.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.boolean.true.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.null.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.binary.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.decimal.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.exponent.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.preffix.binary.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.preffix.hex.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.separator.decimals.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.separator.thousands.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.other.suffix.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.label.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.localname.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.tag.namespace.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.alias.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.class.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.delegate.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.enum.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.interface.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.namespace.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.struct.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.type-parameter.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.enum-member.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.event.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.field.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.local.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.parameter.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.preprocessor.symbol.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.property.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.range-variable.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.variable.tuple-element.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.localname.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.attribute-name.namespace.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.bad-ampersand.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.constant.numeric.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.newline.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.case.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.default.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.else.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.if.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.switch.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.conditional.when.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.context.fixed.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.context.lock.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.context.using.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.exception.catch.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.exception.finally.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.exception.try.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.exception.when.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.break.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.goto.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.return.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.throw.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.yield.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.loop.do.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.loop.for.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.loop.foreach.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.loop.in.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.loop.while.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arrow.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.compound.bitwise.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.compound.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.bitwise.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.bitwise.shift.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.comparison.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.conditional.colon.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.conditional.question-mark.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.decrement.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.as.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.await.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.default.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.new.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.pattern.is.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.by.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.equals.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.from.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.group.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.in.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.into.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.join.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.let.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.on.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.orderby.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.select.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.query.where.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.expression.with.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.increment.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logical.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.null-coalescing.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.null-conditional.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.range.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.relational.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.attribute-specifier.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.constraint.default.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.constraint.notnull.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.constraint.unmanaged.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.alias.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.extern.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.global.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.static.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.directive.using.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.checksum.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.default.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.define.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.disable.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.elif.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.else.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.endif.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.endregion.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.error.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.hidden.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.if.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.line.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.load.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.package.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.pragma.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.project.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.property.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.r.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.region.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.restore.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.sdk.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.undef.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.warning.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.embedded.interpolation.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.preprocessor.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.tag.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.accessor.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.accessor.pointer.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.curlybrace.close.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.curlybrace.open.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.char.begin.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.char.end.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.constant.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.interpolation.begin.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.interpolation.end.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tag.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.typeparameters.begin.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.typeparameters.end.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.dot.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.parenthesis.close.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.parenthesis.open.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.asterisk.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.at.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.colon.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.coloncolon.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.comma.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.equals.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.hash.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.question-mark.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.squarebracket.close.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.squarebracket.open.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.terminator.statement.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.tilde.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.const.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.explicit.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.fixed.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.implicit.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.out.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.readonly.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.ref.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.unsafe.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.where.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.accessor.get.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.class.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.delegate.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.enum.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.event.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.interface.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.namespace.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.operator.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.record.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.struct.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.var.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.cdata.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.unquoted.preprocessor.message.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.discard.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.this.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.alias.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.constant.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.object.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.object.property.cs",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.readwrite.cs",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

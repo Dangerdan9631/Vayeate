@@ -1,4 +1,4 @@
-import type { Catalog, CatalogReference } from '../model/schemas';
+import type { Catalog, CatalogReference, CatalogType, SourceType, TokenType } from '../model/schemas';
 import type { AppStateUpdate } from '../state/app-state';
 import { catalogService } from '../services/catalog-service';
 import { syncCatalogTokens } from '../services/catalog-sync';
@@ -23,6 +23,42 @@ export function setSelectedRef(setState: SetState, ref: CatalogReference | null)
 
 export function setCatalog(setState: SetState, catalog: Catalog | null): void {
   setState({ type: 'SET_CATALOG', catalog });
+}
+
+export function setCatalogCreateFormName(setState: SetState, value: string): void {
+  setState({ type: 'SET_CATALOG_CREATE_FORM_NAME', value });
+}
+
+export function setCatalogCreateFormType(setState: SetState, value: CatalogType): void {
+  setState({ type: 'SET_CATALOG_CREATE_FORM_TYPE', value });
+}
+
+export function setCatalogBulkAddDialogOpen(setState: SetState, value: boolean): void {
+  setState({ type: 'SET_CATALOG_BULK_ADD_DIALOG_OPEN', value });
+}
+
+export function setCatalogBulkAddText(setState: SetState, value: string): void {
+  setState({ type: 'SET_CATALOG_BULK_ADD_TEXT', value });
+}
+
+export function setCatalogTokensSearchText(setState: SetState, value: string): void {
+  setState({ type: 'SET_CATALOG_TOKENS_SEARCH_TEXT', value });
+}
+
+export function setCatalogNewSourceUrl(setState: SetState, value: string): void {
+  setState({ type: 'SET_CATALOG_NEW_SOURCE_URL', value });
+}
+
+export function setCatalogNewSourceTokenType(setState: SetState, value: TokenType): void {
+  setState({ type: 'SET_CATALOG_NEW_SOURCE_TOKEN_TYPE', value });
+}
+
+export function setCatalogNewSourceType(setState: SetState, value: SourceType): void {
+  setState({ type: 'SET_CATALOG_NEW_SOURCE_TYPE', value });
+}
+
+export function setCatalogNewTokenKey(setState: SetState, value: string): void {
+  setState({ type: 'SET_CATALOG_NEW_TOKEN_KEY', value });
 }
 
 export async function loadCatalogRefs(setState: SetState): Promise<CatalogReference[]> {

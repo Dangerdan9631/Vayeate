@@ -124,17 +124,6 @@ export function useTemplateViewModel() {
     });
   }, [template, loadedForDisplay]);
 
-  const ensureCatalogsLoadedForTemplate = useCallback(() => {
-    if (!template) return;
-    const refsToLoad = template.catalogRefs.filter((ref) => {
-      const key = `${ref.name}@${ref.version}`;
-      return !loadedForDisplay[key];
-    });
-    if (refsToLoad.length > 0) {
-      dispatch({ type: 'TEMPLATE_PAGE_ON_ENSURE_CATALOGS_FOR_DISPLAY', refs: refsToLoad });
-    }
-  }, [template, loadedForDisplay, dispatch]);
-
   // --- Mapping helpers ---
 
   const mappingsByType = useMemo(() => {
@@ -698,7 +687,6 @@ export function useTemplateViewModel() {
     includedCatalogMap,
     includedCatalogNamesWithUpdates,
     loadedCatalogsForTemplateRefs,
-    ensureCatalogsLoadedForTemplate,
     mappingsByType,
     mappingCountsByType,
     colorVariableKeys,
