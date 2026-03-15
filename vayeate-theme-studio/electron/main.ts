@@ -8,15 +8,15 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /** Repository-relative data directory: vayeate-theme-studio/data */
 const DATA_DIR = join(__dirname, '..', 'data');
-import { createCatalogRepository } from '../src/data/catalog-repository';
-import { createTemplateRepository } from '../src/data/template-repository';
-import { createThemeRepository } from '../src/data/theme-repository';
-import { createCatalogWithParams } from '../src/controllers/catalog-controller';
-import { createTemplateWithParams } from '../src/controllers/template-controller';
-import { createThemeWithParams } from '../src/controllers/theme-controller';
+import { createCatalogRepository } from '../src/gateway/data/catalog-repository';
+import { createTemplateRepository } from '../src/gateway/data/template-repository';
+import { createThemeRepository } from '../src/gateway/data/theme-repository';
+import { createCatalogWithParams } from '../src/domain/controllers/catalog-controller';
+import { createTemplateWithParams } from '../src/domain/controllers/template-controller';
+import { createThemeWithParams } from '../src/domain/controllers/theme-controller';
 import { getPreviewsDir, loadAllPreviews } from './preview-controller';
-import { generateThemePair } from '../src/core/theme-generator';
-import { exportThemePair } from '../src/core/theme-exporter';
+import { generateThemePair } from '../src/domain/core/theme-generator';
+import { exportThemePair } from '../src/domain/core/theme-exporter';
 import type { Catalog, Template, Theme } from '../src/model/schemas';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';

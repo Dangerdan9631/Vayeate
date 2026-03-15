@@ -21,9 +21,10 @@ This repository contains two connected but distinct surfaces:
 ## Architecture pointers
 
 - Models/schemas: `vayeate-theme-studio/src/model/`
-- Core engine: `vayeate-theme-studio/src/core/`
-- UI/editor: `vayeate-theme-studio/src/ui/`
-- Catalogs and sync: `vayeate-theme-studio/data/catalogs/`, `vayeate-theme-studio/src/services/catalog-sync.ts`
+- Core engine: `vayeate-theme-studio/src/domain/core/`
+- UI/editor: `vayeate-theme-studio/src/app/ui/`
+- Gateway: `vayeate-theme-studio/src/gateway/data/` (repositories), `vayeate-theme-studio/src/gateway/services/` (IPC)
+- Catalogs and sync: `vayeate-theme-studio/data/catalogs/`, `vayeate-theme-studio/src/gateway/services/catalog-sync.ts`
 - Legacy parity references: `scripts/fix-contrast.js`, `scripts/generate-light-themes.js`
 
 ## Agent workflow

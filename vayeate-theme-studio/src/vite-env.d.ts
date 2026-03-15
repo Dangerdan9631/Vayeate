@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 import type { Catalog, CatalogReference, Template, TemplateReference, Theme, ThemeReference } from './model/schemas';
-import type { TokenizedPreview } from './core/tokenizer';
+import type { TokenizedPreview } from './model/preview-types';
 
 declare global {
   interface Window {

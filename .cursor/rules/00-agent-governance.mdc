@@ -6,11 +6,7 @@ alwaysApply: true
 # Agent governance
 
 - Treat `rules/`, `agents/`, `skills/`, and `AGENTS.md` as durable instruction sources.
-- Do not rewrite durable directives because of one local edit.
 - Prefer updating existing directives over creating overlapping new ones.
 - Prefer narrow, specific rules and skills over large generic rules.
-- Use `state/session-directive-deltas.md` as the current session memory artifact.
-- When durable instruction changes are needed, write or update `state/directive-update-report.md` first unless the user explicitly asked for direct edits.
-- Promote only stable, reusable lessons into durable directives.
 - Do not encode one-off conversational preferences as durable project rules.
 - When paths, workflows, or examples change, check for stale references in all directive sources.

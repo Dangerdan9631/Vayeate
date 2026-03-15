@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
-import { compareVersions } from '../../utils/version';
-import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../core/semantic-token';
+import { compareVersions } from '../../domain/utils/version';
+import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/core/semantic-token';
 import type {
   CatalogReference,
   ColorVariableKey,
@@ -518,7 +518,7 @@ export function useTemplateViewModel() {
   };
 }
 
-export type { MergeMappingsResult } from '../../services/template-catalog-merge';
+export type { MergeMappingsResult } from '../../model/schemas';
 
 export interface SemanticCatalogInfo {
   semanticTokenTypes: string[];

@@ -19,15 +19,15 @@ Read before implementing:
 
 1. **Decide scope and coupling**: Choose single-entity vs batch. Ensure all changes in the operation are inherently coupled (no partial execution). If two updates can be done independently, use two operations. Do not implement an operation that calls another operation; only controllers compose multiple operations.
 
-2. **Add or edit the operation**: Place the operation in the appropriate file under `vayeate-theme-studio/src/operations/`: `theme-operations.ts`, `catalog-operations.ts`, or `template-operations.ts`. If the change warrants a new domain, add a new `<domain>-operations.ts` and follow existing patterns (e.g. `SetState`, service calls).
+2. **Add or edit the operation**: Place the operation in the appropriate file under `vayeate-theme-studio/src/domain/operations/`: `theme-operations.ts`, `catalog-operations.ts`, or `template-operations.ts`. If the change warrants a new domain, add a new `<domain>-operations.ts` and follow existing patterns (e.g. `SetState`, service calls).
 
 3. **Export**: Export the new or updated function so controllers can import it.
 
-4. **Use from controller only**: Operations are invoked only by controllers. Wire the operation in the relevant controller under `src/controllers/`; do not call operations from UI or the processor directly.
+4. **Use from controller only**: Operations are invoked only by controllers. Wire the operation in the relevant controller under `src/domain/controllers/`; do not call operations from UI or the processor directly.
 
-5. **State updates**: If the operation produces a new `AppStateUpdate` type, add the corresponding reducer case in `vayeate-theme-studio/src/state/app-state.ts`.
+5. **State updates**: If the operation produces a new `AppStateUpdate` type, add the corresponding reducer case in `vayeate-theme-studio/src/domain/state/app-state.ts`.
 
-6. **Tests**: Add or update tests. Per the Test with Changes rule (`.cursor/rules/vayeate-theme-studio-test-with-changes.mdc`), operations are tested in `src/operations/*.test.ts` or via controller tests that mock the operation. Prefer testing public behavior and outcomes.
+6. **Tests**: Add or update tests. Per the Test with Changes rule (`.cursor/rules/vayeate-theme-studio-test-with-changes.mdc`), operations are tested in `src/domain/operations/*.test.ts` or via controller tests that mock the operation. Prefer testing public behavior and outcomes.
 
 ## References
 

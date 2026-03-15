@@ -12,11 +12,12 @@ When you change code in vayeate-theme-studio, add or update tests that cover the
 
 | Layer | Test location |
 |-------|----------------|
-| State | `src/state/*.test.ts` |
+| State | `src/domain/state/*.test.ts` |
 | Actions | `src/app/actions/*.test.ts` |
-| Controllers | `src/controllers/*.test.ts` |
-| Operations | `src/operations/*.test.ts` |
-| Data | `src/data/*.test.ts` |
+| Controllers | `src/domain/controllers/*.test.ts` |
+| Operations | `src/domain/operations/*.test.ts` |
+| Data | `src/gateway/data/*.test.ts` |
+| Gateway/services | `src/gateway/services/*.test.ts` (when adding/changing services) |
 | Viewmodel | `src/app/viewmodel/*.test.tsx` |
 | UI (pages/components) | Colocated `*.test.tsx` next to the component |
 

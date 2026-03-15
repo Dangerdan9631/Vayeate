@@ -1,6 +1,6 @@
 import type { AppActionV2 } from './action-types';
-import type { AppStateUpdate } from '../../state/app-state';
-import { createLogger } from '../../utils/logger';
+import type { AppStateUpdate } from '../../domain/state/app-state';
+import { createLogger } from '../../domain/utils/logger';
 
 const log = createLogger('ActionQueue');
 

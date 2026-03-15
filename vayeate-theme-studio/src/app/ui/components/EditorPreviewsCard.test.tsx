@@ -8,14 +8,16 @@ import type {
   ContrastVariable,
   Mapping,
 } from '../../../model/schemas';
+import type { ThemesState } from '../../../domain/state/app-state';
 
-vi.mock('../../../services/preview-service', () => ({
-  previewService: {
-    loadPreviews: vi.fn(),
-  },
-}));
-
-const previewService = await import('../../../services/preview-service').then((m) => m.previewService);
+const mockUseThemesState = vi.fn();
+vi.mock('../context/slice-contexts', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../context/slice-contexts')>();
+  return {
+    ...actual,
+    useThemesState: () => mockUseThemesState(),
+  };
+});
 
 function makeProps(overrides: Partial<{
   colorAssignments: readonly ColorAssignment[];
@@ -77,9 +79,13 @@ const mockPreview = {
   ],
 };
 
+function mockThemesState(editorPreviews: ThemesState['editorPreviews'] = [mockPreview]): ThemesState {
+  return { editorPreviews } as ThemesState;
+}
+
 describe('EditorPreviewsCard', () => {
   beforeEach(() => {
-    vi.mocked(previewService.loadPreviews).mockResolvedValue([mockPreview]);
+    mockUseThemesState.mockReturnValue(mockThemesState());
   });
 
   it('renders IDE Foreground, IDE Background, Editor Foreground, Editor Background, and other token selectors', () => {
@@ -102,12 +108,14 @@ describe('EditorPreviewsCard', () => {
     expect(screen.getByRole('heading', { name: 'Light' })).toBeInTheDocument();
   });
 
-  it('loads previews on mount', async () => {
+  it('shows previews from state', () => {
+    mockUseThemesState.mockReturnValue(mockThemesState([mockPreview]));
     render(<EditorPreviewsCard {...makeProps()} />);
-    expect(previewService.loadPreviews).toHaveBeenCalled();
+    const labels = screen.getAllByText('typescript');
+    expect(labels.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('shows all preview blocks after load', async () => {
+  it('shows all preview blocks when editorPreviews in state', async () => {
     render(<EditorPreviewsCard {...makeProps()} />);
     const labels = await screen.findAllByText('typescript');
     expect(labels.length).toBeGreaterThanOrEqual(1);
@@ -132,10 +140,8 @@ describe('EditorPreviewsCard', () => {
 
   it('closes dropdown and scrolls to sample when a sample is selected', async () => {
     const user = userEvent.setup();
-    vi.mocked(previewService.loadPreviews).mockResolvedValue([
-      mockPreview,
-      { ...mockPreview, language: 'javascript', fileName: 'other.js', lines: mockPreview.lines },
-    ]);
+    const secondPreview = { ...mockPreview, language: 'javascript', fileName: 'other.js', lines: mockPreview.lines };
+    mockUseThemesState.mockReturnValue(mockThemesState([mockPreview, secondPreview]));
     render(<EditorPreviewsCard {...makeProps()} />);
     const buttons = await screen.findAllByLabelText('Show sample list');
     await user.click(buttons[0]);

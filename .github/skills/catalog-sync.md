@@ -6,7 +6,7 @@
 
 ## Steps
 
-1. Review `vayeate-theme-studio/data/catalogs/` and `vayeate-theme-studio/src/services/catalog-sync.ts`.
+1. Review `vayeate-theme-studio/data/catalogs/` and `vayeate-theme-studio/src/gateway/services/catalog-sync.ts`.
 2. Apply changes to sync logic and catalog version/load behavior.
 3. Confirm catalog load and token extraction remain deterministic.
 4. Validate remote-fetch and fallback behavior in tests.

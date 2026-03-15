@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState } from '../ui/context/slice-contexts';
-import { compareVersions } from '../../utils/version';
-import { nextPatchVersion } from '../../utils/version';
+import { compareVersions } from '../../domain/utils/version';
+import { nextPatchVersion } from '../../domain/utils/version';
 import type { Catalog, CatalogReference, Token, TokenType } from '../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../core/semantic-token';
+import { mergeSemanticSelectorInto } from '../../domain/core/semantic-token';
 
 let catalogPageLoadDispatched = false;
 

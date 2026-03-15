@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ThemePaneState } from '../../model/theme-pane-state';
 import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
-import { compareVersions } from '../../utils/version';
-import { templateService } from '../../services/template-service';
-import { applyHueShift } from '../../core/color';
-import { resolveColorForThemeTokenKey } from '../../core/scope-resolver';
+import { compareVersions } from '../../domain/utils/version';
+import { applyHueShift } from '../../domain/core/color';
+import { resolveColorForThemeTokenKey } from '../../domain/core/scope-resolver';
 import type { ThemePreviewTokenRefField } from '../actions/action-types';
 import type {
   ColorAssignment,
@@ -12,7 +11,6 @@ import type {
   ContrastComparisonMethod,
   ContrastValue,
   ContrastVariable,
-  Template,
   TemplateReference,
   Theme,
   ThemeReference,
@@ -81,6 +79,7 @@ export function useThemeViewModel() {
     createDialogOpen,
     generateResult,
     saveError,
+    loadedTemplateForTheme: loadedTemplate,
   } = useThemesState();
   const { templateRefs } = useTemplatesState();
 
@@ -142,7 +141,6 @@ export function useThemeViewModel() {
   const selectedTemplateName = theme?.templateRef?.name ?? null;
   const selectedTemplateVersion = theme?.templateRef?.version ?? null;
 
-  const [loadedTemplate, setLoadedTemplate] = useState<Template | null>(null);
   const applyHueToDark = theme?.applyPaletteToDark ?? true;
   const applyHueToLight = theme?.applyPaletteToLight ?? true;
   const hueDragStartRef = useRef<{ theme: Theme; hueAdjustment: number } | null>(null);
@@ -178,19 +176,6 @@ export function useThemeViewModel() {
     const allSame = effectiveHexes.every((h) => h === first);
     return allSame ? { kind: 'single', hex: first || '#808080' } : { kind: 'mixed' };
   }, [theme, checkedColorRefs, displayColorAssignments, applyHueToDark, applyHueToLight]);
-
-  useEffect(() => {
-    if (!selectedTemplateName || !selectedTemplateVersion) {
-      setLoadedTemplate(null);
-      return;
-    }
-    let cancelled = false;
-    (async () => {
-      const t = await templateService.loadTemplate(selectedTemplateName, selectedTemplateVersion);
-      if (!cancelled) setLoadedTemplate(t);
-    })();
-    return () => { cancelled = true; };
-  }, [selectedTemplateName, selectedTemplateVersion]);
 
   // When a theme is loaded (selection changes), set hue reference to the resolved IDE Background color for the preview.
   const lastSelectedRefForHueRef = useRef<{ name: string; version: string } | null>(null);
@@ -860,7 +845,7 @@ export function useThemeViewModel() {
   };
 }
 
-export { mergeAssignmentsFromTemplate } from '../../core/theme-template-merge';
+export { mergeAssignmentsFromTemplate } from '../../domain/core/theme-template-merge';
 
 export function computeOrphanColorKeys(theme: Theme | null): Set<string> {
   if (!theme || !theme.templateRef) return new Set();

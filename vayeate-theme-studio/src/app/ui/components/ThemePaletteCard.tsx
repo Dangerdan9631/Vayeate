@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../../model/schemas';
-import { clusterColors } from '../../../core/color-clustering';
-import { hexToHue, hslToRgb, rgbToHex } from '../../../core/color';
+import { clusterColors } from '../../../domain/core/color-clustering';
+import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/core/color';
 import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';

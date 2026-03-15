@@ -291,3 +291,28 @@ export const themeSchema = z
   })
   .readonly();
 export type Theme = z.infer<typeof themeSchema>;
+
+/** Theme fields that hold a preview token ref (TokenKey | null). Used by theme controller and action types. */
+export type ThemePreviewTokenRefField =
+  | 'idePrimaryTokenRef'
+  | 'ideForegroundTokenRef'
+  | 'themeBackgroundTokenRef'
+  | 'themeForegroundTokenRef'
+  | 'lineNumberBackgroundTokenRef'
+  | 'lineNumberForegroundTokenRef'
+  | 'ideTabTokenRef'
+  | 'ideTabBarBackgroundTokenRef'
+  | 'ideTabBarForegroundTokenRef'
+  | 'editorPreviewScrollbarBackgroundTokenRef'
+  | 'editorPreviewScrollbarForegroundTokenRef'
+  | 'editorPreviewSelectionBackgroundTokenRef'
+  | 'editorPreviewMenuForegroundTokenRef'
+  | 'editorPreviewMenuBackgroundTokenRef';
+
+/** Result of merging template mappings with catalog tokens. Used by domain and app. */
+export interface MergeMappingsResult {
+  mappings: Mapping[];
+  groupsToEnsure: string[];
+  semanticTokenModifiers: string[];
+  semanticTokenLanguages: string[];
+}

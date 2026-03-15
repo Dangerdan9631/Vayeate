@@ -1,12 +1,12 @@
 import { createContext, useCallback, useReducer, useRef, type ReactNode } from 'react';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppActionV2 } from '../../actions/action-types';
-import type { AppState } from '../../../state/app-state';
+import type { AppState } from '../../../domain/state/app-state';
 import {
   appStateReducer,
   initialAppState,
   type AppStateUpdate,
-} from '../../../state/app-state';
+} from '../../../domain/state/app-state';
 import {
   ActiveTabContext,
   AppDispatchContext,
@@ -15,8 +15,8 @@ import {
   ThemesStateContext,
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
-import * as appController from '../../../controllers/app-controller';
-import * as catalogController from '../../../controllers/catalog-controller';
+import * as appController from '../../../domain/controllers/app-controller';
+import * as catalogController from '../../../domain/controllers/catalog-controller';
 import {
   setCatalogCreateFormName,
   setCatalogCreateFormType,
@@ -26,15 +26,15 @@ import {
   setCatalogNewSourceTokenType,
   setCatalogNewSourceType,
   setCatalogNewTokenKey,
-} from '../../../operations/catalog-operations';
-import * as undoController from '../../../controllers/undo-controller';
-import * as tabController from '../../../controllers/tab-controller';
-import * as templateController from '../../../controllers/template-controller';
-import * as themeController from '../../../controllers/theme-controller';
-import * as windowController from '../../../controllers/window-controller';
-import { setThemeCreateFormName } from '../../../operations/theme-operations';
-import { setCurrentUndoStackId } from '../../../operations/undo-operations';
-import { createLogger } from '../../../utils/logger';
+} from '../../../domain/operations/catalog-operations';
+import * as undoController from '../../../domain/controllers/undo-controller';
+import * as tabController from '../../../domain/controllers/tab-controller';
+import * as templateController from '../../../domain/controllers/template-controller';
+import * as themeController from '../../../domain/controllers/theme-controller';
+import * as windowController from '../../../domain/controllers/window-controller';
+import { setThemeCreateFormName } from '../../../domain/operations/theme-operations';
+import { setCurrentUndoStackId } from '../../../domain/operations/undo-operations';
+import { createLogger } from '../../../domain/utils/logger';
 
 const logV2 = createLogger('ActionProcessorV2');
 

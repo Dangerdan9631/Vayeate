@@ -7,10 +7,10 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { AppStateUpdate } from '../../../state/app-state';
-import { undoManagerV2 } from '../../../utils/undo-manager-v2';
-import type { UndoListEntry } from '../../../utils/undo-manager-v2';
-import { createUndoProcessor } from '../../../utils/undo-processor';
+import type { AppStateUpdate } from '../../../domain/state/app-state';
+import { undoManagerV2 } from '../../../domain/utils/undo-manager-v2';
+import type { UndoListEntry } from '../../../domain/utils/undo-manager-v2';
+import { createUndoProcessor } from '../../../domain/utils/undo-processor';
 import { useAppState } from './useAppState';
 
 export type SetState = (update: AppStateUpdate) => void;

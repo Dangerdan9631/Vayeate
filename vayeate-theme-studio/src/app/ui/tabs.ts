@@ -1,4 +1,6 @@
-export type TabId = 'catalogs' | 'templates' | 'themes';
+import type { TabId } from '../../domain/state/app-state';
+
+export type { TabId };
 
 export type TabDefinition = {
   id: TabId;

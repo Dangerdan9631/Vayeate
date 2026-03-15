@@ -12,27 +12,13 @@ import type {
   Template,
   TemplateName,
   ThemeName,
+  ThemePreviewTokenRefField,
   TokenKey,
   TokenType,
   Version,
 } from '../../model/schemas';
 
-/** Theme fields that hold a preview token ref (TokenKey | null). */
-export type ThemePreviewTokenRefField =
-  | 'idePrimaryTokenRef'
-  | 'ideForegroundTokenRef'
-  | 'themeBackgroundTokenRef'
-  | 'themeForegroundTokenRef'
-  | 'lineNumberBackgroundTokenRef'
-  | 'lineNumberForegroundTokenRef'
-  | 'ideTabTokenRef'
-  | 'ideTabBarBackgroundTokenRef'
-  | 'ideTabBarForegroundTokenRef'
-  | 'editorPreviewScrollbarBackgroundTokenRef'
-  | 'editorPreviewScrollbarForegroundTokenRef'
-  | 'editorPreviewSelectionBackgroundTokenRef'
-  | 'editorPreviewMenuForegroundTokenRef'
-  | 'editorPreviewMenuBackgroundTokenRef';
+export type { ThemePreviewTokenRefField };
 
 /**
  * All user-triggerable app actions (see action-queue rule for convention).

@@ -1,6 +1,6 @@
 import { useAppDispatch } from '../context/slice-contexts';
 import type { Theme, TemplateReference } from '../../../model/schemas';
-import type { GenerateResult } from '../../../state/app-state';
+import type { GenerateResult } from '../../../domain/state/app-state';
 
 interface ThemeDetailsCardProps {
   theme: Theme;

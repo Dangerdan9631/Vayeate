@@ -6,10 +6,10 @@ import type {
   ContrastVariable,
   Mapping,
 } from '../../../model/schemas';
-import type { TokenizedPreview } from '../../../core/tokenizer';
-import { contrastRatio } from '../../../core/color';
-import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../core/scope-resolver';
-import { previewService } from '../../../services/preview-service';
+import type { TokenizedPreview } from '../../../model/preview-types';
+import { useThemesState } from '../context/slice-contexts';
+import { contrastRatio } from '../../../domain/core/color';
+import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/core/scope-resolver';
 
 /** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
 interface ResolvedToken {
@@ -224,21 +224,8 @@ export function EditorPreviewsCard({
   editorPreviewMenuBackgroundTokenRef,
   onChangeEditorPreviewMenuBackgroundTokenRef,
 }: EditorPreviewsCardProps) {
-  const [previews, setPreviews] = useState<TokenizedPreview[]>([]);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    previewService
-      .loadPreviews()
-      .then((list) => {
-        if (!cancelled) setPreviews(list);
-      })
-      .catch((err) => {
-        if (!cancelled) setLoadError(String(err?.message ?? err));
-      });
-    return () => { cancelled = true; };
-  }, []);
+  const previews = useThemesState().editorPreviews;
+  const loadError: string | null = null;
 
   const scopeColorMap = useMemo(
     () =>

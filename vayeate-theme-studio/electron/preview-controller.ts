@@ -6,8 +6,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { initOniguruma, tokenizeFile } from '../src/core/tokenizer';
-import type { TokenizedPreview } from '../src/core/tokenizer';
+import { initOniguruma, tokenizeFile } from '../src/domain/core/tokenizer';
+import type { TokenizedPreview } from '../src/domain/core/tokenizer';
 import type { IRawGrammar } from 'vscode-textmate';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

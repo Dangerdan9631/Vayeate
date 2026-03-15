@@ -1,6 +1,6 @@
 import { ActionQueue, type ActionProcessor } from './action-queue';
 import type { AppActionV2 } from './action-types';
-import type { AppStateUpdate } from '../../state/app-state';
+import type { AppStateUpdate } from '../../domain/state/app-state';
 import type { QueueStatus } from './action-queue';
 
 describe('ActionQueue', () => {

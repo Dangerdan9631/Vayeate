@@ -328,18 +328,18 @@ Always render both dark and light outputs side-by-side.
 
 ## 8. Suggested Module Structure
 
-- `src/core/generation/`
+- `src/domain/core/generation/`
   - `theme-generator.ts`
   - `serialization.ts`
   - `exporter.ts`
-- `src/core/catalog/`
+- `src/domain/core/catalog/`
   - `remote-parser.ts`
   - `catalog-sync.ts`
-- `src/core/color/`
+- `src/domain/core/color/`
   - `color-convert.ts`
   - `contrast.ts`
   - `adjustment.ts`
-- `src/core/preview/`
+- `src/domain/core/preview/`
   - `grammar-discovery.ts`
   - `tokenizer.ts`
   - `preview-resolver.ts`

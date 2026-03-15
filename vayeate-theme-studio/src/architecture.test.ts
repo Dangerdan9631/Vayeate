@@ -11,12 +11,22 @@ describe('architecture', () => {
 		expect(violations).toHaveLength(0);
 	});
 
+	it('domain should not depend on app', async () => {
+		const rule = filesOfProject()
+			.inFolder('src/domain')
+			.shouldNot()
+			.dependOnFiles()
+			.inFolder('src/app');
+		const violations = await rule.check();
+		expect(violations).toHaveLength(0);
+	});
+
 	it('UI components should not depend on controllers', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/app/ui/components')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/controllers');
+			.inFolder('src/domain/controllers');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
@@ -26,7 +36,7 @@ describe('architecture', () => {
 			.inFolder('src/app/ui/components')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/operations');
+			.inFolder('src/domain/operations');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
@@ -36,7 +46,7 @@ describe('architecture', () => {
 			.inFolder('src/app/ui/pages')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/controllers');
+			.inFolder('src/domain/controllers');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
@@ -46,7 +56,7 @@ describe('architecture', () => {
 			.inFolder('src/app/ui/pages')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/operations');
+			.inFolder('src/domain/operations');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
@@ -56,7 +66,7 @@ describe('architecture', () => {
 			.inFolder('src/app/viewmodel')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/controllers');
+			.inFolder('src/domain/controllers');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
@@ -66,97 +76,117 @@ describe('architecture', () => {
 			.inFolder('src/app/viewmodel')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/operations');
+			.inFolder('src/domain/operations');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
-	it('viewmodel should not depend on data', async () => {
+	it('viewmodel should not depend on gateway', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/app/viewmodel')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/gateway');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
-	it('app should not depend on data', async () => {
+	it('app should not depend on gateway', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/app')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/gateway');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
 	it('controllers should not depend on data', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/controllers')
+			.inFolder('src/domain/controllers')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/gateway/data');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
 	it('operations should not depend on data', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/operations')
+			.inFolder('src/domain/operations')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/gateway/data');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
 	it('operations should not depend on other operations', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/operations')
+			.inFolder('src/domain/operations')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/operations');
+			.inFolder('src/domain/operations');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
-	it('services should not depend on data', async () => {
+	it('gateway should not depend on domain', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/services')
+			.inFolder('src/gateway')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/domain');
+		const violations = await rule.check();
+		expect(violations).toHaveLength(0);
+	});
+
+	it('gateway/data should not depend on gateway/services', async () => {
+		const rule = filesOfProject()
+			.inFolder('src/gateway/data')
+			.shouldNot()
+			.dependOnFiles()
+			.inFolder('src/gateway/services');
+		const violations = await rule.check();
+		expect(violations).toHaveLength(0);
+	});
+
+	it('gateway/services should not depend on gateway/data', async () => {
+		const rule = filesOfProject()
+			.inFolder('src/gateway/services')
+			.shouldNot()
+			.dependOnFiles()
+			.inFolder('src/gateway/data');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
 	it('state should not depend on controllers', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/state')
+			.inFolder('src/domain/state')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/controllers');
+			.inFolder('src/domain/controllers');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
 	it('state should not depend on operations', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/state')
+			.inFolder('src/domain/state')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/operations');
+			.inFolder('src/domain/operations');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
 	it('state should not depend on data', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/state')
+			.inFolder('src/domain/state')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/gateway/data');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
@@ -171,52 +201,22 @@ describe('architecture', () => {
 		expect(violations).toHaveLength(0);
 	});
 
-	it('model should not depend on controllers', async () => {
+	it('model should not depend on domain', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/model')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/controllers');
+			.inFolder('src/domain');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
 
-	it('model should not depend on operations', async () => {
+	it('model should not depend on gateway', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/model')
 			.shouldNot()
 			.dependOnFiles()
-			.inFolder('src/operations');
-		const violations = await rule.check();
-		expect(violations).toHaveLength(0);
-	});
-
-	it('model should not depend on services', async () => {
-		const rule = filesOfProject()
-			.inFolder('src/model')
-			.shouldNot()
-			.dependOnFiles()
-			.inFolder('src/services');
-		const violations = await rule.check();
-		expect(violations).toHaveLength(0);
-	});
-
-	it('model should not depend on state', async () => {
-		const rule = filesOfProject()
-			.inFolder('src/model')
-			.shouldNot()
-			.dependOnFiles()
-			.inFolder('src/state');
-		const violations = await rule.check();
-		expect(violations).toHaveLength(0);
-	});
-
-	it('model should not depend on data', async () => {
-		const rule = filesOfProject()
-			.inFolder('src/model')
-			.shouldNot()
-			.dependOnFiles()
-			.inFolder('src/data');
+			.inFolder('src/gateway');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});

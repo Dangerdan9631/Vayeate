@@ -4,7 +4,7 @@ import type {
   CatalogsState,
   TemplatesState,
   ThemesState,
-} from '../../../state/app-state';
+} from '../../../domain/state/app-state';
 import type { TabId } from '../tabs';
 
 export const AppDispatchContext = createContext<((action: AppActionV2) => void) | null>(null);

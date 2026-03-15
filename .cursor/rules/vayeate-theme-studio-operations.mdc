@@ -1,12 +1,12 @@
 ---
 description: Constraints for vayeate-theme-studio operations (atomic, fine-grained, coupled)
-globs: vayeate-theme-studio/src/operations/**/*
+globs: vayeate-theme-studio/src/domain/operations/**/*
 alwaysApply: false
 ---
 
 # Theme Studio Operations
 
-Operations are fine-grained units that perform a **single atomic action**: one logical unit of work. They live in `src/operations/` and are composed by controllers. For layer placement and controller usage, see the Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`).
+Operations are fine-grained units that perform a **single atomic action**: one logical unit of work. They live in `src/domain/operations/` and are composed by controllers. For layer placement and controller usage, see the Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`).
 
 ## Atomicity and scope
 

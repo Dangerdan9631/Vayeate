@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
-import { parseThemeJson, type BulkParseResult } from '../../../services/theme-parser';
+import { parseThemeJson, type BulkParseResult } from '../../../domain/core/theme-parser';
 
 interface BulkAddDialogProps {
   existingTokenKeys: Set<string>;
