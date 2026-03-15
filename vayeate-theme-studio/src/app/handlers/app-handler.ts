@@ -46,7 +46,7 @@ export const handleAppAction: ActionHandler<AppAction> = async (
       // action.checked = current state (true = dark), so toggle to the opposite
       const scheme: 'light' | 'dark' = action.checked ? 'light' : 'dark';
       setUiState({ type: 'SET_UI_COLOR_SCHEME', scheme });
-      await window.electronAPI?.saveConfig?.({ colorScheme: scheme });
+      await appController.saveColorScheme(scheme);
       break;
     }
     case 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK':

@@ -40,12 +40,8 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
       // In the full app: dispatch the action; the handler updates UiState + persists to disk.
       dispatch({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: scheme !== 'light' });
     } else {
-      // Standalone (no AppContext/dispatch) – update local state and apply theme directly (no persistence).
-      setLocalScheme((prev) => {
-        const next = prev === 'light' ? 'dark' : 'light';
-        applyTheme(next);
-        return next;
-      });
+      // Standalone (no AppContext/dispatch) – update local state without persistence.
+      setLocalScheme((prev) => (prev === 'light' ? 'dark' : 'light'));
     }
   }, [dispatch, scheme]);
 

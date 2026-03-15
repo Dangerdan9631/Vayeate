@@ -91,7 +91,8 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.applyAssignColorDraft(setState, getState);
       break;
     case 'THEME_PALETTE_ASSIGN_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
-      // No-op here; UI runs eyedropper then dispatches ASSIGN_COLOR_PICKER_ON_COMMIT with picked hex.
+      // Signal UI to open eyedropper for the given color ref; UI dispatches ASSIGN_COLOR_PICKER_ON_COMMIT with picked hex.
+      setThemeOpenPickerContext(setState, `eyedropper:assign:${action.colorRef}`);
       break;
     case 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_SELECT':
       // Live preview: setTheme with updated assignments; no persist.
@@ -114,10 +115,12 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setThemeHueAdjustment(setState, 0);
       break;
     case 'THEME_PALETTE_HUE_REFERENCE_COLOR_BUTTON_ON_CLICK':
-      // No-op; UI opens picker then dispatches PICKER_ON_COMMIT.
+      // Signal UI to open color picker for the hue reference.
+      setThemeOpenPickerContext(setState, 'picker:hue');
       break;
     case 'THEME_PALETTE_HUE_REFERENCE_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
-      // No-op; UI runs eyedropper then dispatches with new hex.
+      // Signal UI to open eyedropper for the hue reference.
+      setThemeOpenPickerContext(setState, 'eyedropper:hue');
       break;
     case 'THEME_PALETTE_HUE_REFERENCE_COLOR_PICKER_ON_SELECT':
       // Live preview: set hue reference in state (no persist).
