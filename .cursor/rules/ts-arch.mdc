@@ -1,0 +1,51 @@
+---
+description: Use ts-arch for architecture unit tests; capture and enforce app architecture; update tests when architecture changes
+globs: vayeate-theme-studio/**/*
+alwaysApply: false
+---
+
+# Architecture Unit Tests (ts-arch)
+
+This project uses **ts-arch** to enforce architecture through unit tests. Architecture rules are executable and must stay in sync with the defined app architecture.
+
+## Practice
+
+1. **Capture the app architecture in ts-arch tests.** Express the same boundaries and dependency rules from the documented architecture as ts-arch rules.
+2. **Enforce via tests.** Run ts-arch in the test suite so violations fail the build. Use the File API (`filesOfProject()`) or the Slice API (PlantUML diagram) as appropriate.
+3. **Update tests when architecture changes.** Whenever the user defines or changes architectural boundaries, layers, or dependency rules, update the ts-arch tests to reflect and enforce those changes. Do not leave architecture tests outdated.
+
+## Setup
+
+- Install: `npm install --save-dev tsarch`
+- Use with Vitest: call `rule.check()` on the rule returned by the fluent API; it returns `Promise<Violation[]>`. Assert `expect(violations).toHaveLength(0)` (or use `toPassAsync` with Jest if using Jest).
+- Paths are relative to `tsconfig.json`; set a longer test timeout for architecture tests (e.g. `testTimeout: 60000` in Vitest config or per-test).
+
+## Example (File API with Vitest)
+
+```typescript
+import { describe, it, expect } from 'vitest'
+import { filesOfProject } from 'tsarch'
+
+describe('architecture', () => {
+  it('renderer should not depend on main', async () => {
+    const rule = filesOfProject()
+      .inFolder('renderer')
+      .shouldNot()
+      .dependOnFiles()
+      .inFolder('main')
+    const violations = await rule.check()
+    expect(violations).toHaveLength(0)
+  })
+
+  it('src should be cycle free', async () => {
+    const rule = filesOfProject()
+      .inFolder('src')
+      .should()
+      .beFreeOfCycles()
+    const violations = await rule.check()
+    expect(violations).toHaveLength(0)
+  })
+})
+```
+
+Add or adjust rules to match the current architecture (e.g. feature boundaries, shared usage). When architecture is extended or changed, add or update ts-arch tests in the same workflow.

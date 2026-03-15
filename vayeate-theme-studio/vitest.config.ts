@@ -6,6 +6,7 @@ export default defineConfig({
 	test: {
 		environment: 'jsdom',
 		globals: true,
+		testTimeout: 60000,
 		exclude: ['**/node_modules/**', '**/dist/**', '**/dist-electron/**', '**/electron/**'],
 		setupFiles: ['./src/test-setup.ts'],
 	},
