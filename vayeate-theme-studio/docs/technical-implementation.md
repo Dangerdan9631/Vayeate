@@ -326,22 +326,16 @@ Always render both dark and light outputs side-by-side.
 
 ---
 
-## 8. Suggested Module Structure
+## 8. Module Structure (current)
 
-- `src/domain/core/generation/`
-  - `theme-generator.ts`
-  - `serialization.ts`
-  - `exporter.ts`
-- `src/domain/core/catalog/`
-  - `remote-parser.ts`
-  - `catalog-sync.ts`
-- `src/domain/core/color/`
-  - `color-convert.ts`
-  - `contrast.ts`
-  - `adjustment.ts`
-- `src/domain/core/preview/`
-  - `grammar-discovery.ts`
-  - `tokenizer.ts`
-  - `preview-resolver.ts`
+- `src/domain/core/` — undo only
+  - `undo-manager-v2.ts`
+  - `undo-processor.ts`
+- `src/domain/utils/` — theme engine, color, tokenizer, scope, merge, logger, version
+  - `theme-generator.ts`, `theme-exporter.ts`, `theme-parser.ts`, `theme-template-merge.ts`, `template-catalog-merge.ts`
+  - `color.ts`, `color-clustering.ts`
+  - `scope-resolver.ts`, `semantic-token.ts`, `tokenizer.ts`
+  - `logger.ts`, `version.ts`
+- Catalog sync and IPC: `src/gateway/services/` (e.g. `catalog-sync.ts`)
 
-Each module MUST expose pure functions where possible and keep side effects isolated to I/O boundaries.
+Each module SHOULD expose pure functions where possible and keep side effects isolated to I/O boundaries.

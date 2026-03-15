@@ -3,7 +3,7 @@ import { useAppDispatch, useCatalogsState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../../domain/utils/version';
 import { nextPatchVersion } from '../../domain/utils/version';
 import type { Catalog, CatalogReference, Token, TokenType } from '../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../domain/core/semantic-token';
+import { mergeSemanticSelectorInto } from '../../domain/utils/semantic-token';
 
 let catalogPageLoadDispatched = false;
 

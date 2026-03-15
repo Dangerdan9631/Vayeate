@@ -6,7 +6,7 @@
 
 ## Steps
 
-1. Inspect `vayeate-theme-studio/src/domain/core/theme-generator.ts` and `vayeate-theme-studio/src/domain/core/color.ts` and related tests.
+1. Inspect `vayeate-theme-studio/src/domain/utils/theme-generator.ts` and `vayeate-theme-studio/src/domain/utils/color.ts` and related tests.
 2. Validate parity assumptions against root scripts as needed.
 3. Implement minimal change with deterministic output preserved.
 4. Add or update generator-focused tests.

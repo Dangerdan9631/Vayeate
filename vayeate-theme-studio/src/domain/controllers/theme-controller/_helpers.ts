@@ -3,7 +3,7 @@ import type {
   ContrastAssignment,
   ContrastAssignmentValue,
 } from '../../../model/schemas';
-import { applyHueShift } from '../../core/color';
+import { applyHueShift } from '../../utils/color';
 
 export function applyHueToAssignmentsFiltered(
   assignments: readonly ColorAssignment[],

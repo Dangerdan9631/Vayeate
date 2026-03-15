@@ -7,7 +7,7 @@ import {
 } from '../../operations/theme-operations';
 import { setCurrentUndoStackId } from '../../operations/undo-operations';
 import { templateService } from '../../../gateway/services/template-service';
-import { mergeAssignmentsFromTemplate } from '../../core/theme-template-merge';
+import { mergeAssignmentsFromTemplate } from '../../utils/theme-template-merge';
 import { themeStackId } from './themeStackId';
 import { saveTheme } from './saveTheme';
 

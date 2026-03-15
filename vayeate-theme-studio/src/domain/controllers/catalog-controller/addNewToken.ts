@@ -1,6 +1,6 @@
 import type { Catalog, Token } from '../../../model/schemas';
 import type { TokenType } from '../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../core/semantic-token';
+import { mergeSemanticSelectorInto } from '../../utils/semantic-token';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogNewTokenKey,

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ThemePaneState } from '../../model/theme-pane-state';
 import { useAppDispatch, useThemesState, useTemplatesState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../../domain/utils/version';
-import { applyHueShift } from '../../domain/core/color';
-import { resolveColorForThemeTokenKey } from '../../domain/core/scope-resolver';
+import { applyHueShift } from '../../domain/utils/color';
+import { resolveColorForThemeTokenKey } from '../../domain/utils/scope-resolver';
 import type { ThemePreviewTokenRefField } from '../actions/action-types';
 import type {
   ColorAssignment,
@@ -845,7 +845,7 @@ export function useThemeViewModel() {
   };
 }
 
-export { mergeAssignmentsFromTemplate } from '../../domain/core/theme-template-merge';
+export { mergeAssignmentsFromTemplate } from '../../domain/utils/theme-template-merge';
 
 export function computeOrphanColorKeys(theme: Theme | null): Set<string> {
   if (!theme || !theme.templateRef) return new Set();

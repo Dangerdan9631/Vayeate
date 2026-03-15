@@ -21,7 +21,7 @@ This repository contains two connected but distinct surfaces:
 ## Architecture pointers
 
 - Models/schemas: `vayeate-theme-studio/src/model/`
-- Core engine: `vayeate-theme-studio/src/domain/core/`
+- Domain core (undo): `vayeate-theme-studio/src/domain/core/` (undo-manager-v2, undo-processor). Domain utils (theme engine, color, tokenizer, etc.): `vayeate-theme-studio/src/domain/utils/`
 - UI/editor: `vayeate-theme-studio/src/app/ui/`
 - Gateway: `vayeate-theme-studio/src/gateway/data/` (repositories), `vayeate-theme-studio/src/gateway/services/` (IPC)
 - Catalogs and sync: `vayeate-theme-studio/data/catalogs/`, `vayeate-theme-studio/src/gateway/services/catalog-sync.ts`

@@ -1,7 +1,7 @@
 import type { AppState } from '../state/app-state';
-import { undoManagerV2 } from '../utils/undo-manager-v2';
+import { undoManagerV2 } from '../core/undo-manager-v2';
 import { undoManagerV2Service } from '../../gateway/services/undo-manager-v2-service';
-import { createUndoProcessor, type SetState } from '../utils/undo-processor';
+import { createUndoProcessor, type SetState } from '../core/undo-processor';
 
 export type GetState = () => AppState;
 

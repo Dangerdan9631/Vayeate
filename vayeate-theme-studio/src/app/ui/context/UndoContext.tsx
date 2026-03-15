@@ -8,9 +8,9 @@ import {
   type ReactNode,
 } from 'react';
 import type { AppStateUpdate } from '../../../domain/state/app-state';
-import { undoManagerV2 } from '../../../domain/utils/undo-manager-v2';
-import type { UndoListEntry } from '../../../domain/utils/undo-manager-v2';
-import { createUndoProcessor } from '../../../domain/utils/undo-processor';
+import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
+import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
+import { createUndoProcessor } from '../../../domain/core/undo-processor';
 import { useAppState } from './useAppState';
 
 export type SetState = (update: AppStateUpdate) => void;

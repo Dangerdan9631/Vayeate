@@ -7,9 +7,9 @@ import {
   performHistoryGoTo,
   setCurrentUndoStackId,
 } from './undo-operations';
-import { undoManagerV2 } from '../utils/undo-manager-v2';
+import { undoManagerV2 } from '../core/undo-manager-v2';
 
-vi.mock('../utils/undo-manager-v2', () => ({
+vi.mock('../core/undo-manager-v2', () => ({
   undoManagerV2: {
     getOrCreate: vi.fn(),
     configure: vi.fn(),
@@ -66,6 +66,8 @@ const initialAppState: AppState = {
     themeVariablesSearchText: '',
     previewVariableFilterText: '',
     selectedPreviewSampleKey: '',
+    editorPreviews: [],
+    loadedTemplateForTheme: null,
   },
   queueStatus: { isProcessing: false, queueLength: 0 },
   undoStackId: { currentUndoStackId: null, undoListVersion: 0 },

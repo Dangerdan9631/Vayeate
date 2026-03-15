@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
 import { compareVersions } from '../../domain/utils/version';
-import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/core/semantic-token';
+import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/utils/semantic-token';
 import type {
   CatalogReference,
   ColorVariableKey,

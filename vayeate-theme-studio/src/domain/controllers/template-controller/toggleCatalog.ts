@@ -4,7 +4,7 @@ import { catalogService } from '../../../gateway/services/catalog-service';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
-} from '../../core/template-catalog-merge';
+} from '../../utils/template-catalog-merge';
 import {
   catalogVersionsByNameFromRefs,
   getBaseForEdit,

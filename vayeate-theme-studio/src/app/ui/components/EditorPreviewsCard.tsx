@@ -8,8 +8,8 @@ import type {
 } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
 import { useThemesState } from '../context/slice-contexts';
-import { contrastRatio } from '../../../domain/core/color';
-import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/core/scope-resolver';
+import { contrastRatio } from '../../../domain/utils/color';
+import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/utils/scope-resolver';
 
 /** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
 interface ResolvedToken {

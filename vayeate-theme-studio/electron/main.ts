@@ -15,8 +15,8 @@ import { createCatalogWithParams } from '../src/domain/controllers/catalog-contr
 import { createTemplateWithParams } from '../src/domain/controllers/template-controller';
 import { createThemeWithParams } from '../src/domain/controllers/theme-controller';
 import { getPreviewsDir, loadAllPreviews } from './preview-controller';
-import { generateThemePair } from '../src/domain/core/theme-generator';
-import { exportThemePair } from '../src/domain/core/theme-exporter';
+import { generateThemePair } from '../src/domain/utils/theme-generator';
+import { exportThemePair } from '../src/domain/utils/theme-exporter';
 import type { Catalog, Template, Theme } from '../src/model/schemas';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';

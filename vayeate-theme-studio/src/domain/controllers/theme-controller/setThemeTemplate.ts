@@ -2,7 +2,7 @@ import type { TemplateName, Version } from '../../../model/schemas';
 import { setTheme, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { templateService } from '../../../gateway/services/template-service';
-import { mergeAssignmentsFromTemplate } from '../../core/theme-template-merge';
+import { mergeAssignmentsFromTemplate } from '../../utils/theme-template-merge';
 import { saveTheme } from './saveTheme';
 
 export async function setThemeTemplate(

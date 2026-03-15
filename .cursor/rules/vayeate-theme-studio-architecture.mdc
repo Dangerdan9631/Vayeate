@@ -20,8 +20,8 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 | **Actions** | `src/app/actions/` | Action types and ActionQueue. UI events only; all mutations flow through here. |
 | **Controllers** | `src/domain/controllers/` | Invoked by AppContext processor for UI events. Compose operations into a single app action. |
 | **Operations** | `src/domain/operations/` (or within controllers) | Fine-grained units: set state, persist state, add to undo stack. Used by controllers. |
-| **Core** | `src/domain/core/` | Theme generation, color, tokenizer, scope resolution, export, theme-parser, template-catalog-merge. |
-| **Utils** | `src/domain/utils/` | Logger, version, undo manager/processor. |
+| **Core** | `src/domain/core/` | Undo manager (UndoManagerV2) and undo processor. Used by controllers/operations for undo stacks. |
+| **Utils** | `src/domain/utils/` | Logger, version, theme generation, color, tokenizer, scope resolution, export, theme-parser, template-catalog-merge, semantic-token. |
 | **Model** | `src/model/` | Zod schemas and types. No dependencies on app, domain, or gateway. |
 | **Gateway/data** | `src/gateway/data/` | Repository pattern (fs I/O). Depends only on model. Called only from main process. |
 | **Gateway/services** | `src/gateway/services/` | IPC clients wrapping `window.electronAPI`. Depends only on model. Used by domain (controllers/operations). Gateway/data and gateway/services do not depend on each other. |

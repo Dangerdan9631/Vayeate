@@ -2,7 +2,7 @@ import type { Mapping } from '../../../model/schemas';
 import {
   formatSemanticSelector,
   SEMANTIC_WILDCARD_TYPE,
-} from '../../core/semantic-token';
+} from '../../utils/semantic-token';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';

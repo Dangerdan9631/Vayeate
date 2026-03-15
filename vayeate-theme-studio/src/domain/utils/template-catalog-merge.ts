@@ -27,7 +27,7 @@ export function mergeMappingsFromCatalogData(
   const semanticTypeToRef = new Map<string, string>();
   const modifiersSet = new Set<string>();
   const languagesSet = new Set<string>();
-  for (const { ref, tokens, semanticTokenTypes = [], semanticTokenModifiers = [], semanticTokenLanguages = [] } of catalogData) {
+  for (const { ref, semanticTokenTypes = [], semanticTokenModifiers = [], semanticTokenLanguages = [] } of catalogData) {
     for (const t of semanticTokenTypes) {
       semanticTypesSet.add(t);
       if (!semanticTypeToRef.has(t)) semanticTypeToRef.set(t, ref.name);

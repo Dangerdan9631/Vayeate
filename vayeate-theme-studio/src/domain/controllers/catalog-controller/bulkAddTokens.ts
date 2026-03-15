@@ -1,5 +1,5 @@
 import type { Catalog } from '../../../model/schemas';
-import { parseThemeJson } from '../../core/theme-parser';
+import { parseThemeJson } from '../../utils/theme-parser';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogBulkAddDialogOpen,

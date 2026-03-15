@@ -58,7 +58,7 @@ Read before implementing:
 
 ### Adding a new undo action type
 
-- Add a member to the **UndoAction** union in `vayeate-theme-studio/src/domain/utils/undo-manager-v2.ts` (the canonical list).
+- Add a member to the **UndoAction** union in `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts` (the canonical list).
 - In the processor implementation used when creating the stack, add a case in both **applyProcessor** and **revertProcessor** for that type. Use the define-undo-action skill (`.cursor/skills/define-undo-action/SKILL.md`) for the full procedure.
 
 ### Stack operations
@@ -75,10 +75,10 @@ Read before implementing:
 
 ## Relationship to current code
 
-The app currently uses the legacy undo stack (`vayeate-theme-studio/src/domain/utils/undo-stack.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx`). UndoManagerV2 is the target design for new implementation. When implementing, this skill is the spec; existing undo-stack and UndoContext can be consulted for current behavior and migration points.
+The app uses UndoManagerV2 (`vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/domain/core/undo-processor.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx`). When implementing or modifying, this skill is the spec; UndoContext can be consulted for wiring.
 
 ## References
 
 - Undo rule (`.cursor/rules/vayeate-theme-studio-undo.mdc`)
 - Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`)
-- Current implementation: `vayeate-theme-studio/src/domain/utils/undo-stack.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx`
+- Implementation: `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/domain/core/undo-processor.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx`

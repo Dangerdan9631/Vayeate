@@ -13,14 +13,19 @@
 - **Domain** (`src/domain/`; must not depend on `src/app/`): controllers, core, operations, state, utils. May depend on model and gateway.
 - **Gateway** (`src/gateway/`; must not depend on `src/domain/`): data (repositories) and services (IPC). gateway/data and gateway/services depend only on model and do not depend on each other.
 - **App** (`src/app/`): UI, viewmodels, actions. Must not depend on gateway; uses state and domain only.
-- Core engine (domain):
-  - color math and contrast: `vayeate-theme-studio/src/domain/core/color.ts`
-  - generation logic: `vayeate-theme-studio/src/domain/core/theme-generator.ts`
-  - export safety: `vayeate-theme-studio/src/domain/core/theme-exporter.ts`
-  - scope resolution: `vayeate-theme-studio/src/domain/core/scope-resolver.ts`
-  - tokenizer: `vayeate-theme-studio/src/domain/core/tokenizer.ts`
-  - theme-parser: `vayeate-theme-studio/src/domain/core/theme-parser.ts`
-  - template-catalog-merge: `vayeate-theme-studio/src/domain/core/template-catalog-merge.ts`
+- Core (domain): undo only.
+  - undo manager: `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`
+  - undo processor: `vayeate-theme-studio/src/domain/core/undo-processor.ts`
+- Utils (domain): theme engine, color, tokenizer, scope, merge, etc.
+  - color math and contrast: `vayeate-theme-studio/src/domain/utils/color.ts`
+  - generation logic: `vayeate-theme-studio/src/domain/utils/theme-generator.ts`
+  - export safety: `vayeate-theme-studio/src/domain/utils/theme-exporter.ts`
+  - scope resolution: `vayeate-theme-studio/src/domain/utils/scope-resolver.ts`
+  - tokenizer: `vayeate-theme-studio/src/domain/utils/tokenizer.ts`
+  - theme-parser: `vayeate-theme-studio/src/domain/utils/theme-parser.ts`
+  - template-catalog-merge: `vayeate-theme-studio/src/domain/utils/template-catalog-merge.ts`
+  - theme-template-merge, semantic-token, color-clustering: `vayeate-theme-studio/src/domain/utils/`
+  - logger, version: `vayeate-theme-studio/src/domain/utils/`
 - Catalog sync: `vayeate-theme-studio/src/gateway/services/catalog-sync.ts`
 - UI and Electron:
   - main editor shell: `vayeate-theme-studio/src/app/ui/App.tsx`

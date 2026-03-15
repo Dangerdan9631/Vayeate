@@ -7,7 +7,7 @@ import {
 } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
 import type { ThemePreviewTokenRefField } from '../../../model/schemas';
-import { applyHueShift } from '../../core/color';
+import { applyHueShift } from '../../utils/color';
 import { saveTheme } from './saveTheme';
 
 /** Set a preview token ref field (THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT). Updates theme, saves, recenters hue. */

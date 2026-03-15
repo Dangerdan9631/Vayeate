@@ -1,5 +1,5 @@
 import type { TokenType } from '../../../model/schemas';
-import { parseSemanticSelector } from '../../core/semantic-token';
+import { parseSemanticSelector } from '../../utils/semantic-token';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { getBaseForEdit, refreshRefsAndSelect } from './_helpers';

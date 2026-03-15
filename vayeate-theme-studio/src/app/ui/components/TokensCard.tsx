@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../../domain/core/semantic-token';
+import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
 
 interface TokensCardProps {
   catalog: Catalog;
