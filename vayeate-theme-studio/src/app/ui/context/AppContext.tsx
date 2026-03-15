@@ -8,6 +8,7 @@ import {
   initialAppState,
   type AppStateUpdate,
 } from '../../../domain/state/app-state';
+import { storeStateReducer, type StoreStateUpdate } from '../../../domain/state/store-state-reducer';
 import { uiStateReducer, type UiStateUpdate } from '../../../domain/state/ui-state-reducer';
 import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
@@ -47,10 +48,13 @@ type GetState = () => AppState;
 
 type SetUiState = (update: UiStateUpdate) => void;
 
+type SetStoreState = (update: StoreStateUpdate) => void;
+
 export function createActionProcessorV2(
   getState: GetState,
   setState: SetState,
-  setUiState: SetUiState
+  setUiState: SetUiState,
+  setStoreState: SetStoreState
 ): (action: AppActionV2) => Promise<void> {
   return async (action: AppActionV2): Promise<void> => {
     logV2.debug('action', action);
@@ -58,7 +62,7 @@ export function createActionProcessorV2(
       case 'APP_APP_ON_LOAD':
         // Load or restore persisted app preferences (e.g. window size, last tab).
         // Initialize refs and any lazy state needed for the current tab.
-        await appController.loadApplication(setState);
+        await appController.loadApplication(setState, setStoreState);
         break;
       case 'APP_APP_ON_CLOSE':
         // Persist app state (preferences, window bounds) to disk if needed.
@@ -104,7 +108,7 @@ export function createActionProcessorV2(
         await windowController.dragWindow();
         break;
       case 'CATALOG_PAGE_ON_LOAD':
-        await catalogController.loadCatalogRefs(setState);
+        await catalogController.loadCatalogRefs(setState, setStoreState);
         setCurrentUndoStackId(setState, null);
         break;
       case 'CATALOG_CATALOGS_LIST_ON_COMMIT':
@@ -213,7 +217,7 @@ export function createActionProcessorV2(
         await catalogController.bulkAddTokens(setState, getState);
         break;
       case 'TEMPLATE_PAGE_ON_LOAD':
-        await templateController.loadTemplatePage(setState);
+        await templateController.loadTemplatePage(setState, setStoreState);
         break;
       case 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT':
         await templateController.selectTemplateAndLoad(setState, action.name, action.version);
@@ -424,7 +428,7 @@ export function createActionProcessorV2(
         }
         break;
       case 'THEME_PAGE_ON_LOAD':
-        await themeController.loadThemeRefs(setState);
+        await themeController.loadThemeRefs(setState, setStoreState);
         setCurrentUndoStackId(setState, null);
         break;
       case 'THEME_PAGE_SAVE_ERROR_DISMISS_BUTTON_ON_CLICK':
@@ -449,13 +453,13 @@ export function createActionProcessorV2(
         themeController.closeThemeCreateDialog(setState);
         break;
       case 'THEME_CREATE_DIALOG_OK_BUTTON_ON_CLICK':
-        await themeController.createTheme(setState, action.params);
+        await themeController.createTheme(setState, setStoreState, action.params);
         break;
       case 'THEME_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK':
-        await themeController.deleteThemeVersion(setState, action.name, action.version);
+        await themeController.deleteThemeVersion(setState, setStoreState, getState, action.name, action.version);
         break;
       case 'THEME_DETAILS_INCREMENT_VERSION_BUTTON_ON_CLICK':
-        await themeController.incrementThemeVersion(setState, getState);
+        await themeController.incrementThemeVersion(setState, setStoreState, getState);
         break;
       case 'THEME_DETAILS_GENERATE_BUTTON_ON_CLICK':
         await themeController.generateTheme(
@@ -815,6 +819,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+  const setStoreState = useCallback(
+    (update: StoreStateUpdate) => {
+      replaceState(storeStateReducer(stateRef.current, update));
+    },
+    [],
+  );
 
   const queueRef = useRef<ActionQueue | null>(null);
 
@@ -858,7 +868,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const dispatch = useCallback((action: AppActionV2): Promise<void> => {
     if (!queueRef.current) {
-      const processor = createActionProcessorV2(getState, setState, setUiState);
+      const processor = createActionProcessorV2(getState, setState, setUiState, setStoreState);
       const queue = new ActionQueue(processor);
       queue.onQueueStatus = (status) =>
         setUiState({
@@ -869,7 +879,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       queueRef.current = queue;
     }
     return queueRef.current.enqueue(action);
-  }, [getState, setState, setUiState]);
+  }, [getState, setState, setUiState, setStoreState]);
 
   const value: AppContextValue = { state, dispatch, setUiState, setWindowState };
 

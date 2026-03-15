@@ -1,5 +1,6 @@
 import type { Theme } from '../../../model/schemas';
 import { nextPatchVersion } from '../../utils/version';
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   setSelectedThemeRef,
   setThemeHueAdjustment as setThemeHueAdjustmentOp,
@@ -16,6 +17,7 @@ import { themeStackId } from './themeStackId';
 
 export async function incrementThemeVersion(
   setState: SetState,
+  setStoreState: SetStoreState,
   getState: GetState,
 ): Promise<void> {
   const state = getState();
@@ -32,7 +34,7 @@ export async function incrementThemeVersion(
     setThemeSaveError(setState, message);
     return;
   }
-  await loadThemeRefsOp(setState);
+  await loadThemeRefsOp(setState, setStoreState);
   setSelectedThemeRef(setState, { name: theme.name, version: newVersion });
   const loaded = await loadTheme(setState, theme.name, newVersion);
   if (loaded) {

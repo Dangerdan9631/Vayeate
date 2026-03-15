@@ -164,7 +164,7 @@ export const initialAppState: AppState = {
     activeTabId: 'catalogs',
     queueStatus: { isProcessing: false, queueLength: 0 },
   },
-  store: {},
+  store: { catalogs: {}, templates: {}, themes: {} },
   window: {
     loadState: 'loading',
     isMinimized: false,

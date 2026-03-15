@@ -1,3 +1,4 @@
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   createTheme as createThemeOperation,
   loadThemeRefs as loadThemeRefsOp,
@@ -12,6 +13,7 @@ import { themeStackId } from './themeStackId';
 
 export async function createTheme(
   setState: SetState,
+  setStoreState: SetStoreState,
   params: { name: string },
 ): Promise<void> {
   setState({ type: 'SET_THEME_IS_CREATING', value: true });
@@ -19,7 +21,7 @@ export async function createTheme(
   setThemeCreateFormName(setState, '');
   try {
     const newTheme = await createThemeOperation(setState, params);
-    await loadThemeRefsOp(setState);
+    await loadThemeRefsOp(setState, setStoreState);
     setTheme(setState, newTheme);
     setSelectedThemeRef(setState, { name: newTheme.name, version: newTheme.version });
     setThemePaneSelectionsOp(

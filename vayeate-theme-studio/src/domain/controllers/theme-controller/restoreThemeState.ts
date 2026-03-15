@@ -1,3 +1,4 @@
+import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   setTheme,
   setSelectedThemeRef,
@@ -15,6 +16,7 @@ import { clearPendingSave } from './theme-save-state';
 
 export async function restoreThemeState(
   setState: SetState,
+  setStoreState: SetStoreState,
   params: RestoreThemeStateParams,
 ): Promise<void> {
   if (params.theme !== undefined && params.theme !== null) {
@@ -49,13 +51,13 @@ export async function restoreThemeState(
       const message = err instanceof Error ? err.message : String(err);
       setThemeSaveError(setState, message);
     }
-    await loadThemeRefsOp(setState);
+    await loadThemeRefsOp(setState, setStoreState);
   }
   if (params.deleteThemeVersionOnRestore) {
     await deleteThemeOp(
       params.deleteThemeVersionOnRestore.name,
       params.deleteThemeVersionOnRestore.version,
     );
-    await loadThemeRefsOp(setState);
+    await loadThemeRefsOp(setState, setStoreState);
   }
 }
