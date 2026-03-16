@@ -8,6 +8,14 @@ alwaysApply: false
 
 When editing code that mutates state or the file system, follow how the undo stack is supposed to work and how to utilize it.
 
+## Current undo status (infrastructure ready; full undo deferred)
+
+- `UndoManagerV2`, the LRU stack, and the persistence adapter are fully implemented and tested.
+- `UndoProcessor` (in `undo-processor.ts`) is implemented but currently handles only `NOOP`. Real domain-specific `UndoAction` types and their `applyProcessor`/`revertProcessor` implementations are deferred to a follow-on effort.
+- `performUndo`, `performRedo`, and `performHistoryGoTo` operations and controller wrappers are implemented and tested.
+- `clearPersistedUndo` is called on app load and unload via the app controller; do not remove this.
+- **Do not push frames from mutative controllers yet** — the processor will NOOP all frames until real `UndoAction` types are defined.
+
 ## How the undo stack is supposed to work
 
 - The undo manager holds its own state with a HashMap of history stacks. Each stack is keyed by context (`getOrCreate(stackId)`). One stack per app page, per catalog version, per template version, per theme version.

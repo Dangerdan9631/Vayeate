@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Theme Studio Operations
 
-Operations are fine-grained units that perform a **single atomic action**: one logical unit of work. They live in `src/domain/operations/` and are composed by controllers. For layer placement and controller usage, see the Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`).
+Operations are fine-grained units that perform a **single atomic action**: one logical unit of work. They live in `src/domain/operations/` and are composed by controllers. Operations are the **only** place where `gateway/services` calls may appear — controllers must not import `gateway/services` or `gateway/data` directly. For layer placement and controller usage, see the Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`).
 
 ## Atomicity and scope
 

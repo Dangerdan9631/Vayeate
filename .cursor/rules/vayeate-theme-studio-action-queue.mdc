@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Action Queue Pattern
 
-All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the processor delegates to controllers, which compose fine-grained operations.
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` no longer contains the action processor switch — it delegates immediately to `createActionProcessor` from `handler-registry.ts`.
 
 ## Event Naming
 
@@ -23,16 +23,19 @@ Each UI interaction dispatches exactly one such event. The control name identifi
 1. Component dispatches one event per interaction: `dispatch({ type: 'CATALOG_SYNC_BUTTON_ON_CLICK', ... })`
 2. ActionQueue.enqueue() pushes the event to a FIFO queue
 3. Processor runs when idle; awaits each action before starting the next
-4. The **processor** (in AppContext) **handles the event by invoking the appropriate controller**. It does not implement business logic itself
-5. **Controllers** compose one or more **operations** to fulfill the app action for that UI event
-6. **Operations** perform a single responsibility: set state (via `setState`), persist state (e.g. via services/IPC), or add to the undo stack
-7. State updates trigger re-renders; ViewModels derive display data
+4. The **processor** (in AppContext) delegates to `createActionProcessor` from `handler-registry.ts`, which routes by action prefix to the correct domain handler
+5. The **domain handler** (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`) has an exhaustive switch and invokes the appropriate **controller**
+6. **Controllers** compose one or more **operations** to fulfill the app action for that UI event
+7. **Operations** perform a single responsibility: set state (via `setState`), persist state (e.g. via services/IPC), or add to the undo stack
+8. State updates trigger re-renders; ViewModels derive display data
 
 ```mermaid
 flowchart LR
   UI[UI Component] -->|"dispatch(CONTROL_ACTION)"| Queue[ActionQueue]
   Queue -->|"process"| Context[AppContext processor]
-  Context -->|"invoke"| Controller[Controller]
+  Context -->|"createActionProcessor"| Registry[handler-registry]
+  Registry -->|"route by prefix"| Handler[Domain Handler]
+  Handler -->|"exhaustive switch"| Controller[Controller]
   Controller -->|"calls"| Op1[Operation 1]
   Controller -->|"calls"| Op2[Operation 2]
   Op1 --> State[setState / persist / undo]
@@ -60,9 +63,9 @@ Use these action suffixes for each control type when naming events:
 - **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`).
 - **Tests**: `useAppDispatch()` returns a no-op when used outside `AppProvider`, so components that only call `dispatch` can be tested without wrapping in `AppProvider`.
 
-## Action processor case comments
+## Handler case comments
 
-When adding or editing cases in `createActionProcessorV2` (in AppContext), write each case comment as **high-level pseudocode** for the implementation:
+When adding or editing cases in domain handler files (`app-handler.ts`, `catalog-handler.ts`, etc.), write each case comment as **high-level pseudocode** for the implementation:
 
 - **What to persist or do**: e.g. delete on disk, write to state, call main process.
 - **What to derive**: e.g. next selection, refs, or derived data.
@@ -81,21 +84,22 @@ export type AppActionV2 =
 case 'MY_FIELD_SET':
   return { ...state, myField: update.payload };
 
-// 3. AppContext.tsx - Processor delegates to controller (name controller function by the action, not the UI event)
+// 3. domain handler (e.g. app-handler.ts) - add exhaustive switch case; invoke controller
 case 'MY_PAGE_MY_BUTTON_ON_CLICK': {
-  await myController.doMyAction(action.payload, setState);
+  await myController.doMyAction(action.payload, deps.setState);
   break;
 }
 ```
 
-The controller invokes operations (e.g. load data, setState, persist). The processor does not call services or setState directly for this event. When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`). Add the new member to the `AppActionV2` union in action-types.ts following the naming convention above; use the add-app-action skill when adding a new action.
+The controller invokes operations (e.g. load data, setState, persist). Handlers do not call services or setState directly. When adding a controller function for a new action, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`). Add the new member to the `AppActionV2` union in `action-types.ts` following the naming convention above; use the add-app-action skill when adding a new action.
 
 ## Rules
 
 - Actions are serializable; no functions or class instances
 - Action types use the `<CONTROL>_<ACTION>` naming convention (see Control Types and Actions)
-- Processor handles events by invoking controllers; it does not implement business logic inline
+- One action = one behavior; do not use optional fields to branch to different behaviors — split into distinct action types instead
+- Handler routes each action to a controller; it does not implement business logic inline
 - Controllers compose operations; operations perform setState, persist, or undo
-- Processor must call `setState` only via the updates produced by operations (invoked through controllers), not mutate state directly
+- `setState` is called only via updates produced by operations (invoked through controllers); handlers and controllers must not mutate state directly
 - Use `AppStateUpdate` for state changes (separate from `AppActionV2` — actions are user intent / UI events, updates are state mutations)
-- When adding a controller function for a new event, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`)
+- When adding a controller function for a new action, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`)

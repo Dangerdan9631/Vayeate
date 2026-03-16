@@ -25,3 +25,13 @@
 
 - Repeated generation for same template must remain byte-equivalent.
 - Keep key ordering stable and avoid non-deterministic iteration over object maps.
+
+## Undo edge cases
+
+- The undo infrastructure (`UndoManagerV2`, `UndoProcessor`) is fully implemented and tested, but real `UndoAction` types (beyond `NOOP`) are deferred. Do not push frames in mutative controllers yet — the processor will no-op all frames.
+- `clearPersistedUndo` is called on app load and unload via the app controller; this is intentional and must not be removed.
+
+## Form state edge cases
+
+- Form inputs tied to actions must be backed by `AppState` fields, not component-local `useState`. If a field value is needed by a controller, it must have been placed into state by a prior action.
+- Draft text values for uncommitted inputs should be stored in the appropriate state slice so they survive re-renders without losing user input.

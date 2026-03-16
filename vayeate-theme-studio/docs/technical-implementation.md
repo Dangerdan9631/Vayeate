@@ -42,6 +42,27 @@ Rationale: `culori` provides deterministic conversion functions and avoids ad ho
 - `zod` for runtime schema validation
 - `fast-deep-equal` for deterministic change detection in persistence/versioning decisions
 
+## 2.4 Application Architecture
+
+The app uses a strictly layered architecture enforced by `ts-arch` tests:
+
+- **`src/model/`** — Zod schemas and types; no dependencies.
+- **`src/gateway/`** — I/O boundary (`data/` for file repositories, `services/` for Electron IPC wrappers); depends only on model.
+- **`src/domain/`** — Business logic; must not depend on `src/app/`.
+  - `state/` — AppState types and reducers (depends on model only).
+  - `utils/` — Pure domain helpers: color math, theme generation, tokenizer, etc. (depends on model only).
+  - `core/` — UndoManagerV2 and UndoProcessor (depends on model + state).
+  - `validations/` — Pure input/state validators (depends on model + state).
+  - `operations/` — Atomic units: setState + gateway/services calls (the only layer that may use gateway/services).
+  - `controllers/` — Compose operations + validations; must NOT import gateway directly.
+- **`src/app/`** — UI and routing; must not depend on gateway.
+  - `actions/` — `AppActionV2` union + `ActionQueue`.
+  - `handlers/` — Per-domain handler files + `handler-registry.ts`; routes each action to a controller; must NOT import gateway, operations, validations, or state directly.
+  - `viewmodel/` — State → UI derivation hooks.
+  - `ui/` — React components and context providers. `AppContext.tsx` is a lean provider (~150 lines).
+
+All user-triggered mutations flow through the `ActionQueue`. `AppContext` delegates to `createActionProcessor` (handler-registry), which routes by action prefix to the correct domain handler (exhaustive switch), which invokes a controller.
+
 ---
 
 ## 3. Theme Configuration -> VS Code Theme File

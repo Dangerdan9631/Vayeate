@@ -6,34 +6,55 @@ alwaysApply: false
 
 # Vayeate Theme Studio Architecture
 
-There is a clean separation between **UI actions** (events tied to UI controls) and **app logic**. App logic lives in fine-grained **operations** and **controllers** that compose multiple operations into a single app action. Actions placed on the queue are tied directly to individual UI events (naming: `<CONTROL>_<ACTION>`). The AppContext handles events by invoking controllers; controllers invoke operations. Operations perform actions like setting state, persisting state, and adding to the undo stack.
+There is a clean separation between **UI actions** (events tied to UI controls) and **app logic**. App logic lives in fine-grained **operations** and **controllers** that compose multiple operations into a single app action. Actions placed on the queue are tied directly to individual UI events (naming: `<CONTROL>_<ACTION>`). The **handler layer** (`app/handlers/`) routes each action to the correct controller; controllers invoke operations. `AppContext.tsx` is a lean provider that no longer contains the action processor switch.
 
 ## Layer Overview
 
-The **domain** layer lives under `src/domain/` and contains controllers, core, operations, state, and utils (no model). **Domain must not depend on app** (`src/app/`). **Model** (`src/model/`) has no dependencies on app, domain, or gateway. **Gateway** (`src/gateway/`) holds data and services; it must not depend on domain; gateway/data and gateway/services are independent of each other. **App must not depend on gateway**; use state and domain only.
+The **domain** layer lives under `src/domain/` and contains controllers, core, operations, state, validations, and utils (no model). **Domain must not depend on app** (`src/app/`). **Model** (`src/model/`) has no dependencies on app, domain, or gateway. **Gateway** (`src/gateway/`) holds data and services; it must not depend on domain; gateway/data and gateway/services are independent of each other. **App must not depend on gateway**; use state and domain only.
 
 | Layer | Location | Responsibility |
 |-------|----------|----------------|
 | **UI** | `src/app/ui/` | React components, pages, styles. No business logic. Dispatches one UI event per interaction. |
 | **ViewModels** | `src/app/viewmodel/` | Custom hooks that derive display data from state. |
-| **State** | `src/domain/state/` | AppState type, reducers, initial state. |
-| **Actions** | `src/app/actions/` | Action types and ActionQueue. UI events only; all mutations flow through here. |
-| **Controllers** | `src/domain/controllers/` | Invoked by AppContext processor for UI events. Compose validations and operations; run validations before operations. |
-| **Validations** | `src/domain/validations/` | Functions that validate input and/or app state and return a boolean. One validator per file; subdirectories per concern (e.g. window-validations). Validations must not reference other validations. Used by controllers (and optionally other app types) before invoking operations. |
-| **Operations** | `src/domain/operations/` (or within controllers) | Fine-grained units: set state, persist state, add to undo stack. Used by controllers. |
-| **Core** | `src/domain/core/` | Undo manager (UndoManagerV2) and undo processor. Used by controllers/operations for undo stacks. |
-| **Utils** | `src/domain/utils/` | Logger, version, theme generation, color, tokenizer, scope resolution, export, theme-parser, template-catalog-merge, semantic-token. |
+| **Actions** | `src/app/actions/` | `AppActionV2` discriminated union + `ActionQueue`. UI events only; all mutations flow through here. |
+| **Handlers** | `src/app/handlers/` | Routes each action to the correct controller. One file per domain (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`). Wired through `handler-registry.ts`. Must NOT depend on gateway, operations, validations, or state directly. |
+| **State** | `src/domain/state/` | AppState type, reducers, initial state. Depends on model only. |
+| **Controllers** | `src/domain/controllers/` | Invoked by handlers for each action. Compose validations and operations; run validations before operations. |
+| **Validations** | `src/domain/validations/` | Functions that validate input and/or app state and return a boolean. One validator per file; subdirectories per concern (e.g. window-validations). Validations must not reference other validations. Used by controllers before invoking operations. |
+| **Operations** | `src/domain/operations/` | Fine-grained units: set state, persist state, add to undo stack. Used by controllers. Must NOT depend on gateway/data, controllers, or app. |
+| **Core** | `src/domain/core/` | UndoManagerV2 and UndoProcessor. Depends on model and state. |
+| **Utils** | `src/domain/utils/` | Logger, version, theme generation, color, tokenizer, scope resolution, export, theme-parser, template-catalog-merge, semantic-token. Depends on model only. |
 | **Model** | `src/model/` | Zod schemas and types. No dependencies on app, domain, or gateway. |
 | **Gateway/data** | `src/gateway/data/` | Repository pattern (fs I/O). Depends only on model. Called only from main process. |
-| **Gateway/services** | `src/gateway/services/` | IPC clients wrapping `window.electronAPI`. Depends only on model. Used by domain (controllers/operations). Gateway/data and gateway/services do not depend on each other. |
+| **Gateway/services** | `src/gateway/services/` | IPC clients wrapping `window.electronAPI`. Depends only on model. Used by operations (NOT controllers). `gateway/data` and `gateway/services` do not depend on each other. |
+
+## Dependency Rules (enforced by ts-arch)
+
+| Module | May depend on | Must NOT depend on |
+|--------|--------------|-------------------|
+| `model/` | nothing | everything |
+| `gateway/data/` | model | domain, app, gateway/services |
+| `gateway/services/` | model | domain, app, gateway/data |
+| `domain/state/` | model | gateway, domain/*, app |
+| `domain/utils/` | model | gateway, domain (except utils-internal), app |
+| `domain/core/` | model, state | gateway, operations, controllers, app |
+| `domain/validations/` | model, state | gateway, operations, controllers, app |
+| `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
+| `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
+| `app/actions/` | model | domain, gateway |
+| `app/handlers/` | controllers | operations, gateway, validations, state |
+| `app/viewmodel/` | model, state, app/ui/context | controllers, operations, gateway |
+| `app/ui/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
 ## Data Flow
 
 ```
-UI dispatch(UI event) → ActionQueue.enqueue → Processor (AppContext) → Controller → Operations
-                                                                              ↓
-                        setState / persist / undo (via operations)
-                                                                              ↓
+UI dispatch(action) → ActionQueue.enqueue → AppContext processor → createActionProcessor (handler-registry)
+                                                                         → domain handler (exhaustive switch)
+                                                                              → Controller → Operations
+                                                                                                ↓
+                                                               setState / persist / undo (via operations)
+                                                                                                ↓
 UI ← ViewModel ← State (setState/setWindowState apply the appropriate reducer)
 ```
 
@@ -49,36 +70,35 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 - **Purpose**: Validations are functions that validate an input and/or read app state and return a boolean (pass/fail). They answer “can this action proceed?” (e.g. can the window be maximized?).
 - **Structure**: Same as operations and controllers—multiple subdirectories (e.g. `window-validations/`), single validator per file. Export via an index per subdirectory and from `src/domain/validations/index.ts`.
 - **No validator calls another validator**: Validations must not reference other validations; keep them independent.
-- **Who uses validations**: Controllers should run validations before invoking operations (e.g. only call `maximizeWindow` op if `canMaximizeWindow(getState)` is true). Other app types (e.g. UI, viewmodels) may also call validations if they need to guard or display state. Architectural guidance for validations is less strict than for operations (which are only composed by controllers).
+- **Who uses validations**: Controllers run validations before invoking operations. Other app types (e.g. UI, viewmodels) may also call validations to guard or display state.
 - **Signature**: Typically `(getState: () => AppState) => boolean` when they need app state; or `(input: X) => boolean` when they only validate input.
-
-- UI events use `<CONTROL>_<ACTION>` naming (e.g. `CATALOG_PAGE_ON_LOAD`, `CATALOG_SYNC_BUTTON_ON_CLICK`).
-- The processor handles each event by invoking the appropriate controller.
-- Controllers compose one or more operations; only controllers may call multiple operations (e.g. load application controller invokes `clearPersistedUndo` on app load). Operations do not call other operations; they have a single responsibility and are composed by controllers.
-- Operations perform setState, persist (e.g. via services/IPC), or undo.
-- For main-process work: Controller/operations use gateway/services; main IPC delegates to controllers; controllers call gateway/data. Domain may depend on gateway; app must not import gateway (use state and domain only).
 
 ## File Structure
 
-- `electron/main.ts` - IPC handlers, BrowserWindow, delegates to controllers
-- `electron/preload.ts` - contextBridge exposes `electronAPI`
-- `src/app/ui/context/AppContext.tsx` - AppProvider, useAppState, wires ActionQueue to reducer; processor invokes controllers
-- `src/app/actions/action-queue.ts` - FIFO queue, sequential async processing
-- `src/app/actions/action-types.ts` - Discriminated union `AppActionV2`. The `AppActionV2` union is the canonical list of all app action event names.
-- `src/domain/` - Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
-- `src/domain/validations/` - Validators (one per file, subdirectories per concern). Controllers run validations before operations.
-- `src/model/` - Schemas and types. Must not depend on app, domain, or gateway.
-- `src/gateway/` - Data (repositories) and services (IPC). Must not depend on domain. gateway/data and gateway/services are independent.
-- `src/domain/controllers/` - Controllers composed of operations; invoked by AppContext processor
+- `electron/main.ts` — IPC handlers, BrowserWindow, delegates to controllers
+- `electron/preload.ts` — contextBridge exposes `electronAPI`
+- `src/app/ui/context/AppContext.tsx` — lean provider (~150 lines): useReducer, context providers, window event listeners, queue setup; calls `createActionProcessor` from handler-registry
+- `src/app/actions/action-queue.ts` — FIFO queue, sequential async processing
+- `src/app/actions/action-types.ts` — Discriminated union `AppActionV2`. The canonical list of all app action event names.
+- `src/app/handlers/handler-types.ts` — `HandlerDeps`, domain `Extract` aliases, `ActionHandler<T>`
+- `src/app/handlers/handler-registry.ts` — `createActionProcessor(deps)` routes to domain handlers by prefix
+- `src/app/handlers/{app,catalog,template,theme}-handler.ts` — per-domain exhaustive switches; route to controllers
+- `src/domain/` — Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
+- `src/domain/validations/` — Validators (one per file, subdirectories per concern). Controllers run validations before operations.
+- `src/model/` — Schemas and types. Must not depend on app, domain, or gateway.
+- `src/gateway/` — Data (repositories) and services (IPC). Must not depend on domain. gateway/data and gateway/services are independent.
+- `src/domain/controllers/` — Controllers composed of operations; invoked by domain handlers
 
 ## Conventions
 
-- **New UI events**: Use `<CONTROL>_<ACTION>` (see Action Queue rule for control/action list). Add the new union member to `AppActionV2` in action-types.ts with payload types from `src/model/schemas.ts` where applicable. In the processor, invoke a controller; controller uses operations for setState, persist, undo. Add reducer cases in the appropriate reducer in `src/domain/state/` (e.g. `reducer.ts` for app state, `window-state-reducer.ts` for window slice). Use the add-app-action skill when adding a new action.
-- **New ViewModels**: Create hook in app/viewmodel/, consume `useAppState()`, return derived data
-- **Renderer → Main**: Use gateway/services from domain only (controllers/operations); app never imports gateway. Never import from gateway/data or domain/controllers in UI/viewmodel (except controller invocation from the processor).
-- **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir
-- **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`
-- **Controller function names**: Name controller functions by the **action executed** (e.g. `setActiveTab`, `loadThemeRefs`, `saveCatalog`), not by the UI event or control (e.g. `handleTabBarOnSelect`, `handleSaveButtonOnClick`). Controllers stay decoupled from the UI; the processor maps UI events to controller functions.
-- **Validations before operations**: In controllers that need guards, call the appropriate validation (e.g. `canMaximizeWindow(getState)`) before invoking the operation; skip or return early if the validation returns false. Pass `getState` (or equivalent) into the controller when it must run validations that read app state.
+- **New UI actions**: Add to `AppActionV2` union in `action-types.ts`. Add an exhaustive switch case in the correct domain handler (`app-handler.ts`, `catalog-handler.ts`, etc.). Invoke a controller from the handler; controller uses operations for setState, persist, undo. Add reducer cases in `reducer.ts`. Use the add-app-action skill.
+- **One action = one behavior**: Never use optional fields to branch to different behaviors within one action type. Split overloaded actions into distinct action types.
+- **All UI events go through the action queue**: No component-owned side effects.
+- **New ViewModels**: Create hook in `app/viewmodel/`, consume `useAppState()`, return derived data.
+- **Renderer → Main**: Use gateway/services from operations only; app never imports gateway. Never import from `gateway/data` or `domain/controllers` in UI/viewmodel.
+- **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir.
+- **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`.
+- **Controller function names**: Name controller functions by the **action executed** (e.g. `setActiveTab`, `loadThemeRefs`, `saveCatalog`), not by the UI event or control. Controllers stay decoupled from the UI; handlers map UI actions to controller functions.
+- **Validations before operations**: In controllers that need guards, call the appropriate validation before invoking the operation; skip or return early if false. Pass `getState` (or equivalent) into the controller when it must run validations that read app state.
 
 For the canonical list of control types and their actions, see the Action Queue rule (`.cursor/rules/vayeate-theme-studio-action-queue.mdc`).
