@@ -62,3 +62,6 @@ export { setContrastVariableLightValue } from './setContrastVariableLightValue';
 export { setContrastVariableLightMethod } from './setContrastVariableLightMethod';
 export { setContrastVariableLightMin } from './setContrastVariableLightMin';
 export { setContrastVariableLightMax } from './setContrastVariableLightMax';
+export { setThemeCreateFormName } from './setThemeCreateFormName';
+export { setThemeOpenPickerContext } from './setThemeOpenPickerContext';
+export { setThemeVariableDraftText } from './setThemeVariableDraftText';

@@ -1,10 +1,5 @@
 import * as themeController from '../../domain/controllers/theme-controller';
-import {
-  setThemeCreateFormName,
-  setThemeOpenPickerContext,
-  setThemeVariableDraftText,
-} from '../../domain/operations/theme-operations';
-import { setCurrentUndoStackId } from '../../domain/operations/undo-operations';
+import * as undoController from '../../domain/controllers/undo-controller';
 import type { ActionHandler, HandlerDeps, ThemeAction } from './handler-types';
 
 export const handleThemeAction: ActionHandler<ThemeAction> = async (
@@ -14,7 +9,7 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
   switch (action.type) {
     case 'THEME_PAGE_ON_LOAD':
       await themeController.loadThemeRefs(setState, setStoreState);
-      setCurrentUndoStackId(setState, null);
+      undoController.resetCurrentUndoStackId(setState);
       break;
     case 'THEME_PAGE_SAVE_ERROR_DISMISS_BUTTON_ON_CLICK':
       themeController.clearThemeSaveError(setState);
@@ -32,7 +27,7 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.openThemeCreateDialog(setState);
       break;
     case 'THEME_CREATE_DIALOG_NAME_TEXT_ON_CHANGE':
-      setThemeCreateFormName(setState, action.value);
+      themeController.setThemeCreateFormName(setState, action.value);
       break;
     case 'THEME_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK':
       themeController.closeThemeCreateDialog(setState);
@@ -92,7 +87,7 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       break;
     case 'THEME_PALETTE_ASSIGN_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
       // Signal UI to open eyedropper for the given color ref; UI dispatches ASSIGN_COLOR_PICKER_ON_COMMIT with picked hex.
-      setThemeOpenPickerContext(setState, `eyedropper:assign:${action.colorRef}`);
+      themeController.setThemeOpenPickerContext(setState, `eyedropper:assign:${action.colorRef}`);
       break;
     case 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_SELECT':
       // Live preview: setTheme with updated assignments; no persist.
@@ -116,11 +111,11 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       break;
     case 'THEME_PALETTE_HUE_REFERENCE_COLOR_BUTTON_ON_CLICK':
       // Signal UI to open color picker for the hue reference.
-      setThemeOpenPickerContext(setState, 'picker:hue');
+      themeController.setThemeOpenPickerContext(setState, 'picker:hue');
       break;
     case 'THEME_PALETTE_HUE_REFERENCE_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
       // Signal UI to open eyedropper for the hue reference.
-      setThemeOpenPickerContext(setState, 'eyedropper:hue');
+      themeController.setThemeOpenPickerContext(setState, 'eyedropper:hue');
       break;
     case 'THEME_PALETTE_HUE_REFERENCE_COLOR_PICKER_ON_SELECT':
       // Live preview: set hue reference in state (no persist).
@@ -227,17 +222,17 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setColorUseDarkForLight(setState, getState, action.ref, action.checked);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `colorDark:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `colorDark:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_COMMIT':
       themeController.setColorVariableDark(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_COLOR_BUTTON_ON_CLICK':
-      setThemeOpenPickerContext(setState, `dark:${action.ref}`);
+      themeController.setThemeOpenPickerContext(setState, `dark:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
       // Eyedropper is launched by the UI; this sets context so UI knows which ref is targeted.
-      setThemeOpenPickerContext(setState, `eyedropper:dark:${action.ref}`);
+      themeController.setThemeOpenPickerContext(setState, `eyedropper:dark:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_DARK_COLOR_PICKER_ON_SELECT':
       themeController.setColorVariableFromHexPreview(
@@ -258,16 +253,16 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `colorLight:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `colorLight:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_COMMIT':
       themeController.setColorVariableLight(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_COLOR_BUTTON_ON_CLICK':
-      setThemeOpenPickerContext(setState, `light:${action.ref}`);
+      themeController.setThemeOpenPickerContext(setState, `light:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_COLOR_EYEDROPPER_BUTTON_ON_CLICK':
-      setThemeOpenPickerContext(setState, `eyedropper:light:${action.ref}`);
+      themeController.setThemeOpenPickerContext(setState, `eyedropper:light:${action.ref}`);
       break;
     case 'THEME_VARIABLES_COLOR_LIGHT_COLOR_PICKER_ON_SELECT':
       themeController.setColorVariableFromHexPreview(
@@ -288,7 +283,7 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_VALUE_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `contrastDark:value:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `contrastDark:value:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_VALUE_TEXT_ON_COMMIT':
       themeController.setContrastVariableDarkValue(
@@ -307,19 +302,19 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MIN_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `contrastDark:min:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `contrastDark:min:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MIN_TEXT_ON_COMMIT':
       themeController.setContrastVariableDarkMin(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MAX_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `contrastDark:max:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `contrastDark:max:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_DARK_MAX_TEXT_ON_COMMIT':
       themeController.setContrastVariableDarkMax(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_VALUE_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `contrastLight:value:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `contrastLight:value:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_VALUE_TEXT_ON_COMMIT':
       themeController.setContrastVariableLightValue(
@@ -338,13 +333,13 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       );
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `contrastLight:min:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `contrastLight:min:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_COMMIT':
       themeController.setContrastVariableLightMin(setState, getState, action.ref, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_CHANGE':
-      setThemeVariableDraftText(setState, `contrastLight:max:${action.ref}`, action.value);
+      themeController.setThemeVariableDraftText(setState, `contrastLight:max:${action.ref}`, action.value);
       break;
     case 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_COMMIT':
       themeController.setContrastVariableLightMax(setState, getState, action.ref, action.value);

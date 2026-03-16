@@ -38,3 +38,5 @@ export { removeColorVariable } from './removeColorVariable';
 export { removeContrastVariable } from './removeContrastVariable';
 export { updateVariableGroupRef } from './updateVariableGroupRef';
 export { updateContrastComparisonSource } from './updateContrastComparisonSource';
+export { setTemplateAddGroupName } from './setTemplateAddGroupName';
+export { setTemplateAddVariableName } from './setTemplateAddVariableName';

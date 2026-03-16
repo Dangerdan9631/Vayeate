@@ -1,8 +1,4 @@
 import * as templateController from '../../domain/controllers/template-controller';
-import {
-  setTemplateAddGroupName,
-  setTemplateAddVariableName,
-} from '../../domain/operations/template-operations';
 import type { ActionHandler, HandlerDeps, TemplateAction } from './handler-types';
 
 export const handleTemplateAction: ActionHandler<TemplateAction> = async (
@@ -145,11 +141,11 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
       );
       break;
     case 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE':
-      setTemplateAddGroupName(setState, action.value);
+      templateController.setTemplateAddGroupName(setState, action.value);
       break;
     case 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK':
       await templateController.addGroup(setState, setStoreState, getState, action.name);
-      setTemplateAddGroupName(setState, '');
+      templateController.setTemplateAddGroupName(setState, '');
       break;
     case 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK':
       await templateController.removeGroup(setState, setStoreState, getState, action.groupId);
@@ -158,7 +154,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
       templateController.setVariablesSearchText(setState, action.value);
       break;
     case 'TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE':
-      setTemplateAddVariableName(setState, action.value);
+      templateController.setTemplateAddVariableName(setState, action.value);
       break;
     case 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK':
       if (action.variableKind === 'contrast') {

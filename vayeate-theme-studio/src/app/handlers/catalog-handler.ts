@@ -1,15 +1,5 @@
 import * as catalogController from '../../domain/controllers/catalog-controller';
-import {
-  setCatalogBulkAddText,
-  setCatalogCreateFormName,
-  setCatalogCreateFormType,
-  setCatalogNewSourceType,
-  setCatalogNewSourceTokenType,
-  setCatalogNewSourceUrl,
-  setCatalogNewTokenKey,
-  setCatalogTokensSearchText,
-} from '../../domain/operations/catalog-operations';
-import { setCurrentUndoStackId } from '../../domain/operations/undo-operations';
+import * as undoController from '../../domain/controllers/undo-controller';
 import type { ActionHandler, CatalogAction, HandlerDeps } from './handler-types';
 
 export const handleCatalogAction: ActionHandler<CatalogAction> = async (
@@ -19,7 +9,7 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
   switch (action.type) {
     case 'CATALOG_PAGE_ON_LOAD':
       await catalogController.loadCatalogRefs(setState, setStoreState);
-      setCurrentUndoStackId(setState, null);
+      undoController.resetCurrentUndoStackId(setState);
       break;
     case 'CATALOG_CATALOGS_LIST_ON_COMMIT':
       await catalogController.selectCatalogAndLoad(setState, action.name, action.version);
@@ -31,10 +21,10 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
       catalogController.openCatalogCreateDialog(setState);
       break;
     case 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE':
-      setCatalogCreateFormName(setState, action.value);
+      catalogController.setCatalogCreateFormName(setState, action.value);
       break;
     case 'CATALOG_CREATE_DIALOG_TYPE_LIST_ON_COMMIT':
-      setCatalogCreateFormType(setState, action.value);
+      catalogController.setCatalogCreateFormType(setState, action.value);
       break;
     case 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK':
       catalogController.closeCatalogCreateDialog(setState);
@@ -70,19 +60,19 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
       await catalogController.removeSource(setState, setStoreState, getState, action.sourceIndex);
       break;
     case 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE':
-      setCatalogNewSourceUrl(setState, action.value);
+      catalogController.setCatalogNewSourceUrl(setState, action.value);
       break;
     case 'CATALOG_DETAILS_NEW_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT':
-      setCatalogNewSourceTokenType(setState, action.value);
+      catalogController.setCatalogNewSourceTokenType(setState, action.value);
       break;
     case 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT':
-      setCatalogNewSourceType(setState, action.value);
+      catalogController.setCatalogNewSourceType(setState, action.value);
       break;
     case 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK':
       await catalogController.addNewSource(setState, setStoreState, getState);
       break;
     case 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE':
-      setCatalogTokensSearchText(setState, action.value);
+      catalogController.setCatalogTokensSearchText(setState, action.value);
       break;
     case 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK':
       catalogController.openBulkAddDialog(setState);
@@ -101,7 +91,7 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
       await catalogController.removeToken(setState, setStoreState, getState, action.key, action.tokenType);
       break;
     case 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE':
-      setCatalogNewTokenKey(setState, action.value);
+      catalogController.setCatalogNewTokenKey(setState, action.value);
       break;
     case 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK':
       await catalogController.addNewToken(
@@ -116,7 +106,7 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
       catalogController.openBulkAddDialog(setState);
       break;
     case 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE':
-      setCatalogBulkAddText(setState, action.value);
+      catalogController.setCatalogBulkAddText(setState, action.value);
       break;
     case 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK':
       catalogController.closeBulkAddDialog(setState);

@@ -5,7 +5,7 @@ describe('app architecture', () => {
 	it('only AppContext should depend on controllers', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/app')
-			.matchingPattern('^(?!src/app/context/AppContext).*')
+			.matchingPattern('^(?!src/app/ui/context/AppContext).*')
 			.shouldNot()
 			.dependOnFiles()
 			.inFolder('src/domain/controllers');
@@ -22,4 +22,26 @@ describe('app architecture', () => {
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});
+
+	it('app/ui/components should not depend on domain/controllers', async () => {
+		const rule = filesOfProject()
+			.inFolder('src/app/ui/components')
+			.shouldNot()
+			.dependOnFiles()
+			.inFolder('src/domain/controllers');
+		const violations = await rule.check();
+		expect(violations).toHaveLength(0);
+	});
+
+	it('app/ui/components should not depend on domain/operations', async () => {
+		const rule = filesOfProject()
+			.inFolder('src/app/ui/components')
+			.shouldNot()
+			.dependOnFiles()
+			.inFolder('src/domain/operations');
+		const violations = await rule.check();
+		expect(violations).toHaveLength(0);
+	});
 });
+
+
