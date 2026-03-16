@@ -1,0 +1,141 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Catalog } from '../../../model/schemas';
+import { catalogService } from '../../../gateway/services/catalog-service';
+import { syncCatalogTokens } from '../../../gateway/services/catalog-sync';
+import {
+  createCatalog,
+  deleteCatalog,
+  loadCatalog,
+  loadCatalogRefs,
+  saveCatalog,
+  syncCatalog,
+} from '.';
+
+vi.mock('../../../gateway/services/catalog-service', () => ({
+  catalogService: {
+    createCatalog: vi.fn(),
+    saveCatalog: vi.fn(),
+    loadCatalog: vi.fn(),
+    listCatalogs: vi.fn(),
+    deleteCatalog: vi.fn(),
+    fetchUrl: vi.fn(),
+  },
+}));
+
+vi.mock('../../../gateway/services/catalog-sync', () => ({
+  syncCatalogTokens: vi.fn(),
+}));
+
+describe('catalog-operations', () => {
+  beforeEach(() => {
+    vi.mocked(catalogService.createCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
+    vi.mocked(catalogService.saveCatalog).mockResolvedValue(undefined);
+    vi.mocked(catalogService.loadCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
+    vi.mocked(catalogService.listCatalogs).mockResolvedValue([{ name: 'c1', version: '1.0.0' }]);
+    vi.mocked(catalogService.deleteCatalog).mockResolvedValue(undefined);
+    vi.mocked(catalogService.fetchUrl).mockResolvedValue('{}');
+    vi.mocked(syncCatalogTokens).mockResolvedValue({
+      tokens: [],
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('createCatalog calls catalogService.createCatalog and returns catalog', async () => {
+    const setState = vi.fn();
+    const result = await createCatalog(setState, { name: 'c1', type: 'manual' });
+
+    expect(catalogService.createCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogService.createCatalog).toHaveBeenCalledWith({ name: 'c1', type: 'manual' });
+    expect(result).toEqual({ name: 'c1', version: '1.0.0' });
+  });
+
+  it('loadCatalogRefs sets store entries from listCatalogs result', async () => {
+    const setState = vi.fn();
+    const setStoreState = vi.fn();
+
+    await loadCatalogRefs(setState, setStoreState);
+
+    expect(catalogService.listCatalogs).toHaveBeenCalledTimes(1);
+    expect(setStoreState).toHaveBeenCalledWith({
+      type: 'SET_STORE_CATALOG_ENTRIES',
+      entries: [{ name: 'c1', version: '1.0.0', isLoaded: false, catalog: undefined }],
+    });
+  });
+
+  it('loadCatalog loads a catalog and updates state', async () => {
+    const setState = vi.fn();
+
+    const loaded = await loadCatalog(setState, 'c1', '1.0.0');
+
+    expect(catalogService.loadCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogService.loadCatalog).toHaveBeenCalledWith('c1', '1.0.0');
+    expect(setState).toHaveBeenCalledWith({
+      type: 'SET_CATALOG',
+      catalog: { name: 'c1', version: '1.0.0' },
+    });
+    expect(loaded).toEqual({ name: 'c1', version: '1.0.0' });
+  });
+
+  it('saveCatalog calls catalogService.saveCatalog', async () => {
+    const catalog = { name: 'c1', version: '1.0.0' } as Catalog;
+
+    await saveCatalog(catalog);
+
+    expect(catalogService.saveCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogService.saveCatalog).toHaveBeenCalledWith(catalog);
+  });
+
+  it('deleteCatalog calls catalogService.deleteCatalog', async () => {
+    await deleteCatalog('c1', '1.0.0');
+
+    expect(catalogService.deleteCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogService.deleteCatalog).toHaveBeenCalledWith('c1', '1.0.0');
+  });
+
+  it('syncCatalog preserves version when catalog is unlocked', async () => {
+    const catalog = {
+      name: 'c1',
+      version: '1.0.0',
+      locked: false,
+      sources: [],
+      tokens: [],
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    } as unknown as Catalog;
+    const fetchUrl = vi.fn().mockResolvedValue('{}');
+
+    const result = await syncCatalog(catalog, fetchUrl);
+
+    expect(syncCatalogTokens).toHaveBeenCalledTimes(1);
+    expect(syncCatalogTokens).toHaveBeenCalledWith(catalog.sources, fetchUrl);
+    expect(result.version).toBe('1.0.0');
+    expect(result.locked).toBe(true);
+  });
+
+  it('syncCatalog bumps patch version when catalog is locked', async () => {
+    const catalog = {
+      name: 'c1',
+      version: '1.0.0',
+      locked: true,
+      sources: [],
+      tokens: [],
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    } as unknown as Catalog;
+    const fetchUrl = vi.fn().mockResolvedValue('{}');
+
+    const result = await syncCatalog(catalog, fetchUrl);
+
+    expect(syncCatalogTokens).toHaveBeenCalledTimes(1);
+    expect(result.version).toBe('1.0.1');
+    expect(result.locked).toBe(true);
+  });
+});
