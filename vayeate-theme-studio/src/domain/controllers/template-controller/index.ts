@@ -1,42 +1,58 @@
 export {
   createTemplateWithParams,
   type CreateTemplateParams,
-} from './createTemplateWithParams';
-export { templateStackId } from './templateStackId';
-export { loadTemplateRefs } from './loadTemplateRefs';
-export { loadTemplatePage } from './loadTemplatePage';
-export { selectTemplateAndLoad } from './selectTemplateAndLoad';
-export { openTemplateCreateDialog } from './openTemplateCreateDialog';
-export { openCreateDialog } from './openCreateDialog';
-export { setCreateFormName } from './setCreateFormName';
-export { closeTemplateCreateDialog } from './closeTemplateCreateDialog';
-export { closeCreateDialog } from './closeCreateDialog';
-export { createTemplate } from './createTemplate';
-export { saveTemplate } from './saveTemplate';
-export { deleteTemplateVersion } from './deleteTemplateVersion';
-export { restoreTemplateState } from './restoreTemplateState';
-export { lockTemplate } from './lockTemplate';
-export { updateAllCatalogs } from './updateAllCatalogs';
-export { toggleCatalog } from './toggleCatalog';
-export { changeCatalogVersion } from './changeCatalogVersion';
-export { setMappingSearchText } from './setMappingSearchText';
-export { setMappingColorVariableFilter } from './setMappingColorVariableFilter';
-export { setMappingContrastVariableFilter } from './setMappingContrastVariableFilter';
-export { setMappingTokenGroupSelection } from './setMappingTokenGroupSelection';
-export { setVariablesSearchText } from './setVariablesSearchText';
-export { setMappingColorRef } from './setMappingColorRef';
-export { setMappingContrastRef } from './setMappingContrastRef';
-export { setMappingGroupRef } from './setMappingGroupRef';
-export { addSemanticVariant } from './addSemanticVariant';
-export { updateSemanticVariantKey } from './updateSemanticVariantKey';
-export { removeMapping } from './removeMapping';
-export { addGroup } from './addGroup';
-export { removeGroup } from './removeGroup';
-export { addColorVariable } from './addColorVariable';
-export { addContrastVariable } from './addContrastVariable';
-export { removeColorVariable } from './removeColorVariable';
-export { removeContrastVariable } from './removeContrastVariable';
-export { updateVariableGroupRef } from './updateVariableGroupRef';
-export { updateContrastComparisonSource } from './updateContrastComparisonSource';
-export { setTemplateAddGroupName } from './setTemplateAddGroupName';
-export { setTemplateAddVariableName } from './setTemplateAddVariableName';
+} from './template-list/createTemplateWithParams';
+
+// template-list
+export { templateStackId } from './template-list/templateStackId';
+export { loadTemplateRefs } from './template-list/loadTemplateRefs';
+export { loadTemplatePage } from './template-list/loadTemplatePage';
+export { selectTemplateAndLoad } from './template-list/selectTemplateAndLoad';
+export { openCreateDialog } from './template-list/openCreateDialog';
+export { setCreateFormName } from './template-list/setCreateFormName';
+export { closeCreateDialog } from './template-list/closeCreateDialog';
+export { createTemplate } from './template-list/createTemplate';
+export { deleteTemplateVersion } from './template-list/deleteTemplateVersion';
+
+// template-details
+export { openTemplateCreateDialog } from './template-details/openTemplateCreateDialog';
+export { closeTemplateCreateDialog } from './template-details/closeTemplateCreateDialog';
+export { saveTemplate } from './template-details/saveTemplate';
+export { restoreTemplateState } from './template-details/restoreTemplateState';
+export { lockTemplate } from './template-details/lockTemplate';
+export { updateAllCatalogs } from './template-details/updateAllCatalogs';
+export { toggleCatalog } from './template-details/toggleCatalog';
+export { changeCatalogVersion } from './template-details/changeCatalogVersion';
+
+// mappings
+export { setMappingSearchText } from './mappings/setMappingSearchText';
+export { setMappingColorVariableFilter } from './mappings/setMappingColorVariableFilter';
+export { setMappingContrastVariableFilter } from './mappings/setMappingContrastVariableFilter';
+export { setMappingTokenGroupSelection } from './mappings/setMappingTokenGroupSelection';
+export { setMappingColorRef } from './mappings/setMappingColorRef';
+export { setMappingContrastRef } from './mappings/setMappingContrastRef';
+export { setMappingGroupRef } from './mappings/setMappingGroupRef';
+export { removeMapping } from './mappings/removeMapping';
+
+// mappings-semantic
+export { addSemanticVariant } from './mappings-semantic/addSemanticVariant';
+export { updateSemanticVariantKey } from './mappings-semantic/updateSemanticVariantKey';
+
+// groups
+export { addGroup } from './groups/addGroup';
+export { removeGroup } from './groups/removeGroup';
+export { setTemplateAddGroupName } from './groups/setTemplateAddGroupName';
+
+// variables
+export { setVariablesSearchText } from './variables/setVariablesSearchText';
+export { setTemplateAddVariableName } from './variables/setTemplateAddVariableName';
+export { updateVariableGroupRef } from './variables/updateVariableGroupRef';
+
+// variables-color
+export { addColorVariable } from './variables-color/addColorVariable';
+export { removeColorVariable } from './variables-color/removeColorVariable';
+
+// variables-contrast
+export { addContrastVariable } from './variables-contrast/addContrastVariable';
+export { removeContrastVariable } from './variables-contrast/removeContrastVariable';
+export { updateContrastComparisonSource } from './variables-contrast/updateContrastComparisonSource';

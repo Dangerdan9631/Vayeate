@@ -1,67 +1,87 @@
 export {
   createThemeWithParams,
   type CreateThemeParams,
-} from './createThemeWithParams';
-export { themeStackId } from './themeStackId';
-export { loadThemeRefs } from './loadThemeRefs';
-export { selectThemeAndLoad } from './selectThemeAndLoad';
-export { selectThemeByName } from './selectThemeByName';
-export { openThemeCreateDialog } from './openThemeCreateDialog';
-export { closeThemeCreateDialog } from './closeThemeCreateDialog';
-export { createTheme } from './createTheme';
-export { saveTheme } from './saveTheme';
-export { setThemePaneSelections } from './setThemePaneSelections';
-export { restoreThemeState } from './restoreThemeState';
-export { setThemeHueAdjustment } from './setThemeHueAdjustment';
-export { setThemeHueReferenceHex } from './setThemeHueReferenceHex';
-export { deleteThemeVersion } from './deleteThemeVersion';
-export { clearThemeSaveError } from './clearThemeSaveError';
-export { incrementThemeVersion } from './incrementThemeVersion';
-export { setThemeTemplate } from './setThemeTemplate';
-export { setThemePreviewTokenRef } from './setThemePreviewTokenRef';
-export { setThemeTemplateToggle } from './setThemeTemplateToggle';
-export { setThemeTemplateVersionOnly } from './setThemeTemplateVersionOnly';
-export { generateTheme } from './generateTheme';
-export { setAssignColorDraftText } from './setAssignColorDraftText';
-export { setApplyPaletteToDark } from './setApplyPaletteToDark';
-export { setApplyPaletteToLight } from './setApplyPaletteToLight';
-export { setPaletteClusterCountKPreview } from './setPaletteClusterCountKPreview';
-export { setPaletteClusterCountK } from './setPaletteClusterCountK';
-export { setPaletteClusterGroupToggled } from './setPaletteClusterGroupToggled';
-export { applyAssignColorDraft } from './applyAssignColorDraft';
-export { commitAssignColorText } from './commitAssignColorText';
-export { assignColorFromPicker } from './assignColorFromPicker';
-export { setAssignColorPreview } from './setAssignColorPreview';
-export { persistCurrentTheme } from './persistCurrentTheme';
-export { recenterHueReference } from './recenterHueReference';
-export { setPaletteSwatchGroupSelection } from './setPaletteSwatchGroupSelection';
-export { setPaletteFullSelection } from './setPaletteFullSelection';
-export { setPalettePrimarySwatch } from './setPalettePrimarySwatch';
-export { setPaletteMemberSwatch } from './setPaletteMemberSwatch';
-export { setThemeVariablesSearchText } from './setThemeVariablesSearchText';
-export { setPreviewVariableSelection } from './setPreviewVariableSelection';
-export { setPreviewVariableFilterText } from './setPreviewVariableFilterText';
-export { clearPreviewVariableFilter } from './clearPreviewVariableFilter';
-export { setPreviewSelectedSample } from './setPreviewSelectedSample';
-export { previewSampleButtonScroll } from './previewSampleButtonScroll';
-export { setVariablesSelectAll } from './setVariablesSelectAll';
-export { setVariablesSelectByType } from './setVariablesSelectByType';
-export { setVariablesSelectByGroup } from './setVariablesSelectByGroup';
-export { toggleVariableSelection } from './toggleVariableSelection';
-export { setColorVariableDark } from './setColorVariableDark';
-export { setColorVariableLight } from './setColorVariableLight';
-export { setColorVariableFromHex } from './setColorVariableFromHex';
-export { setColorVariableFromHexPreview } from './setColorVariableFromHexPreview';
-export { setContrastUseDarkForLight } from './setContrastUseDarkForLight';
-export { setColorUseDarkForLight } from './setColorUseDarkForLight';
-export { setContrastVariableDarkValue } from './setContrastVariableDarkValue';
-export { setContrastVariableDarkMethod } from './setContrastVariableDarkMethod';
-export { setContrastVariableDarkMin } from './setContrastVariableDarkMin';
-export { setContrastVariableDarkMax } from './setContrastVariableDarkMax';
-export { setContrastVariableLightValue } from './setContrastVariableLightValue';
-export { setContrastVariableLightMethod } from './setContrastVariableLightMethod';
-export { setContrastVariableLightMin } from './setContrastVariableLightMin';
-export { setContrastVariableLightMax } from './setContrastVariableLightMax';
-export { setThemeCreateFormName } from './setThemeCreateFormName';
-export { setThemeOpenPickerContext } from './setThemeOpenPickerContext';
-export { setThemeVariableDraftText } from './setThemeVariableDraftText';
+} from './theme-list/createThemeWithParams';
+
+// theme-list
+export { themeStackId } from './theme-list/themeStackId';
+export { loadThemeRefs } from './theme-list/loadThemeRefs';
+export { selectThemeAndLoad } from './theme-list/selectThemeAndLoad';
+export { selectThemeByName } from './theme-list/selectThemeByName';
+export { openThemeCreateDialog } from './theme-list/openThemeCreateDialog';
+export { closeThemeCreateDialog } from './theme-list/closeThemeCreateDialog';
+export { createTheme } from './theme-list/createTheme';
+export { deleteThemeVersion } from './theme-list/deleteThemeVersion';
+export { setThemeCreateFormName } from './theme-list/setThemeCreateFormName';
+
+// theme-details
+export { saveTheme } from './theme-details/saveTheme';
+export { restoreThemeState } from './theme-details/restoreThemeState';
+export { clearThemeSaveError } from './theme-details/clearThemeSaveError';
+export { incrementThemeVersion } from './theme-details/incrementThemeVersion';
+export { setThemeTemplate } from './theme-details/setThemeTemplate';
+export { setThemePreviewTokenRef } from './theme-details/setThemePreviewTokenRef';
+export { setThemeTemplateToggle } from './theme-details/setThemeTemplateToggle';
+export { setThemeTemplateVersionOnly } from './theme-details/setThemeTemplateVersionOnly';
+export { generateTheme } from './theme-details/generateTheme';
+export { persistCurrentTheme } from './theme-details/persistCurrentTheme';
+
+// palette
+export { setApplyPaletteToDark } from './palette/setApplyPaletteToDark';
+export { setApplyPaletteToLight } from './palette/setApplyPaletteToLight';
+export { setPaletteClusterCountKPreview } from './palette/setPaletteClusterCountKPreview';
+export { setPaletteClusterCountK } from './palette/setPaletteClusterCountK';
+export { setPaletteClusterGroupToggled } from './palette/setPaletteClusterGroupToggled';
+export { setPaletteSwatchGroupSelection } from './palette/setPaletteSwatchGroupSelection';
+export { setPaletteFullSelection } from './palette/setPaletteFullSelection';
+export { setPalettePrimarySwatch } from './palette/setPalettePrimarySwatch';
+export { setPaletteMemberSwatch } from './palette/setPaletteMemberSwatch';
+
+// palette-color-assign
+export { setAssignColorDraftText } from './palette-color-assign/setAssignColorDraftText';
+export { applyAssignColorDraft } from './palette-color-assign/applyAssignColorDraft';
+export { commitAssignColorText } from './palette-color-assign/commitAssignColorText';
+export { assignColorFromPicker } from './palette-color-assign/assignColorFromPicker';
+export { setAssignColorPreview } from './palette-color-assign/setAssignColorPreview';
+
+// palette-hue
+export { setThemeHueAdjustment } from './palette-hue/setThemeHueAdjustment';
+export { setThemeHueReferenceHex } from './palette-hue/setThemeHueReferenceHex';
+export { recenterHueReference } from './palette-hue/recenterHueReference';
+
+// previews
+export { setPreviewVariableSelection } from './previews/setPreviewVariableSelection';
+export { setPreviewVariableFilterText } from './previews/setPreviewVariableFilterText';
+export { clearPreviewVariableFilter } from './previews/clearPreviewVariableFilter';
+export { setPreviewSelectedSample } from './previews/setPreviewSelectedSample';
+export { previewSampleButtonScroll } from './previews/previewSampleButtonScroll';
+
+// variables
+export { setThemeVariablesSearchText } from './variables/setThemeVariablesSearchText';
+export { setVariablesSelectAll } from './variables/setVariablesSelectAll';
+export { setVariablesSelectByType } from './variables/setVariablesSelectByType';
+export { setVariablesSelectByGroup } from './variables/setVariablesSelectByGroup';
+export { toggleVariableSelection } from './variables/toggleVariableSelection';
+export { setThemeVariableDraftText } from './variables/setThemeVariableDraftText';
+
+// variables-color
+export { setColorVariableDark } from './variables-color/setColorVariableDark';
+export { setColorVariableLight } from './variables-color/setColorVariableLight';
+export { setColorVariableFromHex } from './variables-color/setColorVariableFromHex';
+export { setColorVariableFromHexPreview } from './variables-color/setColorVariableFromHexPreview';
+export { setColorUseDarkForLight } from './variables-color/setColorUseDarkForLight';
+
+// variables-contrast
+export { setContrastUseDarkForLight } from './variables-contrast/setContrastUseDarkForLight';
+export { setContrastVariableDarkValue } from './variables-contrast/setContrastVariableDarkValue';
+export { setContrastVariableDarkMethod } from './variables-contrast/setContrastVariableDarkMethod';
+export { setContrastVariableDarkMin } from './variables-contrast/setContrastVariableDarkMin';
+export { setContrastVariableDarkMax } from './variables-contrast/setContrastVariableDarkMax';
+export { setContrastVariableLightValue } from './variables-contrast/setContrastVariableLightValue';
+export { setContrastVariableLightMethod } from './variables-contrast/setContrastVariableLightMethod';
+export { setContrastVariableLightMin } from './variables-contrast/setContrastVariableLightMin';
+export { setContrastVariableLightMax } from './variables-contrast/setContrastVariableLightMax';
+
+// pickers
+export { setThemeOpenPickerContext } from './pickers/setThemeOpenPickerContext';
+export { setThemePaneSelections } from './pickers/setThemePaneSelections';

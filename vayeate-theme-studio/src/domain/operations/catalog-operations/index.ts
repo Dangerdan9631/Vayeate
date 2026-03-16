@@ -1,24 +1,34 @@
 export type { CatalogPaneState, CatalogUndoPush, SetState } from './types';
-export { setCatalogRefs } from './setCatalogRefs';
-export { setSelectedRef } from './setSelectedRef';
-export { setCatalog } from './setCatalog';
-export { setCatalogCreateFormName } from './setCatalogCreateFormName';
-export { setCatalogCreateFormType } from './setCatalogCreateFormType';
-export { setCatalogBulkAddDialogOpen } from './setCatalogBulkAddDialogOpen';
-export { setCatalogBulkAddText } from './setCatalogBulkAddText';
-export { setCatalogTokensSearchText } from './setCatalogTokensSearchText';
-export { setCatalogNewSourceUrl } from './setCatalogNewSourceUrl';
-export { setCatalogNewSourceTokenType } from './setCatalogNewSourceTokenType';
-export { setCatalogNewSourceType } from './setCatalogNewSourceType';
-export { setCatalogNewTokenKey } from './setCatalogNewTokenKey';
-export { loadCatalogRefs } from './loadCatalogRefs';
-export { createCatalog } from './createCatalog';
-export { loadCatalog } from './loadCatalog';
-export { loadCatalogForDisplay } from './loadCatalogForDisplay';
-export { refreshCatalogRefs } from './refreshCatalogRefs';
-export { saveCatalog } from './saveCatalog';
-export { deleteCatalog } from './deleteCatalog';
-export { syncCatalog } from './syncCatalog';
-export { loadCatalogSnapshot } from './loadCatalogSnapshot';
-export { listCatalogRefs } from './listCatalogRefs';
-export { getCatalogRefs } from './getCatalogRefs';
+
+// catalog-list
+export { setCatalogRefs } from './catalog-list/setCatalogRefs';
+export { setSelectedRef } from './catalog-list/setSelectedRef';
+export { setCatalogCreateFormName } from './catalog-list/setCatalogCreateFormName';
+export { setCatalogCreateFormType } from './catalog-list/setCatalogCreateFormType';
+export { loadCatalogRefs } from './catalog-list/loadCatalogRefs';
+export { createCatalog } from './catalog-list/createCatalog';
+export { refreshCatalogRefs } from './catalog-list/refreshCatalogRefs';
+export { deleteCatalog } from './catalog-list/deleteCatalog';
+export { listCatalogRefs } from './catalog-list/listCatalogRefs';
+export { getCatalogRefs } from './catalog-list/getCatalogRefs';
+
+// catalog-details
+export { setCatalog } from './catalog-details/setCatalog';
+export { loadCatalog } from './catalog-details/loadCatalog';
+export { loadCatalogForDisplay } from './catalog-details/loadCatalogForDisplay';
+export { saveCatalog } from './catalog-details/saveCatalog';
+export { syncCatalog } from './catalog-details/syncCatalog';
+export { loadCatalogSnapshot } from './catalog-details/loadCatalogSnapshot';
+
+// bulk-add
+export { setCatalogBulkAddDialogOpen } from './bulk-add/setCatalogBulkAddDialogOpen';
+export { setCatalogBulkAddText } from './bulk-add/setCatalogBulkAddText';
+
+// sources
+export { setCatalogNewSourceUrl } from './sources/setCatalogNewSourceUrl';
+export { setCatalogNewSourceTokenType } from './sources/setCatalogNewSourceTokenType';
+export { setCatalogNewSourceType } from './sources/setCatalogNewSourceType';
+
+// tokens
+export { setCatalogTokensSearchText } from './tokens/setCatalogTokensSearchText';
+export { setCatalogNewTokenKey } from './tokens/setCatalogNewTokenKey';
