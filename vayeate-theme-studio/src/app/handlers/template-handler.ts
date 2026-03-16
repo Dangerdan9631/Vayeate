@@ -149,6 +149,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
       break;
     case 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK':
       await templateController.addGroup(setState, setStoreState, getState, action.name);
+      setTemplateAddGroupName(setState, '');
       break;
     case 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK':
       await templateController.removeGroup(setState, setStoreState, getState, action.groupId);

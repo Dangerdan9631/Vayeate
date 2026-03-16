@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useAppDispatch } from '../context/slice-contexts';
+import { useAppDispatch, useTemplatesState } from '../context/slice-contexts';
 
 interface GroupsCardProps {
   groups: readonly string[];
@@ -17,15 +16,15 @@ export function GroupsCard({
   onRemoveGroup,
 }: GroupsCardProps) {
   const dispatch = useAppDispatch();
-  const [newName, setNewName] = useState('');
+  const { addGroupName } = useTemplatesState();
 
-  const trimmed = newName.trim();
+  const trimmed = addGroupName.trim();
   const canAdd = trimmed.length > 0 && !groups.includes(trimmed);
 
   function handleAdd() {
     if (!canAdd) return;
     dispatch({ type: 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK', name: trimmed });
-    setNewName('');
+    dispatch({ type: 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE', value: '' });
   }
 
   return (
@@ -37,11 +36,9 @@ export function GroupsCard({
             className="token-input"
             type="text"
             placeholder="Group name…"
-            value={newName}
+            value={addGroupName}
             onChange={(e) => {
-              const value = e.target.value;
-              setNewName(value);
-              dispatch({ type: 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE', value });
+              dispatch({ type: 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE', value: e.target.value });
             }}
             onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           />
