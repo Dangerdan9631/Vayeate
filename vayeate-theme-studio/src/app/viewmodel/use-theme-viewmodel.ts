@@ -558,16 +558,16 @@ export function useThemeViewModel() {
 
   const toggleColorChecked = useCallback(
     (ref: string) => {
-      dispatch({ type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE', ref });
+      dispatch({ type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE', ref, checked: !checkedColorRefs.has(ref) });
     },
-    [dispatch],
+    [dispatch, checkedColorRefs],
   );
 
   const toggleContrastChecked = useCallback(
     (ref: string) => {
-      dispatch({ type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE', ref });
+      dispatch({ type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE', ref, checked: !checkedContrastRefs.has(ref) });
     },
-    [dispatch],
+    [dispatch, checkedContrastRefs],
   );
 
   const setAllColorChecked = useCallback(

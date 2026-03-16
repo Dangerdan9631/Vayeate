@@ -1,4 +1,3 @@
-import { getThemeRefsFromStore } from '../../state/store-state';
 import { compareVersions } from '../../utils/version';
 import type { SetStoreState } from '../../state/store-state-reducer';
 import {
@@ -8,6 +7,7 @@ import {
   setThemePaneSelections as setThemePaneSelectionsOp,
   loadTheme,
   loadThemeRefs as loadThemeRefsOp,
+  getThemeRefs,
   type SetState,
 } from '../../operations/theme-operations';
 import { setCurrentUndoStackId, type GetState } from '../../operations/undo-operations';
@@ -22,7 +22,7 @@ export async function deleteThemeVersion(
 ): Promise<void> {
   await deleteThemeOp(name, version);
   await loadThemeRefsOp(setState, setStoreState);
-  const refs = getThemeRefsFromStore(getState().store);
+  const refs = getThemeRefs(getState);
 
   const sameThName = refs
     .filter((r) => r.name === name)

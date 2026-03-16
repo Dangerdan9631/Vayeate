@@ -21,3 +21,4 @@ export { deleteCatalog } from './deleteCatalog';
 export { syncCatalog } from './syncCatalog';
 export { loadCatalogSnapshot } from './loadCatalogSnapshot';
 export { listCatalogRefs } from './listCatalogRefs';
+export { getCatalogRefs } from './getCatalogRefs';

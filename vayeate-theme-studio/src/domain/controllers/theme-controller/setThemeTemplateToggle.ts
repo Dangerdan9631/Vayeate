@@ -7,12 +7,12 @@ import { saveTheme } from './saveTheme';
 export function setThemeTemplateToggle(
   setState: SetState,
   getState: GetState,
-  checked?: boolean,
+  checked: boolean,
 ): void {
   const state = getState();
   const theme = state.themes.theme;
   if (!theme) return;
-  if (checked === false) {
+  if (!checked) {
     const withoutTemplate: Theme = { ...theme, templateRef: null };
     setTheme(setState, withoutTemplate);
     saveTheme(setState, withoutTemplate);

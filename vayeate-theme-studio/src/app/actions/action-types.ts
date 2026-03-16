@@ -86,7 +86,7 @@ export type AppActionV2 =
   | { type: 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK'; name: TemplateName; version: Version }
   | { type: 'TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK' }
   | { type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' }
-  | { type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE'; checked?: boolean; catalogName: CatalogName }
+  | { type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE'; checked: boolean; catalogName: CatalogName }
   | { type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT'; value: Version; catalogName: CatalogName }
   | { type: 'TEMPLATE_DETAILS_SAVE_TEMPLATE'; template: Template }
   | { type: 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE'; value: string }
@@ -139,10 +139,10 @@ export type AppActionV2 =
   | { type: 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT'; name: TemplateName; version: Version }
   | { type: 'THEME_DETAILS_TEMPLATE_VERSION_LIST_ON_COMMIT'; name: TemplateName; version: Version }
   | { type: 'THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT'; tokenRefField: ThemePreviewTokenRefField; value: TokenKey | null }
-  | { type: 'THEME_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE'; checked?: boolean }
+  | { type: 'THEME_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE'; checked: boolean }
   | { type: 'THEME_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT'; value: Version }
-  | { type: 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE'; checked?: boolean }
-  | { type: 'THEME_PALETTE_APPLY_TO_LIGHT_CHECKBOX_ON_TOGGLE'; checked?: boolean }
+  | { type: 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE'; checked: boolean }
+  | { type: 'THEME_PALETTE_APPLY_TO_LIGHT_CHECKBOX_ON_TOGGLE'; checked: boolean }
   | { type: 'THEME_PALETTE_ASSIGN_COLOR_TEXT_ON_CHANGE'; value: string }
   | { type: 'THEME_PALETTE_ASSIGN_COLOR_TEXT_ON_COMMIT'; value: string }
   | { type: 'THEME_PALETTE_ASSIGN_COLOR_BUTTON_ON_CLICK' }
@@ -176,7 +176,7 @@ export type AppActionV2 =
   | { type: 'THEME_VARIABLES_SELECT_VARIABLE_TYPE_CHECKBOX_ON_TOGGLE'; checked: boolean; variableType: string }
   | { type: 'THEME_VARIABLES_SELECT_VARIABLE_GROUP_CHECKBOX_ON_TOGGLE'; checked: boolean; groupId: string }
   | { type: 'THEME_VARIABLES_SEARCH_TEXT_ON_CHANGE'; value: string }
-  | { type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE'; ref: ColorVariableKey | ContrastVariableKey; checked?: boolean }
+  | { type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE'; ref: ColorVariableKey | ContrastVariableKey; checked: boolean }
   | { type: 'THEME_VARIABLES_LIGHT_USE_DARK_CHECKBOX_ON_TOGGLE'; checked: boolean; ref: ContrastVariableKey }
   | { type: 'THEME_VARIABLES_COLOR_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE'; checked: boolean; ref: ColorVariableKey }
   | { type: 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_CHANGE'; value: string; ref: ColorVariableKey }

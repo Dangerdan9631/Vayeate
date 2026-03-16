@@ -67,11 +67,11 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       break;
     case 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE':
       // Store apply-palette-to-dark in theme; persist. UI checkbox reflects theme.applyPaletteToDark.
-      themeController.setApplyPaletteToDark(setState, getState, action.checked ?? true);
+      themeController.setApplyPaletteToDark(setState, getState, action.checked);
       break;
     case 'THEME_PALETTE_APPLY_TO_LIGHT_CHECKBOX_ON_TOGGLE':
       // Store apply-palette-to-light in theme; persist. UI checkbox reflects theme.applyPaletteToLight.
-      themeController.setApplyPaletteToLight(setState, getState, action.checked ?? true);
+      themeController.setApplyPaletteToLight(setState, getState, action.checked);
       break;
     case 'THEME_PALETTE_ASSIGN_COLOR_TEXT_ON_CHANGE':
       // Store assign-color draft in themes.assignColorDraftText (session only).

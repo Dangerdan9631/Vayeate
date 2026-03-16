@@ -1,8 +1,7 @@
-import { getCatalogRefsFromStore } from '../../state/store-state';
 import type { SetStoreState } from '../../state/store-state-reducer';
 import { saveTemplate as saveTemplateOp, type SetState } from '../../operations/template-operations';
+import { getCatalogRefs, loadCatalogSnapshot } from '../../operations/catalog-operations';
 import type { GetState } from '../../operations/undo-operations';
-import { loadCatalogSnapshot } from '../../operations/catalog-operations';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
@@ -38,7 +37,7 @@ export async function toggleCatalog(
   include: boolean,
 ): Promise<void> {
   const template = getState().templates.template;
-  const catalogRefs = getCatalogRefsFromStore(getState().store);
+  const catalogRefs = getCatalogRefs(getState);
   if (!template) return;
   const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
   const base = getBaseForEdit(template);

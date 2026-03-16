@@ -21,6 +21,7 @@ import {
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
 import { createActionProcessor } from '../../handlers/handler-registry';
+import { getWindowEventTransport } from './window-event-transport';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
 function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
@@ -82,11 +83,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const queueRef = useRef<ActionQueue | null>(null);
 
   useEffect(() => {
-    const api = window.electronAPI;
+    const transport = getWindowEventTransport();
     const unsubscribes: Array<() => void> = [];
-    if (api?.onWindowState) {
+    if (transport.onWindowState) {
       unsubscribes.push(
-        api.onWindowState((event) => {
+        transport.onWindowState((event) => {
           switch (event) {
             case 'minimized':
               setWindowState({ type: 'SET_WINDOW_MINIMIZED', value: true });
@@ -101,17 +102,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
               setWindowState({ type: 'SET_WINDOW_MINIMIZED', value: false });
               break;
           }
-        }),
+        }) ?? (() => {}),
       );
     }
-    if (api?.onWindowResize) {
+    if (transport.onWindowResize) {
       unsubscribes.push(
-        api.onWindowResize((size) => setWindowState({ type: 'SET_WINDOW_SIZE', size })),
+        transport.onWindowResize((size) => setWindowState({ type: 'SET_WINDOW_SIZE', size })) ??
+          (() => {}),
       );
     }
-    if (api?.onWindowMove) {
+    if (transport.onWindowMove) {
       unsubscribes.push(
-        api.onWindowMove((position) => setWindowState({ type: 'SET_WINDOW_POSITION', position })),
+        transport.onWindowMove((position) =>
+          setWindowState({ type: 'SET_WINDOW_POSITION', position })
+        ) ?? (() => {}),
       );
     }
     return () => {

@@ -9,10 +9,9 @@ import type { GetState } from '../../operations/undo-operations';
 export function toggleVariableSelection(
   setState: SetState,
   getState: GetState,
-  checked: boolean | undefined,
-  ref: ColorVariableKey | ContrastVariableKey | undefined,
+  checked: boolean,
+  ref: ColorVariableKey | ContrastVariableKey,
 ): void {
-  if (ref == null) return;
   const state = getState();
   const theme = state.themes.theme;
   if (!theme) return;
@@ -20,20 +19,12 @@ export function toggleVariableSelection(
   const contrastSet = new Set(state.themes.checkedContrastRefs);
   const isColor = theme.colorAssignments.some((a) => a.colorRef === ref);
   if (isColor) {
-    if (checked === true) colorSet.add(ref);
-    else if (checked === false) colorSet.delete(ref);
-    else {
-      if (colorSet.has(ref)) colorSet.delete(ref);
-      else colorSet.add(ref);
-    }
+    if (checked) colorSet.add(ref);
+    else colorSet.delete(ref);
     setThemePaneSelectionsOp(setState, [...colorSet], state.themes.checkedContrastRefs);
   } else {
-    if (checked === true) contrastSet.add(ref);
-    else if (checked === false) contrastSet.delete(ref);
-    else {
-      if (contrastSet.has(ref)) contrastSet.delete(ref);
-      else contrastSet.add(ref);
-    }
+    if (checked) contrastSet.add(ref);
+    else contrastSet.delete(ref);
     setThemePaneSelectionsOp(setState, state.themes.checkedColorRefs, [...contrastSet]);
   }
 }

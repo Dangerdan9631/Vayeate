@@ -1,6 +1,5 @@
-import { getThemeRefsFromStore } from '../../state/store-state';
 import { compareVersions } from '../../utils/version';
-import type { SetState } from '../../operations/theme-operations';
+import { getThemeRefs, type SetState } from '../../operations/theme-operations';
 import type { GetState } from '../../operations/undo-operations';
 import { selectThemeAndLoad } from './selectThemeAndLoad';
 
@@ -9,8 +8,7 @@ export async function selectThemeByName(
   getState: GetState,
   name: string,
 ): Promise<void> {
-  const state = getState();
-  const refs = getThemeRefsFromStore(state.store).filter((r) => r.name === name);
+  const refs = getThemeRefs(getState).filter((r) => r.name === name);
   if (refs.length === 0) return;
   const best = refs.reduce((a, b) =>
     compareVersions(a.version, b.version) > 0 ? a : b,

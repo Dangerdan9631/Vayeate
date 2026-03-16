@@ -6,6 +6,8 @@ function getAPI() {
   return api;
 }
 
+type WindowStateEvent = 'minimized' | 'maximized' | 'unmaximized' | 'restored';
+
 export const windowService = {
   close: async (): Promise<void> => {
     await getAPI().closeWindow?.();
@@ -30,5 +32,20 @@ export const windowService = {
   },
   toggleDevTools: async (): Promise<void> => {
     await getAPI().toggleDevTools?.();
+  },
+  onWindowState: (
+    callback: (event: WindowStateEvent) => void,
+  ): (() => void) | undefined => {
+    return window.electronAPI?.onWindowState?.(callback);
+  },
+  onWindowResize: (
+    callback: (size: { width: number; height: number }) => void,
+  ): (() => void) | undefined => {
+    return window.electronAPI?.onWindowResize?.(callback);
+  },
+  onWindowMove: (
+    callback: (position: { x: number; y: number }) => void,
+  ): (() => void) | undefined => {
+    return window.electronAPI?.onWindowMove?.(callback);
   },
 };

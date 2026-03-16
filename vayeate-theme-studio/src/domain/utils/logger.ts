@@ -35,13 +35,16 @@ function serializeArg(a: unknown): string {
 
 type RendererLogLevel = 'debug' | 'info' | 'warn' | 'error';
 
+export type LogTransport = (level: RendererLogLevel, tag: string, args: string[]) => void;
+
+let logTransport: LogTransport | null = null;
+
+export function initLogTransport(transport: LogTransport | null): void {
+  logTransport = transport;
+}
+
 function sendToMain(level: RendererLogLevel, tag: string, args: unknown[]): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.electronAPI?.sendLog?.(level, tag, args.map(serializeArg));
-  } catch {
-    // ignore when not in Electron or sendLog unavailable
-  }
+  logTransport?.(level, tag, args.map(serializeArg));
 }
 
 export interface Logger {

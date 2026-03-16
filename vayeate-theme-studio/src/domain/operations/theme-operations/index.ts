@@ -22,3 +22,4 @@ export { saveTheme } from './saveTheme';
 export { deleteTheme } from './deleteTheme';
 export { generateTheme } from './generateTheme';
 export { loadPreviews } from './loadPreviews';
+export { getThemeRefs } from './getThemeRefs';

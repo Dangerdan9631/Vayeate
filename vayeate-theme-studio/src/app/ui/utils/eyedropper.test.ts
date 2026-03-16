@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { isEyedropperSupported, pickColorFromScreen } from './eyedropper';
+import {
+  initEyedropperTransport,
+  isEyedropperSupported,
+  pickColorFromScreen,
+} from './eyedropper';
 
 // Electron overlay (zoom, loupe, pixel feedback) is covered by manual QA; unit tests mock API and do not drive the overlay DOM.
 
@@ -14,6 +18,7 @@ describe('eyedropper', () => {
   afterEach(() => {
     win.EyeDropper = originalEyeDropper;
     win.electronAPI = originalElectronAPI;
+    initEyedropperTransport(undefined);
   });
 
   describe('isEyedropperSupported', () => {
@@ -25,10 +30,10 @@ describe('eyedropper', () => {
 
     it('returns true when electronAPI.eyedropperGetScreenSourcesWithBounds is present', () => {
       delete win.EyeDropper;
-      win.electronAPI = {
-        eyedropperGetScreenSourcesWithBounds: () =>
-          Promise.resolve({ sources: [], fullBounds: { x: 0, y: 0, width: 0, height: 0 } }),
-      } as unknown as Window['electronAPI'];
+      initEyedropperTransport(async () => ({
+        sources: [],
+        fullBounds: { x: 0, y: 0, width: 0, height: 0 },
+      }));
       expect(isEyedropperSupported()).toBe(true);
     });
 
@@ -46,6 +51,7 @@ describe('eyedropper', () => {
     beforeEach(() => {
       win.EyeDropper = undefined;
       win.electronAPI = undefined;
+      initEyedropperTransport(undefined);
     });
 
     it('returns null when EyeDropper is not supported', async () => {

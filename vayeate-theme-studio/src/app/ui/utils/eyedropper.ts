@@ -12,9 +12,22 @@ declare global {
   }
 }
 
+type ScreenSourcesWithBounds = {
+  sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
+  fullBounds: { x: number; y: number; width: number; height: number };
+};
+
+type ScreenSourceProvider = () => Promise<ScreenSourcesWithBounds>;
+
+let screenSourceProvider: ScreenSourceProvider | null = null;
+
+export function initEyedropperTransport(provider?: ScreenSourceProvider): void {
+  screenSourceProvider = provider ?? null;
+}
+
 export function isEyedropperSupported(): boolean {
   if (typeof window === 'undefined') return false;
-  if (window.electronAPI?.eyedropperGetScreenSourcesWithBounds) return true;
+  if (screenSourceProvider) return true;
   return 'EyeDropper' in window;
 }
 
@@ -90,10 +103,9 @@ const ZOOM_STEP = 1.1;
  * composite all monitors, show overlay with zoom and pixel loupe, return pixel color on click or null on cancel.
  */
 async function pickColorFromScreenElectron(): Promise<string | null> {
-  const api = window.electronAPI?.eyedropperGetScreenSourcesWithBounds;
-  if (!api) return null;
+  if (!screenSourceProvider) return null;
 
-  const { sources, fullBounds } = await api();
+  const { sources, fullBounds } = await screenSourceProvider();
   if (sources.length === 0 || fullBounds.width <= 0 || fullBounds.height <= 0) return null;
 
   const { x: originX, y: originY, width: totalW, height: totalH } = fullBounds;
@@ -377,7 +389,7 @@ async function pickColorFromScreenElectron(): Promise<string | null> {
 export async function pickColorFromScreen(): Promise<string | null> {
   if (typeof window === 'undefined') return null;
 
-  if (window.electronAPI?.eyedropperGetScreenSourcesWithBounds) {
+  if (screenSourceProvider) {
     try {
       return await pickColorFromScreenElectron();
     } catch {
