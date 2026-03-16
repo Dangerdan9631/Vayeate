@@ -18,14 +18,14 @@ describe('ColorSchemeContext', () => {
     document.documentElement.removeAttribute('data-theme');
   });
 
-  it('defaults to light in standalone mode', () => {
+  it('defaults to dark in standalone mode', () => {
     render(
       <ColorSchemeProvider>
         <TestConsumer />
       </ColorSchemeProvider>,
     );
-    expect(screen.getByTestId('theme')).toHaveTextContent('light');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
   });
 
   it('toggleColorScheme flips theme in standalone mode (no persistence)', async () => {
@@ -34,19 +34,19 @@ describe('ColorSchemeContext', () => {
         <TestConsumer />
       </ColorSchemeProvider>,
     );
-    expect(screen.getByTestId('theme')).toHaveTextContent('light');
-
-    await act(async () => {
-      screen.getByRole('button', { name: 'Toggle' }).click();
-    });
     expect(screen.getByTestId('theme')).toHaveTextContent('dark');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
 
     await act(async () => {
       screen.getByRole('button', { name: 'Toggle' }).click();
     });
     expect(screen.getByTestId('theme')).toHaveTextContent('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+
+    await act(async () => {
+      screen.getByRole('button', { name: 'Toggle' }).click();
+    });
+    expect(screen.getByTestId('theme')).toHaveTextContent('dark');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
   });
 
   it('useColorScheme throws when used outside provider', () => {

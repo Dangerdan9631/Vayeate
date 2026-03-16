@@ -27,7 +27,7 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const dispatch = useContext(AppDispatchContext);
 
   // Local state is only used when AppContext is not available (e.g., in unit tests).
-  const [localScheme, setLocalScheme] = useState<ColorScheme>('light');
+  const [localScheme, setLocalScheme] = useState<ColorScheme>('dark');
 
   const scheme: ColorScheme = appCtx ? appCtx.state.ui.colorScheme : localScheme;
 

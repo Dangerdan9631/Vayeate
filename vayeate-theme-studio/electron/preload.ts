@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 const _rawConfig = ipcRenderer.sendSync('config:loadSync') as { colorScheme?: string } | null;
 const initialColorScheme: 'light' | 'dark' =
-  _rawConfig?.colorScheme === 'dark' ? 'dark' : 'light';
+  _rawConfig?.colorScheme === 'light' ? 'light' : 'dark';
 
 const electronAPI = {
   saveCatalog: (catalog: unknown) => ipcRenderer.invoke('catalog:save', catalog),

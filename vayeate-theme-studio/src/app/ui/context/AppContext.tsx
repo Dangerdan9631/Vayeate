@@ -40,8 +40,8 @@ export const AppContext = createContext<AppContextValue | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, replaceState] = useReducer(replaceStateReducer, undefined, () => {
     // Initialize colorScheme from config file (via preload synchronous IPC) to avoid a flash on startup.
-    if (window.electronInitialColorScheme === 'dark') {
-      return { ...initialAppState, ui: { ...initialAppState.ui, colorScheme: 'dark' as const } };
+    if (window.electronInitialColorScheme === 'light') {
+      return { ...initialAppState, ui: { ...initialAppState.ui, colorScheme: 'light' as const } };
     }
     return initialAppState;
   });

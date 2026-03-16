@@ -169,7 +169,7 @@ export const initialAppState: AppState = {
   ui: {
     activeTabId: 'catalogs',
     queueStatus: { isProcessing: false, queueLength: 0 },
-    colorScheme: 'light',
+    colorScheme: 'dark',
   },
   store: { catalogs: {}, templates: {}, themes: {} },
   window: {

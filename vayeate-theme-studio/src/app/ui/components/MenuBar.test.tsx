@@ -47,39 +47,39 @@ afterEach(() => {
 describe('MenuBar', () => {
   it('renders theme toggle button on the far right', () => {
     render(<MenuBarWithProviders />);
-    const toggle = screen.getByRole('button', { name: 'Switch to dark mode' });
+    const toggle = screen.getByRole('button', { name: 'Switch to light mode' });
     expect(toggle).toBeInTheDocument();
     expect(toggle.closest('.menu-theme-toggle-wrap')).toBeInTheDocument();
   });
 
-  it('shows light_mode icon when in light mode', () => {
-    render(<MenuBarWithProviders />);
-    const icon = document.querySelector('.menu-theme-toggle .material-symbols-outlined');
-    expect(icon).toHaveTextContent('light_mode');
-  });
-
-  it('shows dark_mode icon when in dark mode', () => {
-    (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme = 'dark';
+  it('shows dark_mode icon by default (dark is the default)', () => {
     render(<MenuBarWithProviders />);
     const icon = document.querySelector('.menu-theme-toggle .material-symbols-outlined');
     expect(icon).toHaveTextContent('dark_mode');
   });
 
+  it('shows light_mode icon when config is light', () => {
+    (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme = 'light';
+    render(<MenuBarWithProviders />);
+    const icon = document.querySelector('.menu-theme-toggle .material-symbols-outlined');
+    expect(icon).toHaveTextContent('light_mode');
+  });
+
   it('toggles theme when theme button is clicked', async () => {
     render(<MenuBarWithProviders />);
-    const toggle = screen.getByRole('button', { name: 'Switch to dark mode' });
-    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('light_mode');
+    const toggle = screen.getByRole('button', { name: 'Switch to light mode' });
+    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('dark_mode');
 
     await act(async () => {
       toggle.click();
     });
-    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('dark_mode');
-    expect(screen.getByRole('button', { name: 'Switch to light mode' })).toBeInTheDocument();
+    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('light_mode');
+    expect(screen.getByRole('button', { name: 'Switch to dark mode' })).toBeInTheDocument();
 
     await act(async () => {
-      screen.getByRole('button', { name: 'Switch to light mode' }).click();
+      screen.getByRole('button', { name: 'Switch to dark mode' }).click();
     });
-    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('light_mode');
+    expect(document.querySelector('.menu-theme-toggle .material-symbols-outlined')).toHaveTextContent('dark_mode');
   });
 
   it('renders File, Edit, History, View menus', () => {
