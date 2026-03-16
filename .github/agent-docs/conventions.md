@@ -32,6 +32,7 @@
 - When a controller needs a service call, extract or reuse an operation in `domain/operations/<domain>-operations/`.
 - Shared helper flows used by multiple files in the same controller domain belong in `<domain>-controller/shared-flows.ts`.
 - Controller functions are named by the action performed (e.g. `saveCatalog`), not by the UI event (e.g. `handleSaveButtonOnClick`).
+- Controller and operation files are organized into subdirectories aligned to the UI card they serve. The subdirectory name must match the card (e.g. `theme-list/` → ThemesCard, `palette/` → ThemePaletteCard). Each subdirectory exports via its own `index.ts`; the domain barrel re-exports everything. Only `shared-flows.ts`, the test file, and the root `index.ts` remain at the controller domain root.
 
 ## Form state conventions
 

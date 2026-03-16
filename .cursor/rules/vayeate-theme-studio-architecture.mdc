@@ -100,5 +100,6 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`.
 - **Controller function names**: Name controller functions by the **action executed** (e.g. `setActiveTab`, `loadThemeRefs`, `saveCatalog`), not by the UI event or control. Controllers stay decoupled from the UI; handlers map UI actions to controller functions.
 - **Validations before operations**: In controllers that need guards, call the appropriate validation before invoking the operation; skip or return early if false. Pass `getState` (or equivalent) into the controller when it must run validations that read app state.
+- **Controller/operation subdirectories**: Within each controller and operations directory, files are grouped into card-aligned subdirectories (e.g. `theme-list/`, `palette/`, `variables/`). The subdirectory name matches the UI card it serves. Each subdirectory has an `index.ts` barrel; only `shared-flows.ts`, the test file, and the root `index.ts` remain at the domain root.
 
 For the canonical list of control types and their actions, see the Action Queue rule (`.cursor/rules/vayeate-theme-studio-action-queue.mdc`).

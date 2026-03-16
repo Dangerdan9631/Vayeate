@@ -15,8 +15,8 @@
   - **`domain/utils/`**: Pure domain logic — theme engine, color, tokenizer, scope resolution, etc. Depends on model only.
   - **`domain/core/`**: UndoManagerV2 and UndoProcessor. Depends on model and state.
   - **`domain/validations/`**: Pure validators. Depends on model and state. Must NOT depend on operations, controllers, or gateway.
-  - **`domain/operations/`**: Wraps gateway/services calls + setState. May depend on model, state, and `gateway/services`. Must NOT depend on `gateway/data`, controllers, or app.
-  - **`domain/controllers/`**: Compose operations + validations only. Must NOT depend on gateway (directly). Must NOT import from `gateway/services/` or `gateway/data/`.
+  - **`domain/operations/`**: Wraps gateway/services calls + setState. May depend on model, state, and `gateway/services`. Must NOT depend on `gateway/data`, controllers, or app. Files are organized into card-aligned subdirectories mirroring the controller structure (e.g. `theme-list/`, `palette/`); each subdirectory exports via its own `index.ts`.
+  - **`domain/controllers/`**: Compose operations + validations only. Must NOT depend on gateway (directly). Must NOT import from `gateway/services/` or `gateway/data/`. Files are organized into card-aligned subdirectories (e.g. `theme-list/`, `palette/`, `variables/`); each subdirectory exports via its own `index.ts`. Only `shared-flows.ts`, the test file, and the root `index.ts` remain at the controller domain root.
   - Shared helper flows within a controller domain live in `<domain>-controller/shared-flows.ts` (not `_helpers.ts`).
 - **Gateway** (`src/gateway/`; must not depend on `src/domain/`): data (repositories) and services (IPC). `gateway/data` and `gateway/services` depend only on model and do not depend on each other.
 - **App** (`src/app/`): Actions, handlers, viewmodels, and UI. Must not depend on gateway; uses state and domain only.

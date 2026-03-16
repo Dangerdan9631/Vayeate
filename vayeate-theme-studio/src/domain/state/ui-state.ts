@@ -9,6 +9,6 @@ export interface QueueStatusState {
 export interface UiState {
   activeTabId: TabId;
   queueStatus: QueueStatusState;
-  /** Color scheme for the UI. Persisted to localStorage. */
+  /** Color scheme for the UI. Persisted via config service. */
   colorScheme: 'light' | 'dark';
 }

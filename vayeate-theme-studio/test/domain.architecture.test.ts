@@ -123,6 +123,16 @@ describe('domain architecture', () => {
 		expect(violations).toHaveLength(0);
 	});
 
+	it('domain/utils should not depend on gateway', async () => {
+		const rule = filesOfProject()
+			.inFolder('src/domain/utils')
+			.shouldNot()
+			.dependOnFiles()
+			.inFolder('src/gateway');
+		const violations = await rule.check();
+		expect(violations).toHaveLength(0);
+	});
+
 	it('domain/validations should not depend on domain/operations', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/domain/validations')
