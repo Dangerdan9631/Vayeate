@@ -40,10 +40,13 @@ export { updateSemanticVariantKey } from './mappings-semantic/updateSemanticVari
 
 // groups
 export { addGroup } from './groups/addGroup';
+export { addGroupAndClearInput } from './groups/addGroupAndClearInput';
 export { removeGroup } from './groups/removeGroup';
 export { setTemplateAddGroupName } from './groups/setTemplateAddGroupName';
 
 // variables
+export { addVariable } from './variables/addVariable';
+export { removeVariable } from './variables/removeVariable';
 export { setVariablesSearchText } from './variables/setVariablesSearchText';
 export { setTemplateAddVariableName } from './variables/setTemplateAddVariableName';
 export { updateVariableGroupRef } from './variables/updateVariableGroupRef';

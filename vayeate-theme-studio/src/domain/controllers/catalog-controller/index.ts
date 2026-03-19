@@ -8,6 +8,7 @@ export { loadCatalogRefs } from './catalog-list/loadCatalogRefs';
 export { loadCatalogForDisplay } from './catalog-list/loadCatalogForDisplay';
 export { catalogStackId } from './catalog-list/catalogStackId';
 export { loadCatalogsForDisplay } from './catalog-list/loadCatalogsForDisplay';
+export { loadCatalogPage } from './catalog-list/loadCatalogPage';
 export { selectCatalogAndLoad } from './catalog-list/selectCatalogAndLoad';
 export { openCatalogCreateDialog } from './catalog-list/openCatalogCreateDialog';
 export { closeCatalogCreateDialog } from './catalog-list/closeCatalogCreateDialog';

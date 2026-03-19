@@ -8,7 +8,14 @@ import {
   clearPreviewVariableFilter,
   setPreviewSelectedSample,
   previewSampleButtonScroll,
+  loadThemePage,
+  commitHueReferenceColor,
+  handleMemberSwatchRightClick,
 } from '.';
+import * as themeListController from './theme-list/loadThemeRefs';
+import * as hueController from './palette-hue/setThemeHueReferenceHex';
+import * as hueAdjustmentController from './palette-hue/setThemeHueAdjustment';
+import * as undoOperations from '../../operations/undo-operations';
 
 describe('createThemeWithParams', () => {
   it('returns an object that satisfies theme schema', () => {
@@ -105,5 +112,49 @@ describe('THEME_PREVIEW_* controller', () => {
   it('previewSampleButtonScroll is a no-op', () => {
     previewSampleButtonScroll(setState);
     expect(setState).not.toHaveBeenCalled();
+  });
+});
+
+describe('theme routing wrapper controllers', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('loadThemePage composes loadThemeRefs then resets current undo stack id', async () => {
+    const setState = vi.fn();
+    const setStoreState = vi.fn();
+    const loadRefsSpy = vi
+      .spyOn(themeListController, 'loadThemeRefs')
+      .mockResolvedValue(undefined);
+    const setUndoSpy = vi
+      .spyOn(undoOperations, 'setCurrentUndoStackId')
+      .mockImplementation(() => {});
+
+    await loadThemePage(setState, setStoreState);
+
+    expect(loadRefsSpy).toHaveBeenCalledWith(setState, setStoreState);
+    expect(setUndoSpy).toHaveBeenCalledWith(setState, null);
+    expect(loadRefsSpy.mock.invocationCallOrder[0]).toBeLessThan(
+      setUndoSpy.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('commitHueReferenceColor composes hue reference update and hue reset', () => {
+    const setState = vi.fn();
+    const setHueReferenceSpy = vi
+      .spyOn(hueController, 'setThemeHueReferenceHex')
+      .mockImplementation(() => {});
+    const setHueAdjustmentSpy = vi
+      .spyOn(hueAdjustmentController, 'setThemeHueAdjustment')
+      .mockImplementation(() => {});
+
+    commitHueReferenceColor(setState, '#112233');
+
+    expect(setHueReferenceSpy).toHaveBeenCalledWith(setState, '#112233');
+    expect(setHueAdjustmentSpy).toHaveBeenCalledWith(setState, 0);
+  });
+
+  it('handleMemberSwatchRightClick is a no-op controller', () => {
+    expect(() => handleMemberSwatchRightClick(vi.fn(), vi.fn() as unknown as () => never, 'x')).not.toThrow();
   });
 });

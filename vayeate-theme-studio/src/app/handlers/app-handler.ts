@@ -11,12 +11,9 @@ export const handleAppAction: ActionHandler<AppAction> = async (
 ): Promise<void> => {
   switch (action.type) {
     case AppActionType.AppAppOnLoad:
-      // Load or restore persisted app preferences (e.g. window size, last tab).
-      // Initialize refs and any lazy state needed for the current tab.
       await appController.loadApplication(setState, setStoreState);
       break;
     case AppActionType.AppAppOnClose:
-      // Persist app state (preferences, window bounds) to disk if needed.
       await appController.unloadApplication(setState);
       break;
     case AppActionType.AppFileMenuExitButtonOnClick:
@@ -43,13 +40,9 @@ export const handleAppAction: ActionHandler<AppAction> = async (
     case AppActionType.AppRibbonTabButtonOnClick:
       tabController.setActiveTab(setUiState, action.tabId);
       break;
-    case AppActionType.AppBarThemeCheckboxOnToggle: {
-      // action.checked = current state (true = dark), so toggle to the opposite
-      const scheme: 'light' | 'dark' = action.checked ? 'light' : 'dark';
-      setUiState({ type: 'SET_UI_COLOR_SCHEME', scheme });
-      await appController.saveColorScheme(scheme);
+    case AppActionType.AppBarThemeCheckboxOnToggle:
+      await appController.toggleColorScheme(setUiState, action.checked);
       break;
-    }
     case AppActionType.AppBarMinimizeButtonOnClick:
       await windowController.minimizeWindow(getState);
       break;

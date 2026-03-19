@@ -145,8 +145,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
       templateController.setTemplateAddGroupName(setState, action.value);
       break;
     case TemplateActionType.TemplateGroupAddButtonOnClick:
-      await templateController.addGroup(setState, setStoreState, getState, action.name);
-      templateController.setTemplateAddGroupName(setState, '');
+      await templateController.addGroupAndClearInput(setState, setStoreState, getState, action.name);
       break;
     case TemplateActionType.TemplateGroupRemoveButtonOnClick:
       await templateController.removeGroup(setState, setStoreState, getState, action.groupId);
@@ -158,23 +157,14 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
       templateController.setTemplateAddVariableName(setState, action.value);
       break;
     case TemplateActionType.TemplateVariablesAddVariableButtonOnClick:
-      if (action.variableKind === 'contrast') {
-        await templateController.addContrastVariable(
-          setState,
-          setStoreState,
-          getState,
-          action.key.trim(),
-          action.groupRef,
-        );
-      } else {
-        await templateController.addColorVariable(
-          setState,
-          setStoreState,
-          getState,
-          action.key.trim(),
-          action.groupRef,
-        );
-      }
+      await templateController.addVariable(
+        setState,
+        setStoreState,
+        getState,
+        action.key,
+        action.groupRef,
+        action.variableKind,
+      );
       break;
     case TemplateActionType.TemplateVariablesGroupListOnCommit:
       await templateController.updateVariableGroupRef(
@@ -185,15 +175,9 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.value || null,
       );
       break;
-    case TemplateActionType.TemplateVariablesRemoveButtonOnClick: {
-      const t = getState().templates.template;
-      if (t?.colorVariables.some((v) => v.key === action.key)) {
-        await templateController.removeColorVariable(setState, setStoreState, getState, action.key);
-      } else {
-        await templateController.removeContrastVariable(setState, setStoreState, getState, action.key);
-      }
+    case TemplateActionType.TemplateVariablesRemoveButtonOnClick:
+      await templateController.removeVariable(setState, setStoreState, getState, action.key);
       break;
-    }
     case TemplateActionType.TemplateVariablesContrastSourceListOnCommit:
       await templateController.updateContrastComparisonSource(
         setState,

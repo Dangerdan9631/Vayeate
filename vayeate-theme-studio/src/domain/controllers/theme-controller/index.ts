@@ -8,6 +8,7 @@ export { themeStackId } from './theme-list/themeStackId';
 export { loadThemeRefs } from './theme-list/loadThemeRefs';
 export { selectThemeAndLoad } from './theme-list/selectThemeAndLoad';
 export { selectThemeByName } from './theme-list/selectThemeByName';
+export { loadThemePage } from './theme-list/loadThemePage';
 export { openThemeCreateDialog } from './theme-list/openThemeCreateDialog';
 export { closeThemeCreateDialog } from './theme-list/closeThemeCreateDialog';
 export { createTheme } from './theme-list/createTheme';
@@ -36,6 +37,7 @@ export { setPaletteSwatchGroupSelection } from './palette/setPaletteSwatchGroupS
 export { setPaletteFullSelection } from './palette/setPaletteFullSelection';
 export { setPalettePrimarySwatch } from './palette/setPalettePrimarySwatch';
 export { setPaletteMemberSwatch } from './palette/setPaletteMemberSwatch';
+export { handleMemberSwatchRightClick } from './palette/handleMemberSwatchRightClick';
 
 // palette-color-assign
 export { setAssignColorDraftText } from './palette-color-assign/setAssignColorDraftText';
@@ -47,6 +49,7 @@ export { setAssignColorPreview } from './palette-color-assign/setAssignColorPrev
 // palette-hue
 export { setThemeHueAdjustment } from './palette-hue/setThemeHueAdjustment';
 export { setThemeHueReferenceHex } from './palette-hue/setThemeHueReferenceHex';
+export { commitHueReferenceColor } from './palette-hue/commitHueReferenceColor';
 export { recenterHueReference } from './palette-hue/recenterHueReference';
 
 // previews

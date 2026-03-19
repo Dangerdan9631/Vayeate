@@ -1,5 +1,4 @@
 import * as themeController from '../../domain/controllers/theme-controller';
-import * as undoController from '../../domain/controllers/undo-controller';
 import type { ActionHandler, HandlerDeps, ThemeAction } from './handler-types';
 import { ThemeActionType } from '../actions/action-types';
 
@@ -9,8 +8,7 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
 ): Promise<void> => {
   switch (action.type) {
     case ThemeActionType.ThemePageOnLoad:
-      await themeController.loadThemeRefs(setState, setStoreState);
-      undoController.resetCurrentUndoStackId(setState);
+      await themeController.loadThemePage(setState, setStoreState);
       break;
     case ThemeActionType.ThemePageSaveErrorDismissButtonOnClick:
       themeController.clearThemeSaveError(setState);
@@ -67,67 +65,51 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setThemePreviewTokenRef(setState, getState, action.tokenRefField, action.value);
       break;
     case ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle:
-      // Store apply-palette-to-dark in theme; persist. UI checkbox reflects theme.applyPaletteToDark.
       themeController.setApplyPaletteToDark(setState, getState, action.checked);
       break;
     case ThemeActionType.ThemePaletteApplyToLightCheckboxOnToggle:
-      // Store apply-palette-to-light in theme; persist. UI checkbox reflects theme.applyPaletteToLight.
       themeController.setApplyPaletteToLight(setState, getState, action.checked);
       break;
     case ThemeActionType.ThemePaletteAssignColorTextOnChange:
-      // Store assign-color draft in themes.assignColorDraftText (session only).
       themeController.setAssignColorDraftText(setState, action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorTextOnCommit:
-      // Parse hex, update colorAssignments for checked refs, setTheme + saveTheme.
       themeController.commitAssignColorText(setState, getState, action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorButtonOnClick:
-      // Apply current draft if valid; UI may also open picker.
       themeController.applyAssignColorDraft(setState, getState);
       break;
     case ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick:
-      // Signal UI to open eyedropper for the given color ref; UI dispatches ASSIGN_COLOR_PICKER_ON_COMMIT with picked hex.
       themeController.setThemeOpenPickerContext(setState, `eyedropper:assign:${action.colorRef}`);
       break;
     case ThemeActionType.ThemePaletteAssignColorPickerOnSelect:
-      // Live preview: setTheme with updated assignments; no persist.
       themeController.setAssignColorPreview(setState, getState, action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorPickerOnCommit:
-      // Commit picked color to selection; persist theme.
       themeController.assignColorFromPicker(setState, getState, action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorPickerOnClose:
       themeController.persistCurrentTheme(setState, getState);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorTextOnChange:
-      // Store hue reference hex in state (text field value).
       themeController.setThemeHueReferenceHex(setState, action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorTextOnCommit:
-      // Set hue reference hex; optionally reset slider to 0.
-      themeController.setThemeHueReferenceHex(setState, action.value);
-      themeController.setThemeHueAdjustment(setState, 0);
+      themeController.commitHueReferenceColor(setState, action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorButtonOnClick:
-      // Signal UI to open color picker for the hue reference.
       themeController.setThemeOpenPickerContext(setState, 'picker:hue');
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick:
-      // Signal UI to open eyedropper for the hue reference.
       themeController.setThemeOpenPickerContext(setState, 'eyedropper:hue');
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorPickerOnSelect:
-      // Live preview: set hue reference in state (no persist).
       themeController.setThemeHueReferenceHex(setState, action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorPickerOnCommit:
-      themeController.setThemeHueReferenceHex(setState, action.value);
-      themeController.setThemeHueAdjustment(setState, 0);
+      themeController.commitHueReferenceColor(setState, action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick:
-      // Bake hue shift into theme, save, set hueAdjustment to 0.
       themeController.recenterHueReference(setState, getState);
       break;
     case ThemeActionType.ThemePaletteHueSliderOnDelta:
@@ -172,14 +154,13 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setPalettePrimarySwatch(setState, getState, action.ref);
       break;
     case ThemeActionType.ThemePalettePrimarySwatchButtonOnRightClick:
-      // Context menu handled by UI; same as primary click.
       themeController.setPalettePrimarySwatch(setState, getState, action.ref);
       break;
     case ThemeActionType.ThemePaletteMemberSwatchButtonOnClick:
       themeController.setPaletteMemberSwatch(setState, getState, action.ref);
       break;
     case ThemeActionType.ThemePaletteMemberSwatchButtonOnRightClick:
-      // Context menu handled by UI; no further state change needed.
+      themeController.handleMemberSwatchRightClick(setState, getState, action.ref);
       break;
     case ThemeActionType.ThemeVariablesSelectAllCheckboxOnToggle:
       themeController.setVariablesSelectAll(setState, getState, action.checked);
@@ -232,7 +213,6 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setThemeOpenPickerContext(setState, `dark:${action.ref}`);
       break;
     case ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick:
-      // Eyedropper is launched by the UI; this sets context so UI knows which ref is targeted.
       themeController.setThemeOpenPickerContext(setState, `eyedropper:dark:${action.ref}`);
       break;
     case ThemeActionType.ThemeVariablesColorDarkColorPickerOnSelect:
@@ -346,28 +326,18 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.setContrastVariableLightMax(setState, getState, action.ref, action.value);
       break;
     case ThemeActionType.ThemePreviewVariableListOnCommit:
-      // Set the selected variable for preview in theme UI state.
-      // Update UI state so the preview pane shows the selected variable's usage.
       themeController.setPreviewVariableSelection(setState, getState, action.value);
       break;
     case ThemeActionType.ThemePreviewVariableFilterTextOnChange:
-      // Store the preview variable filter text in theme UI state (filter is derived for display).
-      // Update UI state so the preview variable list is filtered.
       themeController.setPreviewVariableFilterText(setState, action.value);
       break;
     case ThemeActionType.ThemePreviewVariableFilterClearOnClick:
-      // Clear the preview variable filter text in theme UI state.
-      // Update UI state so the filter is cleared and the full list is shown.
       themeController.clearPreviewVariableFilter(setState);
       break;
     case ThemeActionType.ThemePreviewSampleButtonOnClick:
-      // Insert or refresh the preview sample content in theme UI state (or from disk).
-      // Update UI state so the preview pane shows the sample.
       themeController.previewSampleButtonScroll(setState);
       break;
     case ThemeActionType.ThemePreviewSampleListOnCommit:
-      // Set the selected sample for preview in theme UI state.
-      // Update UI state so the preview pane shows the selected sample.
       themeController.setPreviewSelectedSample(setState, action.value);
       break;
   }

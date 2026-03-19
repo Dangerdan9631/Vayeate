@@ -1,5 +1,4 @@
 import * as catalogController from '../../domain/controllers/catalog-controller';
-import * as undoController from '../../domain/controllers/undo-controller';
 import type { ActionHandler, CatalogAction, HandlerDeps } from './handler-types';
 import { CatalogActionType } from '../actions/action-types';
 
@@ -9,8 +8,7 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
 ): Promise<void> => {
   switch (action.type) {
     case CatalogActionType.CatalogPageOnLoad:
-      await catalogController.loadCatalogRefs(setState, setStoreState);
-      undoController.resetCurrentUndoStackId(setState);
+      await catalogController.loadCatalogPage(setState, setStoreState);
       break;
     case CatalogActionType.CatalogCatalogsListOnCommit:
       await catalogController.selectCatalogAndLoad(setState, action.name, action.version);
