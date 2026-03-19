@@ -5,7 +5,7 @@ import { getTemplateRefsFromStore, getThemeRefsFromStore } from '../../domain/st
 import { compareVersions } from '../../domain/utils/version';
 import { applyHueShift } from '../../domain/utils/color';
 import { resolveColorForThemeTokenKey } from '../../domain/utils/scope-resolver';
-import type { ThemePreviewTokenRefField } from '../actions/action-types';
+import { ThemeActionType, type ThemePreviewTokenRefField } from '../actions/action-types';
 import type {
   ColorAssignment,
   ContrastAssignmentValue,
@@ -91,7 +91,7 @@ export function useThemeViewModel() {
   useEffect(() => {
     if (themePageLoadDispatched) return;
     themePageLoadDispatched = true;
-    dispatch({ type: 'THEME_PAGE_ON_LOAD' });
+    dispatch({ type: ThemeActionType.ThemePageOnLoad });
   }, [dispatch]);
 
   const themeNames = useMemo(() => {
@@ -200,7 +200,7 @@ export function useThemeViewModel() {
       '#1e1e1e',
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
-    dispatch({ type: 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE', value: normalized });
+    dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorTextOnChange, value: normalized });
   }, [theme, loadedTemplate, selectedRef, dispatch]);
 
   const colorVariablesFromTemplate = useMemo(
@@ -252,37 +252,37 @@ export function useThemeViewModel() {
 
   const selectTheme = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name, version });
+      dispatch({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name, version });
     },
     [dispatch],
   );
 
   const selectName = useCallback(
     (name: string) => {
-      dispatch({ type: 'THEME_THEMES_NAME_LIST_ON_COMMIT', name });
+      dispatch({ type: ThemeActionType.ThemeThemesNameListOnCommit, name });
     },
     [dispatch],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: 'THEME_THEMES_CREATE_BUTTON_ON_CLICK' });
-    dispatch({ type: 'THEME_CREATE_DIALOG_ON_OPEN' });
+    dispatch({ type: ThemeActionType.ThemeThemesCreateButtonOnClick });
+    dispatch({ type: ThemeActionType.ThemeCreateDialogOnOpen });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    dispatch({ type: 'THEME_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+    dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
   }, [dispatch]);
 
   const createTheme = useCallback(
     (params: { name: string }) => {
-      dispatch({ type: 'THEME_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
+      dispatch({ type: ThemeActionType.ThemeCreateDialogOkButtonOnClick, params });
     },
     [dispatch],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'THEME_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
+      dispatch({ type: ThemeActionType.ThemeDetailsDeleteVersionButtonOnClick, name, version });
     },
     [dispatch],
   );
@@ -292,7 +292,7 @@ export function useThemeViewModel() {
       return;
     }
     dispatch({
-      type: 'THEME_DETAILS_GENERATE_BUTTON_ON_CLICK',
+      type: ThemeActionType.ThemeDetailsGenerateButtonOnClick,
       themeName: theme.name,
       themeVersion: theme.version,
       templateName: theme.templateRef.name,
@@ -301,7 +301,7 @@ export function useThemeViewModel() {
   }, [canGenerate, dispatch, theme]);
 
   const bumpVersion = useCallback(() => {
-    dispatch({ type: 'THEME_DETAILS_INCREMENT_VERSION_BUTTON_ON_CLICK' });
+    dispatch({ type: ThemeActionType.ThemeDetailsIncrementVersionButtonOnClick });
   }, [dispatch]);
 
   // --- Template selection ---
@@ -311,7 +311,7 @@ export function useThemeViewModel() {
       const versions = templateVersionsByName[templateName];
       if (!versions || versions.length === 0) return;
       const highestVersion = versions[0].version;
-      dispatch({ type: 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT', name: templateName, version: highestVersion });
+      dispatch({ type: ThemeActionType.ThemeDetailsTemplateListOnCommit, name: templateName, version: highestVersion });
     },
     [dispatch, templateVersionsByName],
   );
@@ -319,7 +319,7 @@ export function useThemeViewModel() {
   const changeTemplateVersion = useCallback(
     (version: string) => {
       if (!theme?.templateRef) return;
-      dispatch({ type: 'THEME_DETAILS_TEMPLATE_VERSION_LIST_ON_COMMIT', name: theme.templateRef.name, version });
+      dispatch({ type: ThemeActionType.ThemeDetailsTemplateVersionListOnCommit, name: theme.templateRef.name, version });
     },
     [dispatch, theme],
   );
@@ -328,7 +328,7 @@ export function useThemeViewModel() {
 
   const dispatchPreviewTokenRef = useCallback(
     (tokenRefField: ThemePreviewTokenRefField, value: TokenKey | null) => {
-      dispatch({ type: 'THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT', tokenRefField, value });
+      dispatch({ type: ThemeActionType.ThemeDetailsPreviewTokenRefListOnCommit, tokenRefField, value });
     },
     [dispatch],
   );
@@ -391,35 +391,35 @@ export function useThemeViewModel() {
 
   const setHueAdjustment = useCallback(
     (value: number) => {
-      dispatch({ type: 'THEME_PALETTE_HUE_SLIDER_ON_DELTA', value });
+      dispatch({ type: ThemeActionType.ThemePaletteHueSliderOnDelta, value });
     },
     [dispatch],
   );
 
   const setApplyHueToDark = useCallback(
     (checked: boolean) => {
-      dispatch({ type: 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE', checked });
+      dispatch({ type: ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle, checked });
     },
     [dispatch],
   );
 
   const setApplyHueToLight = useCallback(
     (checked: boolean) => {
-      dispatch({ type: 'THEME_PALETTE_APPLY_TO_LIGHT_CHECKBOX_ON_TOGGLE', checked });
+      dispatch({ type: ThemeActionType.ThemePaletteApplyToLightCheckboxOnToggle, checked });
     },
     [dispatch],
   );
 
   const onClusterCountDelta = useCallback(
     (value: number) => {
-      dispatch({ type: 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_DELTA', value });
+      dispatch({ type: ThemeActionType.ThemePaletteClusterCountSliderOnDelta, value });
     },
     [dispatch],
   );
 
   const onClusterCountCommit = useCallback(
     (value: number) => {
-      dispatch({ type: 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_COMMIT', value });
+      dispatch({ type: ThemeActionType.ThemePaletteClusterCountSliderOnCommit, value });
     },
     [dispatch],
   );
@@ -427,8 +427,8 @@ export function useThemeViewModel() {
   const setHueReferenceHex = useCallback(
     (hex: string) => {
       const normalized = normalizeHex(hex) || '#FF0000';
-      dispatch({ type: 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE', value: normalized });
-      dispatch({ type: 'THEME_PALETTE_HUE_SLIDER_ON_DELTA', value: 0 });
+      dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorTextOnChange, value: normalized });
+      dispatch({ type: ThemeActionType.ThemePaletteHueSliderOnDelta, value: 0 });
     },
     [dispatch],
   );
@@ -443,7 +443,7 @@ export function useThemeViewModel() {
   }, []);
 
   const recenterHue = useCallback(() => {
-    dispatch({ type: 'THEME_PALETTE_HUE_REFERENCE_RECENTER_BUTTON_ON_CLICK' });
+    dispatch({ type: ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick });
   }, [dispatch]);
 
   // --- Color assignment updates (no version bump) ---
@@ -451,7 +451,7 @@ export function useThemeViewModel() {
   const updateColorAssignmentDark = useCallback(
     (colorRef: string, value: string | null) => {
       dispatch({
-        type: 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_COMMIT',
+        type: ThemeActionType.ThemeVariablesColorDarkTextOnCommit,
         ref: colorRef,
         value: value ?? '',
       });
@@ -462,7 +462,7 @@ export function useThemeViewModel() {
   const updateColorAssignmentLight = useCallback(
     (colorRef: string, value: string | null) => {
       dispatch({
-        type: 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_COMMIT',
+        type: ThemeActionType.ThemeVariablesColorLightTextOnCommit,
         ref: colorRef,
         value: value ?? '',
       });
@@ -473,7 +473,7 @@ export function useThemeViewModel() {
   const updateColorAssignmentUseDarkForLight = useCallback(
     (colorRef: string, useDark: boolean) => {
       dispatch({
-        type: 'THEME_VARIABLES_COLOR_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE',
+        type: ThemeActionType.ThemeVariablesColorUseDarkForLightCheckboxOnToggle,
         ref: colorRef,
         checked: useDark,
       });
@@ -487,25 +487,25 @@ export function useThemeViewModel() {
     (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
       if (field === 'value') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_DARK_VALUE_TEXT_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastDarkValueTextOnCommit,
           ref: contrastRef,
           value: value as ContrastValue,
         });
       } else if (field === 'comparisonMethod') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_DARK_METHOD_LIST_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastDarkMethodListOnCommit,
           ref: contrastRef,
           value: value as ContrastComparisonMethod,
         });
       } else if (field === 'min') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_DARK_MIN_TEXT_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastDarkMinTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
       } else if (field === 'max') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_DARK_MAX_TEXT_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastDarkMaxTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
@@ -518,25 +518,25 @@ export function useThemeViewModel() {
     (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
       if (field === 'value') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_LIGHT_VALUE_TEXT_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastLightValueTextOnCommit,
           ref: contrastRef,
           value: value as ContrastValue,
         });
       } else if (field === 'comparisonMethod') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_LIGHT_METHOD_LIST_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastLightMethodListOnCommit,
           ref: contrastRef,
           value: value as ContrastComparisonMethod,
         });
       } else if (field === 'min') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastLightMinTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
       } else if (field === 'max') {
         dispatch({
-          type: 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_COMMIT',
+          type: ThemeActionType.ThemeVariablesContrastLightMaxTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
@@ -548,7 +548,7 @@ export function useThemeViewModel() {
   const updateContrastAssignmentUseDarkForLight = useCallback(
     (contrastRef: string, useDark: boolean) => {
       dispatch({
-        type: 'THEME_VARIABLES_LIGHT_USE_DARK_CHECKBOX_ON_TOGGLE',
+        type: ThemeActionType.ThemeVariablesLightUseDarkCheckboxOnToggle,
         ref: contrastRef,
         checked: useDark,
       });
@@ -558,14 +558,14 @@ export function useThemeViewModel() {
 
   const toggleColorChecked = useCallback(
     (ref: string) => {
-      dispatch({ type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE', ref, checked: !checkedColorRefs.has(ref) });
+      dispatch({ type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle, ref, checked: !checkedColorRefs.has(ref) });
     },
     [dispatch, checkedColorRefs],
   );
 
   const toggleContrastChecked = useCallback(
     (ref: string) => {
-      dispatch({ type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE', ref, checked: !checkedContrastRefs.has(ref) });
+      dispatch({ type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle, ref, checked: !checkedContrastRefs.has(ref) });
     },
     [dispatch, checkedContrastRefs],
   );
@@ -573,7 +573,7 @@ export function useThemeViewModel() {
   const setAllColorChecked = useCallback(
     (checked: boolean) => {
       dispatch({
-        type: 'THEME_VARIABLES_SELECT_VARIABLE_TYPE_CHECKBOX_ON_TOGGLE',
+        type: ThemeActionType.ThemeVariablesSelectVariableTypeCheckboxOnToggle,
         variableType: 'color',
         checked,
       });
@@ -584,7 +584,7 @@ export function useThemeViewModel() {
   const setAllContrastChecked = useCallback(
     (checked: boolean) => {
       dispatch({
-        type: 'THEME_VARIABLES_SELECT_VARIABLE_TYPE_CHECKBOX_ON_TOGGLE',
+        type: ThemeActionType.ThemeVariablesSelectVariableTypeCheckboxOnToggle,
         variableType: 'contrast',
         checked,
       });
@@ -594,7 +594,7 @@ export function useThemeViewModel() {
 
   const setAllVariablesChecked = useCallback(
     (checked: boolean) => {
-      dispatch({ type: 'THEME_VARIABLES_SELECT_ALL_CHECKBOX_ON_TOGGLE', checked });
+      dispatch({ type: ThemeActionType.ThemeVariablesSelectAllCheckboxOnToggle, checked });
     },
     [dispatch],
   );
@@ -602,7 +602,7 @@ export function useThemeViewModel() {
   const setColorGroupChecked = useCallback(
     (groupKey: string, checked: boolean) => {
       dispatch({
-        type: 'THEME_VARIABLES_SELECT_VARIABLE_GROUP_CHECKBOX_ON_TOGGLE',
+        type: ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle,
         groupId: groupKey,
         checked,
       });
@@ -613,7 +613,7 @@ export function useThemeViewModel() {
   const setContrastGroupChecked = useCallback(
     (groupKey: string, checked: boolean) => {
       dispatch({
-        type: 'THEME_VARIABLES_SELECT_VARIABLE_GROUP_CHECKBOX_ON_TOGGLE',
+        type: ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle,
         groupId: groupKey,
         checked,
       });
@@ -626,7 +626,7 @@ export function useThemeViewModel() {
       if (!theme || refs.length === 0) return;
       refs.forEach((ref) => {
         dispatch({
-          type: 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE',
+          type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle,
           ref,
           checked,
         });
@@ -637,36 +637,36 @@ export function useThemeViewModel() {
 
   const setVariablesSearchText = useCallback(
     (value: string) => {
-      dispatch({ type: 'THEME_VARIABLES_SEARCH_TEXT_ON_CHANGE', value });
+      dispatch({ type: ThemeActionType.ThemeVariablesSearchTextOnChange, value });
     },
     [dispatch],
   );
 
   const commitPreviewVariable = useCallback(
     (value: string) => {
-      dispatch({ type: 'THEME_PREVIEW_VARIABLE_LIST_ON_COMMIT', value });
+      dispatch({ type: ThemeActionType.ThemePreviewVariableListOnCommit, value });
     },
     [dispatch],
   );
 
   const setPreviewVariableFilterText = useCallback(
     (value: string) => {
-      dispatch({ type: 'THEME_PREVIEW_VARIABLE_FILTER_TEXT_ON_CHANGE', value });
+      dispatch({ type: ThemeActionType.ThemePreviewVariableFilterTextOnChange, value });
     },
     [dispatch],
   );
 
   const clearPreviewVariableFilter = useCallback(() => {
-    dispatch({ type: 'THEME_PREVIEW_VARIABLE_FILTER_CLEAR_ON_CLICK' });
+    dispatch({ type: ThemeActionType.ThemePreviewVariableFilterClearOnClick });
   }, [dispatch]);
 
   const previewSampleButtonClick = useCallback(() => {
-    dispatch({ type: 'THEME_PREVIEW_SAMPLE_BUTTON_ON_CLICK' });
+    dispatch({ type: ThemeActionType.ThemePreviewSampleButtonOnClick });
   }, [dispatch]);
 
   const commitPreviewSample = useCallback(
     (value: string) => {
-      dispatch({ type: 'THEME_PREVIEW_SAMPLE_LIST_ON_COMMIT', value });
+      dispatch({ type: ThemeActionType.ThemePreviewSampleListOnCommit, value });
     },
     [dispatch],
   );
@@ -681,7 +681,7 @@ export function useThemeViewModel() {
     (hex: string) => {
       const normalized = normalizeHex(hex);
       if (!normalized) return;
-      dispatch({ type: 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_SELECT', value: normalized });
+      dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnSelect, value: normalized });
     },
     [dispatch],
   );
@@ -689,7 +689,7 @@ export function useThemeViewModel() {
   /** Persist current theme when color picker closes. */
   const closeColorPicker = useCallback(
     (_snapshot: ThemePaneState) => {
-      dispatch({ type: 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_CLOSE' });
+      dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnClose });
     },
     [dispatch],
   );
@@ -698,7 +698,7 @@ export function useThemeViewModel() {
     (hex: string) => {
       const normalized = normalizeHex(hex);
       if (!normalized) return;
-      dispatch({ type: 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_COMMIT', value: normalized });
+      dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnCommit, value: normalized });
     },
     [dispatch],
   );
@@ -842,7 +842,7 @@ export function useThemeViewModel() {
     updateContrastAssignmentUseDarkForLight,
     saveError,
     dismissSaveError: useCallback(() => {
-      dispatch({ type: 'THEME_PAGE_SAVE_ERROR_DISMISS_BUTTON_ON_CLICK' });
+      dispatch({ type: ThemeActionType.ThemePageSaveErrorDismissButtonOnClick });
     }, [dispatch]),
   };
 }

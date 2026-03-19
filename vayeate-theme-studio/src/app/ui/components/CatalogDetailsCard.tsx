@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { Catalog, SourceType, TokenType } from '../../../model/schemas';
+import { CatalogActionType } from '../../actions/action-types';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];
@@ -100,7 +101,7 @@ export function CatalogDetailsCard({
                     const v = e.target.value.trim();
                     if (v !== source.url) {
                       dispatch({
-                        type: 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT',
+                        type: CatalogActionType.CatalogDetailsSourceUrlTextOnCommit,
                         value: v,
                         sourceIndex: i,
                       });
@@ -115,7 +116,7 @@ export function CatalogDetailsCard({
                   onChange={(e) => {
                     const value = e.target.value as TokenType;
                     dispatch({
-                      type: 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT',
+                      type: CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit,
                       value,
                       sourceIndex: i,
                     });
@@ -132,7 +133,7 @@ export function CatalogDetailsCard({
                   onChange={(e) => {
                     const value = e.target.value as SourceType;
                     dispatch({
-                      type: 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT',
+                      type: CatalogActionType.CatalogDetailsSourceTypeListOnCommit,
                       value,
                       sourceIndex: i,
                     });
@@ -147,7 +148,7 @@ export function CatalogDetailsCard({
                   className="btn-icon btn-danger-icon"
                   disabled={!isLatestVersion}
                   onClick={() => {
-                    dispatch({ type: 'CATALOG_DETAILS_SOURCE_REMOVE_BUTTON_ON_CLICK', sourceIndex: i });
+                    dispatch({ type: CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick, sourceIndex: i });
                   }}
                   aria-label="Remove source"
                 >
@@ -163,7 +164,7 @@ export function CatalogDetailsCard({
                   value={newSourceUrl}
                   placeholder="https://..."
                   onChange={(e) => {
-                    dispatch({ type: 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE', value: e.target.value });
+                    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange, value: e.target.value });
                   }}
                 />
                 <select
@@ -171,24 +172,24 @@ export function CatalogDetailsCard({
                   value={newSourceTokenType}
                   onChange={(e) => {
                     const tokenType = e.target.value as TokenType;
-                    dispatch({ type: 'CATALOG_DETAILS_NEW_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT', value: tokenType });
+                    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit, value: tokenType });
                     if (
                       tokenType !== 'theme' &&
                       (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
                     ) {
-                      dispatch({ type: 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT', value: 'default' });
+                      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value: 'default' });
                     }
                     if (
                       tokenType !== 'semantic token' &&
                       newSourceType === 'semantic-token-registry'
                     ) {
-                      dispatch({ type: 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT', value: 'default' });
+                      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value: 'default' });
                     }
                     if (
                       tokenType !== 'textmate token' &&
                       (newSourceType === 'textmate-xml' || newSourceType === 'textmate-json')
                     ) {
-                      dispatch({ type: 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT', value: 'default' });
+                      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value: 'default' });
                     }
                   }}
                 >
@@ -201,7 +202,7 @@ export function CatalogDetailsCard({
                   value={newSourceType}
                   onChange={(e) => {
                     dispatch({
-                      type: 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT',
+                      type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit,
                       value: e.target.value as SourceType,
                     });
                   }}
@@ -214,7 +215,7 @@ export function CatalogDetailsCard({
                   type="button"
                   className="btn-icon btn-add-icon"
                   onClick={() => {
-                    dispatch({ type: 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK' });
+                    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick });
                   }}
                   aria-label="Add source"
                 >
@@ -240,7 +241,7 @@ export function CatalogDetailsCard({
             type="button"
             className="btn-secondary"
             onClick={() => {
-              dispatch({ type: 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK' });
+              dispatch({ type: CatalogActionType.CatalogDetailsLockButtonOnClick });
               onLock();
             }}
           >

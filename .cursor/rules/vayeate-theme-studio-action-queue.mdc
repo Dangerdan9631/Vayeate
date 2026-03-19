@@ -20,10 +20,10 @@ Each UI interaction dispatches exactly one such event. The control name identifi
 
 ## Flow
 
-1. Component dispatches one event per interaction: `dispatch({ type: 'CATALOG_SYNC_BUTTON_ON_CLICK', ... })`
+1. Component dispatches one event per interaction: `dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, ... })` (import the per-domain enum from `action-types.ts`)
 2. ActionQueue.enqueue() pushes the event to a FIFO queue
 3. Processor runs when idle; awaits each action before starting the next
-4. The **processor** (in AppContext) delegates to `createActionProcessor` from `handler-registry.ts`, which routes by action prefix to the correct domain handler
+4. The **processor** (in AppContext) delegates to `createActionProcessor` from `handler-registry.ts`, which routes via type guards (`isAppAction`, `isCatalogAction`, etc. in `handler-types.ts`) to the correct domain handler
 5. The **domain handler** (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`) has an exhaustive switch and invokes the appropriate **controller**
 6. **Controllers** compose one or more **operations** to fulfill the app action for that UI event
 7. **Operations** perform a single responsibility: set state (via `setState`), persist state (e.g. via services/IPC), or add to the undo stack
@@ -34,7 +34,7 @@ flowchart LR
   UI[UI Component] -->|"dispatch(CONTROL_ACTION)"| Queue[ActionQueue]
   Queue -->|"process"| Context[AppContext processor]
   Context -->|"createActionProcessor"| Registry[handler-registry]
-  Registry -->|"route by prefix"| Handler[Domain Handler]
+  Registry -->|"route by domain guard"| Handler[Domain Handler]
   Handler -->|"exhaustive switch"| Controller[Controller]
   Controller -->|"calls"| Op1[Operation 1]
   Controller -->|"calls"| Op2[Operation 2]
@@ -58,7 +58,7 @@ Use these action suffixes for each control type when naming events:
 
 ## AppActionV2 and canonical event list
 
-- **Type definition**: `AppActionV2` is a discriminated union in `vayeate-theme-studio/src/app/actions/action-types.ts`. Each member is `{ type: '<ACTION_NAME>'; ...payload }`. **The `AppActionV2` union is the canonical list of all app action event names**; there is no separate list file.
+- **Type definition**: `AppActionV2` is a discriminated union in `vayeate-theme-studio/src/app/actions/action-types.ts`. Each member uses `{ type: XxxActionType.SomeCase; ...payload }` where `AppActionType`, `CatalogActionType`, `TemplateActionType`, and `ThemeActionType` are string enums (runtime values preserve the legacy `APP_*` / `CATALOG_*` / etc. strings). **The `AppActionV2` union is the canonical list of all app action event names**; there is no separate list file.
 - **Naming convention**: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>` (e.g. `CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK`). CONTEXT: APP, CATALOG, TEMPLATE, THEME. SUBCONTEXT: card/section/dialog (e.g. DETAILS, CREATE_DIALOG). CONTROL and ACTION: BUTTON → ON_CLICK, ON_DOUBLE_CLICK, ON_RIGHT_CLICK; LIST → ON_SELECT, ON_COMMIT; CHECKBOX → ON_TOGGLE; TEXT → ON_CHANGE, ON_COMMIT; SLIDER → ON_DELTA, ON_COMMIT; COLOR_PICKER → ON_SELECT, ON_COMMIT; top-level → ON_LOAD, ON_CLOSE.
 - **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`).
 - **Tests**: `useAppDispatch()` returns a no-op when used outside `AppProvider`, so components that only call `dispatch` can be tested without wrapping in `AppProvider`.
@@ -75,17 +75,21 @@ When adding or editing cases in domain handler files (`app-handler.ts`, `catalog
 ## Adding a New Action
 
 ```typescript
-// 1. action-types.ts - Use CONTROL_ACTION naming; add to AppActionV2 union
+// 1. action-types.ts - Add enum member + union member (same string value as before)
+export enum AppActionType {
+  // ...
+  MyPageMyButtonOnClick = 'MY_PAGE_MY_BUTTON_ON_CLICK',
+}
 export type AppActionV2 =
   | ...
-  | { type: 'MY_PAGE_MY_BUTTON_ON_CLICK'; payload: string };  // Add here
+  | { type: AppActionType.MyPageMyButtonOnClick; payload: string };
 
 // 2. app-state.ts - Add reducer case for state updates produced by operations
 case 'MY_FIELD_SET':
   return { ...state, myField: update.payload };
 
 // 3. domain handler (e.g. app-handler.ts) - add exhaustive switch case; invoke controller
-case 'MY_PAGE_MY_BUTTON_ON_CLICK': {
+case AppActionType.MyPageMyButtonOnClick: {
   await myController.doMyAction(action.payload, deps.setState);
   break;
 }

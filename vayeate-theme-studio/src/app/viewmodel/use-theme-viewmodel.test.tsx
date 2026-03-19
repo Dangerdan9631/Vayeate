@@ -4,6 +4,7 @@ import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useThemeViewModel, mergeAssignmentsFromTemplate } from './use-theme-viewmodel';
 import type { Theme, Template } from '../../model/schemas';
+import { ThemeActionType } from '../actions/action-types';
 
 const previewTokenRefsNull = {
   idePrimaryTokenRef: null,
@@ -122,7 +123,7 @@ describe('useThemeViewModel', () => {
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: 'THEME_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-theme' } });
+      await getDispatch()?.({ type: ThemeActionType.ThemeCreateDialogOkButtonOnClick, params: { name: 'test-theme' } });
     });
 
     expect(result.current.theme).not.toBeNull();
@@ -179,7 +180,7 @@ describe('useThemeViewModel', () => {
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'test-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'test-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -391,7 +392,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -405,7 +406,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -425,7 +426,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -451,7 +452,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -476,7 +477,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -497,7 +498,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -510,7 +511,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -533,7 +534,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -556,7 +557,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -588,7 +589,7 @@ describe('useThemeViewModel hue adjustment', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'hue-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'hue-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -666,7 +667,7 @@ describe('useThemeViewModel hue adjustment with useDarkForLight', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'use-dark-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'use-dark-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -735,7 +736,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -749,7 +750,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -770,7 +771,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -804,7 +805,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -825,7 +826,7 @@ describe('useThemeViewModel variable selection', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'sel-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'sel-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -905,7 +906,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -920,7 +921,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -938,7 +939,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));
@@ -951,7 +952,7 @@ describe('useThemeViewModel palette color picker', () => {
     const { Wrapper, getDispatch } = harness();
     const { result } = renderHook(() => useThemeViewModel(), { wrapper: Wrapper });
     await act(async () => {
-      getDispatch()?.({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'pal-theme', version: '1.0.0' });
+      getDispatch()?.({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'pal-theme', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 150));

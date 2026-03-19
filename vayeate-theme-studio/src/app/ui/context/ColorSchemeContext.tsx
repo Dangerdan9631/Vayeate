@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { AppContext } from './AppContext';
 import { AppDispatchContext } from './slice-contexts';
+import { AppActionType } from '../../actions/action-types';
 
 export type ColorScheme = 'light' | 'dark';
 
@@ -38,7 +39,7 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const toggleColorScheme = useCallback(() => {
     if (dispatch) {
       // In the full app: dispatch the action; the handler updates UiState + persists to disk.
-      dispatch({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: scheme !== 'light' });
+      dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle, checked: scheme !== 'light' });
     } else {
       // Standalone (no AppContext/dispatch) – update local state without persistence.
       setLocalScheme((prev) => (prev === 'light' ? 'dark' : 'light'));

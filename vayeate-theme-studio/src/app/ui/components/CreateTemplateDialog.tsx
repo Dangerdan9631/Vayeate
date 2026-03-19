@@ -1,4 +1,5 @@
 import { useAppDispatch } from '../context/slice-contexts';
+import { TemplateActionType } from '../../actions/action-types';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
@@ -49,7 +50,7 @@ export function CreateTemplateDialog({
             type="button"
             className="btn-secondary"
             onClick={() => {
-              dispatch({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+              dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
               onCancel();
             }}
           >

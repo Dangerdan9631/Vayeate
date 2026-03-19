@@ -3,6 +3,7 @@ import type { AppActionV2 } from './action-types';
 import type { AppStateUpdate } from '../../domain/state/app-state';
 import type { QueueStatus } from './action-queue';
 import type { UiStateUpdate } from '../../domain/state/ui-state-reducer';
+import { AppActionType } from './action-types';
 
 describe('ActionQueue', () => {
   it('processes actions in FIFO order and calls setUiState with correct updates for tab clicks', async () => {
@@ -10,7 +11,7 @@ describe('ActionQueue', () => {
     const processor: ActionProcessor = async (action) => {
       const uiUpdates: UiStateUpdate[] = [];
       const setUiState = (update: UiStateUpdate) => uiUpdates.push(update);
-      if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
+      if (action.type === AppActionType.AppRibbonTabButtonOnClick) {
         setUiState({ type: 'SET_UI_ACTIVE_TAB_ID', tabId: action.tabId });
       }
       received.push({ action, uiUpdates });
@@ -18,22 +19,22 @@ describe('ActionQueue', () => {
 
     const queue = new ActionQueue(processor);
 
-    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
-    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'themes' });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'templates' });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'themes' });
 
     await new Promise((r) => setTimeout(r, 50));
 
     expect(received).toHaveLength(2);
-    expect(received[0].action).toEqual({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
+    expect(received[0].action).toEqual({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'templates' });
     expect(received[0].uiUpdates).toEqual([{ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'templates' }]);
-    expect(received[1].action).toEqual({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'themes' });
+    expect(received[1].action).toEqual({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'themes' });
     expect(received[1].uiUpdates).toEqual([{ type: 'SET_UI_ACTIVE_TAB_ID', tabId: 'themes' }]);
   });
 
   it('processes next action only after previous processor completes', async () => {
     const order: string[] = [];
     const processor: ActionProcessor = async (action) => {
-      if (action.type === 'APP_RIBBON_TAB_BUTTON_ON_CLICK') {
+      if (action.type === AppActionType.AppRibbonTabButtonOnClick) {
         order.push(`start-${action.tabId as string}`);
         await new Promise((r) => setTimeout(r, 20));
         order.push(`end-${action.tabId as string}`);
@@ -42,8 +43,8 @@ describe('ActionQueue', () => {
 
     const queue = new ActionQueue(processor);
 
-    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'catalogs' });
-    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'catalogs' });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'templates' });
 
     await new Promise((r) => setTimeout(r, 60));
 
@@ -59,8 +60,8 @@ describe('ActionQueue', () => {
     const queue = new ActionQueue(processor);
     queue.onQueueStatus = (s) => statuses.push({ ...s });
 
-    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'catalogs' });
-    queue.enqueue({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId: 'templates' });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'catalogs' });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'templates' });
 
     await new Promise((r) => setTimeout(r, 80));
 
@@ -74,14 +75,14 @@ describe('ActionQueue', () => {
     const updates: AppStateUpdate[] = [];
     const setState = (u: AppStateUpdate) => updates.push(u);
     const processor: ActionProcessor = async (action) => {
-      if (action.type === 'APP_APP_ON_LOAD') {
+      if (action.type === AppActionType.AppAppOnLoad) {
         setState({ type: 'SET_CATALOG', catalog: null });
       }
     };
 
     const queue = new ActionQueue(processor);
 
-    queue.enqueue({ type: 'APP_APP_ON_LOAD' });
+    queue.enqueue({ type: AppActionType.AppAppOnLoad });
 
     await new Promise((r) => setTimeout(r, 20));
 

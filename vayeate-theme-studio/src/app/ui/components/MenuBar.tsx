@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useColorScheme } from '../context/ColorSchemeContext';
 import { useUndoStack } from '../context/UndoContext';
 import { useAppDispatch } from '../context/slice-contexts';
+import { AppActionType } from '../../actions/action-types';
 
 export function MenuBar() {
   const dispatch = useAppDispatch();
@@ -79,43 +80,43 @@ export function MenuBar() {
   );
 
   const handleExit = useCallback(() => {
-    dispatch({ type: 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppFileMenuExitButtonOnClick });
     setFileOpen(false);
   }, [dispatch]);
 
   const handleReload = useCallback(() => {
-    dispatch({ type: 'APP_VIEW_MENU_RELOAD_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppViewMenuReloadButtonOnClick });
     setViewOpen(false);
   }, [dispatch]);
 
   const handleForceReload = useCallback(() => {
-    dispatch({ type: 'APP_VIEW_MENU_FORCE_RELOAD_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppViewMenuForceReloadButtonOnClick });
     setViewOpen(false);
   }, [dispatch]);
 
   const handleToggleDevTools = useCallback(() => {
-    dispatch({ type: 'APP_VIEW_MENU_TOGGLE_DEV_TOOLS_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppViewMenuToggleDevToolsButtonOnClick });
     setViewOpen(false);
   }, [dispatch]);
 
   const handleMinimize = useCallback(() => {
-    dispatch({ type: 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppBarMinimizeButtonOnClick });
   }, [dispatch]);
 
   const handleMaximize = useCallback(() => {
-    dispatch({ type: 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppBarMaximizeButtonOnClick });
   }, [dispatch]);
 
   const handleClose = useCallback(() => {
-    dispatch({ type: 'APP_BAR_CLOSE_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppBarCloseButtonOnClick });
   }, [dispatch]);
 
   const handleThemeToggle = useCallback(() => {
-    dispatch({ type: 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE', checked: theme !== 'light' });
+    dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle, checked: theme !== 'light' });
   }, [dispatch, theme]);
 
   const handleTitleBarDrag = useCallback(() => {
-    dispatch({ type: 'APP_BAR_TITLE_BAR_ON_DRAG' });
+    dispatch({ type: AppActionType.AppBarTitleBarOnDrag });
   }, [dispatch]);
 
   return (

@@ -12,11 +12,11 @@ Use this skill when:
 
 ## What to do
 
-1. **AppActionV2**: Add a new union member to `AppActionV2` in `vayeate-theme-studio/src/app/actions/action-types.ts` with the exact `type` string and payload. Use the naming convention from the Action Queue rule: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>`. Use types from `../../model/schemas` where applicable (e.g. `CatalogName`, `Version`, `HexColor`, `TokenKey`).
+1. **AppActionV2**: In `vayeate-theme-studio/src/app/actions/action-types.ts`, add a member to the correct per-domain enum (`AppActionType`, `CatalogActionType`, `TemplateActionType`, or `ThemeActionType`) with the string value matching the naming convention from the Action Queue rule: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>`. Add the corresponding union member to `AppActionV2` as `{ type: XxxActionType.YourMember; ...payload }`. Use types from `../../model/schemas` where applicable (e.g. `CatalogName`, `Version`, `HexColor`, `TokenKey`). Dispatch sites and handler `switch` cases use the enum member, not a string literal.
 
 2. **One action = one behavior**: Do not use optional fields to branch to different behaviors within one action type. If you need different behaviors, add separate action types.
 
-3. **If implementing the handler**: Add an exhaustive switch case in the correct domain handler file (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`). The handler invokes a controller. Follow the Action Queue rule: controller composes operations; add reducer cases in `reducer.ts` for state updates. Name controller functions by the action (e.g. `saveCatalog`), not by the UI event.
+3. **If implementing the handler**: Add an exhaustive `switch` case using the enum member (e.g. `case CatalogActionType.CatalogDetailsSaveCatalog:`) in the correct domain handler file (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`). The handler invokes a controller. Follow the Action Queue rule: controller composes operations; add reducer cases in `reducer.ts` for state updates. Name controller functions by the action (e.g. `saveCatalog`), not by the UI event.
 
 ## References
 

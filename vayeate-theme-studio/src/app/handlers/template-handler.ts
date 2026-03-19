@@ -1,42 +1,43 @@
 import * as templateController from '../../domain/controllers/template-controller';
 import type { ActionHandler, HandlerDeps, TemplateAction } from './handler-types';
+import { TemplateActionType } from '../actions/action-types';
 
 export const handleTemplateAction: ActionHandler<TemplateAction> = async (
   action: TemplateAction,
   { setState, getState, setStoreState }: HandlerDeps,
 ): Promise<void> => {
   switch (action.type) {
-    case 'TEMPLATE_PAGE_ON_LOAD':
+    case TemplateActionType.TemplatePageOnLoad:
       await templateController.loadTemplatePage(setState, setStoreState);
       break;
-    case 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateTemplatesListOnCommit:
       await templateController.selectTemplateAndLoad(setState, action.name, action.version);
       break;
-    case 'TEMPLATE_TEMPLATES_CREATE_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateTemplatesCreateButtonOnClick:
       templateController.openCreateDialog(setState);
       break;
-    case 'TEMPLATE_CREATE_DIALOG_ON_OPEN':
+    case TemplateActionType.TemplateCreateDialogOnOpen:
       templateController.openCreateDialog(setState);
       break;
-    case 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE':
+    case TemplateActionType.TemplateCreateDialogNameTextOnChange:
       templateController.setCreateFormName(setState, action.value);
       break;
-    case 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateCreateDialogCancelButtonOnClick:
       templateController.closeCreateDialog(setState);
       break;
-    case 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateCreateDialogOkButtonOnClick:
       await templateController.createTemplate(setState, setStoreState, action.params);
       break;
-    case 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick:
       await templateController.deleteTemplateVersion(setState, setStoreState, action.name, action.version);
       break;
-    case 'TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateDetailsLockButtonOnClick:
       await templateController.lockTemplate(setState, setStoreState, getState);
       break;
-    case 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateDetailsUpdateAllButtonOnClick:
       await templateController.updateAllCatalogs(setState, setStoreState, getState);
       break;
-    case 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE':
+    case TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle:
       await templateController.toggleCatalog(
         setState,
         setStoreState,
@@ -45,7 +46,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.checked ?? true,
       );
       break;
-    case 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateDetailsCatalogVersionListOnCommit:
       await templateController.changeCatalogVersion(
         setState,
         setStoreState,
@@ -54,19 +55,19 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.value,
       );
       break;
-    case 'TEMPLATE_DETAILS_SAVE_TEMPLATE':
+    case TemplateActionType.TemplateDetailsSaveTemplate:
       await templateController.saveTemplate(setState, setStoreState, action.template);
       break;
-    case 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE':
+    case TemplateActionType.TemplateMappingSearchTextOnChange:
       templateController.setMappingSearchText(setState, action.value);
       break;
-    case 'TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER_LIST_ON_SELECT':
+    case TemplateActionType.TemplateMappingColorVariableFilterListOnSelect:
       templateController.setMappingColorVariableFilter(setState, action.values);
       break;
-    case 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT':
+    case TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect:
       templateController.setMappingContrastVariableFilter(setState, action.values);
       break;
-    case 'TEMPLATE_MAPPING_EXISTING_TOKEN_GROUP_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit:
       await templateController.setMappingGroupRef(
         setState,
         setStoreState,
@@ -76,10 +77,10 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.value || null,
       );
       break;
-    case 'TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION_ON_COMMIT':
+    case TemplateActionType.TemplateMappingTokenGroupSelectionOnCommit:
       templateController.setMappingTokenGroupSelection(setState, action.value);
       break;
-    case 'TEMPLATE_MAPPING_EXISTING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit:
       await templateController.setMappingColorRef(
         setState,
         setStoreState,
@@ -90,7 +91,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.isOrphan,
       );
       break;
-    case 'TEMPLATE_MAPPING_EXISTING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit:
       await templateController.setMappingContrastRef(
         setState,
         setStoreState,
@@ -100,7 +101,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.value,
       );
       break;
-    case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick:
       await templateController.addSemanticVariant(
         setState,
         setStoreState,
@@ -111,7 +112,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.defaultGroupRef,
       );
       break;
-    case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_MODIFIER_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit:
       await templateController.updateSemanticVariantKey(
         setState,
         setStoreState,
@@ -121,7 +122,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.language,
       );
       break;
-    case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_LANGUAGE_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit:
       await templateController.updateSemanticVariantKey(
         setState,
         setStoreState,
@@ -131,7 +132,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.value ?? null,
       );
       break;
-    case 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick:
       await templateController.removeMapping(
         setState,
         setStoreState,
@@ -140,23 +141,23 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.tokenType,
       );
       break;
-    case 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE':
+    case TemplateActionType.TemplateGroupAddTextOnChange:
       templateController.setTemplateAddGroupName(setState, action.value);
       break;
-    case 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateGroupAddButtonOnClick:
       await templateController.addGroup(setState, setStoreState, getState, action.name);
       templateController.setTemplateAddGroupName(setState, '');
       break;
-    case 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateGroupRemoveButtonOnClick:
       await templateController.removeGroup(setState, setStoreState, getState, action.groupId);
       break;
-    case 'TEMPLATE_VARIABLES_SEARCH_TEXT_ON_CHANGE':
+    case TemplateActionType.TemplateVariablesSearchTextOnChange:
       templateController.setVariablesSearchText(setState, action.value);
       break;
-    case 'TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE':
+    case TemplateActionType.TemplateVariablesAddVariableNameTextOnChange:
       templateController.setTemplateAddVariableName(setState, action.value);
       break;
-    case 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK':
+    case TemplateActionType.TemplateVariablesAddVariableButtonOnClick:
       if (action.variableKind === 'contrast') {
         await templateController.addContrastVariable(
           setState,
@@ -175,7 +176,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         );
       }
       break;
-    case 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateVariablesGroupListOnCommit:
       await templateController.updateVariableGroupRef(
         setState,
         setStoreState,
@@ -184,7 +185,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
         action.value || null,
       );
       break;
-    case 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK': {
+    case TemplateActionType.TemplateVariablesRemoveButtonOnClick: {
       const t = getState().templates.template;
       if (t?.colorVariables.some((v) => v.key === action.key)) {
         await templateController.removeColorVariable(setState, setStoreState, getState, action.key);
@@ -193,7 +194,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
       }
       break;
     }
-    case 'TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT':
+    case TemplateActionType.TemplateVariablesContrastSourceListOnCommit:
       await templateController.updateContrastComparisonSource(
         setState,
         setStoreState,

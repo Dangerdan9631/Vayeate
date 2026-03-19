@@ -5,6 +5,7 @@ import { useAppState } from '../context/useAppState';
 import { ContentArea } from './ContentArea';
 import type { Theme } from '../../../model/schemas';
 import type { TabId } from '../tabs';
+import { ThemeActionType } from '../../actions/action-types';
 
 const mockTheme: Theme = {
   name: 'test-theme',
@@ -114,7 +115,7 @@ describe('ContentArea', () => {
 
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
-      ref.current!.dispatch({ type: 'THEME_THEMES_VERSION_LIST_ON_COMMIT', name: 'test-theme', version: '1.0.0' });
+      ref.current!.dispatch({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name: 'test-theme', version: '1.0.0' });
       await new Promise((r) => setTimeout(r, 150));
     });
     expect(ref.current!.state.themes.selectedRef).toEqual({ name: 'test-theme', version: '1.0.0' });

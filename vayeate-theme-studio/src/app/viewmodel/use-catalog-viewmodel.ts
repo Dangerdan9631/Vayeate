@@ -5,6 +5,7 @@ import { compareVersions } from '../../domain/utils/version';
 import { nextPatchVersion } from '../../domain/utils/version';
 import type { Catalog, CatalogReference, Token, TokenType } from '../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../domain/utils/semantic-token';
+import { CatalogActionType } from '../actions/action-types';
 
 let catalogPageLoadDispatched = false;
 
@@ -17,7 +18,7 @@ export function useCatalogViewModel() {
   useEffect(() => {
     if (catalogPageLoadDispatched) return;
     catalogPageLoadDispatched = true;
-    dispatch({ type: 'CATALOG_PAGE_ON_LOAD' });
+    dispatch({ type: CatalogActionType.CatalogPageOnLoad });
   }, [dispatch]);
 
   const catalogNames = useMemo(() => {
@@ -76,7 +77,7 @@ export function useCatalogViewModel() {
 
   const selectCatalog = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name, version });
+      dispatch({ type: CatalogActionType.CatalogCatalogsListOnCommit, name, version });
     },
     [dispatch],
   );
@@ -85,42 +86,42 @@ export function useCatalogViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        dispatch({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: best.name, version: best.version });
+        dispatch({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: best.name, version: best.version });
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: 'CATALOG_CATALOGS_CREATE_BUTTON_ON_CLICK' });
-    dispatch({ type: 'CATALOG_CREATE_DIALOG_ON_OPEN' });
+    dispatch({ type: CatalogActionType.CatalogCatalogsCreateButtonOnClick });
+    dispatch({ type: CatalogActionType.CatalogCreateDialogOnOpen });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    dispatch({ type: 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+    dispatch({ type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick });
   }, [dispatch]);
 
   const createCatalog = useCallback(
     (params: { name: string; type: 'manual' | 'remote' }) => {
-      dispatch({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
+      dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params });
     },
     [dispatch],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'CATALOG_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
+      dispatch({ type: CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick, name, version });
     },
     [dispatch],
   );
 
   const lockCatalog = useCallback(() => {
-    dispatch({ type: 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK' });
+    dispatch({ type: CatalogActionType.CatalogDetailsLockButtonOnClick });
   }, [dispatch]);
 
   const syncCatalog = useCallback(() => {
     if (!catalog || catalog.type !== 'remote') return;
-    dispatch({ type: 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK', catalog });
+    dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, catalog });
   }, [dispatch, catalog]);
 
   const addToken = useCallback(
@@ -143,7 +144,7 @@ export function useCatalogViewModel() {
           semanticTokenModifiers: merged.modifiers,
           semanticTokenLanguages: merged.languages,
         };
-        dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+        dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
         return;
       }
       const newToken: Token = { key, type: tokenType };
@@ -151,7 +152,7 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, tokens: [...base.tokens, newToken] };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -166,7 +167,7 @@ export function useCatalogViewModel() {
         ...base,
         tokens: base.tokens.filter((t) => !(t.key === key && t.type === tokenType)),
       };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -183,7 +184,7 @@ export function useCatalogViewModel() {
           t.key === oldKey && t.type === tokenType ? { ...t, key: newKey } : t,
         ),
       };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -198,7 +199,7 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, tokens: [...base.tokens, ...unique] };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -222,7 +223,7 @@ export function useCatalogViewModel() {
         semanticTokenModifiers: merged.modifiers,
         semanticTokenLanguages: merged.languages,
       };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -234,7 +235,7 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, semanticTokenTypes: types };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -246,7 +247,7 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, semanticTokenModifiers: modifiers };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
@@ -258,14 +259,14 @@ export function useCatalogViewModel() {
         ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
         : catalog;
       const updated: Catalog = { ...base, semanticTokenLanguages: languages };
-      dispatch({ type: 'CATALOG_DETAILS_SAVE_CATALOG', catalog: updated });
+      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
     },
     [dispatch, catalog],
   );
 
   const revertToVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK', name, version });
+      dispatch({ type: CatalogActionType.CatalogDetailsRevertButtonOnClick, name, version });
     },
     [dispatch],
   );

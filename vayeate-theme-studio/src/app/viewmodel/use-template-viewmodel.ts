@@ -3,6 +3,7 @@ import { useAppDispatch, useCatalogsState, useStoreState, useTemplatesState } fr
 import { getCatalogRefsFromStore, getTemplateRefsFromStore } from '../../domain/state/store-state';
 import { compareVersions } from '../../domain/utils/version';
 import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/utils/semantic-token';
+import { TemplateActionType } from '../actions/action-types';
 import type {
   CatalogReference,
   ColorVariableKey,
@@ -37,7 +38,7 @@ export function useTemplateViewModel() {
   useEffect(() => {
     if (templatePageLoadDispatched) return;
     templatePageLoadDispatched = true;
-    dispatch({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+    dispatch({ type: TemplateActionType.TemplatePageOnLoad });
   }, [dispatch]);
 
   const templateNames = useMemo(() => {
@@ -206,7 +207,7 @@ export function useTemplateViewModel() {
 
   const selectTemplate = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name, version });
+      dispatch({ type: TemplateActionType.TemplateTemplatesListOnCommit, name, version });
     },
     [dispatch],
   );
@@ -215,43 +216,43 @@ export function useTemplateViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        dispatch({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: best.name, version: best.version });
+        dispatch({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: best.name, version: best.version });
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: 'TEMPLATE_TEMPLATES_CREATE_BUTTON_ON_CLICK' });
-    dispatch({ type: 'TEMPLATE_CREATE_DIALOG_ON_OPEN' });
+    dispatch({ type: TemplateActionType.TemplateTemplatesCreateButtonOnClick });
+    dispatch({ type: TemplateActionType.TemplateCreateDialogOnOpen });
   }, [dispatch]);
 
   const closeCreateDialog = useCallback(() => {
-    dispatch({ type: 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+    dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
   }, [dispatch]);
 
   const createTemplate = useCallback(
     (params: { name: string }) => {
-      dispatch({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params });
+      dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params });
     },
     [dispatch],
   );
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK', name, version });
+      dispatch({ type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick, name, version });
     },
     [dispatch],
   );
 
   const lockTemplate = useCallback(() => {
     if (!template || !canLock) return;
-    dispatch({ type: 'TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK' });
+    dispatch({ type: TemplateActionType.TemplateDetailsLockButtonOnClick });
   }, [template, canLock, dispatch]);
 
   const setCreateFormName = useCallback(
     (value: string) => {
-      dispatch({ type: 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value });
+      dispatch({ type: TemplateActionType.TemplateCreateDialogNameTextOnChange, value });
     },
     [dispatch],
   );
@@ -262,7 +263,7 @@ export function useTemplateViewModel() {
     (catalogName: string, include: boolean) => {
       if (!template) return;
       dispatch({
-        type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE',
+        type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
         catalogName: catalogName as import('../../model/schemas').CatalogName,
         checked: include,
       });
@@ -274,7 +275,7 @@ export function useTemplateViewModel() {
     (catalogName: string, newVersion: string) => {
       if (!template) return;
       dispatch({
-        type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit,
         catalogName: catalogName as import('../../model/schemas').CatalogName,
         value: newVersion,
       });
@@ -284,7 +285,7 @@ export function useTemplateViewModel() {
 
   const updateAllCatalogsToLatest = useCallback(() => {
     if (!template || !isLatestVersion) return;
-    dispatch({ type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' });
+    dispatch({ type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick });
   }, [template, isLatestVersion, dispatch]);
 
   // --- Mapping updates (dispatch-only; processor invokes controller) ---
@@ -297,7 +298,7 @@ export function useTemplateViewModel() {
       isOrphan?: boolean,
     ) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_EXISTING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit,
         value: colorRef as ColorVariableKey,
         tokenKey,
         tokenType,
@@ -310,7 +311,7 @@ export function useTemplateViewModel() {
   const updateMappingContrastRef = useCallback(
     (tokenKey: string, tokenType: TokenType, contrastRef: ContrastVariableKey | null) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_EXISTING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit,
         value: contrastRef,
         tokenKey,
         tokenType,
@@ -322,7 +323,7 @@ export function useTemplateViewModel() {
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_EXISTING_TOKEN_GROUP_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit,
         value: groupRef ?? '',
         tokenKey,
         tokenType,
@@ -334,7 +335,7 @@ export function useTemplateViewModel() {
   const addSemanticVariantMapping = useCallback(
     (semanticType: string, modifiers: string[], language: string | null, defaultGroupRef?: string | null) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK',
+        type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick,
         semanticType,
         modifiers,
         language,
@@ -347,7 +348,7 @@ export function useTemplateViewModel() {
   const updateSemanticVariantKey = useCallback(
     (oldKey: string, modifiers: string[], language: string | null) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_MODIFIER_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit,
         tokenKey: oldKey,
         modifiers,
         language,
@@ -359,7 +360,7 @@ export function useTemplateViewModel() {
   const removeMapping = useCallback(
     (tokenKey: string, tokenType: TokenType) => {
       dispatch({
-        type: 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK',
+        type: TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick,
         tokenKey,
         tokenType,
       });
@@ -372,7 +373,7 @@ export function useTemplateViewModel() {
   const addColorVariable = useCallback(
     (key: string, groupRef?: string | null) => {
       dispatch({
-        type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK',
+        type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick,
         key,
         groupRef: groupRef ?? null,
         variableKind: 'color',
@@ -383,7 +384,7 @@ export function useTemplateViewModel() {
 
   const removeColorVariable = useCallback(
     (key: string) => {
-      dispatch({ type: 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK', key });
+      dispatch({ type: TemplateActionType.TemplateVariablesRemoveButtonOnClick, key });
     },
     [dispatch],
   );
@@ -391,7 +392,7 @@ export function useTemplateViewModel() {
   const addContrastVariable = useCallback(
     (key: string, groupRef?: string | null) => {
       dispatch({
-        type: 'TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK',
+        type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick,
         key,
         groupRef: groupRef ?? null,
         variableKind: 'contrast',
@@ -402,7 +403,7 @@ export function useTemplateViewModel() {
 
   const removeContrastVariable = useCallback(
     (key: string) => {
-      dispatch({ type: 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK', key });
+      dispatch({ type: TemplateActionType.TemplateVariablesRemoveButtonOnClick, key });
     },
     [dispatch],
   );
@@ -410,7 +411,7 @@ export function useTemplateViewModel() {
   const updateContrastComparisonSource = useCallback(
     (key: string, comparisonSourceRef: ColorVariableKey | null) => {
       dispatch({
-        type: 'TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateVariablesContrastSourceListOnCommit,
         value: comparisonSourceRef,
         contrastVariableKey: key as ContrastVariableKey,
       });
@@ -421,7 +422,7 @@ export function useTemplateViewModel() {
   const updateColorVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
       dispatch({
-        type: 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateVariablesGroupListOnCommit,
         value: groupRef ?? '',
         variableKey: key,
       });
@@ -432,7 +433,7 @@ export function useTemplateViewModel() {
   const updateContrastVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
       dispatch({
-        type: 'TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT',
+        type: TemplateActionType.TemplateVariablesGroupListOnCommit,
         value: groupRef ?? '',
         variableKey: key,
       });
@@ -446,7 +447,7 @@ export function useTemplateViewModel() {
     (name: string) => {
       const trimmed = name.trim();
       if (trimmed) {
-        dispatch({ type: 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK', name: trimmed });
+        dispatch({ type: TemplateActionType.TemplateGroupAddButtonOnClick, name: trimmed });
       }
     },
     [dispatch],
@@ -454,7 +455,7 @@ export function useTemplateViewModel() {
 
   const removeGroup = useCallback(
     (name: string) => {
-      dispatch({ type: 'TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK', groupId: name });
+      dispatch({ type: TemplateActionType.TemplateGroupRemoveButtonOnClick, groupId: name });
     },
     [dispatch],
   );

@@ -5,6 +5,7 @@ import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useCatalogViewModel } from './use-catalog-viewmodel';
 import type { Catalog } from '../../model/schemas';
+import { CatalogActionType } from '../actions/action-types';
 
 const mockCatalog: Catalog = {
   name: 'test-catalog',
@@ -85,7 +86,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-catalog', type: 'manual' } });
+      await getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params: { name: 'test-catalog', type: 'manual' } });
     });
 
     expect(result.current.catalog).not.toBeNull();
@@ -111,7 +112,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'foo', type: 'manual' } });
+      getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params: { name: 'foo', type: 'manual' } });
       await new Promise((r) => setTimeout(r, 50));
     });
 
@@ -155,7 +156,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'remote-cat', version: '1.0.0' });
+      getDispatch()?.({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: 'remote-cat', version: '1.0.0' });
     });
 
     await act(async () => {
@@ -200,7 +201,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'sem-cat', version: '1.0.0' });
+      getDispatch()?.({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -249,7 +250,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'sem-cat', version: '1.0.0' });
+      getDispatch()?.({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -294,7 +295,7 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_CATALOGS_LIST_ON_COMMIT', name: 'sem-cat', version: '1.0.0' });
+      getDispatch()?.({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: 'sem-cat', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));

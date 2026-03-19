@@ -1,5 +1,6 @@
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { CatalogType } from '../../../model/schemas';
+import { CatalogActionType } from '../../actions/action-types';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
@@ -17,11 +18,11 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
 
   function handleSubmit() {
     if (!canSubmit) return;
-    dispatch({ type: 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name, type } });
+    dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params: { name, type } });
   }
 
   function handleCancel() {
-    dispatch({ type: 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+    dispatch({ type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick });
     onCancel?.();
   }
 
@@ -38,7 +39,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
             value={name}
             placeholder="my-catalog"
             onChange={(e) =>
-              dispatch({ type: 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value: e.target.value })
+              dispatch({ type: CatalogActionType.CatalogCreateDialogNameTextOnChange, value: e.target.value })
             }
           />
         </label>
@@ -53,7 +54,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
             value={type}
             onChange={(e) =>
               dispatch({
-                type: 'CATALOG_CREATE_DIALOG_TYPE_LIST_ON_COMMIT',
+                type: CatalogActionType.CatalogCreateDialogTypeListOnCommit,
                 value: e.target.value as CatalogType,
               })
             }

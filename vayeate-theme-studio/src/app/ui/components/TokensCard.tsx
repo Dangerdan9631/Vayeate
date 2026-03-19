@@ -3,6 +3,7 @@ import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
+import { CatalogActionType } from '../../actions/action-types';
 
 interface TokensCardProps {
   catalog: Catalog;
@@ -374,7 +375,7 @@ export function TokensCard({
           <button
             type="button"
             className="btn-secondary btn-sm"
-            onClick={() => dispatch({ type: 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK' })}
+            onClick={() => dispatch({ type: CatalogActionType.CatalogTokensBulkAddButtonOnClick })}
           >
             Bulk Add
           </button>
@@ -386,7 +387,7 @@ export function TokensCard({
         placeholder="Search…"
         value={tokensSearchText}
         onChange={(e) =>
-          dispatch({ type: 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE', value: e.target.value })
+          dispatch({ type: CatalogActionType.CatalogTokensSearchTextOnChange, value: e.target.value })
         }
         aria-label="Search tokens"
       />
@@ -398,28 +399,28 @@ export function TokensCard({
           isManual={canEdit}
           onAdd={(key) => {
             dispatch({
-              type: 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK',
+              type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick,
               tokenType: tt,
               key,
             });
           }}
           onRemove={(key) => {
             dispatch({
-              type: 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK',
+              type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick,
               key: key as TokenKey,
               tokenType: tt,
             });
           }}
           onUpdateKey={(oldKey, newKey) => {
             dispatch({
-              type: 'CATALOG_TOKENS_EXISTING_TOKEN_KEY_TEXT_ON_COMMIT',
+              type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit,
               value: newKey,
               key: oldKey as TokenKey,
               tokenType: tt,
             });
           }}
           onNewKeyChange={(value) => {
-            dispatch({ type: 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE', value });
+            dispatch({ type: CatalogActionType.CatalogTokensNewTokenKeyTextOnChange, value });
           }}
         />
       ))}

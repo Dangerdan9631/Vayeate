@@ -81,7 +81,7 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 - `src/app/actions/action-queue.ts` — FIFO queue, sequential async processing
 - `src/app/actions/action-types.ts` — Discriminated union `AppActionV2`. The canonical list of all app action event names.
 - `src/app/handlers/handler-types.ts` — `HandlerDeps`, domain `Extract` aliases, `ActionHandler<T>`
-- `src/app/handlers/handler-registry.ts` — `createActionProcessor(deps)` routes to domain handlers by prefix
+- `src/app/handlers/handler-registry.ts` — `createActionProcessor(deps)` routes to domain handlers via `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`)
 - `src/app/handlers/{app,catalog,template,theme}-handler.ts` — per-domain exhaustive switches; route to controllers
 - `src/domain/` — Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
 - `src/domain/validations/` — Validators (one per file, subdirectories per concern). Controllers run validations before operations.

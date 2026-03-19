@@ -1,83 +1,84 @@
 import * as catalogController from '../../domain/controllers/catalog-controller';
 import * as undoController from '../../domain/controllers/undo-controller';
 import type { ActionHandler, CatalogAction, HandlerDeps } from './handler-types';
+import { CatalogActionType } from '../actions/action-types';
 
 export const handleCatalogAction: ActionHandler<CatalogAction> = async (
   action: CatalogAction,
   { setState, getState, setStoreState }: HandlerDeps,
 ): Promise<void> => {
   switch (action.type) {
-    case 'CATALOG_PAGE_ON_LOAD':
+    case CatalogActionType.CatalogPageOnLoad:
       await catalogController.loadCatalogRefs(setState, setStoreState);
       undoController.resetCurrentUndoStackId(setState);
       break;
-    case 'CATALOG_CATALOGS_LIST_ON_COMMIT':
+    case CatalogActionType.CatalogCatalogsListOnCommit:
       await catalogController.selectCatalogAndLoad(setState, action.name, action.version);
       break;
-    case 'CATALOG_CATALOGS_CREATE_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
       catalogController.openCatalogCreateDialog(setState);
       break;
-    case 'CATALOG_CREATE_DIALOG_ON_OPEN':
+    case CatalogActionType.CatalogCreateDialogOnOpen:
       catalogController.openCatalogCreateDialog(setState);
       break;
-    case 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE':
+    case CatalogActionType.CatalogCreateDialogNameTextOnChange:
       catalogController.setCatalogCreateFormName(setState, action.value);
       break;
-    case 'CATALOG_CREATE_DIALOG_TYPE_LIST_ON_COMMIT':
+    case CatalogActionType.CatalogCreateDialogTypeListOnCommit:
       catalogController.setCatalogCreateFormType(setState, action.value);
       break;
-    case 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogCreateDialogCancelButtonOnClick:
       catalogController.closeCatalogCreateDialog(setState);
       break;
-    case 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogCreateDialogOkButtonOnClick:
       await catalogController.createCatalog(setState, setStoreState, action.params);
       break;
-    case 'CATALOG_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
       await catalogController.deleteCatalogVersion(setState, setStoreState, action.name, action.version);
       break;
-    case 'CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogDetailsSyncButtonOnClick:
       await catalogController.syncCatalog(setState, setStoreState, action.catalog);
       break;
-    case 'CATALOG_DETAILS_LOCK_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogDetailsLockButtonOnClick:
       await catalogController.lockCatalog(setState, setStoreState, getState);
       break;
-    case 'CATALOG_DETAILS_REVERT_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogDetailsRevertButtonOnClick:
       await catalogController.revertCatalogToVersion(setState, setStoreState, action.name, action.version);
       break;
-    case 'CATALOG_DETAILS_SAVE_CATALOG':
+    case CatalogActionType.CatalogDetailsSaveCatalog:
       await catalogController.saveCatalog(setState, setStoreState, action.catalog);
       break;
-    case 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT':
+    case CatalogActionType.CatalogDetailsSourceUrlTextOnCommit:
       await catalogController.updateSourceUrl(setState, setStoreState, getState, action.sourceIndex, action.value);
       break;
-    case 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT':
+    case CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit:
       await catalogController.updateSourceTokenType(setState, setStoreState, getState, action.sourceIndex, action.value);
       break;
-    case 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT':
+    case CatalogActionType.CatalogDetailsSourceTypeListOnCommit:
       await catalogController.updateSourceType(setState, setStoreState, getState, action.sourceIndex, action.value);
       break;
-    case 'CATALOG_DETAILS_SOURCE_REMOVE_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick:
       await catalogController.removeSource(setState, setStoreState, getState, action.sourceIndex);
       break;
-    case 'CATALOG_DETAILS_NEW_SOURCE_URL_TEXT_ON_CHANGE':
+    case CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange:
       catalogController.setCatalogNewSourceUrl(setState, action.value);
       break;
-    case 'CATALOG_DETAILS_NEW_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT':
+    case CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit:
       catalogController.setCatalogNewSourceTokenType(setState, action.value);
       break;
-    case 'CATALOG_DETAILS_NEW_SOURCE_TYPE_LIST_ON_COMMIT':
+    case CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit:
       catalogController.setCatalogNewSourceType(setState, action.value);
       break;
-    case 'CATALOG_DETAILS_NEW_SOURCE_ADD_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick:
       await catalogController.addNewSource(setState, setStoreState, getState);
       break;
-    case 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE':
+    case CatalogActionType.CatalogTokensSearchTextOnChange:
       catalogController.setCatalogTokensSearchText(setState, action.value);
       break;
-    case 'CATALOG_TOKENS_BULK_ADD_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogTokensBulkAddButtonOnClick:
       catalogController.openBulkAddDialog(setState);
       break;
-    case 'CATALOG_TOKENS_EXISTING_TOKEN_KEY_TEXT_ON_COMMIT':
+    case CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit:
       await catalogController.updateTokenKey(
         setState,
         setStoreState,
@@ -87,13 +88,13 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
         action.tokenType,
       );
       break;
-    case 'CATALOG_TOKENS_TOKEN_REMOVE_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogTokensTokenRemoveButtonOnClick:
       await catalogController.removeToken(setState, setStoreState, getState, action.key, action.tokenType);
       break;
-    case 'CATALOG_TOKENS_NEW_TOKEN_KEY_TEXT_ON_CHANGE':
+    case CatalogActionType.CatalogTokensNewTokenKeyTextOnChange:
       catalogController.setCatalogNewTokenKey(setState, action.value);
       break;
-    case 'CATALOG_TOKENS_NEW_TOKEN_ADD_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogTokensNewTokenAddButtonOnClick:
       await catalogController.addNewToken(
         setState,
         setStoreState,
@@ -102,16 +103,16 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
         action.key,
       );
       break;
-    case 'CATALOG_BULK_ADD_TOKENS_DIALOG_ON_OPEN':
+    case CatalogActionType.CatalogBulkAddTokensDialogOnOpen:
       catalogController.openBulkAddDialog(setState);
       break;
-    case 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE':
+    case CatalogActionType.CatalogBulkAddTokensTextOnChange:
       catalogController.setCatalogBulkAddText(setState, action.value);
       break;
-    case 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
       catalogController.closeBulkAddDialog(setState);
       break;
-    case 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK':
+    case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
       await catalogController.bulkAddTokens(setState, setStoreState, getState);
       break;
   }

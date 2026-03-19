@@ -1,5 +1,6 @@
 import { useAppDispatch } from '../context/slice-contexts';
 import type { CatalogName, CatalogReference } from '../../../model/schemas';
+import { TemplateActionType } from '../../actions/action-types';
 
 interface TemplateCatalogsCardProps {
   catalogNames: string[];
@@ -29,7 +30,7 @@ export function TemplateCatalogsCard({
             type="button"
             className="btn btn-primary btn-sm"
             onClick={() => {
-              dispatch({ type: 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK' });
+              dispatch({ type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick });
             }}
           >
             Update All
@@ -62,7 +63,7 @@ export function TemplateCatalogsCard({
                 onClick={(e) => {
                   e.preventDefault();
                   dispatch({
-                    type: 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE',
+                    type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
                     catalogName: name as CatalogName,
                     checked: !included,
                   });
@@ -90,7 +91,7 @@ export function TemplateCatalogsCard({
                 onChange={(e) => {
                   const value = e.target.value;
                   dispatch({
-                    type: 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT',
+                    type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit,
                     catalogName: name as CatalogName,
                     value,
                   });

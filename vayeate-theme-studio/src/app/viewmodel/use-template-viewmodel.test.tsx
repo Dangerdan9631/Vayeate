@@ -4,6 +4,7 @@ import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useTemplateViewModel, computeOrphanKeys } from './use-template-viewmodel';
 import type { Catalog, Template, Mapping, Token } from '../../model/schemas';
+import { CatalogActionType, TemplateActionType } from '../actions/action-types';
 
 const mockTemplate: Template = {
   name: 'test-template',
@@ -98,7 +99,7 @@ describe('useTemplateViewModel', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
+      await getDispatch()?.({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name: 'test-template' } });
     });
 
     expect(result.current.template).not.toBeNull();
@@ -192,7 +193,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
+      getDispatch()?.({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -241,7 +242,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -285,7 +286,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -338,7 +339,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -397,7 +398,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -446,7 +447,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -491,7 +492,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -538,7 +539,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -585,7 +586,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -631,7 +632,7 @@ describe('useTemplateViewModel groups', () => {
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -699,10 +700,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+      await getDispatch()?.({ type: TemplateActionType.TemplatePageOnLoad });
     });
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
+      await getDispatch()?.({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -764,10 +765,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+      await getDispatch()?.({ type: TemplateActionType.TemplatePageOnLoad });
     });
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK', params: { name: 'test-template' } });
+      await getDispatch()?.({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name: 'test-template' } });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -833,7 +834,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -885,7 +886,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -937,7 +938,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1000,7 +1001,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1060,7 +1061,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1123,7 +1124,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1183,7 +1184,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1244,7 +1245,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1307,7 +1308,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1367,10 +1368,10 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_PAGE_ON_LOAD' });
+      await getDispatch()?.({ type: TemplateActionType.TemplatePageOnLoad });
     });
     await act(async () => {
-      await getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      await getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1412,7 +1413,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));
@@ -1503,10 +1504,10 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     const { result } = renderHook(() => useTemplateViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: 'CATALOG_PAGE_ON_LOAD' });
+      getDispatch()?.({ type: CatalogActionType.CatalogPageOnLoad });
     });
     await act(async () => {
-      getDispatch()?.({ type: 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT', name: 'test-template', version: '1.0.0' });
+      getDispatch()?.({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: 'test-template', version: '1.0.0' });
     });
     await act(async () => {
       await new Promise((r) => setTimeout(r, 100));

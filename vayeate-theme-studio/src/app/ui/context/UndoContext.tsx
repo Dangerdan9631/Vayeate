@@ -12,6 +12,7 @@ import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
 import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
 import { createUndoProcessor } from '../../../domain/core/undo-processor';
 import { useAppState } from './useAppState';
+import { AppActionType } from '../../actions/action-types';
 
 export type SetState = (update: AppStateUpdate) => void;
 
@@ -79,16 +80,16 @@ export function UndoProvider({
   }, [currentStackId, undoListVersion, setState]);
 
   const undo = useCallback(() => {
-    dispatch({ type: 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppEditMenuUndoButtonOnClick });
   }, [dispatch]);
 
   const redo = useCallback(() => {
-    dispatch({ type: 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK' });
+    dispatch({ type: AppActionType.AppEditMenuRedoButtonOnClick });
   }, [dispatch]);
 
   const goTo = useCallback(
     (frameId: string) => {
-      dispatch({ type: 'APP_HISTORY_MENU_GO_TO_BUTTON_ON_CLICK', frameId });
+      dispatch({ type: AppActionType.AppHistoryMenuGoToButtonOnClick, frameId });
     },
     [dispatch],
   );

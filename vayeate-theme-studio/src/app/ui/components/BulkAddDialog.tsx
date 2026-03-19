@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import { parseThemeJson, type BulkParseResult } from '../../../domain/utils/theme-parser';
+import { CatalogActionType } from '../../actions/action-types';
 
 interface BulkAddDialogProps {
   existingTokenKeys: Set<string>;
@@ -28,7 +29,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
   const canSubmit = parsed !== null && parsed.newCount > 0;
 
   function handleCancel() {
-    dispatch({ type: 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK' });
+    dispatch({ type: CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick });
     onCancel?.();
   }
 
@@ -47,7 +48,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
           value={text}
           placeholder='{"colors": { ... }, "tokenColors": [ ... ], "semanticTokenColors": { ... }}'
           onChange={(e) =>
-            dispatch({ type: 'CATALOG_BULK_ADD_TOKENS_TEXT_ON_CHANGE', value: e.target.value })
+            dispatch({ type: CatalogActionType.CatalogBulkAddTokensTextOnChange, value: e.target.value })
           }
         />
 
@@ -75,7 +76,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={() => dispatch({ type: 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK' })}
+            onClick={() => dispatch({ type: CatalogActionType.CatalogBulkAddTokensOkButtonOnClick })}
           >
             Add {parsed ? parsed.newCount : 0} token{parsed?.newCount !== 1 ? 's' : ''}
           </button>

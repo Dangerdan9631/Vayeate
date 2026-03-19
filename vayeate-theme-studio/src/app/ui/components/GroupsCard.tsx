@@ -1,4 +1,5 @@
 import { useAppDispatch, useTemplatesState } from '../context/slice-contexts';
+import { TemplateActionType } from '../../actions/action-types';
 
 interface GroupsCardProps {
   groups: readonly string[];
@@ -23,8 +24,8 @@ export function GroupsCard({
 
   function handleAdd() {
     if (!canAdd) return;
-    dispatch({ type: 'TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK', name: trimmed });
-    dispatch({ type: 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE', value: '' });
+    dispatch({ type: TemplateActionType.TemplateGroupAddButtonOnClick, name: trimmed });
+    dispatch({ type: TemplateActionType.TemplateGroupAddTextOnChange, value: '' });
   }
 
   return (
@@ -38,7 +39,7 @@ export function GroupsCard({
             placeholder="Group name…"
             value={addGroupName}
             onChange={(e) => {
-              dispatch({ type: 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE', value: e.target.value });
+              dispatch({ type: TemplateActionType.TemplateGroupAddTextOnChange, value: e.target.value });
             }}
             onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           />

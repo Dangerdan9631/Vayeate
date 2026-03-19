@@ -10,6 +10,7 @@ import { Ribbon } from './components/Ribbon';
 import { StatusBar } from './components/StatusBar';
 import { StyledTooltip } from './components/StyledTooltip';
 import type { TabId } from './tabs';
+import { AppActionType } from '../actions/action-types';
 
 function AppShell() {
   const activeTab = useActiveTab();
@@ -22,12 +23,12 @@ function AppShell() {
   }, [activeTab]);
 
   useEffect(() => {
-    dispatch({ type: 'APP_APP_ON_LOAD' });
+    dispatch({ type: AppActionType.AppAppOnLoad });
   }, [dispatch]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      dispatch({ type: 'APP_APP_ON_CLOSE' });
+      dispatch({ type: AppActionType.AppAppOnClose });
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -61,7 +62,7 @@ function AppShell() {
   const onTabChange = useCallback(
     (tabId: TabId) => {
       setVisibleTab(tabId);
-      dispatch({ type: 'APP_RIBBON_TAB_BUTTON_ON_CLICK', tabId });
+      dispatch({ type: AppActionType.AppRibbonTabButtonOnClick, tabId });
     },
     [dispatch],
   );

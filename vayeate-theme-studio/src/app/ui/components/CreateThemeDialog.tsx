@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAppDispatch } from '../context/slice-contexts';
+import { ThemeActionType } from '../../actions/action-types';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
@@ -35,7 +36,7 @@ export function CreateThemeDialog({ onCancel, onCreate }: CreateThemeDialogProps
             onChange={(e) => {
               const value = e.target.value;
               setName(value);
-              dispatch({ type: 'THEME_CREATE_DIALOG_NAME_TEXT_ON_CHANGE', value });
+              dispatch({ type: ThemeActionType.ThemeCreateDialogNameTextOnChange, value });
             }}
           />
         </label>
@@ -48,7 +49,7 @@ export function CreateThemeDialog({ onCancel, onCreate }: CreateThemeDialogProps
             type="button"
             className="btn-secondary"
             onClick={() => {
-              dispatch({ type: 'THEME_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK' });
+              dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
               onCancel();
             }}
           >

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../context/slice-contexts';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
+import { TemplateActionType } from '../../actions/action-types';
 import type {
   ColorVariable,
   ColorVariableKey,
@@ -983,7 +984,7 @@ export function MappingsCard({
   function toggleColorKey(key: string) {
     setSelectedColorKeys((prev) => {
       const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
-      dispatch({ type: 'TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ColorVariableKey[] });
+      dispatch({ type: TemplateActionType.TemplateMappingColorVariableFilterListOnSelect, values: next as ColorVariableKey[] });
       return next;
     });
   }
@@ -991,7 +992,7 @@ export function MappingsCard({
   function toggleContrastKey(key: string) {
     setSelectedContrastKeys((prev) => {
       const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
-      dispatch({ type: 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT', values: next as ContrastVariableKey[] });
+      dispatch({ type: TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect, values: next as ContrastVariableKey[] });
       return next;
     });
   }
@@ -1008,7 +1009,7 @@ export function MappingsCard({
           onChange={(e) => {
             const value = e.target.value;
             setSearchQuery(value);
-            dispatch({ type: 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE', value });
+            dispatch({ type: TemplateActionType.TemplateMappingSearchTextOnChange, value });
           }}
           aria-label="Search mappings"
         />

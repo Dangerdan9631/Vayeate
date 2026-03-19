@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAppDispatch, useTemplatesState } from '../context/slice-contexts';
 import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../../model/schemas';
 import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../model/schemas';
+import { TemplateActionType } from '../../actions/action-types';
 
 const UNGROUPED_KEY = '__ungrouped__';
 
@@ -447,7 +448,7 @@ export function VariablesCard({
         placeholder="Search…"
         value={variablesSearchText}
         onChange={(e) => {
-          dispatch({ type: 'TEMPLATE_VARIABLES_SEARCH_TEXT_ON_CHANGE', value: e.target.value });
+          dispatch({ type: TemplateActionType.TemplateVariablesSearchTextOnChange, value: e.target.value });
         }}
         aria-label="Search variables"
       />

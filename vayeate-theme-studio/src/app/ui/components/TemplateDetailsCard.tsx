@@ -1,5 +1,6 @@
 import { useAppDispatch } from '../context/slice-contexts';
 import type { Template } from '../../../model/schemas';
+import { TemplateActionType } from '../../actions/action-types';
 
 interface TemplateDetailsCardProps {
   template: Template;
@@ -54,7 +55,7 @@ export function TemplateDetailsCard({
             className="btn-secondary"
             disabled={!canLock}
             onClick={() => {
-              dispatch({ type: 'TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK' });
+              dispatch({ type: TemplateActionType.TemplateDetailsLockButtonOnClick });
               onLock();
             }}
             title={canLock ? 'Lock this version' : 'All mappings must have a color variable assigned'}
