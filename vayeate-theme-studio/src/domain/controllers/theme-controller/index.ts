@@ -1,20 +1,20 @@
 // theme-list
 export { themeStackId } from '../../utils/stack-id';
-export { loadThemeRefs } from './theme-list/loadThemeRefs';
+export { LoadThemeRefsController } from './theme-list/loadThemeRefs';
+export { LoadThemePageController } from './theme-list/loadThemePage';
 export { selectThemeAndLoad } from './theme-list/selectThemeAndLoad';
 export { selectThemeByName } from './theme-list/selectThemeByName';
-export { loadThemePage } from './theme-list/loadThemePage';
 export { openThemeCreateDialog } from './theme-list/openThemeCreateDialog';
 export { closeThemeCreateDialog } from './theme-list/closeThemeCreateDialog';
-export { createTheme } from './theme-list/createTheme';
-export { deleteThemeVersion } from './theme-list/deleteThemeVersion';
+export { CreateThemeController } from './theme-list/createTheme';
+export { DeleteThemeVersionController } from './theme-list/deleteThemeVersion';
 export { setThemeCreateFormName } from './theme-list/setThemeCreateFormName';
 
 // theme-details
 export { saveTheme } from './theme-details/saveTheme';
-export { restoreThemeState } from './theme-details/restoreThemeState';
+export { RestoreThemeStateController } from './theme-details/restoreThemeState';
 export { clearThemeSaveError } from './theme-details/clearThemeSaveError';
-export { incrementThemeVersion } from './theme-details/incrementThemeVersion';
+export { IncrementThemeVersionController } from './theme-details/incrementThemeVersion';
 export { setThemeTemplate } from './theme-details/setThemeTemplate';
 export { setThemePreviewTokenRef } from './theme-details/setThemePreviewTokenRef';
 export { setThemeTemplateToggle } from './theme-details/setThemeTemplateToggle';

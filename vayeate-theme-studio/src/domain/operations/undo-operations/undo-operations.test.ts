@@ -1,11 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AppState } from '../../state/app-state';
 import { initialAppState } from '../../state/app-state';
+import { AppStateSetter } from '../../state/app-state-setter';
+import { AppStateGetter } from '../../state/app-state-getter';
 import {
-  clearPersistedUndo,
-  performUndo,
-  performRedo,
-  performHistoryGoTo,
+  ClearPersistedUndo,
+  PerformUndo,
+  PerformRedo,
+  PerformHistoryGoTo,
   setCurrentUndoStackId,
 } from '.';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
@@ -20,11 +22,15 @@ vi.mock('../../core/undo-manager-v2', () => ({
 
 describe('undo-operations', () => {
   let setState: ReturnType<typeof vi.fn>;
+  let appStateSetter: AppStateSetter;
   let getState: () => AppState;
+  let appStateGetter: AppStateGetter;
 
   beforeEach(() => {
     setState = vi.fn();
+    appStateSetter = new AppStateSetter(setState);
     getState = vi.fn(() => ({ ...initialAppState }));
+    appStateGetter = new AppStateGetter(getState);
     vi.mocked(undoManagerV2.getOrCreate).mockResolvedValue({
       undo: vi.fn().mockReturnValue(false),
       redo: vi.fn().mockReturnValue(false),
@@ -39,14 +45,14 @@ describe('undo-operations', () => {
     vi.clearAllMocks();
   });
 
-  it('performUndo does nothing when currentUndoStackId is null', async () => {
-    getState = vi.fn(() => ({ ...initialAppState, undoStackId: { currentUndoStackId: null, undoListVersion: 0 } }));
-    await performUndo(setState, getState);
+  it('PerformUndo does nothing when currentUndoStackId is null', async () => {
+    appStateGetter = new AppStateGetter(() => ({ ...initialAppState, undoStackId: { currentUndoStackId: null, undoListVersion: 0 } }));
+    await new PerformUndo(appStateSetter, appStateGetter).execute();
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
     expect(setState).not.toHaveBeenCalled();
   });
 
-  it('performUndo calls getOrCreate and stack.undo when currentUndoStackId is set', async () => {
+  it('PerformUndo calls getOrCreate and stack.undo when currentUndoStackId is set', async () => {
     const stack = {
       undo: vi.fn().mockReturnValue(true),
       redo: vi.fn().mockReturnValue(false),
@@ -56,25 +62,23 @@ describe('undo-operations', () => {
       canRedo: false,
     };
     vi.mocked(undoManagerV2.getOrCreate).mockResolvedValue(stack as never);
-    getState = vi.fn(() => ({
+    appStateGetter = new AppStateGetter(() => ({
       ...initialAppState,
       undoStackId: { currentUndoStackId: 'stack-1', undoListVersion: 0 },
     }));
-    await performUndo(setState, getState);
+    await new PerformUndo(appStateSetter, appStateGetter).execute();
     expect(undoManagerV2.getOrCreate).toHaveBeenCalledWith('stack-1', expect.objectContaining({ processor: expect.any(Object) }));
     expect(stack.undo).toHaveBeenCalledTimes(1);
     expect(setState).toHaveBeenCalledWith({ type: 'SET_UNDO_LIST_VERSION', value: 1 });
   });
 
-  it('performRedo does nothing when currentUndoStackId is null', async () => {
-    getState = vi.fn(() => ({ ...initialAppState }));
-    await performRedo(setState, getState);
+  it('PerformRedo does nothing when currentUndoStackId is null', async () => {
+    await new PerformRedo(appStateSetter, appStateGetter).execute();
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
   });
 
-  it('performHistoryGoTo does nothing when currentUndoStackId is null', async () => {
-    getState = vi.fn(() => ({ ...initialAppState }));
-    await performHistoryGoTo(setState, getState, 'frame-1');
+  it('PerformHistoryGoTo does nothing when currentUndoStackId is null', async () => {
+    await new PerformHistoryGoTo(appStateSetter, appStateGetter).execute('frame-1');
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
   });
 
@@ -86,13 +90,13 @@ describe('undo-operations', () => {
     expect(setState).toHaveBeenCalledWith({ type: 'SET_CURRENT_UNDO_STACK_ID', stackId: null });
   });
 
-  describe('clearPersistedUndo', () => {
+  describe('ClearPersistedUndo', () => {
     beforeEach(() => {
       vi.mocked(undoManagerV2.clearPersisted).mockResolvedValue(undefined);
     });
 
-    it('configures and clears undoManagerV2', async () => {
-      await clearPersistedUndo();
+    it('execute configures and clears undoManagerV2', async () => {
+      await new ClearPersistedUndo().execute();
       expect(undoManagerV2.configure).toHaveBeenCalledTimes(1);
       expect(undoManagerV2.clearPersisted).toHaveBeenCalledTimes(1);
     });

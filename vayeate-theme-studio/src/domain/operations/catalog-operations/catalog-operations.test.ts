@@ -3,13 +3,14 @@ import type { Catalog } from '../../../model/schemas';
 import { catalogService } from '../../../gateway/services/catalog-service';
 import { syncCatalogTokens } from '../../../gateway/services/catalog-sync';
 import {
+  LoadCatalogRefs,
   createCatalog,
   deleteCatalog,
   loadCatalog,
-  loadCatalogRefs,
   saveCatalog,
   syncCatalog,
 } from '.';
+import { StoreStateSetter } from '../../state/store-state-setter';
 
 vi.mock('../../../gateway/services/catalog-service', () => ({
   catalogService: {
@@ -55,11 +56,11 @@ describe('catalog-operations', () => {
     expect(result).toEqual({ name: 'c1', version: '1.0.0' });
   });
 
-  it('loadCatalogRefs sets store entries from listCatalogs result', async () => {
-    const setState = vi.fn();
+  it('LoadCatalogRefs.execute sets store entries from listCatalogs result', async () => {
     const setStoreState = vi.fn();
+    const op = new LoadCatalogRefs(new StoreStateSetter(setStoreState));
 
-    await loadCatalogRefs(setState, setStoreState);
+    await op.execute();
 
     expect(catalogService.listCatalogs).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({

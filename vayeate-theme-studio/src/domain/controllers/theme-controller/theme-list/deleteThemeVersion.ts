@@ -1,46 +1,52 @@
+import { singleton } from 'tsyringe';
 import { findNearestVersionRef } from '../../../utils/version';
 import { themeStackId } from '../../../utils/stack-id';
-import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
-  deleteTheme as deleteThemeOp,
-  setSelectedThemeRef,
-  setTheme,
-  setThemePaneSelections as setThemePaneSelectionsOp,
-  loadTheme,
-  loadThemeRefs as loadThemeRefsOp,
-  getThemeRefs,
-  type SetState,
+  DeleteTheme,
+  LoadThemeRefs,
+  GetThemeRefs,
+  SetSelectedThemeRef,
+  LoadTheme,
+  SetThemePaneSelections,
+  SetTheme,
 } from '../../../operations/theme-operations';
-import { setCurrentUndoStackId, type GetState } from '../../../operations/undo-operations';
+import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
 
-export async function deleteThemeVersion(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  name: string,
-  version: string,
-): Promise<void> {
-  await deleteThemeOp(name, version);
-  await loadThemeRefsOp(setState, setStoreState);
-  const refs = getThemeRefs(getState);
-  const nextTh = findNearestVersionRef(refs, name, version);
+@singleton()
+export class DeleteThemeVersionController {
+  constructor(
+    private readonly deleteTheme: DeleteTheme,
+    private readonly loadThemeRefs: LoadThemeRefs,
+    private readonly getThemeRefs: GetThemeRefs,
+    private readonly setSelectedThemeRef: SetSelectedThemeRef,
+    private readonly loadTheme: LoadTheme,
+    private readonly setThemePaneSelections: SetThemePaneSelections,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
+    private readonly setTheme: SetTheme,
+  ) {}
 
-  if (nextTh) {
-    setSelectedThemeRef(setState, nextTh);
-    const loadedNextTh = await loadTheme(setState, nextTh.name, nextTh.version);
-    if (loadedNextTh) {
-      setThemePaneSelectionsOp(
-        setState,
-        loadedNextTh.colorAssignments.map((a) => a.colorRef),
-        loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
-      );
+  async run(name: string, version: string): Promise<void> {
+    await this.deleteTheme.execute(name, version);
+    await this.loadThemeRefs.execute();
+    const refs = this.getThemeRefs.execute();
+    const nextTh = findNearestVersionRef(refs, name, version);
+
+    if (nextTh) {
+      this.setSelectedThemeRef.execute(nextTh);
+      const loadedNextTh = await this.loadTheme.execute(nextTh.name, nextTh.version);
+      if (loadedNextTh) {
+        this.setThemePaneSelections.execute(
+          loadedNextTh.colorAssignments.map((a) => a.colorRef),
+          loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
+        );
+      }
+      this.setCurrentUndoStackId.execute(themeStackId(nextTh.name, nextTh.version));
+    } else {
+      this.setSelectedThemeRef.execute(null);
+      this.setTheme.execute(null);
+      this.setThemePaneSelections.execute([], []);
+      this.setCurrentUndoStackId.execute(null);
     }
-    setCurrentUndoStackId(setState, themeStackId(nextTh.name, nextTh.version));
-  } else {
-    setSelectedThemeRef(setState, null);
-    setTheme(setState, null);
-    setThemePaneSelectionsOp(setState, [], []);
-    setCurrentUndoStackId(setState, null);
   }
 }
 

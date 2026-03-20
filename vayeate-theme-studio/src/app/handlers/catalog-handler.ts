@@ -1,6 +1,7 @@
 import * as catalogController from '../../domain/controllers/catalog-controller';
 import type { ActionHandler, CatalogAction, HandlerDeps } from './handler-types';
 import { CatalogActionType } from '../actions/action-types';
+import { container } from 'tsyringe';
 
 export const handleCatalogAction: ActionHandler<CatalogAction> = async (
   action: CatalogAction,
@@ -8,7 +9,7 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
 ): Promise<void> => {
   switch (action.type) {
     case CatalogActionType.CatalogPageOnLoad:
-      await catalogController.loadCatalogPage(setState, setStoreState);
+      await container.resolve(catalogController.LoadCatalogPageController).run();
       break;
     case CatalogActionType.CatalogCatalogsListOnCommit:
       await catalogController.selectCatalogAndLoad(setState, action.name, action.version);

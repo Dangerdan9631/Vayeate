@@ -1,8 +1,16 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import { loadThemeRefs as loadThemeRefsOp, loadPreviews, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { LoadThemeRefs, LoadPreviews } from '../../../operations/theme-operations';
 
-export async function loadThemeRefs(setState: SetState, setStoreState: SetStoreState): Promise<void> {
-  await loadThemeRefsOp(setState, setStoreState);
-  await loadPreviews(setState);
+@singleton()
+export class LoadThemeRefsController {
+  constructor(
+    private readonly loadThemeRefs: LoadThemeRefs,
+    private readonly loadPreviews: LoadPreviews,
+  ) {}
+
+  async run(): Promise<void> {
+    await this.loadThemeRefs.execute();
+    await this.loadPreviews.execute();
+  }
 }
 

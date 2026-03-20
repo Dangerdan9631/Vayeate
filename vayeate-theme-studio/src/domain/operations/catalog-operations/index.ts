@@ -5,7 +5,7 @@ export { setCatalogRefs } from './catalog-list/setCatalogRefs';
 export { setSelectedRef } from './catalog-list/setSelectedRef';
 export { setCatalogCreateFormName } from './catalog-list/setCatalogCreateFormName';
 export { setCatalogCreateFormType } from './catalog-list/setCatalogCreateFormType';
-export { loadCatalogRefs } from './catalog-list/loadCatalogRefs';
+export { LoadCatalogRefs } from './catalog-list/loadCatalogRefs';
 export { createCatalog } from './catalog-list/createCatalog';
 export { refreshCatalogRefs } from './catalog-list/refreshCatalogRefs';
 export { deleteCatalog } from './catalog-list/deleteCatalog';

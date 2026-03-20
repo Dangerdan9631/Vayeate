@@ -1,39 +1,41 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import * as undoOperations from '../../operations/undo-operations';
-import { performUndo, performRedo, performHistoryGoTo } from '.';
-
-vi.mock('../../operations/undo-operations', () => ({
-  performUndo: vi.fn(),
-  performRedo: vi.fn(),
-  performHistoryGoTo: vi.fn(),
-}));
+import { describe, expect, it, vi } from 'vitest';
+import type { PerformUndo, PerformRedo, PerformHistoryGoTo, SetCurrentUndoStackId } from '../../operations/undo-operations';
+import { PerformUndoController, PerformRedoController, PerformHistoryGoToController, ResetCurrentUndoStackIdController } from '.';
 
 describe('undo-controller', () => {
-  const setState = vi.fn();
-  const getState = vi.fn();
-
-  beforeEach(() => {
-    vi.mocked(undoOperations.performUndo).mockResolvedValue(undefined);
-    vi.mocked(undoOperations.performRedo).mockResolvedValue(undefined);
-    vi.mocked(undoOperations.performHistoryGoTo).mockResolvedValue(undefined);
+  describe('PerformUndoController', () => {
+    it('run delegates to PerformUndo.execute', async () => {
+      const execute = vi.fn().mockResolvedValue(undefined);
+      const op = { execute } as unknown as PerformUndo;
+      await new PerformUndoController(op).run();
+      expect(execute).toHaveBeenCalledTimes(1);
+    });
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
+  describe('PerformRedoController', () => {
+    it('run delegates to PerformRedo.execute', async () => {
+      const execute = vi.fn().mockResolvedValue(undefined);
+      const op = { execute } as unknown as PerformRedo;
+      await new PerformRedoController(op).run();
+      expect(execute).toHaveBeenCalledTimes(1);
+    });
   });
 
-  it('performUndo calls undo-operations.performUndo', async () => {
-    await performUndo(setState, getState);
-    expect(undoOperations.performUndo).toHaveBeenCalledWith(setState, getState);
+  describe('PerformHistoryGoToController', () => {
+    it('run delegates to PerformHistoryGoTo.execute with frameId', async () => {
+      const execute = vi.fn().mockResolvedValue(undefined);
+      const op = { execute } as unknown as PerformHistoryGoTo;
+      await new PerformHistoryGoToController(op).run('frame-123');
+      expect(execute).toHaveBeenCalledWith('frame-123');
+    });
   });
 
-  it('performRedo calls undo-operations.performRedo', async () => {
-    await performRedo(setState, getState);
-    expect(undoOperations.performRedo).toHaveBeenCalledWith(setState, getState);
-  });
-
-  it('performHistoryGoTo calls undo-operations.performHistoryGoTo with frameId', async () => {
-    await performHistoryGoTo(setState, getState, 'frame-123');
-    expect(undoOperations.performHistoryGoTo).toHaveBeenCalledWith(setState, getState, 'frame-123');
+  describe('ResetCurrentUndoStackIdController', () => {
+    it('run delegates to SetCurrentUndoStackId.execute with null', () => {
+      const execute = vi.fn();
+      const op = { execute } as unknown as SetCurrentUndoStackId;
+      new ResetCurrentUndoStackIdController(op).run();
+      expect(execute).toHaveBeenCalledWith(null);
+    });
   });
 });

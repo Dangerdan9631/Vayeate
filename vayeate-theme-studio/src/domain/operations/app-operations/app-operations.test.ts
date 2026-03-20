@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SaveColorScheme, unloadApplication } from '.';
+import { SaveColorScheme, UnloadApplication } from '.';
 import { configService } from '../../../gateway/services/config-service';
 
 vi.mock('../../../gateway/services/config-service', () => ({
@@ -17,10 +17,7 @@ describe('app-operations', () => {
     expect(configService.save).toHaveBeenCalledWith({ colorScheme: 'light' });
   });
 
-  it('unloadApplication resolves without throwing', async () => {
-    await expect(unloadApplication()).resolves.toBeUndefined();
-    await expect(unloadApplication(undefined)).resolves.toBeUndefined();
-    const setState = () => {};
-    await expect(unloadApplication(setState)).resolves.toBeUndefined();
+  it('UnloadApplication execute resolves without throwing', async () => {
+    await expect(new UnloadApplication().execute()).resolves.toBeUndefined();
   });
 });

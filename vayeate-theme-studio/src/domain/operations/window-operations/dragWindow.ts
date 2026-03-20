@@ -1,5 +1,9 @@
+import { singleton } from 'tsyringe';
 import { windowService } from '../../../gateway/services/window-service';
 
-export async function dragWindow(): Promise<void> {
-  await windowService.drag();
+@singleton()
+export class DragWindow {
+  async execute(): Promise<void> {
+    await windowService.drag();
+  }
 }

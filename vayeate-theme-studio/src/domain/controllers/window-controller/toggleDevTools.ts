@@ -1,5 +1,11 @@
-import { toggleDevTools as toggleDevToolsOp } from '../../operations/window-operations';
+import { singleton } from 'tsyringe';
+import { ToggleDevTools } from '../../operations/window-operations';
 
-export async function toggleDevTools(): Promise<void> {
-  await toggleDevToolsOp();
+@singleton()
+export class ToggleDevToolsController {
+  constructor(private readonly toggleDevTools: ToggleDevTools) {}
+
+  async run(): Promise<void> {
+    await this.toggleDevTools.execute();
+  }
 }

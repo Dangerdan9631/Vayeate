@@ -8,7 +8,7 @@ import { container } from 'tsyringe';
 
 export const handleAppAction: ActionHandler<AppAction> = async (
   action: AppAction,
-  { setState, getState, setUiState }: HandlerDeps,
+  _deps: HandlerDeps,
 ): Promise<void> => {
   switch (action.type) {
     case AppActionType.AppAppOnLoad:
@@ -18,43 +18,43 @@ export const handleAppAction: ActionHandler<AppAction> = async (
       await container.resolve(appController.UnloadApplicationController).run();
       break;
     case AppActionType.AppFileMenuExitButtonOnClick:
-      await windowController.closeWindow();
+      await container.resolve(windowController.CloseWindowController).run();
       break;
     case AppActionType.AppEditMenuUndoButtonOnClick:
-      await undoController.performUndo(setState, getState);
+      await container.resolve(undoController.PerformUndoController).run();
       break;
     case AppActionType.AppEditMenuRedoButtonOnClick:
-      await undoController.performRedo(setState, getState);
+      await container.resolve(undoController.PerformRedoController).run();
       break;
     case AppActionType.AppHistoryMenuGoToButtonOnClick:
-      await undoController.performHistoryGoTo(setState, getState, action.frameId);
+      await container.resolve(undoController.PerformHistoryGoToController).run(action.frameId);
       break;
     case AppActionType.AppViewMenuReloadButtonOnClick:
-      await windowController.reloadWindow();
+      await container.resolve(windowController.ReloadWindowController).run();
       break;
     case AppActionType.AppViewMenuForceReloadButtonOnClick:
-      await windowController.forceReloadWindow();
+      await container.resolve(windowController.ForceReloadWindowController).run();
       break;
     case AppActionType.AppViewMenuToggleDevToolsButtonOnClick:
-      await windowController.toggleDevTools();
+      await container.resolve(windowController.ToggleDevToolsController).run();
       break;
     case AppActionType.AppRibbonTabButtonOnClick:
-      tabController.setActiveTab(setUiState, action.tabId);
+      container.resolve(tabController.SetActiveTabController).run(action.tabId);
       break;
     case AppActionType.AppBarThemeCheckboxOnToggle:
       await container.resolve(appController.ToggleColorSchemeController).run(action.checked);
       break;
     case AppActionType.AppBarMinimizeButtonOnClick:
-      await windowController.minimizeWindow(getState);
+      await container.resolve(windowController.MinimizeWindowController).run();
       break;
     case AppActionType.AppBarMaximizeButtonOnClick:
-      await windowController.maximizeWindow(getState);
+      await container.resolve(windowController.MaximizeWindowController).run();
       break;
     case AppActionType.AppBarCloseButtonOnClick:
-      await windowController.closeWindow();
+      await container.resolve(windowController.CloseWindowController).run();
       break;
     case AppActionType.AppBarTitleBarOnDrag:
-      await windowController.dragWindow();
+      await container.resolve(windowController.DragWindowController).run();
       break;
   }
 };

@@ -2,33 +2,33 @@ export type { RestoreThemeStateParams, SetState } from './types';
 
 // theme-list
 export { setThemeRefs } from './theme-list/setThemeRefs';
-export { setSelectedThemeRef } from './theme-list/setSelectedThemeRef';
-export { setThemeCreateFormName } from './theme-list/setThemeCreateFormName';
-export { loadThemeRefs } from './theme-list/loadThemeRefs';
-export { createTheme } from './theme-list/createTheme';
-export { deleteTheme } from './theme-list/deleteTheme';
-export { getThemeRefs } from './theme-list/getThemeRefs';
+export { SetSelectedThemeRef, setSelectedThemeRef } from './theme-list/setSelectedThemeRef';
+export { SetThemeCreateFormName, setThemeCreateFormName } from './theme-list/setThemeCreateFormName';
+export { LoadThemeRefs } from './theme-list/loadThemeRefs';
+export { CreateTheme, createTheme } from './theme-list/createTheme';
+export { DeleteTheme, deleteTheme } from './theme-list/deleteTheme';
+export { GetThemeRefs, getThemeRefs } from './theme-list/getThemeRefs';
 
 // theme-details
-export { setTheme } from './theme-details/setTheme';
-export { setThemeSaveError } from './theme-details/setThemeSaveError';
+export { SetTheme, setTheme } from './theme-details/setTheme';
+export { SetThemeSaveError, setThemeSaveError } from './theme-details/setThemeSaveError';
 export { setGenerateResult } from './theme-details/setGenerateResult';
-export { loadTheme } from './theme-details/loadTheme';
-export { saveTheme } from './theme-details/saveTheme';
+export { LoadTheme, loadTheme } from './theme-details/loadTheme';
+export { SaveTheme, saveTheme } from './theme-details/saveTheme';
 export { generateTheme } from './theme-details/generateTheme';
 
 // previews
 export { setThemePreviewVariableFilterText } from './previews/setThemePreviewVariableFilterText';
 export { setThemePreviewVariableFilterClear } from './previews/setThemePreviewVariableFilterClear';
 export { setThemePreviewSelectedSampleKey } from './previews/setThemePreviewSelectedSampleKey';
-export { loadPreviews } from './previews/loadPreviews';
+export { LoadPreviews, loadPreviews } from './previews/loadPreviews';
 
 // palette-hue
-export { setThemeHueAdjustment } from './palette-hue/setThemeHueAdjustment';
-export { setThemeHueReferenceHex } from './palette-hue/setThemeHueReferenceHex';
+export { SetThemeHueAdjustment, setThemeHueAdjustment } from './palette-hue/setThemeHueAdjustment';
+export { SetThemeHueReferenceHex, setThemeHueReferenceHex } from './palette-hue/setThemeHueReferenceHex';
 
 // pickers
-export { setThemePaneSelections } from './pickers/setThemePaneSelections';
+export { SetThemePaneSelections, setThemePaneSelections } from './pickers/setThemePaneSelections';
 export { setThemeOpenPickerContext } from './pickers/setThemeOpenPickerContext';
 
 // palette-color-assign

@@ -1,5 +1,9 @@
+import { singleton } from 'tsyringe';
 import { windowService } from '../../../gateway/services/window-service';
 
-export async function minimizeWindow(): Promise<void> {
-  await windowService.minimize();
+@singleton()
+export class MinimizeWindow {
+  async execute(): Promise<void> {
+    await windowService.minimize();
+  }
 }

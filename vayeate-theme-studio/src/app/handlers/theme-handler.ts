@@ -1,14 +1,15 @@
 import * as themeController from '../../domain/controllers/theme-controller';
 import type { ActionHandler, HandlerDeps, ThemeAction } from './handler-types';
 import { ThemeActionType } from '../actions/action-types';
+import { container } from 'tsyringe';
 
 export const handleThemeAction: ActionHandler<ThemeAction> = async (
   action: ThemeAction,
-  { setState, getState, setStoreState }: HandlerDeps,
+  { setState, getState }: HandlerDeps,
 ): Promise<void> => {
   switch (action.type) {
     case ThemeActionType.ThemePageOnLoad:
-      await themeController.loadThemePage(setState, setStoreState);
+      await container.resolve(themeController.LoadThemePageController).run();
       break;
     case ThemeActionType.ThemePageSaveErrorDismissButtonOnClick:
       themeController.clearThemeSaveError(setState);
@@ -32,13 +33,13 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       themeController.closeThemeCreateDialog(setState);
       break;
     case ThemeActionType.ThemeCreateDialogOkButtonOnClick:
-      await themeController.createTheme(setState, setStoreState, action.params);
+      await container.resolve(themeController.CreateThemeController).run(action.params);
       break;
     case ThemeActionType.ThemeDetailsDeleteVersionButtonOnClick:
-      await themeController.deleteThemeVersion(setState, setStoreState, getState, action.name, action.version);
+      await container.resolve(themeController.DeleteThemeVersionController).run(action.name, action.version);
       break;
     case ThemeActionType.ThemeDetailsIncrementVersionButtonOnClick:
-      await themeController.incrementThemeVersion(setState, setStoreState, getState);
+      await container.resolve(themeController.IncrementThemeVersionController).run();
       break;
     case ThemeActionType.ThemeDetailsGenerateButtonOnClick:
       await themeController.generateTheme(

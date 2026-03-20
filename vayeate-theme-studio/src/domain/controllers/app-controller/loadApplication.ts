@@ -1,14 +1,22 @@
-import type { SetStoreState } from '../../state/store-state-reducer';
-import type { SetState } from '../../operations/app-operations';
-import { loadCatalogRefs } from '../../operations/catalog-operations';
-import { loadTemplateRefs } from '../../operations/template-operations';
-import { loadThemeRefs } from '../../operations/theme-operations';
-import { clearPersistedUndo } from '../../operations/undo-operations';
+import { singleton } from 'tsyringe';
+import { ClearPersistedUndo } from '../../operations/undo-operations';
+import { LoadCatalogRefs } from '../../operations/catalog-operations';
+import { LoadTemplateRefs } from '../../operations/template-operations';
+import { LoadThemeRefs } from '../../operations/theme-operations';
 
-export async function loadApplication(setState: SetState, setStoreState: SetStoreState): Promise<void> {
-  await clearPersistedUndo();
+@singleton()
+export class LoadApplicationController {
+  constructor(
+    private readonly clearPersistedUndo: ClearPersistedUndo,
+    private readonly loadCatalogRefs: LoadCatalogRefs,
+    private readonly loadTemplateRefs: LoadTemplateRefs,
+    private readonly loadThemeRefs: LoadThemeRefs,
+  ) {}
 
-  await loadCatalogRefs(setState, setStoreState);
-  await loadTemplateRefs(setState, setStoreState);
-  await loadThemeRefs(setState, setStoreState);
+  async run(): Promise<void> {
+    await this.clearPersistedUndo.execute();
+    await this.loadCatalogRefs.execute();
+    await this.loadTemplateRefs.execute();
+    await this.loadThemeRefs.execute();
+  }
 }

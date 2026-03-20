@@ -11,6 +11,9 @@ import {
 import { storeStateReducer, type StoreStateUpdate } from '../../../domain/state/store-state-reducer';
 import { SetUiState, uiStateReducer, type UiStateUpdate } from '../../../domain/state/ui-state-reducer';
 import { UiStateSetter } from '../../../domain/state/ui-state-setter';
+import { AppStateSetter } from '../../../domain/state/app-state-setter';
+import { AppStateGetter } from '../../../domain/state/app-state-getter';
+import { StoreStateSetter } from '../../../domain/state/store-state-setter';
 import { container } from 'tsyringe';
 import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
@@ -60,6 +63,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+  useEffect(() => {
+    container.registerInstance(AppStateSetter, new AppStateSetter(setState));
+  }, [setState]);
+
+  useEffect(() => {
+    container.registerInstance(AppStateGetter, new AppStateGetter(getState));
+  }, [getState]);
 
   const setWindowState = useCallback(
     (update: WindowStateUpdate) => {
@@ -88,6 +98,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+
+  useEffect(() => {
+    container.registerInstance(StoreStateSetter, new StoreStateSetter(setStoreState));
+  }, [setStoreState]);
 
   const queueRef = useRef<ActionQueue | null>(null);
 

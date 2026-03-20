@@ -1,5 +1,9 @@
+import { singleton } from 'tsyringe';
 import { windowService } from '../../../gateway/services/window-service';
 
-export async function restoreWindow(): Promise<void> {
-  await windowService.restore();
+@singleton()
+export class RestoreWindow {
+  async execute(): Promise<void> {
+    await windowService.restore();
+  }
 }

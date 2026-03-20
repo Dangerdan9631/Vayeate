@@ -1,9 +1,7 @@
 import { vi } from 'vitest';
 import { catalogSchema } from '../../../model/schemas';
 import { createCatalogWithParams } from '../../../model/factories';
-import { loadCatalogsForDisplay, loadCatalogPage } from '.';
-import * as catalogListController from './catalog-list/loadCatalogRefs';
-import * as undoOperations from '../../operations/undo-operations';
+import { loadCatalogsForDisplay, LoadCatalogPageController } from '.';
 const loadCatalogForDisplayMock = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 
 vi.mock('../../operations/catalog-operations', async (importOriginal) => {
@@ -68,23 +66,19 @@ describe('loadCatalogsForDisplay', () => {
   });
 });
 
-describe('loadCatalogPage', () => {
+describe('LoadCatalogPageController', () => {
   it('loads catalog refs then resets current undo stack id', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
-    const loadRefsSpy = vi
-      .spyOn(catalogListController, 'loadCatalogRefs')
-      .mockResolvedValue(undefined);
-    const setUndoSpy = vi
-      .spyOn(undoOperations, 'setCurrentUndoStackId')
-      .mockImplementation(() => {});
+    const loadRefsMock = { execute: vi.fn().mockResolvedValue(undefined) };
+    const setUndoMock = { execute: vi.fn() };
 
-    await loadCatalogPage(setState, setStoreState);
+    const controller = new LoadCatalogPageController(loadRefsMock as any, setUndoMock as any);
 
-    expect(loadRefsSpy).toHaveBeenCalledWith(setState, setStoreState);
-    expect(setUndoSpy).toHaveBeenCalledWith(setState, null);
-    expect(loadRefsSpy.mock.invocationCallOrder[0]).toBeLessThan(
-      setUndoSpy.mock.invocationCallOrder[0],
+    await controller.run();
+
+    expect(loadRefsMock.execute).toHaveBeenCalledTimes(1);
+    expect(setUndoMock.execute).toHaveBeenCalledWith(null);
+    expect(loadRefsMock.execute.mock.invocationCallOrder[0]).toBeLessThan(
+      setUndoMock.execute.mock.invocationCallOrder[0],
     );
   });
 });

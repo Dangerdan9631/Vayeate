@@ -1,6 +1,7 @@
 import * as templateController from '../../domain/controllers/template-controller';
 import type { ActionHandler, HandlerDeps, TemplateAction } from './handler-types';
 import { TemplateActionType } from '../actions/action-types';
+import { container } from 'tsyringe';
 
 export const handleTemplateAction: ActionHandler<TemplateAction> = async (
   action: TemplateAction,
@@ -8,7 +9,7 @@ export const handleTemplateAction: ActionHandler<TemplateAction> = async (
 ): Promise<void> => {
   switch (action.type) {
     case TemplateActionType.TemplatePageOnLoad:
-      await templateController.loadTemplatePage(setState, setStoreState);
+      await container.resolve(templateController.LoadTemplatePageController).run();
       break;
     case TemplateActionType.TemplateTemplatesListOnCommit:
       await templateController.selectTemplateAndLoad(setState, action.name, action.version);

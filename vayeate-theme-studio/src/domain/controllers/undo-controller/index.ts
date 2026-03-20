@@ -1,4 +1,4 @@
-export { performUndo } from './performUndo';
-export { performRedo } from './performRedo';
-export { performHistoryGoTo } from './performHistoryGoTo';
-export { resetCurrentUndoStackId } from './resetCurrentUndoStackId';
+export { PerformUndoController } from './performUndo';
+export { PerformRedoController } from './performRedo';
+export { PerformHistoryGoToController } from './performHistoryGoTo';
+export { ResetCurrentUndoStackIdController } from './resetCurrentUndoStackId';

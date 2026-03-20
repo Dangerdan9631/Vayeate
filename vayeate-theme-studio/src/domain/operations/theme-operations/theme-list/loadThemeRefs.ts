@@ -1,14 +1,19 @@
+import { injectable } from 'tsyringe';
 import { themeService } from '../../../../gateway/services/theme-service';
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import type { SetState } from '../types';
+import { StoreStateSetter } from '../../../state/store-state-setter';
 
 /** Load theme refs from data dir into store (set theme entries from ref list). */
-export async function loadThemeRefs(_setState: SetState, setStoreState: SetStoreState): Promise<void> {
-  const refs = await themeService.listThemes();
-  setStoreState({
-    type: 'SET_STORE_THEME_ENTRIES',
-    entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),
-  });
+@injectable()
+export class LoadThemeRefs {
+  constructor(private readonly storeStateSetter: StoreStateSetter) {}
+
+  async execute(): Promise<void> {
+    const refs = await themeService.listThemes();
+    this.storeStateSetter.apply({
+      type: 'SET_STORE_THEME_ENTRIES',
+      entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),
+    });
+  }
 }
 
 

@@ -1,37 +1,46 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
 import {
-  createTheme as createThemeOperation,
-  loadThemeRefs as loadThemeRefsOp,
-  setTheme,
-  setSelectedThemeRef,
-  setThemeCreateFormName,
-  setThemePaneSelections as setThemePaneSelectionsOp,
-  type SetState,
+  CreateTheme,
+  LoadThemeRefs,
+  SetTheme,
+  SetSelectedThemeRef,
+  SetThemePaneSelections,
+  SetThemeCreateFormName,
 } from '../../../operations/theme-operations';
-import { setCurrentUndoStackId } from '../../../operations/undo-operations';
+import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
+import { AppStateSetter } from '../../../state/app-state-setter';
 import { themeStackId } from '../../../utils/stack-id';
 
-export async function createTheme(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  params: { name: string },
-): Promise<void> {
-  setState({ type: 'SET_THEME_IS_CREATING', value: true });
-  setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
-  setThemeCreateFormName(setState, '');
-  try {
-    const newTheme = await createThemeOperation(setState, params);
-    await loadThemeRefsOp(setState, setStoreState);
-    setTheme(setState, newTheme);
-    setSelectedThemeRef(setState, { name: newTheme.name, version: newTheme.version });
-    setThemePaneSelectionsOp(
-      setState,
-      newTheme.colorAssignments.map((a) => a.colorRef),
-      newTheme.contrastAssignments.map((a) => a.contrastVariableRef),
-    );
-    setCurrentUndoStackId(setState, themeStackId(newTheme.name, newTheme.version));
-  } finally {
-    setState({ type: 'SET_THEME_IS_CREATING', value: false });
+@singleton()
+export class CreateThemeController {
+  constructor(
+    private readonly createTheme: CreateTheme,
+    private readonly loadThemeRefs: LoadThemeRefs,
+    private readonly setTheme: SetTheme,
+    private readonly setSelectedThemeRef: SetSelectedThemeRef,
+    private readonly setThemePaneSelections: SetThemePaneSelections,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
+    private readonly setThemeCreateFormName: SetThemeCreateFormName,
+    private readonly appStateSetter: AppStateSetter,
+  ) {}
+
+  async run(params: { name: string }): Promise<void> {
+    this.appStateSetter.apply({ type: 'SET_THEME_IS_CREATING', value: true });
+    this.appStateSetter.apply({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
+    this.setThemeCreateFormName.execute('');
+    try {
+      const newTheme = await this.createTheme.execute(params);
+      await this.loadThemeRefs.execute();
+      this.setTheme.execute(newTheme);
+      this.setSelectedThemeRef.execute({ name: newTheme.name, version: newTheme.version });
+      this.setThemePaneSelections.execute(
+        newTheme.colorAssignments.map((a) => a.colorRef),
+        newTheme.contrastAssignments.map((a) => a.contrastVariableRef),
+      );
+      this.setCurrentUndoStackId.execute(themeStackId(newTheme.name, newTheme.version));
+    } finally {
+      this.appStateSetter.apply({ type: 'SET_THEME_IS_CREATING', value: false });
+    }
   }
 }
 

@@ -1,5 +1,11 @@
-import { closeWindow as closeWindowOp } from '../../operations/window-operations';
+import { singleton } from 'tsyringe';
+import { CloseWindow } from '../../operations/window-operations';
 
-export async function closeWindow(): Promise<void> {
-  await closeWindowOp();
+@singleton()
+export class CloseWindowController {
+  constructor(private readonly closeWindow: CloseWindow) {}
+
+  async run(): Promise<void> {
+    await this.closeWindow.execute();
+  }
 }

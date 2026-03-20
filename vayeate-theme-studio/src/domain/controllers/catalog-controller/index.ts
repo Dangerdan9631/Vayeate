@@ -1,9 +1,9 @@
 // catalog-list
-export { loadCatalogRefs } from './catalog-list/loadCatalogRefs';
+export { LoadCatalogRefsController } from './catalog-list/loadCatalogRefs';
 export { loadCatalogForDisplay } from './catalog-list/loadCatalogForDisplay';
 export { catalogStackId } from '../../utils/stack-id';
 export { loadCatalogsForDisplay } from './catalog-list/loadCatalogsForDisplay';
-export { loadCatalogPage } from './catalog-list/loadCatalogPage';
+export { LoadCatalogPageController } from './catalog-list/loadCatalogPage';
 export { selectCatalogAndLoad } from './catalog-list/selectCatalogAndLoad';
 export { openCatalogCreateDialog } from './catalog-list/openCatalogCreateDialog';
 export { closeCatalogCreateDialog } from './catalog-list/closeCatalogCreateDialog';

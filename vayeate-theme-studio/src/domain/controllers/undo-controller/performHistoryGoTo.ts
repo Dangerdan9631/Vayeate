@@ -1,11 +1,11 @@
-import type { SetState } from '../../operations/app-operations';
-import type { GetState } from '../../operations/undo-operations';
-import { performHistoryGoTo as performHistoryGoToOp } from '../../operations/undo-operations';
+import { singleton } from 'tsyringe';
+import { PerformHistoryGoTo } from '../../operations/undo-operations';
 
-export async function performHistoryGoTo(
-  setState: SetState,
-  getState: GetState,
-  frameId: string,
-): Promise<void> {
-  await performHistoryGoToOp(setState, getState, frameId);
+@singleton()
+export class PerformHistoryGoToController {
+  constructor(private readonly performHistoryGoTo: PerformHistoryGoTo) {}
+
+  async run(frameId: string): Promise<void> {
+    await this.performHistoryGoTo.execute(frameId);
+  }
 }

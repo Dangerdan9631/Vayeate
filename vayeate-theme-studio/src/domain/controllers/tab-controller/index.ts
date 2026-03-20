@@ -1,1 +1,1 @@
-export { setActiveTab } from './setActiveTab';
+export { SetActiveTabController } from './setActiveTab';

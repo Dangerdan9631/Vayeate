@@ -1,50 +1,60 @@
+import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { nextPatchVersion } from '../../../utils/version';
-import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
-  setSelectedThemeRef,
-  setThemeHueAdjustment as setThemeHueAdjustmentOp,
-  setThemeSaveError,
-  setThemePaneSelections as setThemePaneSelectionsOp,
-  saveTheme as saveThemeOp,
-  loadTheme,
-  loadThemeRefs as loadThemeRefsOp,
-  type SetState,
+  SetSelectedThemeRef,
+  SetThemeHueAdjustment,
+  SaveTheme,
+  SetThemeSaveError,
+  LoadThemeRefs,
+  SetThemePaneSelections,
+  LoadTheme,
 } from '../../../operations/theme-operations';
-import { setCurrentUndoStackId, type GetState } from '../../../operations/undo-operations';
+import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import { clearPendingSave } from '../theme-list/theme-save-state';
 import { themeStackId } from '../../../utils/stack-id';
 
-export async function incrementThemeVersion(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-): Promise<void> {
-  const state = getState();
-  const theme = state.themes.theme;
-  if (!theme) return;
-  const newVersion = nextPatchVersion(theme.version);
-  const bumped: Theme = { ...theme, version: newVersion };
-  clearPendingSave();
-  setThemeHueAdjustmentOp(setState, 0);
-  try {
-    await saveThemeOp(bumped);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    setThemeSaveError(setState, message);
-    return;
+@singleton()
+export class IncrementThemeVersionController {
+  constructor(
+    private readonly setSelectedThemeRef: SetSelectedThemeRef,
+    private readonly setThemeHueAdjustment: SetThemeHueAdjustment,
+    private readonly saveTheme: SaveTheme,
+    private readonly setThemeSaveError: SetThemeSaveError,
+    private readonly loadThemeRefs: LoadThemeRefs,
+    private readonly setThemePaneSelections: SetThemePaneSelections,
+    private readonly loadTheme: LoadTheme,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
+    private readonly appStateGetter: AppStateGetter,
+  ) {}
+
+  async run(): Promise<void> {
+    const state = this.appStateGetter.current();
+    const theme = state.themes.theme;
+    if (!theme) return;
+    const newVersion = nextPatchVersion(theme.version);
+    const bumped: Theme = { ...theme, version: newVersion };
+    clearPendingSave();
+    this.setThemeHueAdjustment.execute(0);
+    try {
+      await this.saveTheme.execute(bumped);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.setThemeSaveError.execute(message);
+      return;
+    }
+    await this.loadThemeRefs.execute();
+    this.setSelectedThemeRef.execute({ name: theme.name, version: newVersion });
+    const loaded = await this.loadTheme.execute(theme.name, newVersion);
+    if (loaded) {
+      this.setThemePaneSelections.execute(
+        loaded.colorAssignments.map((a) => a.colorRef),
+        loaded.contrastAssignments.map((a) => a.contrastVariableRef),
+      );
+    }
+    this.setCurrentUndoStackId.execute(themeStackId(theme.name, newVersion));
   }
-  await loadThemeRefsOp(setState, setStoreState);
-  setSelectedThemeRef(setState, { name: theme.name, version: newVersion });
-  const loaded = await loadTheme(setState, theme.name, newVersion);
-  if (loaded) {
-    setThemePaneSelectionsOp(
-      setState,
-      loaded.colorAssignments.map((a) => a.colorRef),
-      loaded.contrastAssignments.map((a) => a.contrastVariableRef),
-    );
-  }
-  setCurrentUndoStackId(setState, themeStackId(theme.name, newVersion));
 }
 
 

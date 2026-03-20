@@ -1,6 +1,12 @@
+import { singleton } from 'tsyringe';
 import type { TabId } from '../../state/tab-id';
-import type { SetUiState } from '../../state/ui-state-reducer';
+import { UiStateSetter } from '../../state/ui-state-setter';
 
-export function setActiveTab(setUiState: SetUiState, tabId: TabId): void {
-  setUiState({ type: 'SET_UI_ACTIVE_TAB_ID', tabId });
+@singleton()
+export class SetActiveTabController {
+  constructor(private readonly uiStateSetter: UiStateSetter) {}
+
+  run(tabId: TabId): void {
+    this.uiStateSetter.apply({ type: 'SET_UI_ACTIVE_TAB_ID', tabId });
+  }
 }

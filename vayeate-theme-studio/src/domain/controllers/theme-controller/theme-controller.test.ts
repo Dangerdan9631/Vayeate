@@ -8,14 +8,12 @@ import {
   clearPreviewVariableFilter,
   setPreviewSelectedSample,
   previewSampleButtonScroll,
-  loadThemePage,
+  LoadThemePageController,
   commitHueReferenceColor,
   handleMemberSwatchRightClick,
 } from '.';
-import * as themeListController from './theme-list/loadThemeRefs';
 import * as hueController from './palette-hue/setThemeHueReferenceHex';
 import * as hueAdjustmentController from './palette-hue/setThemeHueAdjustment';
-import * as undoOperations from '../../operations/undo-operations';
 
 describe('createThemeWithParams', () => {
   it('returns an object that satisfies theme schema', () => {
@@ -120,22 +118,18 @@ describe('theme routing wrapper controllers', () => {
     vi.restoreAllMocks();
   });
 
-  it('loadThemePage composes loadThemeRefs then resets current undo stack id', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
-    const loadRefsSpy = vi
-      .spyOn(themeListController, 'loadThemeRefs')
-      .mockResolvedValue(undefined);
-    const setUndoSpy = vi
-      .spyOn(undoOperations, 'setCurrentUndoStackId')
-      .mockImplementation(() => {});
+  it('LoadThemePageController composes LoadThemeRefsController then resets current undo stack id', async () => {
+    const loadRefsMock = { run: vi.fn().mockResolvedValue(undefined) };
+    const setUndoMock = { execute: vi.fn() };
 
-    await loadThemePage(setState, setStoreState);
+    const controller = new LoadThemePageController(loadRefsMock as any, setUndoMock as any);
 
-    expect(loadRefsSpy).toHaveBeenCalledWith(setState, setStoreState);
-    expect(setUndoSpy).toHaveBeenCalledWith(setState, null);
-    expect(loadRefsSpy.mock.invocationCallOrder[0]).toBeLessThan(
-      setUndoSpy.mock.invocationCallOrder[0],
+    await controller.run();
+
+    expect(loadRefsMock.run).toHaveBeenCalledTimes(1);
+    expect(setUndoMock.execute).toHaveBeenCalledWith(null);
+    expect(loadRefsMock.run.mock.invocationCallOrder[0]).toBeLessThan(
+      setUndoMock.execute.mock.invocationCallOrder[0],
     );
   });
 

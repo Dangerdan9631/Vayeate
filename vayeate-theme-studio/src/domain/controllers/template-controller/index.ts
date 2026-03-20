@@ -1,7 +1,7 @@
 // template-list
 export { templateStackId } from '../../utils/stack-id';
-export { loadTemplateRefs } from './template-list/loadTemplateRefs';
-export { loadTemplatePage } from './template-list/loadTemplatePage';
+export { LoadTemplateRefsController } from './template-list/loadTemplateRefs';
+export { LoadTemplatePageController } from './template-list/loadTemplatePage';
 export { selectTemplateAndLoad } from './template-list/selectTemplateAndLoad';
 export { openCreateDialog } from './template-list/openCreateDialog';
 export { setCreateFormName } from './template-list/setCreateFormName';

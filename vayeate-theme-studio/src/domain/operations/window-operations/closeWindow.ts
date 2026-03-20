@@ -1,5 +1,9 @@
+import { singleton } from 'tsyringe';
 import { windowService } from '../../../gateway/services/window-service';
 
-export async function closeWindow(): Promise<void> {
-  await windowService.close();
+@singleton()
+export class CloseWindow {
+  async execute(): Promise<void> {
+    await windowService.close();
+  }
 }

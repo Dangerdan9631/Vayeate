@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { windowService } from '../../../gateway/services/window-service';
 import {
-  closeWindow,
-  maximizeWindow,
-  restoreWindow,
-  minimizeWindow,
-  dragWindow,
-  reloadWindow,
-  toggleDevTools,
+  CloseWindow,
+  MaximizeWindow,
+  RestoreWindow,
+  MinimizeWindow,
+  DragWindow,
+  ReloadWindow,
+  ToggleDevTools,
 } from '.';
 
 vi.mock('../../../gateway/services/window-service', () => ({
@@ -39,51 +39,51 @@ describe('window-operations', () => {
     vi.clearAllMocks();
   });
 
-  it('closeWindow calls windowService.close', async () => {
-    await closeWindow();
+  it('CloseWindow execute calls windowService.close', async () => {
+    await new CloseWindow().execute();
     expect(windowService.close).toHaveBeenCalledTimes(1);
   });
 
-  it('maximizeWindow calls windowService.maximize', async () => {
-    await maximizeWindow();
+  it('MaximizeWindow execute calls windowService.maximize', async () => {
+    await new MaximizeWindow().execute();
     expect(windowService.maximize).toHaveBeenCalledTimes(1);
   });
 
-  it('restoreWindow calls windowService.restore', async () => {
-    await restoreWindow();
+  it('RestoreWindow execute calls windowService.restore', async () => {
+    await new RestoreWindow().execute();
     expect(windowService.restore).toHaveBeenCalledTimes(1);
   });
 
-  it('minimizeWindow calls windowService.minimize', async () => {
-    await minimizeWindow();
+  it('MinimizeWindow execute calls windowService.minimize', async () => {
+    await new MinimizeWindow().execute();
     expect(windowService.minimize).toHaveBeenCalledTimes(1);
   });
 
-  it('dragWindow calls windowService.drag', async () => {
-    await dragWindow();
+  it('DragWindow execute calls windowService.drag', async () => {
+    await new DragWindow().execute();
     expect(windowService.drag).toHaveBeenCalledTimes(1);
   });
 
-  it('reloadWindow(false) calls windowService.reload', async () => {
-    await reloadWindow(false);
+  it('ReloadWindow execute(false) calls windowService.reload', async () => {
+    await new ReloadWindow().execute(false);
     expect(windowService.reload).toHaveBeenCalledTimes(1);
     expect(windowService.reloadForce).not.toHaveBeenCalled();
   });
 
-  it('reloadWindow(true) calls windowService.reloadForce', async () => {
-    await reloadWindow(true);
+  it('ReloadWindow execute(true) calls windowService.reloadForce', async () => {
+    await new ReloadWindow().execute(true);
     expect(windowService.reloadForce).toHaveBeenCalledTimes(1);
     expect(windowService.reload).not.toHaveBeenCalled();
   });
 
-  it('reloadWindow() defaults to windowService.reload', async () => {
-    await reloadWindow();
+  it('ReloadWindow execute() defaults to windowService.reload', async () => {
+    await new ReloadWindow().execute();
     expect(windowService.reload).toHaveBeenCalledTimes(1);
     expect(windowService.reloadForce).not.toHaveBeenCalled();
   });
 
-  it('toggleDevTools calls windowService.toggleDevTools', async () => {
-    await toggleDevTools();
+  it('ToggleDevTools execute calls windowService.toggleDevTools', async () => {
+    await new ToggleDevTools().execute();
     expect(windowService.toggleDevTools).toHaveBeenCalledTimes(1);
   });
 });

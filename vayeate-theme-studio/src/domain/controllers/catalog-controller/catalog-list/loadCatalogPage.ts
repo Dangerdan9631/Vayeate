@@ -1,9 +1,17 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import { setCurrentUndoStackId, type SetState } from '../../../operations/undo-operations';
-import { loadCatalogRefs } from './loadCatalogRefs';
+import { singleton } from 'tsyringe';
+import { LoadCatalogRefs } from '../../../operations/catalog-operations';
+import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
 
-export async function loadCatalogPage(setState: SetState, setStoreState: SetStoreState): Promise<void> {
-  await loadCatalogRefs(setState, setStoreState);
-  setCurrentUndoStackId(setState, null);
+@singleton()
+export class LoadCatalogPageController {
+  constructor(
+    private readonly loadCatalogRefs: LoadCatalogRefs,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
+  ) {}
+
+  async run(): Promise<void> {
+    await this.loadCatalogRefs.execute();
+    this.setCurrentUndoStackId.execute(null);
+  }
 }
 

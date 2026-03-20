@@ -2,13 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Template } from '../../../model/schemas';
 import { templateService } from '../../../gateway/services/template-service';
 import {
+  LoadTemplateRefs,
   createTemplate,
   deleteTemplate,
   loadTemplate,
-  loadTemplateRefs,
   refreshTemplateRefs,
   saveTemplate,
 } from '.';
+import { StoreStateSetter } from '../../state/store-state-setter';
 
 vi.mock('../../../gateway/services/template-service', () => ({
   templateService: {
@@ -42,11 +43,11 @@ describe('template-operations', () => {
     expect(result).toEqual({ name: 't1', version: '1.0.0' });
   });
 
-  it('loadTemplateRefs sets store entries from listTemplates result', async () => {
-    const setState = vi.fn();
+  it('LoadTemplateRefs.execute sets store entries from listTemplates result', async () => {
     const setStoreState = vi.fn();
+    const op = new LoadTemplateRefs(new StoreStateSetter(setStoreState));
 
-    await loadTemplateRefs(setState, setStoreState);
+    await op.execute();
 
     expect(templateService.listTemplates).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({

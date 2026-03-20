@@ -1,16 +1,23 @@
-import { restoreWindow as restoreWindowOp } from '../../operations/window-operations';
-import type { AppState } from '../../state/app-state';
+import { singleton } from 'tsyringe';
+import { RestoreWindow } from '../../operations/window-operations';
+import { AppStateGetter } from '../../state/app-state-getter';
 import { createLogger } from '../../utils/logger';
 import { canRestoreWindow } from '../../validations/window-validations';
 
 const log = createLogger('WindowController');
 
-export type GetState = () => AppState;
+@singleton()
+export class RestoreWindowController {
+  constructor(
+    private readonly restoreWindow: RestoreWindow,
+    private readonly appStateGetter: AppStateGetter,
+  ) {}
 
-export async function restoreWindow(getState: GetState): Promise<void> {
-  if (!canRestoreWindow(getState)) {
-    log.warn('restoreWindow skipped: validation failed (window not maximized or minimized)');
-    return;
+  async run(): Promise<void> {
+    if (!canRestoreWindow(() => this.appStateGetter.current())) {
+      log.warn('restoreWindow skipped: validation failed (window not maximized or minimized)');
+      return;
+    }
+    await this.restoreWindow.execute();
   }
-  await restoreWindowOp();
 }

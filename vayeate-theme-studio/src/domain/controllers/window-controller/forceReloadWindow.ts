@@ -1,5 +1,11 @@
-import { reloadWindow as reloadWindowOp } from '../../operations/window-operations';
+import { singleton } from 'tsyringe';
+import { ReloadWindow } from '../../operations/window-operations';
 
-export async function forceReloadWindow(): Promise<void> {
-  await reloadWindowOp(true);
+@singleton()
+export class ForceReloadWindowController {
+  constructor(private readonly reloadWindow: ReloadWindow) {}
+
+  async run(): Promise<void> {
+    await this.reloadWindow.execute(true);
+  }
 }

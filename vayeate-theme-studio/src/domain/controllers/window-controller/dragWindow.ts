@@ -1,5 +1,11 @@
-import { dragWindow as dragWindowOp } from '../../operations/window-operations';
+import { singleton } from 'tsyringe';
+import { DragWindow } from '../../operations/window-operations';
 
-export async function dragWindow(): Promise<void> {
-  await dragWindowOp();
+@singleton()
+export class DragWindowController {
+  constructor(private readonly dragWindow: DragWindow) {}
+
+  async run(): Promise<void> {
+    await this.dragWindow.execute();
+  }
 }

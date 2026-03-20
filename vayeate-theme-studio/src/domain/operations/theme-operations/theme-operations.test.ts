@@ -2,13 +2,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Theme } from '../../../model/schemas';
 import { themeService } from '../../../gateway/services/theme-service';
 import {
+  LoadThemeRefs,
   createTheme,
   deleteTheme,
   generateTheme,
   loadTheme,
-  loadThemeRefs,
   saveTheme,
 } from '.';
+import { StoreStateSetter } from '../../state/store-state-setter';
 
 vi.mock('../../../gateway/services/theme-service', () => ({
   themeService: {
@@ -44,11 +45,11 @@ describe('theme-operations', () => {
     expect(result).toEqual({ name: 'th1', version: '1.0.0' });
   });
 
-  it('loadThemeRefs sets store entries from listThemes result', async () => {
-    const setState = vi.fn();
+  it('LoadThemeRefs.execute sets store entries from listThemes result', async () => {
     const setStoreState = vi.fn();
+    const op = new LoadThemeRefs(new StoreStateSetter(setStoreState));
 
-    await loadThemeRefs(setState, setStoreState);
+    await op.execute();
 
     expect(themeService.listThemes).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({

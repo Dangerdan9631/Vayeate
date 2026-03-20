@@ -1,7 +1,7 @@
-export { closeWindow } from './closeWindow';
-export { maximizeWindow } from './maximizeWindow';
-export { restoreWindow } from './restoreWindow';
-export { minimizeWindow } from './minimizeWindow';
-export { dragWindow } from './dragWindow';
-export { reloadWindow } from './reloadWindow';
-export { toggleDevTools } from './toggleDevTools';
+export { CloseWindow } from './closeWindow';
+export { MaximizeWindow } from './maximizeWindow';
+export { RestoreWindow } from './restoreWindow';
+export { MinimizeWindow } from './minimizeWindow';
+export { DragWindow } from './dragWindow';
+export { ReloadWindow } from './reloadWindow';
+export { ToggleDevTools } from './toggleDevTools';

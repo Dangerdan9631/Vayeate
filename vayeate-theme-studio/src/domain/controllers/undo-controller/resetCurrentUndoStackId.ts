@@ -1,6 +1,12 @@
-import { setCurrentUndoStackId, type SetState } from '../../operations/undo-operations';
+import { singleton } from 'tsyringe';
+import { SetCurrentUndoStackId } from '../../operations/undo-operations';
 
 /** Reset the current undo stack ID (e.g. on page navigation). */
-export function resetCurrentUndoStackId(setState: SetState): void {
-  setCurrentUndoStackId(setState, null);
+@singleton()
+export class ResetCurrentUndoStackIdController {
+  constructor(private readonly setCurrentUndoStackId: SetCurrentUndoStackId) {}
+
+  run(): void {
+    this.setCurrentUndoStackId.execute(null);
+  }
 }

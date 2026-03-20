@@ -1,16 +1,23 @@
-import { maximizeWindow as maximizeWindowOp } from '../../operations/window-operations';
-import type { AppState } from '../../state/app-state';
+import { singleton } from 'tsyringe';
+import { MaximizeWindow } from '../../operations/window-operations';
+import { AppStateGetter } from '../../state/app-state-getter';
 import { createLogger } from '../../utils/logger';
 import { canMaximizeWindow } from '../../validations/window-validations';
 
 const log = createLogger('WindowController');
 
-export type GetState = () => AppState;
+@singleton()
+export class MaximizeWindowController {
+  constructor(
+    private readonly maximizeWindow: MaximizeWindow,
+    private readonly appStateGetter: AppStateGetter,
+  ) {}
 
-export async function maximizeWindow(getState: GetState): Promise<void> {
-  if (!canMaximizeWindow(getState)) {
-    log.warn('maximizeWindow skipped: validation failed (window already maximized)');
-    return;
+  async run(): Promise<void> {
+    if (!canMaximizeWindow(() => this.appStateGetter.current())) {
+      log.warn('maximizeWindow skipped: validation failed (window already maximized)');
+      return;
+    }
+    await this.maximizeWindow.execute();
   }
-  await maximizeWindowOp();
 }

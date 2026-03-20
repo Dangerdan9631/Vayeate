@@ -1,6 +1,6 @@
 export type { GetState, SetState } from './types';
-export { clearPersistedUndo } from './clearPersistedUndo';
-export { performUndo } from './performUndo';
-export { performRedo } from './performRedo';
-export { performHistoryGoTo } from './performHistoryGoTo';
-export { setCurrentUndoStackId } from './setCurrentUndoStackId';
+export { ClearPersistedUndo } from './clearPersistedUndo';
+export { PerformUndo } from './performUndo';
+export { PerformRedo } from './performRedo';
+export { PerformHistoryGoTo } from './performHistoryGoTo';
+export { SetCurrentUndoStackId, setCurrentUndoStackId } from './setCurrentUndoStackId';
