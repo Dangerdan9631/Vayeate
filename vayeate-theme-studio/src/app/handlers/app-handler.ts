@@ -8,14 +8,14 @@ import { container } from 'tsyringe';
 
 export const handleAppAction: ActionHandler<AppAction> = async (
   action: AppAction,
-  { setState, getState, setUiState, setStoreState }: HandlerDeps,
+  { setState, getState, setUiState }: HandlerDeps,
 ): Promise<void> => {
   switch (action.type) {
     case AppActionType.AppAppOnLoad:
-      await appController.loadApplication(setState, setStoreState);
+      await container.resolve(appController.LoadApplicationController).run();
       break;
     case AppActionType.AppAppOnClose:
-      await appController.unloadApplication(setState);
+      await container.resolve(appController.UnloadApplicationController).run();
       break;
     case AppActionType.AppFileMenuExitButtonOnClick:
       await windowController.closeWindow();
