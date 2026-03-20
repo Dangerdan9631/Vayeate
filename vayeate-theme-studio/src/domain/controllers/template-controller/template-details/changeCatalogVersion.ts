@@ -1,12 +1,16 @@
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
 import { loadCatalogSnapshot } from '../../../operations/catalog-operations';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
-import { getBaseForEdit, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 async function loadCatalogData(refs: readonly { name: string; version: string }[]): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
@@ -34,7 +38,7 @@ export async function changeCatalogVersion(
 ): Promise<void> {
   const template = getState().templates.template;
   if (!template) return;
-  const base = getBaseForEdit(template);
+  const base = bumpTemplateVersionForEdit(template);
   const newCatalogRefs = base.catalogRefs.map((r) =>
     r.name === catalogName ? { ...r, version: newVersion } : r,
   );

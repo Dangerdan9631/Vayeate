@@ -1,13 +1,18 @@
 import type { CatalogReference } from '../../../../model/schemas';
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  type SetState,
+} from '../../../operations/template-operations';
 import { getCatalogRefs, loadCatalogSnapshot } from '../../../operations/catalog-operations';
 import type { GetState } from '../../../operations/undo-operations';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
-import { catalogVersionsByNameFromRefs, getBaseForEdit, refreshRefsAndSelect } from '../shared-flows';
+import { catalogVersionsByNameFromRefs } from '../../../utils/template-utils';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 async function loadCatalogData(refs: CatalogReference[]): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
@@ -31,7 +36,7 @@ export async function updateAllCatalogs(setState: SetState, setStoreState: SetSt
   const catalogRefs = getCatalogRefs(getState);
   if (!template) return;
   const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
-  const base = getBaseForEdit(template);
+  const base = bumpTemplateVersionForEdit(template);
   const newCatalogRefs: CatalogReference[] = base.catalogRefs.map((ref) => {
     const versions = catalogVersionsByName[ref.name];
     const latest = versions?.[0];

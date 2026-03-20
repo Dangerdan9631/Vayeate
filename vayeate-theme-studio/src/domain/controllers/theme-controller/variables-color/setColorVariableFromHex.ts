@@ -2,7 +2,7 @@ import type { Theme } from '../../../../model/schemas';
 import type { ColorVariableKey } from '../../../../model/schemas';
 import { setTheme, type SetState } from '../../../operations/theme-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { normalizeHexVar } from '../shared-flows';
+import { normalizeHexSafe } from '../../../utils/color';
 import { saveTheme } from '../theme-details/saveTheme';
 
 export function setColorVariableFromHex(
@@ -14,7 +14,7 @@ export function setColorVariableFromHex(
 ): void {
   const theme = getState().themes.theme;
   if (!theme || !ref) return;
-  const normalized = normalizeHexVar(hex);
+  const normalized = normalizeHexSafe(hex);
   if (!normalized) return;
   const newAssignments = theme.colorAssignments.map((a) => {
     if (a.colorRef !== ref) return a;

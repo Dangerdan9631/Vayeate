@@ -1,4 +1,4 @@
-import type { Template } from '../../../../model/schemas';
+import type { Template } from '../schemas';
 
 export interface CreateTemplateParams {
   name: string;
@@ -18,5 +18,3 @@ export function createTemplateWithParams(params: CreateTemplateParams): Template
     semanticTokenLanguages: [],
   };
 }
-
-

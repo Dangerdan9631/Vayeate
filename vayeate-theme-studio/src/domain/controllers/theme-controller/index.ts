@@ -1,10 +1,5 @@
-export {
-  createThemeWithParams,
-  type CreateThemeParams,
-} from './theme-list/createThemeWithParams';
-
 // theme-list
-export { themeStackId } from './theme-list/themeStackId';
+export { themeStackId } from '../../utils/stack-id';
 export { loadThemeRefs } from './theme-list/loadThemeRefs';
 export { selectThemeAndLoad } from './theme-list/selectThemeAndLoad';
 export { selectThemeByName } from './theme-list/selectThemeByName';

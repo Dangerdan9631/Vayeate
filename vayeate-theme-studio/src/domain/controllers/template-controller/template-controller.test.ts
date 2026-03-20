@@ -1,5 +1,5 @@
 import { templateSchema } from '../../../model/schemas';
-import { createTemplateWithParams } from '.';
+import { createTemplateWithParams } from '../../../model/factories';
 import { addGroupAndClearInput, addVariable, removeVariable } from '.';
 import * as groupsController from './groups/addGroup';
 import * as groupsFormController from './groups/setTemplateAddGroupName';

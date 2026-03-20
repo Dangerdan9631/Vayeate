@@ -9,7 +9,7 @@ import {
   type SetState,
 } from '../../../operations/theme-operations';
 import { setCurrentUndoStackId } from '../../../operations/undo-operations';
-import { themeStackId } from './themeStackId';
+import { themeStackId } from '../../../utils/stack-id';
 
 export async function createTheme(
   setState: SetState,

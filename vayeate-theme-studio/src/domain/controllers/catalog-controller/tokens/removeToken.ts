@@ -1,12 +1,13 @@
-import type { Catalog } from '../../../../model/schemas';
 import type { TokenKey, TokenType } from '../../../../model/schemas';
 import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
+  bumpCatalogVersionForEdit,
+  removeTokenFromCatalog,
   type SetState,
 } from '../../../operations/catalog-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { catalogWithVersionBump, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function removeToken(
   setState: SetState,
@@ -17,14 +18,8 @@ export async function removeToken(
 ): Promise<void> {
   const catalog = getState().catalogs.catalog;
   if (!catalog) return;
-  const base = catalogWithVersionBump(catalog);
-  const updated: Catalog = {
-    ...base,
-    tokens: base.tokens.filter((t) => !(t.key === key && t.type === tokenType)),
-  };
+  const base = bumpCatalogVersionForEdit(catalog);
+  const updated = removeTokenFromCatalog(base, key, tokenType);
   await saveCatalogOp(updated);
   await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }
-
-
-

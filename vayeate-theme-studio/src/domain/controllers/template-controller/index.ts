@@ -1,10 +1,5 @@
-export {
-  createTemplateWithParams,
-  type CreateTemplateParams,
-} from './template-list/createTemplateWithParams';
-
 // template-list
-export { templateStackId } from './template-list/templateStackId';
+export { templateStackId } from '../../utils/stack-id';
 export { loadTemplateRefs } from './template-list/loadTemplateRefs';
 export { loadTemplatePage } from './template-list/loadTemplatePage';
 export { selectTemplateAndLoad } from './template-list/selectTemplateAndLoad';

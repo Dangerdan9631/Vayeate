@@ -1,10 +1,11 @@
-import type { Catalog } from '../../../../model/schemas';
-import { compareVersions, nextPatchVersion } from '../../../utils/version';
+import { findHighestVersionRefSameName, nextPatchVersion } from '../../../utils/version';
 import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
   loadCatalogSnapshot,
   saveCatalog as saveCatalogOp,
   listCatalogRefs,
+  revertCatalog,
+  lockHeadCatalogIfUnlocked,
   type SetState,
 } from '../../../operations/catalog-operations';
 import { refreshRefsAndSelect } from '../shared-flows';
@@ -19,27 +20,18 @@ export async function revertCatalogToVersion(
   if (!snapshot) return;
 
   const refs = await listCatalogRefs();
-  const sameNameRefs = refs
-    .filter((r) => r.name === name)
-    .sort((a, b) => compareVersions(a.version, b.version));
-  const highest = sameNameRefs.length > 0 ? sameNameRefs[sameNameRefs.length - 1] : null;
+  const highestRef = findHighestVersionRefSameName(refs, name);
 
-  if (highest) {
-    const highestCatalog = await loadCatalogSnapshot(highest.name, highest.version);
-    if (highestCatalog && !highestCatalog.locked) {
-      await saveCatalogOp({ ...highestCatalog, locked: true });
+  if (highestRef) {
+    const highestCatalog = await loadCatalogSnapshot(highestRef.name, highestRef.version);
+    const toLock = lockHeadCatalogIfUnlocked(highestCatalog);
+    if (toLock) {
+      await saveCatalogOp(toLock);
     }
   }
 
-  const newVersion = highest ? nextPatchVersion(highest.version) : nextPatchVersion(version);
-  const reverted: Catalog = {
-    ...snapshot,
-    version: newVersion,
-    locked: false,
-  };
+  const newVersion = highestRef ? nextPatchVersion(highestRef.version) : nextPatchVersion(version);
+  const reverted = revertCatalog(snapshot, newVersion);
   await saveCatalogOp(reverted);
   await refreshRefsAndSelect(setState, setStoreState, reverted.name, reverted.version);
 }
-
-
-

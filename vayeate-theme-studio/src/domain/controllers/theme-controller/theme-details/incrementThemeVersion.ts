@@ -13,7 +13,7 @@ import {
 } from '../../../operations/theme-operations';
 import { setCurrentUndoStackId, type GetState } from '../../../operations/undo-operations';
 import { clearPendingSave } from '../theme-list/theme-save-state';
-import { themeStackId } from '../theme-list/themeStackId';
+import { themeStackId } from '../../../utils/stack-id';
 
 export async function incrementThemeVersion(
   setState: SetState,

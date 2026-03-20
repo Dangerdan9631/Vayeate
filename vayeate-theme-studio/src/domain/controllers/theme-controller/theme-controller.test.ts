@@ -1,8 +1,8 @@
 import { vi } from 'vitest';
 import { initialAppState } from '../../state/app-state';
 import { themeSchema } from '../../../model/schemas';
+import { createThemeWithParams } from '../../../model/factories';
 import {
-  createThemeWithParams,
   setPreviewVariableSelection,
   setPreviewVariableFilterText,
   clearPreviewVariableFilter,

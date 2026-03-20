@@ -26,6 +26,21 @@ export interface AdjustContrastOptions {
 
 const WCAG_RATIO_MAX = 21;
 
+/**
+ * Lenient hex normalizer for UI/palette input. Returns null if invalid or empty.
+ */
+export function normalizeHexSafe(hex: string): string | null {
+  const s = (hex ?? '').trim().toLowerCase();
+  const withHash = s.startsWith('#') ? s : s ? `#${s}` : '';
+  if (!withHash) return null;
+  const bare = withHash.slice(1);
+  if (!/^[0-9a-f]+$/.test(bare) || (bare.length !== 3 && bare.length !== 6 && bare.length !== 8)) {
+    return null;
+  }
+  const expanded = bare.length === 3 ? bare.split('').map((c) => c + c).join('') : bare;
+  return `#${expanded}`;
+}
+
 export function normalizeHex(hex: string): string {
   const h = hex.trim().toLowerCase();
   if (!h.startsWith('#')) {

@@ -1,10 +1,7 @@
 import { vi } from 'vitest';
 import { catalogSchema } from '../../../model/schemas';
-import {
-  createCatalogWithParams,
-  loadCatalogsForDisplay,
-  loadCatalogPage,
-} from '.';
+import { createCatalogWithParams } from '../../../model/factories';
+import { loadCatalogsForDisplay, loadCatalogPage } from '.';
 import * as catalogListController from './catalog-list/loadCatalogRefs';
 import * as undoOperations from '../../operations/undo-operations';
 const loadCatalogForDisplayMock = vi.hoisted(() => vi.fn().mockResolvedValue(null));

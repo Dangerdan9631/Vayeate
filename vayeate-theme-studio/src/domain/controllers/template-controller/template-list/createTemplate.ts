@@ -7,7 +7,7 @@ import {
   type SetState,
 } from '../../../operations/template-operations';
 import { setCurrentUndoStackId } from '../../../operations/undo-operations';
-import { templateStackId } from './templateStackId';
+import { templateStackId } from '../../../utils/stack-id';
 
 export async function createTemplate(
   setState: SetState,

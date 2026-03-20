@@ -1,14 +1,15 @@
 import type { Theme } from '../../../../model/schemas';
 import { setTheme, type SetState } from '../../../operations/theme-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { normalizeHexForPalette, applyHueToAssignmentsFiltered } from '../shared-flows';
+import { normalizeHexSafe } from '../../../utils/color';
+import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
 export function setAssignColorPreview(
   setState: SetState,
   getState: GetState,
   hex: string,
 ): void {
-  const normalized = normalizeHexForPalette(hex);
+  const normalized = normalizeHexSafe(hex);
   if (!normalized) return;
   const state = getState();
   const theme = state.themes.theme;

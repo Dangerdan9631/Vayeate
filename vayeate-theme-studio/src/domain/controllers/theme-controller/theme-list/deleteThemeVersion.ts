@@ -1,4 +1,5 @@
-import { compareVersions } from '../../../utils/version';
+import { findNearestVersionRef } from '../../../utils/version';
+import { themeStackId } from '../../../utils/stack-id';
 import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
   deleteTheme as deleteThemeOp,
@@ -11,7 +12,6 @@ import {
   type SetState,
 } from '../../../operations/theme-operations';
 import { setCurrentUndoStackId, type GetState } from '../../../operations/undo-operations';
-import { themeStackId } from './themeStackId';
 
 export async function deleteThemeVersion(
   setState: SetState,
@@ -23,14 +23,7 @@ export async function deleteThemeVersion(
   await deleteThemeOp(name, version);
   await loadThemeRefsOp(setState, setStoreState);
   const refs = getThemeRefs(getState);
-
-  const sameThName = refs
-    .filter((r) => r.name === name)
-    .sort((a, b) => compareVersions(a.version, b.version));
-  const lowerTh = sameThName.filter((r) => compareVersions(r.version, version) < 0);
-  const higherTh = sameThName.filter((r) => compareVersions(r.version, version) > 0);
-  const nextTh =
-    lowerTh.length > 0 ? lowerTh[lowerTh.length - 1] : higherTh.length > 0 ? higherTh[0] : null;
+  const nextTh = findNearestVersionRef(refs, name, version);
 
   if (nextTh) {
     setSelectedThemeRef(setState, nextTh);

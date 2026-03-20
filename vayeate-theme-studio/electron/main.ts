@@ -11,9 +11,11 @@ const DATA_DIR = join(__dirname, '..', 'data');
 import { createCatalogRepository } from '../src/gateway/data/catalog-repository';
 import { createTemplateRepository } from '../src/gateway/data/template-repository';
 import { createThemeRepository } from '../src/gateway/data/theme-repository';
-import { createCatalogWithParams } from '../src/domain/controllers/catalog-controller';
-import { createTemplateWithParams } from '../src/domain/controllers/template-controller';
-import { createThemeWithParams } from '../src/domain/controllers/theme-controller';
+import {
+  createCatalogWithParams,
+  createTemplateWithParams,
+  createThemeWithParams,
+} from '../src/model/factories';
 import { getPreviewsDir, loadAllPreviews } from './preview-controller';
 import { generateThemePair } from '../src/domain/utils/theme-generator';
 import { exportThemePair } from '../src/domain/utils/theme-exporter';

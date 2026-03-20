@@ -4,9 +4,16 @@ import {
   SEMANTIC_WILDCARD_TYPE,
 } from '../../../utils/semantic-token';
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  generateSemanticVariantKey,
+  mergeSemanticTokenSets,
+  appendSemanticVariantToTemplate,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { getBaseForEdit, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function addSemanticVariant(
   setState: SetState,
@@ -19,13 +26,13 @@ export async function addSemanticVariant(
 ): Promise<void> {
   const template = getState().templates.template;
   if (!template) return;
-  const base = getBaseForEdit(template);
+  const base = bumpTemplateVersionForEdit(template);
   const baseMapping = base.mappings.find(
     (m) => m.token.type === 'semantic token' && m.token.key === type,
   );
   let key: string;
   if (modifiers.length === 0 && (language === null || (language && language.trim() === ''))) {
-    key = `${type}.empty-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    key = generateSemanticVariantKey(type);
   } else {
     key = formatSemanticSelector(type, modifiers, language);
     if (!key) return;
@@ -44,19 +51,8 @@ export async function addSemanticVariant(
     contrastVariableRef: null,
     groupRef,
   };
-  const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
-  const newLanguages =
-    language && language.trim() !== ''
-      ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
-      : (base.semanticTokenLanguages ?? []);
-  await saveTemplateOp({
-    ...base,
-    mappings: [...base.mappings, newMapping],
-    semanticTokenModifiers: newModifiers,
-    semanticTokenLanguages: newLanguages,
-  });
-  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+  const sets = mergeSemanticTokenSets(base, modifiers, language);
+  const next = appendSemanticVariantToTemplate(base, newMapping, sets.semanticTokenModifiers, sets.semanticTokenLanguages);
+  await saveTemplateOp(next);
+  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }
-
-
-

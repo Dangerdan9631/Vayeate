@@ -1,8 +1,13 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  applyContrastComparisonSourceUpdate,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { getBaseForEdit, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function updateContrastComparisonSource(
   setState: SetState,
@@ -13,13 +18,8 @@ export async function updateContrastComparisonSource(
 ): Promise<void> {
   const template = getState().templates.template;
   if (!template) return;
-  const base = getBaseForEdit(template);
-  const newVars = base.contrastVariables.map((v) =>
-    v.key === contrastVariableKey ? { ...v, comparisonSourceRef } : v,
-  );
-  await saveTemplateOp({ ...base, contrastVariables: newVars });
-  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+  const base = bumpTemplateVersionForEdit(template);
+  const next = applyContrastComparisonSourceUpdate(base, contrastVariableKey, comparisonSourceRef);
+  await saveTemplateOp(next);
+  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }
-
-
-

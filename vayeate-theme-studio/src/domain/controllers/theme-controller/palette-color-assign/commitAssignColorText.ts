@@ -5,7 +5,8 @@ import {
   type SetState,
 } from '../../../operations/theme-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { normalizeHexForPalette, applyHueToAssignmentsFiltered } from '../shared-flows';
+import { normalizeHexSafe } from '../../../utils/color';
+import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 import { saveTheme } from '../theme-details/saveTheme';
 
 export function commitAssignColorText(
@@ -13,7 +14,7 @@ export function commitAssignColorText(
   getState: GetState,
   value: string,
 ): void {
-  const normalized = normalizeHexForPalette(value);
+  const normalized = normalizeHexSafe(value);
   if (!normalized) return;
   const state = getState();
   const theme = state.themes.theme;

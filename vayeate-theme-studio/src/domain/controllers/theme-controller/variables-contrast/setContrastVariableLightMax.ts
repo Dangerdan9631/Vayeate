@@ -2,7 +2,7 @@ import type { Theme } from '../../../../model/schemas';
 import type { ContrastVariableKey } from '../../../../model/schemas';
 import { setTheme, type SetState } from '../../../operations/theme-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { parseContrastValue, updateContrastAssignment } from '../shared-flows';
+import { parseContrastValue, updateContrastAssignment } from '../../../utils/contrast-utils';
 import { saveTheme } from '../theme-details/saveTheme';
 
 export function setContrastVariableLightMax(

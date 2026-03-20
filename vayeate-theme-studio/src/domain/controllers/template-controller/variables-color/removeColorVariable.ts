@@ -1,7 +1,13 @@
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  removeColorVariableFromTemplate,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { getBaseForEdit, referencedColorVarKeysFromTemplate, refreshRefsAndSelect } from '../shared-flows';
+import { referencedColorVarKeysFromTemplate } from '../../../utils/template-utils';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function removeColorVariable(
   setState: SetState,
@@ -13,10 +19,8 @@ export async function removeColorVariable(
   if (!template) return;
   const refs = referencedColorVarKeysFromTemplate(template);
   if (refs.has(key)) return;
-  const base = getBaseForEdit(template);
-  const newVars = base.colorVariables.filter((v) => v.key !== key);
-  await saveTemplateOp({ ...base, colorVariables: newVars });
-  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+  const base = bumpTemplateVersionForEdit(template);
+  const next = removeColorVariableFromTemplate(base, key);
+  await saveTemplateOp(next);
+  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }
-
-

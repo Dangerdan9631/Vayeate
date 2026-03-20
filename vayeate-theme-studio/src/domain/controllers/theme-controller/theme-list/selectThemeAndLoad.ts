@@ -9,7 +9,7 @@ import {
 import { setCurrentUndoStackId } from '../../../operations/undo-operations';
 import { loadTemplateSnapshot } from '../../../operations/template-operations';
 import { mergeAssignmentsFromTemplate } from '../../../utils/theme-template-merge';
-import { themeStackId } from './themeStackId';
+import { themeStackId } from '../../../utils/stack-id';
 import { saveTheme } from '../theme-details/saveTheme';
 
 export async function selectThemeAndLoad(

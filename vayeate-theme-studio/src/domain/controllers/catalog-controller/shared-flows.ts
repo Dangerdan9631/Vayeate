@@ -1,5 +1,3 @@
-import type { Catalog } from '../../../model/schemas';
-import { nextPatchVersion } from '../../utils/version';
 import type { SetStoreState } from '../../state/store-state-reducer';
 import {
   setSelectedRef,
@@ -22,10 +20,4 @@ export async function refreshRefsAndSelect(
       await loadCatalog(setState, match.name, match.version);
     }
   }
-}
-
-export function catalogWithVersionBump(catalog: Catalog): Catalog {
-  return catalog.locked
-    ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
-    : catalog;
 }

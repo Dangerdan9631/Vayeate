@@ -1,27 +1,33 @@
-import type { Catalog } from '../../../../model/schemas';
 import { parseThemeJson } from '../../../utils/theme-parser';
 import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogBulkAddDialogOpen,
   setCatalogBulkAddText,
+  bumpCatalogVersionForEdit,
+  deduplicateBulkTokens,
+  appendTokensToCatalog,
   type SetState,
 } from '../../../operations/catalog-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { catalogWithVersionBump, refreshRefsAndSelect } from '../shared-flows';
+import { canBulkAddTokens } from '../../../validations/catalog-validations';
+import { refreshRefsAndSelect } from '../shared-flows';
 
-export async function bulkAddTokens(setState: SetState, setStoreState: SetStoreState, getState: GetState): Promise<void> {
+export async function bulkAddTokens(
+  setState: SetState,
+  setStoreState: SetStoreState,
+  getState: GetState,
+): Promise<void> {
   const state = getState().catalogs;
   const catalog = state.catalog;
   const text = state.bulkAddText?.trim();
-  if (!catalog || !text) return;
+  if (!canBulkAddTokens(catalog, text)) return;
   try {
-    const result = parseThemeJson(text);
-    const existingKeys = new Set(catalog.tokens.map((t) => `${t.type}::${t.key}`));
-    const unique = result.tokens.filter((t) => !existingKeys.has(`${t.type}::${t.key}`));
+    const result = parseThemeJson(text!);
+    const unique = deduplicateBulkTokens(catalog, result.tokens);
     if (unique.length === 0) return;
-    const base = catalogWithVersionBump(catalog);
-    const updated: Catalog = { ...base, tokens: [...base.tokens, ...unique] };
+    const base = bumpCatalogVersionForEdit(catalog);
+    const updated = appendTokensToCatalog(base, unique);
     await saveCatalogOp(updated);
     await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
   } finally {
@@ -29,6 +35,3 @@ export async function bulkAddTokens(setState: SetState, setStoreState: SetStoreS
     setCatalogBulkAddText(setState, '');
   }
 }
-
-
-

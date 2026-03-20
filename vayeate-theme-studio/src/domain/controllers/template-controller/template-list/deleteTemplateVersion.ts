@@ -1,4 +1,5 @@
-import { compareVersions } from '../../../utils/version';
+import { findNearestVersionRef } from '../../../utils/version';
+import { templateStackId } from '../../../utils/stack-id';
 import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
   deleteTemplate as deleteTemplateOp,
@@ -9,7 +10,6 @@ import {
   type SetState,
 } from '../../../operations/template-operations';
 import { setCurrentUndoStackId } from '../../../operations/undo-operations';
-import { templateStackId } from './templateStackId';
 
 export async function deleteTemplateVersion(
   setState: SetState,
@@ -19,14 +19,7 @@ export async function deleteTemplateVersion(
 ): Promise<void> {
   await deleteTemplateOp(name, version);
   const refs = await refreshTemplateRefs(setStoreState);
-
-  const sameName = refs
-    .filter((r) => r.name === name)
-    .sort((a, b) => compareVersions(a.version, b.version));
-  const lowerT = sameName.filter((r) => compareVersions(r.version, version) < 0);
-  const higherT = sameName.filter((r) => compareVersions(r.version, version) > 0);
-  const nextT =
-    lowerT.length > 0 ? lowerT[lowerT.length - 1] : higherT.length > 0 ? higherT[0] : null;
+  const nextT = findNearestVersionRef(refs, name, version);
 
   if (nextT) {
     setSelectedTemplateRef(setState, nextT);

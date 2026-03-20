@@ -1,8 +1,14 @@
 import { formatSemanticSelector, parseSemanticSelector } from '../../../utils/semantic-token';
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  mergeSemanticTokenSets,
+  updateSemanticVariantKeyInTemplate,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { getBaseForEdit, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function updateSemanticVariantKey(
   setState: SetState,
@@ -27,24 +33,15 @@ export async function updateSemanticVariantKey(
     (m) => m.token.type === 'semantic token' && m.token.key === newKey,
   );
   if (existing) return;
-  const base = getBaseForEdit(template);
-  const newMappings = base.mappings.map((m) =>
-    m.token.type === 'semantic token' && m.token.key === oldKey
-      ? { ...m, token: { key: newKey, type: 'semantic token' as const } }
-      : m,
+  const base = bumpTemplateVersionForEdit(template);
+  const sets = mergeSemanticTokenSets(base, modifiers, language);
+  const next = updateSemanticVariantKeyInTemplate(
+    base,
+    oldKey,
+    newKey,
+    sets.semanticTokenModifiers,
+    sets.semanticTokenLanguages,
   );
-  const newModifiers = [...new Set([...(base.semanticTokenModifiers ?? []), ...modifiers])].sort();
-  const newLanguages =
-    language && language.trim() !== ''
-      ? [...new Set([...(base.semanticTokenLanguages ?? []), language.trim()])].sort()
-      : (base.semanticTokenLanguages ?? []);
-  await saveTemplateOp({
-    ...base,
-    mappings: newMappings,
-    semanticTokenModifiers: newModifiers,
-    semanticTokenLanguages: newLanguages,
-  });
-  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+  await saveTemplateOp(next);
+  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }
-
-

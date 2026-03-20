@@ -1,9 +1,15 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  removeMappingFromTemplate,
+  applyMappingColorRef,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { getBaseForEdit, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function setMappingColorRef(
   setState: SetState,
@@ -16,23 +22,14 @@ export async function setMappingColorRef(
 ): Promise<void> {
   const template = getState().templates.template;
   if (!template) return;
-  const base = getBaseForEdit(template);
+  const base = bumpTemplateVersionForEdit(template);
   if (colorRef === null && isOrphan) {
-    const newMappings = base.mappings.filter(
-      (m) => !(m.token.key === tokenKey && m.token.type === tokenType),
-    );
-    await saveTemplateOp({ ...base, mappings: newMappings });
-    await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+    const next = removeMappingFromTemplate(base, tokenKey, tokenType);
+    await saveTemplateOp(next);
+    await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
     return;
   }
-  const newMappings = base.mappings.map((m) =>
-    m.token.key === tokenKey && m.token.type === tokenType
-      ? { ...m, colorVariableRef: colorRef }
-      : m,
-  );
-  await saveTemplateOp({ ...base, mappings: newMappings });
-  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+  const next = applyMappingColorRef(base, tokenKey, tokenType, colorRef);
+  await saveTemplateOp(next);
+  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }
-
-
-

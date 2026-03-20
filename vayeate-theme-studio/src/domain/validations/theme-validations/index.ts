@@ -1,0 +1,1 @@
+export { canApplyBulkColorToCheckedRefs } from './canApplyBulkColorDraft';

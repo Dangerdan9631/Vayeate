@@ -1,4 +1,4 @@
-import type { Theme } from '../../../../model/schemas';
+import type { Theme } from '../schemas';
 
 export interface CreateThemeParams {
   name: string;
@@ -31,5 +31,3 @@ export function createThemeWithParams(params: CreateThemeParams): Theme {
     paletteClusterGroupIds: [],
   };
 }
-
-

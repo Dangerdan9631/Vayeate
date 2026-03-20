@@ -1,12 +1,7 @@
-export {
-  createCatalogWithParams,
-  type CreateCatalogParams,
-} from './catalog-list/createCatalogWithParams';
-
 // catalog-list
 export { loadCatalogRefs } from './catalog-list/loadCatalogRefs';
 export { loadCatalogForDisplay } from './catalog-list/loadCatalogForDisplay';
-export { catalogStackId } from './catalog-list/catalogStackId';
+export { catalogStackId } from '../../utils/stack-id';
 export { loadCatalogsForDisplay } from './catalog-list/loadCatalogsForDisplay';
 export { loadCatalogPage } from './catalog-list/loadCatalogPage';
 export { selectCatalogAndLoad } from './catalog-list/selectCatalogAndLoad';

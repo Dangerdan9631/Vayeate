@@ -1,7 +1,13 @@
 import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
+import {
+  saveTemplate as saveTemplateOp,
+  bumpTemplateVersionForEdit,
+  removeGroupFromTemplate,
+  type SetState,
+} from '../../../operations/template-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { getBaseForEdit, groupNamesInUseFromTemplate, refreshRefsAndSelect } from '../shared-flows';
+import { groupNamesInUseFromTemplate } from '../../../utils/template-utils';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function removeGroup(
   setState: SetState,
@@ -13,10 +19,8 @@ export async function removeGroup(
   if (!template) return;
   const inUse = groupNamesInUseFromTemplate(template);
   if (inUse.has(groupId)) return;
-  const base = getBaseForEdit(template);
-  const newGroups = (base.groups ?? []).filter((g) => g !== groupId);
-  await saveTemplateOp({ ...base, groups: newGroups });
-  await refreshRefsAndSelect(setState, setStoreState, base.name, base.version);
+  const base = bumpTemplateVersionForEdit(template);
+  const next = removeGroupFromTemplate(base, groupId);
+  await saveTemplateOp(next);
+  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }
-
-

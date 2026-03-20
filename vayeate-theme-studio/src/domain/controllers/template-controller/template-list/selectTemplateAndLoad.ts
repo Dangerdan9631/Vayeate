@@ -5,7 +5,7 @@ import {
 } from '../../../operations/template-operations';
 import { setCurrentUndoStackId } from '../../../operations/undo-operations';
 import * as catalogController from '../../catalog-controller';
-import { templateStackId } from './templateStackId';
+import { templateStackId } from '../../../utils/stack-id';
 
 export async function selectTemplateAndLoad(
   setState: SetState,

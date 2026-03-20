@@ -4,7 +4,7 @@ import {
   type SetState,
 } from '../../../operations/catalog-operations';
 import { setCurrentUndoStackId } from '../../../operations/undo-operations';
-import { catalogStackId } from './catalogStackId';
+import { catalogStackId } from '../../../utils/stack-id';
 
 export async function selectCatalogAndLoad(
   setState: SetState,

@@ -1,4 +1,4 @@
-import type { Catalog, CatalogType } from '../../../../model/schemas';
+import type { Catalog, CatalogType } from '../schemas';
 
 export interface CreateCatalogParams {
   name: string;
@@ -18,5 +18,3 @@ export function createCatalogWithParams(params: CreateCatalogParams): Catalog {
     semanticTokenLanguages: [],
   };
 }
-
-

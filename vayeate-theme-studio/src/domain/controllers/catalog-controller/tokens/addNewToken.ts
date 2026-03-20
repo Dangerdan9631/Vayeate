@@ -1,14 +1,16 @@
-import type { Catalog, Token } from '../../../../model/schemas';
+import type { Token } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../../utils/semantic-token';
 import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
   saveCatalog as saveCatalogOp,
   setCatalogNewTokenKey,
+  bumpCatalogVersionForEdit,
+  addPlainTokenToCatalog,
+  mergeSemanticSelectorsIntoCatalog,
   type SetState,
 } from '../../../operations/catalog-operations';
 import type { GetState } from '../../../operations/undo-operations';
-import { catalogWithVersionBump, refreshRefsAndSelect } from '../shared-flows';
+import { refreshRefsAndSelect } from '../shared-flows';
 
 export async function addNewToken(
   setState: SetState,
@@ -23,36 +25,19 @@ export async function addNewToken(
   if (!catalog || !tokenKey) return;
 
   if (tokenType === 'semantic token') {
-    const current = {
-      types: catalog.semanticTokenTypes ?? [],
-      modifiers: catalog.semanticTokenModifiers ?? [],
-      languages: catalog.semanticTokenLanguages ?? [],
-    };
-    const merged = mergeSemanticSelectorInto(tokenKey, current);
+    const base = bumpCatalogVersionForEdit(catalog);
+    const merged = mergeSemanticSelectorsIntoCatalog(base, tokenKey);
     if (!merged) return;
-    const base = catalogWithVersionBump(catalog);
-    const updated: Catalog = {
-      ...base,
-      semanticTokenTypes: merged.types,
-      semanticTokenModifiers: merged.modifiers,
-      semanticTokenLanguages: merged.languages,
-    };
-    await saveCatalogOp(updated);
-    await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
+    await saveCatalogOp(merged);
+    await refreshRefsAndSelect(setState, setStoreState, merged.name, merged.version);
     setCatalogNewTokenKey(setState, '');
     return;
   }
 
   const newToken: Token = { key: tokenKey, type: tokenType };
-  const base = catalogWithVersionBump(catalog);
-  const updated: Catalog = {
-    ...base,
-    tokens: [...base.tokens, newToken],
-  };
+  const base = bumpCatalogVersionForEdit(catalog);
+  const updated = addPlainTokenToCatalog(base, newToken);
   await saveCatalogOp(updated);
   await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
   setCatalogNewTokenKey(setState, '');
 }
-
-
-
