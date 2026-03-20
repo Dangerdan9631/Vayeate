@@ -7,12 +7,11 @@ import {
 } from '../actions/action-types';
 import type { AppState } from '../../domain/state/app-state';
 import type { AppStateUpdate } from '../../domain/state/app-state';
-import type { UiStateUpdate } from '../../domain/state/ui-state-reducer';
+import type { SetUiState } from '../../domain/state/ui-state-reducer';
 import type { StoreStateUpdate } from '../../domain/state/store-state-reducer';
 
 export type SetState = (update: AppStateUpdate) => void;
 export type GetState = () => AppState;
-export type SetUiState = (update: UiStateUpdate) => void;
 export type SetStoreState = (update: StoreStateUpdate) => void;
 
 export interface HandlerDeps {

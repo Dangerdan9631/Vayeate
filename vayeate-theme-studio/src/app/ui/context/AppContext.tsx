@@ -9,7 +9,9 @@ import {
   type AppStateUpdate,
 } from '../../../domain/state/app-state';
 import { storeStateReducer, type StoreStateUpdate } from '../../../domain/state/store-state-reducer';
-import { uiStateReducer, type UiStateUpdate } from '../../../domain/state/ui-state-reducer';
+import { SetUiState, uiStateReducer, type UiStateUpdate } from '../../../domain/state/ui-state-reducer';
+import { UiStateSetter } from '../../../domain/state/ui-state-setter';
+import { container } from 'tsyringe';
 import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
   ActiveTabContext,
@@ -58,18 +60,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
+
   const setWindowState = useCallback(
     (update: WindowStateUpdate) => {
       replaceState(windowStateReducer(stateRef.current, update));
     },
     [],
   );
-  const setUiState = useCallback(
+
+  const setUiState: SetUiState = useCallback(
     (update: UiStateUpdate) => {
       replaceState(uiStateReducer(stateRef.current, update));
     },
     [],
   );
+
+  useEffect(() => {
+    container.registerInstance(UiStateSetter, new UiStateSetter(setUiState));
+  }, [setUiState]);
+
   const setStoreState = useCallback(
     (update: StoreStateUpdate) => {
       const nextState = storeStateReducer(stateRef.current, update);

@@ -1,6 +1,8 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { container } from 'tsyringe';
 import type { UiStateUpdate } from '../../state/ui-state-reducer';
-import { toggleColorScheme } from '.';
+import { UiStateSetter } from '../../state/ui-state-setter';
+import { ToggleColorScheme } from '.';
 import { configService } from '../../../gateway/services/config-service';
 
 vi.mock('../../../gateway/services/config-service', () => ({
@@ -9,8 +11,9 @@ vi.mock('../../../gateway/services/config-service', () => ({
   },
 }));
 
-describe('toggleColorScheme operation', () => {
+describe('ToggleColorScheme operation', () => {
   beforeEach(() => {
+    container.clearInstances();
     vi.clearAllMocks();
   });
 
@@ -27,7 +30,8 @@ describe('toggleColorScheme operation', () => {
       calls.push('persist');
     });
 
-    await toggleColorScheme(setUiState, true);
+    container.registerInstance(UiStateSetter, new UiStateSetter(setUiState));
+    await container.resolve(ToggleColorScheme).execute(true);
 
     expect(uiUpdates).toEqual([{ type: 'SET_UI_COLOR_SCHEME', scheme: 'light' }]);
     expect(configService.save).toHaveBeenCalledWith({ colorScheme: 'light' });
@@ -47,7 +51,8 @@ describe('toggleColorScheme operation', () => {
       calls.push('persist');
     });
 
-    await toggleColorScheme(setUiState, false);
+    container.registerInstance(UiStateSetter, new UiStateSetter(setUiState));
+    await container.resolve(ToggleColorScheme).execute(false);
 
     expect(uiUpdates).toEqual([{ type: 'SET_UI_COLOR_SCHEME', scheme: 'dark' }]);
     expect(configService.save).toHaveBeenCalledWith({ colorScheme: 'dark' });

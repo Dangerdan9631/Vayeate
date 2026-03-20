@@ -1,5 +1,4 @@
 export type { SetState } from './types';
-export { loadApplication } from './loadApplication';
 export { unloadApplication } from './unloadApplication';
-export { toggleColorScheme } from './toggleColorScheme';
-export { saveColorScheme } from './saveColorScheme';
+export { ToggleColorScheme } from './toggleColorScheme';
+export { SaveColorScheme } from './saveColorScheme';

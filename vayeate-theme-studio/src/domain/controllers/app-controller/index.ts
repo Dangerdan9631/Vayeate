@@ -1,4 +1,4 @@
 export { loadApplication } from './loadApplication';
 export { unloadApplication } from './unloadApplication';
-export { saveColorScheme } from './saveColorScheme';
-export { toggleColorScheme } from './toggleColorScheme';
+export { SaveColorSchemeController } from './saveColorScheme';
+export { ToggleColorSchemeController } from './toggleColorScheme';

@@ -1,26 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { toggleColorScheme } from '.';
-import { toggleColorScheme as toggleColorSchemeOp } from '../../operations/app-operations';
+import type { ToggleColorScheme } from '../../operations/app-operations';
+import { ToggleColorSchemeController } from './toggleColorScheme';
 
-vi.mock('../../operations/app-operations', () => ({
-  toggleColorScheme: vi.fn(),
-}));
+describe('ToggleColorSchemeController', () => {
+  let controller: ToggleColorSchemeController;
+  let execute: ReturnType<typeof vi.fn>;
 
-describe('app-controller', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    execute = vi.fn().mockResolvedValue(undefined);
+    const operation = { execute } as unknown as ToggleColorScheme;
+    controller = new ToggleColorSchemeController(operation);
   });
 
-  it('calls toggleColorScheme operation with setUiState and checked', async () => {
-    const setUiState = vi.fn();
-    const checked = true;
-
-    vi.mocked(toggleColorSchemeOp).mockResolvedValue(undefined);
-
-    await toggleColorScheme(setUiState, checked);
-
-    expect(toggleColorSchemeOp).toHaveBeenCalledTimes(1);
-    expect(toggleColorSchemeOp).toHaveBeenCalledWith(setUiState, checked);
+  it('run delegates to ToggleColorScheme execute', async () => {
+    await controller.run(true);
+    expect(execute).toHaveBeenCalledTimes(1);
+    expect(execute).toHaveBeenCalledWith(true);
   });
 });
-

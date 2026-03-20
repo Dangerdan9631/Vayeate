@@ -1,6 +1,11 @@
-import { saveColorScheme as saveColorSchemeOp } from '../../operations/app-operations';
+import { singleton } from 'tsyringe';
+import { SaveColorScheme } from '../../operations/app-operations';
 
-/** Persist the active color scheme to disk. */
-export async function saveColorScheme(scheme: 'light' | 'dark'): Promise<void> {
-  await saveColorSchemeOp(scheme);
+@singleton()
+export class SaveColorSchemeController {
+  constructor(private readonly saveColorScheme: SaveColorScheme) {}
+
+  async run(scheme: 'light' | 'dark'): Promise<void> {
+    await this.saveColorScheme.execute(scheme);
+  }
 }

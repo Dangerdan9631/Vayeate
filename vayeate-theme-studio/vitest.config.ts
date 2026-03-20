@@ -1,8 +1,9 @@
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { rendererPlugins } from './vite.renderer-plugins';
 
 export default defineConfig({
-	plugins: [react()],
+	esbuild: false,
+	plugins: [...rendererPlugins()],
 	test: {
 		environment: 'jsdom',
 		globals: true,

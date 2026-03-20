@@ -4,6 +4,7 @@ import * as tabController from '../../domain/controllers/tab-controller';
 import * as windowController from '../../domain/controllers/window-controller';
 import type { ActionHandler, AppAction, HandlerDeps } from './handler-types';
 import { AppActionType } from '../actions/action-types';
+import { container } from 'tsyringe';
 
 export const handleAppAction: ActionHandler<AppAction> = async (
   action: AppAction,
@@ -41,7 +42,7 @@ export const handleAppAction: ActionHandler<AppAction> = async (
       tabController.setActiveTab(setUiState, action.tabId);
       break;
     case AppActionType.AppBarThemeCheckboxOnToggle:
-      await appController.toggleColorScheme(setUiState, action.checked);
+      await container.resolve(appController.ToggleColorSchemeController).run(action.checked);
       break;
     case AppActionType.AppBarMinimizeButtonOnClick:
       await windowController.minimizeWindow(getState);
