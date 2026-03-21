@@ -1,13 +1,15 @@
 import { singleton } from 'tsyringe';
-import { windowService } from '../../../gateway/services/window-service';
+import { WindowService } from '../../../gateway/services/window-service';
 
 @singleton()
 export class ReloadWindow {
+  constructor(private readonly windowService: WindowService) {}
+
   async execute(force = false): Promise<void> {
     if (force) {
-      await windowService.reloadForce();
+      await this.windowService.reloadForce();
     } else {
-      await windowService.reload();
+      await this.windowService.reload();
     }
   }
 }

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { container } from 'tsyringe';
 import type { AppState } from '../../state/app-state';
 import { initialAppState } from '../../state/app-state';
 import { AppStateSetter } from '../../state/app-state-setter';
@@ -11,6 +12,7 @@ import {
   setCurrentUndoStackId,
 } from '.';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
+import { UndoManagerV2Service } from '../../../gateway/services/undo-manager-v2-service';
 
 vi.mock('../../core/undo-manager-v2', () => ({
   undoManagerV2: {
@@ -91,13 +93,20 @@ describe('undo-operations', () => {
   });
 
   describe('ClearPersistedUndo', () => {
+    const persistenceMock = {
+      saveStack: vi.fn(),
+      loadStack: vi.fn(),
+      clearPersisted: vi.fn(),
+    };
+
     beforeEach(() => {
       vi.mocked(undoManagerV2.clearPersisted).mockResolvedValue(undefined);
+      container.registerInstance(UndoManagerV2Service, persistenceMock as unknown as UndoManagerV2Service);
     });
 
     it('execute configures and clears undoManagerV2', async () => {
-      await new ClearPersistedUndo().execute();
-      expect(undoManagerV2.configure).toHaveBeenCalledTimes(1);
+      await container.resolve(ClearPersistedUndo).execute();
+      expect(undoManagerV2.configure).toHaveBeenCalledWith({ persistence: persistenceMock });
       expect(undoManagerV2.clearPersisted).toHaveBeenCalledTimes(1);
     });
   });

@@ -3,18 +3,17 @@ import { container } from 'tsyringe';
 import type { UiStateUpdate } from '../../state/ui-state-reducer';
 import { UiStateSetter } from '../../state/ui-state-setter';
 import { ToggleColorScheme } from '.';
-import { configService } from '../../../gateway/services/config-service';
+import { ConfigService } from '../../../gateway/services/config-service';
 
-vi.mock('../../../gateway/services/config-service', () => ({
-  configService: {
-    save: vi.fn(),
-  },
-}));
+const configMock = {
+  save: vi.fn(),
+};
 
 describe('ToggleColorScheme operation', () => {
   beforeEach(() => {
     container.clearInstances();
     vi.clearAllMocks();
+    container.registerInstance(ConfigService, configMock as unknown as ConfigService);
   });
 
   it('toggles from dark (checked=true) to light and persists', async () => {
@@ -26,7 +25,7 @@ describe('ToggleColorScheme operation', () => {
       calls.push('ui');
     };
 
-    vi.mocked(configService.save).mockImplementation(async () => {
+    vi.mocked(configMock.save).mockImplementation(async () => {
       calls.push('persist');
     });
 
@@ -34,7 +33,7 @@ describe('ToggleColorScheme operation', () => {
     await container.resolve(ToggleColorScheme).execute(true);
 
     expect(uiUpdates).toEqual([{ type: 'SET_UI_COLOR_SCHEME', scheme: 'light' }]);
-    expect(configService.save).toHaveBeenCalledWith({ colorScheme: 'light' });
+    expect(configMock.save).toHaveBeenCalledWith({ colorScheme: 'light' });
     expect(calls).toEqual(['ui', 'persist']);
   });
 
@@ -47,7 +46,7 @@ describe('ToggleColorScheme operation', () => {
       calls.push('ui');
     };
 
-    vi.mocked(configService.save).mockImplementation(async () => {
+    vi.mocked(configMock.save).mockImplementation(async () => {
       calls.push('persist');
     });
 
@@ -55,8 +54,7 @@ describe('ToggleColorScheme operation', () => {
     await container.resolve(ToggleColorScheme).execute(false);
 
     expect(uiUpdates).toEqual([{ type: 'SET_UI_COLOR_SCHEME', scheme: 'dark' }]);
-    expect(configService.save).toHaveBeenCalledWith({ colorScheme: 'dark' });
+    expect(configMock.save).toHaveBeenCalledWith({ colorScheme: 'dark' });
     expect(calls).toEqual(['ui', 'persist']);
   });
 });
-

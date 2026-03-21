@@ -1,9 +1,11 @@
 import { singleton } from 'tsyringe';
-import { configService } from '../../../gateway/services/config-service';
+import { ConfigService } from '../../../gateway/services/config-service';
 
 @singleton()
 export class SaveColorScheme {
+  constructor(private readonly configService: ConfigService) {}
+
   async execute(scheme: 'light' | 'dark'): Promise<void> {
-    await configService.save({ colorScheme: scheme });
+    await this.configService.save({ colorScheme: scheme });
   }
 }

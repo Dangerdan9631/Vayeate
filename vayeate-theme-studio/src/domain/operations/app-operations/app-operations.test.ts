@@ -1,20 +1,22 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { container } from 'tsyringe';
 import { SaveColorScheme, UnloadApplication } from '.';
-import { configService } from '../../../gateway/services/config-service';
+import { ConfigService } from '../../../gateway/services/config-service';
 
-vi.mock('../../../gateway/services/config-service', () => ({
-  configService: { save: vi.fn().mockResolvedValue(undefined) },
-}));
+const configMock = {
+  save: vi.fn().mockResolvedValue(undefined),
+};
 
 describe('app-operations', () => {
   beforeEach(() => {
-    vi.mocked(configService.save).mockClear();
+    container.registerInstance(ConfigService, configMock as unknown as ConfigService);
+    vi.mocked(configMock.save).mockClear();
   });
 
   it('SaveColorScheme execute persists scheme via configService', async () => {
-    await new SaveColorScheme().execute('light');
-    expect(configService.save).toHaveBeenCalledTimes(1);
-    expect(configService.save).toHaveBeenCalledWith({ colorScheme: 'light' });
+    await container.resolve(SaveColorScheme).execute('light');
+    expect(configMock.save).toHaveBeenCalledTimes(1);
+    expect(configMock.save).toHaveBeenCalledWith({ colorScheme: 'light' });
   });
 
   it('UnloadApplication execute resolves without throwing', async () => {

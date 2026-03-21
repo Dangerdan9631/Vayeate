@@ -139,8 +139,7 @@ export const loadCatalogForDisplay = (_setState: any, name: any, version: any) =
 
 export const saveCatalog = (catalog: any) => container.resolve(SaveCatalog).execute(catalog);
 
-export const syncCatalog = (catalog: any, fetchUrl?: any) =>
-  container.resolve(SyncCatalog).execute(catalog, fetchUrl);
+export const syncCatalog = (catalog: any) => container.resolve(SyncCatalog).execute(catalog);
 
 export const loadCatalogSnapshot = (name: any, version: any) =>
   container.resolve(LoadCatalogSnapshot).execute(name, version);

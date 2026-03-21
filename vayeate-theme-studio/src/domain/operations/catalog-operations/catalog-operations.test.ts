@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Catalog } from '../../../model/schemas';
 import { CatalogService } from '../../../gateway/services/catalog-service';
-import { syncCatalogTokens } from '../../../gateway/services/catalog-sync';
+import { CatalogSyncService } from '../../../gateway/services/catalog-sync';
 import {
   LoadCatalogRefs,
   createCatalog,
@@ -22,20 +22,24 @@ const catalogServiceMock = {
   fetchUrl: vi.fn(),
 };
 
-vi.mock('../../../gateway/services/catalog-sync', () => ({
-  syncCatalogTokens: vi.fn(),
-}));
+const catalogSyncServiceMock = {
+  sync: vi.fn(),
+};
 
 describe('catalog-operations', () => {
   beforeEach(() => {
     container.registerInstance(CatalogService, catalogServiceMock as unknown as CatalogService);
+    container.registerInstance(
+      CatalogSyncService,
+      catalogSyncServiceMock as unknown as CatalogSyncService,
+    );
     vi.mocked(catalogServiceMock.createCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
     vi.mocked(catalogServiceMock.saveCatalog).mockResolvedValue(undefined);
     vi.mocked(catalogServiceMock.loadCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
     vi.mocked(catalogServiceMock.listCatalogs).mockResolvedValue([{ name: 'c1', version: '1.0.0' }]);
     vi.mocked(catalogServiceMock.deleteCatalog).mockResolvedValue(undefined);
     vi.mocked(catalogServiceMock.fetchUrl).mockResolvedValue('{}');
-    vi.mocked(syncCatalogTokens).mockResolvedValue({
+    vi.mocked(catalogSyncServiceMock.sync).mockResolvedValue({
       tokens: [],
       semanticTokenTypes: [],
       semanticTokenModifiers: [],
@@ -113,12 +117,11 @@ describe('catalog-operations', () => {
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
     } as unknown as Catalog;
-    const fetchUrl = vi.fn().mockResolvedValue('{}');
 
-    const result = await syncCatalog(catalog, fetchUrl);
+    const result = await syncCatalog(catalog);
 
-    expect(syncCatalogTokens).toHaveBeenCalledTimes(1);
-    expect(syncCatalogTokens).toHaveBeenCalledWith(catalog.sources, fetchUrl);
+    expect(catalogSyncServiceMock.sync).toHaveBeenCalledTimes(1);
+    expect(catalogSyncServiceMock.sync).toHaveBeenCalledWith(catalog.sources);
     expect(result.version).toBe('1.0.0');
     expect(result.locked).toBe(true);
   });
@@ -134,11 +137,10 @@ describe('catalog-operations', () => {
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
     } as unknown as Catalog;
-    const fetchUrl = vi.fn().mockResolvedValue('{}');
 
-    const result = await syncCatalog(catalog, fetchUrl);
+    const result = await syncCatalog(catalog);
 
-    expect(syncCatalogTokens).toHaveBeenCalledTimes(1);
+    expect(catalogSyncServiceMock.sync).toHaveBeenCalledTimes(1);
     expect(result.version).toBe('1.0.1');
     expect(result.locked).toBe(true);
   });

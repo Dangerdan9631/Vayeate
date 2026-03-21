@@ -1,5 +1,7 @@
+import { singleton } from 'tsyringe';
 import type { Source, Token, TokenType } from '../../model/schemas';
 import { parseSemanticSelector } from '../../model/semantic-token';
+import { CatalogService } from './catalog-service';
 
 const BACKTICK_RE = /`([^`]+)`/g;
 const CODE_TAG_RE = /<code>([^<]+)<\/code>/gi;
@@ -356,3 +358,12 @@ export type SyncCatalogResult = {
   semanticTokenModifiers: string[];
   semanticTokenLanguages: string[];
 };
+
+@singleton()
+export class CatalogSyncService {
+  constructor(private readonly catalogService: CatalogService) {}
+
+  async sync(sources: readonly Source[]): Promise<SyncCatalogResult> {
+    return syncCatalogTokens(sources, (url) => this.catalogService.fetchUrl(url));
+  }
+}

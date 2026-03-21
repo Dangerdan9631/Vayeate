@@ -1,20 +1,15 @@
 import { injectable } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
-import { CatalogService } from '../../../../gateway/services/catalog-service';
-import { syncCatalogTokens } from '../../../../gateway/services/catalog-sync';
+import { CatalogSyncService } from '../../../../gateway/services/catalog-sync';
 import { nextPatchVersion } from '../../../utils/version';
 
 /** Sync tokens from sources and return updated catalog. No setState, no save. Single responsibility: sync. */
 @injectable()
 export class SyncCatalog {
-  constructor(private readonly catalogService: CatalogService) {}
+  constructor(private readonly catalogSyncService: CatalogSyncService) {}
 
-  async execute(
-    catalog: Catalog,
-    fetchUrl?: (url: string) => Promise<string>,
-  ): Promise<Catalog> {
-    const fetchFn = fetchUrl ?? ((url: string) => this.catalogService.fetchUrl(url));
-    const result = await syncCatalogTokens(catalog.sources, fetchFn);
+  async execute(catalog: Catalog): Promise<Catalog> {
+    const result = await this.catalogSyncService.sync(catalog.sources);
     const version = catalog.locked ? nextPatchVersion(catalog.version) : catalog.version;
     return {
       ...catalog,

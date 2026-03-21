@@ -1,9 +1,11 @@
 import { singleton } from 'tsyringe';
-import { windowService } from '../../../gateway/services/window-service';
+import { WindowService } from '../../../gateway/services/window-service';
 
 @singleton()
 export class ToggleDevTools {
+  constructor(private readonly windowService: WindowService) {}
+
   async execute(): Promise<void> {
-    await windowService.toggleDevTools();
+    await this.windowService.toggleDevTools();
   }
 }

@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { initialAppState } from '../../state/app-state';
 import type { AppState } from '../../state/app-state';
 import { AppStateGetter } from '../../state/app-state-getter';
+import type { WindowService } from '../../../gateway/services/window-service';
 import {
   CloseWindowController,
   MaximizeWindowController,
@@ -45,6 +46,39 @@ function mockStateGetter(overrides: Partial<Pick<AppState, 'window'>> = {}): App
 describe('window-controller', () => {
   let api: Record<keyof WindowAPI, ReturnType<typeof vi.fn>>;
 
+  /** Minimal WindowService stand-in that forwards to `api` (avoids importing gateway impl in controller tests). */
+  function windowSvc(): WindowService {
+    return {
+      close: async () => {
+        await api.closeWindow?.();
+      },
+      minimize: async () => {
+        await api.minimizeWindow?.();
+      },
+      maximize: async () => {
+        await api.maximizeWindow?.();
+      },
+      restore: async () => {
+        await api.restoreWindow?.();
+      },
+      drag: async () => {
+        await api.dragWindow?.();
+      },
+      reload: async () => {
+        await api.reloadWindow?.();
+      },
+      reloadForce: async () => {
+        await api.reloadWindowForce?.();
+      },
+      toggleDevTools: async () => {
+        await api.toggleDevTools?.();
+      },
+      onWindowState: () => undefined,
+      onWindowResize: () => undefined,
+      onWindowMove: () => undefined,
+    } as unknown as WindowService;
+  }
+
   beforeEach(() => {
     api = {
       closeWindow: vi.fn().mockResolvedValue(undefined),
@@ -64,59 +98,59 @@ describe('window-controller', () => {
   });
 
   it('CloseWindowController calls close', async () => {
-    await new CloseWindowController(new CloseWindow()).run();
+    await new CloseWindowController(new CloseWindow(windowSvc())).run();
     expect(api.closeWindow).toHaveBeenCalledTimes(1);
   });
 
   it('MaximizeWindowController calls maximize when not already maximized', async () => {
-    await new MaximizeWindowController(new MaximizeWindow(), mockStateGetter({ window: { ...initialAppState.window, isMaximized: false } })).run();
+    await new MaximizeWindowController(new MaximizeWindow(windowSvc()), mockStateGetter({ window: { ...initialAppState.window, isMaximized: false } })).run();
     expect(api.maximizeWindow).toHaveBeenCalledTimes(1);
   });
 
   it('MaximizeWindowController does not call maximize when already maximized', async () => {
-    await new MaximizeWindowController(new MaximizeWindow(), mockStateGetter({ window: { ...initialAppState.window, isMaximized: true } })).run();
+    await new MaximizeWindowController(new MaximizeWindow(windowSvc()), mockStateGetter({ window: { ...initialAppState.window, isMaximized: true } })).run();
     expect(api.maximizeWindow).not.toHaveBeenCalled();
   });
 
   it('RestoreWindowController calls restore when maximized', async () => {
-    await new RestoreWindowController(new RestoreWindow(), mockStateGetter({ window: { ...initialAppState.window, isMaximized: true, isMinimized: false } })).run();
+    await new RestoreWindowController(new RestoreWindow(windowSvc()), mockStateGetter({ window: { ...initialAppState.window, isMaximized: true, isMinimized: false } })).run();
     expect(api.restoreWindow).toHaveBeenCalledTimes(1);
   });
 
   it('RestoreWindowController does not call restore when not maximized or minimized', async () => {
-    await new RestoreWindowController(new RestoreWindow(), mockStateGetter({ window: { ...initialAppState.window, isMaximized: false, isMinimized: false } })).run();
+    await new RestoreWindowController(new RestoreWindow(windowSvc()), mockStateGetter({ window: { ...initialAppState.window, isMaximized: false, isMinimized: false } })).run();
     expect(api.restoreWindow).not.toHaveBeenCalled();
   });
 
   it('MinimizeWindowController calls minimize when not already minimized', async () => {
-    await new MinimizeWindowController(new MinimizeWindow(), mockStateGetter({ window: { ...initialAppState.window, isMinimized: false } })).run();
+    await new MinimizeWindowController(new MinimizeWindow(windowSvc()), mockStateGetter({ window: { ...initialAppState.window, isMinimized: false } })).run();
     expect(api.minimizeWindow).toHaveBeenCalledTimes(1);
   });
 
   it('MinimizeWindowController does not call minimize when already minimized', async () => {
-    await new MinimizeWindowController(new MinimizeWindow(), mockStateGetter({ window: { ...initialAppState.window, isMinimized: true } })).run();
+    await new MinimizeWindowController(new MinimizeWindow(windowSvc()), mockStateGetter({ window: { ...initialAppState.window, isMinimized: true } })).run();
     expect(api.minimizeWindow).not.toHaveBeenCalled();
   });
 
   it('DragWindowController calls drag', async () => {
-    await new DragWindowController(new DragWindow()).run();
+    await new DragWindowController(new DragWindow(windowSvc())).run();
     expect(api.dragWindow).toHaveBeenCalledTimes(1);
   });
 
   it('ReloadWindowController calls window reload', async () => {
-    await new ReloadWindowController(new ReloadWindow()).run();
+    await new ReloadWindowController(new ReloadWindow(windowSvc())).run();
     expect(api.reloadWindow).toHaveBeenCalledTimes(1);
     expect(api.reloadWindowForce).not.toHaveBeenCalled();
   });
 
   it('ForceReloadWindowController calls window force reload', async () => {
-    await new ForceReloadWindowController(new ReloadWindow()).run();
+    await new ForceReloadWindowController(new ReloadWindow(windowSvc())).run();
     expect(api.reloadWindowForce).toHaveBeenCalledTimes(1);
     expect(api.reloadWindow).not.toHaveBeenCalled();
   });
 
   it('ToggleDevToolsController calls toggleDevTools', async () => {
-    await new ToggleDevToolsController(new ToggleDevTools()).run();
+    await new ToggleDevToolsController(new ToggleDevTools(windowSvc())).run();
     expect(api.toggleDevTools).toHaveBeenCalledTimes(1);
   });
 });
