@@ -1,8 +1,14 @@
+import { injectable } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schemas';
-import type { SetState } from '../types';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function setSelectedRef(setState: SetState, ref: CatalogReference | null): void {
-  setState({ type: 'SET_SELECTED_REF', ref });
+@injectable()
+export class SetSelectedRef {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(ref: CatalogReference | null): void {
+    this.appStateSetter.apply({ type: 'SET_SELECTED_REF', ref });
+  }
 }
 
 

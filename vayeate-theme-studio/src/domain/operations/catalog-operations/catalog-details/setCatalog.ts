@@ -1,8 +1,14 @@
+import { injectable } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
-import type { SetState } from '../types';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function setCatalog(setState: SetState, catalog: Catalog | null): void {
-  setState({ type: 'SET_CATALOG', catalog });
+@injectable()
+export class SetCatalog {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(catalog: Catalog | null): void {
+    this.appStateSetter.apply({ type: 'SET_CATALOG', catalog });
+  }
 }
 
 

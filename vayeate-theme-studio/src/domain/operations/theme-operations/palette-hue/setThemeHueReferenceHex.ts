@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetThemeHueReferenceHex {
@@ -12,7 +12,7 @@ export class SetThemeHueReferenceHex {
 }
 
 /** @deprecated Use SetThemeHueReferenceHex class instead. */
-export function setThemeHueReferenceHex(setState: SetState, value: string): void {
+export function setThemeHueReferenceHex(setState: (update: AppStateUpdate) => void, value: string): void {
   setState({ type: 'SET_THEME_HUE_REFERENCE_HEX', value });
 }
 

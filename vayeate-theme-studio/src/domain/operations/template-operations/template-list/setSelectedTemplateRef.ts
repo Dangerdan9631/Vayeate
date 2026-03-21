@@ -1,11 +1,14 @@
 import type { TemplateReference } from '../../../../model/schemas';
-import type { SetState } from '../types';
+import { injectable } from 'tsyringe';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function setSelectedTemplateRef(
-  setState: SetState,
-  ref: TemplateReference | null,
-): void {
-  setState({ type: 'SET_SELECTED_TEMPLATE_REF', ref });
+@injectable()
+export class SetSelectedTemplateRef {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(ref: TemplateReference | null): void {
+    this.appStateSetter.apply({ type: 'SET_SELECTED_TEMPLATE_REF', ref });
+  }
 }
 
 

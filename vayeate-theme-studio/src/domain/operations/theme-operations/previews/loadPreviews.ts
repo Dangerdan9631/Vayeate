@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { previewService } from '../../../../gateway/services/preview-service';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 /** Load tokenized preview files and set them in state. */
 @singleton()
@@ -19,7 +19,7 @@ export class LoadPreviews {
 }
 
 /** @deprecated Use LoadPreviews class instead. */
-export async function loadPreviews(setState: SetState): Promise<void> {
+export async function loadPreviews(setState: (update: AppStateUpdate) => void): Promise<void> {
   try {
     const previews = await previewService.loadPreviews();
     setState({ type: 'SET_THEME_EDITOR_PREVIEWS', previews });

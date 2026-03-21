@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetThemeCreateFormName {
@@ -12,7 +12,7 @@ export class SetThemeCreateFormName {
 }
 
 /** @deprecated Use SetThemeCreateFormName class instead. */
-export function setThemeCreateFormName(setState: SetState, value: string): void {
+export function setThemeCreateFormName(setState: (update: AppStateUpdate) => void, value: string): void {
   setState({ type: 'SET_THEME_CREATE_FORM_NAME', value });
 }
 

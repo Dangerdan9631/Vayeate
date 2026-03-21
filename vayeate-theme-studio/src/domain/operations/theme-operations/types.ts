@@ -1,7 +1,4 @@
 import type { Theme } from '../../../model/schemas';
-import type { AppStateUpdate } from '../../state/app-state';
-
-export type SetState = (update: AppStateUpdate) => void;
 
 export interface RestoreThemeStateParams {
   theme?: Theme | null;

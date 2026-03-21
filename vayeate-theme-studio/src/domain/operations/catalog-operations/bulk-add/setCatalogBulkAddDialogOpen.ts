@@ -1,6 +1,12 @@
-import type { SetState } from '../types';
+import { injectable } from 'tsyringe';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function setCatalogBulkAddDialogOpen(setState: SetState, value: boolean): void {
-  setState({ type: 'SET_CATALOG_BULK_ADD_DIALOG_OPEN', value });
+@injectable()
+export class SetCatalogBulkAddDialogOpen {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(value: boolean): void {
+    this.appStateSetter.apply({ type: 'SET_CATALOG_BULK_ADD_DIALOG_OPEN', value });
+  }
 }
 

@@ -1,7 +1,4 @@
 import type { Catalog } from '../../../model/schemas';
-import type { AppStateUpdate } from '../../state/app-state';
-
-export type SetState = (update: AppStateUpdate) => void;
 
 export interface CatalogPaneState {
   catalog: Catalog | null;

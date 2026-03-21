@@ -1,14 +1,18 @@
+import { injectable } from 'tsyringe';
 import type { ColorVariableKey, Template } from '../../../../model/schemas';
 
-export function applyContrastComparisonSourceUpdate(
+@injectable()
+export class UpdateContrastComparisonSource {
+  execute(
   template: Template,
   contrastVariableKey: string,
   comparisonSourceRef: ColorVariableKey | null,
-): Template {
+  ): Template {
   return {
     ...template,
     contrastVariables: template.contrastVariables.map((v) =>
       v.key === contrastVariableKey ? { ...v, comparisonSourceRef } : v,
     ),
   };
+  }
 }

@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetThemePaneSelections {
@@ -17,7 +17,7 @@ export class SetThemePaneSelections {
 
 /** @deprecated Use SetThemePaneSelections class instead. */
 export function setThemePaneSelections(
-  setState: SetState,
+  setState: (update: AppStateUpdate) => void,
   checkedColorRefs: string[],
   checkedContrastRefs: string[],
 ): void {

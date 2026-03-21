@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetThemeHueAdjustment {
@@ -12,7 +12,7 @@ export class SetThemeHueAdjustment {
 }
 
 /** @deprecated Use SetThemeHueAdjustment class instead. */
-export function setThemeHueAdjustment(setState: SetState, value: number): void {
+export function setThemeHueAdjustment(setState: (update: AppStateUpdate) => void, value: number): void {
   setState({ type: 'SET_THEME_HUE_ADJUSTMENT', value });
 }
 

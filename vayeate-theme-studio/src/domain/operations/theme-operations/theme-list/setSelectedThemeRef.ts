@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { ThemeReference } from '../../../../model/schemas';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetSelectedThemeRef {
@@ -13,7 +13,7 @@ export class SetSelectedThemeRef {
 }
 
 /** @deprecated Use SetSelectedThemeRef class instead. */
-export function setSelectedThemeRef(setState: SetState, ref: ThemeReference | null): void {
+export function setSelectedThemeRef(setState: (update: AppStateUpdate) => void, ref: ThemeReference | null): void {
   setState({ type: 'SET_SELECTED_THEME_REF', ref });
 }
 

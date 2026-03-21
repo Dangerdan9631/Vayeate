@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { themeService } from '../../../../gateway/services/theme-service';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class LoadTheme {
@@ -17,7 +17,7 @@ export class LoadTheme {
 
 /** @deprecated Use LoadTheme class instead. */
 export async function loadTheme(
-  setState: SetState,
+  setState: (update: AppStateUpdate) => void,
   name: string,
   version: string,
 ): Promise<Theme | null> {

@@ -1,4 +1,6 @@
-export type { GetState, SetState } from './types';
+import type { AppState } from '../../state/app-state';
+
+export type GetState = () => AppState;
 export { ClearPersistedUndo } from './clearPersistedUndo';
 export { PerformUndo } from './performUndo';
 export { PerformRedo } from './performRedo';

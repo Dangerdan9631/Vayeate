@@ -1,5 +1,9 @@
+import { injectable } from 'tsyringe';
 import type { Catalog, Token } from '../../../../model/schemas';
 
-export function addPlainTokenToCatalog(catalog: Catalog, token: Token): Catalog {
-  return { ...catalog, tokens: [...catalog.tokens, token] };
+@injectable()
+export class AddPlainTokenToCatalog {
+  execute(catalog: Catalog, token: Token): Catalog {
+    return { ...catalog, tokens: [...catalog.tokens, token] };
+  }
 }

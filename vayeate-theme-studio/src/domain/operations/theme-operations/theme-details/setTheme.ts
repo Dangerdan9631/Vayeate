@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetTheme {
@@ -14,7 +14,7 @@ export class SetTheme {
 
 /** @deprecated Use SetTheme class instead. */
 export function setTheme(
-  setState: SetState,
+  setState: (update: AppStateUpdate) => void,
   theme: Theme | null,
   preserveHue?: boolean,
 ): void {

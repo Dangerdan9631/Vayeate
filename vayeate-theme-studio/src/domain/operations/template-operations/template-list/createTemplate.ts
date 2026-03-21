@@ -1,13 +1,13 @@
 import type { Template } from '../../../../model/schemas';
 import { templateService } from '../../../../gateway/services/template-service';
-import type { SetState } from '../types';
+import { injectable } from 'tsyringe';
 
-export async function createTemplate(
-  _setState: SetState,
-  params: { name: string },
-): Promise<Template> {
-  const template = await templateService.createTemplate(params);
-  return template;
+@injectable()
+export class CreateTemplate {
+  async execute(params: { name: string }): Promise<Template> {
+    const template = await templateService.createTemplate(params);
+    return template;
+  }
 }
 
 

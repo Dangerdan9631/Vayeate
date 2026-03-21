@@ -39,7 +39,7 @@ export const handleAppAction: ActionHandler<AppAction> = async (
       await container.resolve(windowController.ToggleDevToolsController).run();
       break;
     case AppActionType.AppRibbonTabButtonOnClick:
-      container.resolve(tabController.SetActiveTabController).run(action.tabId);
+      await container.resolve(tabController.SetActiveTabController).run(action.tabId);
       break;
     case AppActionType.AppBarThemeCheckboxOnToggle:
       await container.resolve(appController.ToggleColorSchemeController).run(action.checked);

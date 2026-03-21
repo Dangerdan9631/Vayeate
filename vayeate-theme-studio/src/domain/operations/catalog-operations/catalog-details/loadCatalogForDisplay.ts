@@ -1,15 +1,17 @@
+import { injectable } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { catalogService } from '../../../../gateway/services/catalog-service';
-import type { SetState } from '../types';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export async function loadCatalogForDisplay(
-  setState: SetState,
-  name: string,
-  version: string,
-): Promise<Catalog | null> {
-  const loaded = await catalogService.loadCatalog(name, version);
-  setState({ type: 'SET_LOADED_CATALOG_FOR_DISPLAY', name, version, catalog: loaded });
-  return loaded;
+@injectable()
+export class LoadCatalogForDisplay {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  async execute(name: string, version: string): Promise<Catalog | null> {
+    const loaded = await catalogService.loadCatalog(name, version);
+    this.appStateSetter.apply({ type: 'SET_LOADED_CATALOG_FOR_DISPLAY', name, version, catalog: loaded });
+    return loaded;
+  }
 }
 
 

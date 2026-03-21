@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { AppStateSetter } from '../../../state/app-state-setter';
-import type { SetState } from '../types';
+import type { AppStateUpdate } from '../../../state/app-state';
 
 @singleton()
 export class SetThemeSaveError {
@@ -12,7 +12,7 @@ export class SetThemeSaveError {
 }
 
 /** @deprecated Use SetThemeSaveError class instead. */
-export function setThemeSaveError(setState: SetState, error: string | null): void {
+export function setThemeSaveError(setState: (update: AppStateUpdate) => void, error: string | null): void {
   setState({ type: 'SET_THEME_SAVE_ERROR', error });
 }
 

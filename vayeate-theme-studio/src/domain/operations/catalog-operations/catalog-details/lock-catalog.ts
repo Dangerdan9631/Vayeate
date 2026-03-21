@@ -1,5 +1,9 @@
+import { injectable } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 
-export function lockCatalog(catalog: Catalog): Catalog {
-  return { ...catalog, locked: true };
+@injectable()
+export class LockCatalog {
+  execute(catalog: Catalog): Catalog {
+    return { ...catalog, locked: true };
+  }
 }

@@ -1,8 +1,14 @@
+import { injectable } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
-import type { SetState } from '../types';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function setCatalogCreateFormType(setState: SetState, value: CatalogType): void {
-  setState({ type: 'SET_CATALOG_CREATE_FORM_TYPE', value });
+@injectable()
+export class SetCatalogCreateFormType {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(value: CatalogType): void {
+    this.appStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_TYPE', value });
+  }
 }
 
 

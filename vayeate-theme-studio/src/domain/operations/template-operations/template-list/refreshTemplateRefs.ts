@@ -1,15 +1,22 @@
 import type { TemplateReference } from '../../../../model/schemas';
 import { templateService } from '../../../../gateway/services/template-service';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { injectable } from 'tsyringe';
+import { StoreStateSetter } from '../../../state/store-state-setter';
 
 /** List templates and set entries in store. Single responsibility: refresh ref list. */
-export async function refreshTemplateRefs(setStoreState: SetStoreState): Promise<TemplateReference[]> {
-  const refs = await templateService.listTemplates();
-  setStoreState({
+@injectable()
+export class RefreshTemplateRefs {
+  constructor(private readonly storeStateSetter: StoreStateSetter) {}
+
+  /** List templates and set entries in store. Single responsibility: refresh ref list. */
+  async execute(): Promise<TemplateReference[]> {
+    const refs = await templateService.listTemplates();
+    this.storeStateSetter.apply({
     type: 'SET_STORE_TEMPLATE_ENTRIES',
     entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
-  });
-  return refs;
+    });
+    return refs;
+  }
 }
 
 

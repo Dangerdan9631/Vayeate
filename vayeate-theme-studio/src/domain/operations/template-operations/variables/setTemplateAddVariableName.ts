@@ -1,7 +1,13 @@
-import type { SetState } from '../types';
+import { injectable } from 'tsyringe';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
 /** Store draft value for the "add variable" name input. */
-export function setTemplateAddVariableName(setState: SetState, value: string): void {
-  setState({ type: 'SET_TEMPLATE_ADD_VARIABLE_NAME', value });
+@injectable()
+export class SetTemplateAddVariableName {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(value: string): void {
+    this.appStateSetter.apply({ type: 'SET_TEMPLATE_ADD_VARIABLE_NAME', value });
+  }
 }
 

@@ -1,11 +1,14 @@
+import { injectable } from 'tsyringe';
 import type { ContrastVariableKey } from '../../../../model/schemas';
-import type { SetState } from '../types';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function setTemplateMappingContrastVariableFilter(
-  setState: SetState,
-  values: ContrastVariableKey[],
-): void {
-  setState({ type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER', values });
+@injectable()
+export class SetTemplateMappingContrastVariableFilter {
+  constructor(private readonly appStateSetter: AppStateSetter) {}
+
+  execute(values: ContrastVariableKey[]): void {
+    this.appStateSetter.apply({ type: 'SET_TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER', values });
+  }
 }
 
 
