@@ -1,11 +1,13 @@
 import { injectable } from 'tsyringe';
-import { catalogService } from '../../../../gateway/services/catalog-service';
+import { CatalogService } from '../../../../gateway/services/catalog-service';
 
 /** Delete one catalog version from disk. Single responsibility: delete. */
 @injectable()
 export class DeleteCatalog {
+  constructor(private readonly catalogService: CatalogService) {}
+
   async execute(name: string, version: string): Promise<void> {
-    await catalogService.deleteCatalog(name, version);
+    await this.catalogService.deleteCatalog(name, version);
   }
 }
 

@@ -1,11 +1,13 @@
 import type { Template } from '../../../../model/schemas';
-import { templateService } from '../../../../gateway/services/template-service';
+import { TemplateService } from '../../../../gateway/services/template-service';
 import { injectable } from 'tsyringe';
 
 @injectable()
 export class CreateTemplate {
+  constructor(private readonly templateService: TemplateService) {}
+
   async execute(params: { name: string }): Promise<Template> {
-    const template = await templateService.createTemplate(params);
+    const template = await this.templateService.createTemplate(params);
     return template;
   }
 }

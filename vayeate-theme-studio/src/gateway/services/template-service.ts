@@ -1,30 +1,36 @@
+import { singleton } from 'tsyringe';
 import type { Template } from '../../model/schemas';
 
-function getAPI() {
-  const api = window.electronAPI;
-  if (!api) {
-    throw new Error('Electron API not available. Run the app in Electron.');
+@singleton()
+export class TemplateService {
+  private getAPI() {
+    const api = window.electronAPI;
+    if (!api) {
+      throw new Error('Electron API not available. Run the app in Electron.');
+    }
+    return api;
   }
-  return api;
-}
 
-export const templateService = {
-  createTemplate: async (params: { name: string }): Promise<Template> => {
-    const template = await getAPI().createTemplate(params);
+  async createTemplate(params: { name: string }): Promise<Template> {
+    const template = await this.getAPI().createTemplate(params);
     return template;
-  },
-  saveTemplate: async (template: Template): Promise<void> => {
-    await getAPI().saveTemplate(template);
-  },
-  loadTemplate: async (name: string, version: string): Promise<Template | null> => {
-    const template = await getAPI().loadTemplate(name, version);
+  }
+
+  async saveTemplate(template: Template): Promise<void> {
+    await this.getAPI().saveTemplate(template);
+  }
+
+  async loadTemplate(name: string, version: string): Promise<Template | null> {
+    const template = await this.getAPI().loadTemplate(name, version);
     return template;
-  },
-  listTemplates: async () => {
-    const refs = await getAPI().listTemplates();
+  }
+
+  async listTemplates() {
+    const refs = await this.getAPI().listTemplates();
     return refs;
-  },
-  deleteTemplate: async (name: string, version: string): Promise<void> => {
-    await getAPI().deleteTemplate(name, version);
-  },
-};
+  }
+
+  async deleteTemplate(name: string, version: string): Promise<void> {
+    await this.getAPI().deleteTemplate(name, version);
+  }
+}

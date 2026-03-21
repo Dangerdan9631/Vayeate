@@ -1,12 +1,14 @@
-import { singleton } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { themeService } from '../../../../gateway/services/theme-service';
+import { ThemeService } from '../../../../gateway/services/theme-service';
 import type { AppStateUpdate } from '../../../state/app-state';
 
-@singleton()
+@injectable()
 export class CreateTheme {
+  constructor(private readonly themeService: ThemeService) {}
+
   async execute(params: { name: string }): Promise<Theme> {
-    return await themeService.createTheme(params);
+    return await this.themeService.createTheme(params);
   }
 }
 
@@ -15,8 +17,7 @@ export async function createTheme(
   _setState: (update: AppStateUpdate) => void,
   params: { name: string },
 ): Promise<Theme> {
-  const theme = await themeService.createTheme(params);
-  return theme;
+  return container.resolve(CreateTheme).execute(params);
 }
 
 

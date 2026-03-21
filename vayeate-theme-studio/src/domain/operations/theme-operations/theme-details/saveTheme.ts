@@ -1,18 +1,20 @@
-import { singleton } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { themeService } from '../../../../gateway/services/theme-service';
+import { ThemeService } from '../../../../gateway/services/theme-service';
 
 /** Persist theme to disk only. Single responsibility: save. */
-@singleton()
+@injectable()
 export class SaveTheme {
+  constructor(private readonly themeService: ThemeService) {}
+
   async execute(theme: Theme): Promise<void> {
-    await themeService.saveTheme(theme);
+    await this.themeService.saveTheme(theme);
   }
 }
 
 /** @deprecated Use SaveTheme class instead. */
 export async function saveTheme(theme: Theme): Promise<void> {
-  await themeService.saveTheme(theme);
+  await container.resolve(SaveTheme).execute(theme);
 }
 
 

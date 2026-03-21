@@ -624,8 +624,8 @@ These handler files pass `setState`/`setStoreState` directly to controller funct
 
 ### J. Validation
 
-- [ ] `npm run test` passes with exit code 0
-- [ ] `npm run build` passes with exit code 0
+- [x] `npm run test` passes with exit code 0
+- [x] `npm run build` passes with exit code 0
 
 ---
 

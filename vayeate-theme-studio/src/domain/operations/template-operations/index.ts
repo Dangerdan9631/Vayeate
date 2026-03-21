@@ -1,5 +1,7 @@
+import { container } from 'tsyringe';
 import { AppStateSetter } from '../../state/app-state-setter';
 import { StoreStateSetter } from '../../state/store-state-setter';
+import { TemplateService } from '../../../gateway/services/template-service';
 
 // template-list
 export { LoadTemplateRefs } from './template-list/loadTemplateRefs';
@@ -89,7 +91,7 @@ export type SetState = (update: import('../../state/app-state').AppStateUpdate) 
 
 /** @deprecated Backward-compatible function wrappers for controller migration */
 export const createTemplate = (_setState: SetState, params: { name: string }) =>
-  new CreateTemplateClass().execute(params);
+  container.resolve(CreateTemplateClass).execute(params);
 
 export const setTemplate = (_setState: SetState, template: import('../../../model/schemas').Template | null) =>
   new SetTemplateClass(new AppStateSetter(_setState)).execute(template);
@@ -100,19 +102,19 @@ export const setSelectedTemplateRef = (
 ) => new SetSelectedTemplateRefClass(new AppStateSetter(_setState)).execute(ref);
 
 export const refreshTemplateRefs = (_setStoreState: import('../../state/store-state-reducer').SetStoreState) =>
-  new RefreshTemplateRefsClass(new StoreStateSetter(_setStoreState)).execute();
+  new RefreshTemplateRefsClass(new StoreStateSetter(_setStoreState), container.resolve(TemplateService)).execute();
 
 export const loadTemplate = (_setState: SetState, name: string, version: string) =>
-  new LoadTemplateClass(new AppStateSetter(_setState)).execute(name, version);
+  new LoadTemplateClass(new AppStateSetter(_setState), container.resolve(TemplateService)).execute(name, version);
 
 export const saveTemplate = (template: import('../../../model/schemas').Template) =>
-  new SaveTemplateClass().execute(template);
+  container.resolve(SaveTemplateClass).execute(template);
 
 export const deleteTemplate = (name: string, version: string) =>
-  new DeleteTemplateClass().execute(name, version);
+  container.resolve(DeleteTemplateClass).execute(name, version);
 
 export const loadTemplateSnapshot = (name: string, version: string) =>
-  new LoadTemplateSnapshotClass().execute(name, version);
+  container.resolve(LoadTemplateSnapshotClass).execute(name, version);
 
 export const setTemplateCreateFormName = (_setState: SetState, value: string) =>
   new SetTemplateCreateFormNameClass(new AppStateSetter(_setState)).execute(value);
