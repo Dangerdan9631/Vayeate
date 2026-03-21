@@ -1,20 +1,23 @@
+import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { setTheme, type SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { saveTheme } from '../theme-details/saveTheme';
+import { SetTheme } from '../../../operations/theme-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { SaveThemeController } from '../theme-details/saveTheme';
 
-export function setPaletteClusterCountK(
-  setState: SetState,
-  getState: GetState,
-  value: number,
-): void {
-  const theme = getState().themes.theme;
-  if (!theme) return;
-  const k = Math.max(1, Math.min(12, value));
-  const next: Theme = { ...theme, paletteClusterCountK: k };
-  setTheme(setState, next);
-  saveTheme(setState, next);
+@singleton()
+export class SetPaletteClusterCountKController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly setTheme: SetTheme,
+    private readonly saveThemeController: SaveThemeController,
+  ) {}
+
+  run(value: number): void {
+    const theme = this.appStateGetter.current().themes.theme;
+    if (!theme) return;
+    const k = Math.max(1, Math.min(12, value));
+    const next: Theme = { ...theme, paletteClusterCountK: k };
+    this.setTheme.execute(next);
+    this.saveThemeController.run(next);
+  }
 }
-
-
-

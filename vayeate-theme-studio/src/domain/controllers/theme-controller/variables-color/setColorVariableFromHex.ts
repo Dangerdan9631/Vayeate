@@ -1,33 +1,33 @@
-import type { Theme } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
-import { setTheme, type SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import type { Theme } from '../../../../model/schemas';
+import { SetTheme } from '../../../operations/theme-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import { normalizeHexSafe } from '../../../utils/color';
-import { saveTheme } from '../theme-details/saveTheme';
+import { SaveThemeController } from '../theme-details/saveTheme';
 
-export function setColorVariableFromHex(
-  setState: SetState,
-  getState: GetState,
-  ref: ColorVariableKey | undefined,
-  hex: string,
-  target: 'dark' | 'light',
-): void {
-  const theme = getState().themes.theme;
-  if (!theme || !ref) return;
-  const normalized = normalizeHexSafe(hex);
-  if (!normalized) return;
-  const newAssignments = theme.colorAssignments.map((a) => {
-    if (a.colorRef !== ref) return a;
-    const next = { ...a };
-    if (target === 'dark') next.dark = { value: normalized };
-    else next.light = { value: normalized };
-    return next;
-  });
-  const next: Theme = { ...theme, colorAssignments: newAssignments };
-  setTheme(setState, next);
-  saveTheme(setState, next);
+@singleton()
+export class SetColorVariableFromHexController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly setTheme: SetTheme,
+    private readonly saveThemeController: SaveThemeController,
+  ) {}
+
+  run(ref: ColorVariableKey | undefined, hex: string, target: 'dark' | 'light'): void {
+    const theme = this.appStateGetter.current().themes.theme;
+    if (!theme || !ref) return;
+    const normalized = normalizeHexSafe(hex);
+    if (!normalized) return;
+    const newAssignments = theme.colorAssignments.map((a) => {
+      if (a.colorRef !== ref) return a;
+      const next = { ...a };
+      if (target === 'dark') next.dark = { value: normalized };
+      else next.light = { value: normalized };
+      return next;
+    });
+    const next: Theme = { ...theme, colorAssignments: newAssignments };
+    this.setTheme.execute(next);
+    this.saveThemeController.run(next);
+  }
 }
-
-
-
-

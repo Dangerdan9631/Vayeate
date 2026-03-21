@@ -1,27 +1,28 @@
-import type { Theme } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
 import type { ContrastVariableKey } from '../../../../model/schemas';
-import { setTheme, type SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import type { Theme } from '../../../../model/schemas';
+import { SetTheme } from '../../../operations/theme-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import { parseContrastValue, updateContrastAssignment } from '../../../utils/contrast-utils';
-import { saveTheme } from '../theme-details/saveTheme';
+import { SaveThemeController } from '../theme-details/saveTheme';
 
-export function setContrastVariableDarkMax(
-  setState: SetState,
-  getState: GetState,
-  ref: ContrastVariableKey | undefined,
-  value: string,
-): void {
-  const theme = getState().themes.theme;
-  if (!theme || ref == null) return;
-  const num = value === '' || value == null ? null : parseContrastValue(value);
-  const newAssignments = updateContrastAssignment(theme.contrastAssignments, ref, 'dark', {
-    max: num,
-  });
-  const next: Theme = { ...theme, contrastAssignments: newAssignments };
-  setTheme(setState, next);
-  saveTheme(setState, next);
+@singleton()
+export class SetContrastVariableDarkMaxController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly setTheme: SetTheme,
+    private readonly saveThemeController: SaveThemeController,
+  ) {}
+
+  run(ref: ContrastVariableKey | undefined, value: string): void {
+    const theme = this.appStateGetter.current().themes.theme;
+    if (!theme || ref == null) return;
+    const num = value === '' || value == null ? null : parseContrastValue(value);
+    const newAssignments = updateContrastAssignment(theme.contrastAssignments, ref, 'dark', {
+      max: num,
+    });
+    const next: Theme = { ...theme, contrastAssignments: newAssignments };
+    this.setTheme.execute(next);
+    this.saveThemeController.run(next);
+  }
 }
-
-
-
-

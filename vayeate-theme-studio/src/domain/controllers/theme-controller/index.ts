@@ -2,84 +2,84 @@
 export { themeStackId } from '../../utils/stack-id';
 export { LoadThemeRefsController } from './theme-list/loadThemeRefs';
 export { LoadThemePageController } from './theme-list/loadThemePage';
-export { selectThemeAndLoad } from './theme-list/selectThemeAndLoad';
-export { selectThemeByName } from './theme-list/selectThemeByName';
-export { openThemeCreateDialog } from './theme-list/openThemeCreateDialog';
-export { closeThemeCreateDialog } from './theme-list/closeThemeCreateDialog';
+export { SelectThemeAndLoadController } from './theme-list/selectThemeAndLoad';
+export { SelectThemeByNameController } from './theme-list/selectThemeByName';
+export { OpenThemeCreateDialogController } from './theme-list/openThemeCreateDialog';
+export { CloseThemeCreateDialogController } from './theme-list/closeThemeCreateDialog';
 export { CreateThemeController } from './theme-list/createTheme';
 export { DeleteThemeVersionController } from './theme-list/deleteThemeVersion';
-export { setThemeCreateFormName } from './theme-list/setThemeCreateFormName';
+export { SetThemeCreateFormNameController } from './theme-list/setThemeCreateFormName';
 
 // theme-details
-export { saveTheme } from './theme-details/saveTheme';
+export { SaveThemeController } from './theme-details/saveTheme';
 export { RestoreThemeStateController } from './theme-details/restoreThemeState';
-export { clearThemeSaveError } from './theme-details/clearThemeSaveError';
+export { ClearThemeSaveErrorController } from './theme-details/clearThemeSaveError';
 export { IncrementThemeVersionController } from './theme-details/incrementThemeVersion';
-export { setThemeTemplate } from './theme-details/setThemeTemplate';
-export { setThemePreviewTokenRef } from './theme-details/setThemePreviewTokenRef';
-export { setThemeTemplateToggle } from './theme-details/setThemeTemplateToggle';
-export { setThemeTemplateVersionOnly } from './theme-details/setThemeTemplateVersionOnly';
-export { generateTheme } from './theme-details/generateTheme';
-export { persistCurrentTheme } from './theme-details/persistCurrentTheme';
+export { SetThemeTemplateController } from './theme-details/setThemeTemplate';
+export { SetThemePreviewTokenRefController } from './theme-details/setThemePreviewTokenRef';
+export { SetThemeTemplateToggleController } from './theme-details/setThemeTemplateToggle';
+export { SetThemeTemplateVersionOnlyController } from './theme-details/setThemeTemplateVersionOnly';
+export { GenerateThemeController } from './theme-details/generateTheme';
+export { PersistCurrentThemeController } from './theme-details/persistCurrentTheme';
 
 // palette
-export { setApplyPaletteToDark } from './palette/setApplyPaletteToDark';
-export { setApplyPaletteToLight } from './palette/setApplyPaletteToLight';
-export { setPaletteClusterCountKPreview } from './palette/setPaletteClusterCountKPreview';
-export { setPaletteClusterCountK } from './palette/setPaletteClusterCountK';
-export { setPaletteClusterGroupToggled } from './palette/setPaletteClusterGroupToggled';
-export { setPaletteSwatchGroupSelection } from './palette/setPaletteSwatchGroupSelection';
-export { setPaletteFullSelection } from './palette/setPaletteFullSelection';
-export { setPalettePrimarySwatch } from './palette/setPalettePrimarySwatch';
-export { setPaletteMemberSwatch } from './palette/setPaletteMemberSwatch';
-export { handleMemberSwatchRightClick } from './palette/handleMemberSwatchRightClick';
+export { SetApplyPaletteToDarkController } from './palette/setApplyPaletteToDark';
+export { SetApplyPaletteToLightController } from './palette/setApplyPaletteToLight';
+export { SetPaletteClusterCountKPreviewController } from './palette/setPaletteClusterCountKPreview';
+export { SetPaletteClusterCountKController } from './palette/setPaletteClusterCountK';
+export { SetPaletteClusterGroupToggledController } from './palette/setPaletteClusterGroupToggled';
+export { SetPaletteSwatchGroupSelectionController } from './palette/setPaletteSwatchGroupSelection';
+export { SetPaletteFullSelectionController } from './palette/setPaletteFullSelection';
+export { SetPalettePrimarySwatchController } from './palette/setPalettePrimarySwatch';
+export { SetPaletteMemberSwatchController } from './palette/setPaletteMemberSwatch';
+export { HandleMemberSwatchRightClickController } from './palette/handleMemberSwatchRightClick';
 
 // palette-color-assign
-export { setAssignColorDraftText } from './palette-color-assign/setAssignColorDraftText';
-export { applyAssignColorDraft } from './palette-color-assign/applyAssignColorDraft';
-export { commitAssignColorText } from './palette-color-assign/commitAssignColorText';
-export { assignColorFromPicker } from './palette-color-assign/assignColorFromPicker';
-export { setAssignColorPreview } from './palette-color-assign/setAssignColorPreview';
+export { SetAssignColorDraftTextController } from './palette-color-assign/setAssignColorDraftText';
+export { ApplyAssignColorDraftController } from './palette-color-assign/applyAssignColorDraft';
+export { CommitAssignColorTextController } from './palette-color-assign/commitAssignColorText';
+export { AssignColorFromPickerController } from './palette-color-assign/assignColorFromPicker';
+export { SetAssignColorPreviewController } from './palette-color-assign/setAssignColorPreview';
 
 // palette-hue
-export { setThemeHueAdjustment } from './palette-hue/setThemeHueAdjustment';
-export { setThemeHueReferenceHex } from './palette-hue/setThemeHueReferenceHex';
-export { commitHueReferenceColor } from './palette-hue/commitHueReferenceColor';
-export { recenterHueReference } from './palette-hue/recenterHueReference';
+export { SetThemeHueAdjustmentController } from './palette-hue/setThemeHueAdjustment';
+export { SetThemeHueReferenceHexController } from './palette-hue/setThemeHueReferenceHex';
+export { CommitHueReferenceColorController } from './palette-hue/commitHueReferenceColor';
+export { RecenterHueReferenceController } from './palette-hue/recenterHueReference';
 
 // previews
-export { setPreviewVariableSelection } from './previews/setPreviewVariableSelection';
-export { setPreviewVariableFilterText } from './previews/setPreviewVariableFilterText';
-export { clearPreviewVariableFilter } from './previews/clearPreviewVariableFilter';
-export { setPreviewSelectedSample } from './previews/setPreviewSelectedSample';
-export { previewSampleButtonScroll } from './previews/previewSampleButtonScroll';
+export { SetPreviewVariableSelectionController } from './previews/setPreviewVariableSelection';
+export { SetPreviewVariableFilterTextController } from './previews/setPreviewVariableFilterText';
+export { ClearPreviewVariableFilterController } from './previews/clearPreviewVariableFilter';
+export { SetPreviewSelectedSampleController } from './previews/setPreviewSelectedSample';
+export { PreviewSampleButtonScrollController } from './previews/previewSampleButtonScroll';
 
 // variables
-export { setThemeVariablesSearchText } from './variables/setThemeVariablesSearchText';
-export { setVariablesSelectAll } from './variables/setVariablesSelectAll';
-export { setVariablesSelectByType } from './variables/setVariablesSelectByType';
-export { setVariablesSelectByGroup } from './variables/setVariablesSelectByGroup';
-export { toggleVariableSelection } from './variables/toggleVariableSelection';
-export { setThemeVariableDraftText } from './variables/setThemeVariableDraftText';
+export { SetThemeVariablesSearchTextController } from './variables/setThemeVariablesSearchText';
+export { SetVariablesSelectAllController } from './variables/setVariablesSelectAll';
+export { SetVariablesSelectByTypeController } from './variables/setVariablesSelectByType';
+export { SetVariablesSelectByGroupController } from './variables/setVariablesSelectByGroup';
+export { ToggleVariableSelectionController } from './variables/toggleVariableSelection';
+export { SetThemeVariableDraftTextController } from './variables/setThemeVariableDraftText';
 
 // variables-color
-export { setColorVariableDark } from './variables-color/setColorVariableDark';
-export { setColorVariableLight } from './variables-color/setColorVariableLight';
-export { setColorVariableFromHex } from './variables-color/setColorVariableFromHex';
-export { setColorVariableFromHexPreview } from './variables-color/setColorVariableFromHexPreview';
-export { setColorUseDarkForLight } from './variables-color/setColorUseDarkForLight';
+export { SetColorVariableDarkController } from './variables-color/setColorVariableDark';
+export { SetColorVariableLightController } from './variables-color/setColorVariableLight';
+export { SetColorVariableFromHexController } from './variables-color/setColorVariableFromHex';
+export { SetColorVariableFromHexPreviewController } from './variables-color/setColorVariableFromHexPreview';
+export { SetColorUseDarkForLightController } from './variables-color/setColorUseDarkForLight';
 
 // variables-contrast
-export { setContrastUseDarkForLight } from './variables-contrast/setContrastUseDarkForLight';
-export { setContrastVariableDarkValue } from './variables-contrast/setContrastVariableDarkValue';
-export { setContrastVariableDarkMethod } from './variables-contrast/setContrastVariableDarkMethod';
-export { setContrastVariableDarkMin } from './variables-contrast/setContrastVariableDarkMin';
-export { setContrastVariableDarkMax } from './variables-contrast/setContrastVariableDarkMax';
-export { setContrastVariableLightValue } from './variables-contrast/setContrastVariableLightValue';
-export { setContrastVariableLightMethod } from './variables-contrast/setContrastVariableLightMethod';
-export { setContrastVariableLightMin } from './variables-contrast/setContrastVariableLightMin';
-export { setContrastVariableLightMax } from './variables-contrast/setContrastVariableLightMax';
+export { SetContrastUseDarkForLightController } from './variables-contrast/setContrastUseDarkForLight';
+export { SetContrastVariableDarkValueController } from './variables-contrast/setContrastVariableDarkValue';
+export { SetContrastVariableDarkMethodController } from './variables-contrast/setContrastVariableDarkMethod';
+export { SetContrastVariableDarkMinController } from './variables-contrast/setContrastVariableDarkMin';
+export { SetContrastVariableDarkMaxController } from './variables-contrast/setContrastVariableDarkMax';
+export { SetContrastVariableLightValueController } from './variables-contrast/setContrastVariableLightValue';
+export { SetContrastVariableLightMethodController } from './variables-contrast/setContrastVariableLightMethod';
+export { SetContrastVariableLightMinController } from './variables-contrast/setContrastVariableLightMin';
+export { SetContrastVariableLightMaxController } from './variables-contrast/setContrastVariableLightMax';
 
 // pickers
-export { setThemeOpenPickerContext } from './pickers/setThemeOpenPickerContext';
-export { setThemePaneSelections } from './pickers/setThemePaneSelections';
+export { SetThemeOpenPickerContextController } from './pickers/setThemeOpenPickerContext';
+export { SetThemePaneSelectionsController } from './pickers/setThemePaneSelections';

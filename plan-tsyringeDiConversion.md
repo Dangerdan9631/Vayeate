@@ -526,87 +526,87 @@ await container.resolve(catalogController.CreateCatalogController).run(action.pa
 ### H. Controllers — Theme (`src/domain/controllers/theme-controller/`) — remaining
 
 #### palette-color-assign
-- [ ] `palette-color-assign/applyAssignColorDraft.ts` → `ApplyAssignColorDraftController`
-- [ ] `palette-color-assign/assignColorFromPicker.ts` → `AssignColorFromPickerController`
-- [ ] `palette-color-assign/commitAssignColorText.ts` → `CommitAssignColorTextController`
-- [ ] `palette-color-assign/setAssignColorDraftText.ts` → `SetAssignColorDraftTextController`
-- [ ] `palette-color-assign/setAssignColorPreview.ts` → `SetAssignColorPreviewController`
+- [x] `palette-color-assign/applyAssignColorDraft.ts` → `ApplyAssignColorDraftController`
+- [x] `palette-color-assign/assignColorFromPicker.ts` → `AssignColorFromPickerController`
+- [x] `palette-color-assign/commitAssignColorText.ts` → `CommitAssignColorTextController`
+- [x] `palette-color-assign/setAssignColorDraftText.ts` → `SetAssignColorDraftTextController`
+- [x] `palette-color-assign/setAssignColorPreview.ts` → `SetAssignColorPreviewController`
 
 #### palette-hue
-- [ ] `palette-hue/commitHueReferenceColor.ts` → `CommitHueReferenceColorController`
-- [ ] `palette-hue/recenterHueReference.ts` → `RecenterHueReferenceController`
-- [ ] `palette-hue/setThemeHueAdjustment.ts` → `SetThemeHueAdjustmentController`
-- [ ] `palette-hue/setThemeHueReferenceHex.ts` → `SetThemeHueReferenceHexController`
+- [x] `palette-hue/commitHueReferenceColor.ts` → `CommitHueReferenceColorController`
+- [x] `palette-hue/recenterHueReference.ts` → `RecenterHueReferenceController`
+- [x] `palette-hue/setThemeHueAdjustment.ts` → `SetThemeHueAdjustmentController`
+- [x] `palette-hue/setThemeHueReferenceHex.ts` → `SetThemeHueReferenceHexController`
 
 #### palette
-- [ ] `palette/handleMemberSwatchRightClick.ts` → `HandleMemberSwatchRightClickController`
-- [ ] `palette/setApplyPaletteToDark.ts` → `SetApplyPaletteToDarkController`
-- [ ] `palette/setApplyPaletteToLight.ts` → `SetApplyPaletteToLightController`
-- [ ] `palette/setPaletteClusterCountK.ts` → `SetPaletteClusterCountKController`
-- [ ] `palette/setPaletteClusterCountKPreview.ts` → `SetPaletteClusterCountKPreviewController`
-- [ ] `palette/setPaletteClusterGroupToggled.ts` → `SetPaletteClusterGroupToggledController`
-- [ ] `palette/setPaletteFullSelection.ts` → `SetPaletteFullSelectionController`
-- [ ] `palette/setPaletteMemberSwatch.ts` → `SetPaletteMemberSwatchController`
-- [ ] `palette/setPalettePrimarySwatch.ts` → `SetPalettePrimarySwatchController`
-- [ ] `palette/setPaletteSwatchGroupSelection.ts` → `SetPaletteSwatchGroupSelectionController`
+- [x] `palette/handleMemberSwatchRightClick.ts` → `HandleMemberSwatchRightClickController`
+- [x] `palette/setApplyPaletteToDark.ts` → `SetApplyPaletteToDarkController`
+- [x] `palette/setApplyPaletteToLight.ts` → `SetApplyPaletteToLightController`
+- [x] `palette/setPaletteClusterCountK.ts` → `SetPaletteClusterCountKController`
+- [x] `palette/setPaletteClusterCountKPreview.ts` → `SetPaletteClusterCountKPreviewController`
+- [x] `palette/setPaletteClusterGroupToggled.ts` → `SetPaletteClusterGroupToggledController`
+- [x] `palette/setPaletteFullSelection.ts` → `SetPaletteFullSelectionController`
+- [x] `palette/setPaletteMemberSwatch.ts` → `SetPaletteMemberSwatchController`
+- [x] `palette/setPalettePrimarySwatch.ts` → `SetPalettePrimarySwatchController`
+- [x] `palette/setPaletteSwatchGroupSelection.ts` → `SetPaletteSwatchGroupSelectionController`
 
 #### pickers
-- [ ] `pickers/setThemeOpenPickerContext.ts` → `SetThemeOpenPickerContextController`
-- [ ] `pickers/setThemePaneSelections.ts` → `SetThemePaneSelectionsController`
+- [x] `pickers/setThemeOpenPickerContext.ts` → `SetThemeOpenPickerContextController`
+- [x] `pickers/setThemePaneSelections.ts` → `SetThemePaneSelectionsController`
 
 #### previews
-- [ ] `previews/clearPreviewVariableFilter.ts` → `ClearPreviewVariableFilterController`
-- [ ] `previews/previewSampleButtonScroll.ts` → `PreviewSampleButtonScrollController`
-- [ ] `previews/setPreviewSelectedSample.ts` → `SetPreviewSelectedSampleController`
-- [ ] `previews/setPreviewVariableFilterText.ts` → `SetPreviewVariableFilterTextController`
-- [ ] `previews/setPreviewVariableSelection.ts` → `SetPreviewVariableSelectionController`
+- [x] `previews/clearPreviewVariableFilter.ts` → `ClearPreviewVariableFilterController`
+- [x] `previews/previewSampleButtonScroll.ts` → `PreviewSampleButtonScrollController`
+- [x] `previews/setPreviewSelectedSample.ts` → `SetPreviewSelectedSampleController`
+- [x] `previews/setPreviewVariableFilterText.ts` → `SetPreviewVariableFilterTextController`
+- [x] `previews/setPreviewVariableSelection.ts` → `SetPreviewVariableSelectionController`
 
 #### theme-details
-- [ ] `theme-details/clearThemeSaveError.ts` → `ClearThemeSaveErrorController`
-- [ ] `theme-details/generateTheme.ts` → `GenerateThemeController`
-- [ ] `theme-details/persistCurrentTheme.ts` → `PersistCurrentThemeController`
-- [ ] `theme-details/saveTheme.ts` → `SaveThemeController`
-- [ ] `theme-details/setThemePreviewTokenRef.ts` → `SetThemePreviewTokenRefController`
-- [ ] `theme-details/setThemeTemplate.ts` → `SetThemeTemplateController`
-- [ ] `theme-details/setThemeTemplateToggle.ts` → `SetThemeTemplateToggleController`
-- [ ] `theme-details/setThemeTemplateVersionOnly.ts` → `SetThemeTemplateVersionOnlyController`
+- [x] `theme-details/clearThemeSaveError.ts` → `ClearThemeSaveErrorController`
+- [x] `theme-details/generateTheme.ts` → `GenerateThemeController`
+- [x] `theme-details/persistCurrentTheme.ts` → `PersistCurrentThemeController`
+- [x] `theme-details/saveTheme.ts` → `SaveThemeController`
+- [x] `theme-details/setThemePreviewTokenRef.ts` → `SetThemePreviewTokenRefController`
+- [x] `theme-details/setThemeTemplate.ts` → `SetThemeTemplateController`
+- [x] `theme-details/setThemeTemplateToggle.ts` → `SetThemeTemplateToggleController`
+- [x] `theme-details/setThemeTemplateVersionOnly.ts` → `SetThemeTemplateVersionOnlyController`
 
 #### theme-list
-- [ ] `theme-list/closeThemeCreateDialog.ts` → `CloseThemeCreateDialogController`
-- [ ] `theme-list/openThemeCreateDialog.ts` → `OpenThemeCreateDialogController`
-- [ ] `theme-list/selectThemeAndLoad.ts` → `SelectThemeAndLoadController`
-- [ ] `theme-list/selectThemeByName.ts` → `SelectThemeByNameController`
-- [ ] `theme-list/setThemeCreateFormName.ts` → `SetThemeCreateFormNameController`
-- [ ] `theme-list/theme-save-state.ts` → review: convert or inline if it is a utility module, not a standalone controller
+- [x] `theme-list/closeThemeCreateDialog.ts` → `CloseThemeCreateDialogController`
+- [x] `theme-list/openThemeCreateDialog.ts` → `OpenThemeCreateDialogController`
+- [x] `theme-list/selectThemeAndLoad.ts` → `SelectThemeAndLoadController`
+- [x] `theme-list/selectThemeByName.ts` → `SelectThemeByNameController`
+- [x] `theme-list/setThemeCreateFormName.ts` → `SetThemeCreateFormNameController`
+- [x] `theme-list/theme-save-state.ts` — kept as module-level debounce helpers (`clearPendingSave`, `scheduleDebouncedSave`); updated to use `SaveTheme` + `SetThemeSaveError` class instances (no `SetState` in signature)
 
 #### variables
-- [ ] `variables/setThemeVariableDraftText.ts` → `SetThemeVariableDraftTextController`
-- [ ] `variables/setThemeVariablesSearchText.ts` → `SetThemeVariablesSearchTextController`
-- [ ] `variables/setVariablesSelectAll.ts` → `SetVariablesSelectAllController`
-- [ ] `variables/setVariablesSelectByGroup.ts` → `SetVariablesSelectByGroupController`
-- [ ] `variables/setVariablesSelectByType.ts` → `SetVariablesSelectByTypeController`
-- [ ] `variables/toggleVariableSelection.ts` → `ToggleVariableSelectionController`
+- [x] `variables/setThemeVariableDraftText.ts` → `SetThemeVariableDraftTextController`
+- [x] `variables/setThemeVariablesSearchText.ts` → `SetThemeVariablesSearchTextController`
+- [x] `variables/setVariablesSelectAll.ts` → `SetVariablesSelectAllController`
+- [x] `variables/setVariablesSelectByGroup.ts` → `SetVariablesSelectByGroupController`
+- [x] `variables/setVariablesSelectByType.ts` → `SetVariablesSelectByTypeController`
+- [x] `variables/toggleVariableSelection.ts` → `ToggleVariableSelectionController`
 
 #### variables-color
-- [ ] `variables-color/setColorUseDarkForLight.ts` → `SetColorUseDarkForLightController`
-- [ ] `variables-color/setColorVariableDark.ts` → `SetColorVariableDarkController`
-- [ ] `variables-color/setColorVariableFromHex.ts` → `SetColorVariableFromHexController`
-- [ ] `variables-color/setColorVariableFromHexPreview.ts` → `SetColorVariableFromHexPreviewController`
-- [ ] `variables-color/setColorVariableLight.ts` → `SetColorVariableLightController`
+- [x] `variables-color/setColorUseDarkForLight.ts` → `SetColorUseDarkForLightController`
+- [x] `variables-color/setColorVariableDark.ts` → `SetColorVariableDarkController`
+- [x] `variables-color/setColorVariableFromHex.ts` → `SetColorVariableFromHexController`
+- [x] `variables-color/setColorVariableFromHexPreview.ts` → `SetColorVariableFromHexPreviewController`
+- [x] `variables-color/setColorVariableLight.ts` → `SetColorVariableLightController`
 
 #### variables-contrast
-- [ ] `variables-contrast/setContrastUseDarkForLight.ts` → `SetContrastUseDarkForLightController`
-- [ ] `variables-contrast/setContrastVariableDarkMax.ts` → `SetContrastVariableDarkMaxController`
-- [ ] `variables-contrast/setContrastVariableDarkMethod.ts` → `SetContrastVariableDarkMethodController`
-- [ ] `variables-contrast/setContrastVariableDarkMin.ts` → `SetContrastVariableDarkMinController`
-- [ ] `variables-contrast/setContrastVariableDarkValue.ts` → `SetContrastVariableDarkValueController`
-- [ ] `variables-contrast/setContrastVariableLightMax.ts` → `SetContrastVariableLightMaxController`
-- [ ] `variables-contrast/setContrastVariableLightMethod.ts` → `SetContrastVariableLightMethodController`
-- [ ] `variables-contrast/setContrastVariableLightMin.ts` → `SetContrastVariableLightMinController`
-- [ ] `variables-contrast/setContrastVariableLightValue.ts` → `SetContrastVariableLightValueController`
+- [x] `variables-contrast/setContrastUseDarkForLight.ts` → `SetContrastUseDarkForLightController`
+- [x] `variables-contrast/setContrastVariableDarkMax.ts` → `SetContrastVariableDarkMaxController`
+- [x] `variables-contrast/setContrastVariableDarkMethod.ts` → `SetContrastVariableDarkMethodController`
+- [x] `variables-contrast/setContrastVariableDarkMin.ts` → `SetContrastVariableDarkMinController`
+- [x] `variables-contrast/setContrastVariableDarkValue.ts` → `SetContrastVariableDarkValueController`
+- [x] `variables-contrast/setContrastVariableLightMax.ts` → `SetContrastVariableLightMaxController`
+- [x] `variables-contrast/setContrastVariableLightMethod.ts` → `SetContrastVariableLightMethodController`
+- [x] `variables-contrast/setContrastVariableLightMin.ts` → `SetContrastVariableLightMinController`
+- [x] `variables-contrast/setContrastVariableLightValue.ts` → `SetContrastVariableLightValueController`
 
 #### index
-- [ ] `index.ts` — update all `export { functionName }` entries to `export { ClassName }` as each file is converted
+- [x] `index.ts` — update all `export { functionName }` entries to `export { ClassName }` as each file is converted
 
 ---
 
@@ -616,7 +616,7 @@ These handler files pass `setState`/`setStoreState` directly to controller funct
 
 - [x] `src/app/handlers/catalog-handler.ts` — update all non-class call sites after catalog controllers are converted
 - [x] `src/app/handlers/template-handler.ts` — update all non-class call sites after template controllers are converted
-- [ ] `src/app/handlers/theme-handler.ts` — update all non-class call sites after theme controllers are converted
+- [x] `src/app/handlers/theme-handler.ts` — update all non-class call sites after theme controllers are converted
 
 > After all handlers are updated, `HandlerDeps` (`setState`, `getState`, `setStoreState`, `setUiState`) may be unused in catalog/template/theme handlers and can be removed from their signatures.
 

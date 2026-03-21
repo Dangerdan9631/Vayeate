@@ -1,9 +1,6 @@
-import type { SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import { singleton } from 'tsyringe';
 
-export function handleMemberSwatchRightClick(
-  _setState: SetState,
-  _getState: GetState,
-  _ref: string,
-): void {}
-
+@singleton()
+export class HandleMemberSwatchRightClickController {
+  run(_ref: string): void {}
+}

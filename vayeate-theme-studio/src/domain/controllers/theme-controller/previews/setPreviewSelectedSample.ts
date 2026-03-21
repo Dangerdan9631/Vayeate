@@ -1,6 +1,11 @@
-import { setThemePreviewSelectedSampleKey as setThemePreviewSelectedSampleKeyOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemePreviewSelectedSampleKey } from '../../../operations/theme-operations';
 
-export function setPreviewSelectedSample(setState: SetState, value: string): void {
-  setThemePreviewSelectedSampleKeyOp(setState, value);
+@singleton()
+export class SetPreviewSelectedSampleController {
+  constructor(private readonly setThemePreviewSelectedSampleKey: SetThemePreviewSelectedSampleKey) {}
+
+  run(value: string): void {
+    this.setThemePreviewSelectedSampleKey.execute(value);
+  }
 }
-

@@ -1,6 +1,11 @@
-import { setThemeSaveError, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemeSaveError } from '../../../operations/theme-operations';
 
-export function clearThemeSaveError(setState: SetState): void {
-  setThemeSaveError(setState, null);
+@singleton()
+export class ClearThemeSaveErrorController {
+  constructor(private readonly setThemeSaveError: SetThemeSaveError) {}
+
+  run(): void {
+    this.setThemeSaveError.execute(null);
+  }
 }
-

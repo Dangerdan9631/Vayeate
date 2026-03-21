@@ -1,11 +1,17 @@
-import type { SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { saveTheme } from '../theme-details/saveTheme';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { SaveThemeController } from './saveTheme';
 
 /** Persist current theme (THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_CLOSE). */
-export function persistCurrentTheme(setState: SetState, getState: GetState): void {
-  const theme = getState().themes.theme;
-  if (theme) saveTheme(setState, theme);
+@singleton()
+export class PersistCurrentThemeController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly saveThemeController: SaveThemeController,
+  ) {}
+
+  run(): void {
+    const theme = this.appStateGetter.current().themes.theme;
+    if (theme) this.saveThemeController.run(theme);
+  }
 }
-
-

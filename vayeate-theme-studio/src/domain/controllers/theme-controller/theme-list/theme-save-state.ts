@@ -1,9 +1,5 @@
 import type { Theme } from '../../../../model/schemas';
-import {
-  saveTheme as saveThemeOp,
-  setThemeSaveError,
-  type SetState,
-} from '../../../operations/theme-operations';
+import { SaveTheme, SetThemeSaveError } from '../../../operations/theme-operations';
 
 const SAVE_THEME_DEBOUNCE_MS = 400;
 
@@ -18,7 +14,11 @@ export function clearPendingSave(): void {
   pendingThemeToSave = null;
 }
 
-export function scheduleDebouncedSave(setState: SetState, theme: Theme): void {
+export function scheduleDebouncedSave(
+  saveTheme: SaveTheme,
+  setThemeSaveError: SetThemeSaveError,
+  theme: Theme,
+): void {
   pendingThemeToSave = theme;
   if (saveThemeTimeoutId !== null) clearTimeout(saveThemeTimeoutId);
   saveThemeTimeoutId = setTimeout(() => {
@@ -26,12 +26,10 @@ export function scheduleDebouncedSave(setState: SetState, theme: Theme): void {
     const toSave = pendingThemeToSave;
     pendingThemeToSave = null;
     if (toSave) {
-      saveThemeOp(toSave).catch((err) => {
+      saveTheme.execute(toSave).catch((err) => {
         const message = err instanceof Error ? err.message : String(err);
-        setThemeSaveError(setState, message);
+        setThemeSaveError.execute(message);
       });
     }
   }, SAVE_THEME_DEBOUNCE_MS);
 }
-
-

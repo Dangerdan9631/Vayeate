@@ -1,6 +1,11 @@
-import { setAssignColorDraftText as setAssignColorDraftTextOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetAssignColorDraftText } from '../../../operations/theme-operations';
 
-export function setAssignColorDraftText(setState: SetState, value: string): void {
-  setAssignColorDraftTextOp(setState, value);
+@singleton()
+export class SetAssignColorDraftTextController {
+  constructor(private readonly setAssignColorDraftText: SetAssignColorDraftText) {}
+
+  run(value: string): void {
+    this.setAssignColorDraftText.execute(value);
+  }
 }
-

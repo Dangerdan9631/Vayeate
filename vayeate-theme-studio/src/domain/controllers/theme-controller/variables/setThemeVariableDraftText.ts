@@ -1,7 +1,12 @@
-import { setThemeVariableDraftText as setThemeVariableDraftTextOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemeVariableDraftText } from '../../../operations/theme-operations';
 
 /** Store a draft text value for in-progress variable edits (for validation display). */
-export function setThemeVariableDraftText(setState: SetState, key: string, value: string): void {
-  setThemeVariableDraftTextOp(setState, key, value);
-}
+@singleton()
+export class SetThemeVariableDraftTextController {
+  constructor(private readonly setThemeVariableDraftText: SetThemeVariableDraftText) {}
 
+  run(key: string, value: string): void {
+    this.setThemeVariableDraftText.execute(key, value);
+  }
+}

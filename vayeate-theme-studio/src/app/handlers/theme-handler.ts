@@ -5,32 +5,34 @@ import { container } from 'tsyringe';
 
 export const handleThemeAction: ActionHandler<ThemeAction> = async (
   action: ThemeAction,
-  { setState, getState }: HandlerDeps,
+  _deps: HandlerDeps,
 ): Promise<void> => {
   switch (action.type) {
     case ThemeActionType.ThemePageOnLoad:
       await container.resolve(themeController.LoadThemePageController).run();
       break;
     case ThemeActionType.ThemePageSaveErrorDismissButtonOnClick:
-      themeController.clearThemeSaveError(setState);
+      container.resolve(themeController.ClearThemeSaveErrorController).run();
       break;
     case ThemeActionType.ThemeThemesNameListOnCommit:
-      await themeController.selectThemeByName(setState, getState, action.name);
+      await container.resolve(themeController.SelectThemeByNameController).run(action.name);
       break;
     case ThemeActionType.ThemeThemesVersionListOnCommit:
-      await themeController.selectThemeAndLoad(setState, action.name, action.version);
+      await container
+        .resolve(themeController.SelectThemeAndLoadController)
+        .run(action.name, action.version);
       break;
     case ThemeActionType.ThemeThemesCreateButtonOnClick:
-      themeController.openThemeCreateDialog(setState);
+      container.resolve(themeController.OpenThemeCreateDialogController).run();
       break;
     case ThemeActionType.ThemeCreateDialogOnOpen:
-      themeController.openThemeCreateDialog(setState);
+      container.resolve(themeController.OpenThemeCreateDialogController).run();
       break;
     case ThemeActionType.ThemeCreateDialogNameTextOnChange:
-      themeController.setThemeCreateFormName(setState, action.value);
+      container.resolve(themeController.SetThemeCreateFormNameController).run(action.value);
       break;
     case ThemeActionType.ThemeCreateDialogCancelButtonOnClick:
-      themeController.closeThemeCreateDialog(setState);
+      container.resolve(themeController.CloseThemeCreateDialogController).run();
       break;
     case ThemeActionType.ThemeCreateDialogOkButtonOnClick:
       await container.resolve(themeController.CreateThemeController).run(action.params);
@@ -42,304 +44,311 @@ export const handleThemeAction: ActionHandler<ThemeAction> = async (
       await container.resolve(themeController.IncrementThemeVersionController).run();
       break;
     case ThemeActionType.ThemeDetailsGenerateButtonOnClick:
-      await themeController.generateTheme(
-        setState,
-        action.themeName,
-        action.themeVersion,
-        action.templateName,
-        action.templateVersion,
-      );
+      await container
+        .resolve(themeController.GenerateThemeController)
+        .run(
+          action.themeName,
+          action.themeVersion,
+          action.templateName,
+          action.templateVersion,
+        );
       break;
     case ThemeActionType.ThemeDetailsTemplateListOnCommit:
-      await themeController.setThemeTemplate(setState, getState, action.name, action.version);
+      await container
+        .resolve(themeController.SetThemeTemplateController)
+        .run(action.name, action.version);
       break;
     case ThemeActionType.ThemeDetailsTemplateVersionListOnCommit:
-      await themeController.setThemeTemplate(setState, getState, action.name, action.version);
+      await container
+        .resolve(themeController.SetThemeTemplateController)
+        .run(action.name, action.version);
       break;
     case ThemeActionType.ThemeDetailsCatalogCheckboxOnToggle:
-      themeController.setThemeTemplateToggle(setState, getState, action.checked);
+      container.resolve(themeController.SetThemeTemplateToggleController).run(action.checked);
       break;
     case ThemeActionType.ThemeDetailsCatalogVersionListOnCommit:
-      await themeController.setThemeTemplateVersionOnly(setState, getState, action.value);
+      await container.resolve(themeController.SetThemeTemplateVersionOnlyController).run(action.value);
       break;
     case ThemeActionType.ThemeDetailsPreviewTokenRefListOnCommit:
-      themeController.setThemePreviewTokenRef(setState, getState, action.tokenRefField, action.value);
+      container
+        .resolve(themeController.SetThemePreviewTokenRefController)
+        .run(action.tokenRefField, action.value);
       break;
     case ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle:
-      themeController.setApplyPaletteToDark(setState, getState, action.checked);
+      container.resolve(themeController.SetApplyPaletteToDarkController).run(action.checked);
       break;
     case ThemeActionType.ThemePaletteApplyToLightCheckboxOnToggle:
-      themeController.setApplyPaletteToLight(setState, getState, action.checked);
+      container.resolve(themeController.SetApplyPaletteToLightController).run(action.checked);
       break;
     case ThemeActionType.ThemePaletteAssignColorTextOnChange:
-      themeController.setAssignColorDraftText(setState, action.value);
+      container.resolve(themeController.SetAssignColorDraftTextController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorTextOnCommit:
-      themeController.commitAssignColorText(setState, getState, action.value);
+      container
+        .resolve(themeController.CommitAssignColorTextController)
+        .run(action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorButtonOnClick:
-      themeController.applyAssignColorDraft(setState, getState);
+      container.resolve(themeController.ApplyAssignColorDraftController).run();
       break;
     case ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, `eyedropper:assign:${action.colorRef}`);
+      container
+        .resolve(themeController.SetThemeOpenPickerContextController)
+        .run(`eyedropper:assign:${action.colorRef}`);
       break;
     case ThemeActionType.ThemePaletteAssignColorPickerOnSelect:
-      themeController.setAssignColorPreview(setState, getState, action.value);
+      container
+        .resolve(themeController.SetAssignColorPreviewController)
+        .run(action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorPickerOnCommit:
-      themeController.assignColorFromPicker(setState, getState, action.value);
+      container.resolve(themeController.AssignColorFromPickerController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteAssignColorPickerOnClose:
-      themeController.persistCurrentTheme(setState, getState);
+      container.resolve(themeController.PersistCurrentThemeController).run();
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorTextOnChange:
-      themeController.setThemeHueReferenceHex(setState, action.value);
+      container.resolve(themeController.SetThemeHueReferenceHexController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorTextOnCommit:
-      themeController.commitHueReferenceColor(setState, action.value);
+      container.resolve(themeController.CommitHueReferenceColorController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, 'picker:hue');
+      container.resolve(themeController.SetThemeOpenPickerContextController).run('picker:hue');
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, 'eyedropper:hue');
+      container.resolve(themeController.SetThemeOpenPickerContextController).run('eyedropper:hue');
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorPickerOnSelect:
-      themeController.setThemeHueReferenceHex(setState, action.value);
+      container.resolve(themeController.SetThemeHueReferenceHexController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceColorPickerOnCommit:
-      themeController.commitHueReferenceColor(setState, action.value);
+      container.resolve(themeController.CommitHueReferenceColorController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick:
-      themeController.recenterHueReference(setState, getState);
+      container.resolve(themeController.RecenterHueReferenceController).run();
       break;
     case ThemeActionType.ThemePaletteHueSliderOnDelta:
-      themeController.setThemeHueAdjustment(setState, action.value);
+      container.resolve(themeController.SetThemeHueAdjustmentController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteHueSliderOnCommit:
-      themeController.setThemeHueAdjustment(setState, action.value);
+      container.resolve(themeController.SetThemeHueAdjustmentController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteClusterCountSliderOnDelta:
-      themeController.setPaletteClusterCountKPreview(setState, getState, action.value);
+      container
+        .resolve(themeController.SetPaletteClusterCountKPreviewController)
+        .run(action.value);
       break;
     case ThemeActionType.ThemePaletteClusterCountSliderOnCommit:
-      themeController.setPaletteClusterCountK(setState, getState, action.value);
+      container.resolve(themeController.SetPaletteClusterCountKController).run(action.value);
       break;
     case ThemeActionType.ThemePaletteClusterGroupCheckboxOnToggle:
-      themeController.setPaletteClusterGroupToggled(
-        setState,
-        getState,
-        action.groupId,
-        action.checked,
-      );
+      container
+        .resolve(themeController.SetPaletteClusterGroupToggledController)
+        .run(action.groupId, action.checked);
       break;
     case ThemeActionType.ThemePaletteSwatchFullSelectCheckboxOnToggle:
-      themeController.setPaletteFullSelection(
-        setState,
-        action.fullColorRefs,
-        action.fullContrastRefs,
-      );
+      container
+        .resolve(themeController.SetPaletteFullSelectionController)
+        .run(action.fullColorRefs, action.fullContrastRefs);
       break;
     case ThemeActionType.ThemePaletteSwatchGroupSelectCheckboxOnToggle:
-      themeController.setPaletteSwatchGroupSelection(
-        setState,
-        getState,
-        action.refs,
-        action.checked,
-      );
+      container
+        .resolve(themeController.SetPaletteSwatchGroupSelectionController)
+        .run(action.refs, action.checked);
       break;
     case ThemeActionType.ThemePalettePrimarySwatchButtonOnClick:
-      themeController.setPalettePrimarySwatch(setState, getState, action.ref);
+      container.resolve(themeController.SetPalettePrimarySwatchController).run(action.ref);
       break;
     case ThemeActionType.ThemePalettePrimarySwatchButtonOnDoubleClick:
-      themeController.setPalettePrimarySwatch(setState, getState, action.ref);
+      container.resolve(themeController.SetPalettePrimarySwatchController).run(action.ref);
       break;
     case ThemeActionType.ThemePalettePrimarySwatchButtonOnRightClick:
-      themeController.setPalettePrimarySwatch(setState, getState, action.ref);
+      container.resolve(themeController.SetPalettePrimarySwatchController).run(action.ref);
       break;
     case ThemeActionType.ThemePaletteMemberSwatchButtonOnClick:
-      themeController.setPaletteMemberSwatch(setState, getState, action.ref);
+      container.resolve(themeController.SetPaletteMemberSwatchController).run(action.ref);
       break;
     case ThemeActionType.ThemePaletteMemberSwatchButtonOnRightClick:
-      themeController.handleMemberSwatchRightClick(setState, getState, action.ref);
+      container.resolve(themeController.HandleMemberSwatchRightClickController).run(action.ref);
       break;
     case ThemeActionType.ThemeVariablesSelectAllCheckboxOnToggle:
-      themeController.setVariablesSelectAll(setState, getState, action.checked);
+      container.resolve(themeController.SetVariablesSelectAllController).run(action.checked);
       break;
     case ThemeActionType.ThemeVariablesSelectVariableTypeCheckboxOnToggle:
-      themeController.setVariablesSelectByType(
-        setState,
-        getState,
-        action.checked,
-        action.variableType,
-      );
+      container
+        .resolve(themeController.SetVariablesSelectByTypeController)
+        .run(action.checked, action.variableType);
       break;
     case ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle:
-      await themeController.setVariablesSelectByGroup(
-        setState,
-        getState,
-        action.checked,
-        action.groupId,
-      );
+      await container
+        .resolve(themeController.SetVariablesSelectByGroupController)
+        .run(action.checked, action.groupId);
       break;
     case ThemeActionType.ThemeVariablesSearchTextOnChange:
-      themeController.setThemeVariablesSearchText(setState, action.value);
+      container.resolve(themeController.SetThemeVariablesSearchTextController).run(action.value);
       break;
     case ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle:
-      themeController.toggleVariableSelection(
-        setState,
-        getState,
-        action.checked,
-        action.ref,
-      );
+      container
+        .resolve(themeController.ToggleVariableSelectionController)
+        .run(action.checked, action.ref);
       break;
     case ThemeActionType.ThemeVariablesLightUseDarkCheckboxOnToggle:
-      themeController.setContrastUseDarkForLight(
-        setState,
-        getState,
-        action.ref,
-        action.checked,
-      );
+      container
+        .resolve(themeController.SetContrastUseDarkForLightController)
+        .run(action.ref, action.checked);
       break;
     case ThemeActionType.ThemeVariablesColorUseDarkForLightCheckboxOnToggle:
-      themeController.setColorUseDarkForLight(setState, getState, action.ref, action.checked);
+      container
+        .resolve(themeController.SetColorUseDarkForLightController)
+        .run(action.ref, action.checked);
       break;
     case ThemeActionType.ThemeVariablesColorDarkTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `colorDark:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`colorDark:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesColorDarkTextOnCommit:
-      themeController.setColorVariableDark(setState, getState, action.ref, action.value);
+      container
+        .resolve(themeController.SetColorVariableDarkController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesColorDarkColorButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, `dark:${action.ref}`);
+      container.resolve(themeController.SetThemeOpenPickerContextController).run(`dark:${action.ref}`);
       break;
     case ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, `eyedropper:dark:${action.ref}`);
+      container
+        .resolve(themeController.SetThemeOpenPickerContextController)
+        .run(`eyedropper:dark:${action.ref}`);
       break;
     case ThemeActionType.ThemeVariablesColorDarkColorPickerOnSelect:
-      themeController.setColorVariableFromHexPreview(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-        'dark',
-      );
+      container
+        .resolve(themeController.SetColorVariableFromHexPreviewController)
+        .run(action.ref, action.value, 'dark');
       break;
     case ThemeActionType.ThemeVariablesColorDarkColorPickerOnCommit:
-      themeController.setColorVariableFromHex(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-        'dark',
-      );
+      container
+        .resolve(themeController.SetColorVariableFromHexController)
+        .run(action.ref, action.value, 'dark');
       break;
     case ThemeActionType.ThemeVariablesColorLightTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `colorLight:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`colorLight:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesColorLightTextOnCommit:
-      themeController.setColorVariableLight(setState, getState, action.ref, action.value);
+      container
+        .resolve(themeController.SetColorVariableLightController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesColorLightColorButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, `light:${action.ref}`);
+      container
+        .resolve(themeController.SetThemeOpenPickerContextController)
+        .run(`light:${action.ref}`);
       break;
     case ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick:
-      themeController.setThemeOpenPickerContext(setState, `eyedropper:light:${action.ref}`);
+      container
+        .resolve(themeController.SetThemeOpenPickerContextController)
+        .run(`eyedropper:light:${action.ref}`);
       break;
     case ThemeActionType.ThemeVariablesColorLightColorPickerOnSelect:
-      themeController.setColorVariableFromHexPreview(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-        'light',
-      );
+      container
+        .resolve(themeController.SetColorVariableFromHexPreviewController)
+        .run(action.ref, action.value, 'light');
       break;
     case ThemeActionType.ThemeVariablesColorLightColorPickerOnCommit:
-      themeController.setColorVariableFromHex(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-        'light',
-      );
+      container
+        .resolve(themeController.SetColorVariableFromHexController)
+        .run(action.ref, action.value, 'light');
       break;
     case ThemeActionType.ThemeVariablesContrastDarkValueTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `contrastDark:value:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`contrastDark:value:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastDarkValueTextOnCommit:
-      themeController.setContrastVariableDarkValue(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-      );
+      container
+        .resolve(themeController.SetContrastVariableDarkValueController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastDarkMethodListOnCommit:
-      themeController.setContrastVariableDarkMethod(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-      );
+      container
+        .resolve(themeController.SetContrastVariableDarkMethodController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastDarkMinTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `contrastDark:min:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`contrastDark:min:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastDarkMinTextOnCommit:
-      themeController.setContrastVariableDarkMin(setState, getState, action.ref, action.value);
+      container
+        .resolve(themeController.SetContrastVariableDarkMinController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastDarkMaxTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `contrastDark:max:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`contrastDark:max:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastDarkMaxTextOnCommit:
-      themeController.setContrastVariableDarkMax(setState, getState, action.ref, action.value);
+      container
+        .resolve(themeController.SetContrastVariableDarkMaxController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightValueTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `contrastLight:value:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`contrastLight:value:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightValueTextOnCommit:
-      themeController.setContrastVariableLightValue(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-      );
+      container
+        .resolve(themeController.SetContrastVariableLightValueController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightMethodListOnCommit:
-      themeController.setContrastVariableLightMethod(
-        setState,
-        getState,
-        action.ref,
-        action.value,
-      );
+      container
+        .resolve(themeController.SetContrastVariableLightMethodController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightMinTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `contrastLight:min:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`contrastLight:min:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightMinTextOnCommit:
-      themeController.setContrastVariableLightMin(setState, getState, action.ref, action.value);
+      container
+        .resolve(themeController.SetContrastVariableLightMinController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightMaxTextOnChange:
-      themeController.setThemeVariableDraftText(setState, `contrastLight:max:${action.ref}`, action.value);
+      container
+        .resolve(themeController.SetThemeVariableDraftTextController)
+        .run(`contrastLight:max:${action.ref}`, action.value);
       break;
     case ThemeActionType.ThemeVariablesContrastLightMaxTextOnCommit:
-      themeController.setContrastVariableLightMax(setState, getState, action.ref, action.value);
+      container
+        .resolve(themeController.SetContrastVariableLightMaxController)
+        .run(action.ref, action.value);
       break;
     case ThemeActionType.ThemePreviewVariableListOnCommit:
-      themeController.setPreviewVariableSelection(setState, getState, action.value);
+      container
+        .resolve(themeController.SetPreviewVariableSelectionController)
+        .run(action.value);
       break;
     case ThemeActionType.ThemePreviewVariableFilterTextOnChange:
-      themeController.setPreviewVariableFilterText(setState, action.value);
+      container
+        .resolve(themeController.SetPreviewVariableFilterTextController)
+        .run(action.value);
       break;
     case ThemeActionType.ThemePreviewVariableFilterClearOnClick:
-      themeController.clearPreviewVariableFilter(setState);
+      container.resolve(themeController.ClearPreviewVariableFilterController).run();
       break;
     case ThemeActionType.ThemePreviewSampleButtonOnClick:
-      themeController.previewSampleButtonScroll(setState);
+      container.resolve(themeController.PreviewSampleButtonScrollController).run();
       break;
     case ThemeActionType.ThemePreviewSampleListOnCommit:
-      themeController.setPreviewSelectedSample(setState, action.value);
+      container.resolve(themeController.SetPreviewSelectedSampleController).run(action.value);
       break;
   }
 };

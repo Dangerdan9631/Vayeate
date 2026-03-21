@@ -1,6 +1,11 @@
-import { setThemeCreateFormName as setThemeCreateFormNameOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemeCreateFormName } from '../../../operations/theme-operations';
 
-export function setThemeCreateFormName(setState: SetState, value: string): void {
-  setThemeCreateFormNameOp(setState, value);
+@singleton()
+export class SetThemeCreateFormNameController {
+  constructor(private readonly setThemeCreateFormName: SetThemeCreateFormName) {}
+
+  run(value: string): void {
+    this.setThemeCreateFormName.execute(value);
+  }
 }
-

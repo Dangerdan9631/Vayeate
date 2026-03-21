@@ -1,25 +1,27 @@
-import type { Theme } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
 import type { ContrastVariableKey } from '../../../../model/schemas';
-import { setTheme, type SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { saveTheme } from '../theme-details/saveTheme';
+import type { Theme } from '../../../../model/schemas';
+import { SetTheme } from '../../../operations/theme-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { SaveThemeController } from '../theme-details/saveTheme';
 
-export function setContrastUseDarkForLight(
-  setState: SetState,
-  getState: GetState,
-  ref: ContrastVariableKey | undefined,
-  checked: boolean | undefined,
-): void {
-  const theme = getState().themes.theme;
-  if (!theme || ref == null) return;
-  const useDark = checked === true;
-  const newAssignments = theme.contrastAssignments.map((a) =>
-    a.contrastVariableRef === ref ? { ...a, useDarkForLight: useDark } : a,
-  );
-  const next: Theme = { ...theme, contrastAssignments: newAssignments };
-  setTheme(setState, next);
-  saveTheme(setState, next);
+@singleton()
+export class SetContrastUseDarkForLightController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly setTheme: SetTheme,
+    private readonly saveThemeController: SaveThemeController,
+  ) {}
+
+  run(ref: ContrastVariableKey | undefined, checked: boolean | undefined): void {
+    const theme = this.appStateGetter.current().themes.theme;
+    if (!theme || ref == null) return;
+    const useDark = checked === true;
+    const newAssignments = theme.contrastAssignments.map((a) =>
+      a.contrastVariableRef === ref ? { ...a, useDarkForLight: useDark } : a,
+    );
+    const next: Theme = { ...theme, contrastAssignments: newAssignments };
+    this.setTheme.execute(next);
+    this.saveThemeController.run(next);
+  }
 }
-
-
-

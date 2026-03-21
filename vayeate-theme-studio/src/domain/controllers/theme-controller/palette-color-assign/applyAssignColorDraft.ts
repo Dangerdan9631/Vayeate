@@ -1,11 +1,18 @@
-import type { SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { commitAssignColorText } from './commitAssignColorText';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { CommitAssignColorTextController } from './commitAssignColorText';
 
 /** Apply current assign-color draft text if valid (e.g. assign button click). */
-export function applyAssignColorDraft(setState: SetState, getState: GetState): void {
-  const draft = getState().themes.assignColorDraftText;
-  if (!draft.trim()) return;
-  commitAssignColorText(setState, getState, draft);
-}
+@singleton()
+export class ApplyAssignColorDraftController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly commitAssignColorText: CommitAssignColorTextController,
+  ) {}
 
+  run(): void {
+    const draft = this.appStateGetter.current().themes.assignColorDraftText;
+    if (!draft.trim()) return;
+    this.commitAssignColorText.run(draft);
+  }
+}

@@ -1,6 +1,11 @@
-import { setThemeVariablesSearchText as setThemeVariablesSearchTextOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemeVariablesSearchText } from '../../../operations/theme-operations';
 
-export function setThemeVariablesSearchText(setState: SetState, value: string): void {
-  setThemeVariablesSearchTextOp(setState, value);
+@singleton()
+export class SetThemeVariablesSearchTextController {
+  constructor(private readonly setThemeVariablesSearchText: SetThemeVariablesSearchText) {}
+
+  run(value: string): void {
+    this.setThemeVariablesSearchText.execute(value);
+  }
 }
-

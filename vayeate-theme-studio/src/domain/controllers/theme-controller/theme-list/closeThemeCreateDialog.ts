@@ -1,10 +1,16 @@
-import {
-  setThemeCreateFormName,
-  type SetState,
-} from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemeCreateFormName } from '../../../operations/theme-operations';
+import { AppStateSetter } from '../../../state/app-state-setter';
 
-export function closeThemeCreateDialog(setState: SetState): void {
-  setState({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
-  setThemeCreateFormName(setState, '');
+@singleton()
+export class CloseThemeCreateDialogController {
+  constructor(
+    private readonly setThemeCreateFormName: SetThemeCreateFormName,
+    private readonly appStateSetter: AppStateSetter,
+  ) {}
+
+  run(): void {
+    this.appStateSetter.apply({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
+    this.setThemeCreateFormName.execute('');
+  }
 }
-

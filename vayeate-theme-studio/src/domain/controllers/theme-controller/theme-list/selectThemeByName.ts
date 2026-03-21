@@ -1,14 +1,18 @@
+import { singleton } from 'tsyringe';
+import { GetThemeRefs } from '../../../operations/theme-operations';
 import { findBestVersionRef } from '../../../utils/version';
-import { getThemeRefs, type SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { selectThemeAndLoad } from './selectThemeAndLoad';
+import { SelectThemeAndLoadController } from './selectThemeAndLoad';
 
-export async function selectThemeByName(
-  setState: SetState,
-  getState: GetState,
-  name: string,
-): Promise<void> {
-  const best = findBestVersionRef(getThemeRefs(getState), name);
-  if (!best) return;
-  await selectThemeAndLoad(setState, best.name, best.version);
+@singleton()
+export class SelectThemeByNameController {
+  constructor(
+    private readonly getThemeRefs: GetThemeRefs,
+    private readonly selectThemeAndLoad: SelectThemeAndLoadController,
+  ) {}
+
+  async run(name: string): Promise<void> {
+    const best = findBestVersionRef(this.getThemeRefs.execute(), name);
+    if (!best) return;
+    await this.selectThemeAndLoad.run(best.name, best.version);
+  }
 }

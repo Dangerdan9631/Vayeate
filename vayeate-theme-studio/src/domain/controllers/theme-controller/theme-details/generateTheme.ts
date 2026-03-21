@@ -1,12 +1,16 @@
-import { generateTheme as generateThemeOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { GenerateTheme } from '../../../operations/theme-operations';
 
-export async function generateTheme(
-  setState: SetState,
-  themeName: string,
-  themeVersion: string,
-  templateName: string,
-  templateVersion: string,
-): Promise<void> {
-  await generateThemeOp(setState, themeName, themeVersion, templateName, templateVersion);
+@singleton()
+export class GenerateThemeController {
+  constructor(private readonly generateTheme: GenerateTheme) {}
+
+  async run(
+    themeName: string,
+    themeVersion: string,
+    templateName: string,
+    templateVersion: string,
+  ): Promise<void> {
+    await this.generateTheme.execute(themeName, themeVersion, templateName, templateVersion);
+  }
 }
-

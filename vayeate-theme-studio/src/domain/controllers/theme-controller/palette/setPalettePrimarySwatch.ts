@@ -1,17 +1,18 @@
-import {
-  setThemePaneSelections as setThemePaneSelectionsOp,
-  type SetState,
-} from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import { singleton } from 'tsyringe';
+import { SetThemePaneSelections } from '../../../operations/theme-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
 
 /** Set selection to a single ref (primary swatch click). */
-export function setPalettePrimarySwatch(
-  setState: SetState,
-  getState: GetState,
-  ref: string | undefined,
-): void {
-  if (ref == null) return;
-  const state = getState();
-  setThemePaneSelectionsOp(setState, [ref], state.themes.checkedContrastRefs);
-}
+@singleton()
+export class SetPalettePrimarySwatchController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly setThemePaneSelections: SetThemePaneSelections,
+  ) {}
 
+  run(ref: string | undefined): void {
+    if (ref == null) return;
+    const state = this.appStateGetter.current();
+    this.setThemePaneSelections.execute([ref], state.themes.checkedContrastRefs);
+  }
+}

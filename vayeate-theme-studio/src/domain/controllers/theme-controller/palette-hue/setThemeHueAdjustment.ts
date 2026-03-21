@@ -1,6 +1,11 @@
-import { setThemeHueAdjustment as setThemeHueAdjustmentOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemeHueAdjustment } from '../../../operations/theme-operations';
 
-export function setThemeHueAdjustment(setState: SetState, value: number): void {
-  setThemeHueAdjustmentOp(setState, value);
+@singleton()
+export class SetThemeHueAdjustmentController {
+  constructor(private readonly setThemeHueAdjustment: SetThemeHueAdjustment) {}
+
+  run(value: number): void {
+    this.setThemeHueAdjustment.execute(value);
+  }
 }
-

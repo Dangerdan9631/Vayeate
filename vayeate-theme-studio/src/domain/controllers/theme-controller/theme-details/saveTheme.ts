@@ -1,12 +1,19 @@
+import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { setTheme, setThemeSaveError, type SetState } from '../../../operations/theme-operations';
+import { SaveTheme, SetTheme, SetThemeSaveError } from '../../../operations/theme-operations';
 import { scheduleDebouncedSave } from '../theme-list/theme-save-state';
 
-export function saveTheme(setState: SetState, theme: Theme): void {
-  setTheme(setState, theme, true);
-  setThemeSaveError(setState, null);
-  scheduleDebouncedSave(setState, theme);
+@singleton()
+export class SaveThemeController {
+  constructor(
+    private readonly setTheme: SetTheme,
+    private readonly setThemeSaveError: SetThemeSaveError,
+    private readonly saveTheme: SaveTheme,
+  ) {}
+
+  run(theme: Theme): void {
+    this.setTheme.execute(theme, true);
+    this.setThemeSaveError.execute(null);
+    scheduleDebouncedSave(this.saveTheme, this.setThemeSaveError, theme);
+  }
 }
-
-
-

@@ -1,13 +1,11 @@
-import {
-  setThemePaneSelections as setThemePaneSelectionsOp,
-  type SetState,
-} from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemePaneSelections } from '../../../operations/theme-operations';
 
-export function setThemePaneSelections(
-  setState: SetState,
-  checkedColorRefs: string[],
-  checkedContrastRefs: string[],
-): void {
-  setThemePaneSelectionsOp(setState, checkedColorRefs, checkedContrastRefs);
+@singleton()
+export class SetThemePaneSelectionsController {
+  constructor(private readonly setThemePaneSelections: SetThemePaneSelections) {}
+
+  run(checkedColorRefs: string[], checkedContrastRefs: string[]): void {
+    this.setThemePaneSelections.execute(checkedColorRefs, checkedContrastRefs);
+  }
 }
-

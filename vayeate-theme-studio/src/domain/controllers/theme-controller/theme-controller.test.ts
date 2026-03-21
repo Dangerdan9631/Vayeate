@@ -3,17 +3,15 @@ import { initialAppState } from '../../state/app-state';
 import { themeSchema } from '../../../model/schemas';
 import { createThemeWithParams } from '../../../model/factories';
 import {
-  setPreviewVariableSelection,
-  setPreviewVariableFilterText,
-  clearPreviewVariableFilter,
-  setPreviewSelectedSample,
-  previewSampleButtonScroll,
+  SetPreviewVariableSelectionController,
+  SetPreviewVariableFilterTextController,
+  ClearPreviewVariableFilterController,
+  SetPreviewSelectedSampleController,
+  PreviewSampleButtonScrollController,
   LoadThemePageController,
-  commitHueReferenceColor,
-  handleMemberSwatchRightClick,
+  CommitHueReferenceColorController,
+  HandleMemberSwatchRightClickController,
 } from '.';
-import * as hueController from './palette-hue/setThemeHueReferenceHex';
-import * as hueAdjustmentController from './palette-hue/setThemeHueAdjustment';
 
 describe('createThemeWithParams', () => {
   it('returns an object that satisfies theme schema', () => {
@@ -35,34 +33,37 @@ describe('createThemeWithParams', () => {
 });
 
 describe('THEME_PREVIEW_* controller', () => {
-  const setState = vi.fn();
-  const getState = vi.fn(() => ({ ...initialAppState }));
+  const setThemePaneSelections = { execute: vi.fn() };
+  const setThemePreviewVariableFilterText = { execute: vi.fn() };
+  const setThemePreviewVariableFilterClear = { execute: vi.fn() };
+  const setThemePreviewSelectedSampleKey = { execute: vi.fn() };
 
   beforeEach(() => {
-    setState.mockClear();
-    getState.mockClear();
+    vi.clearAllMocks();
   });
 
-  it('setPreviewVariableSelection sets color ref when value is in colorAssignments', () => {
+  it('SetPreviewVariableSelectionController sets color ref when value is in colorAssignments', () => {
     const themeWithTemplate = {
       ...createThemeWithParams({ name: 't' }),
       templateRef: { name: 'tp', version: '1.0.0' },
       colorAssignments: [{ colorRef: 'primary', dark: { value: '#111' }, light: null, useDarkForLight: false }],
       contrastAssignments: [],
     };
-    getState.mockReturnValue({
-      ...initialAppState,
-      themes: { ...initialAppState.themes, theme: themeWithTemplate },
-    });
-    setPreviewVariableSelection(setState, getState, 'primary');
-    expect(setState).toHaveBeenCalledWith({
-      type: 'SET_THEME_PANE_SELECTIONS',
-      checkedColorRefs: ['primary'],
-      checkedContrastRefs: [],
-    });
+    const appStateGetter = {
+      current: vi.fn(() => ({
+        ...initialAppState,
+        themes: { ...initialAppState.themes, theme: themeWithTemplate },
+      })),
+    };
+    const controller = new SetPreviewVariableSelectionController(
+      appStateGetter as any,
+      setThemePaneSelections as any,
+    );
+    controller.run('primary');
+    expect(setThemePaneSelections.execute).toHaveBeenCalledWith(['primary'], []);
   });
 
-  it('setPreviewVariableSelection sets contrast ref when value is in contrastAssignments', () => {
+  it('SetPreviewVariableSelectionController sets contrast ref when value is in contrastAssignments', () => {
     const themeWithTemplate = {
       ...createThemeWithParams({ name: 't' }),
       templateRef: { name: 'tp', version: '1.0.0' },
@@ -71,45 +72,62 @@ describe('THEME_PREVIEW_* controller', () => {
         { contrastVariableRef: 'textContrast', dark: { value: 4.5, comparisonMethod: 'greaterThan' as const, min: null, max: null }, light: null, useDarkForLight: false },
       ],
     };
-    getState.mockReturnValue({
-      ...initialAppState,
-      themes: { ...initialAppState.themes, theme: themeWithTemplate },
-    });
-    setPreviewVariableSelection(setState, getState, 'textContrast');
-    expect(setState).toHaveBeenCalledWith({
-      type: 'SET_THEME_PANE_SELECTIONS',
-      checkedColorRefs: [],
-      checkedContrastRefs: ['textContrast'],
-    });
+    const appStateGetter = {
+      current: vi.fn(() => ({
+        ...initialAppState,
+        themes: { ...initialAppState.themes, theme: themeWithTemplate },
+      })),
+    };
+    const controller = new SetPreviewVariableSelectionController(
+      appStateGetter as any,
+      setThemePaneSelections as any,
+    );
+    controller.run('textContrast');
+    expect(setThemePaneSelections.execute).toHaveBeenCalledWith([], ['textContrast']);
   });
 
-  it('setPreviewVariableSelection does nothing when theme has no templateRef', () => {
-    getState.mockReturnValue({
-      ...initialAppState,
-      themes: { ...initialAppState.themes, theme: createThemeWithParams({ name: 't' }) },
-    });
-    setPreviewVariableSelection(setState, getState, 'primary');
-    expect(setState).not.toHaveBeenCalled();
+  it('SetPreviewVariableSelectionController does nothing when theme has no templateRef', () => {
+    const appStateGetter = {
+      current: vi.fn(() => ({
+        ...initialAppState,
+        themes: { ...initialAppState.themes, theme: createThemeWithParams({ name: 't' }) },
+      })),
+    };
+    const controller = new SetPreviewVariableSelectionController(
+      appStateGetter as any,
+      setThemePaneSelections as any,
+    );
+    controller.run('primary');
+    expect(setThemePaneSelections.execute).not.toHaveBeenCalled();
   });
 
-  it('setPreviewVariableFilterText dispatches SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', () => {
-    setPreviewVariableFilterText(setState, 'filter');
-    expect(setState).toHaveBeenCalledWith({ type: 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', value: 'filter' });
+  it('SetPreviewVariableFilterTextController dispatches SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', () => {
+    const controller = new SetPreviewVariableFilterTextController(
+      setThemePreviewVariableFilterText as any,
+    );
+    controller.run('filter');
+    expect(setThemePreviewVariableFilterText.execute).toHaveBeenCalledWith('filter');
   });
 
-  it('clearPreviewVariableFilter dispatches filter text empty', () => {
-    clearPreviewVariableFilter(setState);
-    expect(setState).toHaveBeenCalledWith({ type: 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT', value: '' });
+  it('ClearPreviewVariableFilterController dispatches filter text empty', () => {
+    const controller = new ClearPreviewVariableFilterController(
+      setThemePreviewVariableFilterClear as any,
+    );
+    controller.run();
+    expect(setThemePreviewVariableFilterClear.execute).toHaveBeenCalledTimes(1);
   });
 
-  it('setPreviewSelectedSample dispatches SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', () => {
-    setPreviewSelectedSample(setState, 'sample-key');
-    expect(setState).toHaveBeenCalledWith({ type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', value: 'sample-key' });
+  it('SetPreviewSelectedSampleController dispatches SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', () => {
+    const controller = new SetPreviewSelectedSampleController(
+      setThemePreviewSelectedSampleKey as any,
+    );
+    controller.run('sample-key');
+    expect(setThemePreviewSelectedSampleKey.execute).toHaveBeenCalledWith('sample-key');
   });
 
-  it('previewSampleButtonScroll is a no-op', () => {
-    previewSampleButtonScroll(setState);
-    expect(setState).not.toHaveBeenCalled();
+  it('PreviewSampleButtonScrollController is a no-op', () => {
+    const controller = new PreviewSampleButtonScrollController();
+    controller.run();
   });
 });
 
@@ -133,22 +151,21 @@ describe('theme routing wrapper controllers', () => {
     );
   });
 
-  it('commitHueReferenceColor composes hue reference update and hue reset', () => {
-    const setState = vi.fn();
-    const setHueReferenceSpy = vi
-      .spyOn(hueController, 'setThemeHueReferenceHex')
-      .mockImplementation(() => {});
-    const setHueAdjustmentSpy = vi
-      .spyOn(hueAdjustmentController, 'setThemeHueAdjustment')
-      .mockImplementation(() => {});
+  it('CommitHueReferenceColorController composes hue reference update and hue reset', () => {
+    const setHueReference = { execute: vi.fn() };
+    const setHueAdjustment = { execute: vi.fn() };
 
-    commitHueReferenceColor(setState, '#112233');
+    const controller = new CommitHueReferenceColorController(
+      setHueReference as any,
+      setHueAdjustment as any,
+    );
+    controller.run('#112233');
 
-    expect(setHueReferenceSpy).toHaveBeenCalledWith(setState, '#112233');
-    expect(setHueAdjustmentSpy).toHaveBeenCalledWith(setState, 0);
+    expect(setHueReference.execute).toHaveBeenCalledWith('#112233');
+    expect(setHueAdjustment.execute).toHaveBeenCalledWith(0);
   });
 
-  it('handleMemberSwatchRightClick is a no-op controller', () => {
-    expect(() => handleMemberSwatchRightClick(vi.fn(), vi.fn() as unknown as () => never, 'x')).not.toThrow();
+  it('HandleMemberSwatchRightClickController is a no-op controller', () => {
+    expect(() => new HandleMemberSwatchRightClickController().run('x')).not.toThrow();
   });
 });

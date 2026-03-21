@@ -1,6 +1,11 @@
-import { setThemePreviewVariableFilterText as setThemePreviewVariableFilterTextOp, type SetState } from '../../../operations/theme-operations';
+import { singleton } from 'tsyringe';
+import { SetThemePreviewVariableFilterText } from '../../../operations/theme-operations';
 
-export function setPreviewVariableFilterText(setState: SetState, value: string): void {
-  setThemePreviewVariableFilterTextOp(setState, value);
+@singleton()
+export class SetPreviewVariableFilterTextController {
+  constructor(private readonly setThemePreviewVariableFilterText: SetThemePreviewVariableFilterText) {}
+
+  run(value: string): void {
+    this.setThemePreviewVariableFilterText.execute(value);
+  }
 }
-

@@ -1,27 +1,28 @@
-import type { Theme } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
-import { setTheme, type SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import type { Theme } from '../../../../model/schemas';
+import { SetTheme } from '../../../operations/theme-operations';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import { normalizeHexSafe } from '../../../utils/color';
-import { saveTheme } from '../theme-details/saveTheme';
+import { SaveThemeController } from '../theme-details/saveTheme';
 
-export function setColorVariableLight(
-  setState: SetState,
-  getState: GetState,
-  ref: ColorVariableKey | undefined,
-  value: string,
-): void {
-  const theme = getState().themes.theme;
-  if (!theme || !ref) return;
-  const normalized = normalizeHexSafe(value);
-  const newAssignments = theme.colorAssignments.map((a) =>
-    a.colorRef === ref ? { ...a, light: normalized !== null ? { value: normalized } : null } : a,
-  );
-  const next: Theme = { ...theme, colorAssignments: newAssignments };
-  setTheme(setState, next);
-  saveTheme(setState, next);
+@singleton()
+export class SetColorVariableLightController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly setTheme: SetTheme,
+    private readonly saveThemeController: SaveThemeController,
+  ) {}
+
+  run(ref: ColorVariableKey | undefined, value: string): void {
+    const theme = this.appStateGetter.current().themes.theme;
+    if (!theme || !ref) return;
+    const normalized = normalizeHexSafe(value);
+    const newAssignments = theme.colorAssignments.map((a) =>
+      a.colorRef === ref ? { ...a, light: normalized !== null ? { value: normalized } : null } : a,
+    );
+    const next: Theme = { ...theme, colorAssignments: newAssignments };
+    this.setTheme.execute(next);
+    this.saveThemeController.run(next);
+  }
 }
-
-
-
-

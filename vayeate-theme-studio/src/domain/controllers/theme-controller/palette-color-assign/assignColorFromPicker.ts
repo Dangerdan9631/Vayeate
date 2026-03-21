@@ -1,13 +1,11 @@
-import type { SetState } from '../../../operations/theme-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { commitAssignColorText } from './commitAssignColorText';
+import { singleton } from 'tsyringe';
+import { CommitAssignColorTextController } from './commitAssignColorText';
 
-export function assignColorFromPicker(
-  setState: SetState,
-  getState: GetState,
-  hex: string,
-  _ref?: string,
-): void {
-  commitAssignColorText(setState, getState, hex);
+@singleton()
+export class AssignColorFromPickerController {
+  constructor(private readonly commitAssignColorText: CommitAssignColorTextController) {}
+
+  run(hex: string, _ref?: string): void {
+    this.commitAssignColorText.run(hex);
+  }
 }
-
