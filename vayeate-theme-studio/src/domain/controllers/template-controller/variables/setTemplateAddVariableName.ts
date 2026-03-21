@@ -1,7 +1,12 @@
-import { setTemplateAddVariableName as setTemplateAddVariableNameOp, type SetState } from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateAddVariableName } from '../../../operations/template-operations';
 
 /** Store draft value for the "add variable" name input. */
-export function setTemplateAddVariableName(setState: SetState, value: string): void {
-  setTemplateAddVariableNameOp(setState, value);
-}
+@singleton()
+export class SetTemplateAddVariableNameController {
+  constructor(private readonly setTemplateAddVariableName: SetTemplateAddVariableName) {}
 
+  run(value: string): void {
+    this.setTemplateAddVariableName.execute(value);
+  }
+}

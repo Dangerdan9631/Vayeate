@@ -1,16 +1,17 @@
 import type { Template } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import { saveTemplate as saveTemplateOp, type SetState } from '../../../operations/template-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { singleton } from 'tsyringe';
+import { SaveTemplate } from '../../../operations/template-operations';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function saveTemplate(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  template: Template,
-): Promise<void> {
-  await saveTemplateOp(template);
-  await refreshRefsAndSelect(setState, setStoreState, template.name, template.version);
+@singleton()
+export class SaveTemplateController {
+  constructor(
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(template: Template): Promise<void> {
+    await this.saveTemplate.execute(template);
+    await this.templateSharedFlows.refreshRefsAndSelect(template.name, template.version);
+  }
 }
-
-
-

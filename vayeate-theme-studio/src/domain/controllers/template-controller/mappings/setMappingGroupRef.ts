@@ -1,26 +1,33 @@
 import type { TokenType } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  applyMappingGroupRef,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  SaveTemplate,
+  SetMappingGroupRef as SetMappingGroupRefOp,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function setMappingGroupRef(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  tokenKey: string,
-  tokenType: TokenType,
-  groupRef: string | null,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = applyMappingGroupRef(base, tokenKey, tokenType, groupRef);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class SetMappingGroupRefController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly setMappingGroupRefOp: SetMappingGroupRefOp,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(
+    tokenKey: string,
+    tokenType: TokenType,
+    groupRef: string | null,
+  ): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.setMappingGroupRefOp.execute(base, tokenKey, tokenType, groupRef);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

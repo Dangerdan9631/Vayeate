@@ -1,21 +1,23 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { LoadCatalogSnapshot } from '../../../operations/catalog-operations';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  SaveTemplate,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { loadCatalogSnapshot } from '../../../operations/catalog-operations';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-async function loadCatalogData(refs: readonly { name: string; version: string }[]): Promise<CatalogDataItem[]> {
+async function loadCatalogData(
+  loadCatalogSnapshot: LoadCatalogSnapshot,
+  refs: readonly { name: string; version: string }[],
+): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
   for (const ref of refs) {
-    const catalog = await loadCatalogSnapshot(ref.name, ref.version);
+    const catalog = await loadCatalogSnapshot.execute(ref.name, ref.version);
     if (catalog) {
       catalogData.push({
         ref,
@@ -29,36 +31,39 @@ async function loadCatalogData(refs: readonly { name: string; version: string }[
   return catalogData;
 }
 
-export async function changeCatalogVersion(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  catalogName: string,
-  newVersion: string,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const newCatalogRefs = base.catalogRefs.map((r) =>
-    r.name === catalogName ? { ...r, version: newVersion } : r,
-  );
-  const catalogData = await loadCatalogData(newCatalogRefs);
-  const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-    mergeMappingsFromCatalogData(catalogData, base.mappings);
-  const newGroups = [...(base.groups ?? [])];
-  for (const g of groupsToEnsure) {
-    if (!newGroups.includes(g)) newGroups.push(g);
+@singleton()
+export class ChangeCatalogVersionController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly loadCatalogSnapshot: LoadCatalogSnapshot,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(catalogName: string, newVersion: string): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const newCatalogRefs = base.catalogRefs.map((r) =>
+      r.name === catalogName ? { ...r, version: newVersion } : r,
+    );
+    const catalogData = await loadCatalogData(this.loadCatalogSnapshot, newCatalogRefs);
+    const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
+      mergeMappingsFromCatalogData(catalogData, base.mappings);
+    const newGroups = [...(base.groups ?? [])];
+    for (const g of groupsToEnsure) {
+      if (!newGroups.includes(g)) newGroups.push(g);
+    }
+    const updated = {
+      ...base,
+      catalogRefs: newCatalogRefs,
+      mappings: newMappings,
+      groups: newGroups,
+      semanticTokenModifiers,
+      semanticTokenLanguages,
+    };
+    await this.saveTemplate.execute(updated);
+    await this.templateSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
   }
-  const updated = {
-    ...base,
-    catalogRefs: newCatalogRefs,
-    mappings: newMappings,
-    groups: newGroups,
-    semanticTokenModifiers,
-    semanticTokenLanguages,
-  };
-  await saveTemplateOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }
-
-

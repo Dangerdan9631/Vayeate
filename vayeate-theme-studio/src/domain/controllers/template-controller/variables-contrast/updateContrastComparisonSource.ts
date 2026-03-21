@@ -1,25 +1,36 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  applyContrastComparisonSourceUpdate,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  SaveTemplate,
+  UpdateContrastComparisonSource as UpdateContrastComparisonSourceOp,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function updateContrastComparisonSource(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  contrastVariableKey: string,
-  comparisonSourceRef: ColorVariableKey | null,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = applyContrastComparisonSourceUpdate(base, contrastVariableKey, comparisonSourceRef);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class UpdateContrastComparisonSourceController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly updateContrastComparisonSourceOp: UpdateContrastComparisonSourceOp,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(
+    contrastVariableKey: string,
+    comparisonSourceRef: ColorVariableKey | null,
+  ): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.updateContrastComparisonSourceOp.execute(
+      base,
+      contrastVariableKey,
+      comparisonSourceRef,
+    );
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

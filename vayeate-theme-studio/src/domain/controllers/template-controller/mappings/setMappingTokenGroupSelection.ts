@@ -1,9 +1,13 @@
-import {
-  setTemplateMappingTokenGroupSelection,
-  type SetState,
-} from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateMappingTokenGroupSelection } from '../../../operations/template-operations';
 
-export function setMappingTokenGroupSelection(setState: SetState, value: string): void {
-  setTemplateMappingTokenGroupSelection(setState, value);
+@singleton()
+export class SetMappingTokenGroupSelectionController {
+  constructor(
+    private readonly setTemplateMappingTokenGroupSelection: SetTemplateMappingTokenGroupSelection,
+  ) {}
+
+  run(value: string): void {
+    this.setTemplateMappingTokenGroupSelection.execute(value);
+  }
 }
-

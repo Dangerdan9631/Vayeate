@@ -1,14 +1,14 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
-import {
-  setTemplateMappingColorVariableFilter,
-  type SetState,
-} from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateMappingColorVariableFilter } from '../../../operations/template-operations';
 
-export function setMappingColorVariableFilter(
-  setState: SetState,
-  values: ColorVariableKey[],
-): void {
-  setTemplateMappingColorVariableFilter(setState, values);
+@singleton()
+export class SetMappingColorVariableFilterController {
+  constructor(
+    private readonly setTemplateMappingColorVariableFilter: SetTemplateMappingColorVariableFilter,
+  ) {}
+
+  run(values: ColorVariableKey[]): void {
+    this.setTemplateMappingColorVariableFilter.execute(values);
+  }
 }
-
-

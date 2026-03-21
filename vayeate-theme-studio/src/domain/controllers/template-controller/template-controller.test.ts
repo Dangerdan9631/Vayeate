@@ -1,12 +1,12 @@
 import { templateSchema } from '../../../model/schemas';
 import { createTemplateWithParams } from '../../../model/factories';
-import { addGroupAndClearInput, addVariable, removeVariable } from '.';
-import * as groupsController from './groups/addGroup';
-import * as groupsFormController from './groups/setTemplateAddGroupName';
-import * as colorVariablesController from './variables-color/addColorVariable';
-import * as contrastVariablesController from './variables-contrast/addContrastVariable';
-import * as removeColorVariablesController from './variables-color/removeColorVariable';
-import * as removeContrastVariablesController from './variables-contrast/removeContrastVariable';
+import { AddGroupAndClearInputController } from './groups/addGroupAndClearInput';
+import { AddVariableController } from './variables/addVariable';
+import { RemoveVariableController } from './variables/removeVariable';
+import { AddColorVariableController } from './variables-color/addColorVariable';
+import { AddContrastVariableController } from './variables-contrast/addContrastVariable';
+import { RemoveColorVariableController } from './variables-color/removeColorVariable';
+import { RemoveContrastVariableController } from './variables-contrast/removeContrastVariable';
 import { initialAppState } from '../../state/app-state';
 
 describe('createTemplateWithParams', () => {
@@ -33,58 +33,51 @@ describe('template handler wrapper controllers', () => {
     vi.restoreAllMocks();
   });
 
-  it('addGroupAndClearInput composes addGroup and clears input', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
-    const getState = vi.fn();
-    const addGroupSpy = vi.spyOn(groupsController, 'addGroup').mockResolvedValue(undefined);
-    const clearSpy = vi
-      .spyOn(groupsFormController, 'setTemplateAddGroupName')
-      .mockImplementation(() => {});
+  it('AddGroupAndClearInputController composes addGroup and clears input', async () => {
+    const addGroupSpy = vi.fn().mockResolvedValue(undefined);
+    const clearSpy = vi.fn();
+    const controller = new AddGroupAndClearInputController(
+      { run: addGroupSpy } as unknown as InstanceType<typeof import('./groups/addGroup').AddGroupController>,
+      { run: clearSpy } as unknown as InstanceType<
+        typeof import('./groups/setTemplateAddGroupName').SetTemplateAddGroupNameController
+      >,
+    );
 
-    await addGroupAndClearInput(setState, setStoreState, getState, 'new-group');
+    await controller.run('new-group');
 
-    expect(addGroupSpy).toHaveBeenCalledWith(setState, setStoreState, getState, 'new-group');
-    expect(clearSpy).toHaveBeenCalledWith(setState, '');
+    expect(addGroupSpy).toHaveBeenCalledWith('new-group');
+    expect(clearSpy).toHaveBeenCalledWith('');
   });
 
-  it('addVariable routes to contrast variable controller when kind is contrast', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
-    const getState = vi.fn();
-    const addContrastSpy = vi
-      .spyOn(contrastVariablesController, 'addContrastVariable')
-      .mockResolvedValue(undefined);
-    const addColorSpy = vi
-      .spyOn(colorVariablesController, 'addColorVariable')
-      .mockResolvedValue(undefined);
+  it('AddVariableController routes to contrast variable controller when kind is contrast', async () => {
+    const addContrastSpy = vi.fn().mockResolvedValue(undefined);
+    const addColorSpy = vi.fn().mockResolvedValue(undefined);
+    const controller = new AddVariableController(
+      { run: addColorSpy } as unknown as AddColorVariableController,
+      { run: addContrastSpy } as unknown as AddContrastVariableController,
+    );
 
-    await addVariable(setState, setStoreState, getState, '  x  ', null, 'contrast');
+    await controller.run('  x  ', null, 'contrast');
 
-    expect(addContrastSpy).toHaveBeenCalledWith(setState, setStoreState, getState, 'x', null);
+    expect(addContrastSpy).toHaveBeenCalledWith('x', null);
     expect(addColorSpy).not.toHaveBeenCalled();
   });
 
-  it('addVariable routes to color variable controller when kind is color', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
-    const getState = vi.fn();
-    const addContrastSpy = vi
-      .spyOn(contrastVariablesController, 'addContrastVariable')
-      .mockResolvedValue(undefined);
-    const addColorSpy = vi
-      .spyOn(colorVariablesController, 'addColorVariable')
-      .mockResolvedValue(undefined);
+  it('AddVariableController routes to color variable controller when kind is color', async () => {
+    const addContrastSpy = vi.fn().mockResolvedValue(undefined);
+    const addColorSpy = vi.fn().mockResolvedValue(undefined);
+    const controller = new AddVariableController(
+      { run: addColorSpy } as unknown as AddColorVariableController,
+      { run: addContrastSpy } as unknown as AddContrastVariableController,
+    );
 
-    await addVariable(setState, setStoreState, getState, '  y  ', 'group-a', 'color');
+    await controller.run('  y  ', 'group-a', 'color');
 
-    expect(addColorSpy).toHaveBeenCalledWith(setState, setStoreState, getState, 'y', 'group-a');
+    expect(addColorSpy).toHaveBeenCalledWith('y', 'group-a');
     expect(addContrastSpy).not.toHaveBeenCalled();
   });
 
-  it('removeVariable routes to removeColorVariable when key is a color variable', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
+  it('RemoveVariableController routes to removeColorVariable when key is a color variable', async () => {
     const template = {
       ...createTemplateWithParams({ name: 'template-a' }),
       colorVariables: [{ key: 'color.ref', groupRef: null }],
@@ -93,22 +86,21 @@ describe('template handler wrapper controllers', () => {
       ...initialAppState,
       templates: { ...initialAppState.templates, template },
     }));
-    const removeColorSpy = vi
-      .spyOn(removeColorVariablesController, 'removeColorVariable')
-      .mockResolvedValue(undefined);
-    const removeContrastSpy = vi
-      .spyOn(removeContrastVariablesController, 'removeContrastVariable')
-      .mockResolvedValue(undefined);
+    const removeColorSpy = vi.fn().mockResolvedValue(undefined);
+    const removeContrastSpy = vi.fn().mockResolvedValue(undefined);
+    const controller = new RemoveVariableController(
+      { current: getState } as any,
+      { run: removeColorSpy } as unknown as RemoveColorVariableController,
+      { run: removeContrastSpy } as unknown as RemoveContrastVariableController,
+    );
 
-    await removeVariable(setState, setStoreState, getState, 'color.ref');
+    await controller.run('color.ref');
 
-    expect(removeColorSpy).toHaveBeenCalledWith(setState, setStoreState, getState, 'color.ref');
+    expect(removeColorSpy).toHaveBeenCalledWith('color.ref');
     expect(removeContrastSpy).not.toHaveBeenCalled();
   });
 
-  it('removeVariable routes to removeContrastVariable when key is not a color variable', async () => {
-    const setState = vi.fn();
-    const setStoreState = vi.fn();
+  it('RemoveVariableController routes to removeContrastVariable when key is not a color variable', async () => {
     const template = {
       ...createTemplateWithParams({ name: 'template-a' }),
       colorVariables: [{ key: 'color.ref', groupRef: null }],
@@ -117,16 +109,17 @@ describe('template handler wrapper controllers', () => {
       ...initialAppState,
       templates: { ...initialAppState.templates, template },
     }));
-    const removeColorSpy = vi
-      .spyOn(removeColorVariablesController, 'removeColorVariable')
-      .mockResolvedValue(undefined);
-    const removeContrastSpy = vi
-      .spyOn(removeContrastVariablesController, 'removeContrastVariable')
-      .mockResolvedValue(undefined);
+    const removeColorSpy = vi.fn().mockResolvedValue(undefined);
+    const removeContrastSpy = vi.fn().mockResolvedValue(undefined);
+    const controller = new RemoveVariableController(
+      { current: getState } as any,
+      { run: removeColorSpy } as unknown as RemoveColorVariableController,
+      { run: removeContrastSpy } as unknown as RemoveContrastVariableController,
+    );
 
-    await removeVariable(setState, setStoreState, getState, 'contrast.ref');
+    await controller.run('contrast.ref');
 
-    expect(removeContrastSpy).toHaveBeenCalledWith(setState, setStoreState, getState, 'contrast.ref');
+    expect(removeContrastSpy).toHaveBeenCalledWith('contrast.ref');
     expect(removeColorSpy).not.toHaveBeenCalled();
   });
 });

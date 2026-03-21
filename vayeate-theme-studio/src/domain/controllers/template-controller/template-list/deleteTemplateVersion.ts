@@ -1,34 +1,39 @@
+import { singleton } from 'tsyringe';
 import { findNearestVersionRef } from '../../../utils/version';
 import { templateStackId } from '../../../utils/stack-id';
-import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
-  deleteTemplate as deleteTemplateOp,
-  setSelectedTemplateRef,
-  setTemplate,
-  loadTemplate,
-  refreshTemplateRefs,
-  type SetState,
+  DeleteTemplate,
+  LoadTemplate,
+  RefreshTemplateRefs,
+  SetSelectedTemplateRef,
+  SetTemplate,
 } from '../../../operations/template-operations';
-import { setCurrentUndoStackId } from '../../../operations/undo-operations';
+import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
 
-export async function deleteTemplateVersion(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  name: string,
-  version: string,
-): Promise<void> {
-  await deleteTemplateOp(name, version);
-  const refs = await refreshTemplateRefs(setStoreState);
-  const nextT = findNearestVersionRef(refs, name, version);
+@singleton()
+export class DeleteTemplateVersionController {
+  constructor(
+    private readonly deleteTemplate: DeleteTemplate,
+    private readonly refreshTemplateRefs: RefreshTemplateRefs,
+    private readonly setSelectedTemplateRef: SetSelectedTemplateRef,
+    private readonly loadTemplate: LoadTemplate,
+    private readonly setTemplate: SetTemplate,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
+  ) {}
 
-  if (nextT) {
-    setSelectedTemplateRef(setState, nextT);
-    await loadTemplate(setState, nextT.name, nextT.version);
-    setCurrentUndoStackId(setState, templateStackId(nextT.name, nextT.version));
-  } else {
-    setSelectedTemplateRef(setState, null);
-    setTemplate(setState, null);
-    setCurrentUndoStackId(setState, null);
+  async run(name: string, version: string): Promise<void> {
+    await this.deleteTemplate.execute(name, version);
+    const refs = await this.refreshTemplateRefs.execute();
+    const nextT = findNearestVersionRef(refs, name, version);
+
+    if (nextT) {
+      this.setSelectedTemplateRef.execute(nextT);
+      await this.loadTemplate.execute(nextT.name, nextT.version);
+      this.setCurrentUndoStackId.execute(templateStackId(nextT.name, nextT.version));
+    } else {
+      this.setSelectedTemplateRef.execute(null);
+      this.setTemplate.execute(null);
+      this.setCurrentUndoStackId.execute(null);
+    }
   }
 }
-

@@ -1,26 +1,31 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  removeColorVariableFromTemplate,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  RemoveColorVariable as RemoveColorVariableOp,
+  SaveTemplate,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
 import { referencedColorVarKeysFromTemplate } from '../../../utils/template-utils';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function removeColorVariable(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  key: string,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const refs = referencedColorVarKeysFromTemplate(template);
-  if (refs.has(key)) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = removeColorVariableFromTemplate(base, key);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class RemoveColorVariableController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly removeColorVariableFromTemplate: RemoveColorVariableOp,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(key: string): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const refs = referencedColorVarKeysFromTemplate(template);
+    if (refs.has(key)) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.removeColorVariableFromTemplate.execute(base, key);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

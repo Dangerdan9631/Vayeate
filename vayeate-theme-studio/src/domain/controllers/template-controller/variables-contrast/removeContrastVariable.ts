@@ -1,26 +1,31 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  removeContrastVariableFromTemplate,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  RemoveContrastVariable as RemoveContrastVariableOp,
+  SaveTemplate,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
 import { referencedContrastVarKeysFromTemplate } from '../../../utils/template-utils';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function removeContrastVariable(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  key: string,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const refs = referencedContrastVarKeysFromTemplate(template);
-  if (refs.has(key)) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = removeContrastVariableFromTemplate(base, key);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class RemoveContrastVariableController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly removeContrastVariableFromTemplate: RemoveContrastVariableOp,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(key: string): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const refs = referencedContrastVarKeysFromTemplate(template);
+    if (refs.has(key)) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.removeContrastVariableFromTemplate.execute(base, key);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

@@ -1,6 +1,11 @@
-import { setTemplateVariablesSearchText, type SetState } from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateVariablesSearchText } from '../../../operations/template-operations';
 
-export function setVariablesSearchText(setState: SetState, value: string): void {
-  setTemplateVariablesSearchText(setState, value);
+@singleton()
+export class SetVariablesSearchTextController {
+  constructor(private readonly setTemplateVariablesSearchText: SetTemplateVariablesSearchText) {}
+
+  run(value: string): void {
+    this.setTemplateVariablesSearchText.execute(value);
+  }
 }
-

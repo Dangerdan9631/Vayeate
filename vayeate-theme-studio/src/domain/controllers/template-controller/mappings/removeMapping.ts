@@ -1,25 +1,29 @@
 import type { TokenType } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  removeMappingFromTemplate,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  RemoveMappingFromTemplate,
+  SaveTemplate,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function removeMapping(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  tokenKey: string,
-  tokenType: TokenType,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = removeMappingFromTemplate(base, tokenKey, tokenType);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class RemoveMappingController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly removeMappingFromTemplate: RemoveMappingFromTemplate,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(tokenKey: string, tokenType: TokenType): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

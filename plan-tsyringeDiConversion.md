@@ -462,64 +462,64 @@ await container.resolve(catalogController.CreateCatalogController).run(action.pa
 ### G. Controllers — Template (`src/domain/controllers/template-controller/`)
 
 #### shared-flows
-- [ ] `shared-flows.ts` → `TemplateSharedFlows` class (`@injectable()`, method `refreshRefsAndSelect`)
+- [x] `shared-flows.ts` → `TemplateSharedFlows` class (`@injectable()`, method `refreshRefsAndSelect`)
 
 #### groups
-- [ ] `groups/addGroup.ts` → `AddGroupController`
-- [ ] `groups/addGroupAndClearInput.ts` → `AddGroupAndClearInputController`
-- [ ] `groups/removeGroup.ts` → `RemoveGroupController`
-- [ ] `groups/setTemplateAddGroupName.ts` → `SetTemplateAddGroupNameController`
+- [x] `groups/addGroup.ts` → `AddGroupController`
+- [x] `groups/addGroupAndClearInput.ts` → `AddGroupAndClearInputController`
+- [x] `groups/removeGroup.ts` → `RemoveGroupController`
+- [x] `groups/setTemplateAddGroupName.ts` → `SetTemplateAddGroupNameController`
 
 #### mappings
-- [ ] `mappings/removeMapping.ts` → `RemoveMappingController`
-- [ ] `mappings/setMappingColorRef.ts` → `SetMappingColorRefController`
-- [ ] `mappings/setMappingColorVariableFilter.ts` → `SetMappingColorVariableFilterController`
-- [ ] `mappings/setMappingContrastRef.ts` → `SetMappingContrastRefController`
-- [ ] `mappings/setMappingContrastVariableFilter.ts` → `SetMappingContrastVariableFilterController`
-- [ ] `mappings/setMappingGroupRef.ts` → `SetMappingGroupRefController`
-- [ ] `mappings/setMappingSearchText.ts` → `SetMappingSearchTextController`
-- [ ] `mappings/setMappingTokenGroupSelection.ts` → `SetMappingTokenGroupSelectionController`
+- [x] `mappings/removeMapping.ts` → `RemoveMappingController`
+- [x] `mappings/setMappingColorRef.ts` → `SetMappingColorRefController`
+- [x] `mappings/setMappingColorVariableFilter.ts` → `SetMappingColorVariableFilterController`
+- [x] `mappings/setMappingContrastRef.ts` → `SetMappingContrastRefController`
+- [x] `mappings/setMappingContrastVariableFilter.ts` → `SetMappingContrastVariableFilterController`
+- [x] `mappings/setMappingGroupRef.ts` → `SetMappingGroupRefController`
+- [x] `mappings/setMappingSearchText.ts` → `SetMappingSearchTextController`
+- [x] `mappings/setMappingTokenGroupSelection.ts` → `SetMappingTokenGroupSelectionController`
 
 #### mappings-semantic
-- [ ] `mappings-semantic/addSemanticVariant.ts` → `AddSemanticVariantController`
-- [ ] `mappings-semantic/updateSemanticVariantKey.ts` → `UpdateSemanticVariantKeyController`
+- [x] `mappings-semantic/addSemanticVariant.ts` → `AddSemanticVariantController`
+- [x] `mappings-semantic/updateSemanticVariantKey.ts` → `UpdateSemanticVariantKeyController`
 
 #### template-details
-- [ ] `template-details/changeCatalogVersion.ts` → `ChangeCatalogVersionController`
-- [ ] `template-details/closeTemplateCreateDialog.ts` → `CloseTemplateCreateDialogController`
-- [ ] `template-details/lockTemplate.ts` → `LockTemplateController`
-- [ ] `template-details/openTemplateCreateDialog.ts` → `OpenTemplateCreateDialogController`
-- [ ] `template-details/restoreTemplateState.ts` → `RestoreTemplateStateController`
-- [ ] `template-details/saveTemplate.ts` → `SaveTemplateController`
-- [ ] `template-details/toggleCatalog.ts` → `ToggleCatalogController`
-- [ ] `template-details/updateAllCatalogs.ts` → `UpdateAllCatalogsController`
+- [x] `template-details/changeCatalogVersion.ts` → `ChangeCatalogVersionController`
+- [x] `template-details/closeTemplateCreateDialog.ts` → `CloseTemplateCreateDialogController`
+- [x] `template-details/lockTemplate.ts` → `LockTemplateController`
+- [x] `template-details/openTemplateCreateDialog.ts` → `OpenTemplateCreateDialogController`
+- [x] `template-details/restoreTemplateState.ts` → `RestoreTemplateStateController`
+- [x] `template-details/saveTemplate.ts` → `SaveTemplateController`
+- [x] `template-details/toggleCatalog.ts` → `ToggleCatalogController`
+- [x] `template-details/updateAllCatalogs.ts` → `UpdateAllCatalogsController`
 
 #### template-list
-- [ ] `template-list/closeCreateDialog.ts` → `CloseCreateDialogController`
-- [ ] `template-list/createTemplate.ts` → `CreateTemplateController`
-- [ ] `template-list/deleteTemplateVersion.ts` → `DeleteTemplateVersionController`
-- [ ] `template-list/openCreateDialog.ts` → `OpenCreateDialogController`
-- [ ] `template-list/selectTemplateAndLoad.ts` → `SelectTemplateAndLoadController`
-- [ ] `template-list/setCreateFormName.ts` → `SetCreateFormNameController`
+- [x] `template-list/closeCreateDialog.ts` → `CloseCreateDialogController`
+- [x] `template-list/createTemplate.ts` → `CreateTemplateController`
+- [x] `template-list/deleteTemplateVersion.ts` → `DeleteTemplateVersionController`
+- [x] `template-list/openCreateDialog.ts` → `OpenCreateDialogController`
+- [x] `template-list/selectTemplateAndLoad.ts` → `SelectTemplateAndLoadController`
+- [x] `template-list/setCreateFormName.ts` → `SetCreateFormNameController`
 
 #### variables
-- [ ] `variables/addVariable.ts` → `AddVariableController`
-- [ ] `variables/removeVariable.ts` → `RemoveVariableController`
-- [ ] `variables/setTemplateAddVariableName.ts` → `SetTemplateAddVariableNameController`
-- [ ] `variables/setVariablesSearchText.ts` → `SetVariablesSearchTextController`
-- [ ] `variables/updateVariableGroupRef.ts` → `UpdateVariableGroupRefController`
+- [x] `variables/addVariable.ts` → `AddVariableController`
+- [x] `variables/removeVariable.ts` → `RemoveVariableController`
+- [x] `variables/setTemplateAddVariableName.ts` → `SetTemplateAddVariableNameController`
+- [x] `variables/setVariablesSearchText.ts` → `SetVariablesSearchTextController`
+- [x] `variables/updateVariableGroupRef.ts` → `UpdateVariableGroupRefController`
 
 #### variables-color
-- [ ] `variables-color/addColorVariable.ts` → `AddColorVariableController`
-- [ ] `variables-color/removeColorVariable.ts` → `RemoveColorVariableController`
+- [x] `variables-color/addColorVariable.ts` → `AddColorVariableController`
+- [x] `variables-color/removeColorVariable.ts` → `RemoveColorVariableController`
 
 #### variables-contrast
-- [ ] `variables-contrast/addContrastVariable.ts` → `AddContrastVariableController`
-- [ ] `variables-contrast/removeContrastVariable.ts` → `RemoveContrastVariableController`
-- [ ] `variables-contrast/updateContrastComparisonSource.ts` → `UpdateContrastComparisonSourceController`
+- [x] `variables-contrast/addContrastVariable.ts` → `AddContrastVariableController`
+- [x] `variables-contrast/removeContrastVariable.ts` → `RemoveContrastVariableController`
+- [x] `variables-contrast/updateContrastComparisonSource.ts` → `UpdateContrastComparisonSourceController`
 
 #### index
-- [ ] `index.ts` — update all `export { functionName }` entries to `export { ClassName }` as each file is converted
+- [x] `index.ts` — update all `export { functionName }` entries to `export { ClassName }` as each file is converted
 
 ---
 
@@ -615,7 +615,7 @@ await container.resolve(catalogController.CreateCatalogController).run(action.pa
 These handler files pass `setState`/`setStoreState` directly to controller functions. Once the corresponding controllers are converted to classes, each call site must be changed to `container.resolve(XController).run(...)`.
 
 - [x] `src/app/handlers/catalog-handler.ts` — update all non-class call sites after catalog controllers are converted
-- [ ] `src/app/handlers/template-handler.ts` — update all non-class call sites after template controllers are converted
+- [x] `src/app/handlers/template-handler.ts` — update all non-class call sites after template controllers are converted
 - [ ] `src/app/handlers/theme-handler.ts` — update all non-class call sites after theme controllers are converted
 
 > After all handlers are updated, `HandlerDeps` (`setState`, `getState`, `setStoreState`, `setUiState`) may be unused in catalog/template/theme handlers and can be removed from their signatures.

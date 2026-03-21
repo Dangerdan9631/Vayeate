@@ -1,9 +1,12 @@
-import type { SetState } from '../../../operations/template-operations';
-import { closeTemplateCreateDialog } from '../template-details/closeTemplateCreateDialog';
+import { singleton } from 'tsyringe';
+import { CloseTemplateCreateDialogController } from '../template-details/closeTemplateCreateDialog';
 
 /** Close create dialog and clear form (V2: CANCEL_BUTTON). */
-export function closeCreateDialog(setState: SetState): void {
-  closeTemplateCreateDialog(setState);
+@singleton()
+export class CloseCreateDialogController {
+  constructor(private readonly closeTemplateCreateDialog: CloseTemplateCreateDialogController) {}
+
+  run(): void {
+    this.closeTemplateCreateDialog.run();
+  }
 }
-
-

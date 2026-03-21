@@ -1,24 +1,28 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  applyVariableGroupRefUpdate,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  SaveTemplate,
+  UpdateVariableGroupRef as UpdateVariableGroupRefOp,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function updateVariableGroupRef(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  variableKey: string,
-  groupRef: string | null,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = applyVariableGroupRefUpdate(base, variableKey, groupRef);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class UpdateVariableGroupRefController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly updateVariableGroupRefOp: UpdateVariableGroupRefOp,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(variableKey: string, groupRef: string | null): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.updateVariableGroupRefOp.execute(base, variableKey, groupRef);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

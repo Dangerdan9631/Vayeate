@@ -1,21 +1,23 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import {
-  saveTemplate as saveTemplateOp,
-  lockTemplateEntity,
-  type SetState,
-} from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { LockTemplate as LockTemplateOperation, SaveTemplate } from '../../../operations/template-operations';
 import { canLockTemplate } from '../../../validations/template-validations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function lockTemplate(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!canLockTemplate(template)) return;
-  const updated = lockTemplateEntity(template);
-  await saveTemplateOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, template.name, template.version);
+@singleton()
+export class LockTemplateController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly lockTemplateOperation: LockTemplateOperation,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!canLockTemplate(template)) return;
+    const updated = this.lockTemplateOperation.execute(template);
+    await this.saveTemplate.execute(updated);
+    await this.templateSharedFlows.refreshRefsAndSelect(template.name, template.version);
+  }
 }

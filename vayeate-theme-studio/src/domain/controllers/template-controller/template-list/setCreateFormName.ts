@@ -1,6 +1,11 @@
-import { setTemplateCreateFormName, type SetState } from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateCreateFormName } from '../../../operations/template-operations';
 
-export function setCreateFormName(setState: SetState, value: string): void {
-  setTemplateCreateFormName(setState, value);
+@singleton()
+export class SetCreateFormNameController {
+  constructor(private readonly setTemplateCreateFormName: SetTemplateCreateFormName) {}
+
+  run(value: string): void {
+    this.setTemplateCreateFormName.execute(value);
+  }
 }
-

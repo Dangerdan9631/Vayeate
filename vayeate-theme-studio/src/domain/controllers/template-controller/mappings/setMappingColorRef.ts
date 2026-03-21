@@ -1,35 +1,43 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  removeMappingFromTemplate,
-  applyMappingColorRef,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  RemoveMappingFromTemplate,
+  SaveTemplate,
+  SetMappingColorRef as SetMappingColorRefOp,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function setMappingColorRef(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  tokenKey: string,
-  tokenType: TokenType,
-  colorRef: ColorVariableKey | null,
-  isOrphan?: boolean,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const base = bumpTemplateVersionForEdit(template);
-  if (colorRef === null && isOrphan) {
-    const next = removeMappingFromTemplate(base, tokenKey, tokenType);
-    await saveTemplateOp(next);
-    await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
-    return;
+@singleton()
+export class SetMappingColorRefController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly removeMappingFromTemplate: RemoveMappingFromTemplate,
+    private readonly setMappingColorRefOp: SetMappingColorRefOp,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(
+    tokenKey: string,
+    tokenType: TokenType,
+    colorRef: ColorVariableKey | null,
+    isOrphan?: boolean,
+  ): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    if (colorRef === null && isOrphan) {
+      const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
+      await this.saveTemplate.execute(next);
+      await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+      return;
+    }
+    const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
   }
-  const next = applyMappingColorRef(base, tokenKey, tokenType, colorRef);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
 }

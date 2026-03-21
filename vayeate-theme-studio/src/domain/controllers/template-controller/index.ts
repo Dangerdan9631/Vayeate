@@ -1,56 +1,59 @@
+// shared-flows
+export { TemplateSharedFlows } from './shared-flows';
+
 // template-list
 export { templateStackId } from '../../utils/stack-id';
 export { LoadTemplateRefsController } from './template-list/loadTemplateRefs';
 export { LoadTemplatePageController } from './template-list/loadTemplatePage';
-export { selectTemplateAndLoad } from './template-list/selectTemplateAndLoad';
-export { openCreateDialog } from './template-list/openCreateDialog';
-export { setCreateFormName } from './template-list/setCreateFormName';
-export { closeCreateDialog } from './template-list/closeCreateDialog';
-export { createTemplate } from './template-list/createTemplate';
-export { deleteTemplateVersion } from './template-list/deleteTemplateVersion';
+export { SelectTemplateAndLoadController } from './template-list/selectTemplateAndLoad';
+export { OpenCreateDialogController } from './template-list/openCreateDialog';
+export { SetCreateFormNameController } from './template-list/setCreateFormName';
+export { CloseCreateDialogController } from './template-list/closeCreateDialog';
+export { CreateTemplateController } from './template-list/createTemplate';
+export { DeleteTemplateVersionController } from './template-list/deleteTemplateVersion';
 
 // template-details
-export { openTemplateCreateDialog } from './template-details/openTemplateCreateDialog';
-export { closeTemplateCreateDialog } from './template-details/closeTemplateCreateDialog';
-export { saveTemplate } from './template-details/saveTemplate';
-export { restoreTemplateState } from './template-details/restoreTemplateState';
-export { lockTemplate } from './template-details/lockTemplate';
-export { updateAllCatalogs } from './template-details/updateAllCatalogs';
-export { toggleCatalog } from './template-details/toggleCatalog';
-export { changeCatalogVersion } from './template-details/changeCatalogVersion';
+export { OpenTemplateCreateDialogController } from './template-details/openTemplateCreateDialog';
+export { CloseTemplateCreateDialogController } from './template-details/closeTemplateCreateDialog';
+export { SaveTemplateController } from './template-details/saveTemplate';
+export { RestoreTemplateStateController } from './template-details/restoreTemplateState';
+export { LockTemplateController } from './template-details/lockTemplate';
+export { UpdateAllCatalogsController } from './template-details/updateAllCatalogs';
+export { ToggleCatalogController } from './template-details/toggleCatalog';
+export { ChangeCatalogVersionController } from './template-details/changeCatalogVersion';
 
 // mappings
-export { setMappingSearchText } from './mappings/setMappingSearchText';
-export { setMappingColorVariableFilter } from './mappings/setMappingColorVariableFilter';
-export { setMappingContrastVariableFilter } from './mappings/setMappingContrastVariableFilter';
-export { setMappingTokenGroupSelection } from './mappings/setMappingTokenGroupSelection';
-export { setMappingColorRef } from './mappings/setMappingColorRef';
-export { setMappingContrastRef } from './mappings/setMappingContrastRef';
-export { setMappingGroupRef } from './mappings/setMappingGroupRef';
-export { removeMapping } from './mappings/removeMapping';
+export { SetMappingSearchTextController } from './mappings/setMappingSearchText';
+export { SetMappingColorVariableFilterController } from './mappings/setMappingColorVariableFilter';
+export { SetMappingContrastVariableFilterController } from './mappings/setMappingContrastVariableFilter';
+export { SetMappingTokenGroupSelectionController } from './mappings/setMappingTokenGroupSelection';
+export { SetMappingColorRefController } from './mappings/setMappingColorRef';
+export { SetMappingContrastRefController } from './mappings/setMappingContrastRef';
+export { SetMappingGroupRefController } from './mappings/setMappingGroupRef';
+export { RemoveMappingController } from './mappings/removeMapping';
 
 // mappings-semantic
-export { addSemanticVariant } from './mappings-semantic/addSemanticVariant';
-export { updateSemanticVariantKey } from './mappings-semantic/updateSemanticVariantKey';
+export { AddSemanticVariantController } from './mappings-semantic/addSemanticVariant';
+export { UpdateSemanticVariantKeyController } from './mappings-semantic/updateSemanticVariantKey';
 
 // groups
-export { addGroup } from './groups/addGroup';
-export { addGroupAndClearInput } from './groups/addGroupAndClearInput';
-export { removeGroup } from './groups/removeGroup';
-export { setTemplateAddGroupName } from './groups/setTemplateAddGroupName';
+export { AddGroupController } from './groups/addGroup';
+export { AddGroupAndClearInputController } from './groups/addGroupAndClearInput';
+export { RemoveGroupController } from './groups/removeGroup';
+export { SetTemplateAddGroupNameController } from './groups/setTemplateAddGroupName';
 
 // variables
-export { addVariable } from './variables/addVariable';
-export { removeVariable } from './variables/removeVariable';
-export { setVariablesSearchText } from './variables/setVariablesSearchText';
-export { setTemplateAddVariableName } from './variables/setTemplateAddVariableName';
-export { updateVariableGroupRef } from './variables/updateVariableGroupRef';
+export { AddVariableController } from './variables/addVariable';
+export { RemoveVariableController } from './variables/removeVariable';
+export { SetVariablesSearchTextController } from './variables/setVariablesSearchText';
+export { SetTemplateAddVariableNameController } from './variables/setTemplateAddVariableName';
+export { UpdateVariableGroupRefController } from './variables/updateVariableGroupRef';
 
 // variables-color
-export { addColorVariable } from './variables-color/addColorVariable';
-export { removeColorVariable } from './variables-color/removeColorVariable';
+export { AddColorVariableController } from './variables-color/addColorVariable';
+export { RemoveColorVariableController } from './variables-color/removeColorVariable';
 
 // variables-contrast
-export { addContrastVariable } from './variables-contrast/addContrastVariable';
-export { removeContrastVariable } from './variables-contrast/removeContrastVariable';
-export { updateContrastComparisonSource } from './variables-contrast/updateContrastComparisonSource';
+export { AddContrastVariableController } from './variables-contrast/addContrastVariable';
+export { RemoveContrastVariableController } from './variables-contrast/removeContrastVariable';
+export { UpdateContrastComparisonSourceController } from './variables-contrast/updateContrastComparisonSource';

@@ -1,26 +1,31 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  removeGroupFromTemplate,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  RemoveGroupFromTemplate,
+  SaveTemplate,
 } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
 import { groupNamesInUseFromTemplate } from '../../../utils/template-utils';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-export async function removeGroup(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  groupId: string,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
-  const inUse = groupNamesInUseFromTemplate(template);
-  if (inUse.has(groupId)) return;
-  const base = bumpTemplateVersionForEdit(template);
-  const next = removeGroupFromTemplate(base, groupId);
-  await saveTemplateOp(next);
-  await refreshRefsAndSelect(setState, setStoreState, next.name, next.version);
+@singleton()
+export class RemoveGroupController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly removeGroupFromTemplate: RemoveGroupFromTemplate,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(groupId: string): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+    const inUse = groupNamesInUseFromTemplate(template);
+    if (inUse.has(groupId)) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.removeGroupFromTemplate.execute(base, groupId);
+    await this.saveTemplate.execute(next);
+    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+  }
 }

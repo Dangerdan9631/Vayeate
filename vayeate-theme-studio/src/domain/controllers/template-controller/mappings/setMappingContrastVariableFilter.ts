@@ -1,14 +1,14 @@
 import type { ContrastVariableKey } from '../../../../model/schemas';
-import {
-  setTemplateMappingContrastVariableFilter,
-  type SetState,
-} from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateMappingContrastVariableFilter } from '../../../operations/template-operations';
 
-export function setMappingContrastVariableFilter(
-  setState: SetState,
-  values: ContrastVariableKey[],
-): void {
-  setTemplateMappingContrastVariableFilter(setState, values);
+@singleton()
+export class SetMappingContrastVariableFilterController {
+  constructor(
+    private readonly setTemplateMappingContrastVariableFilter: SetTemplateMappingContrastVariableFilter,
+  ) {}
+
+  run(values: ContrastVariableKey[]): void {
+    this.setTemplateMappingContrastVariableFilter.execute(values);
+  }
 }
-
-

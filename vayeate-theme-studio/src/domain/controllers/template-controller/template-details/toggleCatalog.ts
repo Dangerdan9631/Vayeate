@@ -1,22 +1,24 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { GetCatalogRefs, LoadCatalogSnapshot } from '../../../operations/catalog-operations';
 import {
-  saveTemplate as saveTemplateOp,
-  bumpTemplateVersionForEdit,
-  type SetState,
+  BumpTemplateVersionForEdit,
+  SaveTemplate,
 } from '../../../operations/template-operations';
-import { getCatalogRefs, loadCatalogSnapshot } from '../../../operations/catalog-operations';
-import type { GetState } from '../../../operations/undo-operations';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
 import { catalogVersionsByNameFromRefs } from '../../../utils/template-utils';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { TemplateSharedFlows } from '../shared-flows';
 
-async function loadCatalogData(refs: readonly { name: string; version: string }[]): Promise<CatalogDataItem[]> {
+async function loadCatalogData(
+  loadCatalogSnapshot: LoadCatalogSnapshot,
+  refs: readonly { name: string; version: string }[],
+): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
   for (const ref of refs) {
-    const catalog = await loadCatalogSnapshot(ref.name, ref.version);
+    const catalog = await loadCatalogSnapshot.execute(ref.name, ref.version);
     if (catalog) {
       catalogData.push({
         ref,
@@ -30,61 +32,65 @@ async function loadCatalogData(refs: readonly { name: string; version: string }[
   return catalogData;
 }
 
-export async function toggleCatalog(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  catalogName: string,
-  include: boolean,
-): Promise<void> {
-  const template = getState().templates.template;
-  const catalogRefs = getCatalogRefs(getState);
-  if (!template) return;
-  const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
-  const base = bumpTemplateVersionForEdit(template);
-  let newCatalogRefs: { name: string; version: string }[];
-  if (include) {
-    const versions = catalogVersionsByName[catalogName];
-    if (!versions || versions.length === 0) return;
-    const highestVersion = versions[0].version;
-    newCatalogRefs = [...base.catalogRefs, { name: catalogName, version: highestVersion }];
-  } else {
-    newCatalogRefs = base.catalogRefs.filter((r) => r.name !== catalogName);
+@singleton()
+export class ToggleCatalogController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly getCatalogRefs: GetCatalogRefs,
+    private readonly loadCatalogSnapshot: LoadCatalogSnapshot,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEdit,
+    private readonly saveTemplate: SaveTemplate,
+    private readonly templateSharedFlows: TemplateSharedFlows,
+  ) {}
+
+  async run(catalogName: string, include: boolean): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    const catalogRefs = this.getCatalogRefs.execute();
+    if (!template) return;
+    const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    let newCatalogRefs: { name: string; version: string }[];
+    if (include) {
+      const versions = catalogVersionsByName[catalogName];
+      if (!versions || versions.length === 0) return;
+      const highestVersion = versions[0].version;
+      newCatalogRefs = [...base.catalogRefs, { name: catalogName, version: highestVersion }];
+    } else {
+      newCatalogRefs = base.catalogRefs.filter((r) => r.name !== catalogName);
+    }
+    const catalogData = await loadCatalogData(this.loadCatalogSnapshot, newCatalogRefs);
+    const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
+      mergeMappingsFromCatalogData(catalogData, base.mappings);
+    let newGroups: string[];
+    if (include) {
+      newGroups = [...(base.groups ?? [])];
+      for (const g of groupsToEnsure) {
+        if (!newGroups.includes(g)) newGroups.push(g);
+      }
+    } else {
+      const groupNamesInUseAfter = new Set<string>();
+      for (const m of newMappings) {
+        if (m.groupRef) groupNamesInUseAfter.add(m.groupRef);
+      }
+      for (const v of base.colorVariables) {
+        if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
+      }
+      for (const v of base.contrastVariables) {
+        if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
+      }
+      newGroups = (base.groups ?? []).filter(
+        (g) => g !== catalogName || groupNamesInUseAfter.has(g),
+      );
+    }
+    const updated = {
+      ...base,
+      catalogRefs: newCatalogRefs,
+      mappings: newMappings,
+      groups: newGroups,
+      semanticTokenModifiers,
+      semanticTokenLanguages,
+    };
+    await this.saveTemplate.execute(updated);
+    await this.templateSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
   }
-  const catalogData = await loadCatalogData(newCatalogRefs);
-  const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-    mergeMappingsFromCatalogData(catalogData, base.mappings);
-  let newGroups: string[];
-  if (include) {
-    newGroups = [...(base.groups ?? [])];
-    for (const g of groupsToEnsure) {
-      if (!newGroups.includes(g)) newGroups.push(g);
-    }
-  } else {
-    const groupNamesInUseAfter = new Set<string>();
-    for (const m of newMappings) {
-      if (m.groupRef) groupNamesInUseAfter.add(m.groupRef);
-    }
-    for (const v of base.colorVariables) {
-      if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
-    }
-    for (const v of base.contrastVariables) {
-      if (v.groupRef) groupNamesInUseAfter.add(v.groupRef);
-    }
-    newGroups = (base.groups ?? []).filter(
-      (g) => g !== catalogName || groupNamesInUseAfter.has(g),
-    );
-  }
-  const updated = {
-    ...base,
-    catalogRefs: newCatalogRefs,
-    mappings: newMappings,
-    groups: newGroups,
-    semanticTokenModifiers,
-    semanticTokenLanguages,
-  };
-  await saveTemplateOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
 }
-
-

@@ -1,6 +1,11 @@
-import { setTemplateMappingSearchText, type SetState } from '../../../operations/template-operations';
+import { singleton } from 'tsyringe';
+import { SetTemplateMappingSearchText } from '../../../operations/template-operations';
 
-export function setMappingSearchText(setState: SetState, value: string): void {
-  setTemplateMappingSearchText(setState, value);
+@singleton()
+export class SetMappingSearchTextController {
+  constructor(private readonly setTemplateMappingSearchText: SetTemplateMappingSearchText) {}
+
+  run(value: string): void {
+    this.setTemplateMappingSearchText.execute(value);
+  }
 }
-

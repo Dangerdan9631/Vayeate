@@ -1,23 +1,25 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import type { SetState } from '../../../operations/template-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { removeColorVariable } from '../variables-color/removeColorVariable';
-import { removeContrastVariable } from '../variables-contrast/removeContrastVariable';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { RemoveColorVariableController } from '../variables-color/removeColorVariable';
+import { RemoveContrastVariableController } from '../variables-contrast/removeContrastVariable';
 
-export async function removeVariable(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  key: string,
-): Promise<void> {
-  const template = getState().templates.template;
-  if (!template) return;
+@singleton()
+export class RemoveVariableController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly removeColorVariable: RemoveColorVariableController,
+    private readonly removeContrastVariable: RemoveContrastVariableController,
+  ) {}
 
-  if (template.colorVariables.some((variable) => variable.key === key)) {
-    await removeColorVariable(setState, setStoreState, getState, key);
-    return;
+  async run(key: string): Promise<void> {
+    const template = this.appStateGetter.current().templates.template;
+    if (!template) return;
+
+    if (template.colorVariables.some((variable) => variable.key === key)) {
+      await this.removeColorVariable.run(key);
+      return;
+    }
+
+    await this.removeContrastVariable.run(key);
   }
-
-  await removeContrastVariable(setState, setStoreState, getState, key);
 }
-
