@@ -1,6 +1,11 @@
-import { setCatalogBulkAddText as setCatalogBulkAddTextOp, type SetState } from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { SetCatalogBulkAddText } from '../../../operations/catalog-operations';
 
-export function setCatalogBulkAddText(setState: SetState, value: string): void {
-  setCatalogBulkAddTextOp(setState, value);
+@singleton()
+export class SetCatalogBulkAddTextController {
+  constructor(private readonly setCatalogBulkAddText: SetCatalogBulkAddText) {}
+
+  run(value: string): void {
+    this.setCatalogBulkAddText.execute(value);
+  }
 }
-

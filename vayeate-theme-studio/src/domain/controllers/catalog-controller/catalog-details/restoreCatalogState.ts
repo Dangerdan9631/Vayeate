@@ -1,23 +1,23 @@
 import type { Catalog } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import {
-  setCatalog,
-  deleteCatalog as deleteCatalogOp,
-  refreshCatalogRefs,
-  type SetState,
-} from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { DeleteCatalog, RefreshCatalogRefs, SetCatalog } from '../../../operations/catalog-operations';
 
-export async function restoreCatalogState(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  catalog: Catalog | null,
-  deleteVersionOnRestore?: { name: string; version: string },
-): Promise<void> {
-  setCatalog(setState, catalog);
-  if (deleteVersionOnRestore) {
-    await deleteCatalogOp(deleteVersionOnRestore.name, deleteVersionOnRestore.version);
-    await refreshCatalogRefs(setStoreState);
+@singleton()
+export class RestoreCatalogStateController {
+  constructor(
+    private readonly setCatalog: SetCatalog,
+    private readonly deleteCatalog: DeleteCatalog,
+    private readonly refreshCatalogRefs: RefreshCatalogRefs,
+  ) {}
+
+  async run(
+    catalog: Catalog | null,
+    deleteVersionOnRestore?: { name: string; version: string },
+  ): Promise<void> {
+    this.setCatalog.execute(catalog);
+    if (deleteVersionOnRestore) {
+      await this.deleteCatalog.execute(deleteVersionOnRestore.name, deleteVersionOnRestore.version);
+      await this.refreshCatalogRefs.execute();
+    }
   }
 }
-
-

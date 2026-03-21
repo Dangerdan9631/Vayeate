@@ -411,51 +411,51 @@ await container.resolve(catalogController.CreateCatalogController).run(action.pa
 ### F. Controllers — Catalog (`src/domain/controllers/catalog-controller/`)
 
 #### shared-flows
-- [ ] `shared-flows.ts` → `CatalogSharedFlows` class (`@injectable()`, method `refreshRefsAndSelect`)
+- [x] `shared-flows.ts` → `CatalogSharedFlows` class (`@injectable()`, method `refreshRefsAndSelect`)
 
 #### bulk-add
-- [ ] `bulk-add/bulkAddTokens.ts` → `BulkAddTokensController`
-- [ ] `bulk-add/closeBulkAddDialog.ts` → `CloseBulkAddDialogController`
-- [ ] `bulk-add/openBulkAddDialog.ts` → `OpenBulkAddDialogController`
-- [ ] `bulk-add/setCatalogBulkAddText.ts` → `SetCatalogBulkAddTextController`
+- [x] `bulk-add/bulkAddTokens.ts` → `BulkAddTokensController`
+- [x] `bulk-add/closeBulkAddDialog.ts` → `CloseBulkAddDialogController`
+- [x] `bulk-add/openBulkAddDialog.ts` → `OpenBulkAddDialogController`
+- [x] `bulk-add/setCatalogBulkAddText.ts` → `SetCatalogBulkAddTextController`
 
 #### catalog-details
-- [ ] `catalog-details/lockCatalog.ts` → `LockCatalogController`
-- [ ] `catalog-details/restoreCatalogState.ts` → `RestoreCatalogStateController`
-- [ ] `catalog-details/revertCatalogToVersion.ts` → `RevertCatalogToVersionController`
-- [ ] `catalog-details/saveCatalog.ts` → `SaveCatalogController`
-- [ ] `catalog-details/syncCatalog.ts` → `SyncCatalogController`
+- [x] `catalog-details/lockCatalog.ts` → `LockCatalogController`
+- [x] `catalog-details/restoreCatalogState.ts` → `RestoreCatalogStateController`
+- [x] `catalog-details/revertCatalogToVersion.ts` → `RevertCatalogToVersionController`
+- [x] `catalog-details/saveCatalog.ts` → `SaveCatalogController`
+- [x] `catalog-details/syncCatalog.ts` → `SyncCatalogController`
 
 #### catalog-list
-- [ ] `catalog-list/closeCatalogCreateDialog.ts` → `CloseCatalogCreateDialogController`
-- [ ] `catalog-list/createCatalog.ts` → `CreateCatalogController`
-- [ ] `catalog-list/deleteCatalogVersion.ts` → `DeleteCatalogVersionController`
-- [ ] `catalog-list/loadCatalogForDisplay.ts` → `LoadCatalogForDisplayController`
-- [ ] `catalog-list/loadCatalogsForDisplay.ts` → `LoadCatalogsForDisplayController`
-- [ ] `catalog-list/openCatalogCreateDialog.ts` → `OpenCatalogCreateDialogController`
-- [ ] `catalog-list/selectCatalogAndLoad.ts` → `SelectCatalogAndLoadController`
-- [ ] `catalog-list/setCatalogCreateFormName.ts` → `SetCatalogCreateFormNameController`
-- [ ] `catalog-list/setCatalogCreateFormType.ts` → `SetCatalogCreateFormTypeController`
+- [x] `catalog-list/closeCatalogCreateDialog.ts` → `CloseCatalogCreateDialogController`
+- [x] `catalog-list/createCatalog.ts` → `CreateCatalogController`
+- [x] `catalog-list/deleteCatalogVersion.ts` → `DeleteCatalogVersionController`
+- [x] `catalog-list/loadCatalogForDisplay.ts` → `LoadCatalogForDisplayController`
+- [x] `catalog-list/loadCatalogsForDisplay.ts` → `LoadCatalogsForDisplayController`
+- [x] `catalog-list/openCatalogCreateDialog.ts` → `OpenCatalogCreateDialogController`
+- [x] `catalog-list/selectCatalogAndLoad.ts` → `SelectCatalogAndLoadController`
+- [x] `catalog-list/setCatalogCreateFormName.ts` → `SetCatalogCreateFormNameController`
+- [x] `catalog-list/setCatalogCreateFormType.ts` → `SetCatalogCreateFormTypeController`
 
 #### sources
-- [ ] `sources/addNewSource.ts` → `AddNewSourceController`
-- [ ] `sources/removeSource.ts` → `RemoveSourceController`
-- [ ] `sources/setCatalogNewSourceTokenType.ts` → `SetCatalogNewSourceTokenTypeController`
-- [ ] `sources/setCatalogNewSourceType.ts` → `SetCatalogNewSourceTypeController`
-- [ ] `sources/setCatalogNewSourceUrl.ts` → `SetCatalogNewSourceUrlController`
-- [ ] `sources/updateSourceTokenType.ts` → `UpdateSourceTokenTypeController`
-- [ ] `sources/updateSourceType.ts` → `UpdateSourceTypeController`
-- [ ] `sources/updateSourceUrl.ts` → `UpdateSourceUrlController`
+- [x] `sources/addNewSource.ts` → `AddNewSourceController`
+- [x] `sources/removeSource.ts` → `RemoveSourceController`
+- [x] `sources/setCatalogNewSourceTokenType.ts` → `SetCatalogNewSourceTokenTypeController`
+- [x] `sources/setCatalogNewSourceType.ts` → `SetCatalogNewSourceTypeController`
+- [x] `sources/setCatalogNewSourceUrl.ts` → `SetCatalogNewSourceUrlController`
+- [x] `sources/updateSourceTokenType.ts` → `UpdateSourceTokenTypeController`
+- [x] `sources/updateSourceType.ts` → `UpdateSourceTypeController`
+- [x] `sources/updateSourceUrl.ts` → `UpdateSourceUrlController`
 
 #### tokens
-- [ ] `tokens/addNewToken.ts` → `AddNewTokenController`
-- [ ] `tokens/removeToken.ts` → `RemoveTokenController`
-- [ ] `tokens/setCatalogNewTokenKey.ts` → `SetCatalogNewTokenKeyController`
-- [ ] `tokens/setCatalogTokensSearchText.ts` → `SetCatalogTokensSearchTextController`
-- [ ] `tokens/updateTokenKey.ts` → `UpdateTokenKeyController`
+- [x] `tokens/addNewToken.ts` → `AddNewTokenController`
+- [x] `tokens/removeToken.ts` → `RemoveTokenController`
+- [x] `tokens/setCatalogNewTokenKey.ts` → `SetCatalogNewTokenKeyController`
+- [x] `tokens/setCatalogTokensSearchText.ts` → `SetCatalogTokensSearchTextController`
+- [x] `tokens/updateTokenKey.ts` → `UpdateTokenKeyController`
 
 #### index
-- [ ] `index.ts` — update all `export { functionName }` entries to `export { ClassName }` as each file is converted
+- [x] `index.ts` — update all `export { functionName }` entries to `export { ClassName }` as each file is converted
 
 ---
 
@@ -614,7 +614,7 @@ await container.resolve(catalogController.CreateCatalogController).run(action.pa
 
 These handler files pass `setState`/`setStoreState` directly to controller functions. Once the corresponding controllers are converted to classes, each call site must be changed to `container.resolve(XController).run(...)`.
 
-- [ ] `src/app/handlers/catalog-handler.ts` — update all non-class call sites after catalog controllers are converted
+- [x] `src/app/handlers/catalog-handler.ts` — update all non-class call sites after catalog controllers are converted
 - [ ] `src/app/handlers/template-handler.ts` — update all non-class call sites after template controllers are converted
 - [ ] `src/app/handlers/theme-handler.ts` — update all non-class call sites after theme controllers are converted
 

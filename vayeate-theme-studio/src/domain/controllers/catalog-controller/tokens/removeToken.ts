@@ -1,25 +1,29 @@
 import type { TokenKey, TokenType } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveCatalog as saveCatalogOp,
-  bumpCatalogVersionForEdit,
-  removeTokenFromCatalog,
-  type SetState,
+  BumpCatalogVersionForEdit,
+  RemoveTokenFromCatalog,
+  SaveCatalog,
 } from '../../../operations/catalog-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { CatalogSharedFlows } from '../shared-flows';
 
-export async function removeToken(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  key: TokenKey,
-  tokenType: TokenType,
-): Promise<void> {
-  const catalog = getState().catalogs.catalog;
-  if (!catalog) return;
-  const base = bumpCatalogVersionForEdit(catalog);
-  const updated = removeTokenFromCatalog(base, key, tokenType);
-  await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
+@singleton()
+export class RemoveTokenController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly saveCatalog: SaveCatalog,
+    private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEdit,
+    private readonly removeTokenFromCatalog: RemoveTokenFromCatalog,
+    private readonly catalogSharedFlows: CatalogSharedFlows,
+  ) {}
+
+  async run(key: TokenKey, tokenType: TokenType): Promise<void> {
+    const catalog = this.appStateGetter.current().catalogs.catalog;
+    if (!catalog) return;
+    const base = this.bumpCatalogVersionForEdit.execute(catalog);
+    const updated = this.removeTokenFromCatalog.execute(base, key, tokenType);
+    await this.saveCatalog.execute(updated);
+    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+  }
 }

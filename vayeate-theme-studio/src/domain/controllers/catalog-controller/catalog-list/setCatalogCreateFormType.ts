@@ -1,8 +1,12 @@
-import { setCatalogCreateFormType as setCatalogCreateFormTypeOp, type SetState } from '../../../operations/catalog-operations';
 import type { CatalogType } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
+import { SetCatalogCreateFormType } from '../../../operations/catalog-operations';
 
-export function setCatalogCreateFormType(setState: SetState, value: CatalogType): void {
-  setCatalogCreateFormTypeOp(setState, value);
+@singleton()
+export class SetCatalogCreateFormTypeController {
+  constructor(private readonly setCatalogCreateFormType: SetCatalogCreateFormType) {}
+
+  run(value: CatalogType): void {
+    this.setCatalogCreateFormType.execute(value);
+  }
 }
-
-

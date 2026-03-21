@@ -1,21 +1,23 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import {
-  saveCatalog as saveCatalogOp,
-  applyLockToCatalog,
-  type SetState,
-} from '../../../operations/catalog-operations';
-import type { GetState } from '../../../operations/undo-operations';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import { LockCatalog as LockCatalogTransform, SaveCatalog } from '../../../operations/catalog-operations';
 import { canLockCatalog } from '../../../validations/catalog-validations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { CatalogSharedFlows } from '../shared-flows';
 
-export async function lockCatalog(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-): Promise<void> {
-  const catalog = getState().catalogs.catalog;
-  if (!canLockCatalog(catalog)) return;
-  const updated = applyLockToCatalog(catalog);
-  await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, catalog.name, catalog.version);
+@singleton()
+export class LockCatalogController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly lockCatalogTransform: LockCatalogTransform,
+    private readonly saveCatalog: SaveCatalog,
+    private readonly catalogSharedFlows: CatalogSharedFlows,
+  ) {}
+
+  async run(): Promise<void> {
+    const catalog = this.appStateGetter.current().catalogs.catalog;
+    if (!canLockCatalog(catalog)) return;
+    const updated = this.lockCatalogTransform.execute(catalog);
+    await this.saveCatalog.execute(updated);
+    await this.catalogSharedFlows.refreshRefsAndSelect(catalog.name, catalog.version);
+  }
 }

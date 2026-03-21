@@ -1,8 +1,12 @@
-import { setCatalogNewSourceType as setCatalogNewSourceTypeOp, type SetState } from '../../../operations/catalog-operations';
 import type { SourceType } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
+import { SetCatalogNewSourceType } from '../../../operations/catalog-operations';
 
-export function setCatalogNewSourceType(setState: SetState, value: SourceType): void {
-  setCatalogNewSourceTypeOp(setState, value);
+@singleton()
+export class SetCatalogNewSourceTypeController {
+  constructor(private readonly setCatalogNewSourceType: SetCatalogNewSourceType) {}
+
+  run(value: SourceType): void {
+    this.setCatalogNewSourceType.execute(value);
+  }
 }
-
-

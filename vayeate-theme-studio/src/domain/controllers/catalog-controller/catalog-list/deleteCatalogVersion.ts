@@ -1,34 +1,39 @@
+import { singleton } from 'tsyringe';
 import { findNearestVersionRef } from '../../../utils/version';
 import { catalogStackId } from '../../../utils/stack-id';
-import type { SetStoreState } from '../../../state/store-state-reducer';
 import {
-  deleteCatalog as deleteCatalogOp,
-  setSelectedRef,
-  setCatalog,
-  loadCatalog,
-  refreshCatalogRefs,
-  type SetState,
+  DeleteCatalog,
+  LoadCatalog,
+  RefreshCatalogRefs,
+  SetCatalog,
+  SetSelectedRef,
 } from '../../../operations/catalog-operations';
-import { setCurrentUndoStackId } from '../../../operations/undo-operations';
+import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
 
-export async function deleteCatalogVersion(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  name: string,
-  version: string,
-): Promise<void> {
-  await deleteCatalogOp(name, version);
-  const refs = await refreshCatalogRefs(setStoreState);
-  const next = findNearestVersionRef(refs, name, version);
+@singleton()
+export class DeleteCatalogVersionController {
+  constructor(
+    private readonly deleteCatalog: DeleteCatalog,
+    private readonly refreshCatalogRefs: RefreshCatalogRefs,
+    private readonly setSelectedRef: SetSelectedRef,
+    private readonly loadCatalog: LoadCatalog,
+    private readonly setCatalog: SetCatalog,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
+  ) {}
 
-  if (next) {
-    setSelectedRef(setState, next);
-    await loadCatalog(setState, next.name, next.version);
-    setCurrentUndoStackId(setState, catalogStackId(next.name, next.version));
-  } else {
-    setSelectedRef(setState, null);
-    setCatalog(setState, null);
-    setCurrentUndoStackId(setState, null);
+  async run(name: string, version: string): Promise<void> {
+    await this.deleteCatalog.execute(name, version);
+    const refs = await this.refreshCatalogRefs.execute();
+    const next = findNearestVersionRef(refs, name, version);
+
+    if (next) {
+      this.setSelectedRef.execute(next);
+      await this.loadCatalog.execute(next.name, next.version);
+      this.setCurrentUndoStackId.execute(catalogStackId(next.name, next.version));
+    } else {
+      this.setSelectedRef.execute(null);
+      this.setCatalog.execute(null);
+      this.setCurrentUndoStackId.execute(null);
+    }
   }
 }
-

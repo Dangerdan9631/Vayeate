@@ -1,6 +1,11 @@
-import { setCatalogNewTokenKey as setCatalogNewTokenKeyOp, type SetState } from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { SetCatalogNewTokenKey } from '../../../operations/catalog-operations';
 
-export function setCatalogNewTokenKey(setState: SetState, value: string): void {
-  setCatalogNewTokenKeyOp(setState, value);
+@singleton()
+export class SetCatalogNewTokenKeyController {
+  constructor(private readonly setCatalogNewTokenKey: SetCatalogNewTokenKey) {}
+
+  run(value: string): void {
+    this.setCatalogNewTokenKey.execute(value);
+  }
 }
-

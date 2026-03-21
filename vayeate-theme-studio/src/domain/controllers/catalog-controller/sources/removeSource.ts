@@ -1,24 +1,29 @@
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveCatalog as saveCatalogOp,
-  bumpCatalogVersionForEdit,
-  removeSourceAtIndex,
-  type SetState,
+  BumpCatalogVersionForEdit,
+  RemoveSourceAtIndex,
+  SaveCatalog,
 } from '../../../operations/catalog-operations';
-import type { GetState } from '../../../operations/undo-operations';
 import { canUpdateCatalogSource } from '../../../validations/catalog-validations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { CatalogSharedFlows } from '../shared-flows';
 
-export async function removeSource(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  sourceIndex: number,
-): Promise<void> {
-  const catalog = getState().catalogs.catalog;
-  if (!canUpdateCatalogSource(catalog, sourceIndex)) return;
-  const base = bumpCatalogVersionForEdit(catalog);
-  const updated = removeSourceAtIndex(base, sourceIndex);
-  await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
+@singleton()
+export class RemoveSourceController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly saveCatalog: SaveCatalog,
+    private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEdit,
+    private readonly removeSourceAtIndex: RemoveSourceAtIndex,
+    private readonly catalogSharedFlows: CatalogSharedFlows,
+  ) {}
+
+  async run(sourceIndex: number): Promise<void> {
+    const catalog = this.appStateGetter.current().catalogs.catalog;
+    if (!canUpdateCatalogSource(catalog, sourceIndex)) return;
+    const base = this.bumpCatalogVersionForEdit.execute(catalog);
+    const updated = this.removeSourceAtIndex.execute(base, sourceIndex);
+    await this.saveCatalog.execute(updated);
+    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+  }
 }

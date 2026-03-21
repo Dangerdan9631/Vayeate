@@ -1,4 +1,4 @@
-export type { RestoreThemeStateParams } from './types';
+export type { RestoreThemeStateParams, SetState } from './types';
 
 // theme-list
 export { SetThemeRefs, setThemeRefs } from './theme-list/setThemeRefs';

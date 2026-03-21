@@ -1,5 +1,8 @@
 import type { Theme } from '../../../model/schemas';
 
+/** @deprecated Backward compatibility — use injected AppStateSetter */
+export type SetState = (update: import('../../state/app-state').AppStateUpdate) => void;
+
 export interface RestoreThemeStateParams {
   theme?: Theme | null;
   checkedColorRefs?: string[];

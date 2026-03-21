@@ -1,14 +1,16 @@
 import { vi } from 'vitest';
 import { catalogSchema } from '../../../model/schemas';
 import { createCatalogWithParams } from '../../../model/factories';
-import { loadCatalogsForDisplay, LoadCatalogPageController } from '.';
+import { LoadCatalogPageController, LoadCatalogsForDisplayController } from '.';
 const loadCatalogForDisplayMock = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 
 vi.mock('../../operations/catalog-operations', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../operations/catalog-operations')>();
   return {
     ...actual,
-    loadCatalogForDisplay: loadCatalogForDisplayMock,
+    LoadCatalogForDisplay: vi.fn().mockImplementation(() => ({
+      execute: loadCatalogForDisplayMock,
+    })),
   };
 });
 
@@ -36,9 +38,7 @@ describe('createCatalogWithParams', () => {
   });
 });
 
-describe('loadCatalogsForDisplay', () => {
-  const setState = vi.fn();
-
+describe('LoadCatalogsForDisplayController', () => {
   beforeEach(() => {
     loadCatalogForDisplayMock.mockClear();
   });
@@ -48,21 +48,30 @@ describe('loadCatalogsForDisplay', () => {
       { name: 'cat-a', version: '1.0.0' },
       { name: 'cat-b', version: '1.0.1' },
     ];
-    await loadCatalogsForDisplay(setState, refs);
+    const controller = new LoadCatalogsForDisplayController({
+      execute: loadCatalogForDisplayMock,
+    } as any);
+    await controller.run(refs);
     expect(loadCatalogForDisplayMock).toHaveBeenCalledTimes(2);
-    expect(loadCatalogForDisplayMock).toHaveBeenNthCalledWith(1, setState, 'cat-a', '1.0.0');
-    expect(loadCatalogForDisplayMock).toHaveBeenNthCalledWith(2, setState, 'cat-b', '1.0.1');
+    expect(loadCatalogForDisplayMock).toHaveBeenNthCalledWith(1, 'cat-a', '1.0.0');
+    expect(loadCatalogForDisplayMock).toHaveBeenNthCalledWith(2, 'cat-b', '1.0.1');
   });
 
   it('does not call loadCatalogForDisplay when refs is empty', async () => {
-    await loadCatalogsForDisplay(setState, []);
+    const controller = new LoadCatalogsForDisplayController({
+      execute: loadCatalogForDisplayMock,
+    } as any);
+    await controller.run([]);
     expect(loadCatalogForDisplayMock).not.toHaveBeenCalled();
   });
 
   it('calls loadCatalogForDisplay once for a single ref', async () => {
-    await loadCatalogsForDisplay(setState, [{ name: 'only', version: '2.0.0' }]);
+    const controller = new LoadCatalogsForDisplayController({
+      execute: loadCatalogForDisplayMock,
+    } as any);
+    await controller.run([{ name: 'only', version: '2.0.0' }]);
     expect(loadCatalogForDisplayMock).toHaveBeenCalledTimes(1);
-    expect(loadCatalogForDisplayMock).toHaveBeenCalledWith(setState, 'only', '2.0.0');
+    expect(loadCatalogForDisplayMock).toHaveBeenCalledWith('only', '2.0.0');
   });
 });
 

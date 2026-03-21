@@ -1,17 +1,19 @@
 import type { Catalog } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
-import {
-  saveCatalog as saveCatalogOp,
-  syncCatalog as syncCatalogOp,
-  type SetState,
-} from '../../../operations/catalog-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { singleton } from 'tsyringe';
+import { SaveCatalog, SyncCatalog } from '../../../operations/catalog-operations';
+import { CatalogSharedFlows } from '../shared-flows';
 
-export async function syncCatalog(setState: SetState, setStoreState: SetStoreState, catalog: Catalog): Promise<void> {
-  const synced = await syncCatalogOp(catalog);
-  await saveCatalogOp(synced);
-  await refreshRefsAndSelect(setState, setStoreState, synced.name, synced.version);
+@singleton()
+export class SyncCatalogController {
+  constructor(
+    private readonly saveCatalog: SaveCatalog,
+    private readonly syncCatalog: SyncCatalog,
+    private readonly catalogSharedFlows: CatalogSharedFlows,
+  ) {}
+
+  async run(catalog: Catalog): Promise<void> {
+    const synced = await this.syncCatalog.execute(catalog);
+    await this.saveCatalog.execute(synced);
+    await this.catalogSharedFlows.refreshRefsAndSelect(synced.name, synced.version);
+  }
 }
-
-
-

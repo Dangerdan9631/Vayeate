@@ -1,11 +1,15 @@
-import {
-  setCatalogBulkAddDialogOpen,
-  setCatalogBulkAddText,
-  type SetState,
-} from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { SetCatalogBulkAddDialogOpen, SetCatalogBulkAddText } from '../../../operations/catalog-operations';
 
-export function openBulkAddDialog(setState: SetState): void {
-  setCatalogBulkAddDialogOpen(setState, true);
-  setCatalogBulkAddText(setState, '');
+@singleton()
+export class OpenBulkAddDialogController {
+  constructor(
+    private readonly setCatalogBulkAddDialogOpen: SetCatalogBulkAddDialogOpen,
+    private readonly setCatalogBulkAddText: SetCatalogBulkAddText,
+  ) {}
+
+  run(): void {
+    this.setCatalogBulkAddDialogOpen.execute(true);
+    this.setCatalogBulkAddText.execute('');
+  }
 }
-

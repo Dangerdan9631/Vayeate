@@ -1,6 +1,11 @@
-import { setCatalogCreateFormName as setCatalogCreateFormNameOp, type SetState } from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { SetCatalogCreateFormName } from '../../../operations/catalog-operations';
 
-export function setCatalogCreateFormName(setState: SetState, value: string): void {
-  setCatalogCreateFormNameOp(setState, value);
+@singleton()
+export class SetCatalogCreateFormNameController {
+  constructor(private readonly setCatalogCreateFormName: SetCatalogCreateFormName) {}
+
+  run(value: string): void {
+    this.setCatalogCreateFormName.execute(value);
+  }
 }
-

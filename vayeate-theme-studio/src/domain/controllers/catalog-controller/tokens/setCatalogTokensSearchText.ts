@@ -1,6 +1,11 @@
-import { setCatalogTokensSearchText as setCatalogTokensSearchTextOp, type SetState } from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { SetCatalogTokensSearchText } from '../../../operations/catalog-operations';
 
-export function setCatalogTokensSearchText(setState: SetState, value: string): void {
-  setCatalogTokensSearchTextOp(setState, value);
+@singleton()
+export class SetCatalogTokensSearchTextController {
+  constructor(private readonly setCatalogTokensSearchText: SetCatalogTokensSearchText) {}
+
+  run(value: string): void {
+    this.setCatalogTokensSearchText.execute(value);
+  }
 }
-

@@ -1,6 +1,11 @@
-import { setCatalogNewSourceUrl as setCatalogNewSourceUrlOp, type SetState } from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { SetCatalogNewSourceUrl } from '../../../operations/catalog-operations';
 
-export function setCatalogNewSourceUrl(setState: SetState, value: string): void {
-  setCatalogNewSourceUrlOp(setState, value);
+@singleton()
+export class SetCatalogNewSourceUrlController {
+  constructor(private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrl) {}
+
+  run(value: string): void {
+    this.setCatalogNewSourceUrl.execute(value);
+  }
 }
-

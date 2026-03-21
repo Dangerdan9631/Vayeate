@@ -1,26 +1,29 @@
 import type { TokenType } from '../../../../model/schemas';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
 import {
-  saveCatalog as saveCatalogOp,
-  bumpCatalogVersionForEdit,
-  updateTokenKeyInCatalog,
-  type SetState,
+  BumpCatalogVersionForEdit,
+  SaveCatalog,
+  UpdateTokenKeyInCatalog,
 } from '../../../operations/catalog-operations';
-import type { GetState } from '../../../operations/undo-operations';
-import { refreshRefsAndSelect } from '../shared-flows';
+import { CatalogSharedFlows } from '../shared-flows';
 
-export async function updateTokenKey(
-  setState: SetState,
-  setStoreState: SetStoreState,
-  getState: GetState,
-  oldKey: string,
-  newKey: string,
-  tokenType: TokenType,
-): Promise<void> {
-  const catalog = getState().catalogs.catalog;
-  if (!catalog) return;
-  const base = bumpCatalogVersionForEdit(catalog);
-  const updated = updateTokenKeyInCatalog(base, oldKey, newKey, tokenType);
-  await saveCatalogOp(updated);
-  await refreshRefsAndSelect(setState, setStoreState, updated.name, updated.version);
+@singleton()
+export class UpdateTokenKeyController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly saveCatalog: SaveCatalog,
+    private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEdit,
+    private readonly updateTokenKeyInCatalog: UpdateTokenKeyInCatalog,
+    private readonly catalogSharedFlows: CatalogSharedFlows,
+  ) {}
+
+  async run(oldKey: string, newKey: string, tokenType: TokenType): Promise<void> {
+    const catalog = this.appStateGetter.current().catalogs.catalog;
+    if (!catalog) return;
+    const base = this.bumpCatalogVersionForEdit.execute(catalog);
+    const updated = this.updateTokenKeyInCatalog.execute(base, oldKey, newKey, tokenType);
+    await this.saveCatalog.execute(updated);
+    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+  }
 }

@@ -1,43 +1,47 @@
+export { catalogStackId } from '../../utils/stack-id';
+
+// shared-flows
+export { CatalogSharedFlows } from './shared-flows';
+
 // catalog-list
 export { LoadCatalogRefsController } from './catalog-list/loadCatalogRefs';
-export { loadCatalogForDisplay } from './catalog-list/loadCatalogForDisplay';
-export { catalogStackId } from '../../utils/stack-id';
-export { loadCatalogsForDisplay } from './catalog-list/loadCatalogsForDisplay';
+export { LoadCatalogForDisplayController } from './catalog-list/loadCatalogForDisplay';
+export { LoadCatalogsForDisplayController } from './catalog-list/loadCatalogsForDisplay';
 export { LoadCatalogPageController } from './catalog-list/loadCatalogPage';
-export { selectCatalogAndLoad } from './catalog-list/selectCatalogAndLoad';
-export { openCatalogCreateDialog } from './catalog-list/openCatalogCreateDialog';
-export { closeCatalogCreateDialog } from './catalog-list/closeCatalogCreateDialog';
-export { createCatalog } from './catalog-list/createCatalog';
-export { deleteCatalogVersion } from './catalog-list/deleteCatalogVersion';
-export { setCatalogCreateFormName } from './catalog-list/setCatalogCreateFormName';
-export { setCatalogCreateFormType } from './catalog-list/setCatalogCreateFormType';
+export { SelectCatalogAndLoadController } from './catalog-list/selectCatalogAndLoad';
+export { OpenCatalogCreateDialogController } from './catalog-list/openCatalogCreateDialog';
+export { CloseCatalogCreateDialogController } from './catalog-list/closeCatalogCreateDialog';
+export { CreateCatalogController } from './catalog-list/createCatalog';
+export { DeleteCatalogVersionController } from './catalog-list/deleteCatalogVersion';
+export { SetCatalogCreateFormNameController } from './catalog-list/setCatalogCreateFormName';
+export { SetCatalogCreateFormTypeController } from './catalog-list/setCatalogCreateFormType';
 
 // catalog-details
-export { saveCatalog } from './catalog-details/saveCatalog';
-export { syncCatalog } from './catalog-details/syncCatalog';
-export { revertCatalogToVersion } from './catalog-details/revertCatalogToVersion';
-export { restoreCatalogState } from './catalog-details/restoreCatalogState';
-export { lockCatalog } from './catalog-details/lockCatalog';
+export { SaveCatalogController } from './catalog-details/saveCatalog';
+export { SyncCatalogController } from './catalog-details/syncCatalog';
+export { RevertCatalogToVersionController } from './catalog-details/revertCatalogToVersion';
+export { RestoreCatalogStateController } from './catalog-details/restoreCatalogState';
+export { LockCatalogController } from './catalog-details/lockCatalog';
 
 // sources
-export { updateSourceUrl } from './sources/updateSourceUrl';
-export { updateSourceTokenType } from './sources/updateSourceTokenType';
-export { updateSourceType } from './sources/updateSourceType';
-export { removeSource } from './sources/removeSource';
-export { addNewSource } from './sources/addNewSource';
-export { setCatalogNewSourceUrl } from './sources/setCatalogNewSourceUrl';
-export { setCatalogNewSourceType } from './sources/setCatalogNewSourceType';
-export { setCatalogNewSourceTokenType } from './sources/setCatalogNewSourceTokenType';
+export { UpdateSourceUrlController } from './sources/updateSourceUrl';
+export { UpdateSourceTokenTypeController } from './sources/updateSourceTokenType';
+export { UpdateSourceTypeController } from './sources/updateSourceType';
+export { RemoveSourceController } from './sources/removeSource';
+export { AddNewSourceController } from './sources/addNewSource';
+export { SetCatalogNewSourceUrlController } from './sources/setCatalogNewSourceUrl';
+export { SetCatalogNewSourceTypeController } from './sources/setCatalogNewSourceType';
+export { SetCatalogNewSourceTokenTypeController } from './sources/setCatalogNewSourceTokenType';
 
 // tokens
-export { updateTokenKey } from './tokens/updateTokenKey';
-export { removeToken } from './tokens/removeToken';
-export { addNewToken } from './tokens/addNewToken';
-export { setCatalogNewTokenKey } from './tokens/setCatalogNewTokenKey';
-export { setCatalogTokensSearchText } from './tokens/setCatalogTokensSearchText';
+export { UpdateTokenKeyController } from './tokens/updateTokenKey';
+export { RemoveTokenController } from './tokens/removeToken';
+export { AddNewTokenController } from './tokens/addNewToken';
+export { SetCatalogNewTokenKeyController } from './tokens/setCatalogNewTokenKey';
+export { SetCatalogTokensSearchTextController } from './tokens/setCatalogTokensSearchText';
 
 // bulk-add
-export { bulkAddTokens } from './bulk-add/bulkAddTokens';
-export { openBulkAddDialog } from './bulk-add/openBulkAddDialog';
-export { closeBulkAddDialog } from './bulk-add/closeBulkAddDialog';
-export { setCatalogBulkAddText } from './bulk-add/setCatalogBulkAddText';
+export { BulkAddTokensController } from './bulk-add/bulkAddTokens';
+export { OpenBulkAddDialogController } from './bulk-add/openBulkAddDialog';
+export { CloseBulkAddDialogController } from './bulk-add/closeBulkAddDialog';
+export { SetCatalogBulkAddTextController } from './bulk-add/setCatalogBulkAddText';

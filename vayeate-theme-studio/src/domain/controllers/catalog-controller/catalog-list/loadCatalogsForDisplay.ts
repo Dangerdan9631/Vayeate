@@ -1,14 +1,13 @@
-import {
-  loadCatalogForDisplay as loadCatalogForDisplayOp,
-  type SetState,
-} from '../../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { LoadCatalogForDisplay } from '../../../operations/catalog-operations';
 
-export async function loadCatalogsForDisplay(
-  setState: SetState,
-  refs: Array<{ name: string; version: string }>,
-): Promise<void> {
-  for (const ref of refs) {
-    await loadCatalogForDisplayOp(setState, ref.name, ref.version);
+@singleton()
+export class LoadCatalogsForDisplayController {
+  constructor(private readonly loadCatalogForDisplay: LoadCatalogForDisplay) {}
+
+  async run(refs: Array<{ name: string; version: string }>): Promise<void> {
+    for (const ref of refs) {
+      await this.loadCatalogForDisplay.execute(ref.name, ref.version);
+    }
   }
 }
-

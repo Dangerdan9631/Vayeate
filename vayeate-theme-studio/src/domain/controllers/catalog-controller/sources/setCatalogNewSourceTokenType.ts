@@ -1,8 +1,12 @@
-import { setCatalogNewSourceTokenType as setCatalogNewSourceTokenTypeOp, type SetState } from '../../../operations/catalog-operations';
 import type { TokenType } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
+import { SetCatalogNewSourceTokenType } from '../../../operations/catalog-operations';
 
-export function setCatalogNewSourceTokenType(setState: SetState, value: TokenType): void {
-  setCatalogNewSourceTokenTypeOp(setState, value);
+@singleton()
+export class SetCatalogNewSourceTokenTypeController {
+  constructor(private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenType) {}
+
+  run(value: TokenType): void {
+    this.setCatalogNewSourceTokenType.execute(value);
+  }
 }
-
-
