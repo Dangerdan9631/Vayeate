@@ -23,20 +23,20 @@
     {
       "colorRef": "abc",
       "light": {
-        "value": "#b92fbc"
+        "value": "#072b47"
       },
       "dark": {
-        "value": "#e60000"
+        "value": "#072b47"
       },
       "useDarkForLight": false
     },
     {
       "colorRef": "def",
       "light": {
-        "value": "#058a38"
+        "value": "#072b47"
       },
       "dark": {
-        "value": "#ea6666"
+        "value": "#072b47"
       },
       "useDarkForLight": false
     }
@@ -48,5 +48,9 @@
       "dark": null,
       "useDarkForLight": false
     }
-  ]
+  ],
+  "applyPaletteToDark": true,
+  "applyPaletteToLight": true,
+  "paletteClusterCountK": 5,
+  "paletteClusterGroupIds": []
 }

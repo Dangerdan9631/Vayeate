@@ -30,3 +30,121 @@ export function clientToCanvasPixel(
   const clampedY = Math.max(0, Math.min(canvasHeight - 1, py));
   return { px: clampedX, py: clampedY };
 }
+
+/** Continuous bitmap coordinates (for zoom anchoring). Returns null if outside the canvas element. */
+export function clientToCanvasFloat(
+  clientX: number,
+  clientY: number,
+  canvas: HTMLElement,
+  canvasWidth: number,
+  canvasHeight: number,
+): { fx: number; fy: number } | null {
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  const nx = (clientX - rect.left) / rect.width;
+  const ny = (clientY - rect.top) / rect.height;
+  if (nx < 0 || nx > 1 || ny < 0 || ny > 1) return null;
+  return { fx: nx * canvasWidth, fy: ny * canvasHeight };
+}
+
+/** Clamp scroll offsets so the scrollable area does not exceed content bounds. */
+export function clampElementScroll(el: HTMLElement): void {
+  const maxL = Math.max(0, el.scrollWidth - el.clientWidth);
+  const maxT = Math.max(0, el.scrollHeight - el.clientHeight);
+  el.scrollLeft = Math.max(0, Math.min(maxL, el.scrollLeft));
+  el.scrollTop = Math.max(0, Math.min(maxT, el.scrollTop));
+}
+
+/** Loupe canvas size (CSS pixels). */
+export const EYEDROPPER_LOUPE_SIZE = 120;
+/** Source pixels on each side of center (side length = 2 * radius + 1). */
+export const EYEDROPPER_LOUPE_PIXEL_RADIUS = 10;
+
+export const EYEDROPPER_ZOOM_MIN = 1;
+export const EYEDROPPER_ZOOM_MAX = 8;
+export const EYEDROPPER_ZOOM_STEP = 1.1;
+
+export function clampEyedropperZoom(z: number): number {
+  return Math.max(EYEDROPPER_ZOOM_MIN, Math.min(EYEDROPPER_ZOOM_MAX, z));
+}
+
+/**
+ * CSS scale (bitmap px → CSS px) so the full bitmap fits in the viewport (object-fit: contain),
+ * preserving image aspect ratio and centering.
+ */
+export function eyedropperZoomFitContain(
+  viewportW: number,
+  viewportH: number,
+  bitmapW: number,
+  bitmapH: number,
+): number {
+  if (viewportW <= 0 || viewportH <= 0 || bitmapW <= 0 || bitmapH <= 0) return 0;
+  return Math.min(viewportW / bitmapW, viewportH / bitmapH);
+}
+
+/**
+ * Clamp absolute zoom scale relative to the contain-fit scale `zFit`.
+ * Minimum is exactly `zFit` (image fills the view; cannot zoom out further). Maximum is `zFit * EYEDROPPER_ZOOM_MAX`.
+ */
+export function clampEyedropperZoomToFitRange(z: number, zFit: number): number {
+  if (zFit <= 0) return z;
+  const min = zFit;
+  const max = zFit * EYEDROPPER_ZOOM_MAX;
+  return Math.max(min, Math.min(max, z));
+}
+
+/** Rectangle in canvas pixel space for `getImageData` / `drawImage` (clamped at edges). */
+export function loupeSourceRect(
+  px: number,
+  py: number,
+  radius: number,
+  canvasWidth: number,
+  canvasHeight: number,
+): { sx: number; sy: number; sw: number; sh: number } {
+  const side = radius * 2 + 1;
+  let sx = px - radius;
+  let sy = py - radius;
+  if (sx < 0) sx = 0;
+  if (sy < 0) sy = 0;
+  if (sx + side > canvasWidth) sx = Math.max(0, canvasWidth - side);
+  if (sy + side > canvasHeight) sy = Math.max(0, canvasHeight - side);
+  const sw = Math.min(side, canvasWidth - sx);
+  const sh = Math.min(side, canvasHeight - sy);
+  return { sx, sy, sw, sh };
+}
+
+/** Place fixed loupe so it stays on-screen and away from the cursor. */
+export function loupeFixedPosition(
+  clientX: number,
+  clientY: number,
+  loupeSize: number,
+  viewportW: number,
+  viewportH: number,
+): { left: number; top: number } {
+  const gap = 16;
+  let left = clientX + gap;
+  let top = clientY + gap;
+  if (left + loupeSize > viewportW - 8) left = clientX - loupeSize - gap;
+  if (top + loupeSize > viewportH - 8) top = clientY - loupeSize - gap;
+  const pad = 8;
+  left = Math.max(pad, Math.min(left, viewportW - loupeSize - pad));
+  top = Math.max(pad, Math.min(top, viewportH - loupeSize - pad));
+  return { left, top };
+}
+
+/**
+ * Crosshair center in loupe canvas coordinates; `sw`/`sh` are the sampled region size.
+ */
+export function loupeCrosshairCenter(
+  cursorPx: number,
+  cursorPy: number,
+  sx: number,
+  sy: number,
+  sw: number,
+  sh: number,
+  loupeSize: number,
+): { cx: number; cy: number } {
+  const cx = ((cursorPx - sx) + 0.5) * (loupeSize / sw);
+  const cy = ((cursorPy - sy) + 0.5) * (loupeSize / sh);
+  return { cx, cy };
+}

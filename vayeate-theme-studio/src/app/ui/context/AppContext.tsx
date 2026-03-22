@@ -87,7 +87,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const setUiState: SetUiState = useCallback(
     (update: UiStateUpdate) => {
-      replaceState(uiStateReducer(stateRef.current, update));
+      flushSync(() => {
+        replaceState(uiStateReducer(stateRef.current, update));
+      });
     },
     [],
   );

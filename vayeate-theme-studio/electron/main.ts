@@ -236,8 +236,12 @@ app.whenReady().then(async () => {
   /** Full virtual desktop: layout + per-display PNG bytes (ScreenshotService). */
   ipcMain.handle('screenshot:getFullDisplaySnapshot', async () => {
     const displays = screen.getAllDisplays();
-    const maxW = displays.length === 0 ? 1920 : Math.max(...displays.map((d) => d.bounds.width));
-    const maxH = displays.length === 0 ? 1080 : Math.max(...displays.map((d) => d.bounds.height));
+    /** Very large thumbnail requests can stall or fail on some GPUs; cap for reliability. */
+    const MAX_CAPTURE_DIM = 4096;
+    const rawW = displays.length === 0 ? 1920 : Math.max(...displays.map((d) => d.bounds.width));
+    const rawH = displays.length === 0 ? 1080 : Math.max(...displays.map((d) => d.bounds.height));
+    const maxW = Math.min(rawW, MAX_CAPTURE_DIM);
+    const maxH = Math.min(rawH, MAX_CAPTURE_DIM);
 
     const capSources = await desktopCapturer.getSources({
       types: ['screen'],
