@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import { SaveColorScheme, UnloadApplication } from '.';
-import { ConfigService } from '../../../gateway/services/config-service';
+import { ConfigGateway } from '../../../gateway/config/config-gateway';
 
 const configMock = {
   save: vi.fn().mockResolvedValue(undefined),
@@ -9,7 +9,7 @@ const configMock = {
 
 describe('app-operations', () => {
   beforeEach(() => {
-    container.registerInstance(ConfigService, configMock as unknown as ConfigService);
+    container.registerInstance(ConfigGateway, configMock as unknown as ConfigGateway);
     vi.mocked(configMock.save).mockClear();
   });
 

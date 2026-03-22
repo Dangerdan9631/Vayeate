@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Theme } from '../../../model/schemas';
 import { ThemeGateway } from '../../../gateway/theme/theme-gateway';
-import { ThemeService } from '../../../gateway/services/theme-service';
 import {
   LoadThemeRefs,
   createTheme,
@@ -19,22 +18,21 @@ const themeGatewayMock = {
   loadTheme: vi.fn(),
   listThemes: vi.fn(),
   deleteTheme: vi.fn(),
-};
-
-const themeServiceMock = {
   generateTheme: vi.fn(),
 };
 
 describe('theme-operations', () => {
   beforeEach(() => {
     container.registerInstance(ThemeGateway, themeGatewayMock as unknown as ThemeGateway);
-    container.registerInstance(ThemeService, themeServiceMock as unknown as ThemeService);
     vi.mocked(themeGatewayMock.createTheme).mockResolvedValue({ name: 'th1', version: '1.0.0' } as Theme);
     vi.mocked(themeGatewayMock.saveTheme).mockResolvedValue(undefined);
     vi.mocked(themeGatewayMock.loadTheme).mockResolvedValue({ name: 'th1', version: '1.0.0' } as Theme);
     vi.mocked(themeGatewayMock.listThemes).mockResolvedValue([{ name: 'th1', version: '1.0.0' }]);
     vi.mocked(themeGatewayMock.deleteTheme).mockResolvedValue(undefined);
-    vi.mocked(themeServiceMock.generateTheme).mockResolvedValue({ darkPath: 'dark.json', lightPath: 'light.json' });
+    vi.mocked(themeGatewayMock.generateTheme).mockResolvedValue({
+      darkPath: 'exthemes/th1-color-theme.json',
+      lightPath: 'exthemes/th1-light-color-theme.json',
+    });
   });
 
   afterEach(() => {
@@ -98,25 +96,26 @@ describe('theme-operations', () => {
 
     await generateTheme(setState, 'th1', '1.0.0', 't1', '1.0.0');
 
-    expect(themeServiceMock.generateTheme).toHaveBeenCalledTimes(1);
-    expect(themeServiceMock.generateTheme).toHaveBeenCalledWith('th1', '1.0.0', 't1', '1.0.0');
+    expect(themeGatewayMock.generateTheme).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.generateTheme).toHaveBeenCalledWith('th1', '1.0.0', 't1', '1.0.0');
     expect(setState).toHaveBeenNthCalledWith(1, { type: 'SET_GENERATE_RESULT', result: null });
     expect(setState).toHaveBeenNthCalledWith(2, {
       type: 'SET_GENERATE_RESULT',
       result: {
         success: true,
-        message: 'Generated dark.json and light.json',
+        message:
+          'Generated exthemes/th1-color-theme.json and exthemes/th1-light-color-theme.json',
       },
     });
   });
 
   it('generateTheme sets failure result when generation throws', async () => {
-    vi.mocked(themeServiceMock.generateTheme).mockRejectedValue(new Error('generation failed'));
+    vi.mocked(themeGatewayMock.generateTheme).mockRejectedValue(new Error('generation failed'));
     const setState = vi.fn();
 
     await generateTheme(setState, 'th1', '1.0.0', 't1', '1.0.0');
 
-    expect(themeServiceMock.generateTheme).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.generateTheme).toHaveBeenCalledTimes(1);
     expect(setState).toHaveBeenNthCalledWith(1, { type: 'SET_GENERATE_RESULT', result: null });
     expect(setState).toHaveBeenNthCalledWith(2, {
       type: 'SET_GENERATE_RESULT',

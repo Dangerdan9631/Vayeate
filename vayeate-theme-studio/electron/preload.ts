@@ -5,15 +5,7 @@ const initialColorScheme: 'light' | 'dark' =
   _rawConfig?.colorScheme === 'light' ? 'light' : 'dark';
 
 const electronAPI = {
-  generateTheme: (
-    themeName: string,
-    themeVersion: string,
-    templateName: string,
-    templateVersion: string,
-  ) =>
-    ipcRenderer.invoke('theme:generate', themeName, themeVersion, templateName, templateVersion),
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
-  loadPreviews: () => ipcRenderer.invoke('preview:loadAll'),
   /** All screen sources + bounds for full-screen color picker (multi-monitor, no feedback). */
   eyedropperGetScreenSourcesWithBounds: () =>
     ipcRenderer.invoke('eyedropper:getScreenSourcesWithBounds') as Promise<{
@@ -69,12 +61,6 @@ const electronAPI = {
   sendLog: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => {
     ipcRenderer.send('renderer-log', level, tag, args);
   },
-  undoV2Save: (stackId: string, payload: string) =>
-    ipcRenderer.invoke('undoV2:save', stackId, payload),
-  undoV2Load: (stackId: string) =>
-    ipcRenderer.invoke('undoV2:load', stackId) as Promise<string | null>,
-  undoV2ClearPersisted: () => ipcRenderer.invoke('undoV2:clearPersisted'),
-  saveConfig: (config: { colorScheme?: string }) => ipcRenderer.invoke('config:save', config),
   fsCreateFile: (relativePath: string) => ipcRenderer.invoke('fs:createFile', relativePath),
   fsSaveFile: (relativePath: string, contents: string) =>
     ipcRenderer.invoke('fs:saveFile', relativePath, contents),
@@ -83,6 +69,10 @@ const electronAPI = {
   fsDeleteFile: (relativePath: string) => ipcRenderer.invoke('fs:deleteFile', relativePath),
   fsListFiles: (relativeDirPath: string) =>
     ipcRenderer.invoke('fs:listFiles', relativeDirPath) as Promise<string[]>,
+  fsListDirEntries: (relativeDirPath: string) =>
+    ipcRenderer.invoke('fs:listDirEntries', relativeDirPath) as Promise<
+      Array<{ name: string; isDirectory: boolean }>
+    >,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

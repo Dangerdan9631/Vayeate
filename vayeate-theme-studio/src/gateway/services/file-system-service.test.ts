@@ -45,6 +45,19 @@ describe('FileSystemService', () => {
     await expect(svc.listFiles('data/catalogs')).resolves.toEqual(['a.json', 'b.json']);
   });
 
+  it('listDirEntries returns fsListDirEntries result', async () => {
+    const fsListDirEntries = vi
+      .fn()
+      .mockResolvedValue([{ name: 'a', isDirectory: true }, { name: 'b.txt', isDirectory: false }]);
+    window.electronAPI = { fsListDirEntries } as unknown as NonNullable<typeof window.electronAPI>;
+    const svc = new FileSystemService();
+    await expect(svc.listDirEntries('previews')).resolves.toEqual([
+      { name: 'a', isDirectory: true },
+      { name: 'b.txt', isDirectory: false },
+    ]);
+    expect(fsListDirEntries).toHaveBeenCalledWith('previews');
+  });
+
   it('throws when electronAPI is missing', async () => {
     window.electronAPI = undefined;
     const svc = new FileSystemService();

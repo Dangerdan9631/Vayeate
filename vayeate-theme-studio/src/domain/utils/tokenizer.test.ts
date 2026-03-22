@@ -1,9 +1,20 @@
 /**
  * @vitest-environment node
  */
+import { createRequire } from 'node:module';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { tokenizeFile } from './tokenizer';
+import { initOniguruma, tokenizeFile } from './tokenizer';
 import type { IRawGrammar } from 'vscode-textmate';
+
+const require = createRequire(import.meta.url);
+
+function loadOnigWasmFromNodeModules(): Promise<ArrayBuffer> {
+  const wasmPath = path.join(path.dirname(require.resolve('vscode-oniguruma')), 'onig.wasm');
+  const buf = fs.readFileSync(wasmPath);
+  return Promise.resolve(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
+}
 
 const minimalGrammar: IRawGrammar = {
   scopeName: 'source.test',
@@ -22,15 +33,7 @@ const minimalGrammar: IRawGrammar = {
 
 describe('tokenizer', () => {
   beforeEach(async () => {
-    const { initOniguruma } = await import('./tokenizer');
-    const { createRequire } = await import('node:module');
-    const path = await import('node:path');
-    const fs = await import('node:fs');
-    const require = createRequire(import.meta.url);
-    const wasmPath = path.join(path.dirname(require.resolve('vscode-oniguruma')), 'onig.wasm');
-    if (fs.existsSync(wasmPath)) {
-      await initOniguruma(wasmPath);
-    }
+    await initOniguruma({ loadWasm: loadOnigWasmFromNodeModules });
   });
 
   it('tokenizeFile throws when grammar has no scopeName', async () => {

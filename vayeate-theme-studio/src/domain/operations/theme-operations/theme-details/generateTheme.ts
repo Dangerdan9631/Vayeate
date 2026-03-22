@@ -1,4 +1,4 @@
-import { ThemeService } from '../../../../gateway/services/theme-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { container, injectable } from 'tsyringe';
 import { SetGenerateResult } from './setGenerateResult';
 import type { AppStateUpdate } from '../../../state/app-state';
@@ -8,7 +8,7 @@ import type { AppStateUpdate } from '../../../state/app-state';
 export class GenerateTheme {
   constructor(
     private readonly setGenerateResult: SetGenerateResult,
-    private readonly themeService: ThemeService,
+    private readonly themeGateway: ThemeGateway,
   ) {}
 
   async execute(
@@ -19,7 +19,7 @@ export class GenerateTheme {
   ): Promise<void> {
     this.setGenerateResult.execute(null);
     try {
-      const { darkPath, lightPath } = await this.themeService.generateTheme(
+      const { darkPath, lightPath } = await this.themeGateway.generateTheme(
         themeName,
         themeVersion,
         templateName,
@@ -46,7 +46,7 @@ export async function generateTheme(
 ): Promise<void> {
   setState({ type: 'SET_GENERATE_RESULT', result: null });
   try {
-    const { darkPath, lightPath } = await container.resolve(ThemeService).generateTheme(
+    const { darkPath, lightPath } = await container.resolve(ThemeGateway).generateTheme(
       themeName,
       themeVersion,
       templateName,

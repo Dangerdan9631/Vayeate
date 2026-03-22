@@ -1,11 +1,9 @@
 /**
- * TextMate tokenization for preview source files.
- * Runs in the main process (Node/Electron); uses vscode-textmate + vscode-oniguruma.
+ * TextMate tokenization for preview source files (vscode-textmate + vscode-oniguruma).
+ * Call {@link initOniguruma} before {@link tokenizeFile}. Pass WASM bytes via {@link InitOnigurumaOptions.loadWasm}
+ * (Electron renderer fetches bundled `onig.wasm`; Vitest can read from disk in the loader).
  */
 
-import { createRequire } from 'node:module';
-import * as fs from 'node:fs';
-import * as path from 'node:path';
 import {
   loadWASM,
   createOnigScanner,
@@ -14,8 +12,6 @@ import {
 import { Registry } from 'vscode-textmate';
 import type { IRawGrammar } from 'vscode-textmate';
 import type { TokenizedLine, TokenizedToken } from '../../model/preview-types';
-
-const require = createRequire(import.meta.url);
 
 export type { TokenizedPreview, TokenizedLine, TokenizedToken } from '../../model/preview-types';
 
@@ -26,32 +22,34 @@ type OnigLib = {
 
 let onigurumaReady: Promise<OnigLib> | null = null;
 
+export type InitOnigurumaOptions = {
+  loadWasm: () => Promise<ArrayBuffer>;
+};
+
 /**
- * Load the Oniguruma WASM binary. Call once before tokenizing (e.g. from preview controller).
- * In Electron main process, uses path to node_modules.
+ * Load the Oniguruma WASM binary. Call once before tokenizing.
  */
-export function initOniguruma(wasmPath?: string): Promise<void> {
+export function initOniguruma(options: InitOnigurumaOptions): Promise<void> {
   if (onigurumaReady) return onigurumaReady.then(() => {});
-  const resolved =
-    wasmPath ??
-    path.join(path.dirname(require.resolve('vscode-oniguruma')), 'onig.wasm');
-  const data = fs.readFileSync(resolved);
-  onigurumaReady = loadWASM(data).then(
-    (): OnigLib => ({ createOnigScanner, createOnigString }),
-  );
+  onigurumaReady = (async (): Promise<OnigLib> => {
+    const data = await options.loadWasm();
+    await loadWASM(data);
+    return { createOnigScanner, createOnigString };
+  })();
   return onigurumaReady.then(() => {});
 }
 
 /**
  * Tokenize source code with the given TextMate grammar JSON.
- * Returns one tokenized line per line of source; each line has tokens with text and scope stack.
  */
 export async function tokenizeFile(
   grammarJson: IRawGrammar,
   sourceCode: string,
 ): Promise<TokenizedLine[]> {
-  if (!onigurumaReady) await initOniguruma();
-  const onigLib = await onigurumaReady!;
+  if (!onigurumaReady) {
+    throw new Error('initOniguruma must be called before tokenizeFile');
+  }
+  const onigLib = await onigurumaReady;
 
   const scopeName = grammarJson.scopeName;
   if (!scopeName) {

@@ -45,14 +45,14 @@ export class WindowService {
   }
 
   onWindowState(callback: (event: WindowStateEvent) => void): (() => void) | undefined {
-    return window.electronAPI?.onWindowState?.(callback);
+    return this.getAPI().onWindowState?.(callback);
   }
 
   onWindowResize(callback: (size: { width: number; height: number }) => void): (() => void) | undefined {
-    return window.electronAPI?.onWindowResize?.(callback);
+    return this.getAPI().onWindowResize?.(callback);
   }
 
   onWindowMove(callback: (position: { x: number; y: number }) => void): (() => void) | undefined {
-    return window.electronAPI?.onWindowMove?.(callback);
+    return this.getAPI().onWindowMove?.(callback);
   }
 }

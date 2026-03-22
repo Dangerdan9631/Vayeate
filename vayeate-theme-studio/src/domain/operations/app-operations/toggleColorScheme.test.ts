@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import type { UiStateUpdate } from '../../state/ui-state-reducer';
 import { UiStateSetter } from '../../state/ui-state-setter';
 import { ToggleColorScheme } from '.';
-import { ConfigService } from '../../../gateway/services/config-service';
+import { ConfigGateway } from '../../../gateway/config/config-gateway';
 
 const configMock = {
   save: vi.fn(),
@@ -13,7 +13,7 @@ describe('ToggleColorScheme operation', () => {
   beforeEach(() => {
     container.clearInstances();
     vi.clearAllMocks();
-    container.registerInstance(ConfigService, configMock as unknown as ConfigService);
+    container.registerInstance(ConfigGateway, configMock as unknown as ConfigGateway);
   });
 
   it('toggles from dark (checked=true) to light and persists', async () => {

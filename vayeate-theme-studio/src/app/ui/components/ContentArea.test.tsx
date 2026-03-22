@@ -40,7 +40,6 @@ beforeEach(() => {
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
     ...api,
     fetchUrl: () => Promise.resolve(''),
-    generateTheme: () => Promise.resolve({ darkPath: '', lightPath: '' }),
   };
 });
 

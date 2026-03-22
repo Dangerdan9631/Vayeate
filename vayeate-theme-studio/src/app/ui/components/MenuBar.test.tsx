@@ -21,14 +21,12 @@ beforeEach(() => {
     fsDeleteFile: () => Promise.resolve(),
     fsListFiles: () => Promise.resolve([]),
     fetchUrl: () => Promise.resolve(''),
-    generateTheme: () => Promise.resolve({ darkPath: '', lightPath: '' }),
     closeWindow: () => {},
     reloadWindow: () => {},
     reloadWindowForce: () => {},
     toggleDevTools: () => {},
     minimizeWindow: () => {},
     maximizeWindow: () => {},
-    saveConfig: () => Promise.resolve(),
   };
   delete (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme;
 });

@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
 import { UiStateSetter } from '../../state/ui-state-setter';
-import { ConfigService } from '../../../gateway/services/config-service';
+import { ConfigGateway } from '../../../gateway/config/config-gateway';
 
 @singleton()
 export class ToggleColorScheme {
   constructor(
     private readonly uiStateSetter: UiStateSetter,
-    private readonly configService: ConfigService,
+    private readonly configGateway: ConfigGateway,
   ) {}
 
   async execute(checked: boolean): Promise<void> {
@@ -14,6 +14,6 @@ export class ToggleColorScheme {
     const scheme: 'light' | 'dark' = checked ? 'light' : 'dark';
 
     this.uiStateSetter.apply({ type: 'SET_UI_COLOR_SCHEME', scheme });
-    await this.configService.save({ colorScheme: scheme });
+    await this.configGateway.save({ colorScheme: scheme });
   }
 }

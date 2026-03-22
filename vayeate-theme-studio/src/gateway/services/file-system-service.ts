@@ -29,4 +29,11 @@ export class FileSystemService {
   async listFiles(relativeDirPath: string): Promise<string[]> {
     return this.getAPI().fsListFiles(relativeDirPath);
   }
+
+  /** Files and subdirectories under a package-relative directory (see `fs:listDirEntries` in main). */
+  async listDirEntries(
+    relativeDirPath: string,
+  ): Promise<Array<{ name: string; isDirectory: boolean }>> {
+    return this.getAPI().fsListDirEntries(relativeDirPath);
+  }
 }

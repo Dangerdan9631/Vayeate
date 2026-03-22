@@ -12,7 +12,7 @@ import {
   setCurrentUndoStackId,
 } from '.';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
-import { UndoManagerV2Service } from '../../../gateway/services/undo-manager-v2-service';
+import { UndoGateway } from '../../../gateway/undo/undo-gateway';
 
 vi.mock('../../core/undo-manager-v2', () => ({
   undoManagerV2: {
@@ -101,7 +101,7 @@ describe('undo-operations', () => {
 
     beforeEach(() => {
       vi.mocked(undoManagerV2.clearPersisted).mockResolvedValue(undefined);
-      container.registerInstance(UndoManagerV2Service, persistenceMock as unknown as UndoManagerV2Service);
+      container.registerInstance(UndoGateway, persistenceMock as unknown as UndoGateway);
     });
 
     it('execute configures and clears undoManagerV2', async () => {

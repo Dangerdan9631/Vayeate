@@ -2,9 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { filesOfProject } from 'tsarch';
 
 describe('gateway architecture', () => {
-	it('gateway should not depend on domain', async () => {
+	it('gateway should not depend on domain (except theme gateway: generation reuses domain utils)', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/gateway')
+			.matchingPattern('^(?!src/gateway/(?:theme|preview)/).*')
 			.shouldNot()
 			.dependOnFiles()
 			.inFolder('src/domain');

@@ -46,11 +46,24 @@ function resolveSafeProjectRelativePath(rel: string, kind: 'file' | 'dir'): stri
   }
   return resolved;
 }
-import { createTemplateRepository } from '../src/gateway/data/template-repository';
-import { createThemeRepository } from '../src/gateway/data/theme-repository';
-import { getPreviewsDir, loadAllPreviews } from './preview-controller';
-import { generateThemePair } from '../src/domain/utils/theme-generator';
-import { exportThemePair } from '../src/domain/utils/theme-exporter';
+
+/** Repo-root `themes/` (extension output); used when renderer saves `exthemes/...` via FileSystemService. */
+function resolveExthemesExportFile(rel: string): string {
+  const prefix = 'exthemes/';
+  if (!rel.startsWith(prefix)) {
+    throw new Error('Invalid exthemes path');
+  }
+  const rest = rel.slice(prefix.length);
+  const segments = rest.split(/[/\\]/).filter((s) => s && s !== '.');
+  for (const s of segments) {
+    if (s === '..') {
+      throw new Error('Invalid path segment');
+    }
+  }
+  const themesDir = join(PROJECT_ROOT, '..', 'themes');
+  return join(themesDir, ...segments);
+}
+
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 /** Serialize log args for IPC so main process logs appear in renderer DevTools console. No-op if window is closed/destroyed. */
@@ -94,9 +107,6 @@ function installMainLogForwarding(): void {
   };
 }
 
-/** Project root themes directory (vayeate-theme-studio/../themes). */
-const THEMES_OUTPUT_DIR = join(__dirname, '..', '..', 'themes');
-
 /** App icon path (repo root images/icon.png) for window and dock/taskbar. */
 const APP_ICON_PATH = join(__dirname, '..', '..', 'images', 'icon.png');
 
@@ -105,25 +115,7 @@ function getUndoStacksDir(): string {
   return join(DATA_DIR, '.undo');
 }
 
-/** UndoManagerV2 stacks: data/.undo/v2; one JSON file per stack. */
-function getUndoV2Dir(): string {
-  return getUndoStacksDir();
-}
-
-/** Sanitize docId (name@version) or stackId for use in filenames. */
-function sanitizeDocId(docId: string): string {
-  return docId.replace(/[\\/:*?"<>|+]/g, '_');
-}
-
 let mainWindow: BrowserWindow | null = null;
-
-function getTemplateRepository() {
-  return createTemplateRepository(DATA_DIR);
-}
-
-function getThemeRepository() {
-  return createThemeRepository(DATA_DIR);
-}
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -187,9 +179,6 @@ app.whenReady().then(async () => {
   rmSync(undoStacksDir, { recursive: true, force: true });
   mkdirSync(undoStacksDir, { recursive: true });
 
-  const templateRepo = getTemplateRepository();
-  const themeRepo = getThemeRepository();
-
   ipcMain.handle('fs:createFile', async (_event, rel: string) => {
     const abs = resolveSafeProjectRelativePath(rel, 'file');
     await mkdir(dirname(abs), { recursive: true });
@@ -197,7 +186,9 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.handle('fs:saveFile', async (_event, rel: string, contents: string) => {
-    const abs = resolveSafeProjectRelativePath(rel, 'file');
+    const abs = rel.startsWith('exthemes/')
+      ? resolveExthemesExportFile(rel)
+      : resolveSafeProjectRelativePath(rel, 'file');
     await mkdir(dirname(abs), { recursive: true });
     await writeFile(abs, contents, { encoding: 'utf-8' });
   });
@@ -228,6 +219,19 @@ app.whenReady().then(async () => {
     const entries = await readdir(abs, { withFileTypes: true });
     return entries.filter((d) => d.isFile()).map((d) => d.name);
   });
+
+  ipcMain.handle(
+    'fs:listDirEntries',
+    async (_event, rel: string): Promise<Array<{ name: string; isDirectory: boolean }>> => {
+      const abs = resolveSafeProjectRelativePath(rel, 'dir');
+      const st = await stat(abs);
+      if (!st.isDirectory()) {
+        throw new Error('Not a directory');
+      }
+      const entries = await readdir(abs, { withFileTypes: true });
+      return entries.map((e) => ({ name: e.name, isDirectory: e.isDirectory() }));
+    },
+  );
 
   /** All screen sources with display bounds for multi-monitor color picker. */
   ipcMain.handle('eyedropper:getScreenSourcesWithBounds', async () => {
@@ -276,7 +280,6 @@ app.whenReady().then(async () => {
     };
   });
 
-  const undoV2Dir = getUndoV2Dir();
   const configPath = join(DATA_DIR, 'config.json');
   ipcMain.on('config:loadSync', (event) => {
     try {
@@ -286,59 +289,6 @@ app.whenReady().then(async () => {
     } catch {
       event.returnValue = null;
     }
-  });
-  ipcMain.handle('config:save', async (_event, config: { colorScheme?: string }) => {
-    await writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
-  });
-
-  ipcMain.handle('undoV2:save', async (_event, stackId: string, payload: string) => {
-    if (!stackId) return;
-    await mkdir(undoV2Dir, { recursive: true });
-    const file = join(undoV2Dir, `${sanitizeDocId(stackId)}.json`);
-    await writeFile(file, payload, 'utf-8');
-  });
-  ipcMain.handle('undoV2:load', async (_event, stackId: string): Promise<string | null> => {
-    if (!stackId) return null;
-    const file = join(undoV2Dir, `${sanitizeDocId(stackId)}.json`);
-    try {
-      return await readFile(file, 'utf-8');
-    } catch {
-      return null;
-    }
-  });
-  ipcMain.handle('undoV2:clearPersisted', () => {
-    rmSync(undoV2Dir, { recursive: true, force: true });
-    mkdirSync(undoV2Dir, { recursive: true });
-  });
-
-  ipcMain.handle('theme:generate', async (
-    _event,
-    themeName: string,
-    themeVersion: string,
-    templateName: string,
-    templateVersion: string,
-  ) => {
-    const theme = await themeRepo.loadTheme(themeName, themeVersion);
-    if (!theme) {
-      throw new Error(`Theme not found: ${themeName} v${themeVersion}`);
-    }
-    const template = await templateRepo.loadTemplate(templateName, templateVersion);
-    if (!template) {
-      throw new Error(`Template not found: ${templateName} v${templateVersion}`);
-    }
-    const { dark, light } = generateThemePair(theme, template);
-    const { darkPath, lightPath } = await exportThemePair(
-      THEMES_OUTPUT_DIR,
-      theme.name,
-      dark,
-      light,
-    );
-    return { darkPath, lightPath };
-  });
-
-  ipcMain.handle('preview:loadAll', async () => {
-    const previewsDir = getPreviewsDir(join(__dirname, '..'));
-    return await loadAllPreviews(previewsDir);
   });
 
   ipcMain.handle('net:fetch', async (_event, url: string) => {
