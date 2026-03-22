@@ -4,8 +4,10 @@ import {
   AssignColorFromPickerController,
   ClearPreviewVariableFilterController,
   ClearThemeSaveErrorController,
+  CloseEyedropperOverlayController,
   CloseThemeCreateDialogController,
   CommitAssignColorTextController,
+  CommitEyedropperColorController,
   CommitHueReferenceColorController,
   CreateThemeController,
   DeleteThemeVersionController,
@@ -13,6 +15,7 @@ import {
   HandleMemberSwatchRightClickController,
   IncrementThemeVersionController,
   LoadThemePageController,
+  OpenEyedropperOverlayController,
   OpenThemeCreateDialogController,
   PersistCurrentThemeController,
   PreviewSampleButtonScrollController,
@@ -72,8 +75,10 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
     private readonly assignColorFromPicker: AssignColorFromPickerController,
     private readonly clearPreviewVariableFilter: ClearPreviewVariableFilterController,
     private readonly clearThemeSaveError: ClearThemeSaveErrorController,
+    private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
     private readonly closeThemeCreateDialog: CloseThemeCreateDialogController,
     private readonly commitAssignColorText: CommitAssignColorTextController,
+    private readonly commitEyedropperColor: CommitEyedropperColorController,
     private readonly commitHueReferenceColor: CommitHueReferenceColorController,
     private readonly createTheme: CreateThemeController,
     private readonly deleteThemeVersion: DeleteThemeVersionController,
@@ -81,6 +86,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
     private readonly handleMemberSwatchRightClick: HandleMemberSwatchRightClickController,
     private readonly incrementThemeVersion: IncrementThemeVersionController,
     private readonly loadThemePage: LoadThemePageController,
+    private readonly openEyedropperOverlay: OpenEyedropperOverlayController,
     private readonly openThemeCreateDialog: OpenThemeCreateDialogController,
     private readonly persistCurrentTheme: PersistCurrentThemeController,
     private readonly previewSampleButtonScroll: PreviewSampleButtonScrollController,
@@ -131,7 +137,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
     private readonly toggleVariableSelection: ToggleVariableSelectionController,
   ) {}
 
-  async handle(action: ThemeAction, _deps: HandlerDeps): Promise<void> {
+  async handle(action: ThemeAction, deps: HandlerDeps): Promise<void> {
     switch (action.type) {
       case ThemeActionType.ThemePageOnLoad:
         await this.loadThemePage.run();
@@ -205,7 +211,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
         this.applyAssignColorDraft.run();
         break;
       case ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick:
-        this.setThemeOpenPickerContext.run(`eyedropper:assign:${action.colorRef}`);
+        await this.openEyedropperOverlay.run(`eyedropper:assign:${action.colorRef}`);
         break;
       case ThemeActionType.ThemePaletteAssignColorPickerOnSelect:
         this.setAssignColorPreview.run(action.value);
@@ -226,7 +232,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
         this.setThemeOpenPickerContext.run('picker:hue');
         break;
       case ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick:
-        this.setThemeOpenPickerContext.run('eyedropper:hue');
+        await this.openEyedropperOverlay.run('eyedropper:hue');
         break;
       case ThemeActionType.ThemePaletteHueReferenceColorPickerOnSelect:
         this.setThemeHueReferenceHex.run(action.value);
@@ -304,7 +310,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
         this.setThemeOpenPickerContext.run(`dark:${action.ref}`);
         break;
       case ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick:
-        this.setThemeOpenPickerContext.run(`eyedropper:dark:${action.ref}`);
+        await this.openEyedropperOverlay.run(`eyedropper:dark:${action.ref}`);
         break;
       case ThemeActionType.ThemeVariablesColorDarkColorPickerOnSelect:
         this.setColorVariableFromHexPreview.run(action.ref, action.value, 'dark');
@@ -322,7 +328,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
         this.setThemeOpenPickerContext.run(`light:${action.ref}`);
         break;
       case ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick:
-        this.setThemeOpenPickerContext.run(`eyedropper:light:${action.ref}`);
+        await this.openEyedropperOverlay.run(`eyedropper:light:${action.ref}`);
         break;
       case ThemeActionType.ThemeVariablesColorLightColorPickerOnSelect:
         this.setColorVariableFromHexPreview.run(action.ref, action.value, 'light');
@@ -386,6 +392,12 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
         break;
       case ThemeActionType.ThemePreviewSampleListOnCommit:
         this.setPreviewSelectedSample.run(action.value);
+        break;
+      case ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick:
+        this.closeEyedropperOverlay.run();
+        break;
+      case ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick:
+        this.commitEyedropperColor.run(action.hex, deps.getState().ui.eyedropper.contextKey);
         break;
     }
   }

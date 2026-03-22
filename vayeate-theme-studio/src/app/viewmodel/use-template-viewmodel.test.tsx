@@ -9,6 +9,7 @@ import {
   seedCatalogFile,
   seedTemplateFile,
 } from '../../test-utils/electron-api-in-memory-fs';
+import { electronPreloadStubs } from '../../test-utils/electron-stubs';
 import { CatalogActionType, TemplateActionType } from '../actions/action-types';
 
 const mockTemplate: Template = {
@@ -27,13 +28,10 @@ const mockTemplate: Template = {
 beforeEach(() => {
   const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
+    ...electronPreloadStubs(),
     ...api,
     fetchUrl: () => Promise.resolve(''),
   };
-});
-
-afterEach(() => {
-  delete (window as unknown as { electronAPI?: unknown }).electronAPI;
 });
 
 function harness() {
@@ -80,6 +78,7 @@ describe('useTemplateViewModel', () => {
   it('loads template after CREATE_TEMPLATE succeeds', async () => {
     const api = createInMemoryFsElectronApi();
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -162,6 +161,7 @@ describe('useTemplateViewModel groups', () => {
   it('addGroup adds group and save refreshes template', async () => {
     const api = createInMemoryFsElectronApi();
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -204,6 +204,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithGroupAndMapping);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -237,6 +238,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithGroup);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -279,6 +281,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithMapping);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -327,6 +330,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithSemanticBaseAndVariant);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -369,6 +373,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithGroupAndVariable);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -403,6 +408,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithVar);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -439,6 +445,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithVar);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -475,6 +482,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithGroup);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -510,6 +518,7 @@ describe('useTemplateViewModel groups', () => {
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithGroup);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -565,6 +574,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const api = createInMemoryFsElectronApi();
     seedCatalogFile(api.files, catalogWithCommentToken);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -617,6 +627,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const apiSem = createInMemoryFsElectronApi();
     seedCatalogFile(apiSem.files, catalogWithSemanticTypes);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiSem,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -675,6 +686,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithBaseSemantic);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -716,6 +728,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithModifiers);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -757,6 +770,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithGroups);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -809,6 +823,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithStarVariants);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -858,6 +873,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     const api = createInMemoryFsElectronApi();
     seedTemplateFile(api.files, templateWithVariant);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -910,6 +926,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     seedCatalogFile(apiExisting.files, catalogWithCommentToken);
     seedTemplateFile(apiExisting.files, templateWithExistingMapping);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiExisting,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -959,6 +976,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     seedCatalogFile(apiDisable.files, catalogWithCommentToken);
     seedTemplateFile(apiDisable.files, templateWithCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiDisable,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -1009,6 +1027,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     seedCatalogFile(apiVar.files, catalogWithCommentToken);
     seedTemplateFile(apiVar.files, templateWithCatalogAndVariable);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiVar,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -1054,6 +1073,7 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
     seedCatalogFile(apiVersions.files, catA101);
     seedTemplateFile(apiVersions.files, templateWithCatalogV1);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiVersions,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -1112,6 +1132,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     seedCatalogFile(apiOlder.files, minimalCat('1.0.1'));
     seedTemplateFile(apiOlder.files, templateWithCatV100);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiOlder,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -1155,6 +1176,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     seedCatalogFile(apiLatest.files, minimalCatLatest('1.0.1'));
     seedTemplateFile(apiLatest.files, templateWithCatV101);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiLatest,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -1228,6 +1250,7 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
     seedCatalogFile(apiTwo.files, catBV102 as Catalog);
     seedTemplateFile(apiTwo.files, templateWithTwoCatalogs);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...apiTwo,
       fetchUrl: () => Promise.resolve(''),
     };

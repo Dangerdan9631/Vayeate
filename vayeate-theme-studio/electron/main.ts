@@ -233,17 +233,31 @@ app.whenReady().then(async () => {
     },
   );
 
-  /** All screen sources with display bounds for multi-monitor color picker. */
-  ipcMain.handle('eyedropper:getScreenSourcesWithBounds', async () => {
-    const [sources, displays] = await Promise.all([
-      desktopCapturer.getSources({ types: ['screen'], thumbnailSize: { width: 0, height: 0 } }),
-      Promise.resolve(screen.getAllDisplays()),
-    ]);
+  /** Full virtual desktop: layout + per-display PNG bytes (ScreenshotService). */
+  ipcMain.handle('screenshot:getFullDisplaySnapshot', async () => {
+    const displays = screen.getAllDisplays();
+    const maxW = displays.length === 0 ? 1920 : Math.max(...displays.map((d) => d.bounds.width));
+    const maxH = displays.length === 0 ? 1080 : Math.max(...displays.map((d) => d.bounds.height));
+
+    const capSources = await desktopCapturer.getSources({
+      types: ['screen'],
+      thumbnailSize: { width: maxW, height: maxH },
+    });
+
     const byDisplayId = new Map<string, (typeof displays)[0]>();
     for (const d of displays) byDisplayId.set(String(d.id), d);
-    const result: Array<{ sourceId: string; x: number; y: number; width: number; height: number }> = [];
     const usedDisplayIndex = new Set<number>();
-    for (const src of sources) {
+
+    const displayRows: Array<{
+      sourceId: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      png: Buffer;
+    }> = [];
+
+    for (const src of capSources) {
       let bounds: { x: number; y: number; width: number; height: number } | undefined;
       if (src.display_id != null) {
         const display = byDisplayId.get(String(src.display_id));
@@ -261,22 +275,37 @@ app.whenReady().then(async () => {
         const display = byDisplayId.get(String(src.display_id));
         if (display) usedDisplayIndex.add(displays.indexOf(display));
       }
-      result.push({
+
+      const png = src.thumbnail.toPNG();
+      if (png.length === 0) {
+        throw new Error('Screenshot capture failed: empty PNG for desktop source');
+      }
+
+      displayRows.push({
         sourceId: src.id,
         x: bounds.x,
         y: bounds.y,
         width: bounds.width,
         height: bounds.height,
+        png,
       });
     }
-    if (result.length === 0) return { sources: [], fullBounds: { x: 0, y: 0, width: 0, height: 0 } };
-    const minX = Math.min(...result.map((r) => r.x));
-    const minY = Math.min(...result.map((r) => r.y));
-    const maxX = Math.max(...result.map((r) => r.x + r.width));
-    const maxY = Math.max(...result.map((r) => r.y + r.height));
+
+    if (displayRows.length === 0) {
+      return {
+        fullBounds: { x: 0, y: 0, width: 0, height: 0 },
+        displays: [],
+      };
+    }
+
+    const minX = Math.min(...displayRows.map((r) => r.x));
+    const minY = Math.min(...displayRows.map((r) => r.y));
+    const maxX = Math.max(...displayRows.map((r) => r.x + r.width));
+    const maxY = Math.max(...displayRows.map((r) => r.y + r.height));
+
     return {
-      sources: result,
       fullBounds: { x: minX, y: minY, width: maxX - minX, height: maxY - minY },
+      displays: displayRows,
     };
   });
 

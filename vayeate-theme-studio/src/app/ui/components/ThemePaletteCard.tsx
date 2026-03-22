@@ -4,7 +4,9 @@ import { clusterColors } from '../../../domain/utils/color-clustering';
 import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
 import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
-import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
+import { ThemeActionType } from '../../actions/action-types';
+import { useAppDispatch } from '../context/slice-contexts';
+import { isEyedropperSupported } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
 /** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */
@@ -181,6 +183,7 @@ export function ThemePaletteCard({
   onSetSelectedColorsPreview,
   onColorPickerClose,
 }: ThemePaletteCardProps) {
+  const dispatch = useAppDispatch();
   const [hueRefInputValue, setHueRefInputValue] = useState(hueReferenceHex);
   const isHueDraggingRef = useRef(false);
   const hueSliderStyleRef = useRef<HTMLStyleElement | null>(null);
@@ -444,14 +447,14 @@ export function ThemePaletteCard({
               type="button"
               className="theme-palette-btn theme-eyedropper-btn"
               disabled={selectedColorsDisplay.kind === 'none'}
-              onClick={async () => {
+              onClick={() => {
                 if (selectedColorsDisplay.kind === 'none') return;
-                const hex = await pickColorFromScreen();
-                if (hex) {
-                  setColorPickerValue(hex);
-                  setPendingHex(null);
-                  onSetSelectedColors(hex);
-                }
+                const firstRef = [...checkedColorRefs][0];
+                if (!firstRef) return;
+                void dispatch({
+                  type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
+                  colorRef: firstRef,
+                });
               }}
               title="Pick color from anywhere on screen"
               aria-label="Pick color from screen"
@@ -479,6 +482,21 @@ export function ThemePaletteCard({
             aria-label="Hue reference color (hex)"
             placeholder="#FF0000"
           />
+          {isEyedropperSupported() && (
+            <button
+              type="button"
+              className="theme-palette-btn theme-eyedropper-btn"
+              onClick={() => {
+                void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
+              }}
+              title="Pick hue reference from screen"
+              aria-label="Pick hue reference color from screen"
+            >
+              <span className="material-symbols-outlined" aria-hidden>
+                colorize
+              </span>
+            </button>
+          )}
         </div>
       </div>
       <div className="theme-palette-slider-wrap">

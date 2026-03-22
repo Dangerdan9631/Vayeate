@@ -5,6 +5,7 @@ import { ColorSchemeProvider } from './context/ColorSchemeContext';
 import { useUndoStack } from './context/UndoContext';
 import { useActiveTab, useAppDispatch } from './context/slice-contexts';
 import { ContentArea } from './components/ContentArea';
+import { EyedropperOverlay } from './components/EyedropperOverlay';
 import { MenuBar } from './components/MenuBar';
 import { Ribbon } from './components/Ribbon';
 import { StatusBar } from './components/StatusBar';
@@ -69,6 +70,7 @@ function AppShell() {
 
   return (
     <div className="app-shell">
+      <EyedropperOverlay />
       <StyledTooltip />
       <MenuBar />
       <div className="layout">

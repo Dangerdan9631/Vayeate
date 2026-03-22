@@ -7,7 +7,9 @@ import type {
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../../model/schemas';
-import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
+import { ThemeActionType } from '../../actions/action-types';
+import { useAppDispatch } from '../context/slice-contexts';
+import { isEyedropperSupported } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
@@ -276,6 +278,7 @@ function ColorAssignmentRow({
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
 }) {
+  const dispatch = useAppDispatch();
   const darkValue = assignment.dark?.value ?? '';
   const lightValue = assignment.light?.value ?? '';
   const [pendingDarkPicker, setPendingDarkPicker] = useState<string | null>(null);
@@ -356,15 +359,11 @@ function ColorAssignmentRow({
           className="theme-eyedropper-btn"
           title="Pick color from screen (dark)"
           aria-label="Pick dark color from screen"
-          onClick={async () => {
-            const hex = await pickColorFromScreen();
-            if (hex) {
-              let v = hex;
-              if (darkValue.length === 9) v = hex + darkValue.slice(7, 9);
-              onUpdateDark(assignment.colorRef, v);
-              setPendingDarkPicker(null);
-              setPendingDarkHex(null);
-            }
+          onClick={() => {
+            void dispatch({
+              type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
+              ref: assignment.colorRef,
+            });
           }}
         >
           <span className="material-symbols-outlined" aria-hidden>colorize</span>
@@ -407,16 +406,12 @@ function ColorAssignmentRow({
           disabled={assignment.useDarkForLight}
           title="Pick color from screen (light)"
           aria-label="Pick light color from screen"
-          onClick={async () => {
+          onClick={() => {
             if (assignment.useDarkForLight) return;
-            const hex = await pickColorFromScreen();
-            if (hex) {
-              let v = hex;
-              if (lightValue.length === 9) v = hex + lightValue.slice(7, 9);
-              onUpdateLight(assignment.colorRef, v);
-              setPendingLightPicker(null);
-              setPendingLightHex(null);
-            }
+            void dispatch({
+              type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
+              ref: assignment.colorRef,
+            });
           }}
         >
           <span className="material-symbols-outlined" aria-hidden>colorize</span>

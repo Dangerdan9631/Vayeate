@@ -34,7 +34,9 @@ describe('exportThemePair', () => {
   });
 
   afterEach(() => {
-    rmSync(outputDir, { recursive: true, force: true });
+    if (outputDir) {
+      rmSync(outputDir, { recursive: true, force: true });
+    }
   });
 
   it('writes dark and light theme files', async () => {

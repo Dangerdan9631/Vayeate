@@ -1,93 +1,55 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import {
-  initEyedropperTransport,
-  isEyedropperSupported,
-  pickColorFromScreen,
-} from './eyedropper';
+import { describe, it, expect, afterEach } from 'vitest';
+import { clientToCanvasPixel, isEyedropperSupported, rgbToHex } from './eyedropper';
 
-// Electron overlay (zoom, loupe, pixel feedback) is covered by manual QA; unit tests mock API and do not drive the overlay DOM.
-
-describe('eyedropper', () => {
+describe('eyedropper utils', () => {
   const win = globalThis as unknown as Window & {
-    EyeDropper?: unknown;
-    electronAPI?: { eyedropperGetScreenSourcesWithBounds?: () => Promise<{ sources: unknown[]; fullBounds: unknown }> };
+    electronAPI?: { screenshotGetFullDisplaySnapshot?: () => Promise<unknown> };
   };
-  const originalEyeDropper = win.EyeDropper;
   const originalElectronAPI = win.electronAPI;
 
   afterEach(() => {
-    win.EyeDropper = originalEyeDropper;
     win.electronAPI = originalElectronAPI;
-    initEyedropperTransport(undefined);
   });
 
   describe('isEyedropperSupported', () => {
-    it('returns false when EyeDropper and electronAPI eyedropper are missing', () => {
-      delete win.EyeDropper;
+    it('returns false when screenshot API is missing', () => {
       delete win.electronAPI;
       expect(isEyedropperSupported()).toBe(false);
     });
 
-    it('returns true when electronAPI.eyedropperGetScreenSourcesWithBounds is present', () => {
-      delete win.EyeDropper;
-      initEyedropperTransport(async () => ({
-        sources: [],
-        fullBounds: { x: 0, y: 0, width: 0, height: 0 },
-      }));
-      expect(isEyedropperSupported()).toBe(true);
-    });
-
-    it('returns true when EyeDropper is on window', () => {
-      win.electronAPI = undefined;
-      const MockEyeDropper = class {
-        open = () => Promise.resolve({ sRGBHex: '#000000' });
-      };
-      win.EyeDropper = MockEyeDropper as Window['EyeDropper'];
+    it('returns true when screenshotGetFullDisplaySnapshot is present', () => {
+      win.electronAPI = {
+        screenshotGetFullDisplaySnapshot: () =>
+          Promise.resolve({
+            fullBounds: { x: 0, y: 0, width: 1, height: 1 },
+            displays: [],
+          }),
+      } as unknown as NonNullable<Window['electronAPI']>;
       expect(isEyedropperSupported()).toBe(true);
     });
   });
 
-  describe('pickColorFromScreen', () => {
-    beforeEach(() => {
-      win.EyeDropper = undefined;
-      win.electronAPI = undefined;
-      initEyedropperTransport(undefined);
+  describe('rgbToHex', () => {
+    it('returns lowercase hex with hash', () => {
+      expect(rgbToHex(0, 0, 0)).toBe('#000000');
+      expect(rgbToHex(255, 255, 255)).toBe('#ffffff');
+      expect(rgbToHex(10, 20, 30)).toBe('#0a141e');
+    });
+  });
+
+  describe('clientToCanvasPixel', () => {
+    it('maps center of wrapper to canvas center', () => {
+      const el = document.createElement('div');
+      el.getBoundingClientRect = () =>
+        ({ left: 0, top: 0, width: 100, height: 50, right: 100, bottom: 50, x: 0, y: 0, toJSON: () => {} } as DOMRect);
+      expect(clientToCanvasPixel(50, 25, el, 200, 100)).toEqual({ px: 100, py: 50 });
     });
 
-    it('returns null when EyeDropper is not supported', async () => {
-      const result = await pickColorFromScreen();
-      expect(result).toBe(null);
-    });
-
-    it('returns sRGBHex when user selects a color (web EyeDropper)', async () => {
-      const mockOpen = vi.fn().mockResolvedValue({ sRGBHex: '#aabbcc' });
-      win.EyeDropper = class {
-        open = mockOpen;
-      } as Window['EyeDropper'];
-
-      const result = await pickColorFromScreen();
-      expect(mockOpen).toHaveBeenCalled();
-      expect(result).toBe('#aabbcc');
-    });
-
-    it('returns null when user cancels (open rejects)', async () => {
-      const mockOpen = vi.fn().mockRejectedValue(new Error('canceled'));
-      win.EyeDropper = class {
-        open = mockOpen;
-      } as Window['EyeDropper'];
-
-      const result = await pickColorFromScreen();
-      expect(result).toBe(null);
-    });
-
-    it('returns null when open returns undefined result', async () => {
-      const mockOpen = vi.fn().mockResolvedValue(undefined);
-      win.EyeDropper = class {
-        open = mockOpen;
-      } as Window['EyeDropper'];
-
-      const result = await pickColorFromScreen();
-      expect(result).toBe(null);
+    it('returns null when outside wrapper', () => {
+      const el = document.createElement('div');
+      el.getBoundingClientRect = () =>
+        ({ left: 10, top: 10, width: 20, height: 20, right: 30, bottom: 30, x: 10, y: 10, toJSON: () => {} } as DOMRect);
+      expect(clientToCanvasPixel(5, 15, el, 100, 100)).toBe(null);
     });
   });
 });

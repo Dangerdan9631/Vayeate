@@ -102,6 +102,7 @@ export interface UndoStackIdState {
   undoListVersion: number;
 }
 
+import { closedEyedropperUiState } from './eyedropper-ui-state';
 import type { StoreState } from './store-state';
 import type { UiState } from './ui-state';
 import type { WindowState } from './window-state';
@@ -185,6 +186,7 @@ export const initialAppState: AppState = {
   ui: {
     activeTabId: 'catalogs',
     queueStatus: { isProcessing: false, queueLength: 0 },
+    eyedropper: closedEyedropperUiState,
   },
   store: { catalogs: {}, templates: {}, themes: {} },
   window: {

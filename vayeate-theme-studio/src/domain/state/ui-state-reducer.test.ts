@@ -1,3 +1,4 @@
+import { closedEyedropperUiState } from './eyedropper-ui-state';
 import { initialAppState } from './app-state';
 import { uiStateReducer } from './ui-state-reducer';
 
@@ -15,6 +16,13 @@ describe('uiStateReducer', () => {
     });
     expect(state.ui.queueStatus.isProcessing).toBe(true);
     expect(state.ui.queueStatus.queueLength).toBe(3);
+  });
+
+  it('handles SET_UI_EYEDROPPER', () => {
+    const next = { ...closedEyedropperUiState, phase: 'loading' as const, contextKey: 'eyedropper:hue' };
+    const state = uiStateReducer(initialAppState, { type: 'SET_UI_EYEDROPPER', eyedropper: next });
+    expect(state.ui.eyedropper.phase).toBe('loading');
+    expect(state.ui.eyedropper.contextKey).toBe('eyedropper:hue');
   });
 
   it('returns state unchanged for unknown update type', () => {

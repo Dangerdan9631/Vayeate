@@ -1,4 +1,7 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { container } from 'tsyringe';
+import { LogService } from '../../gateway/services/log-service';
+import { LoggerFactory } from '../../domain/utils/logger';
 import { ActionQueue } from './action-queue';
 import type { AppActionV2 } from './action-types';
 import type { AppStateUpdate } from '../../domain/state/app-state';
@@ -23,6 +26,8 @@ function noopDeps(): HandlerDeps {
 describe('ActionQueue', () => {
   beforeEach(() => {
     container.clearInstances();
+    container.registerInstance(LogService, { log: vi.fn() } as unknown as LogService);
+    container.registerInstance(LoggerFactory, new LoggerFactory(container.resolve(LogService)));
   });
 
   it('processes actions in FIFO order and calls setUiState with correct updates for tab clicks', async () => {

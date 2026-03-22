@@ -6,11 +6,18 @@ const initialColorScheme: 'light' | 'dark' =
 
 const electronAPI = {
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
-  /** All screen sources + bounds for full-screen color picker (multi-monitor, no feedback). */
-  eyedropperGetScreenSourcesWithBounds: () =>
-    ipcRenderer.invoke('eyedropper:getScreenSourcesWithBounds') as Promise<{
-      sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
+  /** Multi-monitor layout + per-display PNG bytes (ScreenshotService). */
+  screenshotGetFullDisplaySnapshot: () =>
+    ipcRenderer.invoke('screenshot:getFullDisplaySnapshot') as Promise<{
       fullBounds: { x: number; y: number; width: number; height: number };
+      displays: Array<{
+        sourceId: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        png: Uint8Array;
+      }>;
     }>,
   closeWindow: () => ipcRenderer.invoke('window:close'),
   minimizeWindow: () => ipcRenderer.invoke('window:minimize'),

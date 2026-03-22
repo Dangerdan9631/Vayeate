@@ -1,4 +1,5 @@
 import type { TabId } from './tab-id';
+import type { EyedropperUiState } from './eyedropper-ui-state';
 
 export interface QueueStatusState {
   isProcessing: boolean;
@@ -9,4 +10,5 @@ export interface QueueStatusState {
 export interface UiState {
   activeTabId: TabId;
   queueStatus: QueueStatusState;
+  eyedropper: EyedropperUiState;
 }

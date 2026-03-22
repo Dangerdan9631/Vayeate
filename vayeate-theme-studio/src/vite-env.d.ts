@@ -3,10 +3,17 @@
 /** Shape of `contextBridge.exposeInMainWorld('electronAPI', …)` in `electron/preload.ts`. */
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;
-  /** All screen sources + bounds for full-screen color picker (multi-monitor). */
-  eyedropperGetScreenSourcesWithBounds: () => Promise<{
-    sources: Array<{ sourceId: string; x: number; y: number; width: number; height: number }>;
+  /** Multi-monitor layout + per-display PNG bytes (ScreenshotService). */
+  screenshotGetFullDisplaySnapshot: () => Promise<{
     fullBounds: { x: number; y: number; width: number; height: number };
+    displays: Array<{
+      sourceId: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      png: Uint8Array;
+    }>;
   }>;
   closeWindow: () => Promise<void>;
   minimizeWindow: () => Promise<void>;

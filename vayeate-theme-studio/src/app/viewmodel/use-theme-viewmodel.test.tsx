@@ -5,6 +5,7 @@ import { useAppState } from '../ui/context/useAppState';
 import { useThemeViewModel, mergeAssignmentsFromTemplate } from './use-theme-viewmodel';
 import type { Theme, Template } from '../../model/schemas';
 import { createInMemoryFsElectronApi, seedTemplateFile, seedThemeFile } from '../../test-utils/electron-api-in-memory-fs';
+import { electronPreloadStubs } from '../../test-utils/electron-stubs';
 import { AppActionType, ThemeActionType } from '../actions/action-types';
 
 const previewTokenRefsNull = {
@@ -44,13 +45,10 @@ const mockTheme: Theme = {
 beforeEach(() => {
   const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
+    ...electronPreloadStubs(),
     ...api,
     fetchUrl: () => Promise.resolve(''),
   };
-});
-
-afterEach(() => {
-  delete (window as unknown as { electronAPI?: unknown }).electronAPI;
 });
 
 function harness() {
@@ -97,6 +95,7 @@ describe('useThemeViewModel', () => {
 
   it('loads theme after CREATE_THEME succeeds', async () => {
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...createInMemoryFsElectronApi(),
       fetchUrl: () => Promise.resolve(''),
     };
@@ -142,6 +141,7 @@ describe('useThemeViewModel', () => {
     seedThemeFile(api.files, themeWithOneVar);
     seedTemplateFile(api.files, templateWithTwoVars);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -342,6 +342,7 @@ describe('useThemeViewModel hue adjustment', () => {
     seedThemeFile(api.files, themeWithColors);
     seedTemplateFile(api.files, templateForHue);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -606,6 +607,7 @@ describe('useThemeViewModel hue adjustment with useDarkForLight', () => {
     seedThemeFile(api.files, themeWithUseDark);
     seedTemplateFile(api.files, templateForUseDark);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -664,6 +666,7 @@ describe('useThemeViewModel variable selection', () => {
     seedThemeFile(api.files, themeWithTwoColors);
     seedTemplateFile(api.files, templateForSel);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -823,6 +826,7 @@ describe('useThemeViewModel palette color picker', () => {
     seedThemeFile(api.files, themeWithTwoColors);
     seedTemplateFile(api.files, templateForPal);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };

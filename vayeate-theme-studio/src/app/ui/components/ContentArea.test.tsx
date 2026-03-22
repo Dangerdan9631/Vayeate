@@ -7,6 +7,7 @@ import type { Theme } from '../../../model/schemas';
 import type { TabId } from '../tabs';
 import { ThemeActionType } from '../../actions/action-types';
 import { createInMemoryFsElectronApi, seedThemeFile } from '../../../test-utils/electron-api-in-memory-fs';
+import { electronPreloadStubs } from '../../../test-utils/electron-stubs';
 
 const mockTheme: Theme = {
   name: 'test-theme',
@@ -38,13 +39,10 @@ beforeEach(() => {
   const api = createInMemoryFsElectronApi();
   seedThemeFile(api.files, mockTheme);
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
+    ...electronPreloadStubs(),
     ...api,
     fetchUrl: () => Promise.resolve(''),
   };
-});
-
-afterEach(() => {
-  delete (window as unknown as { electronAPI?: unknown }).electronAPI;
 });
 
 describe('ContentArea', () => {

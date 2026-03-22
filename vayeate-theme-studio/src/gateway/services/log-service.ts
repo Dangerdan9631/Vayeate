@@ -1,14 +1,58 @@
 import { singleton } from 'tsyringe';
 
-export type RendererLogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+
+const LEVEL_ORDER: Record<LogLevel, number> = {
+  debug: 0,
+  info: 1,
+  warn: 2,
+  error: 3,
+};
+
+function serializeArg(a: unknown): string {
+  if (a instanceof Error) return a.message;
+  if (typeof a === 'object' && a !== null) return JSON.stringify(a);
+  return String(a);
+}
 
 @singleton()
 export class LogService {
-  send(level: RendererLogLevel, tag: string, args: string[]): void {
+  private currentLevel: LogLevel = 'debug';
+
+  private getAPI() {
+    const api = window.electronAPI;
+    if (!api) {
+      throw new Error('Electron API not available. Run the app in Electron.');
+    }
+    return api;
+  }
+
+  setLogLevel(level: LogLevel): void {
+    this.currentLevel = level;
+  }
+
+  getLogLevel(): LogLevel {
+    return this.currentLevel;
+  }
+
+  init(): void {
+    this.getAPI().onMainLog?.((level, args) => {
+      this.logToConsole(level, 'Main', ...args);
+    });
+  }
+
+  log(severity: LogLevel, tag: string, ...args: unknown[]): void {
+    if (LEVEL_ORDER[severity] < LEVEL_ORDER[this.currentLevel]) return;
+
+    this.logToConsole(severity, tag, ...args);
+    this.getAPI().sendLog?.(severity, tag, args.map(serializeArg));
+  }
+
+  private logToConsole(severity: LogLevel, tag: string, ...args: unknown[]): void {
     try {
-      window.electronAPI?.sendLog?.(level, tag, args);
+      console[severity](`[${tag}]`, ...args);
     } catch {
-      // ignore when not in Electron or sendLog unavailable
+      // ignore console failures
     }
   }
 }

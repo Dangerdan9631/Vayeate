@@ -4,6 +4,8 @@ export type WindowStateEvent = 'minimized' | 'maximized' | 'unmaximized' | 'rest
 
 @singleton()
 export class WindowService {
+  private ipcUnsubscribes: Array<() => void> = [];
+
   private getAPI() {
     const api = window.electronAPI;
     if (!api) {
@@ -44,15 +46,29 @@ export class WindowService {
     await this.getAPI().toggleDevTools?.();
   }
 
-  onWindowState(callback: (event: WindowStateEvent) => void): (() => void) | undefined {
-    return this.getAPI().onWindowState?.(callback);
+  init(
+    onStateEvent: (event: WindowStateEvent) => void,
+    onResize: (size: { width: number; height: number }) => void,
+    onMove: (position: { x: number; y: number }) => void,
+  ): void {
+    
+    for (const u of this.ipcUnsubscribes) {
+      u();
+    }
+    this.ipcUnsubscribes = [];
+
+    const push = (u: (() => void) | undefined) => {
+      if (u) this.ipcUnsubscribes.push(u);
+    };
+    push(this.getAPI().onWindowState?.(onStateEvent));
+    push(this.getAPI().onWindowResize?.(onResize));
+    push(this.getAPI().onWindowMove?.(onMove));
   }
 
-  onWindowResize(callback: (size: { width: number; height: number }) => void): (() => void) | undefined {
-    return this.getAPI().onWindowResize?.(callback);
-  }
-
-  onWindowMove(callback: (position: { x: number; y: number }) => void): (() => void) | undefined {
-    return this.getAPI().onWindowMove?.(callback);
+  disposeIpcListeners(): void {
+    for (const u of this.ipcUnsubscribes) {
+      u();
+    }
+    this.ipcUnsubscribes = [];
   }
 }

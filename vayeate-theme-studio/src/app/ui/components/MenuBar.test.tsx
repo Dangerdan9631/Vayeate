@@ -2,6 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { ColorSchemeProvider } from '../context/ColorSchemeContext';
 import { AppProvider } from '../context/AppContext';
 import { MenuBar } from './MenuBar';
+import { electronPreloadStubs } from '../../../test-utils/electron-stubs';
 
 function MenuBarWithProviders() {
   return (
@@ -15,6 +16,7 @@ function MenuBarWithProviders() {
 
 beforeEach(() => {
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
+    ...electronPreloadStubs(),
     fsCreateFile: () => Promise.resolve(),
     fsSaveFile: () => Promise.resolve(),
     fsLoadFile: () => Promise.resolve(null),
@@ -32,7 +34,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  delete (window as unknown as { electronAPI?: unknown }).electronAPI;
   delete (window as unknown as { electronInitialColorScheme?: unknown }).electronInitialColorScheme;
 });
 

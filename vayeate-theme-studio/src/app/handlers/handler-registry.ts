@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { createLogger } from '../../domain/utils/logger';
+import { LoggerFactory, type Logger } from '../../domain/utils/logger';
 import type { AppActionV2 } from '../actions/action-types';
 import { AppActionHandler } from './app-handler';
 import { CatalogActionHandler } from './catalog-handler';
@@ -13,23 +13,26 @@ import {
 import { TemplateActionHandler } from './template-handler';
 import { ThemeActionHandler } from './theme-handler';
 
-const log = createLogger('ActionProcessor');
-
 /**
  * Routes each {@link AppActionV2} to the correct domain handler. Injected handlers;
  * {@link HandlerDeps} are supplied per invocation from React (state setters).
  */
 @singleton()
 export class ActionProcessor {
+  private readonly log: Logger;
+
   constructor(
     private readonly appHandler: AppActionHandler,
     private readonly catalogHandler: CatalogActionHandler,
     private readonly templateHandler: TemplateActionHandler,
     private readonly themeHandler: ThemeActionHandler,
-  ) {}
+    loggerFactory: LoggerFactory,
+  ) {
+    this.log = loggerFactory.create('ActionProcessor');
+  }
 
   async process(action: AppActionV2, deps: HandlerDeps): Promise<void> {
-    log.debug('action', action);
+    this.log.debug('action', action);
     if (isAppAction(action)) {
       await this.appHandler.handle(action, deps);
     } else if (isCatalogAction(action)) {

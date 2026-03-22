@@ -1,10 +1,16 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ThemeActionType } from '../../actions/action-types';
 import { ThemePaletteCard } from './ThemePaletteCard';
-import { isEyedropperSupported, pickColorFromScreen } from '../utils/eyedropper';
+import { isEyedropperSupported } from '../utils/eyedropper';
+
+const mockDispatch = vi.fn().mockResolvedValue(undefined);
 
 vi.mock('../utils/eyedropper');
+vi.mock('../context/slice-contexts', () => ({
+  useAppDispatch: () => mockDispatch,
+}));
 
 const defaultPaletteProps = {
   colorAssignments: [] as const,
@@ -361,18 +367,20 @@ describe('ThemePaletteCard', () => {
       expect(btn).not.toBeDisabled();
     });
 
-    it('calls onSetSelectedColors with picked hex when Pick from screen returns a color', async () => {
+    it('dispatches assign eyedropper action when Pick from screen is clicked', async () => {
       const user = userEvent.setup();
       vi.mocked(isEyedropperSupported).mockReturnValue(true);
-      vi.mocked(pickColorFromScreen).mockResolvedValue('#aabbcc');
-      const onSetSelectedColors = vi.fn();
+      mockDispatch.mockClear();
       renderCard({
         selectedColorsDisplay: { kind: 'single', hex: '#ff0000' },
-        onSetSelectedColors,
+        checkedColorRefs: new Set(['colorRefA']),
+        onSetSelectedColors: vi.fn(),
       });
       await user.click(screen.getByRole('button', { name: 'Pick color from screen' }));
-      expect(pickColorFromScreen).toHaveBeenCalled();
-      expect(onSetSelectedColors).toHaveBeenCalledWith('#aabbcc');
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
+        colorRef: 'colorRefA',
+      });
     });
   });
 });

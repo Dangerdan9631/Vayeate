@@ -6,6 +6,7 @@ import { useAppState } from '../ui/context/useAppState';
 import { useCatalogViewModel } from './use-catalog-viewmodel';
 import type { Catalog } from '../../model/schemas';
 import { createInMemoryFsElectronApi, seedCatalogFile } from '../../test-utils/electron-api-in-memory-fs';
+import { electronPreloadStubs } from '../../test-utils/electron-stubs';
 import { AppActionType, CatalogActionType } from '../actions/action-types';
 
 const mockCatalog: Catalog = {
@@ -23,13 +24,10 @@ const mockCatalog: Catalog = {
 beforeEach(() => {
   const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
+    ...electronPreloadStubs(),
     ...api,
     fetchUrl: () => Promise.resolve(''),
   };
-});
-
-afterEach(() => {
-  delete (window as unknown as { electronAPI?: unknown }).electronAPI;
 });
 
 function harness() {
@@ -81,6 +79,7 @@ describe('useCatalogViewModel', () => {
   it('loads catalog after CREATE_CATALOG succeeds', async () => {
     const api = createInMemoryFsElectronApi();
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -108,6 +107,7 @@ describe('useCatalogViewModel', () => {
       fsSaveFile: () => savePromise,
     });
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -151,6 +151,7 @@ describe('useCatalogViewModel', () => {
     const api = createInMemoryFsElectronApi();
     seedCatalogFile(api.files, remoteCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve('`editor.background`'),
     };
@@ -193,6 +194,7 @@ describe('useCatalogViewModel', () => {
     api.fsSaveFile = fsSaveFile;
     seedCatalogFile(api.files, baseCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -243,6 +245,7 @@ describe('useCatalogViewModel', () => {
     api.fsSaveFile = fsSaveFile;
     seedCatalogFile(api.files, baseCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -286,6 +289,7 @@ describe('useCatalogViewModel', () => {
     const api = createInMemoryFsElectronApi({ fsSaveFile });
     seedCatalogFile(api.files, baseCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };
@@ -314,6 +318,7 @@ describe('useCatalogViewModel', () => {
     const api = createInMemoryFsElectronApi();
     seedCatalogFile(api.files, mockCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
+      ...electronPreloadStubs(),
       ...api,
       fetchUrl: () => Promise.resolve(''),
     };

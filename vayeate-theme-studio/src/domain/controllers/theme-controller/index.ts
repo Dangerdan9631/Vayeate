@@ -82,3 +82,8 @@ export { SetContrastVariableLightMaxController } from './variables-contrast/setC
 // pickers
 export { SetThemeOpenPickerContextController } from './pickers/setThemeOpenPickerContext';
 export { SetThemePaneSelectionsController } from './pickers/setThemePaneSelections';
+
+// eyedropper
+export { OpenEyedropperOverlayController } from './eyedropper/openEyedropperOverlay';
+export { CloseEyedropperOverlayController } from './eyedropper/closeEyedropperOverlay';
+export { CommitEyedropperColorController } from './eyedropper/commitEyedropperColor';

@@ -192,6 +192,8 @@ export enum ThemeActionType {
   ThemePreviewVariableFilterClearOnClick = 'THEME_PREVIEW_VARIABLE_FILTER_CLEAR_ON_CLICK',
   ThemePreviewSampleButtonOnClick = 'THEME_PREVIEW_SAMPLE_BUTTON_ON_CLICK',
   ThemePreviewSampleListOnCommit = 'THEME_PREVIEW_SAMPLE_LIST_ON_COMMIT',
+  ThemeEyedropperOverlayCancelButtonOnClick = 'THEME_EYEDROPPER_OVERLAY_CANCEL_BUTTON_ON_CLICK',
+  ThemeEyedropperOverlayColorCommitOnClick = 'THEME_EYEDROPPER_OVERLAY_COLOR_COMMIT_ON_CLICK',
 }
 
 
@@ -384,4 +386,6 @@ export type AppActionV2 =
   | { type: ThemeActionType.ThemePreviewVariableFilterTextOnChange; value: string }
   | { type: ThemeActionType.ThemePreviewVariableFilterClearOnClick }
   | { type: ThemeActionType.ThemePreviewSampleButtonOnClick }
-  | { type: ThemeActionType.ThemePreviewSampleListOnCommit; value: string };
+  | { type: ThemeActionType.ThemePreviewSampleListOnCommit; value: string }
+  | { type: ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick }
+  | { type: ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick; hex: HexColor };

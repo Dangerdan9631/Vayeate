@@ -4,6 +4,7 @@ import { AppProvider } from '../context/AppContext';
 import { CatalogsPage } from './CatalogsPage';
 import type { Catalog } from '../../../model/schemas';
 import { createInMemoryFsElectronApi, seedCatalogFile } from '../../../test-utils/electron-api-in-memory-fs';
+import { electronPreloadStubs } from '../../../test-utils/electron-stubs';
 
 const mockCatalog: Catalog = {
   name: 'mock-catalog',
@@ -20,13 +21,10 @@ const mockCatalog: Catalog = {
 beforeEach(() => {
   const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
+    ...electronPreloadStubs(),
     ...api,
     fetchUrl: () => Promise.resolve(''),
   };
-});
-
-afterEach(() => {
-  delete (window as unknown as { electronAPI?: unknown }).electronAPI;
 });
 
 describe('CatalogsPage', () => {

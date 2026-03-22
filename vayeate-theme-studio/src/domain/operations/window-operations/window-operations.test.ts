@@ -17,6 +17,8 @@ const windowServiceMock = {
   reload: vi.fn(),
   reloadForce: vi.fn(),
   toggleDevTools: vi.fn(),
+  init: vi.fn(),
+  disposeIpcListeners: vi.fn(),
 };
 
 describe('window-operations', () => {

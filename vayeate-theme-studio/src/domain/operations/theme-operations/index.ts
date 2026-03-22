@@ -34,6 +34,10 @@ export { SetThemeOpenPickerContext, setThemeOpenPickerContext } from './pickers/
 // palette-color-assign
 export { SetAssignColorDraftText, setAssignColorDraftText } from './palette-color-assign/setAssignColorDraftText';
 
+// eyedropper
+export { SetEyedropperUiState } from './eyedropper/setEyedropperUiState';
+export { LoadEyedropperSnapshot } from './eyedropper/loadEyedropperSnapshot';
+
 // variables
 export { SetThemeVariablesSearchText, setThemeVariablesSearchText } from './variables/setThemeVariablesSearchText';
 export { SetThemeVariableDraftText, setThemeVariableDraftText } from './variables/setThemeVariableDraftText';

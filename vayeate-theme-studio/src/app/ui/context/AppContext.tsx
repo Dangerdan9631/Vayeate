@@ -1,7 +1,7 @@
 import {
   createContext,
   useCallback,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useReducer,
   useRef,
@@ -22,6 +22,8 @@ import { UiStateSetter } from '../../../domain/state/ui-state-setter';
 import { AppStateSetter } from '../../../domain/state/app-state-setter';
 import { AppStateGetter } from '../../../domain/state/app-state-getter';
 import { StoreStateSetter } from '../../../domain/state/store-state-setter';
+import { WindowStateSetter } from '../../../domain/state/window-state-setter';
+import { BootstrapAppController } from '../../../domain/controllers/app-controller';
 import { container } from 'tsyringe';
 import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
@@ -35,7 +37,6 @@ import {
 import { UndoProvider } from './UndoContext';
 import { handlerDepsSourceToken, type IHandlerDepsSource } from '../../di/handler-deps-source';
 import type { HandlerDeps } from '../../handlers/handler-types';
-import { getWindowEventTransport } from './window-event-transport';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
 function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
@@ -106,10 +107,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const appStateGetter = useMemo(() => new AppStateGetter(getState), [getState]);
   const uiStateSetter = useMemo(() => new UiStateSetter(setUiState), [setUiState]);
   const storeStateSetter = useMemo(() => new StoreStateSetter(setStoreState), [setStoreState]);
+  const windowStateSetter = useMemo(() => new WindowStateSetter(setWindowState), [setWindowState]);
   container.registerInstance(AppStateSetter, appStateSetter);
   container.registerInstance(AppStateGetter, appStateGetter);
   container.registerInstance(UiStateSetter, uiStateSetter);
   container.registerInstance(StoreStateSetter, storeStateSetter);
+  container.registerInstance(WindowStateSetter, windowStateSetter);
 
   const handlerDepsRef = useRef<HandlerDeps>({
     setState,
@@ -129,44 +132,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const queueRef = useRef<ActionQueue | null>(null);
 
-  useEffect(() => {
-    const transport = getWindowEventTransport();
-    const unsubscribes: Array<() => void> = [];
-    if (transport.onWindowState) {
-      unsubscribes.push(
-        transport.onWindowState((event) => {
-          switch (event) {
-            case 'minimized':
-              setWindowState({ type: 'SET_WINDOW_MINIMIZED', value: true });
-              break;
-            case 'maximized':
-              setWindowState({ type: 'SET_WINDOW_MAXIMIZED', value: true });
-              break;
-            case 'unmaximized':
-              setWindowState({ type: 'SET_WINDOW_MAXIMIZED', value: false });
-              break;
-            case 'restored':
-              setWindowState({ type: 'SET_WINDOW_MINIMIZED', value: false });
-              break;
-          }
-        }) ?? (() => {}),
-      );
-    }
-    if (transport.onWindowResize) {
-      unsubscribes.push(
-        transport.onWindowResize((size) => setWindowState({ type: 'SET_WINDOW_SIZE', size })) ??
-          (() => {}),
-      );
-    }
-    if (transport.onWindowMove) {
-      unsubscribes.push(
-        transport.onWindowMove((position) =>
-          setWindowState({ type: 'SET_WINDOW_POSITION', position })
-        ) ?? (() => {}),
-      );
-    }
+  useLayoutEffect(() => {
+    container.resolve(BootstrapAppController).runWindowIpcInit();
     return () => {
-      unsubscribes.forEach((fn) => fn());
+      container.resolve(BootstrapAppController).disposeWindowIpc();
     };
   }, [setWindowState]);
 
