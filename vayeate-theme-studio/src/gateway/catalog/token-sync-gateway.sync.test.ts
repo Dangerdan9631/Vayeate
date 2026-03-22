@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { syncCatalogTokens } from './catalog-sync';
+import { syncCatalogTokens } from './token-sync-gateway';
 import type { Source } from '../../model/schemas';
 
 function mockFetch(body: string, status = 200) {

@@ -41,7 +41,7 @@ Use this file to route an AI coding agent to the right instruction files, archit
 | Task type | Read first | Then read |
 |---|---|---|
 | Theme generation or contrast logic changes | `.github/skills/theme-generation.md` | `vayeate-theme-studio/src/domain/utils/theme-generator.ts`, `vayeate-theme-studio/src/domain/utils/color.ts`, `.github/agent-docs/edge-cases.md` |
-| Catalog pin/sync/drift changes | `.github/skills/catalog-sync.md` | `vayeate-theme-studio/src/gateway/services/catalog-sync.ts`, `vayeate-theme-studio/data/catalogs/`, `.github/agent-docs/functionality.md` |
+| Catalog pin/sync/drift changes | `.github/skills/catalog-sync.md` | `vayeate-theme-studio/src/gateway/catalog/token-sync-gateway.ts`, `vayeate-theme-studio/data/catalogs/`, `.github/agent-docs/functionality.md` |
 | UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `vayeate-theme-studio/src/app/ui/App.tsx`, `.github/agent-docs/architecture.md` |
 | Schema/model changes | `.github/agent-docs/architecture.md` | `vayeate-theme-studio/src/model/schemas.ts`, `vayeate-theme-studio/src/model/`, `.github/agent-docs/conventions.md` |
 | Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `vayeate-theme-studio/src/domain/utils/theme-exporter.ts`, `.github/skills/safe-change-validation.md` |

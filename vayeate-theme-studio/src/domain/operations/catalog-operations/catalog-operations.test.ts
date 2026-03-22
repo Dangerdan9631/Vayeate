@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Catalog } from '../../../model/schemas';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
-import { CatalogSyncService } from '../../../gateway/services/catalog-sync';
+import { TokenSyncGateway } from '../../../gateway/catalog/token-sync-gateway';
 import {
   LoadCatalogRefs,
   createCatalog,
@@ -21,7 +21,7 @@ const catalogGatewayMock = {
   deleteCatalog: vi.fn(),
 };
 
-const catalogSyncServiceMock = {
+const tokenSyncGatewayMock = {
   sync: vi.fn(),
 };
 
@@ -29,15 +29,15 @@ describe('catalog-operations', () => {
   beforeEach(() => {
     container.registerInstance(CatalogGateway, catalogGatewayMock as unknown as CatalogGateway);
     container.registerInstance(
-      CatalogSyncService,
-      catalogSyncServiceMock as unknown as CatalogSyncService,
+      TokenSyncGateway,
+      tokenSyncGatewayMock as unknown as TokenSyncGateway,
     );
     vi.mocked(catalogGatewayMock.createCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
     vi.mocked(catalogGatewayMock.saveCatalog).mockResolvedValue(undefined);
     vi.mocked(catalogGatewayMock.loadCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
     vi.mocked(catalogGatewayMock.listCatalogs).mockResolvedValue([{ name: 'c1', version: '1.0.0' }]);
     vi.mocked(catalogGatewayMock.deleteCatalog).mockResolvedValue(undefined);
-    vi.mocked(catalogSyncServiceMock.sync).mockResolvedValue({
+    vi.mocked(tokenSyncGatewayMock.sync).mockResolvedValue({
       tokens: [],
       semanticTokenTypes: [],
       semanticTokenModifiers: [],
@@ -118,8 +118,8 @@ describe('catalog-operations', () => {
 
     const result = await syncCatalog(catalog);
 
-    expect(catalogSyncServiceMock.sync).toHaveBeenCalledTimes(1);
-    expect(catalogSyncServiceMock.sync).toHaveBeenCalledWith(catalog.sources);
+    expect(tokenSyncGatewayMock.sync).toHaveBeenCalledTimes(1);
+    expect(tokenSyncGatewayMock.sync).toHaveBeenCalledWith(catalog.sources);
     expect(result.version).toBe('1.0.0');
     expect(result.locked).toBe(true);
   });
@@ -138,7 +138,7 @@ describe('catalog-operations', () => {
 
     const result = await syncCatalog(catalog);
 
-    expect(catalogSyncServiceMock.sync).toHaveBeenCalledTimes(1);
+    expect(tokenSyncGatewayMock.sync).toHaveBeenCalledTimes(1);
     expect(result.version).toBe('1.0.1');
     expect(result.locked).toBe(true);
   });

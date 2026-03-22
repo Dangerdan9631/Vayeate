@@ -38,7 +38,7 @@
   - template-catalog-merge: `vayeate-theme-studio/src/domain/utils/template-catalog-merge.ts`
   - theme-template-merge, semantic-token, color-clustering: `vayeate-theme-studio/src/domain/utils/`
   - logger, version: `vayeate-theme-studio/src/domain/utils/`
-- Catalog sync: `vayeate-theme-studio/src/gateway/services/catalog-sync.ts`
+- Catalog sync: `vayeate-theme-studio/src/gateway/catalog/token-sync-gateway.ts`
 - UI and Electron:
   - main editor shell: `vayeate-theme-studio/src/app/ui/App.tsx`
   - components: `vayeate-theme-studio/src/app/ui/components/`

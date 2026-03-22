@@ -357,6 +357,6 @@ Always render both dark and light outputs side-by-side.
   - `color.ts`, `color-clustering.ts`
   - `scope-resolver.ts`, `semantic-token.ts`, `tokenizer.ts`
   - `logger.ts`, `version.ts`
-- Catalog sync and IPC: `src/gateway/services/` (e.g. `catalog-sync.ts`)
+- Catalog sync: `src/gateway/catalog/token-sync-gateway.ts`; other gateway IPC: `src/gateway/services/`
 
 Each module SHOULD expose pure functions where possible and keep side effects isolated to I/O boundaries.

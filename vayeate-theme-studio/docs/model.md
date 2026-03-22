@@ -54,7 +54,7 @@ Manage editor token catalogs from manual entry or remote sync, including version
 
 ### Domain Services
 
-- CatalogSyncService
+- TokenSyncGateway (`syncCatalogTokens`)
   - Fetches remote sources
   - Extracts keys
   - Normalizes, deduplicates, sorts, merges
@@ -384,7 +384,7 @@ Provide search inside the currently loaded application page only: catalog, templ
 
 ## Anti-Corruption Boundaries
 
-- Remote source parsing is isolated from core catalog model via CatalogSyncService normalization.
+- Remote source parsing is isolated from core catalog model via `TokenSyncGateway` / `syncCatalogTokens` normalization.
 - VS Code grammar/tokenization integration is isolated behind Preview services.
 - File-system write semantics are isolated behind ExportPolicyService and serialization services.
 
