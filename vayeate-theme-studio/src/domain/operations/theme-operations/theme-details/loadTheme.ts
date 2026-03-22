@@ -1,6 +1,6 @@
 import { container, injectable } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ThemeService } from '../../../../gateway/services/theme-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { AppStateSetter } from '../../../state/app-state-setter';
 import type { AppStateUpdate } from '../../../state/app-state';
 
@@ -8,11 +8,11 @@ import type { AppStateUpdate } from '../../../state/app-state';
 export class LoadTheme {
   constructor(
     private readonly appStateSetter: AppStateSetter,
-    private readonly themeService: ThemeService,
+    private readonly themeGateway: ThemeGateway,
   ) {}
 
   async execute(name: string, version: string): Promise<Theme | null> {
-    const loaded = await this.themeService.loadTheme(name, version);
+    const loaded = await this.themeGateway.loadTheme(name, version);
     this.appStateSetter.apply({ type: 'SET_THEME', theme: loaded });
     return loaded;
   }
@@ -24,7 +24,7 @@ export async function loadTheme(
   name: string,
   version: string,
 ): Promise<Theme | null> {
-  const loaded = await container.resolve(ThemeService).loadTheme(name, version);
+  const loaded = await container.resolve(ThemeGateway).loadTheme(name, version);
   setState({ type: 'SET_THEME', theme: loaded });
   return loaded;
 }

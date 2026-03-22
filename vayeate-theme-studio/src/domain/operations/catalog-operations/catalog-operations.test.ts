@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Catalog } from '../../../model/schemas';
-import { CatalogService } from '../../../gateway/services/catalog-service';
+import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 import { CatalogSyncService } from '../../../gateway/services/catalog-sync';
 import {
   LoadCatalogRefs,
@@ -13,13 +13,12 @@ import {
 } from '.';
 import { StoreStateSetter } from '../../state/store-state-setter';
 
-const catalogServiceMock = {
+const catalogGatewayMock = {
   createCatalog: vi.fn(),
   saveCatalog: vi.fn(),
   loadCatalog: vi.fn(),
   listCatalogs: vi.fn(),
   deleteCatalog: vi.fn(),
-  fetchUrl: vi.fn(),
 };
 
 const catalogSyncServiceMock = {
@@ -28,17 +27,16 @@ const catalogSyncServiceMock = {
 
 describe('catalog-operations', () => {
   beforeEach(() => {
-    container.registerInstance(CatalogService, catalogServiceMock as unknown as CatalogService);
+    container.registerInstance(CatalogGateway, catalogGatewayMock as unknown as CatalogGateway);
     container.registerInstance(
       CatalogSyncService,
       catalogSyncServiceMock as unknown as CatalogSyncService,
     );
-    vi.mocked(catalogServiceMock.createCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
-    vi.mocked(catalogServiceMock.saveCatalog).mockResolvedValue(undefined);
-    vi.mocked(catalogServiceMock.loadCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
-    vi.mocked(catalogServiceMock.listCatalogs).mockResolvedValue([{ name: 'c1', version: '1.0.0' }]);
-    vi.mocked(catalogServiceMock.deleteCatalog).mockResolvedValue(undefined);
-    vi.mocked(catalogServiceMock.fetchUrl).mockResolvedValue('{}');
+    vi.mocked(catalogGatewayMock.createCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
+    vi.mocked(catalogGatewayMock.saveCatalog).mockResolvedValue(undefined);
+    vi.mocked(catalogGatewayMock.loadCatalog).mockResolvedValue({ name: 'c1', version: '1.0.0' } as Catalog);
+    vi.mocked(catalogGatewayMock.listCatalogs).mockResolvedValue([{ name: 'c1', version: '1.0.0' }]);
+    vi.mocked(catalogGatewayMock.deleteCatalog).mockResolvedValue(undefined);
     vi.mocked(catalogSyncServiceMock.sync).mockResolvedValue({
       tokens: [],
       semanticTokenTypes: [],
@@ -51,12 +49,12 @@ describe('catalog-operations', () => {
     vi.clearAllMocks();
   });
 
-  it('createCatalog calls catalogService.createCatalog and returns catalog', async () => {
+  it('createCatalog calls catalogGateway.createCatalog and returns catalog', async () => {
     const setState = vi.fn();
     const result = await createCatalog(setState, { name: 'c1', type: 'manual' });
 
-    expect(catalogServiceMock.createCatalog).toHaveBeenCalledTimes(1);
-    expect(catalogServiceMock.createCatalog).toHaveBeenCalledWith({ name: 'c1', type: 'manual' });
+    expect(catalogGatewayMock.createCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogGatewayMock.createCatalog).toHaveBeenCalledWith({ name: 'c1', type: 'manual' });
     expect(result).toEqual({ name: 'c1', version: '1.0.0' });
   });
 
@@ -64,12 +62,12 @@ describe('catalog-operations', () => {
     const setStoreState = vi.fn();
     const op = new LoadCatalogRefs(
       new StoreStateSetter(setStoreState),
-      container.resolve(CatalogService),
+      container.resolve(CatalogGateway),
     );
 
     await op.execute();
 
-    expect(catalogServiceMock.listCatalogs).toHaveBeenCalledTimes(1);
+    expect(catalogGatewayMock.listCatalogs).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({
       type: 'SET_STORE_CATALOG_ENTRIES',
       entries: [{ name: 'c1', version: '1.0.0', isLoaded: false, catalog: undefined }],
@@ -81,8 +79,8 @@ describe('catalog-operations', () => {
 
     const loaded = await loadCatalog(setState, 'c1', '1.0.0');
 
-    expect(catalogServiceMock.loadCatalog).toHaveBeenCalledTimes(1);
-    expect(catalogServiceMock.loadCatalog).toHaveBeenCalledWith('c1', '1.0.0');
+    expect(catalogGatewayMock.loadCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogGatewayMock.loadCatalog).toHaveBeenCalledWith('c1', '1.0.0');
     expect(setState).toHaveBeenCalledWith({
       type: 'SET_CATALOG',
       catalog: { name: 'c1', version: '1.0.0' },
@@ -90,20 +88,20 @@ describe('catalog-operations', () => {
     expect(loaded).toEqual({ name: 'c1', version: '1.0.0' });
   });
 
-  it('saveCatalog calls catalogService.saveCatalog', async () => {
+  it('saveCatalog calls catalogGateway.saveCatalog', async () => {
     const catalog = { name: 'c1', version: '1.0.0' } as Catalog;
 
     await saveCatalog(catalog);
 
-    expect(catalogServiceMock.saveCatalog).toHaveBeenCalledTimes(1);
-    expect(catalogServiceMock.saveCatalog).toHaveBeenCalledWith(catalog);
+    expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledWith(catalog);
   });
 
-  it('deleteCatalog calls catalogService.deleteCatalog', async () => {
+  it('deleteCatalog calls catalogGateway.deleteCatalog', async () => {
     await deleteCatalog('c1', '1.0.0');
 
-    expect(catalogServiceMock.deleteCatalog).toHaveBeenCalledTimes(1);
-    expect(catalogServiceMock.deleteCatalog).toHaveBeenCalledWith('c1', '1.0.0');
+    expect(catalogGatewayMock.deleteCatalog).toHaveBeenCalledTimes(1);
+    expect(catalogGatewayMock.deleteCatalog).toHaveBeenCalledWith('c1', '1.0.0');
   });
 
   it('syncCatalog preserves version when catalog is unlocked', async () => {

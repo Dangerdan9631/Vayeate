@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Theme } from '../../../model/schemas';
+import { ThemeGateway } from '../../../gateway/theme/theme-gateway';
 import { ThemeService } from '../../../gateway/services/theme-service';
 import {
   LoadThemeRefs,
@@ -12,23 +13,27 @@ import {
 } from '.';
 import { StoreStateSetter } from '../../state/store-state-setter';
 
-const themeServiceMock = {
+const themeGatewayMock = {
   createTheme: vi.fn(),
   saveTheme: vi.fn(),
   loadTheme: vi.fn(),
   listThemes: vi.fn(),
   deleteTheme: vi.fn(),
+};
+
+const themeServiceMock = {
   generateTheme: vi.fn(),
 };
 
 describe('theme-operations', () => {
   beforeEach(() => {
+    container.registerInstance(ThemeGateway, themeGatewayMock as unknown as ThemeGateway);
     container.registerInstance(ThemeService, themeServiceMock as unknown as ThemeService);
-    vi.mocked(themeServiceMock.createTheme).mockResolvedValue({ name: 'th1', version: '1.0.0' } as Theme);
-    vi.mocked(themeServiceMock.saveTheme).mockResolvedValue(undefined);
-    vi.mocked(themeServiceMock.loadTheme).mockResolvedValue({ name: 'th1', version: '1.0.0' } as Theme);
-    vi.mocked(themeServiceMock.listThemes).mockResolvedValue([{ name: 'th1', version: '1.0.0' }]);
-    vi.mocked(themeServiceMock.deleteTheme).mockResolvedValue(undefined);
+    vi.mocked(themeGatewayMock.createTheme).mockResolvedValue({ name: 'th1', version: '1.0.0' } as Theme);
+    vi.mocked(themeGatewayMock.saveTheme).mockResolvedValue(undefined);
+    vi.mocked(themeGatewayMock.loadTheme).mockResolvedValue({ name: 'th1', version: '1.0.0' } as Theme);
+    vi.mocked(themeGatewayMock.listThemes).mockResolvedValue([{ name: 'th1', version: '1.0.0' }]);
+    vi.mocked(themeGatewayMock.deleteTheme).mockResolvedValue(undefined);
     vi.mocked(themeServiceMock.generateTheme).mockResolvedValue({ darkPath: 'dark.json', lightPath: 'light.json' });
   });
 
@@ -36,22 +41,22 @@ describe('theme-operations', () => {
     vi.clearAllMocks();
   });
 
-  it('createTheme calls themeService.createTheme and returns theme', async () => {
+  it('createTheme calls themeGateway.createTheme and returns theme', async () => {
     const setState = vi.fn();
     const result = await createTheme(setState, { name: 'th1' });
 
-    expect(themeServiceMock.createTheme).toHaveBeenCalledTimes(1);
-    expect(themeServiceMock.createTheme).toHaveBeenCalledWith({ name: 'th1' });
+    expect(themeGatewayMock.createTheme).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.createTheme).toHaveBeenCalledWith({ name: 'th1' });
     expect(result).toEqual({ name: 'th1', version: '1.0.0' });
   });
 
   it('LoadThemeRefs.execute sets store entries from listThemes result', async () => {
     const setStoreState = vi.fn();
-    const op = new LoadThemeRefs(new StoreStateSetter(setStoreState), container.resolve(ThemeService));
+    const op = new LoadThemeRefs(new StoreStateSetter(setStoreState), container.resolve(ThemeGateway));
 
     await op.execute();
 
-    expect(themeServiceMock.listThemes).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.listThemes).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({
       type: 'SET_STORE_THEME_ENTRIES',
       entries: [{ name: 'th1', version: '1.0.0', isLoaded: false, theme: undefined }],
@@ -63,8 +68,8 @@ describe('theme-operations', () => {
 
     const loaded = await loadTheme(setState, 'th1', '1.0.0');
 
-    expect(themeServiceMock.loadTheme).toHaveBeenCalledTimes(1);
-    expect(themeServiceMock.loadTheme).toHaveBeenCalledWith('th1', '1.0.0');
+    expect(themeGatewayMock.loadTheme).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.loadTheme).toHaveBeenCalledWith('th1', '1.0.0');
     expect(setState).toHaveBeenCalledWith({
       type: 'SET_THEME',
       theme: { name: 'th1', version: '1.0.0' },
@@ -72,20 +77,20 @@ describe('theme-operations', () => {
     expect(loaded).toEqual({ name: 'th1', version: '1.0.0' });
   });
 
-  it('saveTheme calls themeService.saveTheme', async () => {
+  it('saveTheme calls themeGateway.saveTheme', async () => {
     const theme = { name: 'th1', version: '1.0.0' } as Theme;
 
     await saveTheme(theme);
 
-    expect(themeServiceMock.saveTheme).toHaveBeenCalledTimes(1);
-    expect(themeServiceMock.saveTheme).toHaveBeenCalledWith(theme);
+    expect(themeGatewayMock.saveTheme).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.saveTheme).toHaveBeenCalledWith(theme);
   });
 
-  it('deleteTheme calls themeService.deleteTheme', async () => {
+  it('deleteTheme calls themeGateway.deleteTheme', async () => {
     await deleteTheme('th1', '1.0.0');
 
-    expect(themeServiceMock.deleteTheme).toHaveBeenCalledTimes(1);
-    expect(themeServiceMock.deleteTheme).toHaveBeenCalledWith('th1', '1.0.0');
+    expect(themeGatewayMock.deleteTheme).toHaveBeenCalledTimes(1);
+    expect(themeGatewayMock.deleteTheme).toHaveBeenCalledWith('th1', '1.0.0');
   });
 
   it('generateTheme sets success result when generation succeeds', async () => {

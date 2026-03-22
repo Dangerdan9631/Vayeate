@@ -1,5 +1,5 @@
 import type { TemplateReference } from '../../../../model/schemas';
-import { TemplateService } from '../../../../gateway/services/template-service';
+import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { injectable } from 'tsyringe';
 import { StoreStateSetter } from '../../../state/store-state-setter';
 
@@ -8,12 +8,12 @@ import { StoreStateSetter } from '../../../state/store-state-setter';
 export class RefreshTemplateRefs {
   constructor(
     private readonly storeStateSetter: StoreStateSetter,
-    private readonly templateService: TemplateService,
+    private readonly templateGateway: TemplateGateway,
   ) {}
 
   /** List templates and set entries in store. Single responsibility: refresh ref list. */
   async execute(): Promise<TemplateReference[]> {
-    const refs = await this.templateService.listTemplates();
+    const refs = await this.templateGateway.listTemplates();
     this.storeStateSetter.apply({
     type: 'SET_STORE_TEMPLATE_ENTRIES',
     entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),

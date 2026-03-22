@@ -1,14 +1,14 @@
 import { injectable } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
-import { CatalogService } from '../../../../gateway/services/catalog-service';
+import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 
 /** Load catalog from disk without updating state. Single responsibility: read. */
 @injectable()
 export class LoadCatalogSnapshot {
-  constructor(private readonly catalogService: CatalogService) {}
+  constructor(private readonly catalogGateway: CatalogGateway) {}
 
   async execute(name: string, version: string): Promise<Catalog | null> {
-    return this.catalogService.loadCatalog(name, version);
+    return this.catalogGateway.loadCatalog(name, version);
   }
 }
 

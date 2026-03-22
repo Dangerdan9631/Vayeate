@@ -4,6 +4,11 @@ import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useTemplateViewModel, computeOrphanKeys } from './use-template-viewmodel';
 import type { Catalog, Template, Mapping, Token } from '../../model/schemas';
+import {
+  createInMemoryFsElectronApi,
+  seedCatalogFile,
+  seedTemplateFile,
+} from '../../test-utils/electron-api-in-memory-fs';
 import { CatalogActionType, TemplateActionType } from '../actions/action-types';
 
 const mockTemplate: Template = {
@@ -20,17 +25,9 @@ const mockTemplate: Template = {
 };
 
 beforeEach(() => {
+  const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
-    createCatalog: () => Promise.resolve(null),
-    saveCatalog: () => Promise.resolve(),
-    loadCatalog: () => Promise.resolve(null),
-    listCatalogs: () => Promise.resolve([]),
-    deleteCatalog: () => Promise.resolve(),
-    createTemplate: () => Promise.resolve(mockTemplate),
-    saveTemplate: () => Promise.resolve(),
-    loadTemplate: () => Promise.resolve(null),
-    listTemplates: () => Promise.resolve([]),
-    deleteTemplate: () => Promise.resolve(),
+    ...api,
     fetchUrl: () => Promise.resolve(''),
   };
 });
@@ -81,17 +78,9 @@ describe('useTemplateViewModel', () => {
   });
 
   it('loads template after CREATE_TEMPLATE succeeds', async () => {
+    const api = createInMemoryFsElectronApi();
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(mockTemplate),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -171,21 +160,9 @@ describe('computeOrphanKeys', () => {
 
 describe('useTemplateViewModel groups', () => {
   it('addGroup adds group and save refreshes template', async () => {
-    let savedTemplate: Template | null = null;
+    const api = createInMemoryFsElectronApi();
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -224,17 +201,10 @@ describe('useTemplateViewModel groups', () => {
         },
       ],
     };
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithGroupAndMapping);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(templateWithGroupAndMapping),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -264,21 +234,10 @@ describe('useTemplateViewModel groups', () => {
       groups: ['G1'],
       mappings: [],
     };
-    let savedTemplate: Template | null = templateWithGroup;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithGroup);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithGroup),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -317,21 +276,10 @@ describe('useTemplateViewModel groups', () => {
         },
       ],
     };
-    let savedTemplate: Template | null = templateWithMapping;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithMapping);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithMapping),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -376,21 +324,10 @@ describe('useTemplateViewModel groups', () => {
         },
       ],
     };
-    let savedTemplate: Template | null = templateWithSemanticBaseAndVariant;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithSemanticBaseAndVariant);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithSemanticBaseAndVariant),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -429,17 +366,10 @@ describe('useTemplateViewModel groups', () => {
       colorVariables: [{ key: 'primary', groupRef: 'G1' }],
       contrastVariables: [],
     };
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithGroupAndVariable);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(templateWithGroupAndVariable),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -470,21 +400,10 @@ describe('useTemplateViewModel groups', () => {
       colorVariables: [{ key: 'primary', groupRef: null }],
       contrastVariables: [],
     };
-    let savedTemplate: Template | null = templateWithVar;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithVar);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithVar),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -517,21 +436,10 @@ describe('useTemplateViewModel groups', () => {
       colorVariables: [],
       contrastVariables: [{ key: 'textContrast', comparisonSourceRef: null, groupRef: null }],
     };
-    let savedTemplate: Template | null = templateWithVar;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithVar);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithVar),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -564,21 +472,10 @@ describe('useTemplateViewModel groups', () => {
       colorVariables: [],
       contrastVariables: [],
     };
-    let savedTemplate: Template | null = templateWithGroup;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithGroup);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithGroup),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -610,21 +507,10 @@ describe('useTemplateViewModel groups', () => {
       colorVariables: [],
       contrastVariables: [],
     };
-    let savedTemplate: Template | null = templateWithGroup;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithGroup);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithGroup),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -676,23 +562,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
   };
 
   it('enabling a catalog adds new mappings with groupRef set to catalog name and adds group only when new mappings added', async () => {
-    let savedTemplate: Template | null = null;
+    const api = createInMemoryFsElectronApi();
+    seedCatalogFile(api.files, catalogWithCommentToken);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: (_name: string, _version: string) =>
-        Promise.resolve(catalogWithCommentToken),
-      listCatalogs: () =>
-        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -741,23 +614,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       semanticTokenModifiers: ['readonly', 'static'],
       semanticTokenLanguages: ['typescript'],
     };
-    let savedTemplate: Template | null = null;
+    const apiSem = createInMemoryFsElectronApi();
+    seedCatalogFile(apiSem.files, catalogWithSemanticTypes);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: (_name: string, _version: string) =>
-        Promise.resolve(catalogWithSemanticTypes),
-      listCatalogs: () =>
-        Promise.resolve([{ name: 'semantic-cat', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiSem,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -812,21 +672,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       semanticTokenModifiers: ['readonly'],
       semanticTokenLanguages: [],
     };
-    let savedTemplate: Template | null = templateWithBaseSemantic;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithBaseSemantic);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? mockTemplate),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -864,21 +713,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       semanticTokenModifiers: ['readonly'],
       semanticTokenLanguages: [],
     };
-    let savedTemplate: Template | null = templateWithModifiers;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithModifiers);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithModifiers),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -916,21 +754,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       semanticTokenModifiers: ['readonly'],
       semanticTokenLanguages: [],
     };
-    let savedTemplate: Template | null = templateWithGroups;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithGroups);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithGroups),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -979,21 +806,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
         },
       ],
     };
-    let savedTemplate: Template | null = templateWithStarVariants;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithStarVariants);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithStarVariants),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1039,21 +855,10 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       semanticTokenModifiers: ['readonly', 'static'],
       semanticTokenLanguages: ['typescript'],
     };
-    let savedTemplate: Template | null = templateWithVariant;
+    const api = createInMemoryFsElectronApi();
+    seedTemplateFile(api.files, templateWithVariant);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithVariant),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1101,22 +906,11 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       ],
       groups: ['OtherGroup'],
     };
-    let savedTemplate: Template | null = templateWithExistingMapping;
+    const apiExisting = createInMemoryFsElectronApi();
+    seedCatalogFile(apiExisting.files, catalogWithCommentToken);
+    seedTemplateFile(apiExisting.files, templateWithExistingMapping);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(catalogWithCommentToken),
-      listCatalogs: () =>
-        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithExistingMapping),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiExisting,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1161,22 +955,11 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       ],
       groups: ['cat-a'],
     };
-    let savedTemplate: Template | null = templateWithCatalog;
+    const apiDisable = createInMemoryFsElectronApi();
+    seedCatalogFile(apiDisable.files, catalogWithCommentToken);
+    seedTemplateFile(apiDisable.files, templateWithCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(catalogWithCommentToken),
-      listCatalogs: () =>
-        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatalog),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiDisable,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1222,22 +1005,11 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       colorVariables: [{ key: 'primary', groupRef: 'cat-a' }],
       groups: ['cat-a'],
     };
-    let savedTemplate: Template | null = templateWithCatalogAndVariable;
+    const apiVar = createInMemoryFsElectronApi();
+    seedCatalogFile(apiVar.files, catalogWithCommentToken);
+    seedTemplateFile(apiVar.files, templateWithCatalogAndVariable);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(catalogWithCommentToken),
-      listCatalogs: () =>
-        Promise.resolve([{ name: 'cat-a', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatalogAndVariable),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiVar,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1276,31 +1048,13 @@ describe('catalog-named groups (toggleCatalog and changeCatalogVersion)', () => 
       ],
       groups: ['cat-a'],
     };
-    let savedTemplate: Template | null = templateWithCatalogV1;
-    const loadCatalogMock = (name: string, version: string): Promise<Catalog | null> => {
-      if (name !== 'cat-a') return Promise.resolve(null);
-      return version === '1.0.1'
-        ? Promise.resolve(catalogWithCommentAndKeyword)
-        : Promise.resolve(catalogWithCommentToken);
-    };
+    const catA101: Catalog = { ...catalogWithCommentAndKeyword, version: '1.0.1' };
+    const apiVersions = createInMemoryFsElectronApi();
+    seedCatalogFile(apiVersions.files, catalogWithCommentToken);
+    seedCatalogFile(apiVersions.files, catA101);
+    seedTemplateFile(apiVersions.files, templateWithCatalogV1);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: loadCatalogMock,
-      listCatalogs: () =>
-        Promise.resolve([
-          { name: 'cat-a', version: '1.0.0' },
-          { name: 'cat-a', version: '1.0.1' },
-        ]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatalogV1),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiVersions,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1342,25 +1096,23 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
       mappings: [],
       groups: [],
     };
-    let savedTemplate: Template | null = templateWithCatV100;
+    const minimalCat = (v: string): Catalog => ({
+      name: 'cat-a',
+      version: v,
+      type: 'manual',
+      locked: false,
+      sources: [],
+      tokens: [],
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    });
+    const apiOlder = createInMemoryFsElectronApi();
+    seedCatalogFile(apiOlder.files, minimalCat('1.0.0'));
+    seedCatalogFile(apiOlder.files, minimalCat('1.0.1'));
+    seedTemplateFile(apiOlder.files, templateWithCatV100);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () =>
-        Promise.resolve([
-          { name: 'cat-a', version: '1.0.0' },
-          { name: 'cat-a', version: '1.0.1' },
-        ]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatV100),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiOlder,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1387,25 +1139,23 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
       mappings: [],
       groups: [],
     };
-    let savedTemplate: Template | null = templateWithCatV101;
+    const minimalCatLatest = (v: string): Catalog => ({
+      name: 'cat-a',
+      version: v,
+      type: 'manual',
+      locked: false,
+      sources: [],
+      tokens: [],
+      semanticTokenTypes: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    });
+    const apiLatest = createInMemoryFsElectronApi();
+    seedCatalogFile(apiLatest.files, minimalCatLatest('1.0.0'));
+    seedCatalogFile(apiLatest.files, minimalCatLatest('1.0.1'));
+    seedTemplateFile(apiLatest.files, templateWithCatV101);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () =>
-        Promise.resolve([
-          { name: 'cat-a', version: '1.0.0' },
-          { name: 'cat-a', version: '1.0.1' },
-        ]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithCatV101),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiLatest,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -1471,32 +1221,14 @@ describe('includedCatalogNamesWithUpdates and updateAllCatalogsToLatest', () => 
       mappings: [],
       groups: [],
     };
-    let savedTemplate: Template | null = templateWithTwoCatalogs;
-    const loadCatalogMock = (name: string, version: string): Promise<Catalog | null> => {
-      if (name === 'cat-a') return version === '1.0.1' ? Promise.resolve(catAV101) : Promise.resolve(catA);
-      if (name === 'cat-b') return version === '1.0.2' ? Promise.resolve(catBV102) : Promise.resolve(catB);
-      return Promise.resolve(null);
-    };
+    const apiTwo = createInMemoryFsElectronApi();
+    seedCatalogFile(apiTwo.files, catA as Catalog);
+    seedCatalogFile(apiTwo.files, catAV101 as Catalog);
+    seedCatalogFile(apiTwo.files, catB as Catalog);
+    seedCatalogFile(apiTwo.files, catBV102 as Catalog);
+    seedTemplateFile(apiTwo.files, templateWithTwoCatalogs);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: loadCatalogMock,
-      listCatalogs: () =>
-        Promise.resolve([
-          { name: 'cat-a', version: '1.0.0' },
-          { name: 'cat-a', version: '1.0.1' },
-          { name: 'cat-b', version: '1.0.0' },
-          { name: 'cat-b', version: '1.0.2' },
-        ]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(mockTemplate),
-      saveTemplate: (t: Template) => {
-        savedTemplate = t;
-        return Promise.resolve();
-      },
-      loadTemplate: () => Promise.resolve(savedTemplate ?? templateWithTwoCatalogs),
-      listTemplates: () => Promise.resolve([{ name: 'test-template', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
+      ...apiTwo,
       fetchUrl: () => Promise.resolve(''),
     };
 

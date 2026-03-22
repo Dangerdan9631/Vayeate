@@ -2,7 +2,7 @@ import { container } from 'tsyringe';
 import { AppStateSetter } from '../../state/app-state-setter';
 import { StoreStateSetter } from '../../state/store-state-setter';
 import { AppStateGetter } from '../../state/app-state-getter';
-import { CatalogService } from '../../../gateway/services/catalog-service';
+import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 
 // Import all operation classes for wrapper functions
 import { SetCatalogRefs } from './catalog-list/setCatalogRefs';
@@ -115,7 +115,7 @@ export const createCatalog = (_setState: any, params: any) =>
   container.resolve(CreateCatalog).execute(params);
 
 export const refreshCatalogRefs = (_setStoreState: any) =>
-  new RefreshCatalogRefs(new StoreStateSetter(_setStoreState), container.resolve(CatalogService)).execute();
+  new RefreshCatalogRefs(new StoreStateSetter(_setStoreState), container.resolve(CatalogGateway)).execute();
 
 export const deleteCatalog = (name: any, version: any) =>
   container.resolve(DeleteCatalog).execute(name, version);
@@ -129,10 +129,10 @@ export const setCatalog = (_setState: any, catalog: any) =>
   new SetCatalog(new AppStateSetter(_setState)).execute(catalog);
 
 export const loadCatalog = (_setState: any, name: any, version: any) =>
-  new LoadCatalog(new AppStateSetter(_setState), container.resolve(CatalogService)).execute(name, version);
+  new LoadCatalog(new AppStateSetter(_setState), container.resolve(CatalogGateway)).execute(name, version);
 
 export const loadCatalogForDisplay = (_setState: any, name: any, version: any) =>
-  new LoadCatalogForDisplay(new AppStateSetter(_setState), container.resolve(CatalogService)).execute(
+  new LoadCatalogForDisplay(new AppStateSetter(_setState), container.resolve(CatalogGateway)).execute(
     name,
     version,
   );

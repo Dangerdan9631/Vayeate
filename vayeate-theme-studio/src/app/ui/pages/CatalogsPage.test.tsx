@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { AppProvider } from '../context/AppContext';
 import { CatalogsPage } from './CatalogsPage';
 import type { Catalog } from '../../../model/schemas';
+import { createInMemoryFsElectronApi, seedCatalogFile } from '../../../test-utils/electron-api-in-memory-fs';
 
 const mockCatalog: Catalog = {
   name: 'mock-catalog',
@@ -17,12 +18,9 @@ const mockCatalog: Catalog = {
 };
 
 beforeEach(() => {
+  const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
-    createCatalog: () => Promise.resolve(mockCatalog),
-    saveCatalog: () => Promise.resolve(),
-    loadCatalog: () => Promise.resolve(null),
-    listCatalogs: () => Promise.resolve([]),
-    deleteCatalog: () => Promise.resolve(),
+    ...api,
     fetchUrl: () => Promise.resolve(''),
   };
 });
@@ -54,12 +52,10 @@ describe('CatalogsPage', () => {
   });
 
   it('shows catalog details after creating a catalog through dialog', async () => {
+    const api = createInMemoryFsElectronApi();
+    seedCatalogFile(api.files, mockCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(mockCatalog),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(mockCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'mock-catalog', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 

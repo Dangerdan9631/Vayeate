@@ -1,13 +1,13 @@
 import { container, injectable } from 'tsyringe';
-import { ThemeService } from '../../../../gateway/services/theme-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 
 /** Delete one theme version from disk. Single responsibility: delete. */
 @injectable()
 export class DeleteTheme {
-  constructor(private readonly themeService: ThemeService) {}
+  constructor(private readonly themeGateway: ThemeGateway) {}
 
   async execute(name: string, version: string): Promise<void> {
-    await this.themeService.deleteTheme(name, version);
+    await this.themeGateway.deleteTheme(name, version);
   }
 }
 

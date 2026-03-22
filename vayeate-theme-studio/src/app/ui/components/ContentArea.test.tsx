@@ -6,6 +6,7 @@ import { ContentArea } from './ContentArea';
 import type { Theme } from '../../../model/schemas';
 import type { TabId } from '../tabs';
 import { ThemeActionType } from '../../actions/action-types';
+import { createInMemoryFsElectronApi, seedThemeFile } from '../../../test-utils/electron-api-in-memory-fs';
 
 const mockTheme: Theme = {
   name: 'test-theme',
@@ -34,19 +35,11 @@ const mockTheme: Theme = {
 };
 
 beforeEach(() => {
+  const api = createInMemoryFsElectronApi();
+  seedThemeFile(api.files, mockTheme);
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
-    createCatalog: () => Promise.resolve(null),
-    saveCatalog: () => Promise.resolve(),
-    loadCatalog: () => Promise.resolve(null),
-    listCatalogs: () => Promise.resolve([]),
-    deleteCatalog: () => Promise.resolve(),
+    ...api,
     fetchUrl: () => Promise.resolve(''),
-    listTemplates: () => Promise.resolve([]),
-    loadTemplate: () => Promise.resolve(null),
-    listThemes: () => Promise.resolve([{ name: 'test-theme', version: '1.0.0' }]),
-    loadTheme: () => Promise.resolve(mockTheme),
-    saveTheme: () => Promise.resolve(),
-    deleteTheme: () => Promise.resolve(),
     generateTheme: () => Promise.resolve({ darkPath: '', lightPath: '' }),
   };
 });

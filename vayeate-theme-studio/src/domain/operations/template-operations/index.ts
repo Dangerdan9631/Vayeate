@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { AppStateSetter } from '../../state/app-state-setter';
 import { StoreStateSetter } from '../../state/store-state-setter';
-import { TemplateService } from '../../../gateway/services/template-service';
+import { TemplateGateway } from '../../../gateway/template/template-gateway';
 
 // template-list
 export { LoadTemplateRefs } from './template-list/loadTemplateRefs';
@@ -102,10 +102,10 @@ export const setSelectedTemplateRef = (
 ) => new SetSelectedTemplateRefClass(new AppStateSetter(_setState)).execute(ref);
 
 export const refreshTemplateRefs = (_setStoreState: import('../../state/store-state-reducer').SetStoreState) =>
-  new RefreshTemplateRefsClass(new StoreStateSetter(_setStoreState), container.resolve(TemplateService)).execute();
+  new RefreshTemplateRefsClass(new StoreStateSetter(_setStoreState), container.resolve(TemplateGateway)).execute();
 
 export const loadTemplate = (_setState: SetState, name: string, version: string) =>
-  new LoadTemplateClass(new AppStateSetter(_setState), container.resolve(TemplateService)).execute(name, version);
+  new LoadTemplateClass(new AppStateSetter(_setState), container.resolve(TemplateGateway)).execute(name, version);
 
 export const saveTemplate = (template: import('../../../model/schemas').Template) =>
   container.resolve(SaveTemplateClass).execute(template);

@@ -15,18 +15,12 @@ function MenuBarWithProviders() {
 
 beforeEach(() => {
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
-    createCatalog: () => Promise.resolve(null),
-    saveCatalog: () => Promise.resolve(),
-    loadCatalog: () => Promise.resolve(null),
-    listCatalogs: () => Promise.resolve([]),
-    deleteCatalog: () => Promise.resolve(),
+    fsCreateFile: () => Promise.resolve(),
+    fsSaveFile: () => Promise.resolve(),
+    fsLoadFile: () => Promise.resolve(null),
+    fsDeleteFile: () => Promise.resolve(),
+    fsListFiles: () => Promise.resolve([]),
     fetchUrl: () => Promise.resolve(''),
-    listTemplates: () => Promise.resolve([]),
-    loadTemplate: () => Promise.resolve(null),
-    listThemes: () => Promise.resolve([]),
-    loadTheme: () => Promise.resolve(null),
-    saveTheme: () => Promise.resolve(),
-    deleteTheme: () => Promise.resolve(),
     generateTheme: () => Promise.resolve({ darkPath: '', lightPath: '' }),
     closeWindow: () => {},
     reloadWindow: () => {},

@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { ThemeService } from '../../../../gateway/services/theme-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { StoreStateSetter } from '../../../state/store-state-setter';
 
 /** Load theme refs from data dir into store (set theme entries from ref list). */
@@ -7,11 +7,11 @@ import { StoreStateSetter } from '../../../state/store-state-setter';
 export class LoadThemeRefs {
   constructor(
     private readonly storeStateSetter: StoreStateSetter,
-    private readonly themeService: ThemeService,
+    private readonly themeGateway: ThemeGateway,
   ) {}
 
   async execute(): Promise<void> {
-    const refs = await this.themeService.listThemes();
+    const refs = await this.themeGateway.listThemes();
     this.storeStateSetter.apply({
       type: 'SET_STORE_THEME_ENTRIES',
       entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),

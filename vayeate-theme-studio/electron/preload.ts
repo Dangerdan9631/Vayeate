@@ -5,30 +5,6 @@ const initialColorScheme: 'light' | 'dark' =
   _rawConfig?.colorScheme === 'light' ? 'light' : 'dark';
 
 const electronAPI = {
-  saveCatalog: (catalog: unknown) => ipcRenderer.invoke('catalog:save', catalog),
-  loadCatalog: (name: string, version: string) =>
-    ipcRenderer.invoke('catalog:load', name, version),
-  listCatalogs: () => ipcRenderer.invoke('catalog:list'),
-  createCatalog: (params: { name: string; type: 'manual' | 'remote' }) =>
-    ipcRenderer.invoke('catalog:create', params),
-  deleteCatalog: (name: string, version: string) =>
-    ipcRenderer.invoke('catalog:delete', name, version),
-  createTemplate: (params: { name: string }) =>
-    ipcRenderer.invoke('template:create', params),
-  saveTemplate: (template: unknown) => ipcRenderer.invoke('template:save', template),
-  loadTemplate: (name: string, version: string) =>
-    ipcRenderer.invoke('template:load', name, version),
-  listTemplates: () => ipcRenderer.invoke('template:list'),
-  deleteTemplate: (name: string, version: string) =>
-    ipcRenderer.invoke('template:delete', name, version),
-  createTheme: (params: { name: string }) =>
-    ipcRenderer.invoke('theme:create', params),
-  saveTheme: (theme: unknown) => ipcRenderer.invoke('theme:save', theme),
-  loadTheme: (name: string, version: string) =>
-    ipcRenderer.invoke('theme:load', name, version),
-  listThemes: () => ipcRenderer.invoke('theme:list'),
-  deleteTheme: (name: string, version: string) =>
-    ipcRenderer.invoke('theme:delete', name, version),
   generateTheme: (
     themeName: string,
     themeVersion: string,
@@ -99,6 +75,14 @@ const electronAPI = {
     ipcRenderer.invoke('undoV2:load', stackId) as Promise<string | null>,
   undoV2ClearPersisted: () => ipcRenderer.invoke('undoV2:clearPersisted'),
   saveConfig: (config: { colorScheme?: string }) => ipcRenderer.invoke('config:save', config),
+  fsCreateFile: (relativePath: string) => ipcRenderer.invoke('fs:createFile', relativePath),
+  fsSaveFile: (relativePath: string, contents: string) =>
+    ipcRenderer.invoke('fs:saveFile', relativePath, contents),
+  fsLoadFile: (relativePath: string) =>
+    ipcRenderer.invoke('fs:loadFile', relativePath) as Promise<string | null>,
+  fsDeleteFile: (relativePath: string) => ipcRenderer.invoke('fs:deleteFile', relativePath),
+  fsListFiles: (relativeDirPath: string) =>
+    ipcRenderer.invoke('fs:listFiles', relativeDirPath) as Promise<string[]>,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

@@ -5,6 +5,7 @@ import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useCatalogViewModel } from './use-catalog-viewmodel';
 import type { Catalog } from '../../model/schemas';
+import { createInMemoryFsElectronApi, seedCatalogFile } from '../../test-utils/electron-api-in-memory-fs';
 import { CatalogActionType } from '../actions/action-types';
 
 const mockCatalog: Catalog = {
@@ -20,12 +21,9 @@ const mockCatalog: Catalog = {
 };
 
 beforeEach(() => {
+  const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
-    createCatalog: () => Promise.resolve(mockCatalog),
-    saveCatalog: () => Promise.resolve(),
-    loadCatalog: () => Promise.resolve(null),
-    listCatalogs: () => Promise.resolve([]),
-    deleteCatalog: () => Promise.resolve(),
+    ...api,
     fetchUrl: () => Promise.resolve(''),
   };
 });
@@ -73,12 +71,9 @@ describe('useCatalogViewModel', () => {
   });
 
   it('loads catalog after CREATE_CATALOG succeeds', async () => {
+    const api = createInMemoryFsElectronApi();
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(mockCatalog),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(mockCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'test-catalog', version: '2.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -91,20 +86,20 @@ describe('useCatalogViewModel', () => {
 
     expect(result.current.catalog).not.toBeNull();
     expect(result.current.catalog?.name).toBe('test-catalog');
+    expect(result.current.catalog?.version).toBe('1.0.0');
     expect(result.current.isCreating).toBe(false);
   });
 
   it('returns isCreating true while CREATE_CATALOG is in progress', async () => {
-    let resolveCreate: (c: Catalog) => void;
-    const createPromise = new Promise<Catalog>((r) => {
-      resolveCreate = r;
+    let resolveSave: () => void;
+    const savePromise = new Promise<void>((r) => {
+      resolveSave = r;
+    });
+    const api = createInMemoryFsElectronApi({
+      fsSaveFile: () => savePromise,
     });
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => createPromise,
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -119,8 +114,8 @@ describe('useCatalogViewModel', () => {
     expect(result.current.isCreating).toBe(true);
 
     await act(async () => {
-      resolveCreate!(mockCatalog);
-      await createPromise;
+      resolveSave!();
+      await savePromise;
     });
 
     await act(async () => {
@@ -143,12 +138,10 @@ describe('useCatalogViewModel', () => {
       semanticTokenLanguages: [],
     };
 
+    const api = createInMemoryFsElectronApi();
+    seedCatalogFile(api.files, remoteCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(remoteCatalog),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(remoteCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'remote-cat', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve('`editor.background`'),
     };
 
@@ -166,13 +159,9 @@ describe('useCatalogViewModel', () => {
     expect(result.current.catalog).not.toBeNull();
     expect(result.current.catalog?.type).toBe('remote');
 
-    // Call syncCatalog - it should dispatch SYNC_CATALOG with the catalog
     act(() => {
       result.current.syncCatalog();
     });
-
-    // The action is enqueued; we verify the function doesn't throw and the catalog is passed
-    // The integration behavior (fetching tokens) is tested in catalog-sync.test.ts
   });
 
   it('addToken with semantic token parses selector and merges into semantic arrays without adding to tokens', async () => {
@@ -187,13 +176,14 @@ describe('useCatalogViewModel', () => {
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
     };
-    const saveCatalogMock = vi.fn().mockResolvedValue(undefined);
+    const api = createInMemoryFsElectronApi();
+    const fsSaveFile = vi.fn(async (_path: string, contents: string) => {
+      api.files.set(_path, contents);
+    });
+    api.fsSaveFile = fsSaveFile;
+    seedCatalogFile(api.files, baseCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(baseCatalog),
-      saveCatalog: saveCatalogMock,
-      loadCatalog: () => Promise.resolve(baseCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'sem-cat', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -216,8 +206,8 @@ describe('useCatalogViewModel', () => {
       await new Promise((r) => setTimeout(r, 150));
     });
 
-    expect(saveCatalogMock).toHaveBeenCalled();
-    const saved = saveCatalogMock.mock.calls[0][0] as Catalog;
+    expect(fsSaveFile).toHaveBeenCalled();
+    const saved = JSON.parse(fsSaveFile.mock.calls[0][1] as string) as Catalog;
     expect(saved.tokens).toEqual([]);
     expect(saved.semanticTokenTypes).toEqual(['foo']);
     expect(saved.semanticTokenModifiers).toEqual(['bar', 'baz']);
@@ -236,13 +226,14 @@ describe('useCatalogViewModel', () => {
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
     };
-    const saveCatalogMock = vi.fn().mockResolvedValue(undefined);
+    const api = createInMemoryFsElectronApi();
+    const fsSaveFile = vi.fn(async (_path: string, contents: string) => {
+      api.files.set(_path, contents);
+    });
+    api.fsSaveFile = fsSaveFile;
+    seedCatalogFile(api.files, baseCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(baseCatalog),
-      saveCatalog: saveCatalogMock,
-      loadCatalog: () => Promise.resolve(baseCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'sem-cat', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -263,7 +254,7 @@ describe('useCatalogViewModel', () => {
       await new Promise((r) => setTimeout(r, 150));
     });
 
-    const saved = saveCatalogMock.mock.calls[0][0] as Catalog;
+    const saved = JSON.parse(fsSaveFile.mock.calls[0][1] as string) as Catalog;
     expect(saved.semanticTokenTypes).toEqual([]);
     expect(saved.semanticTokenModifiers).toEqual(['bar']);
     expect(saved.semanticTokenLanguages).toEqual([]);
@@ -281,13 +272,11 @@ describe('useCatalogViewModel', () => {
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
     };
-    const saveCatalogMock = vi.fn().mockResolvedValue(undefined);
+    const fsSaveFile = vi.fn().mockResolvedValue(undefined);
+    const api = createInMemoryFsElectronApi({ fsSaveFile });
+    seedCatalogFile(api.files, baseCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(baseCatalog),
-      saveCatalog: saveCatalogMock,
-      loadCatalog: () => Promise.resolve(baseCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'sem-cat', version: '1.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -308,16 +297,14 @@ describe('useCatalogViewModel', () => {
       await new Promise((r) => setTimeout(r, 150));
     });
 
-    expect(saveCatalogMock).not.toHaveBeenCalled();
+    expect(fsSaveFile).not.toHaveBeenCalled();
   });
 
   it('exposes addSemanticFromSelector and setSemantic* callbacks', () => {
+    const api = createInMemoryFsElectronApi();
+    seedCatalogFile(api.files, mockCatalog);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(mockCatalog),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(mockCatalog),
-      listCatalogs: () => Promise.resolve([{ name: 'test-catalog', version: '2.0.0' }]),
-      deleteCatalog: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 

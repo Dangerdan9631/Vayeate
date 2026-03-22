@@ -1,14 +1,14 @@
 import { injectable } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
-import { TemplateService } from '../../../../gateway/services/template-service';
+import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 
 @injectable()
 export class LoadTemplateSnapshot {
-  constructor(private readonly templateService: TemplateService) {}
+  constructor(private readonly templateGateway: TemplateGateway) {}
 
   /** Load template from disk without updating state. Single responsibility: read. */
   async execute(name: string, version: string): Promise<Template | null> {
-    return this.templateService.loadTemplate(name, version);
+    return this.templateGateway.loadTemplate(name, version);
   }
 }
 

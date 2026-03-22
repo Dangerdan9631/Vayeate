@@ -1,12 +1,12 @@
 import { injectable } from 'tsyringe';
-import { TemplateService } from '../../../../gateway/services/template-service';
+import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 
 /** Delete one template version from disk. Single responsibility: delete. */
 @injectable()
 export class DeleteTemplate {
-  constructor(private readonly templateService: TemplateService) {}
+  constructor(private readonly templateGateway: TemplateGateway) {}
 
   async execute(name: string, version: string): Promise<void> {
-    await this.templateService.deleteTemplate(name, version);
+    await this.templateGateway.deleteTemplate(name, version);
   }
 }

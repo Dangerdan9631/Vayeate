@@ -1,14 +1,14 @@
 import { container, injectable } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ThemeService } from '../../../../gateway/services/theme-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import type { AppStateUpdate } from '../../../state/app-state';
 
 @injectable()
 export class CreateTheme {
-  constructor(private readonly themeService: ThemeService) {}
+  constructor(private readonly themeGateway: ThemeGateway) {}
 
   async execute(params: { name: string }): Promise<Theme> {
-    return await this.themeService.createTheme(params);
+    return await this.themeGateway.createTheme(params);
   }
 }
 

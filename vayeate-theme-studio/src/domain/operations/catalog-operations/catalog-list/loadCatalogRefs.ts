@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { CatalogService } from '../../../../gateway/services/catalog-service';
+import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { StoreStateSetter } from '../../../state/store-state-setter';
 
 /** Load catalog refs from data dir into store (set catalog entries from ref list). */
@@ -7,11 +7,11 @@ import { StoreStateSetter } from '../../../state/store-state-setter';
 export class LoadCatalogRefs {
   constructor(
     private readonly storeStateSetter: StoreStateSetter,
-    private readonly catalogService: CatalogService,
+    private readonly catalogGateway: CatalogGateway,
   ) {}
 
   async execute(): Promise<void> {
-    const refs = await this.catalogService.listCatalogs();
+    const refs = await this.catalogGateway.listCatalogs();
     this.storeStateSetter.apply({
       type: 'SET_STORE_CATALOG_ENTRIES',
       entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })),

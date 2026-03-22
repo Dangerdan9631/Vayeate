@@ -1,14 +1,14 @@
 import { container, injectable } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ThemeService } from '../../../../gateway/services/theme-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 
 /** Persist theme to disk only. Single responsibility: save. */
 @injectable()
 export class SaveTheme {
-  constructor(private readonly themeService: ThemeService) {}
+  constructor(private readonly themeGateway: ThemeGateway) {}
 
   async execute(theme: Theme): Promise<void> {
-    await this.themeService.saveTheme(theme);
+    await this.themeGateway.saveTheme(theme);
   }
 }
 

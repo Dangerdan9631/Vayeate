@@ -4,6 +4,7 @@ import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useThemeViewModel, mergeAssignmentsFromTemplate } from './use-theme-viewmodel';
 import type { Theme, Template } from '../../model/schemas';
+import { createInMemoryFsElectronApi, seedTemplateFile, seedThemeFile } from '../../test-utils/electron-api-in-memory-fs';
 import { ThemeActionType } from '../actions/action-types';
 
 const previewTokenRefsNull = {
@@ -41,22 +42,9 @@ const mockTheme: Theme = {
 };
 
 beforeEach(() => {
+  const api = createInMemoryFsElectronApi();
   (window as unknown as { electronAPI?: unknown }).electronAPI = {
-    createCatalog: () => Promise.resolve(null),
-    saveCatalog: () => Promise.resolve(),
-    loadCatalog: () => Promise.resolve(null),
-    listCatalogs: () => Promise.resolve([]),
-    deleteCatalog: () => Promise.resolve(),
-    createTemplate: () => Promise.resolve(null),
-    saveTemplate: () => Promise.resolve(),
-    loadTemplate: () => Promise.resolve(null),
-    listTemplates: () => Promise.resolve([]),
-    deleteTemplate: () => Promise.resolve(),
-    createTheme: () => Promise.resolve(mockTheme),
-    saveTheme: () => Promise.resolve(),
-    loadTheme: () => Promise.resolve(null),
-    listThemes: () => Promise.resolve([]),
-    deleteTheme: () => Promise.resolve(),
+    ...api,
     fetchUrl: () => Promise.resolve(''),
   };
 });
@@ -101,21 +89,7 @@ describe('useThemeViewModel', () => {
 
   it('loads theme after CREATE_THEME succeeds', async () => {
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(null),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(null),
-      listTemplates: () => Promise.resolve([]),
-      deleteTemplate: () => Promise.resolve(),
-      createTheme: () => Promise.resolve(mockTheme),
-      saveTheme: () => Promise.resolve(),
-      loadTheme: () => Promise.resolve(mockTheme),
-      listThemes: () => Promise.resolve([{ name: 'test-theme', version: '1.0.0' }]),
-      deleteTheme: () => Promise.resolve(),
+      ...createInMemoryFsElectronApi(),
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -156,23 +130,11 @@ describe('useThemeViewModel', () => {
       semanticTokenLanguages: [],
     };
 
+    const api = createInMemoryFsElectronApi();
+    seedThemeFile(api.files, themeWithOneVar);
+    seedTemplateFile(api.files, templateWithTwoVars);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(null),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: (_name: string, _version: string) =>
-        Promise.resolve(templateWithTwoVars),
-      listTemplates: () => Promise.resolve([{ name: 'tpl', version: '1.0.0' }]),
-      deleteTemplate: () => Promise.resolve(),
-      createTheme: () => Promise.resolve(mockTheme),
-      saveTheme: () => Promise.resolve(),
-      loadTheme: () => Promise.resolve(themeWithOneVar),
-      listThemes: () => Promise.resolve([{ name: 'test-theme', version: '1.0.0' }]),
-      deleteTheme: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
 
@@ -368,22 +330,11 @@ describe('useThemeViewModel hue adjustment', () => {
   };
 
   beforeEach(() => {
+    const api = createInMemoryFsElectronApi();
+    seedThemeFile(api.files, themeWithColors);
+    seedTemplateFile(api.files, templateForHue);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(null),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(templateForHue),
-      listTemplates: () => Promise.resolve([]),
-      deleteTemplate: () => Promise.resolve(),
-      createTheme: () => Promise.resolve(themeWithColors),
-      saveTheme: () => Promise.resolve(),
-      loadTheme: () => Promise.resolve(themeWithColors),
-      listThemes: () => Promise.resolve([{ name: 'hue-theme', version: '1.0.0' }]),
-      deleteTheme: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
   });
@@ -643,22 +594,11 @@ describe('useThemeViewModel hue adjustment with useDarkForLight', () => {
   };
 
   beforeEach(() => {
+    const api = createInMemoryFsElectronApi();
+    seedThemeFile(api.files, themeWithUseDark);
+    seedTemplateFile(api.files, templateForUseDark);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(null),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(templateForUseDark),
-      listTemplates: () => Promise.resolve([]),
-      deleteTemplate: () => Promise.resolve(),
-      createTheme: () => Promise.resolve(themeWithUseDark),
-      saveTheme: () => Promise.resolve(),
-      loadTheme: () => Promise.resolve(themeWithUseDark),
-      listThemes: () => Promise.resolve([{ name: 'use-dark-theme', version: '1.0.0' }]),
-      deleteTheme: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
   });
@@ -712,22 +652,11 @@ describe('useThemeViewModel variable selection', () => {
   };
 
   beforeEach(() => {
+    const api = createInMemoryFsElectronApi();
+    seedThemeFile(api.files, themeWithTwoColors);
+    seedTemplateFile(api.files, templateForSel);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(null),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(templateForSel),
-      listTemplates: () => Promise.resolve([]),
-      deleteTemplate: () => Promise.resolve(),
-      createTheme: () => Promise.resolve(themeWithTwoColors),
-      saveTheme: () => Promise.resolve(),
-      loadTheme: () => Promise.resolve(themeWithTwoColors),
-      listThemes: () => Promise.resolve([{ name: 'sel-theme', version: '1.0.0' }]),
-      deleteTheme: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
   });
@@ -882,22 +811,11 @@ describe('useThemeViewModel palette color picker', () => {
   };
 
   beforeEach(() => {
+    const api = createInMemoryFsElectronApi();
+    seedThemeFile(api.files, themeWithTwoColors);
+    seedTemplateFile(api.files, templateForPal);
     (window as unknown as { electronAPI?: unknown }).electronAPI = {
-      createCatalog: () => Promise.resolve(null),
-      saveCatalog: () => Promise.resolve(),
-      loadCatalog: () => Promise.resolve(null),
-      listCatalogs: () => Promise.resolve([]),
-      deleteCatalog: () => Promise.resolve(),
-      createTemplate: () => Promise.resolve(null),
-      saveTemplate: () => Promise.resolve(),
-      loadTemplate: () => Promise.resolve(templateForPal),
-      listTemplates: () => Promise.resolve([]),
-      deleteTemplate: () => Promise.resolve(),
-      createTheme: () => Promise.resolve(themeWithTwoColors),
-      saveTheme: () => Promise.resolve(),
-      loadTheme: () => Promise.resolve(themeWithTwoColors),
-      listThemes: () => Promise.resolve([{ name: 'pal-theme', version: '1.0.0' }]),
-      deleteTheme: () => Promise.resolve(),
+      ...api,
       fetchUrl: () => Promise.resolve(''),
     };
   });

@@ -1,26 +1,56 @@
 import { app, BrowserWindow, desktopCapturer, ipcMain, net, screen } from 'electron';
 import { rmSync, mkdirSync, readFileSync, existsSync } from 'node:fs';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { join, dirname } from 'node:path';
+import { readFile, writeFile, mkdir, unlink, readdir, stat } from 'node:fs/promises';
+import { join, dirname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+/** Theme Studio package root (contains data/, electron/). */
+const PROJECT_ROOT = resolve(join(__dirname, '..'));
+
 /** Repository-relative data directory: vayeate-theme-studio/data */
 const DATA_DIR = join(__dirname, '..', 'data');
-import { createCatalogRepository } from '../src/gateway/data/catalog-repository';
+
+function resolveSafeProjectRelativePath(rel: string, kind: 'file' | 'dir'): string {
+  const trimmed = rel.replace(/\\/g, '/').trim();
+  if (!trimmed) {
+    throw new Error('Invalid path');
+  }
+  if (trimmed.startsWith('/') || /^[a-zA-Z]:/.test(trimmed)) {
+    throw new Error('Path must be relative');
+  }
+  let pathPart = trimmed;
+  if (kind === 'file') {
+    if (pathPart.endsWith('/') || pathPart.endsWith('\\')) {
+      throw new Error('Invalid file path');
+    }
+  } else {
+    pathPart = pathPart.replace(/[/\\]+$/, '');
+  }
+  const segments = pathPart.split('/').filter((s) => s && s !== '.');
+  for (const s of segments) {
+    if (s === '..') {
+      throw new Error('Invalid path segment');
+    }
+  }
+  const rootResolved = resolve(PROJECT_ROOT);
+  let abs = rootResolved;
+  for (const s of segments) {
+    abs = join(abs, s);
+  }
+  const resolved = resolve(abs);
+  const prefix = rootResolved.endsWith(sep) ? rootResolved : rootResolved + sep;
+  if (resolved !== rootResolved && !resolved.toLowerCase().startsWith(prefix.toLowerCase())) {
+    throw new Error('Path escapes project root');
+  }
+  return resolved;
+}
 import { createTemplateRepository } from '../src/gateway/data/template-repository';
 import { createThemeRepository } from '../src/gateway/data/theme-repository';
-import {
-  createCatalogWithParams,
-  createTemplateWithParams,
-  createThemeWithParams,
-} from '../src/model/factories';
 import { getPreviewsDir, loadAllPreviews } from './preview-controller';
 import { generateThemePair } from '../src/domain/utils/theme-generator';
 import { exportThemePair } from '../src/domain/utils/theme-exporter';
-import type { Catalog, Template, Theme } from '../src/model/schemas';
-
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 /** Serialize log args for IPC so main process logs appear in renderer DevTools console. No-op if window is closed/destroyed. */
@@ -86,10 +116,6 @@ function sanitizeDocId(docId: string): string {
 }
 
 let mainWindow: BrowserWindow | null = null;
-
-function getCatalogRepository() {
-  return createCatalogRepository(DATA_DIR);
-}
 
 function getTemplateRepository() {
   return createTemplateRepository(DATA_DIR);
@@ -161,76 +187,46 @@ app.whenReady().then(async () => {
   rmSync(undoStacksDir, { recursive: true, force: true });
   mkdirSync(undoStacksDir, { recursive: true });
 
-  const repo = getCatalogRepository();
   const templateRepo = getTemplateRepository();
   const themeRepo = getThemeRepository();
 
-  ipcMain.handle('catalog:create', async (_event, params: { name: string; type: 'manual' | 'remote' }) => {
-    const catalog = createCatalogWithParams(params);
-    await repo.saveCatalog(catalog);
-    return catalog;
+  ipcMain.handle('fs:createFile', async (_event, rel: string) => {
+    const abs = resolveSafeProjectRelativePath(rel, 'file');
+    await mkdir(dirname(abs), { recursive: true });
+    await writeFile(abs, '', { encoding: 'utf-8', flag: 'wx' });
   });
 
-  ipcMain.handle('catalog:save', async (_event, catalog: Catalog) => {
-    await repo.saveCatalog(catalog);
+  ipcMain.handle('fs:saveFile', async (_event, rel: string, contents: string) => {
+    const abs = resolveSafeProjectRelativePath(rel, 'file');
+    await mkdir(dirname(abs), { recursive: true });
+    await writeFile(abs, contents, { encoding: 'utf-8' });
   });
 
-  ipcMain.handle('catalog:load', async (_event, name: string, version: string) => {
-    const result = await repo.loadCatalog(name, version);
-    return result;
+  ipcMain.handle('fs:loadFile', async (_event, rel: string): Promise<string | null> => {
+    const abs = resolveSafeProjectRelativePath(rel, 'file');
+    try {
+      return await readFile(abs, 'utf-8');
+    } catch (e: unknown) {
+      if (e && typeof e === 'object' && 'code' in e && (e as NodeJS.ErrnoException).code === 'ENOENT') {
+        return null;
+      }
+      throw e;
+    }
   });
 
-  ipcMain.handle('catalog:list', async () => {
-    const refs = await repo.listCatalogs();
-    return refs;
+  ipcMain.handle('fs:deleteFile', async (_event, rel: string) => {
+    const abs = resolveSafeProjectRelativePath(rel, 'file');
+    await unlink(abs);
   });
 
-  ipcMain.handle('catalog:delete', async (_event, name: string, version: string) => {
-    await repo.deleteCatalog(name, version);
-  });
-
-  ipcMain.handle('template:create', async (_event, params: { name: string }) => {
-    const template = createTemplateWithParams(params);
-    await templateRepo.saveTemplate(template);
-    return template;
-  });
-
-  ipcMain.handle('template:save', async (_event, template: Template) => {
-    await templateRepo.saveTemplate(template);
-  });
-
-  ipcMain.handle('template:load', async (_event, name: string, version: string) => {
-    const result = await templateRepo.loadTemplate(name, version);
-    return result;
-  });
-
-  ipcMain.handle('template:list', async () => {
-    const refs = await templateRepo.listTemplates();
-    return refs;
-  });
-
-  ipcMain.handle('template:delete', async (_event, name: string, version: string) => {
-    await templateRepo.deleteTemplate(name, version);
-  });
-
-  ipcMain.handle('theme:create', async (_event, params: { name: string }) => {
-    const theme = createThemeWithParams(params);
-    await themeRepo.saveTheme(theme);
-    return theme;
-  });
-
-  ipcMain.handle('theme:save', async (_event, theme: Theme) => {
-    await themeRepo.saveTheme(theme);
-  });
-
-  ipcMain.handle('theme:load', async (_event, name: string, version: string) => {
-    const result = await themeRepo.loadTheme(name, version);
-    return result;
-  });
-
-  ipcMain.handle('theme:list', async () => {
-    const refs = await themeRepo.listThemes();
-    return refs;
+  ipcMain.handle('fs:listFiles', async (_event, rel: string): Promise<string[]> => {
+    const abs = resolveSafeProjectRelativePath(rel, 'dir');
+    const st = await stat(abs);
+    if (!st.isDirectory()) {
+      throw new Error('Not a directory');
+    }
+    const entries = await readdir(abs, { withFileTypes: true });
+    return entries.filter((d) => d.isFile()).map((d) => d.name);
   });
 
   /** All screen sources with display bounds for multi-monitor color picker. */
@@ -278,10 +274,6 @@ app.whenReady().then(async () => {
       sources: result,
       fullBounds: { x: minX, y: minY, width: maxX - minX, height: maxY - minY },
     };
-  });
-
-  ipcMain.handle('theme:delete', async (_event, name: string, version: string) => {
-    await themeRepo.deleteTheme(name, version);
   });
 
   const undoV2Dir = getUndoV2Dir();
