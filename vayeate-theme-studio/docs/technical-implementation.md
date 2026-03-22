@@ -61,7 +61,7 @@ The app uses a strictly layered architecture enforced by `ts-arch` tests:
   - `viewmodel/` — State → UI derivation hooks.
   - `ui/` — React components and context providers. `AppContext.tsx` is a lean provider (~150 lines).
 
-All user-triggered mutations flow through the `ActionQueue`. `AppContext` delegates to `createActionProcessor` (handler-registry), which routes by action prefix to the correct domain handler (exhaustive switch), which invokes a controller.
+All user-triggered mutations flow through the `ActionQueue`. `AppContext` resolves the tsyringe `ActionProcessor` (handler-registry) and calls `process(action, deps)`, which routes by action prefix to the correct domain handler (exhaustive switch), which invokes a controller.
 
 ---
 

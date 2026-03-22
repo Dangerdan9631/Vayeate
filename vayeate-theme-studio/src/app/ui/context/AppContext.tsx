@@ -33,7 +33,8 @@ import {
   ThemesStateContext,
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
-import { createActionProcessor } from '../../handlers/handler-registry';
+import { handlerDepsSourceToken, type IHandlerDepsSource } from '../../di/handler-deps-source';
+import type { HandlerDeps } from '../../handlers/handler-types';
 import { getWindowEventTransport } from './window-event-transport';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
@@ -110,6 +111,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
   container.registerInstance(UiStateSetter, uiStateSetter);
   container.registerInstance(StoreStateSetter, storeStateSetter);
 
+  const handlerDepsRef = useRef<HandlerDeps>({
+    setState,
+    getState,
+    setUiState,
+    setStoreState,
+  });
+  handlerDepsRef.current = { setState, getState, setUiState, setStoreState };
+
+  const handlerDepsSource = useMemo<IHandlerDepsSource>(
+    () => ({
+      get: () => handlerDepsRef.current,
+    }),
+    [],
+  );
+  container.registerInstance(handlerDepsSourceToken, handlerDepsSource);
+
   const queueRef = useRef<ActionQueue | null>(null);
 
   useEffect(() => {
@@ -155,8 +172,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const dispatch = useCallback((action: AppActionV2): Promise<void> => {
     if (!queueRef.current) {
-      const processor = createActionProcessor({ setState, getState, setUiState, setStoreState });
-      const queue = new ActionQueue(processor);
+      const queue = container.resolve(ActionQueue);
       queue.onQueueStatus = (status) =>
         setUiState({
           type: 'SET_UI_QUEUE_STATUS',
@@ -166,7 +182,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       queueRef.current = queue;
     }
     return queueRef.current.enqueue(action);
-  }, [getState, setState, setUiState, setStoreState]);
+  }, [setUiState]);
 
   const value: AppContextValue = { state, dispatch, setUiState, setWindowState };
 

@@ -17,7 +17,7 @@
 - Action routing lives exclusively in `app/handlers/`. **Never add business logic to handlers** — they route to controllers only.
 - Each domain has one handler file: `app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`.
 - Each handler uses an exhaustive `switch` on its domain-scoped action subset (e.g. `CatalogAction`). TypeScript will error if a case is missing.
-- `handler-registry.ts` exports `createActionProcessor(deps)` which routes by action type prefix to the correct handler.
+- `handler-registry.ts` exports the `@singleton()` `ActionProcessor` class; `process(action, deps)` routes by action type prefix to the correct handler (`deps` = React `HandlerDeps`).
 - `AppContext.tsx` is a lean provider; it must not contain action processor switch cases.
 
 ## Action naming conventions

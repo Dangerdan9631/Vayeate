@@ -80,6 +80,7 @@ Cursor skills (vayeate-theme-studio):
   - `vayeate-theme-studio/src/domain/*` (controllers, core, operations, state, utils; domain must not depend on app)
   - `vayeate-theme-studio/src/gateway/` (per-area gateways + `services/` for IPC; gateway must not depend on domain; app must not depend on gateway)
   - `vayeate-theme-studio/src/app/actions/` (AppActionV2 union + ActionQueue)
+  - `vayeate-theme-studio/src/app/di/` (tsyringe + `tsyringe-react` re-exports; e.g. `useResolve`, `ActionProcessor`)
   - `vayeate-theme-studio/src/app/handlers/` (per-domain handler files + handler-registry; routes actions to controllers; must NOT depend on gateway, operations, or validations directly)
   - `vayeate-theme-studio/src/app/viewmodel/` (state → UI derivation hooks)
   - `vayeate-theme-studio/src/app/ui/` (React components, pages, lean AppContext provider)

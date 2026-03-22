@@ -47,7 +47,7 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 ## Data Flow
 
 ```
-UI dispatch(action) → ActionQueue.enqueue → AppContext processor → createActionProcessor (handler-registry)
+UI dispatch(action) → ActionQueue.enqueue → AppContext processor → ActionProcessor.process (handler-registry)
                                                                          → domain handler (exhaustive switch)
                                                                               → Controller → Operations
                                                                                                 ↓
@@ -75,11 +75,11 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 
 - `electron/main.ts` — IPC handlers, BrowserWindow, delegates to controllers
 - `electron/preload.ts` — contextBridge exposes `electronAPI`
-- `src/app/ui/context/AppContext.tsx` — lean provider (~150 lines): useReducer, context providers, window event listeners, queue setup; calls `createActionProcessor` from handler-registry
-- `src/app/actions/action-queue.ts` — FIFO queue, sequential async processing
+- `src/app/ui/context/AppContext.tsx` — lean provider (~150 lines): useReducer, context providers, window event listeners, queue setup; resolves `ActionProcessor` from tsyringe and calls `process(action, deps)`
+- `src/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor` + `handlerDepsSourceToken`; FIFO sequential async processing
 - `src/app/actions/action-types.ts` — Discriminated union `AppActionV2`. The canonical list of all app action event names.
 - `src/app/handlers/handler-types.ts` — `HandlerDeps`, domain `Extract` aliases, `ActionHandler<T>`
-- `src/app/handlers/handler-registry.ts` — `createActionProcessor(deps)` routes to domain handlers via `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`)
+- `src/app/handlers/handler-registry.ts` — `@singleton()` `ActionProcessor` (injected domain handlers) routes by `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`); `process(action, deps)` receives React `HandlerDeps`
 - `src/app/handlers/{app,catalog,template,theme}-handler.ts` — per-domain exhaustive switches; route to controllers
 - `src/domain/` — Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
 - `src/domain/validations/` — Validators (one per file, subdirectories per concern). Controllers run validations before operations.

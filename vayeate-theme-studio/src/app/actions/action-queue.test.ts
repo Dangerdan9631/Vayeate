@@ -1,14 +1,33 @@
-import { ActionQueue, type ActionProcessor } from './action-queue';
+import { container } from 'tsyringe';
+import { ActionQueue } from './action-queue';
 import type { AppActionV2 } from './action-types';
 import type { AppStateUpdate } from '../../domain/state/app-state';
 import type { QueueStatus } from './action-queue';
 import type { UiStateUpdate } from '../../domain/state/ui-state-reducer';
 import { AppActionType } from './action-types';
+import { handlerDepsSourceToken } from '../di/handler-deps-source';
+import type { HandlerDeps } from '../handlers/handler-types';
+import { ActionProcessor } from '../handlers/handler-registry';
+
+function noopDeps(): HandlerDeps {
+  return {
+    setState: () => {},
+    getState: () => {
+      throw new Error('not used');
+    },
+    setUiState: () => {},
+    setStoreState: () => {},
+  };
+}
 
 describe('ActionQueue', () => {
+  beforeEach(() => {
+    container.clearInstances();
+  });
+
   it('processes actions in FIFO order and calls setUiState with correct updates for tab clicks', async () => {
     const received: { action: AppActionV2; uiUpdates: UiStateUpdate[] }[] = [];
-    const processor: ActionProcessor = async (action) => {
+    const process = async (action: AppActionV2, _deps: HandlerDeps) => {
       const uiUpdates: UiStateUpdate[] = [];
       const setUiState = (update: UiStateUpdate) => uiUpdates.push(update);
       if (action.type === AppActionType.AppRibbonTabButtonOnClick) {
@@ -16,8 +35,15 @@ describe('ActionQueue', () => {
       }
       received.push({ action, uiUpdates });
     };
+    container.registerInstance(
+      ActionProcessor,
+      { process } as unknown as ActionProcessor,
+    );
+    container.registerInstance(handlerDepsSourceToken, {
+      get: noopDeps,
+    });
 
-    const queue = new ActionQueue(processor);
+    const queue = container.resolve(ActionQueue);
 
     queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'templates' });
     queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'themes' });
@@ -33,15 +59,22 @@ describe('ActionQueue', () => {
 
   it('processes next action only after previous processor completes', async () => {
     const order: string[] = [];
-    const processor: ActionProcessor = async (action) => {
+    const process = async (action: AppActionV2, _deps: HandlerDeps) => {
       if (action.type === AppActionType.AppRibbonTabButtonOnClick) {
         order.push(`start-${action.tabId as string}`);
         await new Promise((r) => setTimeout(r, 20));
         order.push(`end-${action.tabId as string}`);
       }
     };
+    container.registerInstance(
+      ActionProcessor,
+      { process } as unknown as ActionProcessor,
+    );
+    container.registerInstance(handlerDepsSourceToken, {
+      get: noopDeps,
+    });
 
-    const queue = new ActionQueue(processor);
+    const queue = container.resolve(ActionQueue);
 
     queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'catalogs' });
     queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'templates' });
@@ -53,11 +86,18 @@ describe('ActionQueue', () => {
 
   it('calls onQueueStatus with processing state and queue length', async () => {
     const statuses: QueueStatus[] = [];
-    const processor: ActionProcessor = async (_action) => {
+    const process = async (_action: AppActionV2, _deps: HandlerDeps) => {
       await new Promise((r) => setTimeout(r, 10));
     };
+    container.registerInstance(
+      ActionProcessor,
+      { process } as unknown as ActionProcessor,
+    );
+    container.registerInstance(handlerDepsSourceToken, {
+      get: noopDeps,
+    });
 
-    const queue = new ActionQueue(processor);
+    const queue = container.resolve(ActionQueue);
     queue.onQueueStatus = (s) => statuses.push({ ...s });
 
     queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'catalogs' });
@@ -74,13 +114,20 @@ describe('ActionQueue', () => {
   it('processor uses setState from closure to apply updates', async () => {
     const updates: AppStateUpdate[] = [];
     const setState = (u: AppStateUpdate) => updates.push(u);
-    const processor: ActionProcessor = async (action) => {
+    const process = async (action: AppActionV2, deps: HandlerDeps) => {
       if (action.type === AppActionType.AppAppOnLoad) {
-        setState({ type: 'SET_CATALOG', catalog: null });
+        deps.setState({ type: 'SET_CATALOG', catalog: null });
       }
     };
+    container.registerInstance(
+      ActionProcessor,
+      { process } as unknown as ActionProcessor,
+    );
+    container.registerInstance(handlerDepsSourceToken, {
+      get: () => ({ ...noopDeps(), setState }),
+    });
 
-    const queue = new ActionQueue(processor);
+    const queue = container.resolve(ActionQueue);
 
     queue.enqueue({ type: AppActionType.AppAppOnLoad });
 

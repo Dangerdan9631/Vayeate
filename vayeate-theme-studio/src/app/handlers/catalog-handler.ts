@@ -1,109 +1,165 @@
-import * as catalogController from '../../domain/controllers/catalog-controller';
+import { injectable } from 'tsyringe';
+import {
+  AddNewSourceController,
+  AddNewTokenController,
+  BulkAddTokensController,
+  CloseBulkAddDialogController,
+  CloseCatalogCreateDialogController,
+  DeleteCatalogVersionController,
+  LockCatalogController,
+  OpenBulkAddDialogController,
+  OpenCatalogCreateDialogController,
+  RemoveSourceController,
+  RemoveTokenController,
+  RevertCatalogToVersionController,
+  SaveCatalogController,
+  SetCatalogBulkAddTextController,
+  SetCatalogCreateDialogNameController,
+  SetCatalogCreateDialogTypeController,
+  SetCatalogNewSourceTokenTypeController,
+  SetCatalogNewSourceTypeController,
+  SetCatalogNewSourceUrlController,
+  SetCatalogNewTokenKeyController,
+  SetCatalogTokensSearchTextController,
+  SetSelectedCatalogController,
+  SyncCatalogController,
+  UpdateSourceTokenTypeController,
+  UpdateSourceTypeController,
+  UpdateSourceUrlController,
+  UpdateTokenKeyController,
+  LoadCatalogPageController,
+} from '../../domain/controllers/catalog-controller';
 import type { ActionHandler, CatalogAction, HandlerDeps } from './handler-types';
 import { CatalogActionType } from '../actions/action-types';
-import { container } from 'tsyringe';
 
-export const handleCatalogAction: ActionHandler<CatalogAction> = async (
-  action: CatalogAction,
-  _deps: HandlerDeps,
-): Promise<void> => {
-  switch (action.type) {
-    case CatalogActionType.CatalogPageOnLoad:
-      await container.resolve(catalogController.LoadCatalogPageController).run();
-      break;
-    case CatalogActionType.CatalogCatalogsListOnCommit:
-      await container.resolve(catalogController.SetSelectedCatalogController).run(action.name, action.version);
-      break;
-    case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
-      container.resolve(catalogController.OpenCatalogCreateDialogController).run();
-      break;
-    case CatalogActionType.CatalogCreateDialogOnOpen:
-      container.resolve(catalogController.OpenCatalogCreateDialogController).run();
-      break;
-    case CatalogActionType.CatalogCreateDialogNameTextOnChange:
-      container.resolve(catalogController.SetCatalogCreateDialogNameController).run(action.value);
-      break;
-    case CatalogActionType.CatalogCreateDialogTypeListOnCommit:
-      container.resolve(catalogController.SetCatalogCreateDialogTypeController).run(action.value);
-      break;
-    case CatalogActionType.CatalogCreateDialogCancelButtonOnClick:
-      await container.resolve(catalogController.CloseCatalogCreateDialogController).run('Cancel');
-      break;
-    case CatalogActionType.CatalogCreateDialogOkButtonOnClick:
-      await container.resolve(catalogController.CloseCatalogCreateDialogController).run('OK');
-      break;
-    case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
-      await container.resolve(catalogController.DeleteCatalogVersionController).run(action.name, action.version);
-      break;
-    case CatalogActionType.CatalogDetailsSyncButtonOnClick:
-      await container.resolve(catalogController.SyncCatalogController).run(action.catalog);
-      break;
-    case CatalogActionType.CatalogDetailsLockButtonOnClick:
-      await container.resolve(catalogController.LockCatalogController).run();
-      break;
-    case CatalogActionType.CatalogDetailsRevertButtonOnClick:
-      await container.resolve(catalogController.RevertCatalogToVersionController).run(action.name, action.version);
-      break;
-    case CatalogActionType.CatalogDetailsSaveCatalog:
-      await container.resolve(catalogController.SaveCatalogController).run(action.catalog);
-      break;
-    case CatalogActionType.CatalogDetailsSourceUrlTextOnCommit:
-      await container.resolve(catalogController.UpdateSourceUrlController).run(action.sourceIndex, action.value);
-      break;
-    case CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit:
-      await container
-        .resolve(catalogController.UpdateSourceTokenTypeController)
-        .run(action.sourceIndex, action.value);
-      break;
-    case CatalogActionType.CatalogDetailsSourceTypeListOnCommit:
-      await container.resolve(catalogController.UpdateSourceTypeController).run(action.sourceIndex, action.value);
-      break;
-    case CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick:
-      await container.resolve(catalogController.RemoveSourceController).run(action.sourceIndex);
-      break;
-    case CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange:
-      container.resolve(catalogController.SetCatalogNewSourceUrlController).run(action.value);
-      break;
-    case CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit:
-      container.resolve(catalogController.SetCatalogNewSourceTokenTypeController).run(action.value);
-      break;
-    case CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit:
-      container.resolve(catalogController.SetCatalogNewSourceTypeController).run(action.value);
-      break;
-    case CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick:
-      await container.resolve(catalogController.AddNewSourceController).run();
-      break;
-    case CatalogActionType.CatalogTokensSearchTextOnChange:
-      container.resolve(catalogController.SetCatalogTokensSearchTextController).run(action.value);
-      break;
-    case CatalogActionType.CatalogTokensBulkAddButtonOnClick:
-      container.resolve(catalogController.OpenBulkAddDialogController).run();
-      break;
-    case CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit:
-      await container
-        .resolve(catalogController.UpdateTokenKeyController)
-        .run(action.key, action.value, action.tokenType);
-      break;
-    case CatalogActionType.CatalogTokensTokenRemoveButtonOnClick:
-      await container.resolve(catalogController.RemoveTokenController).run(action.key, action.tokenType);
-      break;
-    case CatalogActionType.CatalogTokensNewTokenKeyTextOnChange:
-      container.resolve(catalogController.SetCatalogNewTokenKeyController).run(action.value);
-      break;
-    case CatalogActionType.CatalogTokensNewTokenAddButtonOnClick:
-      await container.resolve(catalogController.AddNewTokenController).run(action.tokenType, action.key);
-      break;
-    case CatalogActionType.CatalogBulkAddTokensDialogOnOpen:
-      container.resolve(catalogController.OpenBulkAddDialogController).run();
-      break;
-    case CatalogActionType.CatalogBulkAddTokensTextOnChange:
-      container.resolve(catalogController.SetCatalogBulkAddTextController).run(action.value);
-      break;
-    case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
-      container.resolve(catalogController.CloseBulkAddDialogController).run();
-      break;
-    case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
-      await container.resolve(catalogController.BulkAddTokensController).run();
-      break;
+@injectable()
+export class CatalogActionHandler implements ActionHandler<CatalogAction> {
+  constructor(
+    private readonly addNewSource: AddNewSourceController,
+    private readonly addNewToken: AddNewTokenController,
+    private readonly bulkAddTokens: BulkAddTokensController,
+    private readonly closeBulkAddDialog: CloseBulkAddDialogController,
+    private readonly closeCatalogCreateDialog: CloseCatalogCreateDialogController,
+    private readonly deleteCatalogVersion: DeleteCatalogVersionController,
+    private readonly lockCatalog: LockCatalogController,
+    private readonly openBulkAddDialog: OpenBulkAddDialogController,
+    private readonly openCatalogCreateDialog: OpenCatalogCreateDialogController,
+    private readonly removeSource: RemoveSourceController,
+    private readonly removeToken: RemoveTokenController,
+    private readonly revertCatalogToVersion: RevertCatalogToVersionController,
+    private readonly saveCatalog: SaveCatalogController,
+    private readonly setCatalogBulkAddText: SetCatalogBulkAddTextController,
+    private readonly setCatalogCreateDialogName: SetCatalogCreateDialogNameController,
+    private readonly setCatalogCreateDialogType: SetCatalogCreateDialogTypeController,
+    private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenTypeController,
+    private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeController,
+    private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlController,
+    private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyController,
+    private readonly setCatalogTokensSearchText: SetCatalogTokensSearchTextController,
+    private readonly setSelectedCatalog: SetSelectedCatalogController,
+    private readonly syncCatalog: SyncCatalogController,
+    private readonly updateSourceTokenType: UpdateSourceTokenTypeController,
+    private readonly updateSourceType: UpdateSourceTypeController,
+    private readonly updateSourceUrl: UpdateSourceUrlController,
+    private readonly updateTokenKey: UpdateTokenKeyController,
+    private readonly loadCatalogPage: LoadCatalogPageController,
+  ) {}
+
+  async handle(action: CatalogAction, _deps: HandlerDeps): Promise<void> {
+    switch (action.type) {
+      case CatalogActionType.CatalogPageOnLoad:
+        await this.loadCatalogPage.run();
+        break;
+      case CatalogActionType.CatalogCatalogsListOnCommit:
+        await this.setSelectedCatalog.run(action.name, action.version);
+        break;
+      case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
+        this.openCatalogCreateDialog.run();
+        break;
+      case CatalogActionType.CatalogCreateDialogOnOpen:
+        this.openCatalogCreateDialog.run();
+        break;
+      case CatalogActionType.CatalogCreateDialogNameTextOnChange:
+        this.setCatalogCreateDialogName.run(action.value);
+        break;
+      case CatalogActionType.CatalogCreateDialogTypeListOnCommit:
+        this.setCatalogCreateDialogType.run(action.value);
+        break;
+      case CatalogActionType.CatalogCreateDialogCancelButtonOnClick:
+        await this.closeCatalogCreateDialog.run('Cancel');
+        break;
+      case CatalogActionType.CatalogCreateDialogOkButtonOnClick:
+        await this.closeCatalogCreateDialog.run('OK');
+        break;
+      case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
+        await this.deleteCatalogVersion.run(action.name, action.version);
+        break;
+      case CatalogActionType.CatalogDetailsSyncButtonOnClick:
+        await this.syncCatalog.run(action.catalog);
+        break;
+      case CatalogActionType.CatalogDetailsLockButtonOnClick:
+        await this.lockCatalog.run();
+        break;
+      case CatalogActionType.CatalogDetailsRevertButtonOnClick:
+        await this.revertCatalogToVersion.run(action.name, action.version);
+        break;
+      case CatalogActionType.CatalogDetailsSaveCatalog:
+        await this.saveCatalog.run(action.catalog);
+        break;
+      case CatalogActionType.CatalogDetailsSourceUrlTextOnCommit:
+        await this.updateSourceUrl.run(action.sourceIndex, action.value);
+        break;
+      case CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit:
+        await this.updateSourceTokenType.run(action.sourceIndex, action.value);
+        break;
+      case CatalogActionType.CatalogDetailsSourceTypeListOnCommit:
+        await this.updateSourceType.run(action.sourceIndex, action.value);
+        break;
+      case CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick:
+        await this.removeSource.run(action.sourceIndex);
+        break;
+      case CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange:
+        this.setCatalogNewSourceUrl.run(action.value);
+        break;
+      case CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit:
+        this.setCatalogNewSourceTokenType.run(action.value);
+        break;
+      case CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit:
+        this.setCatalogNewSourceType.run(action.value);
+        break;
+      case CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick:
+        await this.addNewSource.run();
+        break;
+      case CatalogActionType.CatalogTokensSearchTextOnChange:
+        this.setCatalogTokensSearchText.run(action.value);
+        break;
+      case CatalogActionType.CatalogTokensBulkAddButtonOnClick:
+        this.openBulkAddDialog.run();
+        break;
+      case CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit:
+        await this.updateTokenKey.run(action.key, action.value, action.tokenType);
+        break;
+      case CatalogActionType.CatalogTokensTokenRemoveButtonOnClick:
+        await this.removeToken.run(action.key, action.tokenType);
+        break;
+      case CatalogActionType.CatalogTokensNewTokenKeyTextOnChange:
+        this.setCatalogNewTokenKey.run(action.value);
+        break;
+      case CatalogActionType.CatalogTokensNewTokenAddButtonOnClick:
+        await this.addNewToken.run(action.tokenType, action.key);
+        break;
+      case CatalogActionType.CatalogBulkAddTokensDialogOnOpen:
+        this.openBulkAddDialog.run();
+        break;
+      case CatalogActionType.CatalogBulkAddTokensTextOnChange:
+        this.setCatalogBulkAddText.run(action.value);
+        break;
+      case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
+        this.closeBulkAddDialog.run();
+        break;
+      case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
+        await this.bulkAddTokens.run();
+        break;
+    }
   }
-};
+}

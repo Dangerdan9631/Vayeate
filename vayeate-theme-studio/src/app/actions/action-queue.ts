@@ -1,5 +1,8 @@
+import { inject, singleton } from 'tsyringe';
 import type { AppActionV2 } from './action-types';
 import { createLogger } from '../../domain/utils/logger';
+import { handlerDepsSourceToken, type IHandlerDepsSource } from '../di/handler-deps-source';
+import { ActionProcessor } from '../handlers/handler-registry';
 
 const log = createLogger('ActionQueue');
 
@@ -8,21 +11,20 @@ export interface QueueStatus {
   queueLength: number;
 }
 
-export type ActionProcessor = (action: AppActionV2) => Promise<void>;
-
 interface QueuedAction {
   action: AppActionV2;
   resolve: () => void;
 }
 
+@singleton()
 export class ActionQueue {
   private queue: QueuedAction[] = [];
   private processing = false;
-  private processor: ActionProcessor;
 
-  constructor(processor: ActionProcessor) {
-    this.processor = processor;
-  }
+  constructor(
+    private readonly actionProcessor: ActionProcessor,
+    @inject(handlerDepsSourceToken) private readonly handlerDepsSource: IHandlerDepsSource,
+  ) {}
 
   enqueue(action: AppActionV2): Promise<void> {
     return new Promise((resolve) => {
@@ -41,7 +43,7 @@ export class ActionQueue {
       const { action, resolve } = this.queue.shift()!;
       this.emitStatus();
       try {
-        await this.processor(action);
+        await this.actionProcessor.process(action, this.handlerDepsSource.get());
       } catch (err) {
         log.error('Error processing action:', action.type, err);
       } finally {

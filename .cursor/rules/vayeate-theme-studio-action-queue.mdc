@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Action Queue Pattern
 
-All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` no longer contains the action processor switch — it delegates immediately to `createActionProcessor` from `handler-registry.ts`.
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` registers `handlerDepsSourceToken` (`IHandlerDepsSource` from `app/di/handler-deps-source.ts`) with current React `HandlerDeps`, then resolves the `@singleton()` `ActionQueue` from tsyringe. `ActionQueue` injects `ActionProcessor` + `IHandlerDepsSource` and calls `actionProcessor.process(action, handlerDepsSource.get())`.
 
 ## Event Naming
 
@@ -23,7 +23,7 @@ Each UI interaction dispatches exactly one such event. The control name identifi
 1. Component dispatches one event per interaction: `dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, ... })` (import the per-domain enum from `action-types.ts`)
 2. ActionQueue.enqueue() pushes the event to a FIFO queue
 3. Processor runs when idle; awaits each action before starting the next
-4. The **processor** (in AppContext) delegates to `createActionProcessor` from `handler-registry.ts`, which routes via type guards (`isAppAction`, `isCatalogAction`, etc. in `handler-types.ts`) to the correct domain handler
+4. The **processor** (in AppContext) delegates to `ActionProcessor.process` in `handler-registry.ts`, which routes via type guards (`isAppAction`, `isCatalogAction`, etc. in `handler-types.ts`) to the correct domain handler
 5. The **domain handler** (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`) has an exhaustive switch and invokes the appropriate **controller**
 6. **Controllers** compose one or more **operations** to fulfill the app action for that UI event
 7. **Operations** perform a single responsibility: set state (via `setState`), persist state (e.g. via services/IPC), or add to the undo stack
@@ -33,7 +33,7 @@ Each UI interaction dispatches exactly one such event. The control name identifi
 flowchart LR
   UI[UI Component] -->|"dispatch(CONTROL_ACTION)"| Queue[ActionQueue]
   Queue -->|"process"| Context[AppContext processor]
-  Context -->|"createActionProcessor"| Registry[handler-registry]
+  Context -->|"ActionProcessor.process"| Registry[handler-registry]
   Registry -->|"route by domain guard"| Handler[Domain Handler]
   Handler -->|"exhaustive switch"| Controller[Controller]
   Controller -->|"calls"| Op1[Operation 1]

@@ -36,4 +36,7 @@ export const isCatalogAction = (a: AppActionV2): a is CatalogAction => catalogTy
 export const isTemplateAction = (a: AppActionV2): a is TemplateAction => templateTypes.has(a.type);
 export const isThemeAction = (a: AppActionV2): a is ThemeAction => themeTypes.has(a.type);
 
-export type ActionHandler<T> = (action: T, deps: HandlerDeps) => Promise<void>;
+/** Routes a slice of `AppActionV2` to domain controllers (constructor-injected). */
+export interface ActionHandler<T> {
+  handle(action: T, deps: HandlerDeps): Promise<void>;
+}

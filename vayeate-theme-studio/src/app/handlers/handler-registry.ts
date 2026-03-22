@@ -1,7 +1,8 @@
+import { singleton } from 'tsyringe';
 import { createLogger } from '../../domain/utils/logger';
 import type { AppActionV2 } from '../actions/action-types';
-import { handleAppAction } from './app-handler';
-import { handleCatalogAction } from './catalog-handler';
+import { AppActionHandler } from './app-handler';
+import { CatalogActionHandler } from './catalog-handler';
 import type { HandlerDeps } from './handler-types';
 import {
   isAppAction,
@@ -9,24 +10,34 @@ import {
   isTemplateAction,
   isThemeAction,
 } from './handler-types';
-import { handleTemplateAction } from './template-handler';
-import { handleThemeAction } from './theme-handler';
+import { TemplateActionHandler } from './template-handler';
+import { ThemeActionHandler } from './theme-handler';
 
 const log = createLogger('ActionProcessor');
 
-export function createActionProcessor(
-  deps: HandlerDeps,
-): (action: AppActionV2) => Promise<void> {
-  return async (action: AppActionV2): Promise<void> => {
+/**
+ * Routes each {@link AppActionV2} to the correct domain handler. Injected handlers;
+ * {@link HandlerDeps} are supplied per invocation from React (state setters).
+ */
+@singleton()
+export class ActionProcessor {
+  constructor(
+    private readonly appHandler: AppActionHandler,
+    private readonly catalogHandler: CatalogActionHandler,
+    private readonly templateHandler: TemplateActionHandler,
+    private readonly themeHandler: ThemeActionHandler,
+  ) {}
+
+  async process(action: AppActionV2, deps: HandlerDeps): Promise<void> {
     log.debug('action', action);
     if (isAppAction(action)) {
-      await handleAppAction(action, deps);
+      await this.appHandler.handle(action, deps);
     } else if (isCatalogAction(action)) {
-      await handleCatalogAction(action, deps);
+      await this.catalogHandler.handle(action, deps);
     } else if (isTemplateAction(action)) {
-      await handleTemplateAction(action, deps);
+      await this.templateHandler.handle(action, deps);
     } else if (isThemeAction(action)) {
-      await handleThemeAction(action, deps);
+      await this.themeHandler.handle(action, deps);
     }
-  };
+  }
 }
