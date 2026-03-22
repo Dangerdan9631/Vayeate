@@ -4,18 +4,19 @@ import { createRoot } from 'react-dom/client';
 import { container as diContainer } from 'tsyringe';
 import { App } from './app/ui/App';
 import { initLogTransport } from './domain/utils/logger';
-import { sendLog } from './gateway/services/log-service';
+import { LogService } from './gateway/services/log-service';
 import { initEyedropperTransport } from './app/ui/utils/eyedropper';
-import {
-  getScreenSourcesWithBounds,
-  isElectronEyedropperAvailable,
-} from './gateway/services/eyedropper-service';
+import { EyedropperService } from './gateway/services/eyedropper-service';
 import { initWindowEventTransport } from './app/ui/context/window-event-transport';
 import { WindowService } from './gateway/services/window-service';
 
-initLogTransport(sendLog);
+const logService = diContainer.resolve(LogService);
+initLogTransport((level, tag, args) => logService.send(level, tag, args));
+const eyedropperService = diContainer.resolve(EyedropperService);
 initEyedropperTransport(
-  isElectronEyedropperAvailable() ? getScreenSourcesWithBounds : undefined,
+  eyedropperService.isAvailable()
+    ? eyedropperService.getScreenSourcesWithBounds.bind(eyedropperService)
+    : undefined,
 );
 const windowService = diContainer.resolve(WindowService);
 initWindowEventTransport({
