@@ -26,4 +26,33 @@ describe('ConfigGateway', () => {
     expect(saveFile.mock.calls[0][0]).toBe('data/config.json');
     expect(saveFile.mock.calls[0][1]).toContain('"colorScheme": "dark"');
   });
+
+  it('load reads data/config.json and returns light when stored', async () => {
+    const loadFile = vi
+      .fn()
+      .mockResolvedValue(JSON.stringify({ colorScheme: 'light' }, null, 2));
+    const gw = new ConfigGateway(createFsMock({ loadFile }));
+    await expect(gw.load()).resolves.toEqual({ colorScheme: 'light' });
+    expect(loadFile).toHaveBeenCalledWith('data/config.json');
+  });
+
+  it('load returns dark when file is missing', async () => {
+    const loadFile = vi.fn().mockResolvedValue(null);
+    const gw = new ConfigGateway(createFsMock({ loadFile }));
+    await expect(gw.load()).resolves.toEqual({ colorScheme: 'dark' });
+  });
+
+  it('load returns dark for empty file or invalid JSON', async () => {
+    const gwEmpty = new ConfigGateway(createFsMock({ loadFile: vi.fn().mockResolvedValue('') }));
+    await expect(gwEmpty.load()).resolves.toEqual({ colorScheme: 'dark' });
+
+    const gwBad = new ConfigGateway(createFsMock({ loadFile: vi.fn().mockResolvedValue('{') }));
+    await expect(gwBad.load()).resolves.toEqual({ colorScheme: 'dark' });
+  });
+
+  it('load returns dark when colorScheme is not light', async () => {
+    const loadFile = vi.fn().mockResolvedValue(JSON.stringify({ colorScheme: 'dark' }));
+    const gw = new ConfigGateway(createFsMock({ loadFile }));
+    await expect(gw.load()).resolves.toEqual({ colorScheme: 'dark' });
+  });
 });

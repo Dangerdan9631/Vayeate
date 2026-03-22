@@ -18,7 +18,7 @@
   - **`domain/operations/`**: Wraps gateway/services calls + setState. May depend on model, state, and `gateway/services`. Must NOT depend on `gateway/data`, controllers, or app. Files are organized into card-aligned subdirectories mirroring the controller structure (e.g. `theme-list/`, `palette/`); each subdirectory exports via its own `index.ts`.
   - **`domain/controllers/`**: Compose operations + validations only. Must NOT depend on gateway (directly). Must NOT import from `gateway/services/` or `gateway/data/`. Files are organized into card-aligned subdirectories (e.g. `theme-list/`, `palette/`, `variables/`); each subdirectory exports via its own `index.ts`. Only `shared-flows.ts`, the test file, and the root `index.ts` remain at the controller domain root.
   - Shared helper flows within a controller domain live in `<domain>-controller/shared-flows.ts` (not `_helpers.ts`).
-- **Gateway** (`src/gateway/`; must not depend on `src/domain/`): data (repositories) and services (IPC). `gateway/data` and `gateway/services` depend only on model and do not depend on each other.
+- **Gateway** (`src/gateway/`; must not depend on `src/domain/`): per-area gateways (theme, template, catalog, config, preview, catalog sync) and `services/` (IPC). Gateways persist via `FileSystemService`; `gateway/data/` is reserved (empty aside from `.gitkeep`). Architecture tests still treat `gateway/data` and `gateway/services` as independent layers.
 - **App** (`src/app/`): Actions, handlers, viewmodels, and UI. Must not depend on gateway; uses state and domain only.
   - **`app/actions/`**: `AppActionV2` discriminated union + `ActionQueue`. Depends on model only.
   - **`app/handlers/`**: Per-domain handler files (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`) + `handler-registry.ts`. Routes actions to controllers. Must NOT depend on gateway, operations, validations, or state directly.
@@ -49,7 +49,6 @@
 | Module | May depend on | Must NOT depend on |
 |--------|--------------|-------------------|
 | `model/` | nothing | everything |
-| `gateway/data/` | model | domain, app, gateway/services |
 | `gateway/services/` | model | domain, app, gateway/data |
 | `domain/state/` | model | gateway, domain/*, app |
 | `domain/utils/` | model | gateway, domain (except utils-internal), app |

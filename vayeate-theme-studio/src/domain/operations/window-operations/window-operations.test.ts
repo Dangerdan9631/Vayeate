@@ -2,10 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import { WindowService } from '../../../gateway/services/window-service';
 import {
-  CloseWindow,
-  MaximizeWindow,
-  RestoreWindow,
-  MinimizeWindow,
+  SetWindowState,
   DragWindow,
   ReloadWindow,
   ToggleDevTools,
@@ -39,24 +36,14 @@ describe('window-operations', () => {
     vi.clearAllMocks();
   });
 
-  it('CloseWindow execute calls windowService.close', async () => {
-    await container.resolve(CloseWindow).execute();
-    expect(windowServiceMock.close).toHaveBeenCalledTimes(1);
-  });
-
-  it('MaximizeWindow execute calls windowService.maximize', async () => {
-    await container.resolve(MaximizeWindow).execute();
-    expect(windowServiceMock.maximize).toHaveBeenCalledTimes(1);
-  });
-
-  it('RestoreWindow execute calls windowService.restore', async () => {
-    await container.resolve(RestoreWindow).execute();
-    expect(windowServiceMock.restore).toHaveBeenCalledTimes(1);
-  });
-
-  it('MinimizeWindow execute calls windowService.minimize', async () => {
-    await container.resolve(MinimizeWindow).execute();
-    expect(windowServiceMock.minimize).toHaveBeenCalledTimes(1);
+  it.each([
+    ['close', 'close'] as const,
+    ['minimize', 'minimize'] as const,
+    ['maximize', 'maximize'] as const,
+    ['restore', 'restore'] as const,
+  ] as const)('SetWindowState execute(%s) calls windowService.%s', async (target, method) => {
+    await container.resolve(SetWindowState).execute(target);
+    expect(windowServiceMock[method]).toHaveBeenCalledTimes(1);
   });
 
   it('DragWindow execute calls windowService.drag', async () => {

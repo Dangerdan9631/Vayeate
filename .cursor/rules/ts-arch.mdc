@@ -57,7 +57,6 @@ The following table is the definitive dependency matrix enforced by ts-arch test
 | Module | May depend on | Must NOT depend on |
 |--------|--------------|-------------------|
 | `model/` | nothing | everything |
-| `gateway/data/` | model | domain, app, gateway/services |
 | `gateway/services/` | model | domain, app, gateway/data |
 | `domain/state/` | model | gateway, domain/*, app |
 | `domain/utils/` | model | gateway, domain (except utils-internal), app |

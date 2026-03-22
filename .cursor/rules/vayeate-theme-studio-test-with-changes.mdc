@@ -17,8 +17,8 @@ When you change code in vayeate-theme-studio, add or update tests that cover the
 | Controllers | `src/domain/controllers/<controller>/<controller>.test.ts` (colocated in controller subdirectory) |
 | Validations | `src/domain/validations/<validations>/<validator>.test.ts` (colocated next to each validator file) |
 | Operations | `src/domain/operations/<operations>/<operations>.test.ts` (colocated in operation subdirectory) |
-| Data | `src/gateway/data/*.test.ts` |
 | Gateway/services | `src/gateway/services/*.test.ts` (when adding/changing services) |
+| Gateway (theme/template/catalog/config/preview) | Colocated `*.test.ts` next to the gateway file |
 | Viewmodel | `src/app/viewmodel/*.test.tsx` |
 | UI (pages/components) | Colocated `*.test.tsx` next to the component |
 
@@ -26,5 +26,5 @@ When you change code in vayeate-theme-studio, add or update tests that cover the
 
 - Prefer testing public behavior and outcomes over implementation details
 - Mock `window.electronAPI` in tests that trigger IPC calls (e.g. CREATE_CATALOG)
-- Data layer tests use a temp dir; add `@vitest-environment node` when using Node fs APIs
+- Tests that use Node `fs` against a temp dir should add `@vitest-environment node`
 - Before finishing, run `npm run test` in vayeate-theme-studio and fix any failures

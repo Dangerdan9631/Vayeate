@@ -76,7 +76,7 @@ describe('ThemeGateway', () => {
     expect(result.lightPath).toBe('exthemes/export-me-light-color-theme.json');
   });
 
-  it('saveTheme writes under data/themes and strips ephemeral variable refs from JSON', async () => {
+  it('saveTheme writes validated theme JSON under data/themes', async () => {
     const saveFile = vi.fn().mockResolvedValue(undefined);
     const gw = new ThemeGateway(createFsMock({ saveFile }), createTemplateGatewayMock());
     await gw.saveTheme(validTheme);
@@ -84,7 +84,7 @@ describe('ThemeGateway', () => {
     expect(saveFile.mock.calls[0][0]).toBe('data/themes/my-theme-1.0.0.theme.json');
     const json = saveFile.mock.calls[0][1] as string;
     expect(json).toContain('"name": "my-theme"');
-    expect(json).not.toContain('idePrimaryColorVariableRef');
+    expect(JSON.parse(json)).toMatchObject({ name: 'my-theme', version: '1.0.0' });
   });
 
   it('createTheme persists then returns the new theme', async () => {

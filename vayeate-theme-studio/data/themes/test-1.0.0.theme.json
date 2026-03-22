@@ -5,8 +5,6 @@
     "name": "test",
     "version": "1.0.0"
   },
-  "idePrimaryColorVariableRef": "abc",
-  "themeBackgroundColorVariableRef": "def",
   "colorAssignments": [
     {
       "colorRef": "abc",

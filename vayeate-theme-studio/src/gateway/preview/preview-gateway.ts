@@ -1,9 +1,14 @@
 import { singleton } from 'tsyringe';
 import type { IRawGrammar } from 'vscode-textmate';
+import onigWasmUrl from 'vscode-oniguruma/release/onig.wasm?url';
 import { initOniguruma, tokenizeFile } from '../../domain/utils/tokenizer';
 import type { TokenizedPreview } from '../../model/preview-types';
 import { FileSystemService } from '../services/file-system-service';
-import { createPreviewOnigWasmLoader } from './preview-onig-wasm';
+
+/** WASM loader for {@link initOniguruma} in the Electron renderer (bundled by Vite). */
+function createPreviewOnigWasmLoader(): () => Promise<ArrayBuffer> {
+  return () => fetch(onigWasmUrl).then((r) => r.arrayBuffer());
+}
 
 const PREVIEWS_RELATIVE_DIR = 'previews';
 

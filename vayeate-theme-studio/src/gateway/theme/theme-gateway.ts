@@ -88,28 +88,8 @@ export class ThemeGateway {
     if (!parsed.success) {
       throw new Error('Invalid theme: ' + parsed.error.message);
     }
-    const toPersist = { ...parsed.data } as Record<string, unknown>;
-    delete toPersist.idePrimaryColorVariableRef;
-    delete toPersist.idePrimaryColorContrastVariableRef;
-    delete toPersist.themeBackgroundColorVariableRef;
-    delete toPersist.lineNumberBackgroundColorVariableRef;
-    delete toPersist.lineNumberBackgroundContrastVariableRef;
-    delete toPersist.lineNumberForegroundColorVariableRef;
-    delete toPersist.lineNumberForegroundContrastVariableRef;
-    delete toPersist.ideTabColorVariableRef;
-    delete toPersist.ideTabContrastVariableRef;
-    delete toPersist.ideTabBarBackgroundColorVariableRef;
-    delete toPersist.ideTabBarBackgroundContrastVariableRef;
-    delete toPersist.ideTabBarForegroundColorVariableRef;
-    delete toPersist.ideTabBarForegroundContrastVariableRef;
-    delete toPersist.editorPreviewScrollbarBackgroundColorVariableRef;
-    delete toPersist.editorPreviewScrollbarBackgroundContrastVariableRef;
-    delete toPersist.editorPreviewScrollbarForegroundColorVariableRef;
-    delete toPersist.editorPreviewScrollbarForegroundContrastVariableRef;
-    delete toPersist.editorPreviewSelectionBackgroundColorVariableRef;
-    delete toPersist.editorPreviewSelectionBackgroundContrastVariableRef;
     const rel = themeRelativeFilePath(parsed.data.name, parsed.data.version);
-    await this.fileSystemService.saveFile(rel, JSON.stringify(toPersist, null, 2));
+    await this.fileSystemService.saveFile(rel, JSON.stringify(parsed.data, null, 2));
   }
 
   async loadTheme(name: string, version: string): Promise<Theme | null> {

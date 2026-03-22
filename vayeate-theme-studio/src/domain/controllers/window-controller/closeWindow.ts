@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { CloseWindow } from '../../operations/window-operations';
+import { SetWindowState } from '../../operations/window-operations';
 
 @singleton()
 export class CloseWindowController {
-  constructor(private readonly closeWindow: CloseWindow) {}
+  constructor(private readonly setWindowState: SetWindowState) {}
 
   async run(): Promise<void> {
-    await this.closeWindow.execute();
+    await this.setWindowState.execute('close');
   }
 }

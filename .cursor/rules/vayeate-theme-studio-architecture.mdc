@@ -10,7 +10,7 @@ There is a clean separation between **UI actions** (events tied to UI controls) 
 
 ## Layer Overview
 
-The **domain** layer lives under `src/domain/` and contains controllers, core, operations, state, validations, and utils (no model). **Domain must not depend on app** (`src/app/`). **Model** (`src/model/`) has no dependencies on app, domain, or gateway. **Gateway** (`src/gateway/`) holds data and services; it must not depend on domain; gateway/data and gateway/services are independent of each other. **App must not depend on gateway**; use state and domain only.
+The **domain** layer lives under `src/domain/` and contains controllers, core, operations, state, validations, and utils (no model). **Domain must not depend on app** (`src/app/`). **Model** (`src/model/`) has no dependencies on app, domain, or gateway. **Gateway** (`src/gateway/`) holds per-area gateways and `services/` (IPC); it must not depend on domain; `gateway/data/` and `gateway/services/` are treated as independent layers for architecture tests. **App must not depend on gateway**; use state and domain only.
 
 | Layer | Location | Responsibility |
 |-------|----------|----------------|
@@ -25,7 +25,6 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 | **Core** | `src/domain/core/` | UndoManagerV2 and UndoProcessor. Depends on model and state. |
 | **Utils** | `src/domain/utils/` | Logger, version, theme generation, color, tokenizer, scope resolution, export, theme-parser, template-catalog-merge, semantic-token. Depends on model only. |
 | **Model** | `src/model/` | Zod schemas and types. No dependencies on app, domain, or gateway. |
-| **Gateway/data** | `src/gateway/data/` | Repository pattern (fs I/O). Depends only on model. Called only from main process. |
 | **Gateway/services** | `src/gateway/services/` | IPC clients wrapping `window.electronAPI`. Depends only on model. Used by operations (NOT controllers). `gateway/data` and `gateway/services` do not depend on each other. |
 
 ## Dependency Rules (enforced by ts-arch)
@@ -33,7 +32,6 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 | Module | May depend on | Must NOT depend on |
 |--------|--------------|-------------------|
 | `model/` | nothing | everything |
-| `gateway/data/` | model | domain, app, gateway/services |
 | `gateway/services/` | model | domain, app, gateway/data |
 | `domain/state/` | model | gateway, domain/*, app |
 | `domain/utils/` | model | gateway, domain (except utils-internal), app |
@@ -86,7 +84,7 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 - `src/domain/` — Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
 - `src/domain/validations/` — Validators (one per file, subdirectories per concern). Controllers run validations before operations.
 - `src/model/` — Schemas and types. Must not depend on app, domain, or gateway.
-- `src/gateway/` — Data (repositories) and services (IPC). Must not depend on domain. gateway/data and gateway/services are independent.
+- `src/gateway/` — Per-area gateways and `services/` (IPC). Must not depend on domain. `gateway/data/` and `gateway/services/` are independent for architecture tests.
 - `src/domain/controllers/` — Controllers composed of operations; invoked by domain handlers
 
 ## Conventions
@@ -96,7 +94,7 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 - **All UI events go through the action queue**: No component-owned side effects.
 - **New ViewModels**: Create hook in `app/viewmodel/`, consume `useAppState()`, return derived data.
 - **Renderer → Main**: Use gateway/services from operations only; app never imports gateway. Never import from `gateway/data` or `domain/controllers` in UI/viewmodel.
-- **Main process**: Controllers call data layer; use `app.getPath('userData')` for persistence base dir.
+- **Electron main**: Resolves safe paths for IPC; Theme Studio persistence goes through gateways + `FileSystemService`.
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`.
 - **Controller function names**: Name controller functions by the **action executed** (e.g. `setActiveTab`, `loadThemeRefs`, `saveCatalog`), not by the UI event or control. Controllers stay decoupled from the UI; handlers map UI actions to controller functions.
 - **Validations before operations**: In controllers that need guards, call the appropriate validation before invoking the operation; skip or return early if false. Pass `getState` (or equivalent) into the controller when it must run validations that read app state.

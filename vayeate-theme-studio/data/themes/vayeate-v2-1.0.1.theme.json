@@ -5,8 +5,6 @@
     "name": "vayeate-v2",
     "version": "1.0.1"
   },
-  "idePrimaryColorVariableRef": "chromePrimaryBg",
-  "themeBackgroundColorVariableRef": "editorBg",
   "colorAssignments": [
     {
       "colorRef": "chromePrimaryBg",
