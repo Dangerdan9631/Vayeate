@@ -79,6 +79,15 @@ export type TokenType = z.infer<typeof tokenTypeSchema>;
 export const contrastComparisonMethodSchema = z.enum(['lessThan', 'equalTo', 'greaterThan']);
 export type ContrastComparisonMethod = z.infer<typeof contrastComparisonMethodSchema>;
 
+export const colorSchemeSchema = z.enum(['light', 'dark']);
+export type ColorScheme = z.infer<typeof colorSchemeSchema>;
+
+/** Persisted Theme Studio preferences (`data/config.json`). */
+export const appConfigSchema = z.object({
+  colorScheme: colorSchemeSchema,
+});
+export type AppConfig = z.infer<typeof appConfigSchema>;
+
 // --- Token ---
 
 export const tokenSchema = z

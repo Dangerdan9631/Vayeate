@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { LoadAppConfig } from '../../operations/app-operations';
 import type { LoadCatalogRefs } from '../../operations/catalog-operations';
 import type { LoadTemplateRefs } from '../../operations/template-operations';
 import type { LoadThemeRefs } from '../../operations/theme-operations';
@@ -12,31 +13,52 @@ vi.mock('../../operations/theme-operations', () => ({ LoadThemeRefs: vi.fn() }))
 
 describe('app-controller', () => {
   let clearPersistedUndo: ClearPersistedUndo;
+  let loadAppConfig: LoadAppConfig;
   let loadCatalogRefs: LoadCatalogRefs;
   let loadTemplateRefs: LoadTemplateRefs;
   let loadThemeRefs: LoadThemeRefs;
 
   beforeEach(() => {
     clearPersistedUndo = { execute: vi.fn().mockResolvedValue(undefined) } as unknown as ClearPersistedUndo;
+    loadAppConfig = { execute: vi.fn().mockResolvedValue(undefined) } as unknown as LoadAppConfig;
     loadCatalogRefs = { execute: vi.fn().mockResolvedValue(undefined) } as unknown as LoadCatalogRefs;
     loadTemplateRefs = { execute: vi.fn().mockResolvedValue(undefined) } as unknown as LoadTemplateRefs;
     loadThemeRefs = { execute: vi.fn().mockResolvedValue(undefined) } as unknown as LoadThemeRefs;
   });
 
   it('LoadApplicationController run composes operations and resolves', async () => {
-    const controller = new LoadApplicationController(clearPersistedUndo, loadCatalogRefs, loadTemplateRefs, loadThemeRefs);
+    const controller = new LoadApplicationController(
+      clearPersistedUndo,
+      loadAppConfig,
+      loadCatalogRefs,
+      loadTemplateRefs,
+      loadThemeRefs,
+    );
     await expect(controller.run()).resolves.toBeUndefined();
   });
 
   it('LoadApplicationController run calls ClearPersistedUndo.execute', async () => {
-    const controller = new LoadApplicationController(clearPersistedUndo, loadCatalogRefs, loadTemplateRefs, loadThemeRefs);
+    const controller = new LoadApplicationController(
+      clearPersistedUndo,
+      loadAppConfig,
+      loadCatalogRefs,
+      loadTemplateRefs,
+      loadThemeRefs,
+    );
     await controller.run();
     expect(clearPersistedUndo.execute).toHaveBeenCalledTimes(1);
   });
 
-  it('LoadApplicationController run calls load refs operations', async () => {
-    const controller = new LoadApplicationController(clearPersistedUndo, loadCatalogRefs, loadTemplateRefs, loadThemeRefs);
+  it('LoadApplicationController run calls load app config and load refs operations', async () => {
+    const controller = new LoadApplicationController(
+      clearPersistedUndo,
+      loadAppConfig,
+      loadCatalogRefs,
+      loadTemplateRefs,
+      loadThemeRefs,
+    );
     await controller.run();
+    expect(loadAppConfig.execute).toHaveBeenCalledTimes(1);
     expect(loadCatalogRefs.execute).toHaveBeenCalledTimes(1);
     expect(loadTemplateRefs.execute).toHaveBeenCalledTimes(1);
     expect(loadThemeRefs.execute).toHaveBeenCalledTimes(1);

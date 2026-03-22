@@ -1,4 +1,17 @@
-import type { Catalog, CatalogReference, CatalogType, ColorVariableKey, ContrastVariableKey, SourceType, Template, TemplateReference, Theme, ThemeReference, TokenType } from '../../model/schemas';
+import type {
+  AppConfig,
+  Catalog,
+  CatalogReference,
+  CatalogType,
+  ColorVariableKey,
+  ContrastVariableKey,
+  SourceType,
+  Template,
+  TemplateReference,
+  Theme,
+  ThemeReference,
+  TokenType,
+} from '../../model/schemas';
 import type { TokenizedPreview } from '../../model/preview-types';
 
 export type { TabId } from './tab-id';
@@ -102,6 +115,8 @@ export interface AppState {
   templates: TemplatesState;
   themes: ThemesState;
   undoStackId: UndoStackIdState;
+  /** Persisted app preferences (color scheme, etc.); mirrored to `data/config.json` via operations. */
+  appConfig: AppConfig;
   /** Parallel state (not yet used in app/reducer). */
   ui: UiState;
   /** Parallel state (not yet used in app/reducer). */
@@ -166,10 +181,10 @@ export const initialAppState: AppState = {
     currentUndoStackId: null,
     undoListVersion: 0,
   },
+  appConfig: { colorScheme: 'dark' },
   ui: {
     activeTabId: 'catalogs',
     queueStatus: { isProcessing: false, queueLength: 0 },
-    colorScheme: 'dark',
   },
   store: { catalogs: {}, templates: {}, themes: {} },
   window: {

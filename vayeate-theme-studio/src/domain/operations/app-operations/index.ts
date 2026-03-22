@@ -1,3 +1,4 @@
 export { UnloadApplication } from './unloadApplication';
-export { ToggleColorScheme } from './toggleColorScheme';
-export { SaveColorScheme } from './saveColorScheme';
+export { SetColorScheme } from './setColorScheme';
+export { LoadAppConfig } from './loadAppConfig';
+export { SaveAppConfig } from './saveAppConfig';

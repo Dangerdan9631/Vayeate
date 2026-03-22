@@ -41,9 +41,12 @@ export const handleAppAction: ActionHandler<AppAction> = async (
     case AppActionType.AppRibbonTabButtonOnClick:
       await container.resolve(tabController.SetActiveTabController).run(action.tabId);
       break;
-    case AppActionType.AppBarThemeCheckboxOnToggle:
-      await container.resolve(appController.ToggleColorSchemeController).run(action.checked);
+    case AppActionType.AppBarThemeCheckboxOnToggle: {
+      // checked = current dark-mode toggle (true when theme is dark); next scheme is the opposite
+      const scheme: 'light' | 'dark' = action.checked ? 'light' : 'dark';
+      await container.resolve(appController.SetColorSchemeController).run(scheme);
       break;
+    }
     case AppActionType.AppBarMinimizeButtonOnClick:
       await container.resolve(windowController.MinimizeWindowController).run();
       break;

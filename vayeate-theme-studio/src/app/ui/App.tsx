@@ -84,10 +84,10 @@ function AppShell() {
 
 export function App() {
   return (
-    <ColorSchemeProvider>
-      <AppProvider>
+    <AppProvider>
+      <ColorSchemeProvider>
         <AppShell />
-      </AppProvider>
-    </ColorSchemeProvider>
+      </ColorSchemeProvider>
+    </AppProvider>
   );
 }

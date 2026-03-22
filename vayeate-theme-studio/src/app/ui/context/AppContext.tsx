@@ -43,13 +43,17 @@ export interface AppContextValue {
 export const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, replaceState] = useReducer(replaceStateReducer, undefined, () => {
-    // Initialize colorScheme from config file (via preload synchronous IPC) to avoid a flash on startup.
-    if (window.electronInitialColorScheme === 'light') {
-      return { ...initialAppState, ui: { ...initialAppState.ui, colorScheme: 'light' as const } };
-    }
-    return initialAppState;
-  });
+  const [state, replaceState] = useReducer(
+    replaceStateReducer,
+    initialAppState,
+    (base): AppState => {
+      // Initialize colorScheme from config file (via preload synchronous IPC) to avoid a flash on startup.
+      if (window.electronInitialColorScheme === 'light') {
+        return { ...base, appConfig: { colorScheme: 'light' } };
+      }
+      return base;
+    },
+  );
   const stateRef = useRef(state);
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);

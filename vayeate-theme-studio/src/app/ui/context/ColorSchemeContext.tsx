@@ -9,8 +9,9 @@ import {
 import { AppContext } from './AppContext';
 import { AppDispatchContext } from './slice-contexts';
 import { AppActionType } from '../../actions/action-types';
+import type { ColorScheme } from '../../../model/schemas';
 
-export type ColorScheme = 'light' | 'dark';
+export type { ColorScheme };
 
 function applyTheme(theme: ColorScheme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -30,7 +31,7 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   // Local state is only used when AppContext is not available (e.g., in unit tests).
   const [localScheme, setLocalScheme] = useState<ColorScheme>('dark');
 
-  const scheme: ColorScheme = appCtx ? appCtx.state.ui.colorScheme : localScheme;
+  const scheme: ColorScheme = appCtx ? appCtx.state.appConfig.colorScheme : localScheme;
 
   useEffect(() => {
     applyTheme(scheme);
@@ -38,7 +39,7 @@ export function ColorSchemeProvider({ children }: { children: ReactNode }) {
 
   const toggleColorScheme = useCallback(() => {
     if (dispatch) {
-      // In the full app: dispatch the action; the handler updates UiState + persists to disk.
+      // In the full app: dispatch the action; the handler updates appConfig + persists to disk.
       dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle, checked: scheme !== 'light' });
     } else {
       // Standalone (no AppContext/dispatch) – update local state without persistence.

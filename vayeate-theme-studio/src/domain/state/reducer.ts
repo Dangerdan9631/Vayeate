@@ -1,5 +1,6 @@
 import type { AppState, GenerateResult } from './app-state';
 import type {
+  AppConfig,
   Catalog,
   CatalogReference,
   CatalogType,
@@ -15,6 +16,8 @@ import type {
 import type { TokenizedPreview } from '../../model/preview-types';
 
 export type AppStateUpdate =
+  | { type: 'SET_APP_CONFIG'; config: AppConfig }
+  | { type: 'SET_COLOR_SCHEME'; scheme: 'light' | 'dark' }
   | { type: 'SET_SELECTED_REF'; ref: CatalogReference | null }
   | { type: 'SET_CATALOG'; catalog: Catalog | null }
   | { type: 'SET_LOADED_CATALOG_FOR_DISPLAY'; name: string; version: string; catalog: Catalog | null }
@@ -65,6 +68,10 @@ export type AppStateUpdate =
 
 export function appStateReducer(state: AppState, update: AppStateUpdate): AppState {
   switch (update.type) {
+    case 'SET_APP_CONFIG':
+      return { ...state, appConfig: update.config };
+    case 'SET_COLOR_SCHEME':
+      return { ...state, appConfig: { ...state.appConfig, colorScheme: update.scheme } };
     case 'SET_SELECTED_REF':
       return { ...state, catalogs: { ...state.catalogs, selectedRef: update.ref } };
     case 'SET_CATALOG':

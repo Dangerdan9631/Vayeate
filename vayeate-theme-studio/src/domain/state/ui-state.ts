@@ -5,10 +5,8 @@ export interface QueueStatusState {
   queueLength: number;
 }
 
-/** Parallel state: UI-only state (active tab, queue status, color scheme, etc.). */
+/** Parallel state: UI-only state (active tab, queue status, etc.). */
 export interface UiState {
   activeTabId: TabId;
   queueStatus: QueueStatusState;
-  /** Color scheme for the UI. Persisted via config service. */
-  colorScheme: 'light' | 'dark';
 }

@@ -105,9 +105,23 @@ describe('initialAppState', () => {
     expect(initialAppState.ui.queueStatus.isProcessing).toBe(false);
     expect(initialAppState.ui.queueStatus.queueLength).toBe(0);
   });
+
+  it('defaults app config to dark color scheme', () => {
+    expect(initialAppState.appConfig).toEqual({ colorScheme: 'dark' });
+  });
 });
 
 describe('appStateReducer', () => {
+  it('handles SET_APP_CONFIG', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_APP_CONFIG', config: { colorScheme: 'light' } });
+    expect(state.appConfig).toEqual({ colorScheme: 'light' });
+  });
+
+  it('handles SET_COLOR_SCHEME', () => {
+    const state = appStateReducer(initialAppState, { type: 'SET_COLOR_SCHEME', scheme: 'light' });
+    expect(state.appConfig.colorScheme).toBe('light');
+  });
+
   it('handles SET_SELECTED_REF', () => {
     const state = appStateReducer(initialAppState, { type: 'SET_SELECTED_REF', ref: sampleRef });
     expect(state.catalogs.selectedRef).toEqual(sampleRef);

@@ -4,8 +4,7 @@ import type { TabId } from './tab-id';
 export type SetUiState = (update: UiStateUpdate) => void;
 export type UiStateUpdate =
   | { type: 'SET_UI_ACTIVE_TAB_ID'; tabId: TabId }
-  | { type: 'SET_UI_QUEUE_STATUS'; isProcessing: boolean; queueLength: number }
-  | { type: 'SET_UI_COLOR_SCHEME'; scheme: 'light' | 'dark' };
+  | { type: 'SET_UI_QUEUE_STATUS'; isProcessing: boolean; queueLength: number };
 
 export function uiStateReducer(state: AppState, update: UiStateUpdate): AppState {
   switch (update.type) {
@@ -16,8 +15,6 @@ export function uiStateReducer(state: AppState, update: UiStateUpdate): AppState
         ...state,
         ui: { ...state.ui, queueStatus: { isProcessing: update.isProcessing, queueLength: update.queueLength } },
       };
-    case 'SET_UI_COLOR_SCHEME':
-      return { ...state, ui: { ...state.ui, colorScheme: update.scheme } };
     default:
       return state;
   }

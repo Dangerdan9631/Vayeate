@@ -1,11 +1,9 @@
 import { singleton } from 'tsyringe';
+import type { AppConfig } from '../../model/schemas';
 import { FileSystemService } from '../services/file-system-service';
 
 /** Package-relative path: Theme Studio root `data/config.json`. */
 const CONFIG_RELATIVE_FILE = 'data/config.json';
-
-/** Persisted UI preferences (subset of `data/config.json`). */
-export type AppConfig = { colorScheme: 'light' | 'dark' };
 
 const DEFAULT_CONFIG: AppConfig = { colorScheme: 'dark' };
 
