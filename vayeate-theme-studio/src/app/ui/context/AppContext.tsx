@@ -1,4 +1,12 @@
-import { createContext, useCallback, useEffect, useReducer, useRef, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  type ReactNode,
+} from 'react';
 import { flushSync } from 'react-dom';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppActionV2 } from '../../actions/action-types';
@@ -67,13 +75,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     },
     [],
   );
-  useEffect(() => {
-    container.registerInstance(AppStateSetter, new AppStateSetter(setState));
-  }, [setState]);
-
-  useEffect(() => {
-    container.registerInstance(AppStateGetter, new AppStateGetter(getState));
-  }, [getState]);
 
   const setWindowState = useCallback(
     (update: WindowStateUpdate) => {
@@ -89,10 +90,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  useEffect(() => {
-    container.registerInstance(UiStateSetter, new UiStateSetter(setUiState));
-  }, [setUiState]);
-
   const setStoreState = useCallback(
     (update: StoreStateUpdate) => {
       const nextState = storeStateReducer(stateRef.current, update);
@@ -103,9 +100,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  useEffect(() => {
-    container.registerInstance(StoreStateSetter, new StoreStateSetter(setStoreState));
-  }, [setStoreState]);
+  /** Register before child useEffects run; useEffect here runs too late for CATALOG_PAGE_ON_LOAD et al. */
+  const appStateSetter = useMemo(() => new AppStateSetter(setState), [setState]);
+  const appStateGetter = useMemo(() => new AppStateGetter(getState), [getState]);
+  const uiStateSetter = useMemo(() => new UiStateSetter(setUiState), [setUiState]);
+  const storeStateSetter = useMemo(() => new StoreStateSetter(setStoreState), [setStoreState]);
+  container.registerInstance(AppStateSetter, appStateSetter);
+  container.registerInstance(AppStateGetter, appStateGetter);
+  container.registerInstance(UiStateSetter, uiStateSetter);
+  container.registerInstance(StoreStateSetter, storeStateSetter);
 
   const queueRef = useRef<ActionQueue | null>(null);
 

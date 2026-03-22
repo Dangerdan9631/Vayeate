@@ -29,15 +29,6 @@ describe('CatalogGateway', () => {
     expect(saveFile.mock.calls[0][1]).toContain('"name": "dotnet"');
   });
 
-  it('createCatalog persists then returns the new catalog', async () => {
-    const saveFile = vi.fn().mockResolvedValue(undefined);
-    const gw = new CatalogGateway(createFsMock({ saveFile }));
-    const catalog = await gw.createCatalog({ name: 'foo', type: 'remote' });
-    expect(catalog.name).toBe('foo');
-    expect(catalog.type).toBe('remote');
-    expect(saveFile).toHaveBeenCalledWith('data/catalogs/foo-1.0.0.json', expect.any(String));
-  });
-
   it('loadCatalog returns parsed catalog when file is valid JSON', async () => {
     const stored = createCatalogWithParams({ name: 'bar', type: 'manual' });
     const loadFile = vi.fn().mockResolvedValue(JSON.stringify(stored));

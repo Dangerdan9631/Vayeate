@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { AppProvider } from '../ui/context/AppContext';
 import { useAppState } from '../ui/context/useAppState';
 import { useThemeViewModel, mergeAssignmentsFromTemplate } from './use-theme-viewmodel';
 import type { Theme, Template } from '../../model/schemas';
 import { createInMemoryFsElectronApi, seedTemplateFile, seedThemeFile } from '../../test-utils/electron-api-in-memory-fs';
-import { ThemeActionType } from '../actions/action-types';
+import { AppActionType, ThemeActionType } from '../actions/action-types';
 
 const previewTokenRefsNull = {
   idePrimaryTokenRef: null,
@@ -69,6 +69,14 @@ const HarnessInner = React.forwardRef<
   object
 >(function HarnessInner(_, ref) {
   const { dispatch } = useAppState();
+  const appOnLoadDispatched = useRef(false);
+
+  useEffect(() => {
+    if (!dispatch || appOnLoadDispatched.current) return;
+    appOnLoadDispatched.current = true;
+    void dispatch({ type: AppActionType.AppAppOnLoad });
+  }, [dispatch]);
+
   if (ref && typeof ref === 'object' && 'current' in ref) {
     (ref as React.MutableRefObject<{ dispatch: ((a: import('../actions/action-types').AppActionV2) => void) | null }>).current = {
       dispatch,

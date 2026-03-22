@@ -6,7 +6,8 @@ const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
 interface CreateCatalogDialogProps {
   onCancel?: () => void;
-  onCreate?: (params: { name: string; type: 'manual' | 'remote' }) => void;
+  /** Optional hook after OK is dispatched (form values live in catalog app state). */
+  onCreate?: () => void;
 }
 
 export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCatalogDialogProps) {
@@ -18,7 +19,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
 
   function handleSubmit() {
     if (!canSubmit) return;
-    dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params: { name, type } });
+    dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick });
   }
 
   function handleCancel() {

@@ -1,11 +1,11 @@
 import { injectable } from 'tsyringe';
-import { LoadCatalog, RefreshCatalogRefs, SetSelectedRef } from '../../operations/catalog-operations';
+import { LoadCatalog, RefreshCatalogRefs, SetSelectedCatalog } from '../../operations/catalog-operations';
 
 @injectable()
 export class CatalogSharedFlows {
   constructor(
     private readonly refreshCatalogRefs: RefreshCatalogRefs,
-    private readonly setSelectedRef: SetSelectedRef,
+    private readonly setSelectedCatalog: SetSelectedCatalog,
     private readonly loadCatalog: LoadCatalog,
   ) {}
 
@@ -14,8 +14,8 @@ export class CatalogSharedFlows {
     if (selectName && selectVersion) {
       const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
       if (match) {
-        this.setSelectedRef.execute(match);
-        await this.loadCatalog.execute(match.name, match.version);
+        const catalog = await this.loadCatalog.execute(match.name, match.version);
+        this.setSelectedCatalog.execute(match, catalog ?? null);
       }
     }
   }

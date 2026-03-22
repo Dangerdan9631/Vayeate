@@ -37,7 +37,7 @@ describe('app-controller', () => {
     await expect(controller.run()).resolves.toBeUndefined();
   });
 
-  it('LoadApplicationController run calls ClearPersistedUndo.execute', async () => {
+  it('LoadApplicationController run calls clear undo, app config, and ref list operations', async () => {
     const controller = new LoadApplicationController(
       clearPersistedUndo,
       loadAppConfig,
@@ -47,17 +47,6 @@ describe('app-controller', () => {
     );
     await controller.run();
     expect(clearPersistedUndo.execute).toHaveBeenCalledTimes(1);
-  });
-
-  it('LoadApplicationController run calls load app config and load refs operations', async () => {
-    const controller = new LoadApplicationController(
-      clearPersistedUndo,
-      loadAppConfig,
-      loadCatalogRefs,
-      loadTemplateRefs,
-      loadThemeRefs,
-    );
-    await controller.run();
     expect(loadAppConfig.execute).toHaveBeenCalledTimes(1);
     expect(loadCatalogRefs.execute).toHaveBeenCalledTimes(1);
     expect(loadTemplateRefs.execute).toHaveBeenCalledTimes(1);

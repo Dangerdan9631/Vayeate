@@ -4,17 +4,13 @@ export { catalogStackId } from '../../utils/stack-id';
 export { CatalogSharedFlows } from './shared-flows';
 
 // catalog-list
-export { LoadCatalogRefsController } from './catalog-list/loadCatalogRefs';
-export { LoadCatalogForDisplayController } from './catalog-list/loadCatalogForDisplay';
-export { LoadCatalogsForDisplayController } from './catalog-list/loadCatalogsForDisplay';
-export { LoadCatalogPageController } from './catalog-list/loadCatalogPage';
-export { SelectCatalogAndLoadController } from './catalog-list/selectCatalogAndLoad';
-export { OpenCatalogCreateDialogController } from './catalog-list/openCatalogCreateDialog';
-export { CloseCatalogCreateDialogController } from './catalog-list/closeCatalogCreateDialog';
-export { CreateCatalogController } from './catalog-list/createCatalog';
+export { LoadCatalogPageController } from './page/loadCatalogPage';
+export { SetSelectedCatalogController } from './page/setSelectedCatalog';
+export { OpenCatalogCreateDialogController } from './create-dialog/openCatalogCreateDialog';
+export { CloseCatalogCreateDialogController } from './create-dialog/closeCatalogCreateDialog';
+export { SetCatalogCreateDialogNameController } from './create-dialog/setCatalogCreateDialogName';
+export { SetCatalogCreateDialogTypeController } from './create-dialog/setCatalogCreateDialogType';
 export { DeleteCatalogVersionController } from './catalog-list/deleteCatalogVersion';
-export { SetCatalogCreateFormNameController } from './catalog-list/setCatalogCreateFormName';
-export { SetCatalogCreateFormTypeController } from './catalog-list/setCatalogCreateFormType';
 
 // catalog-details
 export { SaveCatalogController } from './catalog-details/saveCatalog';

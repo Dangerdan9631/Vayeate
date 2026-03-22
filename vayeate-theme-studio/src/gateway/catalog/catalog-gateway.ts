@@ -1,5 +1,4 @@
 import { singleton } from 'tsyringe';
-import { createCatalogWithParams } from '../../model/factories';
 import { catalogReferenceSchema, catalogSchema } from '../../model/schemas';
 import type { Catalog, CatalogName, CatalogReference, Version } from '../../model/schemas';
 import { FileSystemService } from '../services/file-system-service';
@@ -35,12 +34,6 @@ function parseFileName(baseName: string): { name: CatalogName; version: Version 
 @singleton()
 export class CatalogGateway {
   constructor(private readonly fileSystemService: FileSystemService) {}
-
-  async createCatalog(params: { name: string; type: 'manual' | 'remote' }): Promise<Catalog> {
-    const catalog = createCatalogWithParams(params);
-    await this.saveCatalog(catalog);
-    return catalog;
-  }
 
   async saveCatalog(catalog: Catalog): Promise<void> {
     const parsed = catalogSchema.safeParse(catalog);

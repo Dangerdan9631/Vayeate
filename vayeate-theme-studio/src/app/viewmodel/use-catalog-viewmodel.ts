@@ -101,12 +101,9 @@ export function useCatalogViewModel() {
     dispatch({ type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick });
   }, [dispatch]);
 
-  const createCatalog = useCallback(
-    (params: { name: string; type: 'manual' | 'remote' }) => {
-      dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params });
-    },
-    [dispatch],
-  );
+  const createCatalog = useCallback(() => {
+    dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick });
+  }, [dispatch]);
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {

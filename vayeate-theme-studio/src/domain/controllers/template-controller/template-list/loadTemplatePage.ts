@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { LoadTemplateRefs } from '../../../operations/template-operations';
 import { LoadCatalogRefs } from '../../../operations/catalog-operations';
 
-/** Load template refs and catalog refs for the template page. */
+/** Refresh template + catalog ref lists when entering the template tab (store is also populated on app load). */
 @singleton()
 export class LoadTemplatePageController {
   constructor(
@@ -15,4 +15,3 @@ export class LoadTemplatePageController {
     await this.loadCatalogRefs.execute();
   }
 }
-

@@ -1,6 +1,5 @@
 // theme-list
 export { themeStackId } from '../../utils/stack-id';
-export { LoadThemeRefsController } from './theme-list/loadThemeRefs';
 export { LoadThemePageController } from './theme-list/loadThemePage';
 export { SelectThemeAndLoadController } from './theme-list/selectThemeAndLoad';
 export { SelectThemeByNameController } from './theme-list/selectThemeByName';

@@ -1,20 +1,20 @@
 import { singleton } from 'tsyringe';
-import { LoadCatalog, SetSelectedRef } from '../../../operations/catalog-operations';
+import { LoadCatalog, SetSelectedCatalog } from '../../../operations/catalog-operations';
 import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
 import { catalogStackId } from '../../../utils/stack-id';
 
 @singleton()
-export class SelectCatalogAndLoadController {
+export class SetSelectedCatalogController {
   constructor(
-    private readonly setSelectedRef: SetSelectedRef,
     private readonly loadCatalog: LoadCatalog,
+    private readonly setSelectedCatalog: SetSelectedCatalog,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
   ) {}
 
   async run(name: string, version: string): Promise<void> {
     const ref = { name, version };
-    this.setSelectedRef.execute(ref);
-    await this.loadCatalog.execute(name, version);
+    const catalog = await this.loadCatalog.execute(name, version);
+    this.setSelectedCatalog.execute(ref, catalog ?? null);
     this.setCurrentUndoStackId.execute(catalogStackId(name, version));
   }
 }

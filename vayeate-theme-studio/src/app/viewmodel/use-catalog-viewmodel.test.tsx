@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { renderHook, act } from '@testing-library/react';
 import { vi } from 'vitest';
 import { AppProvider } from '../ui/context/AppContext';
@@ -6,7 +6,7 @@ import { useAppState } from '../ui/context/useAppState';
 import { useCatalogViewModel } from './use-catalog-viewmodel';
 import type { Catalog } from '../../model/schemas';
 import { createInMemoryFsElectronApi, seedCatalogFile } from '../../test-utils/electron-api-in-memory-fs';
-import { CatalogActionType } from '../actions/action-types';
+import { AppActionType, CatalogActionType } from '../actions/action-types';
 
 const mockCatalog: Catalog = {
   name: 'test-catalog',
@@ -52,6 +52,14 @@ const HarnessInner = React.forwardRef<
   object
 >(function HarnessInner(_, ref) {
   const { dispatch } = useAppState();
+  const appOnLoadDispatched = useRef(false);
+
+  useEffect(() => {
+    if (!dispatch || appOnLoadDispatched.current) return;
+    appOnLoadDispatched.current = true;
+    void dispatch({ type: AppActionType.AppAppOnLoad });
+  }, [dispatch]);
+
   if (ref && typeof ref === 'object' && 'current' in ref) {
     (ref as React.MutableRefObject<{ dispatch: ((a: import('../actions/action-types').AppActionV2) => void) | null }>).current = {
       dispatch,
@@ -81,7 +89,8 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      await getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params: { name: 'test-catalog', type: 'manual' } });
+      getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogNameTextOnChange, value: 'test-catalog' });
+      await getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick });
     });
 
     expect(result.current.catalog).not.toBeNull();
@@ -107,7 +116,8 @@ describe('useCatalogViewModel', () => {
     const { result } = renderHook(() => useCatalogViewModel(), { wrapper: Wrapper });
 
     await act(async () => {
-      getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick, params: { name: 'foo', type: 'manual' } });
+      getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogNameTextOnChange, value: 'foo' });
+      getDispatch()?.({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick });
       await new Promise((r) => setTimeout(r, 50));
     });
 

@@ -5,8 +5,7 @@ import {
   DeleteCatalog,
   LoadCatalog,
   RefreshCatalogRefs,
-  SetCatalog,
-  SetSelectedRef,
+  SetSelectedCatalog,
 } from '../../../operations/catalog-operations';
 import { SetCurrentUndoStackId } from '../../../operations/undo-operations';
 
@@ -15,9 +14,8 @@ export class DeleteCatalogVersionController {
   constructor(
     private readonly deleteCatalog: DeleteCatalog,
     private readonly refreshCatalogRefs: RefreshCatalogRefs,
-    private readonly setSelectedRef: SetSelectedRef,
     private readonly loadCatalog: LoadCatalog,
-    private readonly setCatalog: SetCatalog,
+    private readonly setSelectedCatalog: SetSelectedCatalog,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackId,
   ) {}
 
@@ -27,12 +25,11 @@ export class DeleteCatalogVersionController {
     const next = findNearestVersionRef(refs, name, version);
 
     if (next) {
-      this.setSelectedRef.execute(next);
-      await this.loadCatalog.execute(next.name, next.version);
+      const catalog = await this.loadCatalog.execute(next.name, next.version);
+      this.setSelectedCatalog.execute(next, catalog ?? null);
       this.setCurrentUndoStackId.execute(catalogStackId(next.name, next.version));
     } else {
-      this.setSelectedRef.execute(null);
-      this.setCatalog.execute(null);
+      this.setSelectedCatalog.execute(null);
       this.setCurrentUndoStackId.execute(null);
     }
   }

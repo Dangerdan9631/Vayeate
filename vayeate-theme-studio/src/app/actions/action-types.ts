@@ -225,7 +225,7 @@ export type AppActionV2 =
   | { type: CatalogActionType.CatalogCreateDialogNameTextOnChange; value: string }
   | { type: CatalogActionType.CatalogCreateDialogTypeListOnCommit; value: CatalogType }
   | { type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick }
-  | { type: CatalogActionType.CatalogCreateDialogOkButtonOnClick; params: { name: CatalogName; type: CatalogType } }
+  | { type: CatalogActionType.CatalogCreateDialogOkButtonOnClick }
   | { type: CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick; name: CatalogName; version: Version }
   | { type: CatalogActionType.CatalogDetailsSyncButtonOnClick; catalog: Catalog }
   | { type: CatalogActionType.CatalogDetailsLockButtonOnClick }

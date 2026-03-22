@@ -136,17 +136,17 @@ describe('theme routing wrapper controllers', () => {
     vi.restoreAllMocks();
   });
 
-  it('LoadThemePageController composes LoadThemeRefsController then resets current undo stack id', async () => {
-    const loadRefsMock = { run: vi.fn().mockResolvedValue(undefined) };
+  it('LoadThemePageController loads previews then resets current undo stack id', async () => {
+    const loadPreviewsMock = { execute: vi.fn().mockResolvedValue(undefined) };
     const setUndoMock = { execute: vi.fn() };
 
-    const controller = new LoadThemePageController(loadRefsMock as any, setUndoMock as any);
+    const controller = new LoadThemePageController(loadPreviewsMock as any, setUndoMock as any);
 
     await controller.run();
 
-    expect(loadRefsMock.run).toHaveBeenCalledTimes(1);
+    expect(loadPreviewsMock.execute).toHaveBeenCalledTimes(1);
     expect(setUndoMock.execute).toHaveBeenCalledWith(null);
-    expect(loadRefsMock.run.mock.invocationCallOrder[0]).toBeLessThan(
+    expect(loadPreviewsMock.execute.mock.invocationCallOrder[0]).toBeLessThan(
       setUndoMock.execute.mock.invocationCallOrder[0],
     );
   });

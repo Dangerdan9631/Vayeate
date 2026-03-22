@@ -7,8 +7,11 @@ import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 // Import all operation classes for wrapper functions
 import { SetCatalogRefs } from './catalog-list/setCatalogRefs';
 import { SetSelectedRef } from './catalog-list/setSelectedRef';
-import { SetCatalogCreateFormName } from './catalog-list/setCatalogCreateFormName';
-import { SetCatalogCreateFormType } from './catalog-list/setCatalogCreateFormType';
+import { SetSelectedCatalog } from './catalog-list/setSelectedCatalog';
+import { SetCatalogCreateDialogData } from './create-dialog/setCatalogCreateDialogData';
+import { GetCatalogCreateDialogData } from './create-dialog/getCatalogCreateDialogData';
+import { OpenCatalogCreateDialog } from './create-dialog/openCatalogCreateDialog';
+import { CloseCatalogCreateDialog } from './create-dialog/closeCatalogCreateDialog';
 import { LoadCatalogRefs } from './catalog-list/loadCatalogRefs';
 import { CreateCatalog } from './catalog-list/createCatalog';
 import { RefreshCatalogRefs } from './catalog-list/refreshCatalogRefs';
@@ -45,13 +48,17 @@ import { UpdateTokenKeyInCatalog } from './tokens/update-token-key-in-catalog';
 import { RemoveTokenFromCatalog } from './tokens/remove-token-from-catalog';
 
 export type { CatalogPaneState, CatalogUndoPush } from './types';
+export type { CatalogCreateDialogData } from './create-dialog/getCatalogCreateDialogData';
 
 // Re-export all classes
 export {
   SetCatalogRefs,
   SetSelectedRef,
-  SetCatalogCreateFormName,
-  SetCatalogCreateFormType,
+  SetSelectedCatalog,
+  SetCatalogCreateDialogData,
+  GetCatalogCreateDialogData,
+  OpenCatalogCreateDialog,
+  CloseCatalogCreateDialog,
   LoadCatalogRefs,
   CreateCatalog,
   RefreshCatalogRefs,
@@ -105,11 +112,14 @@ export const setCatalogRefs = (_setStoreState: any, refs: any) =>
 export const setSelectedRef = (_setState: any, ref: any) =>
   new SetSelectedRef(new AppStateSetter(_setState)).execute(ref);
 
-export const setCatalogCreateFormName = (_setState: any, value: any) =>
-  new SetCatalogCreateFormName(new AppStateSetter(_setState)).execute(value);
+export const setCatalogCreateDialogData = (_setState: any, options: any) =>
+  new SetCatalogCreateDialogData(new AppStateSetter(_setState)).execute(options);
 
-export const setCatalogCreateFormType = (_setState: any, value: any) =>
-  new SetCatalogCreateFormType(new AppStateSetter(_setState)).execute(value);
+export const openCatalogCreateDialog = (_setState: any) =>
+  new OpenCatalogCreateDialog(new AppStateSetter(_setState)).execute();
+
+export const closeCatalogCreateDialog = (_setState: any) =>
+  new CloseCatalogCreateDialog(new AppStateSetter(_setState)).execute();
 
 export const createCatalog = (_setState: any, params: any) =>
   container.resolve(CreateCatalog).execute(params);
@@ -129,7 +139,7 @@ export const setCatalog = (_setState: any, catalog: any) =>
   new SetCatalog(new AppStateSetter(_setState)).execute(catalog);
 
 export const loadCatalog = (_setState: any, name: any, version: any) =>
-  new LoadCatalog(new AppStateSetter(_setState), container.resolve(CatalogGateway)).execute(name, version);
+  container.resolve(LoadCatalog).execute(name, version);
 
 export const loadCatalogForDisplay = (_setState: any, name: any, version: any) =>
   new LoadCatalogForDisplay(new AppStateSetter(_setState), container.resolve(CatalogGateway)).execute(

@@ -12,7 +12,7 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
       await container.resolve(catalogController.LoadCatalogPageController).run();
       break;
     case CatalogActionType.CatalogCatalogsListOnCommit:
-      await container.resolve(catalogController.SelectCatalogAndLoadController).run(action.name, action.version);
+      await container.resolve(catalogController.SetSelectedCatalogController).run(action.name, action.version);
       break;
     case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
       container.resolve(catalogController.OpenCatalogCreateDialogController).run();
@@ -21,16 +21,16 @@ export const handleCatalogAction: ActionHandler<CatalogAction> = async (
       container.resolve(catalogController.OpenCatalogCreateDialogController).run();
       break;
     case CatalogActionType.CatalogCreateDialogNameTextOnChange:
-      container.resolve(catalogController.SetCatalogCreateFormNameController).run(action.value);
+      container.resolve(catalogController.SetCatalogCreateDialogNameController).run(action.value);
       break;
     case CatalogActionType.CatalogCreateDialogTypeListOnCommit:
-      container.resolve(catalogController.SetCatalogCreateFormTypeController).run(action.value);
+      container.resolve(catalogController.SetCatalogCreateDialogTypeController).run(action.value);
       break;
     case CatalogActionType.CatalogCreateDialogCancelButtonOnClick:
-      container.resolve(catalogController.CloseCatalogCreateDialogController).run();
+      await container.resolve(catalogController.CloseCatalogCreateDialogController).run('Cancel');
       break;
     case CatalogActionType.CatalogCreateDialogOkButtonOnClick:
-      await container.resolve(catalogController.CreateCatalogController).run(action.params);
+      await container.resolve(catalogController.CloseCatalogCreateDialogController).run('OK');
       break;
     case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
       await container.resolve(catalogController.DeleteCatalogVersionController).run(action.name, action.version);
