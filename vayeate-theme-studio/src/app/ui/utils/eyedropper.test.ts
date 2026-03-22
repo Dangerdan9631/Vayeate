@@ -88,6 +88,19 @@ describe('eyedropper utils', () => {
     });
   });
 
+  describe('aspect pan range (used by clampEyedropperCanvasInAspectBounds)', () => {
+    it('unifies image narrower vs wider than contain width', () => {
+      const Rleft = 100;
+      const Rw = 200;
+      const narrower = 150;
+      expect(Math.min(Rleft, Rleft + Rw - narrower)).toBe(100);
+      expect(Math.max(Rleft, Rleft + Rw - narrower)).toBe(150);
+      const wider = 250;
+      expect(Math.min(Rleft, Rleft + Rw - wider)).toBe(50);
+      expect(Math.max(Rleft, Rleft + Rw - wider)).toBe(100);
+    });
+  });
+
   describe('clampEyedropperZoomToFitRange', () => {
     it('clamps relative to zFit; min is exactly fit', () => {
       const zf = 0.5;

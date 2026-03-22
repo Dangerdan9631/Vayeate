@@ -11,6 +11,7 @@ import { useAppDispatch } from '../context/slice-contexts';
 import { useAppState } from '../context/useAppState';
 import {
   clampElementScroll,
+  clampEyedropperCanvasInAspectBounds,
   clampEyedropperZoomToFitRange,
   clientToCanvasFloat,
   clientToCanvasPixel,
@@ -23,6 +24,7 @@ import {
   loupeFixedPosition,
   loupeSourceRect,
   rgbToHex,
+  scrollContainerContentSize,
 } from '../utils/eyedropper';
 
 /** Full-screen screen snapshot overlay; driven by `state.ui.eyedropper`. */
@@ -47,7 +49,7 @@ export function EyedropperOverlay() {
   const [zoom, setZoom] = useState(1);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [previewHex, setPreviewHex] = useState<string | null>(null);
-  /** Scroll viewport client size (padding included in element; used for contain fit). */
+  /** Content area inside scroll padding (matches aspect “view bounds” / contain fit). */
   const [scrollViewport, setScrollViewport] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
@@ -65,19 +67,41 @@ export function EyedropperOverlay() {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el || phase !== 'ready' || !snapshot) return;
-    const ro = new ResizeObserver(() => {
-      setScrollViewport({ w: el.clientWidth, h: el.clientHeight });
-    });
+    const sync = () => {
+      const { w, h } = scrollContainerContentSize(el);
+      setScrollViewport({ w, h });
+    };
+    const ro = new ResizeObserver(sync);
     ro.observe(el);
-    setScrollViewport({ w: el.clientWidth, h: el.clientHeight });
+    sync();
     return () => ro.disconnect();
   }, [phase, snapshot]);
+
+  useLayoutEffect(() => {
+    const scroll = scrollRef.current;
+    const canvas = canvasRef.current;
+    if (!scroll || !canvas || phase !== 'ready' || !snapshot) return;
+    const tw = snapshot.fullBounds.width;
+    const th = snapshot.fullBounds.height;
+    clampEyedropperCanvasInAspectBounds(scroll, canvas, tw, th);
+  }, [scrollViewport.w, scrollViewport.h, zoom, phase, snapshot]);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el || phase !== 'ready') return;
-    clampElementScroll(el);
-  }, [scrollViewport.w, scrollViewport.h, zoom, phase]);
+    const onScroll = () => {
+      const canvas = canvasRef.current;
+      if (!canvas || !snapshot) return;
+      clampEyedropperCanvasInAspectBounds(
+        el,
+        canvas,
+        snapshot.fullBounds.width,
+        snapshot.fullBounds.height,
+      );
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [phase, snapshot]);
 
   /** Contain-fit scale + initial zoom to fit; on viewport resize, re-clamp zoom to fit-relative range. */
   useEffect(() => {
@@ -164,6 +188,7 @@ export function EyedropperOverlay() {
     scroll.scrollLeft -= corr.clientX - px;
     scroll.scrollTop -= corr.clientY - py;
     clampElementScroll(scroll);
+    clampEyedropperCanvasInAspectBounds(scroll, canvas, tw, th);
     wheelCorrectionRef.current = null;
   }, [zoom, phase, snapshot]);
 
@@ -174,9 +199,13 @@ export function EyedropperOverlay() {
     const th = snapshot.fullBounds.height;
     const onWheel = (e: Event) => {
       const we = e as WheelEvent;
-      we.preventDefault();
       const canvas = canvasRef.current;
       if (!canvas) return;
+      const anchor = clientToCanvasFloat(we.clientX, we.clientY, canvas, tw, th);
+      if (!anchor) {
+        return;
+      }
+      we.preventDefault();
       const zf = zoomFitRef.current;
       if (zf <= 0) return;
       const z0 = zoomRef.current;
@@ -185,12 +214,6 @@ export function EyedropperOverlay() {
         zf,
       );
       if (Math.abs(z1 - z0) < 1e-9) return;
-      let anchor = clientToCanvasFloat(we.clientX, we.clientY, canvas, tw, th);
-      if (!anchor) {
-        const sr = el.getBoundingClientRect();
-        anchor = clientToCanvasFloat(sr.left + sr.width / 2, sr.top + sr.height / 2, canvas, tw, th);
-      }
-      if (!anchor) return;
       wheelCorrectionRef.current = {
         clientX: we.clientX,
         clientY: we.clientY,
@@ -404,8 +427,8 @@ export function EyedropperOverlay() {
               minWidth: innerMinW,
               minHeight: innerMinH,
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
               boxSizing: 'border-box',
             }}
           >

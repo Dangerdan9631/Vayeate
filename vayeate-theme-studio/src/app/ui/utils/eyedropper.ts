@@ -55,6 +55,66 @@ export function clampElementScroll(el: HTMLElement): void {
   el.scrollTop = Math.max(0, Math.min(maxT, el.scrollTop));
 }
 
+/** Content-box width/height inside padding (for contain + aspect bounds). */
+export function scrollContainerContentSize(el: HTMLElement): { w: number; h: number } {
+  const cs = getComputedStyle(el);
+  const pl = parseFloat(cs.paddingLeft) || 0;
+  const pr = parseFloat(cs.paddingRight) || 0;
+  const pt = parseFloat(cs.paddingTop) || 0;
+  const pb = parseFloat(cs.paddingBottom) || 0;
+  return {
+    w: Math.max(0, el.clientWidth - pl - pr),
+    h: Math.max(0, el.clientHeight - pt - pb),
+  };
+}
+
+/**
+ * Keeps the canvas edges inside the centered “contain” rect (same aspect as the bitmap) in the
+ * scroll container’s **content** area. Does not force centering when the image is smaller than
+ * that rect—only prevents each edge from crossing past the matching edge of R.
+ */
+export function clampEyedropperCanvasInAspectBounds(
+  scrollEl: HTMLElement,
+  canvas: HTMLElement,
+  bitmapW: number,
+  bitmapH: number,
+): void {
+  if (bitmapW <= 0 || bitmapH <= 0) return;
+  const { w: innerW, h: innerH } = scrollContainerContentSize(scrollEl);
+  if (innerW <= 0 || innerH <= 0) return;
+
+  const Rw = Math.min(innerW, (innerH * bitmapW) / bitmapH);
+  const Rh = Math.min(innerH, (innerW * bitmapH) / bitmapW);
+  const cs = getComputedStyle(scrollEl);
+  const pl = parseFloat(cs.paddingLeft) || 0;
+  const pt = parseFloat(cs.paddingTop) || 0;
+  const sr = scrollEl.getBoundingClientRect();
+  const Rleft = sr.left + scrollEl.clientLeft + pl + (innerW - Rw) / 2;
+  const Rtop = sr.top + scrollEl.clientTop + pt + (innerH - Rh) / 2;
+
+  for (let i = 0; i < 8; i++) {
+    const cr = canvas.getBoundingClientRect();
+    const cw = cr.width;
+    const ch = cr.height;
+    const minL = Math.min(Rleft, Rleft + Rw - cw);
+    const maxL = Math.max(Rleft, Rleft + Rw - cw);
+    const minT = Math.min(Rtop, Rtop + Rh - ch);
+    const maxT = Math.max(Rtop, Rtop + Rh - ch);
+
+    let dl = 0;
+    let dt = 0;
+    if (cr.left < minL - 0.25) dl = minL - cr.left;
+    else if (cr.left > maxL + 0.25) dl = maxL - cr.left;
+    if (cr.top < minT - 0.25) dt = minT - cr.top;
+    else if (cr.top > maxT + 0.25) dt = maxT - cr.top;
+
+    if (Math.abs(dl) < 1e-4 && Math.abs(dt) < 1e-4) break;
+    scrollEl.scrollLeft += dl;
+    scrollEl.scrollTop += dt;
+  }
+  clampElementScroll(scrollEl);
+}
+
 /** Loupe canvas size (CSS pixels). */
 export const EYEDROPPER_LOUPE_SIZE = 120;
 /** Source pixels on each side of center (side length = 2 * radius + 1). */
