@@ -1,6 +1,7 @@
 import { injectable } from 'tsyringe';
 import {
   LoadApplicationController,
+  SetActiveTabController,
   SetColorSchemeController,
   UnloadApplicationController,
 } from '../../domain/controllers/app-controller';
@@ -9,7 +10,6 @@ import {
   PerformRedoController,
   PerformUndoController,
 } from '../../domain/controllers/undo-controller';
-import { SetActiveTabController } from '../../domain/controllers/tab-controller';
 import {
   CloseWindowController,
   DragWindowController,
@@ -74,7 +74,7 @@ export class AppActionHandler implements ActionHandler<AppAction> {
         await this.setActiveTab.run(action.tabId);
         break;
       case AppActionType.AppBarThemeCheckboxOnToggle: {
-        const scheme: 'light' | 'dark' = action.checked ? 'light' : 'dark';
+        const scheme = action.checked ? 'light' : 'dark';
         await this.setColorScheme.run(scheme);
         break;
       }
