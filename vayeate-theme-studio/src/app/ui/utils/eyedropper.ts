@@ -47,6 +47,27 @@ export function clientToCanvasFloat(
   return { fx: nx * canvasWidth, fy: ny * canvasHeight };
 }
 
+/**
+ * Bitmap coordinates for zoom anchoring: clamps the client point to the canvas rect, then maps
+ * linearly (same as `clientToCanvasFloat` for points on the canvas). Use for wheel zoom when the
+ * cursor may be in scroll padding outside the image.
+ */
+export function clientToCanvasFloatClamped(
+  clientX: number,
+  clientY: number,
+  canvas: HTMLElement,
+  canvasWidth: number,
+  canvasHeight: number,
+): { fx: number; fy: number } | null {
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  const cx = Math.min(Math.max(clientX, rect.left), rect.right);
+  const cy = Math.min(Math.max(clientY, rect.top), rect.bottom);
+  const nx = (cx - rect.left) / rect.width;
+  const ny = (cy - rect.top) / rect.height;
+  return { fx: nx * canvasWidth, fy: ny * canvasHeight };
+}
+
 /** Clamp scroll offsets so the scrollable area does not exceed content bounds. */
 export function clampElementScroll(el: HTMLElement): void {
   const maxL = Math.max(0, el.scrollWidth - el.clientWidth);
@@ -69,6 +90,24 @@ export function scrollContainerContentSize(el: HTMLElement): { w: number; h: num
 }
 
 /**
+ * Width and height of the centered aspect “contain” rectangle inside the scroll content area
+ * (same aspect as the bitmap; the largest such rect that fits in `innerW` × `innerH`).
+ */
+export function eyedropperAspectContainRect(
+  innerW: number,
+  innerH: number,
+  bitmapW: number,
+  bitmapH: number,
+): { Rw: number; Rh: number } {
+  if (innerW <= 0 || innerH <= 0 || bitmapW <= 0 || bitmapH <= 0) {
+    return { Rw: 0, Rh: 0 };
+  }
+  const Rw = Math.min(innerW, (innerH * bitmapW) / bitmapH);
+  const Rh = Math.min(innerH, (innerW * bitmapH) / bitmapW);
+  return { Rw, Rh };
+}
+
+/**
  * Keeps the canvas edges inside the centered “contain” rect (same aspect as the bitmap) in the
  * scroll container’s **content** area. Does not force centering when the image is smaller than
  * that rect—only prevents each edge from crossing past the matching edge of R.
@@ -83,8 +122,8 @@ export function clampEyedropperCanvasInAspectBounds(
   const { w: innerW, h: innerH } = scrollContainerContentSize(scrollEl);
   if (innerW <= 0 || innerH <= 0) return;
 
-  const Rw = Math.min(innerW, (innerH * bitmapW) / bitmapH);
-  const Rh = Math.min(innerH, (innerW * bitmapH) / bitmapW);
+  const { Rw, Rh } = eyedropperAspectContainRect(innerW, innerH, bitmapW, bitmapH);
+  if (Rw <= 0 || Rh <= 0) return;
   const cs = getComputedStyle(scrollEl);
   const pl = parseFloat(cs.paddingLeft) || 0;
   const pt = parseFloat(cs.paddingTop) || 0;

@@ -13,7 +13,7 @@ import {
   clampElementScroll,
   clampEyedropperCanvasInAspectBounds,
   clampEyedropperZoomToFitRange,
-  clientToCanvasFloat,
+  clientToCanvasFloatClamped,
   clientToCanvasPixel,
   EYEDROPPER_LOUPE_PIXEL_RADIUS,
   EYEDROPPER_LOUPE_SIZE,
@@ -32,6 +32,7 @@ export function EyedropperOverlay() {
   const { state } = useAppState();
   const dispatch = useAppDispatch();
   const { phase, snapshot, errorMessage, contextKey } = state.ui.eyedropper;
+  const overlayRootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -192,8 +193,9 @@ export function EyedropperOverlay() {
     wheelCorrectionRef.current = null;
   }, [zoom, phase, snapshot]);
 
+  /** Full-screen overlay: scroll area does not cover letterboxing; wheel must work on dimmed regions too. */
   useEffect(() => {
-    const el = scrollRef.current;
+    const el = overlayRootRef.current;
     if (!el || phase !== 'ready' || snapshotBitmapError || !snapshot) return;
     const tw = snapshot.fullBounds.width;
     const th = snapshot.fullBounds.height;
@@ -201,7 +203,7 @@ export function EyedropperOverlay() {
       const we = e as WheelEvent;
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const anchor = clientToCanvasFloat(we.clientX, we.clientY, canvas, tw, th);
+      const anchor = clientToCanvasFloatClamped(we.clientX, we.clientY, canvas, tw, th);
       if (!anchor) {
         return;
       }
@@ -355,6 +357,7 @@ export function EyedropperOverlay() {
 
   return (
     <div
+      ref={overlayRootRef}
       className="eyedropper-overlay"
       style={{
         position: 'fixed',

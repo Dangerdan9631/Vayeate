@@ -3,7 +3,9 @@ import {
   clampEyedropperZoom,
   clampEyedropperZoomToFitRange,
   clientToCanvasFloat,
+  clientToCanvasFloatClamped,
   clientToCanvasPixel,
+  eyedropperAspectContainRect,
   eyedropperZoomFitContain,
   isEyedropperSupported,
   loupeCrosshairCenter,
@@ -71,6 +73,53 @@ describe('eyedropper utils', () => {
         ({ left: 0, top: 0, width: 100, height: 50, right: 100, bottom: 50, x: 0, y: 0, toJSON: () => {} } as DOMRect);
       const r = clientToCanvasFloat(50, 25, el, 200, 100);
       expect(r).toEqual({ fx: 100, fy: 50 });
+    });
+  });
+
+  describe('clientToCanvasFloatClamped', () => {
+    const rect = { left: 10, top: 20, width: 100, height: 50, right: 110, bottom: 70, x: 10, y: 20, toJSON: () => {} } as DOMRect;
+
+    it('matches clientToCanvasFloat for a point inside the canvas', () => {
+      const el = document.createElement('canvas');
+      el.getBoundingClientRect = () => rect;
+      expect(clientToCanvasFloatClamped(60, 45, el, 200, 100)).toEqual(clientToCanvasFloat(60, 45, el, 200, 100));
+    });
+
+    it('maps a point left/above the canvas to top-left of bitmap space', () => {
+      const el = document.createElement('canvas');
+      el.getBoundingClientRect = () => rect;
+      expect(clientToCanvasFloatClamped(0, 0, el, 200, 100)).toEqual({ fx: 0, fy: 0 });
+    });
+
+    it('maps a point right/below the canvas to bottom-right of bitmap space', () => {
+      const el = document.createElement('canvas');
+      el.getBoundingClientRect = () => rect;
+      expect(clientToCanvasFloatClamped(200, 100, el, 200, 100)).toEqual({ fx: 200, fy: 100 });
+    });
+  });
+
+  describe('eyedropperAspectContainRect', () => {
+    it('returns full width when viewport is wider than bitmap aspect', () => {
+      const { Rw, Rh } = eyedropperAspectContainRect(800, 600, 1600, 1200);
+      expect(Rw).toBe(800);
+      expect(Rh).toBe(600);
+    });
+
+    it('limits by width when viewport is narrow relative to bitmap aspect', () => {
+      const { Rw, Rh } = eyedropperAspectContainRect(400, 900, 1600, 1200);
+      expect(Rw).toBe(400);
+      expect(Rh).toBe(300);
+    });
+
+    it('limits by height when viewport is short relative to bitmap aspect', () => {
+      const { Rw, Rh } = eyedropperAspectContainRect(900, 400, 1200, 1600);
+      expect(Rh).toBe(400);
+      expect(Rw).toBe(300);
+    });
+
+    it('returns zeros when dimensions are invalid', () => {
+      expect(eyedropperAspectContainRect(0, 100, 100, 100)).toEqual({ Rw: 0, Rh: 0 });
+      expect(eyedropperAspectContainRect(100, 100, 0, 100)).toEqual({ Rw: 0, Rh: 0 });
     });
   });
 
