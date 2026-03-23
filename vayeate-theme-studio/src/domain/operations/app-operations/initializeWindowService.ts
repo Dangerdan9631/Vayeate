@@ -22,8 +22,4 @@ export class InitializeWindowService {
       },
     );
   }
-
-  tearDownWindowIpc(): void {
-    this.windowService.disposeIpcListeners();
-  }
 }

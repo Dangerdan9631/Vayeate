@@ -40,7 +40,7 @@ describe('WindowService', () => {
     expect(onMove).toHaveBeenCalledWith({ x: 1, y: 2 });
   });
 
-  it('disposeIpcListeners unsubscribes previous init', () => {
+  it('init unsubscribes previous listeners before re-registering', () => {
     const unsub1 = vi.fn();
     const unsub2 = vi.fn();
     let call = 0;
@@ -58,5 +58,24 @@ describe('WindowService', () => {
     svc.init(noop, noop, noop);
     svc.init(noop, noop, noop);
     expect(unsub1).toHaveBeenCalled();
+  });
+
+  it('dispose unsubscribes all listeners registered by the last init', () => {
+    const unsubState = vi.fn();
+    const unsubResize = vi.fn();
+    const unsubMove = vi.fn();
+    window.electronAPI = {
+      onWindowState: vi.fn(() => unsubState),
+      onWindowResize: vi.fn(() => unsubResize),
+      onWindowMove: vi.fn(() => unsubMove),
+    } as unknown as NonNullable<typeof window.electronAPI>;
+
+    const svc = new WindowService();
+    svc.init(() => {}, () => {}, () => {});
+    svc.dispose();
+
+    expect(unsubState).toHaveBeenCalledTimes(1);
+    expect(unsubResize).toHaveBeenCalledTimes(1);
+    expect(unsubMove).toHaveBeenCalledTimes(1);
   });
 });

@@ -135,10 +135,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const queueRef = useRef<ActionQueue | null>(null);
 
   useLayoutEffect(() => {
-    container.resolve(BootstrapAppController).runWindowIpcInit();
-    return () => {
-      container.resolve(BootstrapAppController).disposeWindowIpc();
-    };
+    return container.resolve(BootstrapAppController).run();
   }, [setWindowState]);
 
   const dispatch = useCallback((action: AppActionV2): Promise<void> => {

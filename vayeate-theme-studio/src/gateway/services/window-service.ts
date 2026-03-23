@@ -51,7 +51,6 @@ export class WindowService {
     onResize: (size: { width: number; height: number }) => void,
     onMove: (position: { x: number; y: number }) => void,
   ): void {
-    
     for (const u of this.ipcUnsubscribes) {
       u();
     }
@@ -65,7 +64,7 @@ export class WindowService {
     push(this.getAPI().onWindowMove?.(onMove));
   }
 
-  disposeIpcListeners(): void {
+  dispose(): void {
     for (const u of this.ipcUnsubscribes) {
       u();
     }
