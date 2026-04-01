@@ -27,6 +27,8 @@ const electronAPI = {
   reloadWindow: () => ipcRenderer.invoke('window:reload'),
   reloadWindowForce: () => ipcRenderer.invoke('window:reloadForce'),
   toggleDevTools: () => ipcRenderer.invoke('window:toggleDevTools'),
+  getWindowBounds: () =>
+    ipcRenderer.invoke('window:getBounds') as Promise<{ x: number; y: number; width: number; height: number }>,
   /** Subscribe to main process logs so they appear in the renderer DevTools console. */
   onMainLog: (callback: (level: 'debug' | 'info' | 'warn' | 'error', args: string[]) => void) => {
     ipcRenderer.on('main-log', (_event, level: 'debug' | 'info' | 'warn' | 'error', args: string[]) =>

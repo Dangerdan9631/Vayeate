@@ -1,16 +1,32 @@
 import { singleton } from 'tsyringe';
-import { InitializeWindowService, TearDownWindowService } from '../../operations/app-operations';
-
-
+import {
+  InitializeWindowService,
+  LoadAppConfig,
+  TearDownWindowService,
+} from '../../operations/app-operations';
+import { LoadCatalogRefs } from '../../operations/catalog-operations';
+import { LoadTemplateRefs } from '../../operations/template-operations';
+import { LoadThemeRefs } from '../../operations/theme-operations';
+import { ClearPersistedUndo } from '../../operations/undo-operations';
 
 @singleton()
 export class BootstrapAppController {
   constructor(
+    private readonly clearPersistedUndo: ClearPersistedUndo,
+    private readonly loadAppConfig: LoadAppConfig,
+    private readonly loadCatalogRefs: LoadCatalogRefs,
+    private readonly loadTemplateRefs: LoadTemplateRefs,
+    private readonly loadThemeRefs: LoadThemeRefs,
     private readonly initializeWindowService: InitializeWindowService,
     private readonly tearDownWindowService: TearDownWindowService,
   ) { }
   
   run(): (() => void) {
+    void this.clearPersistedUndo.execute();
+    void this.loadAppConfig.execute();
+    void this.loadCatalogRefs.execute();
+    void this.loadTemplateRefs.execute();
+    void this.loadThemeRefs.execute();
     this.initializeWindowService.execute();
     return () => {
       this.tearDownWindowService.execute();

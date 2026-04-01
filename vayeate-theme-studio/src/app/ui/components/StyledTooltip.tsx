@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useViewportSize } from '../../viewmodel/useViewportSize';
 
 const OFFSET = 8;
 const PADDING = 8;
@@ -9,6 +10,7 @@ const PADDING = 8;
  * temporarily removes the native title so only our tooltip is visible.
  */
 export function StyledTooltip() {
+  const viewport = useViewportSize();
   const [state, setState] = useState<{
     text: string;
     x: number;
@@ -24,8 +26,8 @@ export function StyledTooltip() {
     const tip = tooltipRef.current;
     const rect = anchorRectRef.current;
     const tipRect = tip.getBoundingClientRect();
-    const viewW = window.innerWidth;
-    const viewH = window.innerHeight;
+    const viewW = viewport.width > 0 ? viewport.width : 1;
+    const viewH = viewport.height > 0 ? viewport.height : 1;
     let x = rect.left;
     let y = rect.bottom + OFFSET;
     if (x + tipRect.width + PADDING > viewW) x = viewW - tipRect.width - PADDING;
@@ -35,7 +37,7 @@ export function StyledTooltip() {
     if (x !== state.x || y !== state.y) {
       setState((prev) => prev ? { ...prev, x, y } : null);
     }
-  }, [state?.text]);
+  }, [state?.text, viewport.width, viewport.height]);
 
   useEffect(() => {
     function show(el: HTMLElement, text: string, hasTitle: boolean) {

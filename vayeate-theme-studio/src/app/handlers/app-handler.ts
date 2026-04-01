@@ -1,9 +1,7 @@
 import { injectable } from 'tsyringe';
 import {
-  LoadApplicationController,
   SetActiveTabController,
   SetColorSchemeController,
-  UnloadApplicationController,
 } from '../../domain/controllers/app-controller';
 import {
   PerformHistoryGoToController,
@@ -25,8 +23,6 @@ import { AppActionType } from '../actions/action-types';
 @injectable()
 export class AppActionHandler implements ActionHandler<AppAction> {
   constructor(
-    private readonly loadApplication: LoadApplicationController,
-    private readonly unloadApplication: UnloadApplicationController,
     private readonly closeWindow: CloseWindowController,
     private readonly performUndo: PerformUndoController,
     private readonly performRedo: PerformRedoController,
@@ -43,12 +39,6 @@ export class AppActionHandler implements ActionHandler<AppAction> {
 
   async handle(action: AppAction, _deps: HandlerDeps): Promise<void> {
     switch (action.type) {
-      case AppActionType.AppAppOnLoad:
-        await this.loadApplication.run();
-        break;
-      case AppActionType.AppAppOnClose:
-        await this.unloadApplication.run();
-        break;
       case AppActionType.AppFileMenuExitButtonOnClick:
         await this.closeWindow.run();
         break;

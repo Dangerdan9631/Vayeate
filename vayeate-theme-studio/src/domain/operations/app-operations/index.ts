@@ -1,4 +1,3 @@
-export { UnloadApplication } from './unloadApplication';
 export { SetColorScheme } from './setColorScheme';
 export { LoadAppConfig } from './loadAppConfig';
 export { SaveAppConfig } from './saveAppConfig';

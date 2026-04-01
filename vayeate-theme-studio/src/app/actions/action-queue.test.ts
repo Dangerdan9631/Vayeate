@@ -120,7 +120,7 @@ describe('ActionQueue', () => {
     const updates: AppStateUpdate[] = [];
     const setState = (u: AppStateUpdate) => updates.push(u);
     const process = async (action: AppActionV2, deps: HandlerDeps) => {
-      if (action.type === AppActionType.AppAppOnLoad) {
+      if (action.type === AppActionType.AppRibbonTabButtonOnClick) {
         deps.setState({ type: 'SET_CATALOG', catalog: null });
       }
     };
@@ -134,7 +134,7 @@ describe('ActionQueue', () => {
 
     const queue = container.resolve(ActionQueue);
 
-    queue.enqueue({ type: AppActionType.AppAppOnLoad });
+    queue.enqueue({ type: AppActionType.AppRibbonTabButtonOnClick, tabId: 'catalogs' });
 
     await new Promise((r) => setTimeout(r, 20));
 

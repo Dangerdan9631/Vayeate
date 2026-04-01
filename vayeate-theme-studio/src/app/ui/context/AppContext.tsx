@@ -1,7 +1,6 @@
 import {
   createContext,
   useCallback,
-  useLayoutEffect,
   useMemo,
   useReducer,
   useRef,
@@ -23,7 +22,6 @@ import { AppStateSetter } from '../../../domain/state/app-state-setter';
 import { AppStateGetter } from '../../../domain/state/app-state-getter';
 import { StoreStateSetter } from '../../../domain/state/store-state-setter';
 import { WindowStateSetter } from '../../../domain/state/window-state-setter';
-import { BootstrapAppController } from '../../../domain/controllers/app-controller';
 import { container } from 'tsyringe';
 import { windowStateReducer, type WindowStateUpdate } from '../../../domain/state/window-state-reducer';
 import {
@@ -133,10 +131,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   container.registerInstance(handlerDepsSourceToken, handlerDepsSource);
 
   const queueRef = useRef<ActionQueue | null>(null);
-
-  useLayoutEffect(() => {
-    return container.resolve(BootstrapAppController).run();
-  }, [setWindowState]);
 
   const dispatch = useCallback((action: AppActionV2): Promise<void> => {
     if (!queueRef.current) {

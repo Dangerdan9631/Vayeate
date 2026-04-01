@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import './styles.css';
+import { container } from 'tsyringe';
+import { BootstrapAppController } from '../../domain/controllers/app-controller';
 import { AppProvider } from './context/AppContext';
 import { ColorSchemeProvider } from './context/ColorSchemeContext';
-import { useUndoStack } from './context/UndoContext';
 import { useActiveTab, useAppDispatch } from './context/slice-contexts';
 import { ContentArea } from './components/ContentArea';
 import { EyedropperOverlay } from './components/EyedropperOverlay';
@@ -16,7 +17,6 @@ import { AppActionType } from '../actions/action-types';
 function AppShell() {
   const activeTab = useActiveTab();
   const dispatch = useAppDispatch();
-  const { undo, redo, canUndo, canRedo } = useUndoStack();
   const [visibleTab, setVisibleTab] = useState<TabId>(activeTab);
 
   useEffect(() => {
@@ -24,41 +24,11 @@ function AppShell() {
   }, [activeTab]);
 
   useEffect(() => {
-    dispatch({ type: AppActionType.AppAppOnLoad });
-  }, [dispatch]);
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      dispatch({ type: AppActionType.AppAppOnClose });
+    const teardown = container.resolve(BootstrapAppController).run();
+    return () => {
+      teardown();
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [dispatch]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-        if (e.shiftKey) {
-          if (canRedo) {
-            e.preventDefault();
-            redo();
-          }
-        } else {
-          if (canUndo) {
-            e.preventDefault();
-            undo();
-          }
-        }
-      } else if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
-        if (canRedo) {
-          e.preventDefault();
-          redo();
-        }
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, canUndo, canRedo]);
+  }, []);
 
   const onTabChange = useCallback(
     (tabId: TabId) => {

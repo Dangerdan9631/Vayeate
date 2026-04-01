@@ -7,7 +7,7 @@ import { useCatalogViewModel } from './use-catalog-viewmodel';
 import type { Catalog } from '../../model/schemas';
 import { createInMemoryFsElectronApi, seedCatalogFile } from '../../test-utils/electron-api-in-memory-fs';
 import { electronPreloadStubs } from '../../test-utils/electron-stubs';
-import { AppActionType, CatalogActionType } from '../actions/action-types';
+import {  CatalogActionType } from '../actions/action-types';
 
 const mockCatalog: Catalog = {
   name: 'test-catalog',
@@ -55,7 +55,7 @@ const HarnessInner = React.forwardRef<
   useEffect(() => {
     if (!dispatch || appOnLoadDispatched.current) return;
     appOnLoadDispatched.current = true;
-    void dispatch({ type: AppActionType.AppAppOnLoad });
+    
   }, [dispatch]);
 
   if (ref && typeof ref === 'object' && 'current' in ref) {

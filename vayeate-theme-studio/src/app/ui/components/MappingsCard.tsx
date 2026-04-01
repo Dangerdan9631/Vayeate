@@ -637,7 +637,15 @@ function SemanticVariantRow({
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isModifierOpen, onCloseModifierDropdown, pendingModifiers, displayModifiers, mapping.token.key, parsed.language, updateVariantKey]);
+  }, [
+    isModifierOpen,
+    onCloseModifierDropdown,
+    pendingModifiers,
+    displayModifiers,
+    mapping.token.key,
+    parsed.language,
+    updateVariantKey,
+  ]);
 
   useEffect(() => {
     if (!languageOpen) return;

@@ -8,9 +8,13 @@ afterEach(() => {
 
 describe('WindowService', () => {
   it('init registers IPC listeners and forwards to deps', () => {
-    const onStateEvent = vi.fn();
-    const onResize = vi.fn();
-    const onMove = vi.fn();
+    const callbacks = {
+      onStateEvent: vi.fn(),
+      onResize: vi.fn(),
+      onMove: vi.fn(),
+      onViewportResize: vi.fn(),
+      onGlobalKeyDown: vi.fn(),
+    };
     const onWindowState = vi.fn((cb: (e: string) => void) => {
       cb('minimized');
       return () => {};
@@ -27,17 +31,45 @@ describe('WindowService', () => {
       onWindowState,
       onWindowResize,
       onWindowMove,
+      getWindowBounds: vi.fn(() => Promise.resolve({ x: 7, y: 8, width: 300, height: 400 })),
     } as unknown as NonNullable<typeof window.electronAPI>;
 
     const svc = new WindowService();
-    svc.init(onStateEvent, onResize, onMove);
+    svc.init(callbacks);
 
     expect(onWindowState).toHaveBeenCalled();
     expect(onWindowResize).toHaveBeenCalled();
     expect(onWindowMove).toHaveBeenCalled();
-    expect(onStateEvent).toHaveBeenCalledWith('minimized');
-    expect(onResize).toHaveBeenCalledWith({ width: 10, height: 20 });
-    expect(onMove).toHaveBeenCalledWith({ x: 1, y: 2 });
+    expect(callbacks.onStateEvent).toHaveBeenCalledWith('minimized');
+    expect(callbacks.onResize).toHaveBeenCalledWith({ width: 10, height: 20 });
+    expect(callbacks.onMove).toHaveBeenCalledWith({ x: 1, y: 2 });
+    expect(callbacks.onViewportResize).toHaveBeenCalled();
+  });
+
+  it('init hydrates initial bounds through callbacks when getWindowBounds exists', async () => {
+    const getWindowBounds = vi.fn(() => Promise.resolve({ x: 10, y: 20, width: 111, height: 222 }));
+    window.electronAPI = {
+      onWindowState: vi.fn(() => () => {}),
+      onWindowResize: vi.fn(() => () => {}),
+      onWindowMove: vi.fn(() => () => {}),
+      getWindowBounds,
+    } as unknown as NonNullable<typeof window.electronAPI>;
+    const callbacks = {
+      onStateEvent: vi.fn(),
+      onResize: vi.fn(),
+      onMove: vi.fn(),
+      onViewportResize: vi.fn(),
+      onGlobalKeyDown: vi.fn(),
+    };
+
+    const svc = new WindowService();
+    svc.init(callbacks);
+
+    await vi.waitFor(() => {
+      expect(getWindowBounds).toHaveBeenCalledTimes(1);
+      expect(callbacks.onMove).toHaveBeenCalledWith({ x: 10, y: 20 });
+      expect(callbacks.onResize).toHaveBeenCalledWith({ width: 111, height: 222 });
+    });
   });
 
   it('init unsubscribes previous listeners before re-registering', () => {
@@ -54,9 +86,15 @@ describe('WindowService', () => {
     } as unknown as NonNullable<typeof window.electronAPI>;
 
     const svc = new WindowService();
-    const noop = () => {};
-    svc.init(noop, noop, noop);
-    svc.init(noop, noop, noop);
+    const callbacks = {
+      onStateEvent: () => {},
+      onResize: () => {},
+      onMove: () => {},
+      onViewportResize: () => {},
+      onGlobalKeyDown: () => {},
+    };
+    svc.init(callbacks);
+    svc.init(callbacks);
     expect(unsub1).toHaveBeenCalled();
   });
 
@@ -71,7 +109,13 @@ describe('WindowService', () => {
     } as unknown as NonNullable<typeof window.electronAPI>;
 
     const svc = new WindowService();
-    svc.init(() => {}, () => {}, () => {});
+    svc.init({
+      onStateEvent: () => {},
+      onResize: () => {},
+      onMove: () => {},
+      onViewportResize: () => {},
+      onGlobalKeyDown: () => {},
+    });
     svc.dispose();
 
     expect(unsubState).toHaveBeenCalledTimes(1);

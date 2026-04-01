@@ -368,6 +368,13 @@ app.whenReady().then(async () => {
     mainWindow?.webContents.toggleDevTools();
   });
 
+  ipcMain.handle('window:getBounds', () => {
+    if (mainWindow == null || mainWindow.isDestroyed()) {
+      return { x: 0, y: 0, width: 0, height: 0 };
+    }
+    return mainWindow.getBounds();
+  });
+
   createWindow();
   installMainLogForwarding();
 

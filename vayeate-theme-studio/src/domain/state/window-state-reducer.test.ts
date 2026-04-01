@@ -14,6 +14,7 @@ describe('windowStateReducer', () => {
       expect(next.window.loadState).toBe(state.window.loadState);
       expect(next.window.isMinimized).toBe(state.window.isMinimized);
       expect(next.window.isMaximized).toBe(state.window.isMaximized);
+      expect(next.window.viewport).toBe(state.window.viewport);
     });
   });
 
@@ -28,6 +29,19 @@ describe('windowStateReducer', () => {
       expect(next.window.loadState).toBe(state.window.loadState);
       expect(next.window.isMinimized).toBe(state.window.isMinimized);
       expect(next.window.isMaximized).toBe(state.window.isMaximized);
+      expect(next.window.viewport).toBe(state.window.viewport);
+    });
+  });
+
+  describe('SET_VIEWPORT_SIZE', () => {
+    it('updates state.window.viewport and leaves other window fields unchanged', () => {
+      const state = initialAppState;
+      const update = { type: 'SET_VIEWPORT_SIZE' as const, size: { width: 1920, height: 1080 } };
+      const next = windowStateReducer(state, update);
+
+      expect(next.window.viewport).toEqual({ width: 1920, height: 1080 });
+      expect(next.window.size).toBe(state.window.size);
+      expect(next.window.position).toBe(state.window.position);
     });
   });
 });

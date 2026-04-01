@@ -10,5 +10,6 @@ export function electronPreloadStubs() {
     onWindowState: vi.fn(() => () => {}),
     onWindowResize: vi.fn(() => () => {}),
     onWindowMove: vi.fn(() => () => {}),
+    getWindowBounds: vi.fn(() => Promise.resolve({ x: 0, y: 0, width: 1024, height: 768 })),
   };
 }

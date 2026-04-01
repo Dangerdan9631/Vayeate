@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
-import { LoadAppConfig, SaveAppConfig, SetColorScheme, UnloadApplication } from '.';
+import { LoadAppConfig, SaveAppConfig, SetColorScheme } from '.';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { AppStateGetter } from '../../state/app-state-getter';
 import { AppStateSetter } from '../../state/app-state-setter';
@@ -42,9 +42,5 @@ describe('app-operations', () => {
     await container.resolve(SaveAppConfig).execute();
     expect(configMock.save).toHaveBeenCalledTimes(1);
     expect(configMock.save).toHaveBeenCalledWith({ colorScheme: 'light' });
-  });
-
-  it('UnloadApplication execute resolves without throwing', async () => {
-    await expect(new UnloadApplication().execute()).resolves.toBeUndefined();
   });
 });

@@ -6,3 +6,7 @@ export { DragWindowController } from './dragWindow';
 export { ReloadWindowController } from './reloadWindow';
 export { ForceReloadWindowController } from './forceReloadWindow';
 export { ToggleDevToolsController } from './toggleDevTools';
+export { OnWindowStateEventController } from './onWindowStateEvent';
+export { OnWindowResizeEventController } from './onWindowResizeEvent';
+export { OnWindowMoveEventController } from './onWindowMoveEvent';
+export { OnViewportResizeEventController } from './onViewportResizeEvent';

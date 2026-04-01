@@ -6,7 +6,7 @@ import { useThemeViewModel, mergeAssignmentsFromTemplate } from './use-theme-vie
 import type { Theme, Template } from '../../model/schemas';
 import { createInMemoryFsElectronApi, seedTemplateFile, seedThemeFile } from '../../test-utils/electron-api-in-memory-fs';
 import { electronPreloadStubs } from '../../test-utils/electron-stubs';
-import { AppActionType, ThemeActionType } from '../actions/action-types';
+import {  ThemeActionType } from '../actions/action-types';
 
 const previewTokenRefsNull = {
   idePrimaryTokenRef: null,
@@ -72,7 +72,7 @@ const HarnessInner = React.forwardRef<
   useEffect(() => {
     if (!dispatch || appOnLoadDispatched.current) return;
     appOnLoadDispatched.current = true;
-    void dispatch({ type: AppActionType.AppAppOnLoad });
+    
   }, [dispatch]);
 
   if (ref && typeof ref === 'object' && 'current' in ref) {

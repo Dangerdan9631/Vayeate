@@ -7,6 +7,7 @@ import {
   type MouseEvent,
 } from 'react';
 import { ThemeActionType } from '../../actions/action-types';
+import { useViewportSize } from '../../viewmodel/useViewportSize';
 import { useAppDispatch } from '../context/slice-contexts';
 import { useAppState } from '../context/useAppState';
 import {
@@ -31,6 +32,7 @@ import {
 export function EyedropperOverlay() {
   const { state } = useAppState();
   const dispatch = useAppDispatch();
+  const appViewport = useViewportSize();
   const { phase, snapshot, errorMessage, contextKey } = state.ui.eyedropper;
   const overlayRootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -350,9 +352,11 @@ export function EyedropperOverlay() {
   const zoomVsFitLabel =
     zFit > 0 ? `${(zoom / zFit).toFixed(2)}× fit` : `${zoom.toFixed(2)}×`;
 
+  const loupeVw = appViewport.width > 0 ? appViewport.width : 1;
+  const loupeVh = appViewport.height > 0 ? appViewport.height : 1;
   const loupePos =
     pointer && phase === 'ready' && !snapshotBitmapError
-      ? loupeFixedPosition(pointer.x, pointer.y, EYEDROPPER_LOUPE_SIZE, window.innerWidth, window.innerHeight)
+      ? loupeFixedPosition(pointer.x, pointer.y, EYEDROPPER_LOUPE_SIZE, loupeVw, loupeVh)
       : null;
 
   return (

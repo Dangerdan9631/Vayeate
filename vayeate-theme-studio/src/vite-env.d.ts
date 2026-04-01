@@ -23,6 +23,8 @@ export interface ElectronAPI {
   reloadWindow: () => Promise<void>;
   reloadWindowForce: () => Promise<void>;
   toggleDevTools: () => Promise<void>;
+  /** BrowserWindow bounds from main (x, y, width, height). */
+  getWindowBounds: () => Promise<{ x: number; y: number; width: number; height: number }>;
   /** Subscribe to main process logs so they appear in the renderer DevTools console. */
   onMainLog: (callback: (level: 'debug' | 'info' | 'warn' | 'error', args: string[]) => void) => void;
   /** Subscribe to window state events from main. Returns unsubscribe. */

@@ -195,6 +195,7 @@ export const initialAppState: AppState = {
     isMaximized: false,
     size: { width: 0, height: 0 },
     position: { x: 0, y: 0 },
+    viewport: { width: 0, height: 0 },
   },
 };
 

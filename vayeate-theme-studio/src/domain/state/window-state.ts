@@ -12,11 +12,11 @@ export interface Position {
 
 export type WindowLoadState = 'loading' | 'loaded' | 'unloading';
 
-/** Parallel state: window/app shell (not yet used in app/reducer). */
 export interface WindowState {
   loadState: WindowLoadState;
   isMinimized: boolean;
   isMaximized: boolean;
   size: Size;
   position: Position;
+  viewport: Size;
 }

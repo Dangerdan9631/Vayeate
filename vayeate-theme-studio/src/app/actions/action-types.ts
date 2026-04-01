@@ -21,8 +21,6 @@ import type {
 export type { ThemePreviewTokenRefField };
 
 export enum AppActionType {
-  AppAppOnLoad = 'APP_APP_ON_LOAD',
-  AppAppOnClose = 'APP_APP_ON_CLOSE',
   AppFileMenuExitButtonOnClick = 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK',
   AppEditMenuUndoButtonOnClick = 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK',
   AppEditMenuRedoButtonOnClick = 'APP_EDIT_MENU_REDO_BUTTON_ON_CLICK',
@@ -204,8 +202,6 @@ export enum ThemeActionType {
  */
 export type AppActionV2 =
   // App Navigation and menu
-  | { type: AppActionType.AppAppOnLoad }
-  | { type: AppActionType.AppAppOnClose }
   | { type: AppActionType.AppFileMenuExitButtonOnClick }
   | { type: AppActionType.AppEditMenuUndoButtonOnClick }
   | { type: AppActionType.AppEditMenuRedoButtonOnClick }
