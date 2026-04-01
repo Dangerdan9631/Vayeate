@@ -8,9 +8,9 @@ import {
 } from 'react';
 import { flushSync } from 'react-dom';
 import { ActionQueue } from '../../actions/action-queue';
-import type { QueueStatus } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
 import type { AppState } from '../../../domain/state/app-state';
+import type { QueueStatusState } from '../../../domain/state/ui-state';
 import {
   appStateReducer,
   initialAppState,
@@ -94,6 +94,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const setUiQueueStatus = useCallback((queueStatus: QueueStatusState) => {
+    flushSync(() => {
+      const s = stateRef.current;
+      replaceState({
+        ...s,
+        ui: {
+          ...s.ui,
+          queueStatus,
+        },
+      });
+    });
+  }, []);
+
   const setStoreState = useCallback(
     (update: StoreStateUpdate) => {
       const nextState = storeStateReducer(stateRef.current, update);
@@ -130,17 +143,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!queueRef.current) {
       const queue = container.resolve(ActionQueue);
       queue.setDepsGetter(() => handlerDepsRef.current);
-      queue.onQueueStatus = (status: QueueStatus) =>
-        setUiState({
-          type: 'SET_UI_QUEUE_STATUS',
-          isProcessing: status.isProcessing,
-          queueLength: status.queueLength,
-        });
+      queue.onQueueStatus = setUiQueueStatus;
       queueRef.current = queue;
     }
     const queue = queueRef.current!;
     return queue.enqueue(action);
-  }, [setUiState]);
+  }, [setUiQueueStatus]);
 
   const value: AppContextValue = { state, dispatch, setUiState, setWindowState };
 

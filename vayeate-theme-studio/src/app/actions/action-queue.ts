@@ -1,13 +1,9 @@
 import { singleton } from 'tsyringe';
 import type { AppAction } from './action-types';
+import type { QueueStatusState } from '../../domain/state/ui-state';
 import { LoggerFactory, type Logger } from '../../domain/utils/logger';
 import { ActionProcessor } from './handler-registry';
 import type { HandlerDeps } from './handler-types';
-
-export interface QueueStatus {
-  isProcessing: boolean;
-  queueLength: number;
-}
 
 interface QueuedAction {
   action: AppAction;
@@ -65,8 +61,12 @@ export class ActionQueue {
   }
 
   private emitStatus(): void {
-    this.onQueueStatus({ isProcessing: this.processing, queueLength: this.queue.length });
+    this.onQueueStatus({
+      isProcessing: this.processing,
+      queueLength: this.queue.length,
+    });
   }
 
-  onQueueStatus: (status: QueueStatus) => void = () => {};
+  /** Receives the full `AppState.ui.queueStatus` slice built by this queue. */
+  onQueueStatus: (queueStatus: QueueStatusState) => void = () => {};
 }

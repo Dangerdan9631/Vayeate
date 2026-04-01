@@ -15,7 +15,7 @@ export function StatusBar() {
               <div className="status-progress-bar" />
             </div>
             <span className="status-queue-text">
-              {queueLength} action{queueLength !== 1 ? 's' : ''} in queue
+              {queueLength + 1} action{queueLength !== 0 ? 's' : ''} in queue
             </span>
           </div>
         )}
