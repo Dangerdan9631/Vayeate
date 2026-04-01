@@ -8,8 +8,7 @@ import {
 } from 'react';
 import { ThemeActionType } from '../../actions/action-types';
 import { useViewportSize } from '../../viewmodel/useViewportSize';
-import { useAppDispatch } from '../context/slice-contexts';
-import { useAppState } from '../context/useAppState';
+import { useAppDispatch, useEyedropperUiState } from '../context/slice-contexts';
 import {
   clampElementScroll,
   clampEyedropperCanvasInAspectBounds,
@@ -30,10 +29,9 @@ import {
 
 /** Full-screen screen snapshot overlay; driven by `state.ui.eyedropper`. */
 export function EyedropperOverlay() {
-  const { state } = useAppState();
   const dispatch = useAppDispatch();
   const appViewport = useViewportSize();
-  const { phase, snapshot, errorMessage, contextKey } = state.ui.eyedropper;
+  const { phase, snapshot, errorMessage, contextKey } = useEyedropperUiState();
   const overlayRootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -296,6 +294,15 @@ export function EyedropperOverlay() {
     void dispatch({ type: ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick });
   }, [dispatch]);
 
+  const onBackdropClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      if (e.target === e.currentTarget) {
+        onCancel();
+      }
+    },
+    [onCancel],
+  );
+
   const onCanvasMouseMove = useCallback(
     (e: MouseEvent<HTMLCanvasElement>) => {
       setPointer({ x: e.clientX, y: e.clientY });
@@ -373,9 +380,7 @@ export function EyedropperOverlay() {
         background: 'rgba(0,0,0,0.35)',
         cursor: 'crosshair',
       }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onCancel();
-      }}
+      onClick={onBackdropClick}
     >
       <p
         style={{

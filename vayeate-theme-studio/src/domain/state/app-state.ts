@@ -108,7 +108,7 @@ import type { UiState } from './ui-state';
 import type { WindowState } from './window-state';
 
 export type { StoreState } from './store-state';
-export type { UiState } from './ui-state';
+export type { MenuOpenState, UiState } from './ui-state';
 export type { Position, Size, WindowLoadState, WindowState } from './window-state';
 
 export interface AppState {
@@ -186,6 +186,12 @@ export const initialAppState: AppState = {
   ui: {
     activeTabId: 'catalogs',
     queueStatus: { isProcessing: false, queueLength: 0 },
+    menuOpen: {
+      fileOpen: false,
+      editOpen: false,
+      historyOpen: false,
+      viewOpen: false,
+    },
     eyedropper: closedEyedropperUiState,
   },
   store: { catalogs: {}, templates: {}, themes: {} },

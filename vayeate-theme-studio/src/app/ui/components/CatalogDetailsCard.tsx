@@ -240,10 +240,7 @@ export function CatalogDetailsCard({
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => {
-              dispatch({ type: CatalogActionType.CatalogDetailsLockButtonOnClick });
-              onLock();
-            }}
+            onClick={onLock}
           >
             Lock
           </button>

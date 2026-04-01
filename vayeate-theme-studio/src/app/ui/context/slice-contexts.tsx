@@ -2,14 +2,18 @@ import { createContext, useContext } from 'react';
 import type { AppActionV2 } from '../../actions/action-types';
 import type {
   CatalogsState,
+  MenuOpenState,
   StoreState,
   TemplatesState,
   ThemesState,
 } from '../../../domain/state/app-state';
+import type { EyedropperUiState } from '../../../domain/state/eyedropper-ui-state';
 import type { TabId } from '../tabs';
 
 export const AppDispatchContext = createContext<((action: AppActionV2) => Promise<void>) | null>(null);
 export const ActiveTabContext = createContext<TabId | null>(null);
+export const MenuOpenStateContext = createContext<MenuOpenState | null>(null);
+export const EyedropperUiStateContext = createContext<EyedropperUiState | null>(null);
 export const CatalogsStateContext = createContext<CatalogsState | null>(null);
 export const TemplatesStateContext = createContext<TemplatesState | null>(null);
 export const ThemesStateContext = createContext<ThemesState | null>(null);
@@ -30,6 +34,22 @@ export function useActiveTab(): TabId {
     throw new Error('useActiveTab must be used within AppProvider');
   }
   return activeTab;
+}
+
+export function useMenuOpenState(): MenuOpenState {
+  const menuState = useContext(MenuOpenStateContext);
+  if (!menuState) {
+    throw new Error('useMenuOpenState must be used within AppProvider');
+  }
+  return menuState;
+}
+
+export function useEyedropperUiState(): EyedropperUiState {
+  const eyedropperState = useContext(EyedropperUiStateContext);
+  if (!eyedropperState) {
+    throw new Error('useEyedropperUiState must be used within AppProvider');
+  }
+  return eyedropperState;
 }
 
 export function useCatalogsState(): CatalogsState {

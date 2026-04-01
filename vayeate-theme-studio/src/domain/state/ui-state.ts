@@ -6,9 +6,17 @@ export interface QueueStatusState {
   queueLength: number;
 }
 
+export interface MenuOpenState {
+  fileOpen: boolean;
+  editOpen: boolean;
+  historyOpen: boolean;
+  viewOpen: boolean;
+}
+
 /** Parallel state: UI-only state (active tab, queue status, etc.). */
 export interface UiState {
   activeTabId: TabId;
   queueStatus: QueueStatusState;
+  menuOpen: MenuOpenState;
   eyedropper: EyedropperUiState;
 }

@@ -1,102 +1,92 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useColorScheme } from '../context/ColorSchemeContext';
 import { useUndoStack } from '../context/UndoContext';
-import { useAppDispatch } from '../context/slice-contexts';
+import { useAppDispatch, useMenuOpenState } from '../context/slice-contexts';
 import { AppActionType } from '../../actions/action-types';
 
 export function MenuBar() {
   const dispatch = useAppDispatch();
   const { theme } = useColorScheme();
-  const { undo, redo, canUndo, canRedo, frames, currentId, goTo } = useUndoStack();
-  const [fileOpen, setFileOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(false);
-  const [viewOpen, setViewOpen] = useState(false);
+  const { fileOpen, editOpen, historyOpen, viewOpen } = useMenuOpenState();
+  const { canUndo, canRedo, frames, currentId } = useUndoStack();
   const fileRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
+  const isAnyMenuOpen = fileOpen || editOpen || historyOpen || viewOpen;
 
   useEffect(() => {
-    if (!fileOpen) return;
+    if (!isAnyMenuOpen) return;
     const handleClickOutside = (e: MouseEvent) => {
-      if (fileRef.current && !fileRef.current.contains(e.target as Node)) {
-        setFileOpen(false);
+      const targetNode = e.target as Node;
+      const refs = [fileRef, editRef, historyRef, viewRef];
+      const clickedInsideAnyMenu = refs.some((menuRef) => menuRef.current?.contains(targetNode));
+      if (!clickedInsideAnyMenu) {
+        void dispatch({ type: AppActionType.AppMenuOnClose });
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [fileOpen]);
-
-  useEffect(() => {
-    if (!editOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (editRef.current && !editRef.current.contains(e.target as Node)) {
-        setEditOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [editOpen]);
-
-  useEffect(() => {
-    if (!historyOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (historyRef.current && !historyRef.current.contains(e.target as Node)) {
-        setHistoryOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [historyOpen]);
-
-  useEffect(() => {
-    if (!viewOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (viewRef.current && !viewRef.current.contains(e.target as Node)) {
-        setViewOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [viewOpen]);
+  }, [dispatch, isAnyMenuOpen]);
 
   const handleUndo = useCallback(() => {
-    undo();
-    setEditOpen(false);
-  }, [undo]);
+    void dispatch({ type: AppActionType.AppEditMenuUndoButtonOnClick });
+    void dispatch({ type: AppActionType.AppMenuOnClose });
+  }, [dispatch]);
 
   const handleRedo = useCallback(() => {
-    redo();
-    setEditOpen(false);
-  }, [redo]);
+    void dispatch({ type: AppActionType.AppEditMenuRedoButtonOnClick });
+    void dispatch({ type: AppActionType.AppMenuOnClose });
+  }, [dispatch]);
 
   const handleHistoryClick = useCallback(
     (frameId: string) => {
-      goTo(frameId);
-      setHistoryOpen(false);
+      void dispatch({ type: AppActionType.AppHistoryMenuGoToButtonOnClick, frameId });
+      void dispatch({ type: AppActionType.AppMenuOnClose });
     },
-    [goTo],
+    [dispatch],
+  );
+  const handleHistoryItemClick = useCallback(
+    (frameId: string) => () => {
+      handleHistoryClick(frameId);
+    },
+    [handleHistoryClick],
   );
 
   const handleExit = useCallback(() => {
-    dispatch({ type: AppActionType.AppFileMenuExitButtonOnClick });
-    setFileOpen(false);
+    void dispatch({ type: AppActionType.AppFileMenuExitButtonOnClick });
+    void dispatch({ type: AppActionType.AppMenuOnClose });
+  }, [dispatch]);
+
+  const handleFileMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppActionType.AppFileMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleEditMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppActionType.AppEditMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleHistoryMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppActionType.AppHistoryMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleViewMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppActionType.AppViewMenuTriggerButtonOnClick });
   }, [dispatch]);
 
   const handleReload = useCallback(() => {
-    dispatch({ type: AppActionType.AppViewMenuReloadButtonOnClick });
-    setViewOpen(false);
+    void dispatch({ type: AppActionType.AppViewMenuReloadButtonOnClick });
+    void dispatch({ type: AppActionType.AppMenuOnClose });
   }, [dispatch]);
 
   const handleForceReload = useCallback(() => {
-    dispatch({ type: AppActionType.AppViewMenuForceReloadButtonOnClick });
-    setViewOpen(false);
+    void dispatch({ type: AppActionType.AppViewMenuForceReloadButtonOnClick });
+    void dispatch({ type: AppActionType.AppMenuOnClose });
   }, [dispatch]);
 
   const handleToggleDevTools = useCallback(() => {
-    dispatch({ type: AppActionType.AppViewMenuToggleDevToolsButtonOnClick });
-    setViewOpen(false);
+    void dispatch({ type: AppActionType.AppViewMenuToggleDevToolsButtonOnClick });
+    void dispatch({ type: AppActionType.AppMenuOnClose });
   }, [dispatch]);
 
   const handleMinimize = useCallback(() => {
@@ -170,7 +160,7 @@ export function MenuBar() {
           <button
             type="button"
             className="menu-edit-trigger"
-            onClick={() => setFileOpen((o) => !o)}
+            onClick={handleFileMenuTrigger}
             aria-expanded={fileOpen}
             aria-haspopup="true"
             aria-label="File menu"
@@ -195,7 +185,7 @@ export function MenuBar() {
           <button
             type="button"
             className="menu-edit-trigger"
-            onClick={() => setEditOpen((o) => !o)}
+            onClick={handleEditMenuTrigger}
             aria-expanded={editOpen}
             aria-haspopup="true"
             aria-label="Edit menu"
@@ -233,7 +223,7 @@ export function MenuBar() {
           <button
             type="button"
             className="menu-edit-trigger"
-            onClick={() => setHistoryOpen((o) => !o)}
+            onClick={handleHistoryMenuTrigger}
             aria-expanded={historyOpen}
             aria-haspopup="true"
             aria-label="History menu"
@@ -250,7 +240,7 @@ export function MenuBar() {
                       type="button"
                       role="menuitem"
                       className={`menu-edit-history-item ${frame.id === currentId ? 'menu-edit-history-current' : ''}`}
-                      onClick={() => handleHistoryClick(frame.id)}
+                      onClick={handleHistoryItemClick(frame.id)}
                     >
                       {frame.id === currentId && (
                         <span className="material-symbols-outlined menu-edit-history-check" aria-hidden>check</span>
@@ -271,7 +261,7 @@ export function MenuBar() {
           <button
             type="button"
             className="menu-edit-trigger"
-            onClick={() => setViewOpen((o) => !o)}
+            onClick={handleViewMenuTrigger}
             aria-expanded={viewOpen}
             aria-haspopup="true"
             aria-label="View menu"

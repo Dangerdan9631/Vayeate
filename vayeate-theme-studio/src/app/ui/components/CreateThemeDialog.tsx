@@ -1,29 +1,44 @@
-import { useState } from 'react';
-import { useAppDispatch } from '../context/slice-contexts';
+import type { MouseEvent } from 'react';
+import { useAppDispatch, useThemesState } from '../context/slice-contexts';
 import { ThemeActionType } from '../../actions/action-types';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
 interface CreateThemeDialogProps {
-  onCancel: () => void;
-  onCreate: (params: { name: string }) => void;
+  onCancel?: () => void;
 }
 
-export function CreateThemeDialog({ onCancel, onCreate }: CreateThemeDialogProps) {
+export function CreateThemeDialog({ onCancel }: CreateThemeDialogProps) {
   const dispatch = useAppDispatch();
-  const [name, setName] = useState('');
+  const { createFormName: name } = useThemesState();
 
   const nameValid = name.length > 0 && NAME_REGEX.test(name);
   const canSubmit = nameValid;
 
   function handleSubmit() {
     if (!canSubmit) return;
-    onCreate({ name });
+    dispatch({ type: ThemeActionType.ThemeCreateDialogOkButtonOnClick, params: { name } });
+  }
+
+  function handleCancel() {
+    if (onCancel) {
+      onCancel();
+      return;
+    }
+    dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
+  }
+
+  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
+  function handleNameChange(value: string) {
+    dispatch({ type: ThemeActionType.ThemeCreateDialogNameTextOnChange, value });
   }
 
   return (
-    <div className="dialog-overlay" onClick={onCancel}>
-      <div className="dialog-content" onClick={(e) => e.stopPropagation()}>
+    <div className="dialog-overlay" onClick={handleCancel}>
+      <div className="dialog-content" onClick={handleDialogContentClick}>
         <h3>Create New Theme</h3>
 
         <label className="field-row">
@@ -33,11 +48,7 @@ export function CreateThemeDialog({ onCancel, onCreate }: CreateThemeDialogProps
             type="text"
             value={name}
             placeholder="my-theme"
-            onChange={(e) => {
-              const value = e.target.value;
-              setName(value);
-              dispatch({ type: ThemeActionType.ThemeCreateDialogNameTextOnChange, value });
-            }}
+            onChange={(e) => handleNameChange(e.target.value)}
           />
         </label>
         {name.length > 0 && !nameValid && (
@@ -48,10 +59,7 @@ export function CreateThemeDialog({ onCancel, onCreate }: CreateThemeDialogProps
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => {
-              dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
-              onCancel();
-            }}
+            onClick={handleCancel}
           >
             Cancel
           </button>

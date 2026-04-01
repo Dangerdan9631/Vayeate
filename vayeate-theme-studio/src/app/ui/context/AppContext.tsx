@@ -28,12 +28,14 @@ import {
   ActiveTabContext,
   AppDispatchContext,
   CatalogsStateContext,
+  EyedropperUiStateContext,
+  MenuOpenStateContext,
   StoreStateContext,
   TemplatesStateContext,
   ThemesStateContext,
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
-import { handlerDepsSourceToken, type IHandlerDepsSource } from '../../di/handler-deps-source';
+import { HandlerDepsSource } from '../../di/handler-deps-source';
 import type { HandlerDeps } from '../../handlers/handler-types';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
@@ -122,13 +124,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   });
   handlerDepsRef.current = { setState, getState, setUiState, setStoreState };
 
-  const handlerDepsSource = useMemo<IHandlerDepsSource>(
-    () => ({
-      get: () => handlerDepsRef.current,
-    }),
-    [],
-  );
-  container.registerInstance(handlerDepsSourceToken, handlerDepsSource);
+  const handlerDepsSource = useMemo(() => container.resolve(HandlerDepsSource), []);
+  handlerDepsSource.setGetter(() => handlerDepsRef.current);
 
   const queueRef = useRef<ActionQueue | null>(null);
 
@@ -152,17 +149,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={value}>
       <AppDispatchContext.Provider value={dispatch}>
         <ActiveTabContext.Provider value={state.ui.activeTabId}>
-          <StoreStateContext.Provider value={state.store}>
-            <CatalogsStateContext.Provider value={state.catalogs}>
-              <TemplatesStateContext.Provider value={state.templates}>
-                <ThemesStateContext.Provider value={state.themes}>
-                  <UndoProvider setState={setState}>
-                    {children}
-                  </UndoProvider>
-                </ThemesStateContext.Provider>
-              </TemplatesStateContext.Provider>
-            </CatalogsStateContext.Provider>
-          </StoreStateContext.Provider>
+          <MenuOpenStateContext.Provider value={state.ui.menuOpen}>
+            <EyedropperUiStateContext.Provider value={state.ui.eyedropper}>
+              <StoreStateContext.Provider value={state.store}>
+                <CatalogsStateContext.Provider value={state.catalogs}>
+                  <TemplatesStateContext.Provider value={state.templates}>
+                    <ThemesStateContext.Provider value={state.themes}>
+                      <UndoProvider setState={setState}>
+                        {children}
+                      </UndoProvider>
+                    </ThemesStateContext.Provider>
+                  </TemplatesStateContext.Provider>
+                </CatalogsStateContext.Provider>
+              </StoreStateContext.Provider>
+            </EyedropperUiStateContext.Provider>
+          </MenuOpenStateContext.Provider>
         </ActiveTabContext.Provider>
       </AppDispatchContext.Provider>
     </AppContext.Provider>

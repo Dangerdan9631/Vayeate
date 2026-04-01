@@ -20,6 +20,22 @@ export function TemplateCatalogsCard({
   const dispatch = useAppDispatch();
   const showUpdateAll =
     isLatestVersion && includedCatalogNamesWithUpdates.length > 0;
+  const handleUpdateAll = () =>
+    dispatch({ type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick });
+  const handleCatalogToggle = (name: string, checked: boolean) => {
+    dispatch({
+      type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
+      catalogName: name as CatalogName,
+      checked,
+    });
+  };
+  const handleCatalogVersionChange = (name: string, value: string) => {
+    dispatch({
+      type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit,
+      catalogName: name as CatalogName,
+      value,
+    });
+  };
 
   return (
     <div className="placeholder template-catalogs-card">
@@ -29,9 +45,7 @@ export function TemplateCatalogsCard({
           <button
             type="button"
             className="btn btn-primary btn-sm"
-            onClick={() => {
-              dispatch({ type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick });
-            }}
+            onClick={handleUpdateAll}
           >
             Update All
           </button>
@@ -62,11 +76,7 @@ export function TemplateCatalogsCard({
                 className="checkbox-icon-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  dispatch({
-                    type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
-                    catalogName: name as CatalogName,
-                    checked: !included,
-                  });
+                  handleCatalogToggle(name, !included);
                 }}
               >
                 <span className="material-symbols-outlined" aria-hidden>
@@ -89,12 +99,7 @@ export function TemplateCatalogsCard({
                 className="field-select template-catalog-version"
                 value={selectedVersion}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  dispatch({
-                    type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit,
-                    catalogName: name as CatalogName,
-                    value,
-                  });
+                  handleCatalogVersionChange(name, e.target.value);
                 }}
               >
                 {versions.map((ref) => (

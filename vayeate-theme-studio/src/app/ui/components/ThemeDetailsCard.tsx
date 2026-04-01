@@ -1,7 +1,5 @@
-import { useAppDispatch } from '../context/slice-contexts';
 import type { Theme, TemplateReference } from '../../../model/schemas';
 import type { GenerateResult } from '../../../domain/state/app-state';
-import { ThemeActionType } from '../../actions/action-types';
 
 interface ThemeDetailsCardProps {
   theme: Theme;
@@ -14,7 +12,7 @@ interface ThemeDetailsCardProps {
   onDeleteVersion: () => void;
   onGenerate: () => void;
   onBumpVersion: () => void;
-  onChangeTemplate: (name: string) => void;
+  onChangeTemplate: (name: string, version: string) => void;
   onChangeTemplateVersion: (version: string) => void;
 }
 
@@ -28,11 +26,10 @@ export function ThemeDetailsCard({
   generateResult,
   onDeleteVersion,
   onGenerate,
-  onBumpVersion: _onBumpVersion,
+  onBumpVersion,
   onChangeTemplate,
   onChangeTemplateVersion,
 }: ThemeDetailsCardProps) {
-  const dispatch = useAppDispatch();
   const versionsForTemplate = selectedTemplateName
     ? templateVersionsByName[selectedTemplateName] ?? []
     : [];
@@ -65,8 +62,7 @@ export function ThemeDetailsCard({
               const name = e.target.value;
               if (name) {
                 const version = templateVersionsByName[name]?.[0]?.version ?? '';
-                dispatch({ type: ThemeActionType.ThemeDetailsTemplateListOnCommit, name, version });
-                onChangeTemplate(name);
+                onChangeTemplate(name, version);
               }
             }}
           >
@@ -89,7 +85,6 @@ export function ThemeDetailsCard({
               value={selectedTemplateVersion ?? ''}
               onChange={(e) => {
                 const version = e.target.value;
-                dispatch({ type: ThemeActionType.ThemeDetailsTemplateVersionListOnCommit, name: selectedTemplateName, version });
                 onChangeTemplateVersion(version);
               }}
             >
@@ -120,7 +115,7 @@ export function ThemeDetailsCard({
         <button
           type="button"
           className="btn-secondary"
-          onClick={() => dispatch({ type: ThemeActionType.ThemeDetailsIncrementVersionButtonOnClick })}
+          onClick={onBumpVersion}
           title="Create a new version (e.g. 1.0.0 → 1.0.1)"
         >
           Increment Version

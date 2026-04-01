@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppDispatch } from '../context/slice-contexts';
+import { useCallback, useContext, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
+import { TemplatesStateContext, useAppDispatch } from '../context/slice-contexts';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
 import { TemplateActionType } from '../../actions/action-types';
 import type {
@@ -148,13 +148,14 @@ function GroupSection({
   const sectionGroupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
   const [collapsed, setCollapsed] = useState(false);
   const totalInGroup = DISPLAYED_TOKEN_TYPES.reduce((sum, tt) => sum + byType[tt].length, 0);
+  const toggleCollapsed = () => setCollapsed((v) => !v);
 
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={toggleCollapsed}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -232,15 +233,28 @@ function MappingTypeSection({
   const label = tokenTypeLabel(tokenType);
   const isSemanticWithVariants =
     tokenType === 'semantic token' && semanticVariant !== undefined;
+  const toggleCollapsed = () => setCollapsed((v) => !v);
 
   const semanticBlocks = isSemanticWithVariants ? buildSemanticBlocks(mappings) : null;
+  const handleGroupRefChange =
+    (m: Mapping) =>
+    (value: string) =>
+      onUpdateGroupRef(m.token.key, m.token.type, value || null);
+  const handleColorRefChange =
+    (m: Mapping, isOrphan: boolean) =>
+    (value: string) =>
+      onUpdateColorRef(m.token.key, m.token.type, value || null, isOrphan);
+  const handleContrastRefChange =
+    (m: Mapping) =>
+    (value: string) =>
+      onUpdateContrastRef(m.token.key, m.token.type, value || null);
 
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={toggleCollapsed}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -285,13 +299,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.groupRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) =>
-                      onUpdateGroupRef(
-                        m.token.key,
-                        m.token.type,
-                        e.target.value || null,
-                      )
-                    }
+                    onChange={(e) => handleGroupRefChange(m)(e.target.value)}
                     title="Group"
                   >
                     <option value="">Ungrouped</option>
@@ -316,14 +324,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.colorVariableRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) =>
-                      onUpdateColorRef(
-                        m.token.key,
-                        m.token.type,
-                        e.target.value || null,
-                        isOrphan,
-                      )
-                    }
+                    onChange={(e) => handleColorRefChange(m, isOrphan)(e.target.value)}
                   >
                     <option value="">— color —</option>
                     {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -336,13 +337,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.contrastVariableRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) =>
-                      onUpdateContrastRef(
-                        m.token.key,
-                        m.token.type,
-                        e.target.value || null,
-                      )
-                    }
+                    onChange={(e) => handleContrastRefChange(m)(e.target.value)}
                   >
                     <option value="">— contrast —</option>
                     {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -415,6 +410,19 @@ function SemanticBlockRows({
     },
     [semanticVariant, openModifierKey],
   );
+  const handleBaseGroupChange = (value: string) =>
+    onUpdateGroupRef(base.token.key, base.token.type, value || null);
+  const handleBaseColorChange = (value: string) =>
+    onUpdateColorRef(base.token.key, base.token.type, value || null, isBaseOrphan);
+  const handleBaseContrastChange = (value: string) =>
+    onUpdateContrastRef(base.token.key, base.token.type, value || null);
+  const handleAddVariant = () =>
+    semanticVariant.onAddSemanticVariant(
+      type,
+      [],
+      null,
+      type === SEMANTIC_WILDCARD_TYPE ? sectionGroupRef : undefined,
+    );
 
   return (
     <div className="mapping-semantic-block">
@@ -441,9 +449,7 @@ function SemanticBlockRows({
             className="field-select mapping-var-select mapping-col-group"
             value={base.groupRef ?? ''}
             disabled={!canEdit}
-            onChange={(e) =>
-              onUpdateGroupRef(base.token.key, base.token.type, e.target.value || null)
-            }
+            onChange={(e) => handleBaseGroupChange(e.target.value)}
             title="Group"
           >
             <option value="">Ungrouped</option>
@@ -481,14 +487,7 @@ function SemanticBlockRows({
               className="field-select mapping-var-select mapping-col-color"
               value={base.colorVariableRef ?? ''}
               disabled={!canEdit}
-              onChange={(e) =>
-                onUpdateColorRef(
-                  base.token.key,
-                  base.token.type,
-                  e.target.value || null,
-                  isBaseOrphan,
-                )
-              }
+              onChange={(e) => handleBaseColorChange(e.target.value)}
             >
               <option value="">— color —</option>
               {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -501,13 +500,7 @@ function SemanticBlockRows({
               className="field-select mapping-var-select mapping-col-contrast"
               value={base.contrastVariableRef ?? ''}
               disabled={!canEdit}
-              onChange={(e) =>
-                onUpdateContrastRef(
-                  base.token.key,
-                  base.token.type,
-                  e.target.value || null,
-                )
-              }
+              onChange={(e) => handleBaseContrastChange(e.target.value)}
             >
               <option value="">— contrast —</option>
               {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -523,14 +516,7 @@ function SemanticBlockRows({
             <button
               type="button"
               className="mapping-row-add-variant-btn"
-              onClick={() =>
-                semanticVariant.onAddSemanticVariant(
-                  type,
-                  [],
-                  null,
-                  type === SEMANTIC_WILDCARD_TYPE ? sectionGroupRef : undefined,
-                )
-              }
+              onClick={handleAddVariant}
               title="Add variant"
               aria-label="Add semantic token variant"
             >
@@ -676,6 +662,33 @@ function SemanticVariantRow({
   function setLanguage(lang: string | null) {
     updateVariantKey(mapping.token.key, displayModifiers, lang);
   }
+  const handleToggleModifierDropdown = () => {
+    if (isModifierOpen) {
+      commitModifiersAndClose();
+      return;
+    }
+    onOpenModifierDropdown();
+  };
+  const handleToggleLanguageDropdown = () => setLanguageOpen((o) => !o);
+  const handleRemoveClick = () => onRemoveMapping(mapping.token.key, mapping.token.type);
+  const handleGroupChange = (value: string) =>
+    onUpdateGroupRef(mapping.token.key, mapping.token.type, value || null);
+  const handleColorChange = (value: string) =>
+    onUpdateColorRef(mapping.token.key, mapping.token.type, value || null, isOrphan);
+  const handleContrastChange = (value: string) =>
+    onUpdateContrastRef(mapping.token.key, mapping.token.type, value || null);
+  const handleModifierOptionClick = (mod: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    toggleModifier(mod);
+  };
+  const handleLanguageNoneClick = (e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLanguage(null);
+  };
+  const handleLanguageOptionClick = (lang: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLanguage(lang);
+  };
 
   const modifiersForDisplay = isModifierOpen ? pendingModifiers : displayModifiers;
 
@@ -695,9 +708,7 @@ function SemanticVariantRow({
             className="field-select mapping-var-select mapping-col-group"
             value={mapping.groupRef ?? ''}
             disabled={!canEdit}
-            onChange={(e) =>
-              onUpdateGroupRef(mapping.token.key, mapping.token.type, e.target.value || null)
-            }
+            onChange={(e) => handleGroupChange(e.target.value)}
             title="Group"
           >
             <option value="">Ungrouped</option>
@@ -715,7 +726,7 @@ function SemanticVariantRow({
             <button
               type="button"
               className="field-select mapping-var-select mapping-variant-multiselect-btn"
-              onClick={() => (isModifierOpen ? commitModifiersAndClose() : onOpenModifierDropdown())}
+              onClick={handleToggleModifierDropdown}
               aria-expanded={isModifierOpen}
               aria-haspopup="listbox"
               aria-label="Modifiers"
@@ -734,10 +745,7 @@ function SemanticVariantRow({
                     aria-checked={pendingModifiers.includes(mod)}
                     aria-label={`Include modifier ${mod}`}
                     className="checkbox-icon-btn"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleModifier(mod);
-                    }}
+                    onClick={handleModifierOptionClick(mod)}
                   >
                     <span className="material-symbols-outlined" aria-hidden>
                       {pendingModifiers.includes(mod) ? 'check_box' : 'check_box_outline_blank'}
@@ -756,7 +764,7 @@ function SemanticVariantRow({
             <button
               type="button"
               className="field-select mapping-var-select mapping-variant-multiselect-btn"
-              onClick={() => setLanguageOpen((o) => !o)}
+              onClick={handleToggleLanguageDropdown}
               aria-expanded={languageOpen}
               aria-haspopup="listbox"
               aria-label="Language"
@@ -772,10 +780,7 @@ function SemanticVariantRow({
                     aria-checked={parsed.language === null}
                     aria-label="No specific language"
                     className="checkbox-icon-btn"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setLanguage(null);
-                    }}
+                    onClick={handleLanguageNoneClick}
                   >
                     <span className="material-symbols-outlined" aria-hidden>
                       {parsed.language === null ? 'check_box' : 'check_box_outline_blank'}
@@ -791,10 +796,7 @@ function SemanticVariantRow({
                       aria-checked={parsed.language === lang}
                       aria-label={`Language: ${lang}`}
                       className="checkbox-icon-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setLanguage(lang);
-                      }}
+                      onClick={handleLanguageOptionClick(lang)}
                     >
                       <span className="material-symbols-outlined" aria-hidden>
                         {parsed.language === lang ? 'check_box' : 'check_box_outline_blank'}
@@ -814,14 +816,7 @@ function SemanticVariantRow({
           className="field-select mapping-var-select mapping-col-color"
           value={mapping.colorVariableRef ?? ''}
           disabled={!canEdit}
-          onChange={(e) =>
-            onUpdateColorRef(
-              mapping.token.key,
-              mapping.token.type,
-              e.target.value || null,
-              isOrphan,
-            )
-          }
+          onChange={(e) => handleColorChange(e.target.value)}
         >
           <option value="">— color —</option>
           {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -834,13 +829,7 @@ function SemanticVariantRow({
           className="field-select mapping-var-select mapping-col-contrast"
           value={mapping.contrastVariableRef ?? ''}
           disabled={!canEdit}
-          onChange={(e) =>
-            onUpdateContrastRef(
-              mapping.token.key,
-              mapping.token.type,
-              e.target.value || null,
-            )
-          }
+          onChange={(e) => handleContrastChange(e.target.value)}
         >
           <option value="">— contrast —</option>
           {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -853,7 +842,7 @@ function SemanticVariantRow({
           <button
             type="button"
             className="mapping-variant-remove-btn mapping-col-action"
-            onClick={() => onRemoveMapping(mapping.token.key, mapping.token.type)}
+            onClick={handleRemoveClick}
             title="Remove variant"
             aria-label="Remove variant"
           >
@@ -934,9 +923,13 @@ export function MappingsCard({
   onRemoveMapping,
 }: MappingsCardProps) {
   const dispatch = useAppDispatch();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedColorKeys, setSelectedColorKeys] = useState<string[]>([]);
-  const [selectedContrastKeys, setSelectedContrastKeys] = useState<string[]>([]);
+  const templatesState = useContext(TemplatesStateContext);
+  const [localSearchQuery, setLocalSearchQuery] = useState('');
+  const [localSelectedColorKeys, setLocalSelectedColorKeys] = useState<string[]>([]);
+  const [localSelectedContrastKeys, setLocalSelectedContrastKeys] = useState<string[]>([]);
+  const searchQuery = templatesState?.mappingSearchText ?? localSearchQuery;
+  const selectedColorKeys = templatesState?.mappingColorVariableFilter ?? localSelectedColorKeys;
+  const selectedContrastKeys = templatesState?.mappingContrastVariableFilter ?? localSelectedContrastKeys;
 
   const filteredMappingsByType: Record<TokenType, Mapping[]> = Object.fromEntries(
     DISPLAYED_TOKEN_TYPES.map((tt) => [
@@ -990,20 +983,44 @@ export function MappingsCard({
   }, [openFilter]);
 
   function toggleColorKey(key: string) {
-    setSelectedColorKeys((prev) => {
-      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+    const next = selectedColorKeys.includes(key)
+      ? selectedColorKeys.filter((k) => k !== key)
+      : [...selectedColorKeys, key];
+    if (templatesState) {
       dispatch({ type: TemplateActionType.TemplateMappingColorVariableFilterListOnSelect, values: next as ColorVariableKey[] });
-      return next;
-    });
+    } else {
+      setLocalSelectedColorKeys(next);
+    }
   }
 
   function toggleContrastKey(key: string) {
-    setSelectedContrastKeys((prev) => {
-      const next = prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key];
+    const next = selectedContrastKeys.includes(key)
+      ? selectedContrastKeys.filter((k) => k !== key)
+      : [...selectedContrastKeys, key];
+    if (templatesState) {
       dispatch({ type: TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect, values: next as ContrastVariableKey[] });
-      return next;
-    });
+    } else {
+      setLocalSelectedContrastKeys(next);
+    }
   }
+  const handleSearchTextChange = (value: string) => {
+    if (templatesState) {
+      dispatch({ type: TemplateActionType.TemplateMappingSearchTextOnChange, value });
+    } else {
+      setLocalSearchQuery(value);
+    }
+  };
+  const handleToggleColorFilterDropdown = () => setOpenFilter((v) => (v === 'color' ? null : 'color'));
+  const handleToggleContrastFilterDropdown = () =>
+    setOpenFilter((v) => (v === 'contrast' ? null : 'contrast'));
+  const handleColorFilterOptionClick = (key: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    toggleColorKey(key);
+  };
+  const handleContrastFilterOptionClick = (key: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    toggleContrastKey(key);
+  };
 
   return (
     <div className="tokens-card placeholder">
@@ -1014,18 +1031,14 @@ export function MappingsCard({
           className="mappings-filter-search"
           placeholder="Search…"
           value={searchQuery}
-          onChange={(e) => {
-            const value = e.target.value;
-            setSearchQuery(value);
-            dispatch({ type: TemplateActionType.TemplateMappingSearchTextOnChange, value });
-          }}
+          onChange={(e) => handleSearchTextChange(e.target.value)}
           aria-label="Search mappings"
         />
         <div className="mappings-filter-dropdown-wrap" ref={colorDropdownRef}>
           <button
             type="button"
             className={`mappings-filter-btn ${openFilter === 'color' ? 'mappings-filter-btn-open' : ''} ${selectedColorKeys.length > 0 ? 'mappings-filter-btn-active' : ''}`}
-            onClick={() => setOpenFilter((v) => (v === 'color' ? null : 'color'))}
+            onClick={handleToggleColorFilterDropdown}
             aria-expanded={openFilter === 'color'}
             aria-haspopup="true"
             aria-label="Filter by color variable"
@@ -1050,10 +1063,7 @@ export function MappingsCard({
                       aria-checked={selectedColorKeys.includes(v.key)}
                       aria-label={`Filter by color variable ${v.key}`}
                       className="checkbox-icon-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleColorKey(v.key);
-                      }}
+                      onClick={handleColorFilterOptionClick(v.key)}
                     >
                       <span className="material-symbols-outlined" aria-hidden>
                         {selectedColorKeys.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}
@@ -1070,7 +1080,7 @@ export function MappingsCard({
           <button
             type="button"
             className={`mappings-filter-btn ${openFilter === 'contrast' ? 'mappings-filter-btn-open' : ''} ${selectedContrastKeys.length > 0 ? 'mappings-filter-btn-active' : ''}`}
-            onClick={() => setOpenFilter((v) => (v === 'contrast' ? null : 'contrast'))}
+            onClick={handleToggleContrastFilterDropdown}
             aria-expanded={openFilter === 'contrast'}
             aria-haspopup="true"
             aria-label="Filter by contrast variable"
@@ -1095,10 +1105,7 @@ export function MappingsCard({
                       aria-checked={selectedContrastKeys.includes(v.key)}
                       aria-label={`Filter by contrast variable ${v.key}`}
                       className="checkbox-icon-btn"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleContrastKey(v.key);
-                      }}
+                      onClick={handleContrastFilterOptionClick(v.key)}
                     >
                       <span className="material-symbols-outlined" aria-hidden>
                         {selectedContrastKeys.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}

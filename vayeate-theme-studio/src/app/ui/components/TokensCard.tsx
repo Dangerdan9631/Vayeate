@@ -9,10 +9,10 @@ interface TokensCardProps {
   catalog: Catalog;
   tokensByType: Record<TokenType, Token[]>;
   isLatestVersion: boolean;
-  onAddToken: (key: string, tokenType: TokenType) => void;
-  onRemoveToken: (key: string, tokenType: TokenType) => void;
-  onUpdateTokenKey: (oldKey: string, newKey: string, tokenType: TokenType) => void;
-  onBulkAdd: () => void;
+  onAddToken?: (key: string, tokenType: TokenType) => void;
+  onRemoveToken?: (key: string, tokenType: TokenType) => void;
+  onUpdateTokenKey?: (oldKey: string, newKey: string, tokenType: TokenType) => void;
+  onBulkAdd?: () => void;
   onAddSemanticFromSelector?: (selector: string) => void;
   onSetSemanticTypes?: (types: string[]) => void;
   onSetSemanticModifiers?: (modifiers: string[]) => void;
@@ -45,6 +45,23 @@ function TokenTypeSection({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [newKey, setNewKey] = useState('');
+  const toggleCollapsed = () => setCollapsed((v) => !v);
+  const handleNewKeyChange = (value: string) => {
+    setNewKey(value);
+    onNewKeyChange?.(value);
+  };
+  const handleAddClick = () => {
+    const key = newKey.trim();
+    if (isValidTokenKey(key)) {
+      onAdd(key);
+      setNewKey('');
+    }
+  };
+  const handleTokenBlur = (oldKey: string, value: string) => {
+    const v = value.trim();
+    if (v && v !== oldKey && isValidTokenKey(v)) onUpdateKey(oldKey, v);
+  };
+  const handleRemoveClick = (key: string) => () => onRemove(key);
 
   const label =
     tokenType === 'theme'
@@ -56,7 +73,7 @@ function TokenTypeSection({
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={toggleCollapsed}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -75,16 +92,13 @@ function TokenTypeSection({
                     className="token-input"
                     type="text"
                     defaultValue={t.key}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim();
-                      if (v && v !== t.key && isValidTokenKey(v)) onUpdateKey(t.key, v);
-                    }}
+                    onBlur={(e) => handleTokenBlur(t.key, e.target.value)}
                   />
                   <button
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() => onRemove(t.key)}
+                    onClick={handleRemoveClick(t.key)}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -102,24 +116,14 @@ function TokenTypeSection({
                 type="text"
                 placeholder="new key…"
                 value={newKey}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setNewKey(value);
-                  onNewKeyChange?.(value);
-                }}
+                onChange={(e) => handleNewKeyChange(e.target.value)}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
                 disabled={!isValidTokenKey(newKey.trim())}
-                onClick={() => {
-                  const key = newKey.trim();
-                  if (isValidTokenKey(key)) {
-                    onAdd(key);
-                    setNewKey('');
-                  }
-                }}
+                onClick={handleAddClick}
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
@@ -164,6 +168,14 @@ function SemanticTokenCatalogSection({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectorInput, setSelectorInput] = useState('');
+  const toggleCollapsed = () => setCollapsed((v) => !v);
+  const handleSelectorInputChange = (value: string) => setSelectorInput(value);
+  const handleSelectorInputKeyDown = (key: string, preventDefault: () => void) => {
+    if (key === 'Enter') {
+      preventDefault();
+      handleAddSelector();
+    }
+  };
   const types = catalog.semanticTokenTypes ?? [];
   const modifiers = catalog.semanticTokenModifiers ?? [];
   const languages = catalog.semanticTokenLanguages ?? [];
@@ -194,7 +206,7 @@ function SemanticTokenCatalogSection({
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={toggleCollapsed}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -213,13 +225,8 @@ function SemanticTokenCatalogSection({
                 type="text"
                 placeholder="type.modifier.modifier:language or *"
                 value={selectorInput}
-                onChange={(e) => setSelectorInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleAddSelector();
-                  }
-                }}
+                onChange={(e) => handleSelectorInputChange(e.target.value)}
+                onKeyDown={(e) => handleSelectorInputKeyDown(e.key, () => e.preventDefault())}
                 aria-label="Semantic selector"
               />
               <button
@@ -345,10 +352,6 @@ export function TokensCard({
   catalog,
   tokensByType,
   isLatestVersion,
-  onAddToken: _onAddToken,
-  onRemoveToken: _onRemoveToken,
-  onUpdateTokenKey: _onUpdateTokenKey,
-  onBulkAdd: _onBulkAdd,
   onAddSemanticFromSelector,
   onSetSemanticTypes,
   onSetSemanticModifiers,
@@ -357,6 +360,35 @@ export function TokensCard({
   const dispatch = useAppDispatch();
   const tokensSearchText = useCatalogsState().tokensSearchText;
   const canEdit = catalog.type === 'manual' && isLatestVersion;
+  const handleBulkAddClick = () =>
+    dispatch({ type: CatalogActionType.CatalogTokensBulkAddButtonOnClick });
+  const handleSearchChange = (value: string) =>
+    dispatch({ type: CatalogActionType.CatalogTokensSearchTextOnChange, value });
+  const handleAddToken = (tokenType: TokenType) => (key: string) => {
+    dispatch({
+      type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick,
+      tokenType,
+      key,
+    });
+  };
+  const handleRemoveToken = (tokenType: TokenType) => (key: string) => {
+    dispatch({
+      type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick,
+      key: key as TokenKey,
+      tokenType,
+    });
+  };
+  const handleUpdateTokenKey = (tokenType: TokenType) => (oldKey: string, newKey: string) => {
+    dispatch({
+      type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit,
+      value: newKey,
+      key: oldKey as TokenKey,
+      tokenType,
+    });
+  };
+  const handleNewTokenKeyChange = (value: string) => {
+    dispatch({ type: CatalogActionType.CatalogTokensNewTokenKeyTextOnChange, value });
+  };
 
   const filteredTokensByType = Object.fromEntries(
     TOKEN_LIST_SECTIONS.map((tt) => [
@@ -375,7 +407,7 @@ export function TokensCard({
           <button
             type="button"
             className="btn-secondary btn-sm"
-            onClick={() => dispatch({ type: CatalogActionType.CatalogTokensBulkAddButtonOnClick })}
+            onClick={handleBulkAddClick}
           >
             Bulk Add
           </button>
@@ -386,9 +418,7 @@ export function TokensCard({
         className="card-search-input"
         placeholder="Search…"
         value={tokensSearchText}
-        onChange={(e) =>
-          dispatch({ type: CatalogActionType.CatalogTokensSearchTextOnChange, value: e.target.value })
-        }
+        onChange={(e) => handleSearchChange(e.target.value)}
         aria-label="Search tokens"
       />
       {TOKEN_LIST_SECTIONS.map((tt) => (
@@ -397,31 +427,10 @@ export function TokensCard({
           tokenType={tt}
           tokens={filteredTokensByType[tt]}
           isManual={canEdit}
-          onAdd={(key) => {
-            dispatch({
-              type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick,
-              tokenType: tt,
-              key,
-            });
-          }}
-          onRemove={(key) => {
-            dispatch({
-              type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick,
-              key: key as TokenKey,
-              tokenType: tt,
-            });
-          }}
-          onUpdateKey={(oldKey, newKey) => {
-            dispatch({
-              type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit,
-              value: newKey,
-              key: oldKey as TokenKey,
-              tokenType: tt,
-            });
-          }}
-          onNewKeyChange={(value) => {
-            dispatch({ type: CatalogActionType.CatalogTokensNewTokenKeyTextOnChange, value });
-          }}
+          onAdd={handleAddToken(tt)}
+          onRemove={handleRemoveToken(tt)}
+          onUpdateKey={handleUpdateTokenKey(tt)}
+          onNewKeyChange={handleNewTokenKeyChange}
         />
       ))}
       <SemanticTokenCatalogSection

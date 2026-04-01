@@ -1,7 +1,7 @@
-import { inject, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { AppActionV2 } from './action-types';
 import { LoggerFactory, type Logger } from '../../domain/utils/logger';
-import { handlerDepsSourceToken, type IHandlerDepsSource } from '../di/handler-deps-source';
+import { HandlerDepsSource } from '../di/handler-deps-source';
 import { ActionProcessor } from '../handlers/handler-registry';
 
 export interface QueueStatus {
@@ -22,7 +22,7 @@ export class ActionQueue {
 
   constructor(
     private readonly actionProcessor: ActionProcessor,
-    @inject(handlerDepsSourceToken) private readonly handlerDepsSource: IHandlerDepsSource,
+    private readonly handlerDepsSource: HandlerDepsSource,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('ActionQueue');

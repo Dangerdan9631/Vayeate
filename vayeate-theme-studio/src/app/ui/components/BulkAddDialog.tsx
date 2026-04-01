@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type MouseEvent } from 'react';
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import { parseThemeJson, type BulkParseResult } from '../../../domain/utils/theme-parser';
 import { CatalogActionType } from '../../actions/action-types';
@@ -27,15 +27,23 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
   const isError = parseResult !== null && 'error' in parseResult;
   const parsed = parseResult !== null && 'result' in parseResult ? parseResult : null;
   const canSubmit = parsed !== null && parsed.newCount > 0;
+  const handleTextChange = (value: string) =>
+    dispatch({ type: CatalogActionType.CatalogBulkAddTokensTextOnChange, value });
+  const handleSubmit = () =>
+    dispatch({ type: CatalogActionType.CatalogBulkAddTokensOkButtonOnClick });
 
   function handleCancel() {
     dispatch({ type: CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick });
     onCancel?.();
   }
 
+  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
-      <div className="dialog-content dialog-wide" onClick={(e) => e.stopPropagation()}>
+      <div className="dialog-content dialog-wide" onClick={handleDialogContentClick}>
         <h3>Bulk Add Tokens</h3>
         <p className="dialog-description">
           Paste a VS Code color theme JSON file. Tokens will be extracted from
@@ -47,9 +55,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
           rows={12}
           value={text}
           placeholder='{"colors": { ... }, "tokenColors": [ ... ], "semanticTokenColors": { ... }}'
-          onChange={(e) =>
-            dispatch({ type: CatalogActionType.CatalogBulkAddTokensTextOnChange, value: e.target.value })
-          }
+          onChange={(e) => handleTextChange(e.target.value)}
         />
 
         {isError && (
@@ -76,7 +82,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={() => dispatch({ type: CatalogActionType.CatalogBulkAddTokensOkButtonOnClick })}
+            onClick={handleSubmit}
           >
             Add {parsed ? parsed.newCount : 0} token{parsed?.newCount !== 1 ? 's' : ''}
           </button>

@@ -54,10 +54,6 @@ export function CatalogsPage() {
               catalog={vm.catalog}
               tokensByType={vm.tokensByType}
               isLatestVersion={vm.isLatestVersion}
-              onAddToken={vm.addToken}
-              onRemoveToken={vm.removeToken}
-              onUpdateTokenKey={vm.updateTokenKey}
-              onBulkAdd={() => {}}
               onAddSemanticFromSelector={vm.addSemanticFromSelector}
               onSetSemanticTypes={vm.setSemanticTypes}
               onSetSemanticModifiers={vm.setSemanticModifiers}
@@ -69,7 +65,6 @@ export function CatalogsPage() {
       {vm.createDialogOpen && (
         <CreateCatalogDialog
           onCancel={vm.closeCreateDialog}
-          onCreate={vm.createCatalog}
         />
       )}
       {bulkAddDialogOpen && (

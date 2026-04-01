@@ -305,6 +305,19 @@ export function ThemePaletteCard({
     },
     [hexToRefs, checkedColorRefs, onSetColorRefsChecked],
   );
+  const handleApplyToDarkChangeChecked = (checked: boolean) => onApplyToDarkChange(checked);
+  const handleApplyToLightChangeChecked = (checked: boolean) => onApplyToLightChange(checked);
+  const handleHueRefInputValueChange = (value: string) => setHueRefInputValue(value);
+  const handleHueChangeValue = (value: string) => onHueChange(Number(value));
+  const handleHuePointerDown = () => {
+    isHueDraggingRef.current = true;
+    onHueDragStart?.();
+  };
+  const handleClusterCountDeltaValue = (value: string) => onClusterCountDelta(Number(value));
+  const handleClusterCountCommitCurrent = () => onClusterCountCommit(clusterCountK);
+  const handleClusterByDarkChecked = (checked: boolean) => setClusterByDark(checked);
+  const handleHueReferenceEyedropper = () =>
+    void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
 
   return (
     <div className="catalog-details-card placeholder theme-palette-card">
@@ -327,7 +340,7 @@ export function ThemePaletteCard({
             <input
               type="checkbox"
               checked={applyToDark}
-              onChange={(e) => onApplyToDarkChange(e.target.checked)}
+              onChange={(e) => handleApplyToDarkChangeChecked(e.target.checked)}
               aria-label="Apply adjustments to dark theme colors"
             />
             <span className="material-symbols-outlined" aria-hidden>dark_mode</span>
@@ -343,7 +356,7 @@ export function ThemePaletteCard({
             <input
               type="checkbox"
               checked={applyToLight}
-              onChange={(e) => onApplyToLightChange(e.target.checked)}
+              onChange={(e) => handleApplyToLightChangeChecked(e.target.checked)}
               aria-label="Apply adjustments to light theme colors"
             />
             <span className="material-symbols-outlined" aria-hidden>light_mode</span>
@@ -476,7 +489,7 @@ export function ThemePaletteCard({
             type="text"
             className="theme-palette-hue-ref-input"
             value={hueRefInputValue}
-            onChange={(e) => setHueRefInputValue(e.target.value)}
+            onChange={(e) => handleHueRefInputValueChange(e.target.value)}
             onBlur={handleHueRefBlur}
             onKeyDown={handleHueRefKeyDown}
             aria-label="Hue reference color (hex)"
@@ -486,9 +499,7 @@ export function ThemePaletteCard({
             <button
               type="button"
               className="theme-palette-btn theme-eyedropper-btn"
-              onClick={() => {
-                void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
-              }}
+              onClick={handleHueReferenceEyedropper}
               title="Pick hue reference from screen"
               aria-label="Pick hue reference color from screen"
             >
@@ -509,11 +520,8 @@ export function ThemePaletteCard({
           max={100}
           step={1}
           value={hueAdjustment}
-          onChange={(e) => onHueChange(Number(e.target.value))}
-          onPointerDown={() => {
-            isHueDraggingRef.current = true;
-            onHueDragStart?.();
-          }}
+          onChange={(e) => handleHueChangeValue(e.target.value)}
+          onPointerDown={handleHuePointerDown}
           aria-label="Hue adjustment"
           aria-valuemin={-100}
           aria-valuemax={100}
@@ -534,9 +542,9 @@ export function ThemePaletteCard({
             max={CLUSTER_K_MAX}
             step={1}
             value={clusterCountK}
-            onChange={(e) => onClusterCountDelta(Number(e.target.value))}
-            onPointerUp={() => onClusterCountCommit(clusterCountK)}
-            onMouseUp={() => onClusterCountCommit(clusterCountK)}
+            onChange={(e) => handleClusterCountDeltaValue(e.target.value)}
+            onPointerUp={handleClusterCountCommitCurrent}
+            onMouseUp={handleClusterCountCommitCurrent}
             aria-label="Cluster count (k)"
             aria-valuemin={CLUSTER_K_MIN}
             aria-valuemax={CLUSTER_K_MAX}
@@ -555,7 +563,7 @@ export function ThemePaletteCard({
           <input
             type="checkbox"
             checked={clusterByDark}
-            onChange={(e) => setClusterByDark(e.target.checked)}
+            onChange={(e) => handleClusterByDarkChecked(e.target.checked)}
             aria-label={clusterByDark ? 'Cluster by dark theme colors' : 'Cluster by light theme colors'}
           />
           <span className="material-symbols-outlined" aria-hidden>

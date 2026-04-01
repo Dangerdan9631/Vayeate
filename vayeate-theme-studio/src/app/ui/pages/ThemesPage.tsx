@@ -159,7 +159,6 @@ export function ThemesPage() {
       {vm.createDialogOpen && (
         <CreateThemeDialog
           onCancel={vm.closeCreateDialog}
-          onCreate={vm.createTheme}
         />
       )}
     </>

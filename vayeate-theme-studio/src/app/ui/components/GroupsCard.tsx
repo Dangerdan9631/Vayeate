@@ -5,7 +5,6 @@ interface GroupsCardProps {
   groups: readonly string[];
   groupNamesInUse: Set<string>;
   canEdit: boolean;
-  onAddGroup: (name: string) => void;
   onRemoveGroup: (name: string) => void;
 }
 
@@ -13,7 +12,6 @@ export function GroupsCard({
   groups,
   groupNamesInUse,
   canEdit,
-  onAddGroup: _onAddGroup,
   onRemoveGroup,
 }: GroupsCardProps) {
   const dispatch = useAppDispatch();

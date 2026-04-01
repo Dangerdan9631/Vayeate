@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
 import type { CatalogType } from '../../../model/schemas';
 import { CatalogActionType } from '../../actions/action-types';
@@ -6,11 +7,9 @@ const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
 interface CreateCatalogDialogProps {
   onCancel?: () => void;
-  /** Optional hook after OK is dispatched (form values live in catalog app state). */
-  onCreate?: () => void;
 }
 
-export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCatalogDialogProps) {
+export function CreateCatalogDialog({ onCancel }: CreateCatalogDialogProps) {
   const dispatch = useAppDispatch();
   const { createFormName: name, createFormType: type } = useCatalogsState();
 
@@ -23,13 +22,28 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
   }
 
   function handleCancel() {
+    if (onCancel) {
+      onCancel();
+      return;
+    }
     dispatch({ type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick });
-    onCancel?.();
+  }
+
+  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
+  function handleNameChange(value: string) {
+    dispatch({ type: CatalogActionType.CatalogCreateDialogNameTextOnChange, value });
+  }
+
+  function handleTypeChange(value: CatalogType) {
+    dispatch({ type: CatalogActionType.CatalogCreateDialogTypeListOnCommit, value });
   }
 
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
-      <div className="dialog-content" onClick={(e) => e.stopPropagation()}>
+      <div className="dialog-content" onClick={handleDialogContentClick}>
         <h3>Create New Catalog</h3>
 
         <label className="field-row">
@@ -39,9 +53,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
             type="text"
             value={name}
             placeholder="my-catalog"
-            onChange={(e) =>
-              dispatch({ type: CatalogActionType.CatalogCreateDialogNameTextOnChange, value: e.target.value })
-            }
+            onChange={(e) => handleNameChange(e.target.value)}
           />
         </label>
         {name.length > 0 && !nameValid && (
@@ -53,12 +65,7 @@ export function CreateCatalogDialog({ onCancel, onCreate: _onCreate }: CreateCat
           <select
             className="field-select"
             value={type}
-            onChange={(e) =>
-              dispatch({
-                type: CatalogActionType.CatalogCreateDialogTypeListOnCommit,
-                value: e.target.value as CatalogType,
-              })
-            }
+            onChange={(e) => handleTypeChange(e.target.value as CatalogType)}
           >
             <option value="manual">Manual</option>
             <option value="remote">Remote</option>

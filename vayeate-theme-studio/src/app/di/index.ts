@@ -7,7 +7,4 @@
  */
 export { useResolve } from 'tsyringe-react';
 export { ActionProcessor } from '../handlers/handler-registry';
-export {
-  handlerDepsSourceToken,
-  type IHandlerDepsSource,
-} from './handler-deps-source';
+export { HandlerDepsSource } from './handler-deps-source';

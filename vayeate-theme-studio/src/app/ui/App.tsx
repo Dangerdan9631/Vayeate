@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import './styles.css';
 import { container } from 'tsyringe';
 import { LoadAppController, UnloadAppController } from '../../domain/controllers/app-controller';
@@ -17,11 +17,6 @@ import { AppActionType } from '../actions/action-types';
 function AppShell() {
   const activeTab = useActiveTab();
   const dispatch = useAppDispatch();
-  const [visibleTab, setVisibleTab] = useState<TabId>(activeTab);
-
-  useEffect(() => {
-    setVisibleTab(activeTab);
-  }, [activeTab]);
 
   useEffect(() => {
     container.resolve(LoadAppController).run();
@@ -31,7 +26,6 @@ function AppShell() {
 
   const onTabChange = useCallback(
     (tabId: TabId) => {
-      setVisibleTab(tabId);
       dispatch({ type: AppActionType.AppRibbonTabButtonOnClick, tabId });
     },
     [dispatch],
@@ -43,9 +37,9 @@ function AppShell() {
       <StyledTooltip />
       <MenuBar />
       <div className="layout">
-        <Ribbon activeTab={visibleTab} onTabChange={onTabChange} />
+        <Ribbon activeTab={activeTab} onTabChange={onTabChange} />
         <main className="content">
-          <ContentArea activeTab={visibleTab} />
+          <ContentArea activeTab={activeTab} />
         </main>
       </div>
       <StatusBar />

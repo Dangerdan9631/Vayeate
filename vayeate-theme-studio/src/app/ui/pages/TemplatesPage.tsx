@@ -118,7 +118,6 @@ export function TemplatesPage() {
               groups={vm.template.groups}
               groupNamesInUse={vm.groupNamesInUse}
               canEdit={canEdit}
-              onAddGroup={vm.addGroup}
               onRemoveGroup={vm.removeGroup}
             />
           )}
@@ -143,10 +142,7 @@ export function TemplatesPage() {
       </div>
       {vm.createDialogOpen && (
         <CreateTemplateDialog
-          createFormName={vm.createFormName}
-          setCreateFormName={vm.setCreateFormName}
           onCancel={vm.closeCreateDialog}
-          onCreate={vm.createTemplate}
         />
       )}
     </>

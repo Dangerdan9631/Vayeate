@@ -307,11 +307,11 @@ export function useThemeViewModel() {
   // --- Template selection ---
 
   const changeTemplate = useCallback(
-    (templateName: string) => {
+    (templateName: string, version?: string) => {
       const versions = templateVersionsByName[templateName];
       if (!versions || versions.length === 0) return;
-      const highestVersion = versions[0].version;
-      dispatch({ type: ThemeActionType.ThemeDetailsTemplateListOnCommit, name: templateName, version: highestVersion });
+      const selectedVersion = version ?? versions[0].version;
+      dispatch({ type: ThemeActionType.ThemeDetailsTemplateListOnCommit, name: templateName, version: selectedVersion });
     },
     [dispatch, templateVersionsByName],
   );

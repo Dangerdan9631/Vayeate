@@ -18,6 +18,29 @@ describe('uiStateReducer', () => {
     expect(state.ui.queueStatus.queueLength).toBe(3);
   });
 
+  it('handles SET_UI_MENU_OPEN_STATE', () => {
+    const state = uiStateReducer(initialAppState, {
+      type: 'SET_UI_MENU_OPEN_STATE',
+      menuId: 'view',
+      isOpen: true,
+    });
+    expect(state.ui.menuOpen.viewOpen).toBe(true);
+    expect(state.ui.menuOpen.fileOpen).toBe(false);
+  });
+
+  it('handles SET_UI_ALL_MENUS_CLOSED', () => {
+    const opened = uiStateReducer(initialAppState, {
+      type: 'SET_UI_MENU_OPEN_STATE',
+      menuId: 'file',
+      isOpen: true,
+    });
+    const closed = uiStateReducer(opened, { type: 'SET_UI_ALL_MENUS_CLOSED' });
+    expect(closed.ui.menuOpen.fileOpen).toBe(false);
+    expect(closed.ui.menuOpen.editOpen).toBe(false);
+    expect(closed.ui.menuOpen.historyOpen).toBe(false);
+    expect(closed.ui.menuOpen.viewOpen).toBe(false);
+  });
+
   it('handles SET_UI_EYEDROPPER', () => {
     const next = { ...closedEyedropperUiState, phase: 'loading' as const, contextKey: 'eyedropper:hue' };
     const state = uiStateReducer(initialAppState, { type: 'SET_UI_EYEDROPPER', eyedropper: next });

@@ -21,6 +21,16 @@ export function ThemesCard({
   onCreateClick,
   isCreating,
 }: ThemesCardProps) {
+  function handleNameChange(value: string) {
+    if (value) {
+      onSelectName(value);
+    }
+  }
+
+  function handleVersionChange(value: string) {
+    onSelectVersion(value);
+  }
+
   return (
     <div className="catalogs-card placeholder">
       <h2>Themes</h2>
@@ -30,9 +40,7 @@ export function ThemesCard({
         <select
           className="field-select"
           value={selectedName ?? ''}
-          onChange={(e) => {
-            if (e.target.value) onSelectName(e.target.value);
-          }}
+          onChange={(e) => handleNameChange(e.target.value)}
         >
           <option value="" disabled>
             Select a theme…
@@ -51,7 +59,7 @@ export function ThemesCard({
           <select
             className="field-select"
             value={selectedRef?.version ?? ''}
-            onChange={(e) => onSelectVersion(e.target.value)}
+            onChange={(e) => handleVersionChange(e.target.value)}
           >
             {versionsForSelectedName.map((ref) => (
               <option key={ref.version} value={ref.version}>
