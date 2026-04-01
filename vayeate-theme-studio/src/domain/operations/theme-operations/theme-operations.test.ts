@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import type { Theme } from '../../../model/schemas';
 import { ThemeGateway } from '../../../gateway/theme/theme-gateway';
 import {
-  LoadThemeRefs,
+  LoadThemeRefsOperation,
   createTheme,
   deleteTheme,
   generateTheme,
@@ -48,9 +48,9 @@ describe('theme-operations', () => {
     expect(result).toEqual({ name: 'th1', version: '1.0.0' });
   });
 
-  it('LoadThemeRefs.execute sets store entries from listThemes result', async () => {
+  it('LoadThemeRefsOperation.execute sets store entries from listThemes result', async () => {
     const setStoreState = vi.fn();
-    const op = new LoadThemeRefs(new StoreStateSetter(setStoreState), container.resolve(ThemeGateway));
+    const op = new LoadThemeRefsOperation(new StoreStateSetter(setStoreState), container.resolve(ThemeGateway));
 
     await op.execute();
 

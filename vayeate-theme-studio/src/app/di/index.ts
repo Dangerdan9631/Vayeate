@@ -6,5 +6,5 @@
  * in a component (same global container as `AppContext`).
  */
 export { useResolve } from 'tsyringe-react';
-export { ActionProcessor } from '../handlers/handler-registry';
+export { ActionProcessor } from '../actions/handler-registry';
 export { HandlerDepsSource } from './handler-deps-source';

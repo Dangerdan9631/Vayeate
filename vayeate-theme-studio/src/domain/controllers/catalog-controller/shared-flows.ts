@@ -1,12 +1,12 @@
 import { injectable } from 'tsyringe';
-import { LoadCatalog, RefreshCatalogRefs, SetSelectedCatalog } from '../../operations/catalog-operations';
+import { LoadCatalogOperation, RefreshCatalogRefsOperation, SetSelectedCatalogOperation } from '../../operations/catalog-operations';
 
 @injectable()
 export class CatalogSharedFlows {
   constructor(
-    private readonly refreshCatalogRefs: RefreshCatalogRefs,
-    private readonly setSelectedCatalog: SetSelectedCatalog,
-    private readonly loadCatalog: LoadCatalog,
+    private readonly refreshCatalogRefs: RefreshCatalogRefsOperation,
+    private readonly setSelectedCatalog: SetSelectedCatalogOperation,
+    private readonly loadCatalog: LoadCatalogOperation,
   ) {}
 
   async refreshRefsAndSelect(selectName?: string, selectVersion?: string): Promise<void> {

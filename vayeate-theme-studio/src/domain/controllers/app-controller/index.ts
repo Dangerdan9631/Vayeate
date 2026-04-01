@@ -1,8 +1,8 @@
-export { SetActiveTabController } from './setActiveTab';
-export { SetColorSchemeController } from './setColorScheme';
-export { LoadAppController } from './loadApp';
-export { UnloadAppController } from './unloadApp';
-export { InitializeLoggingController } from './initializeLogging';
-export { OnGlobalKeyDownEventController } from './onGlobalKeyDownEvent';
-export { ToggleMenuOpenController } from './toggleMenuOpen';
-export { CloseAllMenusController } from './closeMenu';
+export { SetActiveTabController } from './set-active-tab-controller';
+export { SetColorSchemeController } from './set-color-scheme-controller';
+export { LoadAppController } from './load-app-controller';
+export { UnloadAppController } from './unload-app-controller';
+export { InitializeLoggingController } from './initialize-logging-controller';
+export { OnGlobalKeyDownEventController } from './on-global-key-down-event-controller';
+export { ToggleMenuOpenController } from './toggle-menu-open-controller';
+export { CloseAllMenusController } from './close-all-menus-controller';

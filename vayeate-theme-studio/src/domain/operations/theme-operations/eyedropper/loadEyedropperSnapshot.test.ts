@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import { UiStateSetter } from '../../../state/ui-state-setter';
-import { LoadEyedropperSnapshot } from './loadEyedropperSnapshot';
+import { LoadEyedropperSnapshotOperation } from './load-eyedropper-snapshot-operation';
 
-describe('LoadEyedropperSnapshot', () => {
+describe('LoadEyedropperSnapshotOperation', () => {
   it('maps snapshot to ui ready state on success', async () => {
     const apply = vi.fn();
     const uiStateSetter = new UiStateSetter(apply);
@@ -22,7 +22,7 @@ describe('LoadEyedropperSnapshot', () => {
         ],
       }),
     } as unknown as ScreenshotService;
-    const op = new LoadEyedropperSnapshot(uiStateSetter, screenshotService);
+    const op = new LoadEyedropperSnapshotOperation(uiStateSetter, screenshotService);
     await op.execute('eyedropper:hue');
     expect(apply).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -44,7 +44,7 @@ describe('LoadEyedropperSnapshot', () => {
     const screenshotService = {
       getFullDisplaySnapshot: vi.fn().mockRejectedValue(new Error('ipc failed')),
     } as unknown as ScreenshotService;
-    const op = new LoadEyedropperSnapshot(uiStateSetter, screenshotService);
+    const op = new LoadEyedropperSnapshotOperation(uiStateSetter, screenshotService);
     await op.execute('eyedropper:dark:foo');
     expect(apply).toHaveBeenCalledWith({
       type: 'SET_UI_EYEDROPPER',

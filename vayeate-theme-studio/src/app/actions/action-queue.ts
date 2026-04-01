@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
-import type { AppActionV2 } from './action-types';
+import type { AppAction } from './action-types';
 import { LoggerFactory, type Logger } from '../../domain/utils/logger';
 import { HandlerDepsSource } from '../di/handler-deps-source';
-import { ActionProcessor } from '../handlers/handler-registry';
+import { ActionProcessor } from './handler-registry';
 
 export interface QueueStatus {
   isProcessing: boolean;
@@ -10,7 +10,7 @@ export interface QueueStatus {
 }
 
 interface QueuedAction {
-  action: AppActionV2;
+  action: AppAction;
   resolve: () => void;
 }
 
@@ -28,7 +28,7 @@ export class ActionQueue {
     this.log = loggerFactory.create('ActionQueue');
   }
 
-  enqueue(action: AppActionV2): Promise<void> {
+  enqueue(action: AppAction): Promise<void> {
     return new Promise((resolve) => {
       this.queue.push({ action, resolve });
       this.emitStatus();

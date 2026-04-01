@@ -8,7 +8,8 @@ import {
 } from 'react';
 import { flushSync } from 'react-dom';
 import { ActionQueue } from '../../actions/action-queue';
-import type { AppActionV2 } from '../../actions/action-types';
+import type { QueueStatus } from '../../actions/action-queue';
+import type { AppAction } from '../../actions/action-types';
 import type { AppState } from '../../../domain/state/app-state';
 import {
   appStateReducer,
@@ -36,7 +37,7 @@ import {
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
 import { HandlerDepsSource } from '../../di/handler-deps-source';
-import type { HandlerDeps } from '../../handlers/handler-types';
+import type { HandlerDeps } from '../../actions/handler-types';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
 function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
@@ -45,7 +46,7 @@ function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
 
 export interface AppContextValue {
   state: AppState;
-  dispatch: (action: AppActionV2) => Promise<void>;
+  dispatch: (action: AppAction) => Promise<void>;
   setUiState: (update: UiStateUpdate) => void;
   setWindowState: (update: WindowStateUpdate) => void;
 }
@@ -129,10 +130,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const queueRef = useRef<ActionQueue | null>(null);
 
-  const dispatch = useCallback((action: AppActionV2): Promise<void> => {
+  const dispatch = useCallback((action: AppAction): Promise<void> => {
     if (!queueRef.current) {
       const queue = container.resolve(ActionQueue);
-      queue.onQueueStatus = (status) =>
+      queue.onQueueStatus = (status: QueueStatus) =>
         setUiState({
           type: 'SET_UI_QUEUE_STATUS',
           isProcessing: status.isProcessing,
@@ -140,7 +141,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         });
       queueRef.current = queue;
     }
-    return queueRef.current.enqueue(action);
+    const queue = queueRef.current!;
+    return queue.enqueue(action);
   }, [setUiState]);
 
   const value: AppContextValue = { state, dispatch, setUiState, setWindowState };

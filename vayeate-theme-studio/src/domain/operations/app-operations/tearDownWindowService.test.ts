@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
-import { TearDownWindowService } from './tearDownWindowService';
+import { TearDownWindowServiceOperation } from './tear-down-window-service-operation';
 import type { WindowService } from '../../../gateway/services/window-service';
 
-describe('TearDownWindowService', () => {
+describe('TearDownWindowServiceOperation', () => {
   it('execute calls dispose on WindowService', () => {
     const dispose = vi.fn();
     const windowService = { dispose } as unknown as WindowService;
-    new TearDownWindowService(windowService).execute();
+    new TearDownWindowServiceOperation(windowService).execute();
     expect(dispose).toHaveBeenCalledTimes(1);
   });
 });

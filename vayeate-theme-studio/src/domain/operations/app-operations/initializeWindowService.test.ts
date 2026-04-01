@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { container } from 'tsyringe';
-import { InitializeWindowService } from './initializeWindowService';
+import { InitializeWindowServiceOperation } from './initialize-window-service-operation';
 import type { WindowService } from '../../../gateway/services/window-service';
 import type {
   OnViewportResizeEventController,
@@ -10,7 +10,7 @@ import type {
 } from '../../controllers/window-controller';
 import type { OnGlobalKeyDownEventController } from '../../controllers/app-controller';
 
-describe('InitializeWindowService', () => {
+describe('InitializeWindowServiceOperation', () => {
   beforeEach(() => {
     container.clearInstances();
   });
@@ -28,7 +28,7 @@ describe('InitializeWindowService', () => {
     const onViewportResizeEvent = { run: vi.fn() } as unknown as OnViewportResizeEventController;
     const onGlobalKeyDownEvent = { run: vi.fn() } as unknown as OnGlobalKeyDownEventController;
 
-    const op = new InitializeWindowService(
+    const op = new InitializeWindowServiceOperation(
       windowService,
       onWindowStateEvent,
       onWindowResizeEvent,

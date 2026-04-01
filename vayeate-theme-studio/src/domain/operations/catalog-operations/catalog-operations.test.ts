@@ -4,7 +4,7 @@ import type { Catalog } from '../../../model/schemas';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 import { TokenSyncGateway } from '../../../gateway/catalog/token-sync-gateway';
 import {
-  LoadCatalogRefs,
+  LoadCatalogRefsOperation,
   createCatalog,
   deleteCatalog,
   loadCatalog,
@@ -75,8 +75,8 @@ describe('catalog-operations', () => {
     expect(result).toEqual({ name: 'c1', version: '1.0.0' });
   });
 
-  it('LoadCatalogRefs.execute sets store entries from listCatalogs result', async () => {
-    const op = new LoadCatalogRefs(
+  it('LoadCatalogRefsOperation.execute sets store entries from listCatalogs result', async () => {
+    const op = new LoadCatalogRefsOperation(
       new StoreStateSetter(setStoreState),
       container.resolve(CatalogGateway),
     );

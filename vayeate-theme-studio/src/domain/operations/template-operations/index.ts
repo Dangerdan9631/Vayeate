@@ -4,87 +4,87 @@ import { StoreStateSetter } from '../../state/store-state-setter';
 import { TemplateGateway } from '../../../gateway/template/template-gateway';
 
 // template-list
-export { LoadTemplateRefs } from './template-list/loadTemplateRefs';
-export { SetTemplateRefs } from './template-list/setTemplateRefs';
-export { SetSelectedTemplateRef } from './template-list/setSelectedTemplateRef';
-export { SetTemplateCreateFormName } from './template-list/setTemplateCreateFormName';
-export { CreateTemplate } from './template-list/createTemplate';
-export { RefreshTemplateRefs } from './template-list/refreshTemplateRefs';
-export { DeleteTemplate } from './template-list/deleteTemplate';
+export { LoadTemplateRefsOperation } from './template-list/load-template-refs-operation';
+export { SetTemplateRefsOperation } from './template-list/set-template-refs-operation';
+export { SetSelectedTemplateRefOperation } from './template-list/set-selected-template-ref-operation';
+export { SetTemplateCreateFormNameOperation } from './template-list/set-template-create-form-name-operation';
+export { CreateTemplateOperation } from './template-list/create-template-operation';
+export { RefreshTemplateRefsOperation } from './template-list/refresh-template-refs-operation';
+export { DeleteTemplateOperation } from './template-list/delete-template-operation';
 
 // template-details
-export { SetTemplate } from './template-details/setTemplate';
-export { LoadTemplate } from './template-details/loadTemplate';
-export { LoadTemplateSnapshot } from './template-details/loadTemplateSnapshot';
-export { SaveTemplate } from './template-details/saveTemplate';
-export { BumpTemplateVersionForEdit } from './template-details/bump-template-version-for-edit';
-export { LockTemplate } from './template-details/lock-template';
+export { SetTemplateOperation } from './template-details/set-template-operation';
+export { LoadTemplateOperation } from './template-details/load-template-operation';
+export { LoadTemplateSnapshotOperation } from './template-details/load-template-snapshot-operation';
+export { SaveTemplateOperation } from './template-details/save-template-operation';
+export { BumpTemplateVersionForEditOperation } from './template-details/bump-template-version-for-edit-operation';
+export { LockTemplateOperation } from './template-details/lock-template-operation';
 
 // mappings
-export { SetTemplateMappingSearchText } from './mappings/setTemplateMappingSearchText';
-export { SetTemplateMappingColorVariableFilter } from './mappings/setTemplateMappingColorVariableFilter';
-export { SetTemplateMappingContrastVariableFilter } from './mappings/setTemplateMappingContrastVariableFilter';
-export { SetTemplateMappingTokenGroupSelection } from './mappings/setTemplateMappingTokenGroupSelection';
-export { RemoveMappingFromTemplate } from './mappings/remove-mapping-from-template';
-export { SetMappingColorRef } from './mappings/set-mapping-color-ref';
-export { SetMappingContrastRef } from './mappings/set-mapping-contrast-ref';
-export { SetMappingGroupRef } from './mappings/set-mapping-group-ref';
+export { SetTemplateMappingSearchTextOperation } from './mappings/set-template-mapping-search-text-operation';
+export { SetTemplateMappingColorVariableFilterOperation } from './mappings/set-template-mapping-color-variable-filter-operation';
+export { SetTemplateMappingContrastVariableFilterOperation } from './mappings/set-template-mapping-contrast-variable-filter-operation';
+export { SetTemplateMappingTokenGroupSelectionOperation } from './mappings/set-template-mapping-token-group-selection-operation';
+export { RemoveMappingFromTemplateOperation } from './mappings/remove-mapping-from-template-operation';
+export { SetMappingColorRefOperation } from './mappings/set-mapping-color-ref-operation';
+export { SetMappingContrastRefOperation } from './mappings/set-mapping-contrast-ref-operation';
+export { SetMappingGroupRefOperation } from './mappings/set-mapping-group-ref-operation';
 
 // template groups (entity transforms)
-export { AddGroupToTemplate } from './groups/add-group-to-template';
-export { RemoveGroupFromTemplate } from './groups/remove-group-from-template';
+export { AddGroupToTemplateOperation } from './groups/add-group-to-template-operation';
+export { RemoveGroupFromTemplateOperation } from './groups/remove-group-from-template-operation';
 
 // variables
-export { SetTemplateVariablesSearchText } from './variables/setTemplateVariablesSearchText';
-export { SetTemplateAddGroupName } from './variables/setTemplateAddGroupName';
-export { SetTemplateAddVariableName } from './variables/setTemplateAddVariableName';
-export { UpdateVariableGroupRef } from './variables/update-variable-group-ref';
+export { SetTemplateVariablesSearchTextOperation } from './variables/set-template-variables-search-text-operation';
+export { SetTemplateAddGroupNameOperation } from './variables/set-template-add-group-name-operation';
+export { SetTemplateAddVariableNameOperation } from './variables/set-template-add-variable-name-operation';
+export { UpdateVariableGroupRefOperation } from './variables/update-variable-group-ref-operation';
 
-export { AddColorVariable } from './variables-color/add-color-variable';
-export { RemoveColorVariable } from './variables-color/remove-color-variable';
-export { AddContrastVariable } from './variables-contrast/add-contrast-variable';
-export { RemoveContrastVariable } from './variables-contrast/remove-contrast-variable';
-export { UpdateContrastComparisonSource } from './variables-contrast/update-contrast-comparison-source';
+export { AddColorVariableOperation } from './variables-color/add-color-variable-operation';
+export { RemoveColorVariableOperation } from './variables-color/remove-color-variable-operation';
+export { AddContrastVariableOperation } from './variables-contrast/add-contrast-variable-operation';
+export { RemoveContrastVariableOperation } from './variables-contrast/remove-contrast-variable-operation';
+export { UpdateContrastComparisonSourceOperation } from './variables-contrast/update-contrast-comparison-source-operation';
 
-export { GenerateSemanticVariantKey } from './mappings-semantic/generate-semantic-variant-key';
-export { MergeSemanticTokenSets } from './mappings-semantic/merge-semantic-token-sets';
-export { AppendSemanticVariantToTemplate } from './mappings-semantic/append-semantic-variant-to-template';
-export { UpdateSemanticVariantKeyInTemplate } from './mappings-semantic/update-semantic-variant-key-in-template';
+export { GenerateSemanticVariantKeyOperation } from './mappings-semantic/generate-semantic-variant-key-operation';
+export { MergeSemanticTokenSetsOperation } from './mappings-semantic/merge-semantic-token-sets-operation';
+export { AppendSemanticVariantToTemplateOperation } from './mappings-semantic/append-semantic-variant-to-template-operation';
+export { UpdateSemanticVariantKeyInTemplateOperation } from './mappings-semantic/update-semantic-variant-key-in-template-operation';
 
-import { CreateTemplate as CreateTemplateClass } from './template-list/createTemplate';
-import { DeleteTemplate as DeleteTemplateClass } from './template-list/deleteTemplate';
-import { LoadTemplate as LoadTemplateClass } from './template-details/loadTemplate';
-import { LoadTemplateSnapshot as LoadTemplateSnapshotClass } from './template-details/loadTemplateSnapshot';
-import { RefreshTemplateRefs as RefreshTemplateRefsClass } from './template-list/refreshTemplateRefs';
-import { SaveTemplate as SaveTemplateClass } from './template-details/saveTemplate';
-import { SetSelectedTemplateRef as SetSelectedTemplateRefClass } from './template-list/setSelectedTemplateRef';
-import { SetTemplate as SetTemplateClass } from './template-details/setTemplate';
-import { SetTemplateCreateFormName as SetTemplateCreateFormNameClass } from './template-list/setTemplateCreateFormName';
-import { SetTemplateAddGroupName as SetTemplateAddGroupNameClass } from './variables/setTemplateAddGroupName';
-import { SetTemplateAddVariableName as SetTemplateAddVariableNameClass } from './variables/setTemplateAddVariableName';
-import { SetTemplateVariablesSearchText as SetTemplateVariablesSearchTextClass } from './variables/setTemplateVariablesSearchText';
-import { SetTemplateMappingSearchText as SetTemplateMappingSearchTextClass } from './mappings/setTemplateMappingSearchText';
-import { SetTemplateMappingColorVariableFilter as SetTemplateMappingColorVariableFilterClass } from './mappings/setTemplateMappingColorVariableFilter';
-import { SetTemplateMappingContrastVariableFilter as SetTemplateMappingContrastVariableFilterClass } from './mappings/setTemplateMappingContrastVariableFilter';
-import { SetTemplateMappingTokenGroupSelection as SetTemplateMappingTokenGroupSelectionClass } from './mappings/setTemplateMappingTokenGroupSelection';
-import { BumpTemplateVersionForEdit as BumpTemplateVersionForEditClass } from './template-details/bump-template-version-for-edit';
-import { RemoveMappingFromTemplate as RemoveMappingFromTemplateClass } from './mappings/remove-mapping-from-template';
-import { SetMappingColorRef as SetMappingColorRefClass } from './mappings/set-mapping-color-ref';
-import { SetMappingContrastRef as SetMappingContrastRefClass } from './mappings/set-mapping-contrast-ref';
-import { SetMappingGroupRef as SetMappingGroupRefClass } from './mappings/set-mapping-group-ref';
-import { LockTemplate as LockTemplateClass } from './template-details/lock-template';
-import { GenerateSemanticVariantKey as GenerateSemanticVariantKeyClass } from './mappings-semantic/generate-semantic-variant-key';
-import { MergeSemanticTokenSets as MergeSemanticTokenSetsClass } from './mappings-semantic/merge-semantic-token-sets';
-import { AppendSemanticVariantToTemplate as AppendSemanticVariantToTemplateClass } from './mappings-semantic/append-semantic-variant-to-template';
-import { UpdateSemanticVariantKeyInTemplate as UpdateSemanticVariantKeyInTemplateClass } from './mappings-semantic/update-semantic-variant-key-in-template';
-import { AddGroupToTemplate as AddGroupToTemplateClass } from './groups/add-group-to-template';
-import { RemoveGroupFromTemplate as RemoveGroupFromTemplateClass } from './groups/remove-group-from-template';
-import { UpdateVariableGroupRef as UpdateVariableGroupRefClass } from './variables/update-variable-group-ref';
-import { AddColorVariable as AddColorVariableClass } from './variables-color/add-color-variable';
-import { RemoveColorVariable as RemoveColorVariableClass } from './variables-color/remove-color-variable';
-import { AddContrastVariable as AddContrastVariableClass } from './variables-contrast/add-contrast-variable';
-import { RemoveContrastVariable as RemoveContrastVariableClass } from './variables-contrast/remove-contrast-variable';
-import { UpdateContrastComparisonSource as UpdateContrastComparisonSourceClass } from './variables-contrast/update-contrast-comparison-source';
+import { CreateTemplateOperation as CreateTemplateClass } from './template-list/create-template-operation';
+import { DeleteTemplateOperation as DeleteTemplateClass } from './template-list/delete-template-operation';
+import { LoadTemplateOperation as LoadTemplateClass } from './template-details/load-template-operation';
+import { LoadTemplateSnapshotOperation as LoadTemplateSnapshotClass } from './template-details/load-template-snapshot-operation';
+import { RefreshTemplateRefsOperation as RefreshTemplateRefsClass } from './template-list/refresh-template-refs-operation';
+import { SaveTemplateOperation as SaveTemplateClass } from './template-details/save-template-operation';
+import { SetSelectedTemplateRefOperation as SetSelectedTemplateRefClass } from './template-list/set-selected-template-ref-operation';
+import { SetTemplateOperation as SetTemplateClass } from './template-details/set-template-operation';
+import { SetTemplateCreateFormNameOperation as SetTemplateCreateFormNameClass } from './template-list/set-template-create-form-name-operation';
+import { SetTemplateAddGroupNameOperation as SetTemplateAddGroupNameClass } from './variables/set-template-add-group-name-operation';
+import { SetTemplateAddVariableNameOperation as SetTemplateAddVariableNameClass } from './variables/set-template-add-variable-name-operation';
+import { SetTemplateVariablesSearchTextOperation as SetTemplateVariablesSearchTextClass } from './variables/set-template-variables-search-text-operation';
+import { SetTemplateMappingSearchTextOperation as SetTemplateMappingSearchTextClass } from './mappings/set-template-mapping-search-text-operation';
+import { SetTemplateMappingColorVariableFilterOperation as SetTemplateMappingColorVariableFilterClass } from './mappings/set-template-mapping-color-variable-filter-operation';
+import { SetTemplateMappingContrastVariableFilterOperation as SetTemplateMappingContrastVariableFilterClass } from './mappings/set-template-mapping-contrast-variable-filter-operation';
+import { SetTemplateMappingTokenGroupSelectionOperation as SetTemplateMappingTokenGroupSelectionClass } from './mappings/set-template-mapping-token-group-selection-operation';
+import { BumpTemplateVersionForEditOperation as BumpTemplateVersionForEditClass } from './template-details/bump-template-version-for-edit-operation';
+import { RemoveMappingFromTemplateOperation as RemoveMappingFromTemplateClass } from './mappings/remove-mapping-from-template-operation';
+import { SetMappingColorRefOperation as SetMappingColorRefClass } from './mappings/set-mapping-color-ref-operation';
+import { SetMappingContrastRefOperation as SetMappingContrastRefClass } from './mappings/set-mapping-contrast-ref-operation';
+import { SetMappingGroupRefOperation as SetMappingGroupRefClass } from './mappings/set-mapping-group-ref-operation';
+import { LockTemplateOperation as LockTemplateClass } from './template-details/lock-template-operation';
+import { GenerateSemanticVariantKeyOperation as GenerateSemanticVariantKeyClass } from './mappings-semantic/generate-semantic-variant-key-operation';
+import { MergeSemanticTokenSetsOperation as MergeSemanticTokenSetsClass } from './mappings-semantic/merge-semantic-token-sets-operation';
+import { AppendSemanticVariantToTemplateOperation as AppendSemanticVariantToTemplateClass } from './mappings-semantic/append-semantic-variant-to-template-operation';
+import { UpdateSemanticVariantKeyInTemplateOperation as UpdateSemanticVariantKeyInTemplateClass } from './mappings-semantic/update-semantic-variant-key-in-template-operation';
+import { AddGroupToTemplateOperation as AddGroupToTemplateClass } from './groups/add-group-to-template-operation';
+import { RemoveGroupFromTemplateOperation as RemoveGroupFromTemplateClass } from './groups/remove-group-from-template-operation';
+import { UpdateVariableGroupRefOperation as UpdateVariableGroupRefClass } from './variables/update-variable-group-ref-operation';
+import { AddColorVariableOperation as AddColorVariableClass } from './variables-color/add-color-variable-operation';
+import { RemoveColorVariableOperation as RemoveColorVariableClass } from './variables-color/remove-color-variable-operation';
+import { AddContrastVariableOperation as AddContrastVariableClass } from './variables-contrast/add-contrast-variable-operation';
+import { RemoveContrastVariableOperation as RemoveContrastVariableClass } from './variables-contrast/remove-contrast-variable-operation';
+import { UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceClass } from './variables-contrast/update-contrast-comparison-source-operation';
 
 /** @deprecated Backward compatibility — use injected AppStateSetter instead */
 export type SetState = (update: import('../../state/app-state').AppStateUpdate) => void;

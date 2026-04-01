@@ -1,0 +1,45 @@
+import type { Source } from '../../../../model/schemas';
+import { singleton } from 'tsyringe';
+import { AppStateGetter } from '../../../state/app-state-getter';
+import {
+  AddSourceToCatalogOperation,
+  BumpCatalogVersionForEditOperation,
+  SaveCatalogOperation,
+  SetCatalogNewSourceTokenTypeOperation,
+  SetCatalogNewSourceTypeOperation,
+  SetCatalogNewSourceUrlOperation,
+} from '../../../operations/catalog-operations';
+import { CatalogSharedFlows } from '../shared-flows';
+
+@singleton()
+export class AddNewSourceController {
+  constructor(
+    private readonly appStateGetter: AppStateGetter,
+    private readonly saveCatalog: SaveCatalogOperation,
+    private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlOperation,
+    private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenTypeOperation,
+    private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeOperation,
+    private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
+    private readonly addSourceToCatalog: AddSourceToCatalogOperation,
+    private readonly catalogSharedFlows: CatalogSharedFlows,
+  ) {}
+
+  async run(): Promise<void> {
+    const state = this.appStateGetter.current().catalogs;
+    const catalog = state.catalog;
+    const url = state.newSourceUrl?.trim();
+    if (!catalog || !url) return;
+    const source: Source = {
+      url,
+      type: state.newSourceType,
+      tokenType: state.newSourceTokenType,
+    };
+    const base = this.bumpCatalogVersionForEdit.execute(catalog);
+    const updated = this.addSourceToCatalog.execute(base, source);
+    await this.saveCatalog.execute(updated);
+    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    this.setCatalogNewSourceUrl.execute('');
+    this.setCatalogNewSourceTokenType.execute('theme');
+    this.setCatalogNewSourceType.execute('default');
+  }
+}

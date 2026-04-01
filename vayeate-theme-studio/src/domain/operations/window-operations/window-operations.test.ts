@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import { WindowService } from '../../../gateway/services/window-service';
 import {
-  SetWindowState,
-  DragWindow,
-  ReloadWindow,
-  ToggleDevTools,
+  SetWindowStateOperation,
+  DragWindowOperation,
+  ReloadWindowOperation,
+  ToggleDevToolsOperation,
 } from '.';
 
 const windowServiceMock = {
@@ -43,36 +43,36 @@ describe('window-operations', () => {
     ['minimize', 'minimize'] as const,
     ['maximize', 'maximize'] as const,
     ['restore', 'restore'] as const,
-  ] as const)('SetWindowState execute(%s) calls windowService.%s', async (target, method) => {
-    await container.resolve(SetWindowState).execute(target);
+  ] as const)('SetWindowStateOperation execute(%s) calls windowService.%s', async (target, method) => {
+    await container.resolve(SetWindowStateOperation).execute(target);
     expect(windowServiceMock[method]).toHaveBeenCalledTimes(1);
   });
 
-  it('DragWindow execute calls windowService.drag', async () => {
-    await container.resolve(DragWindow).execute();
+  it('DragWindowOperation execute calls windowService.drag', async () => {
+    await container.resolve(DragWindowOperation).execute();
     expect(windowServiceMock.drag).toHaveBeenCalledTimes(1);
   });
 
-  it('ReloadWindow execute(false) calls windowService.reload', async () => {
-    await container.resolve(ReloadWindow).execute(false);
+  it('ReloadWindowOperation execute(false) calls windowService.reload', async () => {
+    await container.resolve(ReloadWindowOperation).execute(false);
     expect(windowServiceMock.reload).toHaveBeenCalledTimes(1);
     expect(windowServiceMock.reloadForce).not.toHaveBeenCalled();
   });
 
-  it('ReloadWindow execute(true) calls windowService.reloadForce', async () => {
-    await container.resolve(ReloadWindow).execute(true);
+  it('ReloadWindowOperation execute(true) calls windowService.reloadForce', async () => {
+    await container.resolve(ReloadWindowOperation).execute(true);
     expect(windowServiceMock.reloadForce).toHaveBeenCalledTimes(1);
     expect(windowServiceMock.reload).not.toHaveBeenCalled();
   });
 
-  it('ReloadWindow execute() defaults to windowService.reload', async () => {
-    await container.resolve(ReloadWindow).execute();
+  it('ReloadWindowOperation execute() defaults to windowService.reload', async () => {
+    await container.resolve(ReloadWindowOperation).execute();
     expect(windowServiceMock.reload).toHaveBeenCalledTimes(1);
     expect(windowServiceMock.reloadForce).not.toHaveBeenCalled();
   });
 
-  it('ToggleDevTools execute calls windowService.toggleDevTools', async () => {
-    await container.resolve(ToggleDevTools).execute();
+  it('ToggleDevToolsOperation execute calls windowService.toggleDevTools', async () => {
+    await container.resolve(ToggleDevToolsOperation).execute();
     expect(windowServiceMock.toggleDevTools).toHaveBeenCalledTimes(1);
   });
 });

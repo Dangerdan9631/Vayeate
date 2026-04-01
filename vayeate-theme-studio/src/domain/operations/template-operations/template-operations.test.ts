@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import type { Template } from '../../../model/schemas';
 import { TemplateGateway } from '../../../gateway/template/template-gateway';
 import {
-  LoadTemplateRefs,
+  LoadTemplateRefsOperation,
   createTemplate,
   deleteTemplate,
   loadTemplate,
@@ -43,9 +43,9 @@ describe('template-operations', () => {
     expect(result).toEqual({ name: 't1', version: '1.0.0' });
   });
 
-  it('LoadTemplateRefs.execute sets store entries from listTemplates result', async () => {
+  it('LoadTemplateRefsOperation.execute sets store entries from listTemplates result', async () => {
     const setStoreState = vi.fn();
-    const op = new LoadTemplateRefs(new StoreStateSetter(setStoreState), container.resolve(TemplateGateway));
+    const op = new LoadTemplateRefsOperation(new StoreStateSetter(setStoreState), container.resolve(TemplateGateway));
 
     await op.execute();
 

@@ -1,43 +1,43 @@
 export type { RestoreThemeStateParams, SetState } from './types';
 
 // theme-list
-export { SetThemeRefs, setThemeRefs } from './theme-list/setThemeRefs';
-export { SetSelectedThemeRef, setSelectedThemeRef } from './theme-list/setSelectedThemeRef';
-export { SetThemeCreateFormName, setThemeCreateFormName } from './theme-list/setThemeCreateFormName';
-export { LoadThemeRefs } from './theme-list/loadThemeRefs';
-export { CreateTheme, createTheme } from './theme-list/createTheme';
-export { DeleteTheme, deleteTheme } from './theme-list/deleteTheme';
-export { GetThemeRefs, getThemeRefs } from './theme-list/getThemeRefs';
+export { SetThemeRefsOperation, setThemeRefs } from './theme-list/set-theme-refs-operation';
+export { SetSelectedThemeRefOperation, setSelectedThemeRef } from './theme-list/set-selected-theme-ref-operation';
+export { SetThemeCreateFormNameOperation, setThemeCreateFormName } from './theme-list/set-theme-create-form-name-operation';
+export { LoadThemeRefsOperation } from './theme-list/load-theme-refs-operation';
+export { CreateThemeOperation, createTheme } from './theme-list/create-theme-operation';
+export { DeleteThemeOperation, deleteTheme } from './theme-list/delete-theme-operation';
+export { GetThemeRefsOperation, getThemeRefs } from './theme-list/get-theme-refs-operation';
 
 // theme-details
-export { SetTheme, setTheme } from './theme-details/setTheme';
-export { SetThemeSaveError, setThemeSaveError } from './theme-details/setThemeSaveError';
-export { SetGenerateResult, setGenerateResult } from './theme-details/setGenerateResult';
-export { LoadTheme, loadTheme } from './theme-details/loadTheme';
-export { SaveTheme, saveTheme } from './theme-details/saveTheme';
-export { GenerateTheme, generateTheme } from './theme-details/generateTheme';
+export { SetThemeOperation, setTheme } from './theme-details/set-theme-operation';
+export { SetThemeSaveErrorOperation, setThemeSaveError } from './theme-details/set-theme-save-error-operation';
+export { SetGenerateResultOperation, setGenerateResult } from './theme-details/set-generate-result-operation';
+export { LoadThemeOperation, loadTheme } from './theme-details/load-theme-operation';
+export { SaveThemeOperation, saveTheme } from './theme-details/save-theme-operation';
+export { GenerateThemeOperation, generateTheme } from './theme-details/generate-theme-operation';
 
 // previews
-export { SetThemePreviewVariableFilterText, setThemePreviewVariableFilterText } from './previews/setThemePreviewVariableFilterText';
-export { SetThemePreviewVariableFilterClear, setThemePreviewVariableFilterClear } from './previews/setThemePreviewVariableFilterClear';
-export { SetThemePreviewSelectedSampleKey, setThemePreviewSelectedSampleKey } from './previews/setThemePreviewSelectedSampleKey';
-export { LoadPreviews, loadPreviews } from './previews/loadPreviews';
+export { SetThemePreviewVariableFilterTextOperation, setThemePreviewVariableFilterText } from './previews/set-theme-preview-variable-filter-text-operation';
+export { SetThemePreviewVariableFilterClearOperation, setThemePreviewVariableFilterClear } from './previews/set-theme-preview-variable-filter-clear-operation';
+export { SetThemePreviewSelectedSampleKeyOperation, setThemePreviewSelectedSampleKey } from './previews/set-theme-preview-selected-sample-key-operation';
+export { LoadPreviewsOperation, loadPreviews } from './previews/load-previews-operation';
 
 // palette-hue
-export { SetThemeHueAdjustment, setThemeHueAdjustment } from './palette-hue/setThemeHueAdjustment';
-export { SetThemeHueReferenceHex, setThemeHueReferenceHex } from './palette-hue/setThemeHueReferenceHex';
+export { SetThemeHueAdjustmentOperation, setThemeHueAdjustment } from './palette-hue/set-theme-hue-adjustment-operation';
+export { SetThemeHueReferenceHexOperation, setThemeHueReferenceHex } from './palette-hue/set-theme-hue-reference-hex-operation';
 
 // pickers
-export { SetThemePaneSelections, setThemePaneSelections } from './pickers/setThemePaneSelections';
-export { SetThemeOpenPickerContext, setThemeOpenPickerContext } from './pickers/setThemeOpenPickerContext';
+export { SetThemePaneSelectionsOperation, setThemePaneSelections } from './pickers/set-theme-pane-selections-operation';
+export { SetThemeOpenPickerContextOperation, setThemeOpenPickerContext } from './pickers/set-theme-open-picker-context-operation';
 
 // palette-color-assign
-export { SetAssignColorDraftText, setAssignColorDraftText } from './palette-color-assign/setAssignColorDraftText';
+export { SetAssignColorDraftTextOperation, setAssignColorDraftText } from './palette-color-assign/set-assign-color-draft-text-operation';
 
 // eyedropper
-export { SetEyedropperUiState } from './eyedropper/setEyedropperUiState';
-export { LoadEyedropperSnapshot } from './eyedropper/loadEyedropperSnapshot';
+export { SetEyedropperUiStateOperation } from './eyedropper/set-eyedropper-ui-state-operation';
+export { LoadEyedropperSnapshotOperation } from './eyedropper/load-eyedropper-snapshot-operation';
 
 // variables
-export { SetThemeVariablesSearchText, setThemeVariablesSearchText } from './variables/setThemeVariablesSearchText';
-export { SetThemeVariableDraftText, setThemeVariableDraftText } from './variables/setThemeVariableDraftText';
+export { SetThemeVariablesSearchTextOperation, setThemeVariablesSearchText } from './variables/set-theme-variables-search-text-operation';
+export { SetThemeVariableDraftTextOperation, setThemeVariableDraftText } from './variables/set-theme-variable-draft-text-operation';

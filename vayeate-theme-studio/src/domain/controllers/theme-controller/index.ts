@@ -1,89 +1,89 @@
 // theme-list
 export { themeStackId } from '../../utils/stack-id';
-export { LoadThemePageController } from './theme-list/loadThemePage';
-export { SelectThemeAndLoadController } from './theme-list/selectThemeAndLoad';
-export { SelectThemeByNameController } from './theme-list/selectThemeByName';
-export { OpenThemeCreateDialogController } from './theme-list/openThemeCreateDialog';
-export { CloseThemeCreateDialogController } from './theme-list/closeThemeCreateDialog';
-export { CreateThemeController } from './theme-list/createTheme';
-export { DeleteThemeVersionController } from './theme-list/deleteThemeVersion';
-export { SetThemeCreateFormNameController } from './theme-list/setThemeCreateFormName';
+export { LoadThemePageController } from './theme-list/load-theme-page-controller';
+export { SelectThemeAndLoadController } from './theme-list/select-theme-and-load-controller';
+export { SelectThemeByNameController } from './theme-list/select-theme-by-name-controller';
+export { OpenThemeCreateDialogController } from './theme-list/open-theme-create-dialog-controller';
+export { CloseThemeCreateDialogController } from './theme-list/close-theme-create-dialog-controller';
+export { CreateThemeController } from './theme-list/create-theme-controller';
+export { DeleteThemeVersionController } from './theme-list/delete-theme-version-controller';
+export { SetThemeCreateFormNameController } from './theme-list/set-theme-create-form-name-controller';
 
 // theme-details
-export { SaveThemeController } from './theme-details/saveTheme';
-export { RestoreThemeStateController } from './theme-details/restoreThemeState';
-export { ClearThemeSaveErrorController } from './theme-details/clearThemeSaveError';
-export { IncrementThemeVersionController } from './theme-details/incrementThemeVersion';
-export { SetThemeTemplateController } from './theme-details/setThemeTemplate';
-export { SetThemePreviewTokenRefController } from './theme-details/setThemePreviewTokenRef';
-export { SetThemeTemplateToggleController } from './theme-details/setThemeTemplateToggle';
-export { SetThemeTemplateVersionOnlyController } from './theme-details/setThemeTemplateVersionOnly';
-export { GenerateThemeController } from './theme-details/generateTheme';
-export { PersistCurrentThemeController } from './theme-details/persistCurrentTheme';
+export { SaveThemeController } from './theme-details/save-theme-controller';
+export { RestoreThemeStateController } from './theme-details/restore-theme-state-controller';
+export { ClearThemeSaveErrorController } from './theme-details/clear-theme-save-error-controller';
+export { IncrementThemeVersionController } from './theme-details/increment-theme-version-controller';
+export { SetThemeTemplateController } from './theme-details/set-theme-template-controller';
+export { SetThemePreviewTokenRefController } from './theme-details/set-theme-preview-token-ref-controller';
+export { SetThemeTemplateToggleController } from './theme-details/set-theme-template-toggle-controller';
+export { SetThemeTemplateVersionOnlyController } from './theme-details/set-theme-template-version-only-controller';
+export { GenerateThemeController } from './theme-details/generate-theme-controller';
+export { PersistCurrentThemeController } from './theme-details/persist-current-theme-controller';
 
 // palette
-export { SetApplyPaletteToDarkController } from './palette/setApplyPaletteToDark';
-export { SetApplyPaletteToLightController } from './palette/setApplyPaletteToLight';
-export { SetPaletteClusterCountKPreviewController } from './palette/setPaletteClusterCountKPreview';
-export { SetPaletteClusterCountKController } from './palette/setPaletteClusterCountK';
-export { SetPaletteClusterGroupToggledController } from './palette/setPaletteClusterGroupToggled';
-export { SetPaletteSwatchGroupSelectionController } from './palette/setPaletteSwatchGroupSelection';
-export { SetPaletteFullSelectionController } from './palette/setPaletteFullSelection';
-export { SetPalettePrimarySwatchController } from './palette/setPalettePrimarySwatch';
-export { SetPaletteMemberSwatchController } from './palette/setPaletteMemberSwatch';
-export { HandleMemberSwatchRightClickController } from './palette/handleMemberSwatchRightClick';
+export { SetApplyPaletteToDarkController } from './palette/set-apply-palette-to-dark-controller';
+export { SetApplyPaletteToLightController } from './palette/set-apply-palette-to-light-controller';
+export { SetPaletteClusterCountKPreviewController } from './palette/set-palette-cluster-count-k-preview-controller';
+export { SetPaletteClusterCountKController } from './palette/set-palette-cluster-count-k-controller';
+export { SetPaletteClusterGroupToggledController } from './palette/set-palette-cluster-group-toggled-controller';
+export { SetPaletteSwatchGroupSelectionController } from './palette/set-palette-swatch-group-selection-controller';
+export { SetPaletteFullSelectionController } from './palette/set-palette-full-selection-controller';
+export { SetPalettePrimarySwatchController } from './palette/set-palette-primary-swatch-controller';
+export { SetPaletteMemberSwatchController } from './palette/set-palette-member-swatch-controller';
+export { HandleMemberSwatchRightClickController } from './palette/handle-member-swatch-right-click-controller';
 
 // palette-color-assign
-export { SetAssignColorDraftTextController } from './palette-color-assign/setAssignColorDraftText';
-export { ApplyAssignColorDraftController } from './palette-color-assign/applyAssignColorDraft';
-export { CommitAssignColorTextController } from './palette-color-assign/commitAssignColorText';
-export { AssignColorFromPickerController } from './palette-color-assign/assignColorFromPicker';
-export { SetAssignColorPreviewController } from './palette-color-assign/setAssignColorPreview';
+export { SetAssignColorDraftTextController } from './palette-color-assign/set-assign-color-draft-text-controller';
+export { ApplyAssignColorDraftController } from './palette-color-assign/apply-assign-color-draft-controller';
+export { CommitAssignColorTextController } from './palette-color-assign/commit-assign-color-text-controller';
+export { AssignColorFromPickerController } from './palette-color-assign/assign-color-from-picker-controller';
+export { SetAssignColorPreviewController } from './palette-color-assign/set-assign-color-preview-controller';
 
 // palette-hue
-export { SetThemeHueAdjustmentController } from './palette-hue/setThemeHueAdjustment';
-export { SetThemeHueReferenceHexController } from './palette-hue/setThemeHueReferenceHex';
-export { CommitHueReferenceColorController } from './palette-hue/commitHueReferenceColor';
-export { RecenterHueReferenceController } from './palette-hue/recenterHueReference';
+export { SetThemeHueAdjustmentController } from './palette-hue/set-theme-hue-adjustment-controller';
+export { SetThemeHueReferenceHexController } from './palette-hue/set-theme-hue-reference-hex-controller';
+export { CommitHueReferenceColorController } from './palette-hue/commit-hue-reference-color-controller';
+export { RecenterHueReferenceController } from './palette-hue/recenter-hue-reference-controller';
 
 // previews
-export { SetPreviewVariableSelectionController } from './previews/setPreviewVariableSelection';
-export { SetPreviewVariableFilterTextController } from './previews/setPreviewVariableFilterText';
-export { ClearPreviewVariableFilterController } from './previews/clearPreviewVariableFilter';
-export { SetPreviewSelectedSampleController } from './previews/setPreviewSelectedSample';
-export { PreviewSampleButtonScrollController } from './previews/previewSampleButtonScroll';
+export { SetPreviewVariableSelectionController } from './previews/set-preview-variable-selection-controller';
+export { SetPreviewVariableFilterTextController } from './previews/set-preview-variable-filter-text-controller';
+export { ClearPreviewVariableFilterController } from './previews/clear-preview-variable-filter-controller';
+export { SetPreviewSelectedSampleController } from './previews/set-preview-selected-sample-controller';
+export { PreviewSampleButtonScrollController } from './previews/preview-sample-button-scroll-controller';
 
 // variables
-export { SetThemeVariablesSearchTextController } from './variables/setThemeVariablesSearchText';
-export { SetVariablesSelectAllController } from './variables/setVariablesSelectAll';
-export { SetVariablesSelectByTypeController } from './variables/setVariablesSelectByType';
-export { SetVariablesSelectByGroupController } from './variables/setVariablesSelectByGroup';
-export { ToggleVariableSelectionController } from './variables/toggleVariableSelection';
-export { SetThemeVariableDraftTextController } from './variables/setThemeVariableDraftText';
+export { SetThemeVariablesSearchTextController } from './variables/set-theme-variables-search-text-controller';
+export { SetVariablesSelectAllController } from './variables/set-variables-select-all-controller';
+export { SetVariablesSelectByTypeController } from './variables/set-variables-select-by-type-controller';
+export { SetVariablesSelectByGroupController } from './variables/set-variables-select-by-group-controller';
+export { ToggleVariableSelectionController } from './variables/toggle-variable-selection-controller';
+export { SetThemeVariableDraftTextController } from './variables/set-theme-variable-draft-text-controller';
 
 // variables-color
-export { SetColorVariableDarkController } from './variables-color/setColorVariableDark';
-export { SetColorVariableLightController } from './variables-color/setColorVariableLight';
-export { SetColorVariableFromHexController } from './variables-color/setColorVariableFromHex';
-export { SetColorVariableFromHexPreviewController } from './variables-color/setColorVariableFromHexPreview';
-export { SetColorUseDarkForLightController } from './variables-color/setColorUseDarkForLight';
+export { SetColorVariableDarkController } from './variables-color/set-color-variable-dark-controller';
+export { SetColorVariableLightController } from './variables-color/set-color-variable-light-controller';
+export { SetColorVariableFromHexController } from './variables-color/set-color-variable-from-hex-controller';
+export { SetColorVariableFromHexPreviewController } from './variables-color/set-color-variable-from-hex-preview-controller';
+export { SetColorUseDarkForLightController } from './variables-color/set-color-use-dark-for-light-controller';
 
 // variables-contrast
-export { SetContrastUseDarkForLightController } from './variables-contrast/setContrastUseDarkForLight';
-export { SetContrastVariableDarkValueController } from './variables-contrast/setContrastVariableDarkValue';
-export { SetContrastVariableDarkMethodController } from './variables-contrast/setContrastVariableDarkMethod';
-export { SetContrastVariableDarkMinController } from './variables-contrast/setContrastVariableDarkMin';
-export { SetContrastVariableDarkMaxController } from './variables-contrast/setContrastVariableDarkMax';
-export { SetContrastVariableLightValueController } from './variables-contrast/setContrastVariableLightValue';
-export { SetContrastVariableLightMethodController } from './variables-contrast/setContrastVariableLightMethod';
-export { SetContrastVariableLightMinController } from './variables-contrast/setContrastVariableLightMin';
-export { SetContrastVariableLightMaxController } from './variables-contrast/setContrastVariableLightMax';
+export { SetContrastUseDarkForLightController } from './variables-contrast/set-contrast-use-dark-for-light-controller';
+export { SetContrastVariableDarkValueController } from './variables-contrast/set-contrast-variable-dark-value-controller';
+export { SetContrastVariableDarkMethodController } from './variables-contrast/set-contrast-variable-dark-method-controller';
+export { SetContrastVariableDarkMinController } from './variables-contrast/set-contrast-variable-dark-min-controller';
+export { SetContrastVariableDarkMaxController } from './variables-contrast/set-contrast-variable-dark-max-controller';
+export { SetContrastVariableLightValueController } from './variables-contrast/set-contrast-variable-light-value-controller';
+export { SetContrastVariableLightMethodController } from './variables-contrast/set-contrast-variable-light-method-controller';
+export { SetContrastVariableLightMinController } from './variables-contrast/set-contrast-variable-light-min-controller';
+export { SetContrastVariableLightMaxController } from './variables-contrast/set-contrast-variable-light-max-controller';
 
 // pickers
-export { SetThemeOpenPickerContextController } from './pickers/setThemeOpenPickerContext';
-export { SetThemePaneSelectionsController } from './pickers/setThemePaneSelections';
+export { SetThemeOpenPickerContextController } from './pickers/set-theme-open-picker-context-controller';
+export { SetThemePaneSelectionsController } from './pickers/set-theme-pane-selections-controller';
 
 // eyedropper
-export { OpenEyedropperOverlayController } from './eyedropper/openEyedropperOverlay';
-export { CloseEyedropperOverlayController } from './eyedropper/closeEyedropperOverlay';
-export { CommitEyedropperColorController } from './eyedropper/commitEyedropperColor';
+export { OpenEyedropperOverlayController } from './eyedropper/open-eyedropper-overlay-controller';
+export { CloseEyedropperOverlayController } from './eyedropper/close-eyedropper-overlay-controller';
+export { CommitEyedropperColorController } from './eyedropper/commit-eyedropper-color-controller';

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { HandlerDeps } from '../handlers/handler-types';
+import type { HandlerDeps } from '../actions/handler-types';
 
 /** Supplies current React-bound {@link HandlerDeps} for {@link ActionQueue}. */
 @singleton()

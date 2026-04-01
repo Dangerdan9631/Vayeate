@@ -1,5 +1,5 @@
 import type { Theme } from '../../../../model/schemas';
-import { SaveTheme, SetThemeSaveError } from '../../../operations/theme-operations';
+import { SaveThemeOperation, SetThemeSaveErrorOperation } from '../../../operations/theme-operations';
 
 const SAVE_THEME_DEBOUNCE_MS = 400;
 
@@ -15,8 +15,8 @@ export function clearPendingSave(): void {
 }
 
 export function scheduleDebouncedSave(
-  saveTheme: SaveTheme,
-  setThemeSaveError: SetThemeSaveError,
+  saveTheme: SaveThemeOperation,
+  setThemeSaveError: SetThemeSaveErrorOperation,
   theme: Theme,
 ): void {
   pendingThemeToSave = theme;

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
-import { CloseAllMenus, LoadAppConfig, SaveAppConfig, SetColorScheme, SetMenuOpenState } from '.';
+import { CloseAllMenusOperation, LoadAppConfigOperation, SaveAppConfigOperation, SetColorSchemeOperation, SetMenuOpenStateOperation } from '.';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { AppStateGetter } from '../../state/app-state-getter';
 import { AppStateSetter } from '../../state/app-state-setter';
@@ -19,42 +19,42 @@ describe('app-operations', () => {
     vi.mocked(configMock.save).mockClear();
   });
 
-  it('SetColorScheme applies SET_COLOR_SCHEME via AppStateSetter', () => {
+  it('SetColorSchemeOperation applies SET_COLOR_SCHEME via AppStateSetter', () => {
     const apply = vi.fn();
     container.registerInstance(AppStateSetter, new AppStateSetter(apply));
-    container.resolve(SetColorScheme).execute('light');
+    container.resolve(SetColorSchemeOperation).execute('light');
     expect(apply).toHaveBeenCalledWith({ type: 'SET_COLOR_SCHEME', scheme: 'light' });
   });
 
-  it('SetMenuOpenState applies SET_UI_MENU_OPEN_STATE via UiStateSetter', () => {
+  it('SetMenuOpenStateOperation applies SET_UI_MENU_OPEN_STATE via UiStateSetter', () => {
     const apply = vi.fn();
     container.registerInstance(UiStateSetter, new UiStateSetter(apply));
-    container.resolve(SetMenuOpenState).execute('history', true);
+    container.resolve(SetMenuOpenStateOperation).execute('history', true);
     expect(apply).toHaveBeenCalledWith({ type: 'SET_UI_MENU_OPEN_STATE', menuId: 'history', isOpen: true });
   });
 
-  it('CloseAllMenus applies SET_UI_ALL_MENUS_CLOSED via UiStateSetter', () => {
+  it('CloseAllMenusOperation applies SET_UI_ALL_MENUS_CLOSED via UiStateSetter', () => {
     const apply = vi.fn();
     container.registerInstance(UiStateSetter, new UiStateSetter(apply));
-    container.resolve(CloseAllMenus).execute();
+    container.resolve(CloseAllMenusOperation).execute();
     expect(apply).toHaveBeenCalledWith({ type: 'SET_UI_ALL_MENUS_CLOSED' });
   });
 
-  it('LoadAppConfig loads from gateway and applies SET_APP_CONFIG', async () => {
+  it('LoadAppConfigOperation loads from gateway and applies SET_APP_CONFIG', async () => {
     vi.mocked(configMock.load).mockResolvedValue({ colorScheme: 'light' });
     const apply = vi.fn();
     container.registerInstance(AppStateSetter, new AppStateSetter(apply));
-    await container.resolve(LoadAppConfig).execute();
+    await container.resolve(LoadAppConfigOperation).execute();
     expect(configMock.load).toHaveBeenCalledTimes(1);
     expect(apply).toHaveBeenCalledWith({ type: 'SET_APP_CONFIG', config: { colorScheme: 'light' } });
   });
 
-  it('SaveAppConfig persists appConfig from state via gateway', async () => {
+  it('SaveAppConfigOperation persists appConfig from state via gateway', async () => {
     container.registerInstance(
       AppStateGetter,
       new AppStateGetter(() => ({ ...initialAppState, appConfig: { colorScheme: 'light' } })),
     );
-    await container.resolve(SaveAppConfig).execute();
+    await container.resolve(SaveAppConfigOperation).execute();
     expect(configMock.save).toHaveBeenCalledTimes(1);
     expect(configMock.save).toHaveBeenCalledWith({ colorScheme: 'light' });
   });

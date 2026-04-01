@@ -1,5 +1,5 @@
-export { SetWindowState, type SetWindowStateTarget } from './setWindowState';
-export { ApplyWindowStateUpdate } from './applyWindowStateUpdate';
-export { DragWindow } from './dragWindow';
-export { ReloadWindow } from './reloadWindow';
-export { ToggleDevTools } from './toggleDevTools';
+export { SetWindowStateOperation, type SetWindowStateTarget } from './set-window-state-operation';
+export { ApplyWindowStateUpdateOperation } from './apply-window-state-update-operation';
+export { DragWindowOperation } from './drag-window-operation';
+export { ReloadWindowOperation } from './reload-window-operation';
+export { ToggleDevToolsOperation } from './toggle-dev-tools-operation';

@@ -1,12 +1,12 @@
 import { injectable } from 'tsyringe';
-import { LoadTemplate, RefreshTemplateRefs, SetSelectedTemplateRef } from '../../operations/template-operations';
+import { LoadTemplateOperation, RefreshTemplateRefsOperation, SetSelectedTemplateRefOperation } from '../../operations/template-operations';
 
 @injectable()
 export class TemplateSharedFlows {
   constructor(
-    private readonly refreshTemplateRefs: RefreshTemplateRefs,
-    private readonly setSelectedTemplateRef: SetSelectedTemplateRef,
-    private readonly loadTemplate: LoadTemplate,
+    private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
+    private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
+    private readonly loadTemplate: LoadTemplateOperation,
   ) {}
 
   async refreshRefsAndSelect(selectName?: string, selectVersion?: string): Promise<void> {
