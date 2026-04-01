@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import './styles.css';
 import { container } from 'tsyringe';
-import { BootstrapAppController } from '../../domain/controllers/app-controller';
+import { LoadAppController, UnloadAppController } from '../../domain/controllers/app-controller';
 import { AppProvider } from './context/AppContext';
 import { ColorSchemeProvider } from './context/ColorSchemeContext';
 import { useActiveTab, useAppDispatch } from './context/slice-contexts';
@@ -24,10 +24,9 @@ function AppShell() {
   }, [activeTab]);
 
   useEffect(() => {
-    const teardown = container.resolve(BootstrapAppController).run();
-    return () => {
-      teardown();
-    };
+    container.resolve(LoadAppController).run();
+    const unload = container.resolve(UnloadAppController);
+    return () => unload.run();
   }, []);
 
   const onTabChange = useCallback(

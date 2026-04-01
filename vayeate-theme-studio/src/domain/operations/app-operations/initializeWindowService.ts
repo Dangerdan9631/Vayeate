@@ -6,7 +6,7 @@ import {
   OnWindowResizeEventController,
   OnWindowStateEventController,
 } from '../../controllers/window-controller';
-import { OnGlobalKeyDownEventController } from '../../controllers/app-controller';
+import { OnGlobalKeyDownEventController } from '../../controllers/app-controller/onGlobalKeyDownEvent';
 
 @singleton()
 export class InitializeWindowService {

@@ -71,8 +71,13 @@ export class WindowService {
     push(api.onWindowResize?.(callbacks.onResize));
     push(api.onWindowMove?.(callbacks.onMove));
 
-    this.registerGlobalKeyDown(callbacks.onGlobalKeyDown);
-    this.subscribeViewportResize(callbacks.onViewportResize);
+    window.addEventListener('keydown', callbacks.onGlobalKeyDown as EventListener);
+    push(() => window.removeEventListener('keydown', callbacks.onGlobalKeyDown as EventListener));
+
+    const onViewportResize = () => callbacks.onViewportResize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener('resize', onViewportResize);
+    push(() => window.removeEventListener('resize', onViewportResize));
+    onViewportResize();
 
     // One-shot hydration on init: set initial BrowserWindow bounds into state if available.
     void api
@@ -82,61 +87,6 @@ export class WindowService {
         callbacks.onResize({ width: b.width, height: b.height });
       })
       .catch(() => {});
-  }
-
-  addWindowListener<K extends keyof WindowEventMap>(
-    type: K,
-    listener: (this: Window, ev: WindowEventMap[K]) => void,
-    options?: boolean | AddEventListenerOptions,
-  ): () => void {
-    window.addEventListener(type, listener as EventListener, options);
-    const unsub = () => window.removeEventListener(type, listener as EventListener, options);
-    this.unsubscribes.push(unsub);
-    return () => {
-      unsub();
-      const i = this.unsubscribes.indexOf(unsub);
-      if (i >= 0) this.unsubscribes.splice(i, 1);
-    };
-  }
-
-  addDocumentListener<K extends keyof DocumentEventMap>(
-    type: K,
-    listener: (this: Document, ev: DocumentEventMap[K]) => void,
-    options?: boolean | AddEventListenerOptions,
-  ): () => void {
-    document.addEventListener(type, listener as EventListener, options);
-    const unsub = () => document.removeEventListener(type, listener as EventListener, options);
-    this.unsubscribes.push(unsub);
-    return () => {
-      unsub();
-      const i = this.unsubscribes.indexOf(unsub);
-      if (i >= 0) this.unsubscribes.splice(i, 1);
-    };
-  }
-
-  registerGlobalKeyDown(handler: (e: KeyboardEvent) => void): () => void {
-    window.addEventListener('keydown', handler as EventListener);
-    const unsub = () => window.removeEventListener('keydown', handler as EventListener);
-    this.unsubscribes.push(unsub);
-    return () => {
-      unsub();
-      const i = this.unsubscribes.indexOf(unsub);
-      if (i >= 0) this.unsubscribes.splice(i, 1);
-    };
-  }
-
-  /** Pushes viewport (innerWidth/innerHeight) on resize and once immediately. */
-  subscribeViewportResize(onChange: (size: { width: number; height: number }) => void): () => void {
-    const fn = () => onChange({ width: window.innerWidth, height: window.innerHeight });
-    window.addEventListener('resize', fn);
-    fn();
-    const unsub = () => window.removeEventListener('resize', fn);
-    this.unsubscribes.push(unsub);
-    return () => {
-      unsub();
-      const i = this.unsubscribes.indexOf(unsub);
-      if (i >= 0) this.unsubscribes.splice(i, 1);
-    };
   }
 
   dispose(): void {

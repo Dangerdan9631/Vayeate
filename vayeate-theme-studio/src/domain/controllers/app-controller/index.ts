@@ -1,5 +1,6 @@
 export { SetActiveTabController } from './setActiveTab';
 export { SetColorSchemeController } from './setColorScheme';
-export { BootstrapAppController } from './bootstrapApp';
-export { InitializeLoggingController } from './initializeLogging.ts';
+export { LoadAppController } from './loadApp';
+export { UnloadAppController } from './unloadApp';
+export { InitializeLoggingController } from './initializeLogging';
 export { OnGlobalKeyDownEventController } from './onGlobalKeyDownEvent';
