@@ -76,7 +76,7 @@ UI ← ViewModel ← State (setState/setWindowState apply the appropriate reduce
 - `electron/main.ts` — IPC handlers, BrowserWindow, delegates to controllers
 - `electron/preload.ts` — contextBridge exposes `electronAPI`
 - `src/app/ui/context/AppContext.tsx` — lean provider (~150 lines): useReducer, context providers, window event listeners, queue setup; resolves `ActionProcessor` from tsyringe and calls `process(action, deps)`
-- `src/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor` + `handlerDepsSourceToken`; FIFO sequential async processing
+- `src/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor`, receives a one-time registered `HandlerDeps` getter from `AppContext`, and processes FIFO sequential async actions
 - `src/app/actions/action-types.ts` — Discriminated union `AppActionV2`. The canonical list of all app action event names.
 - `src/app/handlers/handler-types.ts` — `HandlerDeps`, domain `Extract` aliases, `ActionHandler<T>`
 - `src/app/handlers/handler-registry.ts` — `@singleton()` `ActionProcessor` (injected domain handlers) routes by `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`); `process(action, deps)` receives React `HandlerDeps`

@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Action Queue Pattern
 
-All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` registers `handlerDepsSourceToken` (`IHandlerDepsSource` from `app/di/handler-deps-source.ts`) with current React `HandlerDeps`, then resolves the `@singleton()` `ActionQueue` from tsyringe. `ActionQueue` injects `ActionProcessor` + `IHandlerDepsSource` and calls `actionProcessor.process(action, handlerDepsSource.get())`.
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` resolves the `@singleton()` `ActionQueue` once and registers a getter that returns the current React `HandlerDeps`. `ActionQueue` injects `ActionProcessor`, stores that getter, and calls `actionProcessor.process(action, depsGetter())` while processing.
 
 ## Event Naming
 

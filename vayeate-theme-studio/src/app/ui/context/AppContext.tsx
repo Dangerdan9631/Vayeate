@@ -36,7 +36,6 @@ import {
   ThemesStateContext,
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
-import { HandlerDepsSource } from '../../di/handler-deps-source';
 import type { HandlerDeps } from '../../actions/handler-types';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
@@ -125,14 +124,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   });
   handlerDepsRef.current = { setState, getState, setUiState, setStoreState };
 
-  const handlerDepsSource = useMemo(() => container.resolve(HandlerDepsSource), []);
-  handlerDepsSource.setGetter(() => handlerDepsRef.current);
-
   const queueRef = useRef<ActionQueue | null>(null);
 
   const dispatch = useCallback((action: AppAction): Promise<void> => {
     if (!queueRef.current) {
       const queue = container.resolve(ActionQueue);
+      queue.setDepsGetter(() => handlerDepsRef.current);
       queue.onQueueStatus = (status: QueueStatus) =>
         setUiState({
           type: 'SET_UI_QUEUE_STATUS',

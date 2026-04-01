@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import type { AppAction } from './action-types';
 import { LoggerFactory, type Logger } from '../../domain/utils/logger';
-import { HandlerDepsSource } from '../di/handler-deps-source';
 import { ActionProcessor } from './handler-registry';
+import type { HandlerDeps } from './handler-types';
 
 export interface QueueStatus {
   isProcessing: boolean;
@@ -19,13 +19,17 @@ export class ActionQueue {
   private queue: QueuedAction[] = [];
   private processing = false;
   private readonly log: Logger;
+  private depsGetter: (() => HandlerDeps) | null = null;
 
   constructor(
     private readonly actionProcessor: ActionProcessor,
-    private readonly handlerDepsSource: HandlerDepsSource,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('ActionQueue');
+  }
+
+  setDepsGetter(getter: () => HandlerDeps): void {
+    this.depsGetter = getter;
   }
 
   enqueue(action: AppAction): Promise<void> {
@@ -45,7 +49,10 @@ export class ActionQueue {
       const { action, resolve } = this.queue.shift()!;
       this.emitStatus();
       try {
-        await this.actionProcessor.process(action, this.handlerDepsSource.get());
+        if (!this.depsGetter) {
+          throw new Error('ActionQueue deps getter is not configured.');
+        }
+        await this.actionProcessor.process(action, this.depsGetter());
       } catch (err) {
         this.log.error('Error processing action:', action.type, err);
       } finally {
