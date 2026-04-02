@@ -1,19 +1,19 @@
 import { injectable } from 'tsyringe';
-import { AppStateSetter } from '../../../state/app-state-setter';
-import type { AppStateUpdate } from '../../../state/app-state';
+import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import type { ThemesStateUpdate } from '../../../state/theme/themes-state-reducer';
 
 /** Set selected preview sample key for scrolling (THEME_PREVIEW_SAMPLE_LIST_ON_COMMIT). */
 @injectable()
 export class SetThemePreviewSelectedSampleKeyOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
 
   execute(value: string): void {
-    this.appStateSetter.apply({ type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', value });
+    this.ThemesStateSetter.apply({ type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', value });
   }
 }
 
 /** @deprecated Use SetThemePreviewSelectedSampleKeyOperation class instead. */
-export function setThemePreviewSelectedSampleKey(setState: (update: AppStateUpdate) => void, value: string): void {
+export function setThemePreviewSelectedSampleKey(setState: (update: ThemesStateUpdate) => void, value: string): void {
   setState({ type: 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY', value });
 }
 

@@ -10,7 +10,7 @@ import {
   loadTheme,
   saveTheme,
 } from '.';
-import { StoreStateSetter } from '../../state/store-state-setter';
+import { ThemesStateSetter } from '../../state/theme/themes-state-reducer';
 
 const themeGatewayMock = {
   createTheme: vi.fn(),
@@ -48,15 +48,15 @@ describe('theme-operations', () => {
     expect(result).toEqual({ name: 'th1', version: '1.0.0' });
   });
 
-  it('LoadThemeRefsOperation.execute sets store entries from listThemes result', async () => {
-    const setStoreState = vi.fn();
-    const op = new LoadThemeRefsOperation(new StoreStateSetter(setStoreState), container.resolve(ThemeGateway));
+  it('LoadThemeRefsOperation.execute sets theme map entries from listThemes result', async () => {
+    const setThemesState = vi.fn();
+    const op = new LoadThemeRefsOperation(new ThemesStateSetter(setThemesState), container.resolve(ThemeGateway));
 
     await op.execute();
 
     expect(themeGatewayMock.listThemes).toHaveBeenCalledTimes(1);
-    expect(setStoreState).toHaveBeenCalledWith({
-      type: 'SET_STORE_THEME_ENTRIES',
+    expect(setThemesState).toHaveBeenCalledWith({
+      type: 'SET_THEME_MAP_ENTRIES',
       entries: [{ name: 'th1', version: '1.0.0', isLoaded: false, theme: undefined }],
     });
   });

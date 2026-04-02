@@ -1,22 +1,22 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 @singleton()
 export class SetPaletteSwatchGroupSelectionController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
   run(refs: string[], checked: boolean): void {
-    const state = this.appStateGetter.current();
-    const currentColor = state.themes.checkedColorRefs;
+    const state = this.themesStateGetter.current();
+    const currentColor = state.checkedColorRefs;
     const nextSet = new Set(currentColor);
     for (const r of refs) {
       if (checked) nextSet.add(r);
       else nextSet.delete(r);
     }
-    this.setThemePaneSelections.execute([...nextSet], state.themes.checkedContrastRefs);
+    this.setThemePaneSelections.execute([...nextSet], state.checkedContrastRefs);
   }
 }

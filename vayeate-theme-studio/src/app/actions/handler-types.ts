@@ -1,23 +1,8 @@
-import type { AppState } from '../../domain/state/app-state';
-import type { AppStateUpdate } from '../../domain/state/app-state';
-import type { SetUiState } from '../../domain/state/ui-state-reducer';
-import type { StoreStateUpdate } from '../../domain/state/store-state-reducer';
 import { AppActionType } from './app-action-type';
 import { CatalogActionType } from './catalog-action-type';
 import { TemplateActionType } from './template-action-type';
 import { ThemeActionType } from './theme-action-type';
 import type { AppAction as AppActionUnion } from './app-action';
-
-export type SetState = (update: AppStateUpdate) => void;
-export type GetState = () => AppState;
-export type SetStoreState = (update: StoreStateUpdate) => void;
-
-export interface HandlerDeps {
-  setState: SetState;
-  getState: GetState;
-  setUiState: SetUiState;
-  setStoreState: SetStoreState;
-}
 
 export type AppAction = Extract<AppActionUnion, { type: AppActionType }>;
 export type CatalogAction = Extract<AppActionUnion, { type: CatalogActionType }>;
@@ -36,5 +21,5 @@ export const isThemeAction = (a: AppActionUnion): a is ThemeAction => themeTypes
 
 /** Routes a slice of `AppAction` to domain controllers (constructor-injected). */
 export interface ActionHandler<T> {
-  handle(action: T, deps: HandlerDeps): Promise<void>;
+  handle(action: T): Promise<void>;
 }

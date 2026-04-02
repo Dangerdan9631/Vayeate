@@ -7,7 +7,7 @@ export { SetThemeCreateFormNameOperation, setThemeCreateFormName } from './theme
 export { LoadThemeRefsOperation } from './theme-list/load-theme-refs-operation';
 export { CreateThemeOperation, createTheme } from './theme-list/create-theme-operation';
 export { DeleteThemeOperation, deleteTheme } from './theme-list/delete-theme-operation';
-export { GetThemeRefsOperation, getThemeRefs } from './theme-list/get-theme-refs-operation';
+export { GetThemeRefsOperation } from './theme-list/get-theme-refs-operation';
 
 // theme-details
 export { SetThemeOperation, setTheme } from './theme-details/set-theme-operation';

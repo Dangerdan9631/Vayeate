@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { closedEyedropperUiState } from '../../../state/eyedropper-ui-state';
+import { closedEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
 import { SetEyedropperUiStateOperation } from '../../../operations/theme-operations';
 
 @singleton()

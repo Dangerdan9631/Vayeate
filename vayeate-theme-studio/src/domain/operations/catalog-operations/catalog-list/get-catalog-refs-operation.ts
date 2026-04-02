@@ -1,16 +1,14 @@
 import { injectable } from 'tsyringe';
-import { getCatalogRefsFromStore } from '../../../state/store-state';
+import { getCatalogRefsFromCatalogsState } from '../../../state/catalog/catalogs-state';
 import type { CatalogReference } from '../../../../model/schemas';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 
 /** Read current catalog refs from state. Use in controllers instead of importing domain/state directly. */
 @injectable()
 export class GetCatalogRefsOperation {
-  constructor(private readonly appStateGetter: AppStateGetter) {}
+  constructor(private readonly catalogsStateGetter: CatalogsStateGetter) {}
 
   execute(): CatalogReference[] {
-    return getCatalogRefsFromStore(this.appStateGetter.current().store);
+    return getCatalogRefsFromCatalogsState(this.catalogsStateGetter.current());
   }
 }
-
-

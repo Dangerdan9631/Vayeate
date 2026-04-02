@@ -1,5 +1,6 @@
-import type { TabId } from './tab-id';
-import type { EyedropperUiState } from './eyedropper-ui-state';
+import { closedEyedropperUiState, type EyedropperUiState } from './eyedropper-ui-state';
+
+export type TabId = 'catalogs' | 'templates' | 'themes';
 
 export interface QueueStatusState {
   isProcessing: boolean;
@@ -20,3 +21,15 @@ export interface UiState {
   menuOpen: MenuOpenState;
   eyedropper: EyedropperUiState;
 }
+
+export const initialUiState: UiState = {
+  activeTabId: 'catalogs',
+  queueStatus: { isProcessing: false, queueLength: 0 },
+  menuOpen: {
+    fileOpen: false,
+    editOpen: false,
+    historyOpen: false,
+    viewOpen: false,
+  },
+  eyedropper: closedEyedropperUiState,
+};

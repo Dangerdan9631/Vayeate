@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   BumpTemplateVersionForEditOperation,
   RemoveGroupFromTemplateOperation,
@@ -11,7 +11,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class RemoveGroupController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeGroupFromTemplate: RemoveGroupFromTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -19,7 +19,7 @@ export class RemoveGroupController {
   ) {}
 
   async run(groupId: string): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const inUse = groupNamesInUseFromTemplate(template);
     if (inUse.has(groupId)) return;

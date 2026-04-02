@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   AddColorVariableOperation as AddColorVariableOp,
   BumpTemplateVersionForEditOperation,
@@ -10,7 +10,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class AddColorVariableController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addColorVariableToTemplate: AddColorVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -18,7 +18,7 @@ export class AddColorVariableController {
   ) {}
 
   async run(key: string, groupRef?: string | null): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addColorVariableToTemplate.execute(base, key, groupRef);

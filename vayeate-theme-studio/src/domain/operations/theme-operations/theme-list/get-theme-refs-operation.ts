@@ -1,22 +1,14 @@
 import { singleton } from 'tsyringe';
-import { getThemeRefsFromStore } from '../../../state/store-state';
+import { getThemeRefsFromThemesState } from '../../../state/theme/themes-state';
 import type { ThemeReference } from '../../../../model/schemas';
-import type { AppState } from '../../../state/app-state';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 /** Read current theme refs from state. Use in controllers instead of importing domain/state directly. */
 @singleton()
 export class GetThemeRefsOperation {
-  constructor(private readonly appStateGetter: AppStateGetter) {}
+  constructor(private readonly themesStateGetter: ThemesStateGetter) {}
 
   execute(): ThemeReference[] {
-    return getThemeRefsFromStore(this.appStateGetter.current().store);
+    return getThemeRefsFromThemesState(this.themesStateGetter.current());
   }
 }
-
-/** @deprecated Use GetThemeRefsOperation class instead. */
-export function getThemeRefs(getState: () => AppState): ThemeReference[] {
-  return getThemeRefsFromStore(getState().store);
-}
-
-

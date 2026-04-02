@@ -1,8 +1,8 @@
 import { injectable } from 'tsyringe';
 import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
-import type { EyedropperSnapshotPayload } from '../../../state/eyedropper-ui-state';
-import { UiStateSetter } from '../../../state/ui-state-setter';
+import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
+import { UiStateSetter } from '../../../state/ui/ui-state-reducer';
 
 /** IPC may deliver Buffer, Uint8Array, ArrayBuffer, or Node-style `{ type, data }` depending on clone path. */
 function pngToUint8Array(png: unknown): Uint8Array {

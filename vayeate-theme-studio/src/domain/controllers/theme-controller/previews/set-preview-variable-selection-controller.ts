@@ -1,18 +1,18 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 /** Set pane selection to the single variable ref (THEME_PREVIEW_VARIABLE_LIST_ON_COMMIT). */
 @singleton()
 export class SetPreviewVariableSelectionController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
   run(value: string): void {
-    const state = this.appStateGetter.current();
-    const theme = state.themes.theme;
+    const state = this.themesStateGetter.current();
+    const theme = state.theme;
     if (!theme?.templateRef || !value) return;
     const isColorRef = theme.colorAssignments.some((a) => a.colorRef === value);
     const isContrastRef = theme.contrastAssignments.some((a) => a.contrastVariableRef === value);

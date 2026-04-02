@@ -65,7 +65,7 @@ import {
   SetVariablesSelectByTypeController,
   ToggleVariableSelectionController,
 } from '../../domain/controllers/theme-controller';
-import type { ActionHandler, HandlerDeps, ThemeAction } from './handler-types';
+import type { ActionHandler, ThemeAction } from './handler-types';
 import { ThemeActionType } from './action-types';
 
 @injectable()
@@ -137,7 +137,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
     private readonly toggleVariableSelection: ToggleVariableSelectionController,
   ) {}
 
-  async handle(action: ThemeAction, deps: HandlerDeps): Promise<void> {
+  async handle(action: ThemeAction): Promise<void> {
     switch (action.type) {
       case ThemeActionType.ThemePageOnLoad:
         await this.loadThemePage.run();
@@ -397,7 +397,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
         this.closeEyedropperOverlay.run();
         break;
       case ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick:
-        this.commitEyedropperColor.run(action.hex, deps.getState().ui.eyedropper.contextKey);
+        this.commitEyedropperColor.run(action.hex);
         break;
     }
   }

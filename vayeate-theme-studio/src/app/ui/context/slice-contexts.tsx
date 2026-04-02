@@ -1,13 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { AppAction } from '../../actions/action-types';
-import type {
-  CatalogsState,
-  MenuOpenState,
-  StoreState,
-  TemplatesState,
-  ThemesState,
-} from '../../../domain/state/app-state';
-import type { EyedropperUiState } from '../../../domain/state/eyedropper-ui-state';
+import type { CatalogsState, MenuOpenState, TemplatesState, ThemesState } from '../../../domain/state/app-state';
+import type { EyedropperUiState } from '../../../domain/state/ui/eyedropper-ui-state';
 import type { TabId } from '../tabs';
 
 export const AppDispatchContext = createContext<((action: AppAction) => Promise<void>) | null>(null);
@@ -17,7 +11,6 @@ export const EyedropperUiStateContext = createContext<EyedropperUiState | null>(
 export const CatalogsStateContext = createContext<CatalogsState | null>(null);
 export const TemplatesStateContext = createContext<TemplatesState | null>(null);
 export const ThemesStateContext = createContext<ThemesState | null>(null);
-export const StoreStateContext = createContext<StoreState | null>(null);
 
 /** Returns dispatch when inside AppProvider; otherwise a no-op so components can be tested in isolation. */
 export function useAppDispatch(): (action: AppAction) => Promise<void> {
@@ -74,12 +67,4 @@ export function useThemesState(): ThemesState {
     throw new Error('useThemesState must be used within AppProvider');
   }
   return slice;
-}
-
-export function useStoreState(): StoreState {
-  const store = useContext(StoreStateContext);
-  if (!store) {
-    throw new Error('useStoreState must be used within AppProvider');
-  }
-  return store;
 }

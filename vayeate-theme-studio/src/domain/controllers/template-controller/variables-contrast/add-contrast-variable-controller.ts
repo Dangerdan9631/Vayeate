@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   AddContrastVariableOperation as AddContrastVariableOp,
   BumpTemplateVersionForEditOperation,
@@ -10,7 +10,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class AddContrastVariableController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addContrastVariableToTemplate: AddContrastVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -18,7 +18,7 @@ export class AddContrastVariableController {
   ) {}
 
   async run(key: string, groupRef?: string | null): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addContrastVariableToTemplate.execute(base, key, groupRef);

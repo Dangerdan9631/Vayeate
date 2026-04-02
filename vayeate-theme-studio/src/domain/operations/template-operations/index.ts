@@ -1,6 +1,6 @@
 import { container } from 'tsyringe';
-import { AppStateSetter } from '../../state/app-state-setter';
-import { StoreStateSetter } from '../../state/store-state-setter';
+import { TemplatesStateSetter } from '../../state/template/templates-state-reducer';
+import type { SetTemplatesState } from '../../state/template/templates-state-reducer';
 import { TemplateGateway } from '../../../gateway/template/template-gateway';
 
 // template-list
@@ -86,26 +86,26 @@ import { AddContrastVariableOperation as AddContrastVariableClass } from './vari
 import { RemoveContrastVariableOperation as RemoveContrastVariableClass } from './variables-contrast/remove-contrast-variable-operation';
 import { UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceClass } from './variables-contrast/update-contrast-comparison-source-operation';
 
-/** @deprecated Backward compatibility — use injected AppStateSetter instead */
-export type SetState = (update: import('../../state/app-state').AppStateUpdate) => void;
+/** @deprecated Backward compatibility — use injected TemplatesStateSetter */
+export type SetState = SetTemplatesState;
 
 /** @deprecated Backward-compatible function wrappers for controller migration */
 export const createTemplate = (_setState: SetState, params: { name: string }) =>
   container.resolve(CreateTemplateClass).execute(params);
 
 export const setTemplate = (_setState: SetState, template: import('../../../model/schemas').Template | null) =>
-  new SetTemplateClass(new AppStateSetter(_setState)).execute(template);
+  new SetTemplateClass(new TemplatesStateSetter(_setState)).execute(template);
 
 export const setSelectedTemplateRef = (
   _setState: SetState,
   ref: import('../../../model/schemas').TemplateReference | null,
-) => new SetSelectedTemplateRefClass(new AppStateSetter(_setState)).execute(ref);
+) => new SetSelectedTemplateRefClass(new TemplatesStateSetter(_setState)).execute(ref);
 
-export const refreshTemplateRefs = (_setStoreState: import('../../state/store-state-reducer').SetStoreState) =>
-  new RefreshTemplateRefsClass(new StoreStateSetter(_setStoreState), container.resolve(TemplateGateway)).execute();
+export const refreshTemplateRefs = (_setTemplatesState: SetTemplatesState) =>
+  new RefreshTemplateRefsClass(new TemplatesStateSetter(_setTemplatesState), container.resolve(TemplateGateway)).execute();
 
 export const loadTemplate = (_setState: SetState, name: string, version: string) =>
-  new LoadTemplateClass(new AppStateSetter(_setState), container.resolve(TemplateGateway)).execute(name, version);
+  new LoadTemplateClass(new TemplatesStateSetter(_setState), container.resolve(TemplateGateway)).execute(name, version);
 
 export const saveTemplate = (template: import('../../../model/schemas').Template) =>
   container.resolve(SaveTemplateClass).execute(template);
@@ -117,28 +117,28 @@ export const loadTemplateSnapshot = (name: string, version: string) =>
   container.resolve(LoadTemplateSnapshotClass).execute(name, version);
 
 export const setTemplateCreateFormName = (_setState: SetState, value: string) =>
-  new SetTemplateCreateFormNameClass(new AppStateSetter(_setState)).execute(value);
+  new SetTemplateCreateFormNameClass(new TemplatesStateSetter(_setState)).execute(value);
 
 export const setTemplateAddGroupName = (_setState: SetState, value: string) =>
-  new SetTemplateAddGroupNameClass(new AppStateSetter(_setState)).execute(value);
+  new SetTemplateAddGroupNameClass(new TemplatesStateSetter(_setState)).execute(value);
 
 export const setTemplateAddVariableName = (_setState: SetState, value: string) =>
-  new SetTemplateAddVariableNameClass(new AppStateSetter(_setState)).execute(value);
+  new SetTemplateAddVariableNameClass(new TemplatesStateSetter(_setState)).execute(value);
 
 export const setTemplateVariablesSearchText = (_setState: SetState, value: string) =>
-  new SetTemplateVariablesSearchTextClass(new AppStateSetter(_setState)).execute(value);
+  new SetTemplateVariablesSearchTextClass(new TemplatesStateSetter(_setState)).execute(value);
 
 export const setTemplateMappingSearchText = (_setState: SetState, value: string) =>
-  new SetTemplateMappingSearchTextClass(new AppStateSetter(_setState)).execute(value);
+  new SetTemplateMappingSearchTextClass(new TemplatesStateSetter(_setState)).execute(value);
 
 export const setTemplateMappingColorVariableFilter = (_setState: SetState, values: string[]) =>
-  new SetTemplateMappingColorVariableFilterClass(new AppStateSetter(_setState)).execute(values);
+  new SetTemplateMappingColorVariableFilterClass(new TemplatesStateSetter(_setState)).execute(values);
 
 export const setTemplateMappingContrastVariableFilter = (_setState: SetState, values: string[]) =>
-  new SetTemplateMappingContrastVariableFilterClass(new AppStateSetter(_setState)).execute(values);
+  new SetTemplateMappingContrastVariableFilterClass(new TemplatesStateSetter(_setState)).execute(values);
 
 export const setTemplateMappingTokenGroupSelection = (_setState: SetState, value: string) =>
-  new SetTemplateMappingTokenGroupSelectionClass(new AppStateSetter(_setState)).execute(value);
+  new SetTemplateMappingTokenGroupSelectionClass(new TemplatesStateSetter(_setState)).execute(value);
 
 export const bumpTemplateVersionForEdit = (template: import('../../../model/schemas').Template) =>
   new BumpTemplateVersionForEditClass().execute(template);

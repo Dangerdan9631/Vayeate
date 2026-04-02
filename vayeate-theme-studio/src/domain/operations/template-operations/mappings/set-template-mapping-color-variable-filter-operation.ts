@@ -1,13 +1,13 @@
 import { injectable } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 @injectable()
 export class SetTemplateMappingColorVariableFilterOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 
   execute(values: ColorVariableKey[]): void {
-    this.appStateSetter.apply({ type: 'SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER', values });
+    this.TemplatesStateSetter.apply({ type: 'SET_TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER', values });
   }
 }
 

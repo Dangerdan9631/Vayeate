@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey, HexColor } from '../../../../model/schemas';
+import { UiStateGetter } from '../../../state/ui/ui-state-reducer';
 import { CommitAssignColorTextController } from '../palette-color-assign/commit-assign-color-text-controller';
 import { CommitHueReferenceColorController } from '../palette-hue/commit-hue-reference-color-controller';
 import { SetColorVariableDarkController } from '../variables-color/set-color-variable-dark-controller';
@@ -18,10 +19,12 @@ export class CommitEyedropperColorController {
     private readonly commitHueReferenceColor: CommitHueReferenceColorController,
     private readonly setColorVariableDark: SetColorVariableDarkController,
     private readonly setColorVariableLight: SetColorVariableLightController,
+    private readonly uiStateGetter: UiStateGetter,
   ) {}
 
-  /** Apply picked `hex` for the current `contextKey` (same strings as open overlay), then close. */
-  run(hex: HexColor, contextKey: string | null): void {
+  /** Apply picked `hex` for the current eyedropper context (same strings as open overlay), then close. */
+  run(hex: HexColor): void {
+    const contextKey = this.uiStateGetter.current().eyedropper.contextKey;
     if (!contextKey) {
       this.closeEyedropperOverlay.run();
       return;

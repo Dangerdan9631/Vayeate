@@ -20,3 +20,12 @@ export interface WindowState {
   position: Position;
   viewport: Size;
 }
+
+export const initialWindowState: WindowState = {
+  loadState: 'loading',
+  isMinimized: false,
+  isMaximized: false,
+  size: { width: 0, height: 0 },
+  position: { x: 0, y: 0 },
+  viewport: { width: 0, height: 0 },
+};

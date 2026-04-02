@@ -1,20 +1,20 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { AppStateSetter } from '../../../state/app-state-setter';
-import type { AppStateUpdate } from '../../../state/app-state';
+import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import type { ThemesStateUpdate } from '../../../state/theme/themes-state-reducer';
 
 @singleton()
 export class SetThemeOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
 
   execute(theme: Theme | null, preserveHue?: boolean): void {
-    this.appStateSetter.apply({ type: 'SET_THEME', theme, preserveHue });
+    this.ThemesStateSetter.apply({ type: 'SET_THEME', theme, preserveHue });
   }
 }
 
 /** @deprecated Use SetThemeOperation class instead. */
 export function setTheme(
-  setState: (update: AppStateUpdate) => void,
+  setState: (update: ThemesStateUpdate) => void,
   theme: Theme | null,
   preserveHue?: boolean,
 ): void {

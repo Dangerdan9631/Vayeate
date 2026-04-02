@@ -1,6 +1,6 @@
 import type { SourceType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import {
   BumpCatalogVersionForEditOperation,
   SaveCatalogOperation,
@@ -12,7 +12,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class UpdateSourceTypeController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSourceTypeInCatalog: UpdateSourceTypeInCatalogOperation,
@@ -20,7 +20,7 @@ export class UpdateSourceTypeController {
   ) {}
 
   async run(sourceIndex: number, value: SourceType): Promise<void> {
-    const catalog = this.appStateGetter.current().catalogs.catalog;
+    const catalog = this.catalogsStateGetter.current().catalog;
     if (!canUpdateCatalogSource(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceTypeInCatalog.execute(base, sourceIndex, value);

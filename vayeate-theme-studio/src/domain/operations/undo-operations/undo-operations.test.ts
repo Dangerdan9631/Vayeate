@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { AppState } from '../../state/app-state';
 import { initialAppState } from '../../state/app-state';
-import { AppStateSetter } from '../../state/app-state-setter';
-import { AppStateGetter } from '../../state/app-state-getter';
+import { UndoStackStateSetter } from '../../state/undo-stack/undo-stack-state-reducer';
+import { UndoStackStateGetter } from '../../state/undo-stack/undo-stack-state-reducer';
 import {
   ClearPersistedUndoOperation,
   PerformUndoOperation,
@@ -24,15 +24,15 @@ vi.mock('../../core/undo-manager-v2', () => ({
 
 describe('undo-operations', () => {
   let setState: ReturnType<typeof vi.fn>;
-  let appStateSetter: AppStateSetter;
+  let undoStackStateSetter: UndoStackStateSetter;
   let getState: () => AppState;
-  let appStateGetter: AppStateGetter;
+  let undoStackStateGetter: UndoStackStateGetter;
 
   beforeEach(() => {
     setState = vi.fn();
-    appStateSetter = new AppStateSetter(setState);
+    undoStackStateSetter = new UndoStackStateSetter(setState);
     getState = vi.fn(() => ({ ...initialAppState }));
-    appStateGetter = new AppStateGetter(getState);
+    undoStackStateGetter = new UndoStackStateGetter(() => getState().undoStack);
     vi.mocked(undoManagerV2.getOrCreate).mockResolvedValue({
       undo: vi.fn().mockReturnValue(false),
       redo: vi.fn().mockReturnValue(false),
@@ -48,8 +48,12 @@ describe('undo-operations', () => {
   });
 
   it('PerformUndoOperation does nothing when currentUndoStackId is null', async () => {
-    appStateGetter = new AppStateGetter(() => ({ ...initialAppState, undoStackId: { currentUndoStackId: null, undoListVersion: 0 } }));
-    await new PerformUndoOperation(appStateSetter, appStateGetter).execute();
+    undoStackStateGetter = new UndoStackStateGetter(() => ({
+      ...initialAppState.undoStack,
+      currentUndoStackId: null,
+      undoListVersion: 0,
+    }));
+    await new PerformUndoOperation(undoStackStateSetter, undoStackStateGetter).execute();
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
     expect(setState).not.toHaveBeenCalled();
   });
@@ -64,23 +68,24 @@ describe('undo-operations', () => {
       canRedo: false,
     };
     vi.mocked(undoManagerV2.getOrCreate).mockResolvedValue(stack as never);
-    appStateGetter = new AppStateGetter(() => ({
-      ...initialAppState,
-      undoStackId: { currentUndoStackId: 'stack-1', undoListVersion: 0 },
+    undoStackStateGetter = new UndoStackStateGetter(() => ({
+      ...initialAppState.undoStack,
+      currentUndoStackId: 'stack-1',
+      undoListVersion: 0,
     }));
-    await new PerformUndoOperation(appStateSetter, appStateGetter).execute();
-    expect(undoManagerV2.getOrCreate).toHaveBeenCalledWith('stack-1', expect.objectContaining({ processor: expect.any(Object) }));
+    await new PerformUndoOperation(undoStackStateSetter, undoStackStateGetter).execute();
+    expect(undoManagerV2.getOrCreate).toHaveBeenCalledWith('stack-1');
     expect(stack.undo).toHaveBeenCalledTimes(1);
     expect(setState).toHaveBeenCalledWith({ type: 'SET_UNDO_LIST_VERSION', value: 1 });
   });
 
   it('PerformRedoOperation does nothing when currentUndoStackId is null', async () => {
-    await new PerformRedoOperation(appStateSetter, appStateGetter).execute();
+    await new PerformRedoOperation(undoStackStateSetter, undoStackStateGetter).execute();
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
   });
 
   it('PerformHistoryGoToOperation does nothing when currentUndoStackId is null', async () => {
-    await new PerformHistoryGoToOperation(appStateSetter, appStateGetter).execute('frame-1');
+    await new PerformHistoryGoToOperation(undoStackStateSetter, undoStackStateGetter).execute('frame-1');
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
   });
 

@@ -11,8 +11,7 @@ import {
   saveCatalog,
   syncCatalog,
 } from '.';
-import { StoreStateSetter } from '../../state/store-state-setter';
-import { AppStateSetter } from '../../state/app-state-setter';
+import { CatalogsStateSetter } from '../../state/catalog/catalogs-state-reducer';
 
 const catalogGatewayMock = {
   saveCatalog: vi.fn(),
@@ -27,13 +26,10 @@ const tokenSyncGatewayMock = {
 
 describe('catalog-operations', () => {
   let setState: ReturnType<typeof vi.fn>;
-  let setStoreState: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     setState = vi.fn();
-    setStoreState = vi.fn();
-    container.registerInstance(AppStateSetter, new AppStateSetter(setState));
-    container.registerInstance(StoreStateSetter, new StoreStateSetter(setStoreState));
+    container.registerInstance(CatalogsStateSetter, new CatalogsStateSetter(setState));
     container.registerInstance(CatalogGateway, catalogGatewayMock as unknown as CatalogGateway);
     container.registerInstance(
       TokenSyncGateway,
@@ -63,9 +59,9 @@ describe('catalog-operations', () => {
     expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'c1', version: '1.0.0', type: 'manual' }),
     );
-    expect(setStoreState).toHaveBeenCalledWith(
+    expect(setState).toHaveBeenCalledWith(
       expect.objectContaining({
-        type: 'SET_STORE_CATALOG_ENTRY',
+        type: 'SET_CATALOG_MAP_ENTRY',
         name: 'c1',
         version: '1.0.0',
         isLoaded: true,
@@ -77,15 +73,15 @@ describe('catalog-operations', () => {
 
   it('LoadCatalogRefsOperation.execute sets store entries from listCatalogs result', async () => {
     const op = new LoadCatalogRefsOperation(
-      new StoreStateSetter(setStoreState),
+      new CatalogsStateSetter(setState),
       container.resolve(CatalogGateway),
     );
 
     await op.execute();
 
     expect(catalogGatewayMock.listCatalogs).toHaveBeenCalledTimes(1);
-    expect(setStoreState).toHaveBeenCalledWith({
-      type: 'SET_STORE_CATALOG_ENTRIES',
+    expect(setState).toHaveBeenCalledWith({
+      type: 'SET_CATALOG_MAP_ENTRIES',
       entries: [{ name: 'c1', version: '1.0.0', isLoaded: false, catalog: undefined }],
     });
   });

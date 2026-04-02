@@ -4,7 +4,7 @@ import {
   SetThemeOperation,
   SetThemeHueAdjustmentOperation,
 } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 import { SaveThemeController } from '../theme-details/save-theme-controller';
@@ -12,7 +12,7 @@ import { SaveThemeController } from '../theme-details/save-theme-controller';
 @singleton()
 export class CommitAssignColorTextController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
     private readonly saveThemeController: SaveThemeController,
@@ -21,13 +21,13 @@ export class CommitAssignColorTextController {
   run(value: string): void {
     const normalized = normalizeHexSafe(value);
     if (!normalized) return;
-    const state = this.appStateGetter.current();
-    const theme = state.themes.theme;
-    const checkedColorRefs = new Set(state.themes.checkedColorRefs);
+    const state = this.themesStateGetter.current();
+    const theme = state.theme;
+    const checkedColorRefs = new Set(state.checkedColorRefs);
     if (!theme || checkedColorRefs.size === 0) return;
     const applyToDark = theme.applyPaletteToDark ?? true;
     const applyToLight = theme.applyPaletteToLight ?? true;
-    const hueAdjustment = state.themes.hueAdjustment;
+    const hueAdjustment = state.hueAdjustment;
     let workingAssignments = theme.colorAssignments;
     if (hueAdjustment !== 0) {
       workingAssignments = applyHueToAssignmentsFiltered(

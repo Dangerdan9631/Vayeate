@@ -1,13 +1,13 @@
 import { injectable } from 'tsyringe';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 /** Store draft value for the "add group" name input. */
 @injectable()
 export class SetTemplateAddGroupNameOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 
   execute(value: string): void {
-    this.appStateSetter.apply({ type: 'SET_TEMPLATE_ADD_GROUP_NAME', value });
+    this.TemplatesStateSetter.apply({ type: 'SET_TEMPLATE_ADD_GROUP_NAME', value });
   }
 }
 

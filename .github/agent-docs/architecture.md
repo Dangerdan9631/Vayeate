@@ -20,9 +20,7 @@
   - Shared helper flows within a controller domain live in `<domain>-controller/shared-flows.ts` (not `_helpers.ts`).
 - **Gateway** (`src/gateway/`; must not depend on `src/domain/`): per-area gateways (theme, template, catalog, config, preview, catalog sync) and `services/` (IPC). Gateways persist via `FileSystemService`; `gateway/data/` is reserved (empty aside from `.gitkeep`). Architecture tests still treat `gateway/data` and `gateway/services` as independent layers.
 - **App** (`src/app/`): Actions, handlers, viewmodels, and UI. Must not depend on gateway; uses state and domain only.
-  - **`app/actions/`**: `AppActionV2` discriminated union + `ActionQueue`. Depends on model only.
-  - **`app/handlers/`**: Per-domain handler files (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`) + `handler-registry.ts`. Routes actions to controllers. Must NOT depend on gateway, operations, validations, or state directly.
-    - `handler-types.ts` defines `HandlerDeps` and domain-scoped `Extract` type aliases (`AppAction`, `CatalogAction`, `TemplateAction`, `ThemeAction`).
+  - **`app/actions/`**: `AppActionV2` discriminated union, `ActionQueue`, `handler-registry.ts` (`ActionProcessor`), per-domain handler classes (`*-handler.ts`), and `handler-types.ts`. Handlers route to controllers only; they must NOT depend on gateway, operations, or validations. `handler-types.ts` holds domain-scoped `Extract` aliases (`AppAction`, `CatalogAction`, `TemplateAction`, `ThemeAction`) and `ActionHandler<T>`. Slice `*StateSetter` / `*StateGetter` classes are registered from `AppContext.tsx` and injected into controllers as needed.
   - **`app/viewmodel/`**: Custom hooks that derive display data from state.
   - **`app/ui/`**: React components, pages, and context providers. `AppContext.tsx` is a lean provider (~150 lines); it no longer contains the action processor switch.
 - Core (domain): undo only.
@@ -56,8 +54,7 @@
 | `domain/validations/` | model, state | gateway, operations, controllers, app |
 | `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
 | `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
-| `app/actions/` | model | domain, gateway |
-| `app/handlers/` | controllers | operations, gateway, validations, state |
+| `app/actions/` | model, controllers | gateway, operations, validations |
 | `app/viewmodel/` | model, state, app/ui/context | controllers, operations, gateway |
 | `app/ui/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
@@ -66,17 +63,18 @@
 ```
 UI dispatch(action) → ActionQueue.enqueue → AppContext processor → handler-registry → domain handler → Controller → Operations
                                                                                                                         ↓
-                                                               setState / persist / undo (via operations)
+                                                               slice setters / persist / undo (via operations)
                                                                                                                         ↓
-UI ← ViewModel ← State (setState/setWindowState apply the appropriate reducer)
+UI ← ViewModel ← State (each slice setter applies its slice reducer)
 ```
 
 ## State and reducers
 
-- **Single app state**: There is one `AppState` value. React holds it via one `useReducer` (or equivalent) that simply replaces state with the next value; it does not interpret update types.
-- **Multiple reducers**: Each slice of state has its own reducer (e.g. `appStateReducer`, `windowStateReducer`). Each reducer has signature `(state: AppState, update: X) => AppState` and is responsible for updating only its portion of `AppState`; it still accepts and returns the whole `AppState`.
-- **Never combine**: Do not create a combined reducer or a single dispatch that routes to different reducers based on update type.
-- **Caller uses the right reducer**: Each caller knows what it is updating and holds the appropriate setter (e.g. `setState` for `AppStateUpdate`, `setWindowState` for `WindowStateUpdate`).
+- **Single app state**: One `AppState` aggregate: `catalogs`, `templates`, `themes`, `appConfig`, `undoStack`, `ui`, `window` (no top-level `store`). React holds it via one `useReducer` that replaces state wholesale.
+- **Per-slice reducers and setters**: No root `AppStateSetter` / `AppStateGetter` or monolithic `AppStateUpdate`. Each slice has its own update union, reducer function, and `*StateSetter` / `*StateGetter` classes in the same `*-state-reducer.ts` module. Catalog, template, and theme slices own ref maps (`catalogMap`, `templateMap`, `themeMap`).
+- **`AppConfig` vs `AppConfigState`**: Gateway uses schema `AppConfig`; runtime slice is `AppConfigState`; operations map at load/save.
+- **Undo**: `AppState.undoStack` holds `UndoStackState`.
+- **Never combine**: No single dispatch that routes every update type; callers use the slice API that matches their writes.
 
 ## Data artifacts
 

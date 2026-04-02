@@ -1,6 +1,6 @@
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   BumpTemplateVersionForEditOperation,
   SaveTemplateOperation,
@@ -11,7 +11,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class SetMappingContrastRefController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly setMappingContrastRefOp: SetMappingContrastRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -23,7 +23,7 @@ export class SetMappingContrastRefController {
     tokenType: TokenType,
     contrastVariableRef: string | null,
   ): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingContrastRefOp.execute(base, tokenKey, tokenType, contrastVariableRef);

@@ -1,16 +1,19 @@
 import { singleton } from 'tsyringe';
+import { appConfigSchema } from '../../../model/schemas';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
-import { AppStateGetter } from '../../state/app-state-getter';
+import { AppConfigStateGetter } from '../../state/app-config/app-config-state-reducer';
 
 @singleton()
 export class SaveAppConfigOperation {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly appConfigStateGetter: AppConfigStateGetter,
     private readonly configGateway: ConfigGateway,
   ) {}
 
   async execute(): Promise<void> {
-    const { appConfig } = this.appStateGetter.current();
-    await this.configGateway.save(appConfig);
+    const appConfigState = this.appConfigStateGetter.current();
+    await this.configGateway.save(
+      appConfigSchema.parse({ colorScheme: appConfigState.colorScheme }),
+    );
   }
 }

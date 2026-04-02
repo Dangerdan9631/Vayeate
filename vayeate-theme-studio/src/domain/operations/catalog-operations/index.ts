@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
-import { AppStateSetter } from '../../state/app-state-setter';
-import { StoreStateSetter } from '../../state/store-state-setter';
-import { AppStateGetter } from '../../state/app-state-getter';
+import { CatalogsStateSetter } from '../../state/catalog/catalogs-state-reducer';
+import { CatalogsStateGetter } from '../../state/catalog/catalogs-state-reducer';
+import type { SetCatalogsState } from '../../state/catalog/catalogs-state-reducer';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 
 // Import all operation classes for wrapper functions
@@ -100,49 +100,51 @@ export {
 export const applyLockToCatalog = (catalog: any) =>
   new LockCatalogOperation().execute(catalog);
 
-/** @deprecated Backward compatibility type - use injected AppStateSetter instead */
-export type SetState = (update: import('../../state/app-state').AppStateUpdate) => void;
+/** @deprecated Backward compatibility — use injected CatalogsStateSetter */
+export type SetState = SetCatalogsState;
 
 // Backward-compatible function wrappers for controller migration period
 // These adapt the old function signatures to work with the new DI-based classes
 
-export const setCatalogRefs = (_setStoreState: any, refs: any) =>
-  new SetCatalogRefsOperation(new StoreStateSetter(_setStoreState)).execute(refs);
+export const setCatalogRefs = (_setCatalogsState: SetCatalogsState, refs: any) =>
+  new SetCatalogRefsOperation(new CatalogsStateSetter(_setCatalogsState)).execute(refs);
 
 export const setSelectedRef = (_setState: any, ref: any) =>
-  new SetSelectedRefOperation(new AppStateSetter(_setState)).execute(ref);
+  new SetSelectedRefOperation(new CatalogsStateSetter(_setState)).execute(ref);
 
 export const setCatalogCreateDialogData = (_setState: any, options: any) =>
-  new SetCatalogCreateDialogDataOperation(new AppStateSetter(_setState)).execute(options);
+  new SetCatalogCreateDialogDataOperation(new CatalogsStateSetter(_setState)).execute(options);
 
 export const openCatalogCreateDialog = (_setState: any) =>
-  new OpenCatalogCreateDialogOperation(new AppStateSetter(_setState)).execute();
+  new OpenCatalogCreateDialogOperation(new CatalogsStateSetter(_setState)).execute();
 
 export const closeCatalogCreateDialog = (_setState: any) =>
-  new CloseCatalogCreateDialogOperation(new AppStateSetter(_setState)).execute();
+  new CloseCatalogCreateDialogOperation(new CatalogsStateSetter(_setState)).execute();
 
 export const createCatalog = (_setState: any, params: any) =>
   container.resolve(CreateCatalogOperation).execute(params);
 
 export const refreshCatalogRefs = (_setStoreState: any) =>
-  new RefreshCatalogRefsOperation(new StoreStateSetter(_setStoreState), container.resolve(CatalogGateway)).execute();
+  new RefreshCatalogRefsOperation(new CatalogsStateSetter(_setStoreState), container.resolve(CatalogGateway)).execute();
 
 export const deleteCatalog = (name: any, version: any) =>
   container.resolve(DeleteCatalogOperation).execute(name, version);
 
 export const listCatalogRefs = () => container.resolve(ListCatalogRefsOperation).execute();
 
-export const getCatalogRefs = (_getState: any) =>
-  new GetCatalogRefsOperation(new AppStateGetter(_getState)).execute();
+export const getCatalogRefs = (_getCatalogsState: () => import('../../state/catalog/catalogs-state').CatalogsState) =>
+  new GetCatalogRefsOperation(
+    new CatalogsStateGetter(_getCatalogsState),
+  ).execute();
 
 export const setCatalog = (_setState: any, catalog: any) =>
-  new SetCatalogOperation(new AppStateSetter(_setState)).execute(catalog);
+  new SetCatalogOperation(new CatalogsStateSetter(_setState)).execute(catalog);
 
 export const loadCatalog = (_setState: any, name: any, version: any) =>
   container.resolve(LoadCatalogOperation).execute(name, version);
 
 export const loadCatalogForDisplay = (_setState: any, name: any, version: any) =>
-  new LoadCatalogForDisplayOperation(new AppStateSetter(_setState), container.resolve(CatalogGateway)).execute(
+  new LoadCatalogForDisplayOperation(new CatalogsStateSetter(_setState), container.resolve(CatalogGateway)).execute(
     name,
     version,
   );
@@ -167,19 +169,19 @@ export const lockHeadCatalogIfUnlocked = (head: any) =>
   new LockHeadCatalogIfUnlockedOperation().execute(head);
 
 export const setCatalogBulkAddDialogOpen = (_setState: any, value: any) =>
-  new SetCatalogBulkAddDialogOpenOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogBulkAddDialogOpenOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const setCatalogBulkAddText = (_setState: any, value: any) =>
-  new SetCatalogBulkAddTextOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogBulkAddTextOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const setCatalogNewSourceUrl = (_setState: any, value: any) =>
-  new SetCatalogNewSourceUrlOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogNewSourceUrlOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const setCatalogNewSourceTokenType = (_setState: any, value: any) =>
-  new SetCatalogNewSourceTokenTypeOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogNewSourceTokenTypeOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const setCatalogNewSourceType = (_setState: any, value: any) =>
-  new SetCatalogNewSourceTypeOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogNewSourceTypeOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const addSourceToCatalog = (catalog: any, source: any) =>
   new AddSourceToCatalogOperation().execute(catalog, source);
@@ -197,10 +199,10 @@ export const updateSourceTokenTypeInCatalog = (catalog: any, sourceIndex: any, v
   new UpdateSourceTokenTypeInCatalogOperation().execute(catalog, sourceIndex, value);
 
 export const setCatalogTokensSearchText = (_setState: any, value: any) =>
-  new SetCatalogTokensSearchTextOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogTokensSearchTextOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const setCatalogNewTokenKey = (_setState: any, value: any) =>
-  new SetCatalogNewTokenKeyOperation(new AppStateSetter(_setState)).execute(value);
+  new SetCatalogNewTokenKeyOperation(new CatalogsStateSetter(_setState)).execute(value);
 
 export const deduplicateBulkTokens = (catalog: any, incoming: any) =>
   new DeduplicateBulkTokensOperation().execute(catalog, incoming);

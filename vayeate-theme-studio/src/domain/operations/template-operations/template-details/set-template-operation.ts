@@ -1,13 +1,13 @@
 import { injectable } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 @injectable()
 export class SetTemplateOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 
   execute(template: Template | null): void {
-    this.appStateSetter.apply({ type: 'SET_TEMPLATE', template });
+    this.TemplatesStateSetter.apply({ type: 'SET_TEMPLATE', template });
   }
 }
 

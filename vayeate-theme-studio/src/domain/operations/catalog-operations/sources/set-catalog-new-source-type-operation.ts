@@ -1,13 +1,13 @@
 import { injectable } from 'tsyringe';
 import type { SourceType } from '../../../../model/schemas';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
 @injectable()
 export class SetCatalogNewSourceTypeOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
 
   execute(value: SourceType): void {
-    this.appStateSetter.apply({ type: 'SET_CATALOG_NEW_SOURCE_TYPE', value });
+    this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_NEW_SOURCE_TYPE', value });
   }
 }
 

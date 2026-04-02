@@ -1,13 +1,13 @@
 import type { TemplateReference } from '../../../../model/schemas';
 import { injectable } from 'tsyringe';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 @injectable()
 export class SetSelectedTemplateRefOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 
   execute(ref: TemplateReference | null): void {
-    this.appStateSetter.apply({ type: 'SET_SELECTED_TEMPLATE_REF', ref });
+    this.TemplatesStateSetter.apply({ type: 'SET_SELECTED_TEMPLATE_REF', ref });
   }
 }
 

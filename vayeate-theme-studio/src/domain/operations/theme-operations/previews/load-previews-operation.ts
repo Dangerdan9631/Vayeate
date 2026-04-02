@@ -1,28 +1,28 @@
 import { container, singleton } from 'tsyringe';
 import { PreviewGateway } from '../../../../gateway/preview/preview-gateway';
-import { AppStateSetter } from '../../../state/app-state-setter';
-import type { AppStateUpdate } from '../../../state/app-state';
+import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import type { ThemesStateUpdate } from '../../../state/theme/themes-state-reducer';
 
 /** Load tokenized preview files and set them in state. */
 @singleton()
 export class LoadPreviewsOperation {
   constructor(
-    private readonly appStateSetter: AppStateSetter,
+    private readonly ThemesStateSetter: ThemesStateSetter,
     private readonly previewGateway: PreviewGateway,
   ) {}
 
   async execute(): Promise<void> {
     try {
       const previews = await this.previewGateway.loadPreviews();
-      this.appStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews });
+      this.ThemesStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews });
     } catch {
-      this.appStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews: [] });
+      this.ThemesStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews: [] });
     }
   }
 }
 
 /** @deprecated Use LoadPreviewsOperation class instead. */
-export async function loadPreviews(setState: (update: AppStateUpdate) => void): Promise<void> {
+export async function loadPreviews(setState: (update: ThemesStateUpdate) => void): Promise<void> {
   try {
     const previews = await container.resolve(PreviewGateway).loadPreviews();
     setState({ type: 'SET_THEME_EDITOR_PREVIEWS', previews });

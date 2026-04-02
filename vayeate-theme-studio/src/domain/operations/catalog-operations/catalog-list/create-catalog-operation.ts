@@ -1,24 +1,22 @@
 import { injectable } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schemas';
 import { createCatalogWithParams } from '../../../../model/factories';
-import { AppStateSetter } from '../../../state/app-state-setter';
-import { StoreStateSetter } from '../../../state/store-state-setter';
+import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 import { SaveCatalogOperation } from '../catalog-details/save-catalog-operation';
 
 @injectable()
 export class CreateCatalogOperation {
   constructor(
-    private readonly appStateSetter: AppStateSetter,
-    private readonly storeStateSetter: StoreStateSetter,
+    private readonly catalogsStateSetter: CatalogsStateSetter,
     private readonly saveCatalog: SaveCatalogOperation,
   ) {}
 
   async execute(params: { name: string; type: 'manual' | 'remote' }): Promise<CatalogReference> {
-    this.appStateSetter.apply({ type: 'SET_IS_CREATING', value: true });
+    this.catalogsStateSetter.apply({ type: 'SET_IS_CREATING', value: true });
     try {
       const catalog = createCatalogWithParams(params);
-      this.storeStateSetter.apply({
-        type: 'SET_STORE_CATALOG_ENTRY',
+      this.catalogsStateSetter.apply({
+        type: 'SET_CATALOG_MAP_ENTRY',
         name: catalog.name,
         version: catalog.version,
         isLoaded: true,
@@ -27,7 +25,7 @@ export class CreateCatalogOperation {
       await this.saveCatalog.execute(catalog);
       return { name: catalog.name, version: catalog.version };
     } finally {
-      this.appStateSetter.apply({ type: 'SET_IS_CREATING', value: false });
+      this.catalogsStateSetter.apply({ type: 'SET_IS_CREATING', value: false });
     }
   }
 }

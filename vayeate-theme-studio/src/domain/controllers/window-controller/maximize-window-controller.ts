@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { SetWindowStateOperation } from '../../operations/window-operations';
-import { AppStateGetter } from '../../state/app-state-getter';
+import { WindowStateGetter } from '../../state/window/window-state-reducer';
 import { LoggerFactory, type Logger } from '../../utils/logger';
 import { canMaximizeWindow } from '../../validations/window-validations';
 
@@ -10,14 +10,14 @@ export class MaximizeWindowController {
 
   constructor(
     private readonly setWindowState: SetWindowStateOperation,
-    private readonly appStateGetter: AppStateGetter,
+    private readonly windowStateGetter: WindowStateGetter,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('WindowController');
   }
 
   async run(): Promise<void> {
-    if (!canMaximizeWindow(() => this.appStateGetter.current())) {
+    if (!canMaximizeWindow(() => this.windowStateGetter.current())) {
       this.log.warn('maximizeWindow skipped: validation failed (window already maximized)');
       return;
     }

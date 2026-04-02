@@ -1,7 +1,8 @@
 import type { Theme } from '../../../model/schemas';
+import type { ThemesStateUpdate } from '../../state/theme/themes-state-reducer';
 
-/** @deprecated Backward compatibility — use injected AppStateSetter */
-export type SetState = (update: import('../../state/app-state').AppStateUpdate) => void;
+/** @deprecated Backward compatibility — use injected ThemesStateSetter */
+export type SetState = (update: ThemesStateUpdate) => void;
 
 export interface RestoreThemeStateParams {
   theme?: Theme | null;

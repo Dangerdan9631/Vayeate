@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { UiStateSetter } from '../../state/ui-state-setter';
+import { UiStateSetter } from '../../state/ui/ui-state-reducer';
 
 @singleton()
 export class CloseAllMenusOperation {

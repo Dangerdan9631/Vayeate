@@ -1,6 +1,6 @@
 import type { TokenKey, TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import {
   BumpCatalogVersionForEditOperation,
   RemoveTokenFromCatalogOperation,
@@ -11,7 +11,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class RemoveTokenController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly removeTokenFromCatalog: RemoveTokenFromCatalogOperation,
@@ -19,7 +19,7 @@ export class RemoveTokenController {
   ) {}
 
   async run(key: TokenKey, tokenType: TokenType): Promise<void> {
-    const catalog = this.appStateGetter.current().catalogs.catalog;
+    const catalog = this.catalogsStateGetter.current().catalog;
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.removeTokenFromCatalog.execute(base, key, tokenType);

@@ -4,7 +4,7 @@ import {
   SEMANTIC_WILDCARD_TYPE,
 } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   AppendSemanticVariantToTemplateOperation,
   BumpTemplateVersionForEditOperation,
@@ -17,7 +17,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class AddSemanticVariantController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly generateSemanticVariantKey: GenerateSemanticVariantKeyOperation,
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
@@ -32,7 +32,7 @@ export class AddSemanticVariantController {
     language: string | null,
     defaultGroupRef?: string | null,
   ): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const baseMapping = base.mappings.find(

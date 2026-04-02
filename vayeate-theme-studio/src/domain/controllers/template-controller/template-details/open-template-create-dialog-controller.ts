@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 import { SetTemplateCreateFormNameOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class OpenTemplateCreateDialogController {
   constructor(
-    private readonly appStateSetter: AppStateSetter,
+    private readonly templatesStateSetter: TemplatesStateSetter,
     private readonly setTemplateCreateFormName: SetTemplateCreateFormNameOperation,
   ) {}
 
   run(): void {
     this.setTemplateCreateFormName.execute('');
-    this.appStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: true });
+    this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: true });
   }
 }

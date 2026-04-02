@@ -1,18 +1,18 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { RemoveColorVariableController } from '../variables-color/remove-color-variable-controller';
 import { RemoveContrastVariableController } from '../variables-contrast/remove-contrast-variable-controller';
 
 @singleton()
 export class RemoveVariableController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly removeColorVariable: RemoveColorVariableController,
     private readonly removeContrastVariable: RemoveContrastVariableController,
   ) {}
 
   async run(key: string): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
 
     if (template.colorVariables.some((variable) => variable.key === key)) {

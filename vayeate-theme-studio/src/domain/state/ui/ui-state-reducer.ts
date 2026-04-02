@@ -1,8 +1,7 @@
-import type { AppState } from './app-state';
+import type { AppState } from '../app-state';
 import type { EyedropperUiState } from './eyedropper-ui-state';
-import type { TabId } from './tab-id';
+import type { TabId, UiState } from './ui-state';
 
-export type SetUiState = (update: UiStateUpdate) => void;
 export type UiStateUpdate =
   | { type: 'SET_UI_ACTIVE_TAB_ID'; tabId: TabId }
   | { type: 'SET_UI_ALL_MENUS_CLOSED' }
@@ -50,5 +49,23 @@ export function uiStateReducer(state: AppState, update: UiStateUpdate): AppState
       return { ...state, ui: { ...state.ui, eyedropper: update.eyedropper } };
     default:
       return state;
+  }
+}
+
+export type SetUiState = (update: UiStateUpdate) => void;
+export class UiStateSetter {
+  constructor(private readonly set: SetUiState) { }
+
+  apply(update: UiStateUpdate): void {
+    this.set(update);
+  }
+}
+
+export type GetUiState = () => UiState;
+export class UiStateGetter {
+  constructor(private readonly get: GetUiState) {}
+
+  current(): UiState {
+    return this.get();
   }
 }

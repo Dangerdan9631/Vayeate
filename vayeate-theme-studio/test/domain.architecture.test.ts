@@ -53,12 +53,12 @@ describe('domain architecture', () => {
 		expect(violations).toHaveLength(0);
 	});
 
-	it('state should only depend on model', async () => {
+	it('state should only depend on model and other domain/state modules', async () => {
 		const rule = filesOfProject()
 			.inFolder('src/domain/state')
 			.shouldNot()
 			.dependOnFiles()
-			.matchingPattern('^(?!src/model).*');
+			.matchingPattern('^(?!src/model)(?!src/domain/state).*');
 		const violations = await rule.check();
 		expect(violations).toHaveLength(0);
 	});

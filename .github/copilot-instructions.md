@@ -22,7 +22,7 @@ This repository contains two connected but distinct surfaces:
 
 - Models/schemas: `vayeate-theme-studio/src/model/`
 - Domain core (undo): `vayeate-theme-studio/src/domain/core/` (undo-manager-v2, undo-processor). Domain utils (theme engine, color, tokenizer, etc.): `vayeate-theme-studio/src/domain/utils/`
-- Action routing — **handlers** (not AppContext): `vayeate-theme-studio/src/app/handlers/` — one file per domain (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`); wired through `handler-registry.ts`
+- Action routing — **handlers** (not AppContext): `vayeate-theme-studio/src/app/actions/` — one file per domain (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`); wired through `handler-registry.ts`
 - UI/editor: `vayeate-theme-studio/src/app/ui/` — `AppContext.tsx` is now a lean provider (~150 lines); it no longer contains the action processor switch
 - Gateway: `vayeate-theme-studio/src/gateway/` (theme/template/catalog/config/preview gateways), `vayeate-theme-studio/src/gateway/services/` (IPC)
 - Catalogs and sync: `vayeate-theme-studio/data/catalogs/`, `vayeate-theme-studio/src/gateway/catalog/token-sync-gateway.ts`

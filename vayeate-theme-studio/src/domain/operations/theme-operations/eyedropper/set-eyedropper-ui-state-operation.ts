@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
-import type { EyedropperUiState } from '../../../state/eyedropper-ui-state';
-import { UiStateSetter } from '../../../state/ui-state-setter';
+import type { EyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
+import { UiStateSetter } from '../../../state/ui/ui-state-reducer';
 
 /** Replace the full `ui.eyedropper` slice. */
 @injectable()

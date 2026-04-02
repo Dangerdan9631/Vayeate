@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations';
 import {
   BumpTemplateVersionForEditOperation,
@@ -34,7 +34,7 @@ async function loadCatalogData(
 @singleton()
 export class ChangeCatalogVersionController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly loadCatalogSnapshot: LoadCatalogSnapshotOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -42,7 +42,7 @@ export class ChangeCatalogVersionController {
   ) {}
 
   async run(catalogName: string, newVersion: string): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const newCatalogRefs = base.catalogRefs.map((r) =>

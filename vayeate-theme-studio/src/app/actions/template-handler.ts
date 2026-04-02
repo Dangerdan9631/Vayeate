@@ -32,7 +32,7 @@ import {
   UpdateSemanticVariantKeyController,
   UpdateVariableGroupRefController,
 } from '../../domain/controllers/template-controller';
-import type { ActionHandler, HandlerDeps, TemplateAction } from './handler-types';
+import type { ActionHandler, TemplateAction } from './handler-types';
 import { TemplateActionType } from './action-types';
 
 @injectable()
@@ -71,7 +71,7 @@ export class TemplateActionHandler implements ActionHandler<TemplateAction> {
     private readonly updateVariableGroupRef: UpdateVariableGroupRefController,
   ) {}
 
-  async handle(action: TemplateAction, _deps: HandlerDeps): Promise<void> {
+  async handle(action: TemplateAction): Promise<void> {
     switch (action.type) {
       case TemplateActionType.TemplatePageOnLoad:
         await this.loadTemplatePage.run();

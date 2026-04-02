@@ -1,6 +1,6 @@
 import type { Source } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import {
   AddSourceToCatalogOperation,
   BumpCatalogVersionForEditOperation,
@@ -14,7 +14,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class AddNewSourceController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlOperation,
     private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenTypeOperation,
@@ -25,7 +25,7 @@ export class AddNewSourceController {
   ) {}
 
   async run(): Promise<void> {
-    const state = this.appStateGetter.current().catalogs;
+    const state = this.catalogsStateGetter.current();
     const catalog = state.catalog;
     const url = state.newSourceUrl?.trim();
     if (!catalog || !url) return;

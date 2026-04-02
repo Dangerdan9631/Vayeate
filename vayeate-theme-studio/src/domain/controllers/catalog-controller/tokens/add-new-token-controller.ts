@@ -1,7 +1,7 @@
 import type { Token } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import {
   AddPlainTokenToCatalogOperation,
   BumpCatalogVersionForEditOperation,
@@ -14,7 +14,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class AddNewTokenController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
@@ -24,7 +24,7 @@ export class AddNewTokenController {
   ) {}
 
   async run(tokenType: TokenType, key?: string): Promise<void> {
-    const state = this.appStateGetter.current().catalogs;
+    const state = this.catalogsStateGetter.current();
     const catalog = state.catalog;
     const tokenKey = (key ?? state.newTokenKey)?.trim();
     if (!catalog || !tokenKey) return;

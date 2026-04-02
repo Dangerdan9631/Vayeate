@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { TabId } from '../../state/tab-id';
-import { UiStateSetter } from '../../state/ui-state-setter';
+import type { TabId } from '../../state/app-state';
+import { UiStateSetter } from '../../state/ui/ui-state-reducer';
 
 @singleton()
 export class SetActiveTabController {

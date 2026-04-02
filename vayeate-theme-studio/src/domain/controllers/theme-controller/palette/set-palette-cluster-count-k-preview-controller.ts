@@ -1,18 +1,18 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { SetThemeOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 /** Update cluster count in state only (slider drag; no persist). */
 @singleton()
 export class SetPaletteClusterCountKPreviewController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
   ) {}
 
   run(value: number): void {
-    const theme = this.appStateGetter.current().themes.theme;
+    const theme = this.themesStateGetter.current().theme;
     if (!theme) return;
     const k = Math.max(1, Math.min(12, value));
     const next: Theme = { ...theme, paletteClusterCountK: k };

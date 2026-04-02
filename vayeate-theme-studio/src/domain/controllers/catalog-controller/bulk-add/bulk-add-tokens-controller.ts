@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { parseThemeJson } from '../../../utils/theme-parser';
 import {
   AppendTokensToCatalogOperation,
@@ -15,7 +15,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class BulkAddTokensController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogBulkAddDialogOpen: SetCatalogBulkAddDialogOpenOperation,
     private readonly setCatalogBulkAddText: SetCatalogBulkAddTextOperation,
@@ -26,7 +26,7 @@ export class BulkAddTokensController {
   ) {}
 
   async run(): Promise<void> {
-    const state = this.appStateGetter.current().catalogs;
+    const state = this.catalogsStateGetter.current();
     const catalog = state.catalog;
     const text = state.bulkAddText?.trim();
     if (!canBulkAddTokens(catalog, text)) return;

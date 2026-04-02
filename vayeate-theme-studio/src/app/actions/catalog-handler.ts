@@ -29,7 +29,7 @@ import {
   UpdateTokenKeyController,
   LoadCatalogPageController,
 } from '../../domain/controllers/catalog-controller';
-import type { ActionHandler, CatalogAction, HandlerDeps } from './handler-types';
+import type { ActionHandler, CatalogAction } from './handler-types';
 import { CatalogActionType } from './action-types';
 
 @injectable()
@@ -65,7 +65,7 @@ export class CatalogActionHandler implements ActionHandler<CatalogAction> {
     private readonly loadCatalogPage: LoadCatalogPageController,
   ) {}
 
-  async handle(action: CatalogAction, _deps: HandlerDeps): Promise<void> {
+  async handle(action: CatalogAction): Promise<void> {
     switch (action.type) {
       case CatalogActionType.CatalogPageOnLoad:
         await this.loadCatalogPage.run();

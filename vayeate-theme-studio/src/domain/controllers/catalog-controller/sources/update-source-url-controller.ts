@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import {
   BumpCatalogVersionForEditOperation,
   SaveCatalogOperation,
@@ -11,7 +11,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class UpdateSourceUrlController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSourceUrlInCatalog: UpdateSourceUrlInCatalogOperation,
@@ -19,7 +19,7 @@ export class UpdateSourceUrlController {
   ) {}
 
   async run(sourceIndex: number, value: string): Promise<void> {
-    const catalog = this.appStateGetter.current().catalogs.catalog;
+    const catalog = this.catalogsStateGetter.current().catalog;
     if (!canUpdateCatalogSource(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceUrlInCatalog.execute(base, sourceIndex, value);

@@ -10,7 +10,7 @@ import {
   refreshTemplateRefs,
   saveTemplate,
 } from '.';
-import { StoreStateSetter } from '../../state/store-state-setter';
+import { TemplatesStateSetter } from '../../state/template/templates-state-reducer';
 
 const templateGatewayMock = {
   createTemplate: vi.fn(),
@@ -45,13 +45,13 @@ describe('template-operations', () => {
 
   it('LoadTemplateRefsOperation.execute sets store entries from listTemplates result', async () => {
     const setStoreState = vi.fn();
-    const op = new LoadTemplateRefsOperation(new StoreStateSetter(setStoreState), container.resolve(TemplateGateway));
+    const op = new LoadTemplateRefsOperation(new TemplatesStateSetter(setStoreState), container.resolve(TemplateGateway));
 
     await op.execute();
 
     expect(templateGatewayMock.listTemplates).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({
-      type: 'SET_STORE_TEMPLATE_ENTRIES',
+      type: 'SET_TEMPLATE_MAP_ENTRIES',
       entries: [{ name: 't1', version: '1.0.0', isLoaded: false, template: undefined }],
     });
   });
@@ -93,7 +93,7 @@ describe('template-operations', () => {
 
     expect(templateGatewayMock.listTemplates).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({
-      type: 'SET_STORE_TEMPLATE_ENTRIES',
+      type: 'SET_TEMPLATE_MAP_ENTRIES',
       entries: [{ name: 't1', version: '1.0.0', isLoaded: false, template: undefined }],
     });
     expect(refs).toEqual([{ name: 't1', version: '1.0.0' }]);

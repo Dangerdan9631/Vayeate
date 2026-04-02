@@ -11,7 +11,7 @@ import {
   LoadThemeOperation,
 } from '../../../operations/theme-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { clearPendingSave } from '../theme-list/theme-save-state';
 import { themeStackId } from '../../../utils/stack-id';
 
@@ -26,12 +26,12 @@ export class IncrementThemeVersionController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTheme: LoadThemeOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
   ) {}
 
   async run(): Promise<void> {
-    const state = this.appStateGetter.current();
-    const theme = state.themes.theme;
+    const state = this.themesStateGetter.current();
+    const theme = state.theme;
     if (!theme) return;
     const newVersion = nextPatchVersion(theme.version);
     const bumped: Theme = { ...theme, version: newVersion };

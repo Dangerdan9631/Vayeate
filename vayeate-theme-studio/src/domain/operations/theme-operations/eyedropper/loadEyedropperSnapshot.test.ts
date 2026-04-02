@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
-import { UiStateSetter } from '../../../state/ui-state-setter';
+import { UiStateSetter } from '../../../state/ui/ui-state-reducer';
 import { LoadEyedropperSnapshotOperation } from './load-eyedropper-snapshot-operation';
 
 describe('LoadEyedropperSnapshotOperation', () => {

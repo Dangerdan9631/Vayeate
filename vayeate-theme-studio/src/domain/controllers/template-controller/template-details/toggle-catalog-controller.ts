@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { GetCatalogRefsOperation, LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations';
 import {
   BumpTemplateVersionForEditOperation,
@@ -35,7 +35,7 @@ async function loadCatalogData(
 @singleton()
 export class ToggleCatalogController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalogSnapshot: LoadCatalogSnapshotOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
@@ -44,7 +44,7 @@ export class ToggleCatalogController {
   ) {}
 
   async run(catalogName: string, include: boolean): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
     const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);

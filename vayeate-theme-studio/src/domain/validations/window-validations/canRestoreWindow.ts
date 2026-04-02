@@ -1,9 +1,8 @@
-import type { AppState } from '../../state/app-state';
+import type { WindowState } from '../../state/window/window-state';
 
-export type GetState = () => AppState;
+export type GetWindowState = () => WindowState;
 
-/** Returns true if the window is maximized or minimized and can be restored. */
-export function canRestoreWindow(getState: GetState): boolean {
-  const { isMaximized, isMinimized } = getState().window;
+export function canRestoreWindow(getWindowState: GetWindowState): boolean {
+  const { isMaximized, isMinimized } = getWindowState();
   return isMaximized || isMinimized;
 }

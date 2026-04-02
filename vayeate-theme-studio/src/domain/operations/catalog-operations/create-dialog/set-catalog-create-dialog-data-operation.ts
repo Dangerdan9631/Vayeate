@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
 export type SetCatalogCreateDialogDataOptions = {
   name?: string;
@@ -9,14 +9,14 @@ export type SetCatalogCreateDialogDataOptions = {
 
 @injectable()
 export class SetCatalogCreateDialogDataOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
 
   execute(options: SetCatalogCreateDialogDataOptions): void {
     if (options.name !== undefined) {
-      this.appStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_NAME', value: options.name });
+      this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_NAME', value: options.name });
     }
     if (options.type !== undefined) {
-      this.appStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_TYPE', value: options.type });
+      this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_TYPE', value: options.type });
     }
   }
 }

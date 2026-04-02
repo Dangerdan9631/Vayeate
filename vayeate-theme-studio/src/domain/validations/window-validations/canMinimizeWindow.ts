@@ -1,8 +1,7 @@
-import type { AppState } from '../../state/app-state';
+import type { WindowState } from '../../state/window/window-state';
 
-export type GetState = () => AppState;
+export type GetWindowState = () => WindowState;
 
-/** Returns true if the window is not already minimized and can be minimized. */
-export function canMinimizeWindow(getState: GetState): boolean {
-  return !getState().window.isMinimized;
+export function canMinimizeWindow(getWindowState: GetWindowState): boolean {
+  return !getWindowState().isMinimized;
 }

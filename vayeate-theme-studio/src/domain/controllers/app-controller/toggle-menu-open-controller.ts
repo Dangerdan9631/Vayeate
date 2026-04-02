@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../state/app-state-getter';
+import { UiStateGetter } from '../../state/ui/ui-state-reducer';
 import { type MenuId, SetMenuOpenStateOperation } from '../../operations/app-operations';
 
 @singleton()
 export class ToggleMenuOpenController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly uiStateGetter: UiStateGetter,
     private readonly setMenuOpenState: SetMenuOpenStateOperation,
   ) {}
 
   run(menuId: MenuId): void {
-    const state = this.appStateGetter.current();
+    const ui = this.uiStateGetter.current();
     const keyByMenuId = {
       file: 'fileOpen',
       edit: 'editOpen',
@@ -18,6 +18,6 @@ export class ToggleMenuOpenController {
       view: 'viewOpen',
     } as const;
     const key = keyByMenuId[menuId];
-    this.setMenuOpenState.execute(menuId, !state.ui.menuOpen[key]);
+    this.setMenuOpenState.execute(menuId, !ui.menuOpen[key]);
   }
 }

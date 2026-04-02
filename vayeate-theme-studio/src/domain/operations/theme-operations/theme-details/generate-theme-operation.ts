@@ -1,7 +1,7 @@
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { container, injectable } from 'tsyringe';
 import { SetGenerateResultOperation } from './set-generate-result-operation';
-import type { AppStateUpdate } from '../../../state/app-state';
+import type { ThemesStateUpdate } from '../../../state/theme/themes-state-reducer';
 
 /** Generate theme files via service and report result in state. */
 @injectable()
@@ -38,7 +38,7 @@ export class GenerateThemeOperation {
 
 /** @deprecated Use GenerateThemeOperation class instead. */
 export async function generateTheme(
-  setState: (update: AppStateUpdate) => void,
+  setState: (update: ThemesStateUpdate) => void,
   themeName: string,
   themeVersion: string,
   templateName: string,

@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import type { ThemePreviewTokenRefField } from '../../../../model/schemas';
 import { SetThemeOperation, SetThemeHueAdjustmentOperation, SetThemeHueReferenceHexOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { applyHueShift } from '../../../utils/color';
 import { SaveThemeController } from './save-theme-controller';
 
@@ -10,7 +10,7 @@ import { SaveThemeController } from './save-theme-controller';
 @singleton()
 export class SetThemePreviewTokenRefController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
     private readonly saveThemeController: SaveThemeController,
     private readonly setThemeHueReferenceHex: SetThemeHueReferenceHexOperation,
@@ -18,14 +18,14 @@ export class SetThemePreviewTokenRefController {
   ) {}
 
   run(tokenRefField: ThemePreviewTokenRefField, value: string | null): void {
-    const theme = this.appStateGetter.current().themes.theme;
+    const theme = this.themesStateGetter.current().theme;
     if (!theme) return;
     const next: Theme = { ...theme, [tokenRefField]: value };
     this.setTheme.execute(next);
     this.saveThemeController.run(next);
-    const state = this.appStateGetter.current();
-    const hueRef = state.themes.hueReferenceHex ?? '';
-    const hueAdjustment = state.themes.hueAdjustment ?? 0;
+    const themeState = this.themesStateGetter.current();
+    const hueRef = themeState.hueReferenceHex ?? '';
+    const hueAdjustment = themeState.hueAdjustment ?? 0;
     const nextRefHex = applyHueShift(hueRef, hueAdjustment / 100);
     this.setThemeHueReferenceHex.execute(nextRefHex);
     this.setThemeHueAdjustment.execute(0);

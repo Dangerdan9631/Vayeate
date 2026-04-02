@@ -7,14 +7,11 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { AppStateUpdate } from '../../../domain/state/app-state';
 import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
 import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
 import { createUndoProcessor } from '../../../domain/core/undo-processor';
 import { useAppState } from './useAppState';
 import { AppActionType } from '../../actions/action-types';
-
-export type SetState = (update: AppStateUpdate) => void;
 
 export interface UndoStackValue {
   canUndo: boolean;
@@ -34,16 +31,10 @@ export function useUndoStack(): UndoStackValue {
   return ctx;
 }
 
-export function UndoProvider({
-  children,
-  setState,
-}: {
-  children: ReactNode;
-  setState: SetState;
-}) {
+export function UndoProvider({ children }: { children: ReactNode }) {
   const { state, dispatch } = useAppState();
-  const currentStackId = state.undoStackId.currentUndoStackId;
-  const undoListVersion = state.undoStackId.undoListVersion;
+  const currentStackId = state.undoStack.currentUndoStackId;
+  const undoListVersion = state.undoStack.undoListVersion;
 
   const [listState, setListState] = useState<{
     frames: UndoListEntry[];
@@ -58,7 +49,7 @@ export function UndoProvider({
       return;
     }
     let cancelled = false;
-    const processor = createUndoProcessor(setState);
+    const processor = createUndoProcessor();
     undoManagerV2
       .getOrCreate(currentStackId, { processor })
       .then((stack) => {
@@ -77,7 +68,7 @@ export function UndoProvider({
     return () => {
       cancelled = true;
     };
-  }, [currentStackId, undoListVersion, setState]);
+  }, [currentStackId, undoListVersion]);
 
   const undo = useCallback(() => {
     dispatch({ type: AppActionType.AppEditMenuUndoButtonOnClick });

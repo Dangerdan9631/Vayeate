@@ -1,5 +1,5 @@
-import type { AppState } from './app-state';
-import type { Position, Size, WindowLoadState } from './window-state';
+import type { AppState } from '../app-state';
+import type { Position, Size, WindowLoadState, WindowState } from './window-state';
 
 export type WindowStateUpdate =
   | { type: 'SET_WINDOW_LOAD_STATE'; value: WindowLoadState }
@@ -8,6 +8,7 @@ export type WindowStateUpdate =
   | { type: 'SET_WINDOW_SIZE'; size: Size }
   | { type: 'SET_WINDOW_POSITION'; position: Position }
   | { type: 'SET_VIEWPORT_SIZE'; size: Size };
+
 
 export function windowStateReducer(state: AppState, update: WindowStateUpdate): AppState {
   switch (update.type) {
@@ -25,5 +26,23 @@ export function windowStateReducer(state: AppState, update: WindowStateUpdate): 
       return { ...state, window: { ...state.window, viewport: update.size } };
     default:
       return state;
+  }
+}
+
+export type SetWindowState = (update: WindowStateUpdate) => void;
+export class WindowStateSetter {
+  constructor(private readonly set: SetWindowState) { }
+
+  apply(update: WindowStateUpdate): void {
+    this.set(update);
+  }
+}
+
+export type GetWindowState = () => WindowState;
+export class WindowStateGetter {
+  constructor(private readonly get: GetWindowState) {}
+
+  current(): WindowState {
+    return this.get();
   }
 }

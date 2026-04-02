@@ -1,28 +1,28 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { SetThemeOperation, SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 import { SaveThemeController } from '../theme-details/save-theme-controller';
 
 @singleton()
 export class RecenterHueReferenceController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
     private readonly saveThemeController: SaveThemeController,
   ) {}
 
   run(): void {
-    const state = this.appStateGetter.current();
-    const theme = state.themes.theme;
-    const hueAdjustment = state.themes.hueAdjustment;
+    const state = this.themesStateGetter.current();
+    const theme = state.theme;
+    const hueAdjustment = state.hueAdjustment;
     if (!theme || hueAdjustment === 0) {
       this.setThemeHueAdjustment.execute(0);
       return;
     }
-    const checkedColorRefs = new Set(state.themes.checkedColorRefs);
+    const checkedColorRefs = new Set(state.checkedColorRefs);
     const applyToDark = theme.applyPaletteToDark ?? true;
     const applyToLight = theme.applyPaletteToLight ?? true;
     const newAssignments = applyHueToAssignmentsFiltered(

@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import { CloseAllMenusOperation, LoadAppConfigOperation, SaveAppConfigOperation, SetColorSchemeOperation, SetMenuOpenStateOperation } from '.';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
-import { AppStateGetter } from '../../state/app-state-getter';
-import { AppStateSetter } from '../../state/app-state-setter';
+import { AppConfigStateGetter } from '../../state/app-config/app-config-state-reducer';
+import { AppConfigStateSetter } from '../../state/app-config/app-config-state-reducer';
 import { initialAppState } from '../../state/app-state';
-import { UiStateSetter } from '../../state/ui-state-setter';
+import { UiStateSetter } from '../../state/ui/ui-state-reducer';
 
 const configMock = {
   load: vi.fn().mockResolvedValue({ colorScheme: 'dark' as const }),
@@ -19,9 +19,9 @@ describe('app-operations', () => {
     vi.mocked(configMock.save).mockClear();
   });
 
-  it('SetColorSchemeOperation applies SET_COLOR_SCHEME via AppStateSetter', () => {
+  it('SetColorSchemeOperation applies SET_COLOR_SCHEME via AppConfigStateSetter', () => {
     const apply = vi.fn();
-    container.registerInstance(AppStateSetter, new AppStateSetter(apply));
+    container.registerInstance(AppConfigStateSetter, new AppConfigStateSetter(apply));
     container.resolve(SetColorSchemeOperation).execute('light');
     expect(apply).toHaveBeenCalledWith({ type: 'SET_COLOR_SCHEME', scheme: 'light' });
   });
@@ -40,19 +40,22 @@ describe('app-operations', () => {
     expect(apply).toHaveBeenCalledWith({ type: 'SET_UI_ALL_MENUS_CLOSED' });
   });
 
-  it('LoadAppConfigOperation loads from gateway and applies SET_APP_CONFIG', async () => {
+  it('LoadAppConfigOperation loads from gateway and applies SET_APP_CONFIG_STATE', async () => {
     vi.mocked(configMock.load).mockResolvedValue({ colorScheme: 'light' });
     const apply = vi.fn();
-    container.registerInstance(AppStateSetter, new AppStateSetter(apply));
+    container.registerInstance(AppConfigStateSetter, new AppConfigStateSetter(apply));
     await container.resolve(LoadAppConfigOperation).execute();
     expect(configMock.load).toHaveBeenCalledTimes(1);
-    expect(apply).toHaveBeenCalledWith({ type: 'SET_APP_CONFIG', config: { colorScheme: 'light' } });
+    expect(apply).toHaveBeenCalledWith({
+      type: 'SET_APP_CONFIG_STATE',
+      config: { colorScheme: 'light' },
+    });
   });
 
   it('SaveAppConfigOperation persists appConfig from state via gateway', async () => {
     container.registerInstance(
-      AppStateGetter,
-      new AppStateGetter(() => ({ ...initialAppState, appConfig: { colorScheme: 'light' } })),
+      AppConfigStateGetter,
+      new AppConfigStateGetter(() => ({ ...initialAppState.appConfig, colorScheme: 'light' })),
     );
     await container.resolve(SaveAppConfigOperation).execute();
     expect(configMock.save).toHaveBeenCalledTimes(1);

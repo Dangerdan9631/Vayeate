@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 
 export type CatalogCreateDialogData = {
   createFormName: string;
@@ -10,10 +10,10 @@ export type CatalogCreateDialogData = {
 /** Read current catalog create-dialog draft fields from app state. */
 @injectable()
 export class GetCatalogCreateDialogDataOperation {
-  constructor(private readonly appStateGetter: AppStateGetter) {}
+  constructor(private readonly catalogsStateGetter: CatalogsStateGetter) {}
 
   execute(): CatalogCreateDialogData {
-    const { createFormName, createFormType } = this.appStateGetter.current().catalogs;
+    const { createFormName, createFormType } = this.catalogsStateGetter.current();
     return { createFormName, createFormType };
   }
 }

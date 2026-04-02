@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import { WindowStateSetter } from '../../state/window-state-setter';
-import type { WindowStateUpdate } from '../../state/window-state-reducer';
+import { WindowStateSetter } from '../../state/window/window-state-reducer';
+import type { WindowStateUpdate } from '../../state/window/window-state-reducer';
 
 @singleton()
 export class ApplyWindowStateUpdateOperation {

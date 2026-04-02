@@ -1,6 +1,6 @@
 import { formatSemanticSelector, parseSemanticSelector } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   BumpTemplateVersionForEditOperation,
   MergeSemanticTokenSetsOperation,
@@ -12,7 +12,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class UpdateSemanticVariantKeyController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
     private readonly updateSemanticVariantKeyInTemplate: UpdateSemanticVariantKeyInTemplateOperation,
@@ -25,7 +25,7 @@ export class UpdateSemanticVariantKeyController {
     modifiers: string[],
     language: string | null,
   ): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     let parsed: { type: string; modifiers: string[]; language: string | null };
     try {

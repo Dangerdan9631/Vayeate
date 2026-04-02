@@ -2,19 +2,19 @@ import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
 import { SetThemeOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 
 /** Live preview only (no persist). For THEME_VARIABLES_*_COLOR_PICKER_ON_SELECT. */
 @singleton()
 export class SetColorVariableFromHexPreviewController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
   ) {}
 
   run(ref: ColorVariableKey | undefined, hex: string, target: 'dark' | 'light'): void {
-    const theme = this.appStateGetter.current().themes.theme;
+    const theme = this.themesStateGetter.current().theme;
     if (!theme || !ref) return;
     const normalized = normalizeHexSafe(hex);
     if (!normalized) return;

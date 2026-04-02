@@ -8,7 +8,7 @@ import {
 } from '../../../operations/theme-operations';
 import { loadTemplateSnapshot } from '../../../operations/template-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 import { mergeAssignmentsFromTemplate } from '../../../utils/theme-template-merge';
 import { themeStackId } from '../../../utils/stack-id';
 import { SaveThemeController } from '../theme-details/save-theme-controller';
@@ -22,7 +22,7 @@ export class SelectThemeAndLoadController {
     private readonly setTheme: SetThemeOperation,
     private readonly saveThemeController: SaveThemeController,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
-    private readonly appStateSetter: AppStateSetter,
+    private readonly themesStateSetter: ThemesStateSetter,
   ) {}
 
   async run(name: string, version: string): Promise<void> {
@@ -55,7 +55,7 @@ export class SelectThemeAndLoadController {
         }
       }
     }
-    this.appStateSetter.apply({ type: 'SET_THEME_LOADED_TEMPLATE', template: templateForTheme });
+    this.themesStateSetter.apply({ type: 'SET_THEME_LOADED_TEMPLATE', template: templateForTheme });
     this.setCurrentUndoStackId.execute(themeStackId(name, version));
   }
 }

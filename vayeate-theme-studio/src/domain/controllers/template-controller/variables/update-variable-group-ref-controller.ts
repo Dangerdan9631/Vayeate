@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   BumpTemplateVersionForEditOperation,
   SaveTemplateOperation,
@@ -10,7 +10,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 @singleton()
 export class UpdateVariableGroupRefController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly updateVariableGroupRefOp: UpdateVariableGroupRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -18,7 +18,7 @@ export class UpdateVariableGroupRefController {
   ) {}
 
   async run(variableKey: string, groupRef: string | null): Promise<void> {
-    const template = this.appStateGetter.current().templates.template;
+    const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.updateVariableGroupRefOp.execute(base, variableKey, groupRef);

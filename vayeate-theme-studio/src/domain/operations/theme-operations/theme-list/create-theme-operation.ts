@@ -1,7 +1,7 @@
 import { container, injectable } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
-import type { AppStateUpdate } from '../../../state/app-state';
+import type { ThemesStateUpdate } from '../../../state/theme/themes-state-reducer';
 
 @injectable()
 export class CreateThemeOperation {
@@ -14,7 +14,7 @@ export class CreateThemeOperation {
 
 /** @deprecated Use CreateThemeOperation class instead. */
 export async function createTheme(
-  _setState: (update: AppStateUpdate) => void,
+  _setState: (update: ThemesStateUpdate) => void,
   params: { name: string },
 ): Promise<Theme> {
   return container.resolve(CreateThemeOperation).execute(params);

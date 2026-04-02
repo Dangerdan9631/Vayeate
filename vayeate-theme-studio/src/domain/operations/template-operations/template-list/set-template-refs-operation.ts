@@ -1,17 +1,15 @@
 import type { TemplateReference } from '../../../../model/schemas';
 import { injectable } from 'tsyringe';
-import { StoreStateSetter } from '../../../state/store-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 @injectable()
 export class SetTemplateRefsOperation {
-  constructor(private readonly storeStateSetter: StoreStateSetter) {}
+  constructor(private readonly templatesStateSetter: TemplatesStateSetter) {}
 
   execute(refs: TemplateReference[]): void {
-    this.storeStateSetter.apply({
-    type: 'SET_STORE_TEMPLATE_ENTRIES',
+    this.templatesStateSetter.apply({
+      type: 'SET_TEMPLATE_MAP_ENTRIES',
       entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
     });
   }
 }
-
-

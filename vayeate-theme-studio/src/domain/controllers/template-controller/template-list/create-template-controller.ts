@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 import {
   CreateTemplateOperation,
   RefreshTemplateRefsOperation,
@@ -12,7 +12,7 @@ import { templateStackId } from '../../../utils/stack-id';
 @singleton()
 export class CreateTemplateController {
   constructor(
-    private readonly appStateSetter: AppStateSetter,
+    private readonly templatesStateSetter: TemplatesStateSetter,
     private readonly createTemplate: CreateTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setTemplate: SetTemplateOperation,
@@ -21,8 +21,8 @@ export class CreateTemplateController {
   ) {}
 
   async run(params: { name: string }): Promise<void> {
-    this.appStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: true });
-    this.appStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: false });
+    this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: true });
+    this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: false });
     try {
       const newTemplate = await this.createTemplate.execute(params);
       await this.refreshTemplateRefs.execute();
@@ -35,7 +35,7 @@ export class CreateTemplateController {
         templateStackId(newTemplate.name, newTemplate.version),
       );
     } finally {
-      this.appStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: false });
+      this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: false });
     }
   }
 }

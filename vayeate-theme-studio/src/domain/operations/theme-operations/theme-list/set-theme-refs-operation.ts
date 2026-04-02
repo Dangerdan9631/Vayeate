@@ -1,24 +1,26 @@
 import { injectable } from 'tsyringe';
 import type { ThemeReference } from '../../../../model/schemas';
-import { StoreStateSetter } from '../../../state/store-state-setter';
-import type { SetStoreState } from '../../../state/store-state-reducer';
+import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 
 @injectable()
 export class SetThemeRefsOperation {
-  constructor(private readonly storeStateSetter: StoreStateSetter) {}
+  constructor(private readonly themesStateSetter: ThemesStateSetter) {}
 
   execute(refs: ThemeReference[]): void {
-    this.storeStateSetter.apply({
-      type: 'SET_STORE_THEME_ENTRIES',
+    this.themesStateSetter.apply({
+      type: 'SET_THEME_MAP_ENTRIES',
       entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),
     });
   }
 }
 
 /** @deprecated Use SetThemeRefsOperation class instead. */
-export function setThemeRefs(setStoreState: SetStoreState, refs: ThemeReference[]): void {
-  setStoreState({
-    type: 'SET_STORE_THEME_ENTRIES',
+export function setThemeRefs(
+  setThemesState: import('../../../state/theme/themes-state-reducer').SetThemesState,
+  refs: ThemeReference[],
+): void {
+  setThemesState({
+    type: 'SET_THEME_MAP_ENTRIES',
     entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),
   });
 }

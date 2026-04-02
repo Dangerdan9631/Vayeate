@@ -1,20 +1,20 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations';
-import { AppStateGetter } from '../../../state/app-state-getter';
+import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 @singleton()
 export class SetVariablesSelectByTypeController {
   constructor(
-    private readonly appStateGetter: AppStateGetter,
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
   run(checked?: boolean, variableType?: string): void {
-    const state = this.appStateGetter.current();
-    const theme = state.themes.theme;
+    const state = this.themesStateGetter.current();
+    const theme = state.theme;
     if (!theme) return;
-    const colorRefs = state.themes.checkedColorRefs;
-    const contrastRefs = state.themes.checkedContrastRefs;
+    const colorRefs = state.checkedColorRefs;
+    const contrastRefs = state.checkedContrastRefs;
     let nextColor = [...colorRefs];
     let nextContrast = [...contrastRefs];
     if (variableType === 'color') {

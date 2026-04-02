@@ -3,7 +3,6 @@ import { LoggerFactory, type Logger } from '../../domain/utils/logger';
 import type { AppAction } from './action-types';
 import { AppActionHandler } from './app-handler';
 import { CatalogActionHandler } from './catalog-handler';
-import type { HandlerDeps } from './handler-types';
 import {
   isAppAction,
   isCatalogAction,
@@ -13,10 +12,7 @@ import {
 import { TemplateActionHandler } from './template-handler';
 import { ThemeActionHandler } from './theme-handler';
 
-/**
- * Routes each {@link AppAction} to the correct domain handler. Injected handlers;
- * {@link HandlerDeps} are supplied per invocation from React (state setters).
- */
+/** Routes each {@link AppAction} to the correct domain handler (injected). */
 @singleton()
 export class ActionProcessor {
   private readonly log: Logger;
@@ -31,16 +27,16 @@ export class ActionProcessor {
     this.log = loggerFactory.create('ActionProcessor');
   }
 
-  async process(action: AppAction, deps: HandlerDeps): Promise<void> {
+  async process(action: AppAction): Promise<void> {
     this.log.debug('action', action);
     if (isAppAction(action)) {
-      await this.appHandler.handle(action, deps);
+      await this.appHandler.handle(action);
     } else if (isCatalogAction(action)) {
-      await this.catalogHandler.handle(action, deps);
+      await this.catalogHandler.handle(action);
     } else if (isTemplateAction(action)) {
-      await this.templateHandler.handle(action, deps);
+      await this.templateHandler.handle(action);
     } else if (isThemeAction(action)) {
-      await this.themeHandler.handle(action, deps);
+      await this.themeHandler.handle(action);
     }
   }
 }

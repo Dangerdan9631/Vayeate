@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useCatalogsState, useStoreState, useTemplatesState } from '../ui/context/slice-contexts';
-import { getCatalogRefsFromStore, getTemplateRefsFromStore } from '../../domain/state/store-state';
+import { useAppDispatch, useCatalogsState, useTemplatesState } from '../ui/context/slice-contexts';
+import { getCatalogRefsFromCatalogsState } from '../../domain/state/catalog/catalogs-state';
+import { getTemplateRefsFromTemplatesState } from '../../domain/state/template/templates-state';
 import { compareVersions } from '../../domain/utils/version';
 import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/utils/semantic-token';
 import { TemplateActionType } from '../actions/action-types';
@@ -18,6 +19,7 @@ let templatePageLoadDispatched = false;
 
 export function useTemplateViewModel() {
   const dispatch = useAppDispatch();
+  const templates = useTemplatesState();
   const {
     selectedRef,
     template,
@@ -29,11 +31,11 @@ export function useTemplateViewModel() {
     mappingContrastVariableFilter,
     mappingTokenGroupSelection,
     variablesSearchText,
-  } = useTemplatesState();
-  const store = useStoreState();
-  const catalogRefs = useMemo(() => getCatalogRefsFromStore(store), [store]);
-  const templateRefs = useMemo(() => getTemplateRefsFromStore(store), [store]);
-  const { loadedForDisplay } = useCatalogsState();
+  } = templates;
+  const catalogs = useCatalogsState();
+  const catalogRefs = useMemo(() => getCatalogRefsFromCatalogsState(catalogs), [catalogs]);
+  const templateRefs = useMemo(() => getTemplateRefsFromTemplatesState(templates), [templates]);
+  const { loadedForDisplay } = catalogs;
 
   useEffect(() => {
     if (templatePageLoadDispatched) return;

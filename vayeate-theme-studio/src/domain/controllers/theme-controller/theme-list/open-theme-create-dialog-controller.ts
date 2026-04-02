@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
 import { SetThemeCreateFormNameOperation } from '../../../operations/theme-operations';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 
 @singleton()
 export class OpenThemeCreateDialogController {
   constructor(
     private readonly setThemeCreateFormName: SetThemeCreateFormNameOperation,
-    private readonly appStateSetter: AppStateSetter,
+    private readonly themesStateSetter: ThemesStateSetter,
   ) {}
 
   run(): void {
     this.setThemeCreateFormName.execute('');
-    this.appStateSetter.apply({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: true });
+    this.themesStateSetter.apply({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: true });
   }
 }

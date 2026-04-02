@@ -1,11 +1,11 @@
 import { injectable } from 'tsyringe';
-import { AppStateSetter } from '../../../state/app-state-setter';
+import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
 @injectable()
 export class OpenCatalogCreateDialogOperation {
-  constructor(private readonly appStateSetter: AppStateSetter) {}
+  constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
 
   execute(): void {
-    this.appStateSetter.apply({ type: 'SET_CREATE_DIALOG_OPEN', value: true });
+    this.CatalogsStateSetter.apply({ type: 'SET_CREATE_DIALOG_OPEN', value: true });
   }
 }
