@@ -8,7 +8,6 @@ import type {
   TokenType,
 } from '../../../model/schemas';
 
-/** Single catalog entry payload for batch set. */
 export interface CatalogEntryInput {
   name: string;
   version: string;

@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { getCatalogRefsFromCatalogsState } from '../../../state/catalog/catalogs-state';
+import { getCatalogRefsFromCatalogMap } from '../../../state/catalog/catalogs-state';
 import type { CatalogReference } from '../../../../model/schemas';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 
@@ -9,6 +9,6 @@ export class GetCatalogRefsOperation {
   constructor(private readonly catalogsStateGetter: CatalogsStateGetter) {}
 
   execute(): CatalogReference[] {
-    return getCatalogRefsFromCatalogsState(this.catalogsStateGetter.current());
+    return getCatalogRefsFromCatalogMap(this.catalogsStateGetter.current().catalogMap);
   }
 }

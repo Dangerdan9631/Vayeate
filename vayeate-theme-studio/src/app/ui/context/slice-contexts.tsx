@@ -1,6 +1,9 @@
 import { createContext, useContext } from 'react';
 import type { AppAction } from '../../actions/action-types';
-import type { CatalogsState, MenuOpenState, TemplatesState, ThemesState } from '../../../domain/state/app-state';
+import type { CatalogsState } from '../../../domain/state/catalog/catalogs-state';
+import type { TemplatesState } from '../../../domain/state/template/templates-state';
+import type { ThemesState } from '../../../domain/state/theme/themes-state';
+import type { MenuOpenState } from '../../../domain/state/ui/ui-state';
 import type { EyedropperUiState } from '../../../domain/state/ui/eyedropper-ui-state';
 import type { TabId } from '../tabs';
 

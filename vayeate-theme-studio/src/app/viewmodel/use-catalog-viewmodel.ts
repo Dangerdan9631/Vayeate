@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useAppDispatch, useCatalogsState } from '../ui/context/slice-contexts';
-import { getCatalogRefsFromCatalogsState } from '../../domain/state/catalog/catalogs-state';
+import { getCatalogRefsFromCatalogMap } from '../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../domain/utils/version';
 import { nextPatchVersion } from '../../domain/utils/version';
 import type { Catalog, CatalogReference, Token, TokenType } from '../../model/schemas';
@@ -13,7 +13,7 @@ export function useCatalogViewModel() {
   const dispatch = useAppDispatch();
   const catalogs = useCatalogsState();
   const { selectedRef, catalog, isCreating, createDialogOpen } = catalogs;
-  const catalogRefs = useMemo(() => getCatalogRefsFromCatalogsState(catalogs), [catalogs]);
+  const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogs.catalogMap), [catalogs.catalogMap]);
 
   useEffect(() => {
     if (catalogPageLoadDispatched) return;

@@ -62,8 +62,3 @@ export function getCatalogRefsFromCatalogMap(map: CatalogStoreMap): CatalogRefer
   }
   return refs;
 }
-
-/** @deprecated Use getCatalogRefsFromCatalogMap */
-export function getCatalogRefsFromCatalogsState(state: CatalogsState): CatalogReference[] {
-  return getCatalogRefsFromCatalogMap(state.catalogMap);
-}

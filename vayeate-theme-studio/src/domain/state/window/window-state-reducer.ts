@@ -1,8 +1,7 @@
 import type { AppState } from '../app-state';
-import type { Position, Size, WindowLoadState, WindowState } from './window-state';
+import type { Position, Size, WindowState } from './window-state';
 
 export type WindowStateUpdate =
-  | { type: 'SET_WINDOW_LOAD_STATE'; value: WindowLoadState }
   | { type: 'SET_WINDOW_MINIMIZED'; value: boolean }
   | { type: 'SET_WINDOW_MAXIMIZED'; value: boolean }
   | { type: 'SET_WINDOW_SIZE'; size: Size }
@@ -12,8 +11,6 @@ export type WindowStateUpdate =
 
 export function windowStateReducer(state: AppState, update: WindowStateUpdate): AppState {
   switch (update.type) {
-    case 'SET_WINDOW_LOAD_STATE':
-      return { ...state, window: { ...state.window, loadState: update.value } };
     case 'SET_WINDOW_MINIMIZED':
       return { ...state, window: { ...state.window, isMinimized: update.value } };
     case 'SET_WINDOW_MAXIMIZED':

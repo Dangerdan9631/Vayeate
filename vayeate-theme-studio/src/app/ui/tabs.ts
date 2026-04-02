@@ -1,4 +1,4 @@
-import type { TabId } from '../../domain/state/app-state';
+import type { TabId } from '../../domain/state/ui/ui-state';
 
 export type { TabId };
 

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { getThemeRefsFromThemesState } from '../../../state/theme/themes-state';
+import { getThemeRefs } from '../../../state/theme/themes-state';
 import type { ThemeReference } from '../../../../model/schemas';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
@@ -9,6 +9,6 @@ export class GetThemeRefsOperation {
   constructor(private readonly themesStateGetter: ThemesStateGetter) {}
 
   execute(): ThemeReference[] {
-    return getThemeRefsFromThemesState(this.themesStateGetter.current());
+    return getThemeRefs(this.themesStateGetter.current().themeMap);
   }
 }

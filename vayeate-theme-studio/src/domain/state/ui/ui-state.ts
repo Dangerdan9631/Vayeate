@@ -14,7 +14,6 @@ export interface MenuOpenState {
   viewOpen: boolean;
 }
 
-/** Parallel state: UI-only state (active tab, queue status, etc.). */
 export interface UiState {
   activeTabId: TabId;
   queueStatus: QueueStatusState;

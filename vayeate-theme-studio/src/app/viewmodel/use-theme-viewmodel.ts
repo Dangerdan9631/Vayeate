@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ThemePaneState } from '../../model/theme-pane-state';
 import { useAppDispatch, useTemplatesState, useThemesState } from '../ui/context/slice-contexts';
-import { getTemplateRefsFromTemplatesState } from '../../domain/state/template/templates-state';
-import { getThemeRefsFromThemesState } from '../../domain/state/theme/themes-state';
+import { getTemplateRefs } from '../../domain/state/template/templates-state';
+import { getThemeRefs } from '../../domain/state/theme/themes-state';
 import { compareVersions } from '../../domain/utils/version';
 import { applyHueShift } from '../../domain/utils/color';
 import { resolveColorForThemeTokenKey } from '../../domain/utils/scope-resolver';
@@ -84,8 +84,8 @@ export function useThemeViewModel() {
     loadedTemplateForTheme: loadedTemplate,
   } = themes;
   const templates = useTemplatesState();
-  const themeRefs = useMemo(() => getThemeRefsFromThemesState(themes), [themes]);
-  const templateRefs = useMemo(() => getTemplateRefsFromTemplatesState(templates), [templates]);
+  const themeRefs = useMemo(() => getThemeRefs(themes.themeMap), [themes.themeMap]);
+  const templateRefs = useMemo(() => getTemplateRefs(templates.templateMap), [templates.templateMap]);
 
   const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
   const checkedContrastRefs = useMemo(() => new Set(checkedContrastRefsArray), [checkedContrastRefsArray]);

@@ -18,7 +18,6 @@ export interface EyedropperSnapshotPayload {
 
 export interface EyedropperUiState {
   phase: EyedropperPhase;
-  /** Intent key, e.g. `eyedropper:dark:ref`, `eyedropper:assign:colorRef`. */
   contextKey: string | null;
   snapshot: EyedropperSnapshotPayload | null;
   errorMessage: string | null;

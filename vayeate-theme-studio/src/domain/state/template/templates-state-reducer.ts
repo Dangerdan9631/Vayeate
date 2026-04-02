@@ -7,7 +7,6 @@ import type {
   TemplateReference,
 } from '../../../model/schemas';
 
-/** Single template entry payload for batch set. */
 export interface TemplateEntryInput {
   name: string;
   version: string;

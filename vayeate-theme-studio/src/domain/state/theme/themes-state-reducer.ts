@@ -14,7 +14,6 @@ export interface ThemeEntryInput {
 export type ThemesStateUpdate =
   | { type: 'SET_SELECTED_THEME_REF'; ref: ThemeReference | null }
   | { type: 'SET_THEME'; theme: Theme | null; preserveHue?: boolean }
-  | { type: 'SET_THEME_AND_HUE'; theme: Theme | null; hueAdjustment: number }
   | { type: 'SET_THEME_PANE_SELECTIONS'; checkedColorRefs: string[]; checkedContrastRefs: string[] }
   | { type: 'SET_THEME_HUE_ADJUSTMENT'; value: number }
   | { type: 'SET_THEME_HUE_REFERENCE_HEX'; value: string }
@@ -46,11 +45,6 @@ export function themesStateReducer(state: AppState, update: ThemesStateUpdate): 
           theme: update.theme,
           ...(update.preserveHue === true ? {} : { hueAdjustment: 0 }),
         },
-      };
-    case 'SET_THEME_AND_HUE':
-      return {
-        ...state,
-        themes: { ...state.themes, theme: update.theme, hueAdjustment: update.hueAdjustment },
       };
     case 'SET_THEME_PANE_SELECTIONS':
       return {

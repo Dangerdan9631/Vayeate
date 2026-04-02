@@ -11,28 +11,6 @@ import { initialUndoStackState } from './undo-stack/undo-stack-state';
 import { initialUiState, type UiState } from './ui/ui-state';
 import { initialWindowState, type WindowState } from './window/window-state';
 
-export type { TabId } from './ui/ui-state';
-
-// Re-export slice types for consumers that imported from app-state
-export type { CatalogsState, CatalogEntry, CatalogStoreMap } from './catalog/catalogs-state';
-export { getCatalogRefsFromCatalogMap, getCatalogRefsFromCatalogsState } from './catalog/catalogs-state';
-export type { TemplatesState, TemplateEntry, TemplateStoreMap } from './template/templates-state';
-export {
-  getTemplateRefsFromTemplateMap,
-  getTemplateRefsFromTemplatesState,
-} from './template/templates-state';
-export type { ThemesState, ThemeEntry, ThemeStoreMap, GenerateResult } from './theme/themes-state';
-export { getThemeRefsFromThemeMap, getThemeRefsFromThemesState } from './theme/themes-state';
-export type { AppConfigState } from './app-config/app-config-state';
-export { initialAppConfigState } from './app-config/app-config-state';
-export type { UndoStackState } from './undo-stack/undo-stack-state';
-export { initialUndoStackState } from './undo-stack/undo-stack-state';
-
-export type { MenuOpenState, UiState } from './ui/ui-state';
-export { initialUiState } from './ui/ui-state';
-export type { Position, Size, WindowLoadState, WindowState } from './window/window-state';
-export { initialWindowState } from './window/window-state';
-
 export interface AppState {
   catalogs: CatalogsState;
   templates: TemplatesState;
