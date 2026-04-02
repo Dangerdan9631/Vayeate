@@ -10,7 +10,6 @@ import { flushSync } from 'react-dom';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
 import type { AppState } from '../../../domain/state/app-state';
-import type { QueueStatusState } from '../../../domain/state/ui-state';
 import {
   appStateReducer,
   initialAppState,
@@ -21,6 +20,12 @@ import { SetUiState, uiStateReducer, type UiStateUpdate } from '../../../domain/
 import { UiStateSetter } from '../../../domain/state/ui-state-setter';
 import { AppStateSetter } from '../../../domain/state/app-state-setter';
 import { AppStateGetter } from '../../../domain/state/app-state-getter';
+import { QueueStatusStateGetter } from '../../../domain/state/queue-status-state-getter';
+import { queueStatusStateReducer } from '../../../domain/state/queue-status-state-reducer';
+import {
+  QueueStatusStateSetter,
+  type SetQueueStatusState,
+} from '../../../domain/state/queue-status-state-setter';
 import { StoreStateSetter } from '../../../domain/state/store-state-setter';
 import { WindowStateSetter } from '../../../domain/state/window-state-setter';
 import { container } from 'tsyringe';
@@ -94,16 +99,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const setUiQueueStatus = useCallback((queueStatus: QueueStatusState) => {
+  const setQueueStatus = useCallback<SetQueueStatusState>((queueStatus) => {
     flushSync(() => {
-      const s = stateRef.current;
-      replaceState({
-        ...s,
-        ui: {
-          ...s.ui,
-          queueStatus,
-        },
-      });
+      replaceState(
+        queueStatusStateReducer(stateRef.current, { type: 'SET_QUEUE_STATUS', queueStatus }),
+      );
     });
   }, []);
 
@@ -120,11 +120,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
   /** Register before child useEffects run; useEffect here runs too late for CATALOG_PAGE_ON_LOAD et al. */
   const appStateSetter = useMemo(() => new AppStateSetter(setState), [setState]);
   const appStateGetter = useMemo(() => new AppStateGetter(getState), [getState]);
+  const queueStatusStateSetter = useMemo(
+    () => new QueueStatusStateSetter(setQueueStatus),
+    [setQueueStatus],
+  );
+  const queueStatusStateGetter = useMemo(
+    () => new QueueStatusStateGetter(() => getState().ui.queueStatus),
+    [getState],
+  );
   const uiStateSetter = useMemo(() => new UiStateSetter(setUiState), [setUiState]);
   const storeStateSetter = useMemo(() => new StoreStateSetter(setStoreState), [setStoreState]);
   const windowStateSetter = useMemo(() => new WindowStateSetter(setWindowState), [setWindowState]);
   container.registerInstance(AppStateSetter, appStateSetter);
   container.registerInstance(AppStateGetter, appStateGetter);
+  container.registerInstance(QueueStatusStateSetter, queueStatusStateSetter);
+  container.registerInstance(QueueStatusStateGetter, queueStatusStateGetter);
   container.registerInstance(UiStateSetter, uiStateSetter);
   container.registerInstance(StoreStateSetter, storeStateSetter);
   container.registerInstance(WindowStateSetter, windowStateSetter);
@@ -143,12 +153,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!queueRef.current) {
       const queue = container.resolve(ActionQueue);
       queue.setDepsGetter(() => handlerDepsRef.current);
-      queue.onQueueStatus = setUiQueueStatus;
+      queue.onQueueStatus = setQueueStatus;
       queueRef.current = queue;
     }
     const queue = queueRef.current!;
     return queue.enqueue(action);
-  }, [setUiQueueStatus]);
+  }, [setQueueStatus]);
 
   const value: AppContextValue = { state, dispatch, setUiState, setWindowState };
 
