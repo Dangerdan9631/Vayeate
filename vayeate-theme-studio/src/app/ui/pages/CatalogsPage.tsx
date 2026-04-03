@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useCatalogViewModel } from '../../viewmodel/use-catalog-viewmodel';
-import { useCatalogsState } from '../context/slice-contexts';
+import { useCatalogsState } from '../context/app-context-hooks';
 import { BulkAddDialog } from '../components/BulkAddDialog';
 import { CatalogDetailsCard } from '../components/CatalogDetailsCard';
 import { CatalogsCard } from '../components/CatalogsCard';

@@ -1,10 +1,5 @@
-import {
-  createContext,
-  useCallback,
-  useReducer,
-  useRef,
-  type ReactNode,
-} from 'react';
+import { useCallback, useReducer, useRef, type ReactNode } from 'react';
+import { createContext } from 'use-context-selector';
 import { ActionQueue } from '../../actions/action-queue';
 import type { AppAction } from '../../actions/action-types';
 import type { AppState } from '../../../domain/state/app-state';
@@ -50,15 +45,6 @@ import {
   windowStateReducer,
 } from '../../../domain/state/window/window-state-reducer';
 import { container } from 'tsyringe';
-import {
-  ActiveTabContext,
-  AppDispatchContext,
-  CatalogsStateContext,
-  EyedropperUiStateContext,
-  MenuOpenStateContext,
-  TemplatesStateContext,
-  ThemesStateContext,
-} from './slice-contexts';
 import { useAppSliceBridge } from './use-app-slice-bridge';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
@@ -170,23 +156,5 @@ export function AppProvider({ children, initialAppConfig }: { children: ReactNod
 
   const value: AppContextValue = { state, dispatch };
 
-  return (
-    <AppContext.Provider value={value}>
-      <AppDispatchContext.Provider value={dispatch}>
-        <ActiveTabContext.Provider value={state.ui.activeTabId}>
-          <MenuOpenStateContext.Provider value={state.ui.menuOpen}>
-            <EyedropperUiStateContext.Provider value={state.ui.eyedropper}>
-              <CatalogsStateContext.Provider value={state.catalogs}>
-                <TemplatesStateContext.Provider value={state.templates}>
-                    <ThemesStateContext.Provider value={state.themes}>
-                    {children}
-                  </ThemesStateContext.Provider>
-                </TemplatesStateContext.Provider>
-              </CatalogsStateContext.Provider>
-            </EyedropperUiStateContext.Provider>
-          </MenuOpenStateContext.Provider>
-        </ActiveTabContext.Provider>
-      </AppDispatchContext.Provider>
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

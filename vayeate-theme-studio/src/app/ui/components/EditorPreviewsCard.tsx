@@ -7,7 +7,7 @@ import type {
   Mapping,
 } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
-import { useThemesState } from '../context/slice-contexts';
+import { useThemesState } from '../context/app-context-hooks';
 import { contrastRatio } from '../../../domain/utils/color';
 import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/utils/scope-resolver';
 

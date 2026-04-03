@@ -1,4 +1,4 @@
-import { useAppDispatch, useTemplatesState } from '../context/slice-contexts';
+import { useAppDispatch, useTemplatesState } from '../context/app-context-hooks';
 import { TemplateActionType } from '../../actions/action-types';
 
 interface GroupsCardProps {

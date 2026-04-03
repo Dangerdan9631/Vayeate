@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { ThemeActionType } from '../../actions/action-types';
 import { useViewportSize } from '../../viewmodel/useViewportSize';
-import { useAppDispatch, useEyedropperUiState } from '../context/slice-contexts';
+import { useAppDispatch, useEyedropperUiState } from '../context/app-context-hooks';
 import {
   clampElementScroll,
   clampEyedropperCanvasInAspectBounds,

@@ -5,7 +5,7 @@ import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
 import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { ThemeActionType } from '../../actions/action-types';
-import { useAppDispatch } from '../context/slice-contexts';
+import { useAppDispatch } from '../context/app-context-hooks';
 import { isEyedropperSupported } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 

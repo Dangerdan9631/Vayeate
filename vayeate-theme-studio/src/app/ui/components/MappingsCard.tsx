@@ -1,5 +1,5 @@
-import { useCallback, useContext, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
-import { TemplatesStateContext, useAppDispatch } from '../context/slice-contexts';
+import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
+import { useAppDispatch, useTemplatesState } from '../context/app-context-hooks';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
 import { TemplateActionType } from '../../actions/action-types';
 import type {
@@ -923,7 +923,7 @@ export function MappingsCard({
   onRemoveMapping,
 }: MappingsCardProps) {
   const dispatch = useAppDispatch();
-  const templatesState = useContext(TemplatesStateContext);
+  const templatesState = useTemplatesState();
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [localSelectedColorKeys, setLocalSelectedColorKeys] = useState<string[]>([]);
   const [localSelectedContrastKeys, setLocalSelectedContrastKeys] = useState<string[]>([]);

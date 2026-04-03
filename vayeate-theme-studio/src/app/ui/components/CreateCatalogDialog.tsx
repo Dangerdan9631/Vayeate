@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { useAppDispatch, useCatalogsState } from '../context/slice-contexts';
+import { useAppDispatch, useCatalogsState } from '../context/app-context-hooks';
 import type { CatalogType } from '../../../model/schemas';
 import { CatalogActionType } from '../../actions/action-types';
 

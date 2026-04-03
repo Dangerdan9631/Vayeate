@@ -92,7 +92,7 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 - **New UI actions**: Add to `AppActionV2` union in `action-types.ts`. Add an exhaustive switch case in the correct domain handler (`app-handler.ts`, `catalog-handler.ts`, etc.). Invoke a controller from the handler; controller uses operations for setState, persist, undo. Add reducer cases in `reducer.ts`. Use the add-app-action skill.
 - **One action = one behavior**: Never use optional fields to branch to different behaviors within one action type. Split overloaded actions into distinct action types.
 - **All UI events go through the action queue**: No component-owned side effects.
-- **New ViewModels**: Create hook in `app/viewmodel/`, consume `useAppState()`, return derived data.
+- **New ViewModels**: Create hook in `app/viewmodel/`, consume `useAppState()` from `app/ui/context/app-context-hooks.tsx`, return derived data.
 - **Renderer → Main**: Use gateway/services from operations only; app never imports gateway. Never import from `gateway/data` or `domain/controllers` in UI/viewmodel.
 - **Electron main**: Resolves safe paths for IPC; Theme Studio persistence goes through gateways + `FileSystemService`.
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`.

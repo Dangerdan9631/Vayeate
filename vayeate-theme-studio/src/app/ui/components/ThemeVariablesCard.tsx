@@ -8,7 +8,7 @@ import type {
   ContrastVariable,
 } from '../../../model/schemas';
 import { ThemeActionType } from '../../actions/action-types';
-import { useAppDispatch } from '../context/slice-contexts';
+import { useAppDispatch } from '../context/app-context-hooks';
 import { isEyedropperSupported } from '../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
 
