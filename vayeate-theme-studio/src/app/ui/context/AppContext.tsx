@@ -90,109 +90,85 @@ export function AppProvider({ children }: { children: ReactNode }) {
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);
 
-  const selectCatalogsState = (s: AppState) => s.catalogs;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: catalogsStateReducer,
-    selectSlice: selectCatalogsState,
+    selectSlice: (s: AppState) => s.catalogs,
     SetterClass: CatalogsStateSetter,
     GetterClass: CatalogsStateGetter,
-    setterToken: CatalogsStateSetter,
-    getterToken: CatalogsStateGetter,
   });
 
-  const selectTemplatesState = (s: AppState) => s.templates;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: templatesStateReducer,
-    selectSlice: selectTemplatesState,
+    selectSlice: (s: AppState) => s.templates,
     SetterClass: TemplatesStateSetter,
     GetterClass: TemplatesStateGetter,
-    setterToken: TemplatesStateSetter,
-    getterToken: TemplatesStateGetter,
   });
 
-  const selectThemesState = (s: AppState) => s.themes;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: themesStateReducer,
-    selectSlice: selectThemesState,
+    selectSlice: (s: AppState) => s.themes,
     SetterClass: ThemesStateSetter,
     GetterClass: ThemesStateGetter,
-    setterToken: ThemesStateSetter,
-    getterToken: ThemesStateGetter,
   });
 
-  const selectAppConfigState = (s: AppState) => s.appConfig;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: appConfigStateReducer,
-    selectSlice: selectAppConfigState,
+    selectSlice: (s: AppState) => s.appConfig,
     SetterClass: AppConfigStateSetter,
     GetterClass: AppConfigStateGetter,
-    setterToken: AppConfigStateSetter,
-    getterToken: AppConfigStateGetter,
   });
 
-  const selectUndoStackState = (s: AppState) => s.undoStack;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: undoStackStateReducer,
-    selectSlice: selectUndoStackState,
+    selectSlice: (s: AppState) => s.undoStack,
     SetterClass: UndoStackStateSetter,
     GetterClass: UndoStackStateGetter,
-    setterToken: UndoStackStateSetter,
-    getterToken: UndoStackStateGetter,
   });
 
-  const selectUiState = (s: AppState) => s.ui;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: uiStateReducer,
-    selectSlice: selectUiState,
+    selectSlice: (s: AppState) => s.ui,
     SetterClass: UiStateSetter,
     GetterClass: UiStateGetter,
-    setterToken: UiStateSetter,
-    getterToken: UiStateGetter,
   });
 
-  const selectQueueStatusState = (s: AppState) => s.ui.queueStatus;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: (appState, queueStatus) =>
       queueStatusStateReducer(appState, { type: 'SET_QUEUE_STATUS', queueStatus }),
-    selectSlice: selectQueueStatusState,
+    selectSlice: (s: AppState) => s.ui.queueStatus,
     SetterClass: QueueStatusStateSetter,
     GetterClass: QueueStatusStateGetter,
-    setterToken: QueueStatusStateSetter,
-    getterToken: QueueStatusStateGetter,
   });
 
-  const selectWindowState = (s: AppState) => s.window;
   useAppSliceBridge({
     stateRef,
     replaceState,
     getState,
     reducer: windowStateReducer,
-    selectSlice: selectWindowState,
+    selectSlice: (s: AppState) => s.window,
     SetterClass: WindowStateSetter,
     GetterClass: WindowStateGetter,
-    setterToken: WindowStateSetter,
-    getterToken: WindowStateGetter,
   });
 
   const queueRef = useRef<ActionQueue | null>(null);

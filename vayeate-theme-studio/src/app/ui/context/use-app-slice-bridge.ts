@@ -12,8 +12,6 @@ export interface UseAppSliceBridgeOptions<Update, Slice, Setter, Getter> {
   selectSlice: (state: AppState) => Slice;
   SetterClass: new (set: (update: Update) => void) => Setter;
   GetterClass: new (get: () => Slice) => Getter;
-  setterToken: new (...args: never[]) => Setter;
-  getterToken: new (...args: never[]) => Getter;
 }
 
 /**
@@ -31,8 +29,6 @@ export function useAppSliceBridge<Update, Slice, Setter, Getter>(
     selectSlice,
     SetterClass,
     GetterClass,
-    setterToken,
-    getterToken,
   } = options;
 
   const setState = useCallback(
@@ -48,6 +44,6 @@ export function useAppSliceBridge<Update, Slice, Setter, Getter>(
     [GetterClass, getState, selectSlice],
   );
 
-  container.registerInstance(setterToken, setter);
-  container.registerInstance(getterToken, getter);
+  container.registerInstance(SetterClass, setter);
+  container.registerInstance(GetterClass, getter);
 }
