@@ -6,7 +6,7 @@ import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 import { container } from 'tsyringe';
-import { useRegisterAppSliceBridges } from './use-register-app-slice-bridges';
+import { registerAppSliceBridges } from './use-app-slice-bridge';
 
 export interface AppContextValue {
   state: AppState;
@@ -25,7 +25,7 @@ export function AppProvider({ children, initialAppConfig }: { children: ReactNod
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);
 
-  useRegisterAppSliceBridges({ stateRef, replaceState, getState });
+  registerAppSliceBridges({ stateRef, replaceState, getState });
 
   const queueRef = useRef<ActionQueue | null>(null);
   const dispatch = useCallback((action: AppAction): Promise<void> => {
