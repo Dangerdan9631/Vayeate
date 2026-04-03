@@ -1,57 +1,28 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useEffect, type ReactNode } from 'react';
 import { AppContext } from './AppContext';
-import { AppDispatchContext } from './slice-contexts';
-import { AppActionType } from '../../actions/action-types';
 import type { ColorScheme } from '../../../model/schemas';
 
 export type { ColorScheme };
 
-function applyTheme(theme: ColorScheme) {
-  document.documentElement.setAttribute('data-theme', theme);
-}
-
 interface ColorSchemeContextValue {
   theme: ColorScheme;
-  toggleColorScheme: () => void;
 }
 
 const ColorSchemeContext = createContext<ColorSchemeContextValue | null>(null);
 
 export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const appCtx = useContext(AppContext);
-  const dispatch = useContext(AppDispatchContext);
+  if (!appCtx) {
+    throw new Error('ColorSchemeProvider must be used within AppProvider');
+  }
 
-  // Local state is only used when AppContext is not available (e.g., in unit tests).
-  const [localScheme, setLocalScheme] = useState<ColorScheme>('dark');
-
-  const scheme: ColorScheme = appCtx ? appCtx.state.appConfig.colorScheme : localScheme;
+  const theme = appCtx.state.appConfig.colorScheme;
 
   useEffect(() => {
-    applyTheme(scheme);
-  }, [scheme]);
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
-  const toggleColorScheme = useCallback(() => {
-    if (dispatch) {
-      // In the full app: dispatch the action; the handler updates appConfig + persists to disk.
-      dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle, checked: scheme !== 'light' });
-    } else {
-      // Standalone (no AppContext/dispatch) – update local state without persistence.
-      setLocalScheme((prev) => (prev === 'light' ? 'dark' : 'light'));
-    }
-  }, [dispatch, scheme]);
-
-  return (
-    <ColorSchemeContext.Provider value={{ theme: scheme, toggleColorScheme }}>
-      {children}
-    </ColorSchemeContext.Provider>
-  );
+  return <ColorSchemeContext.Provider value={{ theme }}>{children}</ColorSchemeContext.Provider>;
 }
 
 export function useColorScheme(): ColorSchemeContextValue {

@@ -63,11 +63,6 @@ import { UndoProvider } from './UndoContext';
 import { useAppSliceBridge } from './use-app-slice-bridge';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
-/** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
-function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
-  return nextState;
-}
-
 export interface AppContextValue {
   state: AppState;
   dispatch: (action: AppAction) => Promise<void>;
@@ -77,7 +72,7 @@ export const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children, initialAppConfig }: { children: ReactNode, initialAppConfig: AppConfigState }) {
   const [state, replaceState] = useReducer(
-    replaceStateReducer,
+    (_state: AppState, nextState: AppState): AppState => nextState,
     initialAppState,
     (base): AppState => ({ ...base, appConfig: initialAppConfig }),
   );
