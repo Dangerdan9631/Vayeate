@@ -1,10 +1,10 @@
-import { useThemeViewModel } from '../../viewmodel/use-theme-viewmodel';
-import { CreateThemeDialog } from '../components/CreateThemeDialog';
-import { EditorPreviewsCard } from '../components/EditorPreviewsCard';
-import { ThemeDetailsCard } from '../components/ThemeDetailsCard';
-import { ThemePaletteCard } from '../components/ThemePaletteCard';
-import { ThemeVariablesCard } from '../components/ThemeVariablesCard';
-import { ThemesCard } from '../components/ThemesCard';
+import { useThemeViewModel } from '../../../viewmodel/use-theme-viewmodel';
+import { CreateThemeDialog } from './CreateThemeDialog';
+import { EditorPreviewsCard } from './EditorPreviewsCard';
+import { ThemeDetailsCard } from './ThemeDetailsCard';
+import { ThemePaletteCard } from './ThemePaletteCard';
+import { ThemeVariablesCard } from './ThemeVariablesCard';
+import { ThemesCard } from './ThemesCard';
 
 export function ThemesPage() {
   const vm = useThemeViewModel();

@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { useCatalogViewModel } from '../../viewmodel/use-catalog-viewmodel';
-import { useCatalogsState } from '../context/app-context-hooks';
-import { BulkAddDialog } from '../components/BulkAddDialog';
-import { CatalogDetailsCard } from '../components/CatalogDetailsCard';
-import { CatalogsCard } from '../components/CatalogsCard';
-import { CreateCatalogDialog } from '../components/CreateCatalogDialog';
-import { TokensCard } from '../components/TokensCard';
+import { useCatalogViewModel } from '../../../viewmodel/use-catalog-viewmodel';
+import { useCatalogsState } from '../../context/app-context-hooks';
+import { BulkAddDialog } from './BulkAddDialog';
+import { CatalogDetailsCard } from './CatalogDetailsCard';
+import { CatalogsCard } from './CatalogsCard';
+import { CreateCatalogDialog } from './CreateCatalogDialog';
+import { TokensCard } from './TokensCard';
 
 export function CatalogsPage() {
   const vm = useCatalogViewModel();

@@ -3,15 +3,15 @@ import {
   useTemplateViewModel,
   computeOrphanKeys,
   type SemanticCatalogInfo,
-} from '../../viewmodel/use-template-viewmodel';
-import { CreateTemplateDialog } from '../components/CreateTemplateDialog';
-import { GroupsCard } from '../components/GroupsCard';
-import { MappingsCard } from '../components/MappingsCard';
-import { TemplateCatalogsCard } from '../components/TemplateCatalogsCard';
-import { TemplateDetailsCard } from '../components/TemplateDetailsCard';
-import { TemplatesCard } from '../components/TemplatesCard';
-import { VariablesCard } from '../components/VariablesCard';
-import type { Token } from '../../../model/schemas';
+} from '../../../viewmodel/use-template-viewmodel';
+import { CreateTemplateDialog } from './CreateTemplateDialog';
+import { GroupsCard } from './GroupsCard';
+import { MappingsCard } from './MappingsCard';
+import { TemplateCatalogsCard } from './TemplateCatalogsCard';
+import { TemplateDetailsCard } from './TemplateDetailsCard';
+import { TemplatesCard } from './TemplatesCard';
+import { VariablesCard } from './VariablesCard';
+import type { Token } from '../../../../model/schemas';
 
 export function TemplatesPage() {
   const vm = useTemplateViewModel();

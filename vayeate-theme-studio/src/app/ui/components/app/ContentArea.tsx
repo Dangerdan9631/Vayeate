@@ -1,7 +1,7 @@
-import type { TabId } from '../tabs';
-import { CatalogsPage } from '../pages/CatalogsPage';
-import { TemplatesPage } from '../pages/TemplatesPage';
-import { ThemesPage } from '../pages/ThemesPage';
+import type { TabId } from '../../tabs';
+import { CatalogsPage } from '../catalog/CatalogsPage';
+import { TemplatesPage } from '../template/TemplatesPage';
+import { ThemesPage } from '../theme/ThemesPage';
 
 interface ContentAreaProps {
   activeTab: TabId;

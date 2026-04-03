@@ -6,9 +6,9 @@ import {
   useState,
   type MouseEvent,
 } from 'react';
-import { ThemeActionType } from '../../actions/action-types';
-import { useViewportSize } from '../../viewmodel/useViewportSize';
-import { useAppDispatch, useEyedropperUiState } from '../context/app-context-hooks';
+import { ThemeActionType } from '../../../actions/action-types';
+import { useViewportSize } from '../../../viewmodel/useViewportSize';
+import { useAppDispatch, useEyedropperUiState } from '../../context/app-context-hooks';
 import {
   clampElementScroll,
   clampEyedropperCanvasInAspectBounds,
@@ -25,7 +25,7 @@ import {
   loupeSourceRect,
   rgbToHex,
   scrollContainerContentSize,
-} from '../utils/eyedropper';
+} from '../../utils/eyedropper';
 
 /** Full-screen screen snapshot overlay; driven by `state.ui.eyedropper`. */
 export function EyedropperOverlay() {

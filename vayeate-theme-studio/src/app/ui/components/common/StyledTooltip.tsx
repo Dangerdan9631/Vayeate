@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useViewportSize } from '../../viewmodel/useViewportSize';
+import { useViewportSize } from '../../../viewmodel/useViewportSize';
 
 const OFFSET = 8;
 const PADDING = 8;

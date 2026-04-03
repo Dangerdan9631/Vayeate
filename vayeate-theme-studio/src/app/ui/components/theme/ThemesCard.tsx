@@ -1,18 +1,18 @@
-import type { TemplateReference } from '../../../model/schemas';
+import type { ThemeReference } from '../../../../model/schemas';
 
-interface TemplatesCardProps {
-  templateNames: string[];
+interface ThemesCardProps {
+  themeNames: string[];
   selectedName: string | null;
-  versionsForSelectedName: TemplateReference[];
-  selectedRef: TemplateReference | null;
+  versionsForSelectedName: ThemeReference[];
+  selectedRef: ThemeReference | null;
   onSelectName: (name: string) => void;
   onSelectVersion: (version: string) => void;
   onCreateClick: () => void;
   isCreating: boolean;
 }
 
-export function TemplatesCard({
-  templateNames,
+export function ThemesCard({
+  themeNames,
   selectedName,
   versionsForSelectedName,
   selectedRef,
@@ -20,7 +20,7 @@ export function TemplatesCard({
   onSelectVersion,
   onCreateClick,
   isCreating,
-}: TemplatesCardProps) {
+}: ThemesCardProps) {
   function handleNameChange(value: string) {
     if (value) {
       onSelectName(value);
@@ -33,7 +33,7 @@ export function TemplatesCard({
 
   return (
     <div className="catalogs-card placeholder">
-      <h2>Templates</h2>
+      <h2>Themes</h2>
 
       <label className="field-row">
         <span className="field-label">Name</span>
@@ -43,9 +43,9 @@ export function TemplatesCard({
           onChange={(e) => handleNameChange(e.target.value)}
         >
           <option value="" disabled>
-            Select a template…
+            Select a theme…
           </option>
-          {templateNames.map((name) => (
+          {themeNames.map((name) => (
             <option key={name} value={name}>
               {name}
             </option>
@@ -76,7 +76,7 @@ export function TemplatesCard({
         disabled={isCreating}
         onClick={onCreateClick}
       >
-        {isCreating ? 'Creating…' : 'Create new template'}
+        {isCreating ? 'Creating…' : 'Create new theme'}
       </button>
     </div>
   );

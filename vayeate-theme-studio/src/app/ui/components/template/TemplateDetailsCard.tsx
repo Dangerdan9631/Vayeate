@@ -1,4 +1,4 @@
-import type { Template } from '../../../model/schemas';
+import type { Template } from '../../../../model/schemas';
 
 interface TemplateDetailsCardProps {
   template: Template;

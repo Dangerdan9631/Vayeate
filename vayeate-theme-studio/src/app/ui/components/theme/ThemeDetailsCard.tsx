@@ -1,5 +1,5 @@
-import type { Theme, TemplateReference } from '../../../model/schemas';
-import type { GenerateResult } from '../../../domain/state/theme/themes-state';
+import type { Theme, TemplateReference } from '../../../../model/schemas';
+import type { GenerateResult } from '../../../../domain/state/theme/themes-state';
 
 interface ThemeDetailsCardProps {
   theme: Theme;

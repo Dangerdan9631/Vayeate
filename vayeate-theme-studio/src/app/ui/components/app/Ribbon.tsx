@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { TAB_DEFINITIONS, type TabId } from '../tabs';
+import { TAB_DEFINITIONS, type TabId } from '../../tabs';
 
 interface RibbonProps {
   activeTab: TabId;

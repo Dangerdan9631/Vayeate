@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
-import { useAppDispatch, useTemplatesState } from '../context/app-context-hooks';
-import { TemplateActionType } from '../../actions/action-types';
+import { useAppDispatch, useTemplatesState } from '../../context/app-context-hooks';
+import { TemplateActionType } from '../../../actions/action-types';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 

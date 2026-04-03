@@ -6,11 +6,11 @@ import type {
   ContrastComparisonMethod,
   ContrastAssignmentValue,
   ContrastVariable,
-} from '../../../model/schemas';
-import { ThemeActionType } from '../../actions/action-types';
-import { useAppDispatch } from '../context/app-context-hooks';
-import { isEyedropperSupported } from '../utils/eyedropper';
-import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
+} from '../../../../model/schemas';
+import { ThemeActionType } from '../../../actions/action-types';
+import { useAppDispatch } from '../../context/app-context-hooks';
+import { isEyedropperSupported } from '../../utils/eyedropper';
+import { TriStateCheckbox, type TriState } from '../common/TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
 

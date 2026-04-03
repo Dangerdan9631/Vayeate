@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useAppDispatch, useCatalogsState } from '../context/app-context-hooks';
-import type { Catalog, SourceType, TokenType } from '../../../model/schemas';
-import { CatalogActionType } from '../../actions/action-types';
+import { useAppDispatch, useCatalogsState } from '../../context/app-context-hooks';
+import type { Catalog, SourceType, TokenType } from '../../../../model/schemas';
+import { CatalogActionType } from '../../../actions/action-types';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];

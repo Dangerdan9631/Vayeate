@@ -1,4 +1,4 @@
-import type { CatalogReference } from '../../../model/schemas';
+import type { CatalogReference } from '../../../../model/schemas';
 
 interface CatalogsCardProps {
   catalogNames: string[];

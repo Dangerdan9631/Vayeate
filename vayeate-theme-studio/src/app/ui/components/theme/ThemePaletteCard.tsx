@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { ColorAssignment, ColorVariable } from '../../../model/schemas';
-import { clusterColors } from '../../../domain/utils/color-clustering';
-import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
-import type { SelectedColorsDisplay } from '../../viewmodel/use-theme-viewmodel';
-import type { ThemePaneState } from '../../../model/theme-pane-state';
-import { ThemeActionType } from '../../actions/action-types';
-import { useAppDispatch } from '../context/app-context-hooks';
-import { isEyedropperSupported } from '../utils/eyedropper';
-import { TriStateCheckbox, type TriState } from './TriStateCheckbox';
+import type { ColorAssignment, ColorVariable } from '../../../../model/schemas';
+import { clusterColors } from '../../../../domain/utils/color-clustering';
+import { hexToHue, hslToRgb, rgbToHex } from '../../../../domain/utils/color';
+import type { SelectedColorsDisplay } from '../../../viewmodel/use-theme-viewmodel';
+import type { ThemePaneState } from '../../../../model/theme-pane-state';
+import { ThemeActionType } from '../../../actions/action-types';
+import { useAppDispatch } from '../../context/app-context-hooks';
+import { isEyedropperSupported } from '../../utils/eyedropper';
+import { TriStateCheckbox, type TriState } from '../common/TriStateCheckbox';
 
 /** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */
 function hueSliderGradientFromRefHex(refHex: string): string {

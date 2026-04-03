@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
-import { useAppDispatch, useTemplatesState } from '../context/app-context-hooks';
-import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
-import { TemplateActionType } from '../../actions/action-types';
+import { useAppDispatch, useTemplatesState } from '../../context/app-context-hooks';
+import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../../domain/utils/semantic-token';
+import { TemplateActionType } from '../../../actions/action-types';
 import type {
   ColorVariable,
   ColorVariableKey,
@@ -9,7 +9,7 @@ import type {
   ContrastVariableKey,
   Mapping,
   TokenType,
-} from '../../../model/schemas';
+} from '../../../../model/schemas';
 
 const UNGROUPED_KEY = '__ungrouped__';
 

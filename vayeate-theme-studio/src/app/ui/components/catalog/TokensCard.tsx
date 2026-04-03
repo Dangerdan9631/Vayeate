@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useAppDispatch, useCatalogsState } from '../context/app-context-hooks';
-import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
-import { tokenKeySchema } from '../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
-import { CatalogActionType } from '../../actions/action-types';
+import { useAppDispatch, useCatalogsState } from '../../context/app-context-hooks';
+import type { Catalog, Token, TokenKey, TokenType } from '../../../../model/schemas';
+import { tokenKeySchema } from '../../../../model/schemas';
+import { mergeSemanticSelectorInto } from '../../../../domain/utils/semantic-token';
+import { CatalogActionType } from '../../../actions/action-types';
 
 interface TokensCardProps {
   catalog: Catalog;
