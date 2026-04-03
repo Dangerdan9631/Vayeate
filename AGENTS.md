@@ -53,7 +53,7 @@ Use this file to route an AI coding agent to the right instruction files, archit
 | Adding or using validations | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “Validations”) | `vayeate-theme-studio/src/domain/validations/`, controllers that use them |
 | State / reducer structure or new state slice | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “State and reducers”) | `vayeate-theme-studio/src/domain/state/`, `vayeate-theme-studio/src/app/ui/context/AppContext.tsx` |
 | App changes that mutate state or files (undoable work) | `.cursor/rules/vayeate-theme-studio-undo.mdc` | Existing operations/controllers/viewmodels, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
-| Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/app/ui/context/UndoContext.tsx` when implementing or migrating |
+| Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/app/viewmodel/use-undo-stack-viewmodel.ts` when implementing UI wiring or migrating |
 | Adding a new undo action type | `.cursor/skills/define-undo-action/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `.cursor/rules/vayeate-theme-studio-undo.mdc` |
 
 ## Skills index

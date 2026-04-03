@@ -1,19 +1,11 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
-import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
-import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
-import { createUndoProcessor } from '../../../domain/core/undo-processor';
-import { useAppState } from './useAppState';
-import { AppActionType } from '../../actions/action-types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import type { UndoListEntry } from '../../domain/core/undo-manager-v2';
+import { createUndoProcessor } from '../../domain/core/undo-processor';
+import { useAppState } from '../ui/context/useAppState';
+import { AppActionType } from '../actions/action-types';
 
-export interface UndoStackValue {
+export interface UndoStackViewModel {
   canUndo: boolean;
   canRedo: boolean;
   frames: UndoListEntry[];
@@ -23,15 +15,8 @@ export interface UndoStackValue {
   goTo: (frameId: string) => void;
 }
 
-const UndoContext = createContext<UndoStackValue | null>(null);
-
-export function useUndoStack(): UndoStackValue {
-  const ctx = useContext(UndoContext);
-  if (!ctx) throw new Error('useUndoStack must be used within UndoProvider');
-  return ctx;
-}
-
-export function UndoProvider({ children }: { children: ReactNode }) {
+/** Subscribes to the current undo stack for menu/history UI; must run under AppProvider. */
+export function useUndoStackViewModel(): UndoStackViewModel {
   const { state, dispatch } = useAppState();
   const currentStackId = state.undoStack.currentUndoStackId;
   const undoListVersion = state.undoStack.undoListVersion;
@@ -71,21 +56,21 @@ export function UndoProvider({ children }: { children: ReactNode }) {
   }, [currentStackId, undoListVersion]);
 
   const undo = useCallback(() => {
-    dispatch({ type: AppActionType.AppEditMenuUndoButtonOnClick });
+    void dispatch({ type: AppActionType.AppEditMenuUndoButtonOnClick });
   }, [dispatch]);
 
   const redo = useCallback(() => {
-    dispatch({ type: AppActionType.AppEditMenuRedoButtonOnClick });
+    void dispatch({ type: AppActionType.AppEditMenuRedoButtonOnClick });
   }, [dispatch]);
 
   const goTo = useCallback(
     (frameId: string) => {
-      dispatch({ type: AppActionType.AppHistoryMenuGoToButtonOnClick, frameId });
+      void dispatch({ type: AppActionType.AppHistoryMenuGoToButtonOnClick, frameId });
     },
     [dispatch],
   );
 
-  const value = useMemo<UndoStackValue>(
+  return useMemo(
     () => ({
       canUndo: listState.canUndo,
       canRedo: listState.canRedo,
@@ -97,6 +82,4 @@ export function UndoProvider({ children }: { children: ReactNode }) {
     }),
     [listState.canUndo, listState.canRedo, listState.frames, listState.currentId, undo, redo, goTo],
   );
-
-  return <UndoContext.Provider value={value}>{children}</UndoContext.Provider>;
 }

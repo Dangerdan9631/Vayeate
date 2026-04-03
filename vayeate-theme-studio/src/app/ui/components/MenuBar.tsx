@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useColorScheme } from '../context/ColorSchemeContext';
-import { useUndoStack } from '../context/UndoContext';
+import { useUndoStackViewModel } from '../../viewmodel/use-undo-stack-viewmodel';
 import { useAppDispatch, useMenuOpenState } from '../context/slice-contexts';
 import { AppActionType } from '../../actions/action-types';
 
@@ -8,7 +8,7 @@ export function MenuBar() {
   const dispatch = useAppDispatch();
   const { theme } = useColorScheme();
   const { fileOpen, editOpen, historyOpen, viewOpen } = useMenuOpenState();
-  const { canUndo, canRedo, frames, currentId } = useUndoStack();
+  const { canUndo, canRedo, frames, currentId } = useUndoStackViewModel();
   const fileRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);

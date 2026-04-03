@@ -59,7 +59,6 @@ import {
   TemplatesStateContext,
   ThemesStateContext,
 } from './slice-contexts';
-import { UndoProvider } from './UndoContext';
 import { useAppSliceBridge } from './use-app-slice-bridge';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
@@ -179,8 +178,8 @@ export function AppProvider({ children, initialAppConfig }: { children: ReactNod
             <EyedropperUiStateContext.Provider value={state.ui.eyedropper}>
               <CatalogsStateContext.Provider value={state.catalogs}>
                 <TemplatesStateContext.Provider value={state.templates}>
-                  <ThemesStateContext.Provider value={state.themes}>
-                    <UndoProvider>{children}</UndoProvider>
+                    <ThemesStateContext.Provider value={state.themes}>
+                    {children}
                   </ThemesStateContext.Provider>
                 </TemplatesStateContext.Provider>
               </CatalogsStateContext.Provider>
