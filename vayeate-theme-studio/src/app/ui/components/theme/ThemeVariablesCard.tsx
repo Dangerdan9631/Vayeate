@@ -9,7 +9,6 @@ import type {
 } from '../../../../model/schemas';
 import { ThemeActionType } from '../../../actions/action-types';
 import { useAppDispatch } from '../../context/app-context-hooks';
-import { isEyedropperSupported } from '../../utils/eyedropper';
 import { TriStateCheckbox, type TriState } from '../common/TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
@@ -297,7 +296,7 @@ function ColorAssignmentRow({
 
   return (
     <div
-      className={`theme-color-row ${isOrphan ? 'theme-row-orphan' : ''} ${isEyedropperSupported() ? 'theme-color-row--has-eyedropper' : ''}`}
+      className={`theme-color-row theme-color-row--has-eyedropper ${isOrphan ? 'theme-row-orphan' : ''}`}
     >
       <button
         type="button"
@@ -353,22 +352,20 @@ function ColorAssignmentRow({
           setPendingDarkPicker(null);
         }}
       />
-      {isEyedropperSupported() && (
-        <button
-          type="button"
-          className="theme-eyedropper-btn"
-          title="Pick color from screen (dark)"
-          aria-label="Pick dark color from screen"
-          onClick={() => {
-            void dispatch({
-              type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
-              ref: assignment.colorRef,
-            });
-          }}
-        >
-          <span className="material-symbols-outlined" aria-hidden>colorize</span>
-        </button>
-      )}
+      <button
+        type="button"
+        className="theme-eyedropper-btn"
+        title="Pick color from screen (dark)"
+        aria-label="Pick dark color from screen"
+        onClick={() => {
+          void dispatch({
+            type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
+            ref: assignment.colorRef,
+          });
+        }}
+      >
+        <span className="material-symbols-outlined" aria-hidden>colorize</span>
+      </button>
       <input
         className="field-input theme-color-hex"
         type="text"
@@ -399,24 +396,22 @@ function ColorAssignmentRow({
           setPendingLightPicker(null);
         }}
       />
-      {isEyedropperSupported() && (
-        <button
-          type="button"
-          className="theme-eyedropper-btn"
-          disabled={assignment.useDarkForLight}
-          title="Pick color from screen (light)"
-          aria-label="Pick light color from screen"
-          onClick={() => {
-            if (assignment.useDarkForLight) return;
-            void dispatch({
-              type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
-              ref: assignment.colorRef,
-            });
-          }}
-        >
-          <span className="material-symbols-outlined" aria-hidden>colorize</span>
-        </button>
-      )}
+      <button
+        type="button"
+        className="theme-eyedropper-btn"
+        disabled={assignment.useDarkForLight}
+        title="Pick color from screen (light)"
+        aria-label="Pick light color from screen"
+        onClick={() => {
+          if (assignment.useDarkForLight) return;
+          void dispatch({
+            type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
+            ref: assignment.colorRef,
+          });
+        }}
+      >
+        <span className="material-symbols-outlined" aria-hidden>colorize</span>
+      </button>
       <label
         className="theme-use-dark-check theme-icon-checkbox"
         title={
