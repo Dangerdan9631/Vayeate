@@ -1,12 +1,31 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-const _rawConfig = ipcRenderer.sendSync('config:loadSync') as { colorScheme?: string } | null;
-const initialColorScheme: 'light' | 'dark' =
-  _rawConfig?.colorScheme === 'light' ? 'light' : 'dark';
+type AppConfig = {
+  colorScheme?: 'light' | 'dark'
+};
+
+function parseAppConfig(): AppConfig | undefined {
+  const raw = ipcRenderer.sendSync('config:loadSync');
+  if (raw === null || raw === undefined || typeof raw !== 'object' || Array.isArray(raw)) {
+    return undefined;
+  }
+
+  const colorScheme = (`colorScheme` in raw && (raw['colorScheme'] === 'light' || raw['colorScheme'] === 'dark'))
+      ? raw['colorScheme'] as 'light' | 'dark'
+      : undefined;
+  
+  return {
+    colorScheme: colorScheme
+  } as AppConfig;
+}
+
+const initialAppConfig = parseAppConfig();
+function getElectronInitialAppConfig(): AppConfig | undefined {
+  return initialAppConfig;
+}
 
 const electronAPI = {
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
-  /** Multi-monitor layout + per-display PNG bytes (ScreenshotService). */
   screenshotGetFullDisplaySnapshot: () =>
     ipcRenderer.invoke('screenshot:getFullDisplaySnapshot') as Promise<{
       fullBounds: { x: number; y: number; width: number; height: number };
@@ -29,13 +48,11 @@ const electronAPI = {
   toggleDevTools: () => ipcRenderer.invoke('window:toggleDevTools'),
   getWindowBounds: () =>
     ipcRenderer.invoke('window:getBounds') as Promise<{ x: number; y: number; width: number; height: number }>,
-  /** Subscribe to main process logs so they appear in the renderer DevTools console. */
   onMainLog: (callback: (level: 'debug' | 'info' | 'warn' | 'error', args: string[]) => void) => {
     ipcRenderer.on('main-log', (_event, level: 'debug' | 'info' | 'warn' | 'error', args: string[]) =>
       callback(level, args),
     );
   },
-  /** Subscribe to window state events from main (minimize, maximize, unmaximize, restore). Returns unsubscribe. */
   onWindowState: (callback: (event: 'minimized' | 'maximized' | 'unmaximized' | 'restored') => void) => {
     const onMinimized = () => callback('minimized');
     const onMaximized = () => callback('maximized');
@@ -52,21 +69,18 @@ const electronAPI = {
       ipcRenderer.removeListener('window:restored', onRestored);
     };
   },
-  /** Subscribe to window resize events from main. Returns unsubscribe. */
   onWindowResize: (callback: (size: { width: number; height: number }) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, width: number, height: number) =>
       callback({ width, height });
     ipcRenderer.on('window:resized', handler);
     return () => ipcRenderer.removeListener('window:resized', handler);
   },
-  /** Subscribe to window move events from main. Returns unsubscribe. */
   onWindowMove: (callback: (position: { x: number; y: number }) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, x: number, y: number) =>
       callback({ x, y });
     ipcRenderer.on('window:moved', handler);
     return () => ipcRenderer.removeListener('window:moved', handler);
   },
-  /** Send renderer logs to main process so they appear in the IDE/terminal console. */
   sendLog: (level: 'debug' | 'info' | 'warn' | 'error', tag: string, args: string[]) => {
     ipcRenderer.send('renderer-log', level, tag, args);
   },
@@ -85,4 +99,4 @@ const electronAPI = {
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);
-contextBridge.exposeInMainWorld('electronInitialColorScheme', initialColorScheme);
+contextBridge.exposeInMainWorld('getElectronInitialAppConfig', getElectronInitialAppConfig);

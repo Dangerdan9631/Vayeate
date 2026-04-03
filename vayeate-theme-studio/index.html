@@ -8,9 +8,9 @@
   <body>
     <script>
       (function () {
-        var v = localStorage.getItem('vayeate-theme-studio-color-scheme');
-        if (v === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-        else document.documentElement.setAttribute('data-theme', 'light');
+        var initialAppConfig = window.getElectronInitialAppConfig();
+        var scheme = initialAppConfig?.colorScheme ?? 'dark';
+        document.documentElement.setAttribute('data-theme', scheme);
       })();
     </script>
     <div id="app"></div>

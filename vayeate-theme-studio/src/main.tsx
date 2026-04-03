@@ -4,15 +4,17 @@ import { createRoot } from 'react-dom/client';
 import { App } from './app/ui/App';
 import { container } from 'tsyringe';
 import { InitializeLoggingController } from './domain/controllers/app-controller';
+import { AppConfigBootstrapService } from './gateway/services/app-config-bootstrap-service';
 
 container.resolve(InitializeLoggingController).run();
+const initialAppConfig = container.resolve(AppConfigBootstrapService).getInitialAppConfig();
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (appRoot) {
   const root = createRoot(appRoot);
   root.render(
     <React.StrictMode>
-      <App />
+      <App initialAppConfig={initialAppConfig} />
     </React.StrictMode>
   );
 }

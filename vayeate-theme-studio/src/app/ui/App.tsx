@@ -13,6 +13,7 @@ import { StatusBar } from './components/StatusBar';
 import { StyledTooltip } from './components/StyledTooltip';
 import type { TabId } from './tabs';
 import { AppActionType } from '../actions/action-types';
+import type { AppConfigState } from '../../domain/state/app-config/app-config-state';
 
 function AppShell() {
   const activeTab = useActiveTab();
@@ -47,9 +48,9 @@ function AppShell() {
   );
 }
 
-export function App() {
+export function App({ initialAppConfig }: { initialAppConfig: AppConfigState }) {
   return (
-    <AppProvider>
+    <AppProvider initialAppConfig={initialAppConfig}>
       <ColorSchemeProvider>
         <AppShell />
       </ColorSchemeProvider>

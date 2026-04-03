@@ -61,6 +61,7 @@ import {
 } from './slice-contexts';
 import { UndoProvider } from './UndoContext';
 import { useAppSliceBridge } from './use-app-slice-bridge';
+import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
 /** Reducer that just replaces state; each setter calls the appropriate slice reducer directly. */
 function replaceStateReducer(_state: AppState, nextState: AppState): AppState {
@@ -74,17 +75,11 @@ export interface AppContextValue {
 
 export const AppContext = createContext<AppContextValue | null>(null);
 
-export function AppProvider({ children }: { children: ReactNode }) {
+export function AppProvider({ children, initialAppConfig }: { children: ReactNode, initialAppConfig: AppConfigState }) {
   const [state, replaceState] = useReducer(
     replaceStateReducer,
     initialAppState,
-    (base): AppState => {
-      // Initialize colorScheme from config file (via preload synchronous IPC) to avoid a flash on startup.
-      if (window.electronInitialColorScheme === 'light') {
-        return { ...base, appConfig: { colorScheme: 'light' } };
-      }
-      return base;
-    },
+    (base): AppState => ({ ...base, appConfig: initialAppConfig }),
   );
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -172,7 +167,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   });
 
   const queueRef = useRef<ActionQueue | null>(null);
-
   const dispatch = useCallback((action: AppAction): Promise<void> => {
     if (!queueRef.current) {
       queueRef.current = container.resolve(ActionQueue);
