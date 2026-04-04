@@ -401,8 +401,8 @@ app.whenReady().then(async () => {
   });
 });
 
+// Single-window app: always terminate the process when the window is gone (including macOS;
+// the default darwin exception would leave Electron running with no UI after the red close button).
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });

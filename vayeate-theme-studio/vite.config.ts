@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import electron from 'vite-plugin-electron/simple';
 import { rendererPlugins } from './vite.renderer-plugins';
+import { viteElectronDevShutdown } from './vite.electron-dev-shutdown.plugin';
 
 export default defineConfig({
 	// Let @rollup/plugin-typescript emit decorators + metadata (tsyringe).
@@ -16,6 +17,7 @@ export default defineConfig({
 			},
 			renderer: {},
 		}),
+		viteElectronDevShutdown(),
 	],
 	server: {
 		port: 5174,
