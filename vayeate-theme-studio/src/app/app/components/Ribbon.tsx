@@ -1,5 +1,7 @@
 import type { MouseEvent } from 'react';
 import { TabId } from '../../../domain/state/ui/ui-state';
+import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { AppActionType } from '../actions/app-action-type';
 
 type TabDefinition = {
   id: TabId;
@@ -15,13 +17,14 @@ const TAB_DEFINITIONS: TabDefinition[] = [
 
 interface RibbonProps {
   activeTab: TabId;
-  onTabChange: (tabId: TabId) => void;
 }
 
-export function Ribbon({ activeTab, onTabChange }: RibbonProps) {
+export function Ribbon({ activeTab }: RibbonProps) {
+  const dispatch = useAppDispatch();
+
   function handleTabClick(e: MouseEvent<HTMLButtonElement>) {
     const tabId = e.currentTarget.dataset.tabId as TabId;
-    onTabChange(tabId);
+    dispatch({ type: AppActionType.AppRibbonTabButtonOnClick, tabId });
   }
 
   return (
