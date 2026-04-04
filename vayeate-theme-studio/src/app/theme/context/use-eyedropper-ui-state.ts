@@ -1,5 +1,5 @@
 import { useContextSelector } from 'use-context-selector';
-import type { EyedropperUiState } from '../../../domain/state/ui/eyedropper-ui-state';
+import type { EyedropperUiState } from '../types/eyedropper-ui';
 import { AppContext } from '../../core/context/AppContext';
 
 export function useEyedropperUiState(): EyedropperUiState {
