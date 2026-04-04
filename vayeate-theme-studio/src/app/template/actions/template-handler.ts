@@ -32,11 +32,14 @@ import {
   UpdateSemanticVariantKeyController,
   UpdateVariableGroupRefController,
 } from '../../../domain/controllers/template-controller';
-import type { ActionHandler, TemplateAction } from '../../core/actions/handler-types';
-import { TemplateActionType } from './template-action-type';
+import type { AppAction } from '../../core/actions/app-action';
+import { TemplateActions, TemplateActionType } from './template-action-type';
+
+const templateTypes = new Set<string>(Object.values(TemplateActionType));
+export const isTemplateAction = (a: AppAction): a is TemplateActions => templateTypes.has(a.type);
 
 @injectable()
-export class TemplateActionHandler implements ActionHandler<TemplateAction> {
+export class TemplateActionHandler {
   constructor(
     private readonly addGroupAndClearInput: AddGroupAndClearInputController,
     private readonly addSemanticVariant: AddSemanticVariantController,
@@ -71,7 +74,7 @@ export class TemplateActionHandler implements ActionHandler<TemplateAction> {
     private readonly updateVariableGroupRef: UpdateVariableGroupRefController,
   ) {}
 
-  async handle(action: TemplateAction): Promise<void> {
+  async handle(action: TemplateActions): Promise<void> {
     switch (action.type) {
       case TemplateActionType.TemplatePageOnLoad:
         await this.loadTemplatePage.run();

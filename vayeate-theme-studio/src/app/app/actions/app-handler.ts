@@ -19,11 +19,14 @@ import {
   ReloadWindowController,
   ToggleDevToolsController,
 } from '../../../domain/controllers/window-controller';
-import type { ActionHandler, AppAction } from '../../core/actions/handler-types';
-import { AppActionType } from './app-action-type';
+import type { AppAction } from '../../core/actions/app-action';
+import { AppActions, AppActionType } from './app-action-type';
+
+const appTypes = new Set<string>(Object.values(AppActionType));
+export const isAppAction = (a: AppAction): a is AppActions => appTypes.has(a.type);
 
 @injectable()
-export class AppActionHandler implements ActionHandler<AppAction> {
+export class AppActionHandler {
   constructor(
     private readonly closeWindow: CloseWindowController,
     private readonly closeAllMenus: CloseAllMenusController,
@@ -41,7 +44,7 @@ export class AppActionHandler implements ActionHandler<AppAction> {
     private readonly dragWindow: DragWindowController,
   ) {}
 
-  async handle(action: AppAction): Promise<void> {
+  async handle(action: AppActions): Promise<void> {
     switch (action.type) {
       case AppActionType.AppFileMenuTriggerButtonOnClick:
         this.toggleMenuOpen.run('file');

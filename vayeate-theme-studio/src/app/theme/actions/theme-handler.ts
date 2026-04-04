@@ -65,11 +65,14 @@ import {
   SetVariablesSelectByTypeController,
   ToggleVariableSelectionController,
 } from '../../../domain/controllers/theme-controller';
-import type { ActionHandler, ThemeAction } from '../../core/actions/handler-types';
-import { ThemeActionType } from './theme-action-type';
+import type { AppAction } from '../../core/actions/app-action';
+import { ThemeActions, ThemeActionType } from './theme-action-type';
+
+const themeTypes = new Set<string>(Object.values(ThemeActionType));
+export const isThemeAction = (a: AppAction): a is ThemeActions => themeTypes.has(a.type);
 
 @injectable()
-export class ThemeActionHandler implements ActionHandler<ThemeAction> {
+export class ThemeActionHandler {
   constructor(
     private readonly applyAssignColorDraft: ApplyAssignColorDraftController,
     private readonly assignColorFromPicker: AssignColorFromPickerController,
@@ -137,7 +140,7 @@ export class ThemeActionHandler implements ActionHandler<ThemeAction> {
     private readonly toggleVariableSelection: ToggleVariableSelectionController,
   ) {}
 
-  async handle(action: ThemeAction): Promise<void> {
+  async handle(action: ThemeActions): Promise<void> {
     switch (action.type) {
       case ThemeActionType.ThemePageOnLoad:
         await this.loadThemePage.run();

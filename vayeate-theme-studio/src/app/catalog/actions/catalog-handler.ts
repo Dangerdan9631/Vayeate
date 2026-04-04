@@ -29,11 +29,14 @@ import {
   UpdateTokenKeyController,
   LoadCatalogPageController,
 } from '../../../domain/controllers/catalog-controller';
-import type { ActionHandler, CatalogAction } from '../../core/actions/handler-types';
-import { CatalogActionType } from './catalog-action-type';
+import type { AppAction } from '../../core/actions/app-action';
+import { CatalogActions, CatalogActionType } from './catalog-action-type';
+
+const catalogTypes = new Set<string>(Object.values(CatalogActionType));
+export const isCatalogAction = (a: AppAction): a is CatalogActions => catalogTypes.has(a.type);
 
 @injectable()
-export class CatalogActionHandler implements ActionHandler<CatalogAction> {
+export class CatalogActionHandler {
   constructor(
     private readonly addNewSource: AddNewSourceController,
     private readonly addNewToken: AddNewTokenController,
@@ -65,7 +68,7 @@ export class CatalogActionHandler implements ActionHandler<CatalogAction> {
     private readonly loadCatalogPage: LoadCatalogPageController,
   ) {}
 
-  async handle(action: CatalogAction): Promise<void> {
+  async handle(action: CatalogActions): Promise<void> {
     switch (action.type) {
       case CatalogActionType.CatalogPageOnLoad:
         await this.loadCatalogPage.run();

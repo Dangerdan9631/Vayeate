@@ -1,16 +1,10 @@
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import type { AppAction } from './app-action';
-import { AppActionHandler } from '../../app/actions/app-handler';
-import { CatalogActionHandler } from '../../catalog/actions/catalog-handler';
-import {
-  isAppAction,
-  isCatalogAction,
-  isTemplateAction,
-  isThemeAction,
-} from './handler-types';
-import { TemplateActionHandler } from '../../template/actions/template-handler';
-import { ThemeActionHandler } from '../../theme/actions/theme-handler';
+import { AppActionHandler, isAppAction } from '../../app/actions/app-handler';
+import { CatalogActionHandler, isCatalogAction } from '../../catalog/actions/catalog-handler';
+import { TemplateActionHandler, isTemplateAction } from '../../template/actions/template-handler';
+import { ThemeActionHandler, isThemeAction } from '../../theme/actions/theme-handler';
 
 @singleton()
 export class ActionProcessor {

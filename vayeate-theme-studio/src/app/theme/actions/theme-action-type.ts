@@ -174,4 +174,3 @@ export type ThemeActions =
   | { type: ThemeActionType.ThemePreviewSampleListOnCommit; value: string }
   | { type: ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick }
   | { type: ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick; hex: HexColor };
-  
