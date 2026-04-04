@@ -1,3 +1,5 @@
+import { Catalog, CatalogName, CatalogType, SourceType, TokenType, Version, TokenKey } from "../../../model/schemas";
+
 export enum CatalogActionType {
   CatalogPageOnLoad = 'CATALOG_PAGE_ON_LOAD',
   CatalogCatalogsListOnCommit = 'CATALOG_CATALOGS_LIST_ON_COMMIT',
@@ -31,3 +33,36 @@ export enum CatalogActionType {
   CatalogBulkAddTokensCancelButtonOnClick = 'CATALOG_BULK_ADD_TOKENS_CANCEL_BUTTON_ON_CLICK',
   CatalogBulkAddTokensOkButtonOnClick = 'CATALOG_BULK_ADD_TOKENS_OK_BUTTON_ON_CLICK',
 }
+
+export type CatalogActions =
+  | { type: CatalogActionType.CatalogPageOnLoad }
+  | { type: CatalogActionType.CatalogCatalogsListOnCommit; name: CatalogName; version: Version }
+  | { type: CatalogActionType.CatalogCatalogsCreateButtonOnClick }
+  | { type: CatalogActionType.CatalogCreateDialogOnOpen }
+  | { type: CatalogActionType.CatalogCreateDialogNameTextOnChange; value: string }
+  | { type: CatalogActionType.CatalogCreateDialogTypeListOnCommit; value: CatalogType }
+  | { type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick }
+  | { type: CatalogActionType.CatalogCreateDialogOkButtonOnClick }
+  | { type: CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick; name: CatalogName; version: Version }
+  | { type: CatalogActionType.CatalogDetailsSyncButtonOnClick; catalog: Catalog }
+  | { type: CatalogActionType.CatalogDetailsLockButtonOnClick }
+  | { type: CatalogActionType.CatalogDetailsRevertButtonOnClick; name: CatalogName; version: Version }
+  | { type: CatalogActionType.CatalogDetailsSaveCatalog; catalog: Catalog }
+  | { type: CatalogActionType.CatalogDetailsSourceUrlTextOnCommit; value: string; sourceIndex: number }
+  | { type: CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit; value: TokenType; sourceIndex: number }
+  | { type: CatalogActionType.CatalogDetailsSourceTypeListOnCommit; value: SourceType; sourceIndex: number }
+  | { type: CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick; sourceIndex: number }
+  | { type: CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange; value: string }
+  | { type: CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit; value: TokenType }
+  | { type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit; value: SourceType }
+  | { type: CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick }
+  | { type: CatalogActionType.CatalogTokensSearchTextOnChange; value: string }
+  | { type: CatalogActionType.CatalogTokensBulkAddButtonOnClick }
+  | { type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit; value: string; key: TokenKey; tokenType: TokenType }
+  | { type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick; key: TokenKey; tokenType: TokenType }
+  | { type: CatalogActionType.CatalogTokensNewTokenKeyTextOnChange; value: string }
+  | { type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick; tokenType: TokenType; key?: string }
+  | { type: CatalogActionType.CatalogBulkAddTokensDialogOnOpen }
+  | { type: CatalogActionType.CatalogBulkAddTokensTextOnChange; value: string }
+  | { type: CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick }
+  | { type: CatalogActionType.CatalogBulkAddTokensOkButtonOnClick };

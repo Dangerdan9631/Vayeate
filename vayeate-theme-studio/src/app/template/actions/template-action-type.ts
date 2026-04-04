@@ -1,3 +1,5 @@
+import { CatalogName, ColorVariableKey, ContrastVariableKey, Template, TemplateName, TokenType, Version } from "../../../model/schemas";
+
 export enum TemplateActionType {
   TemplatePageOnLoad = 'TEMPLATE_PAGE_ON_LOAD',
   TemplateTemplatesListOnCommit = 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT',
@@ -33,3 +35,38 @@ export enum TemplateActionType {
   TemplateVariablesRemoveButtonOnClick = 'TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK',
   TemplateVariablesContrastSourceListOnCommit = 'TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT',
 }
+
+export type TemplateActions =
+  | { type: TemplateActionType.TemplatePageOnLoad }
+  | { type: TemplateActionType.TemplateTemplatesListOnCommit; name: TemplateName; version: Version }
+  | { type: TemplateActionType.TemplateTemplatesCreateButtonOnClick }
+  | { type: TemplateActionType.TemplateCreateDialogOnOpen }
+  | { type: TemplateActionType.TemplateCreateDialogNameTextOnChange; value: string }
+  | { type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick }
+  | { type: TemplateActionType.TemplateCreateDialogOkButtonOnClick; params: { name: TemplateName } }
+  | { type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick; name: TemplateName; version: Version }
+  | { type: TemplateActionType.TemplateDetailsLockButtonOnClick }
+  | { type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick }
+  | { type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle; checked: boolean; catalogName: CatalogName }
+  | { type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit; value: Version; catalogName: CatalogName }
+  | { type: TemplateActionType.TemplateDetailsSaveTemplate; template: Template }
+  | { type: TemplateActionType.TemplateMappingSearchTextOnChange; value: string }
+  | { type: TemplateActionType.TemplateMappingColorVariableFilterListOnSelect; values: ColorVariableKey[] }
+  | { type: TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect; values: ContrastVariableKey[] }
+  | { type: TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit; value: string; tokenKey: string; tokenType: TokenType }
+  | { type: TemplateActionType.TemplateMappingTokenGroupSelectionOnCommit; value: string }
+  | { type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit; value: ColorVariableKey; tokenKey: string; tokenType: TokenType; isOrphan?: boolean }
+  | { type: TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit; value: ContrastVariableKey | null; tokenKey: string; tokenType: TokenType }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick; semanticType: string; modifiers: string[]; language: string | null; defaultGroupRef?: string | null }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit; tokenKey: string; modifiers: string[]; language: string | null }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit; value: string; tokenKey: string; modifiers: string[] }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick; tokenKey: string; tokenType: TokenType }
+  | { type: TemplateActionType.TemplateGroupAddTextOnChange; value: string }
+  | { type: TemplateActionType.TemplateGroupAddButtonOnClick; name: string }
+  | { type: TemplateActionType.TemplateGroupRemoveButtonOnClick; groupId: string }
+  | { type: TemplateActionType.TemplateVariablesSearchTextOnChange; value: string }
+  | { type: TemplateActionType.TemplateVariablesAddVariableNameTextOnChange; value: string }
+  | { type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick; key: string; groupRef: string | null; variableKind: 'color' | 'contrast' }
+  | { type: TemplateActionType.TemplateVariablesGroupListOnCommit; value: string; variableKey: string }
+  | { type: TemplateActionType.TemplateVariablesRemoveButtonOnClick; key: ColorVariableKey | ContrastVariableKey }
+  | { type: TemplateActionType.TemplateVariablesContrastSourceListOnCommit; value: ColorVariableKey | null; contrastVariableKey: ContrastVariableKey };

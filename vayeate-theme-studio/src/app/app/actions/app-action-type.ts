@@ -1,3 +1,5 @@
+import { TabId } from "../../../domain/state/ui/ui-state";
+
 export enum AppActionType {
   AppFileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',
   AppFileMenuExitButtonOnClick = 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK',
@@ -18,3 +20,23 @@ export enum AppActionType {
   AppBarCloseButtonOnClick = 'APP_BAR_CLOSE_BUTTON_ON_CLICK',
   AppBarTitleBarOnDrag = 'APP_BAR_TITLE_BAR_ON_DRAG',
 }
+
+export type AppActions =
+  | { type: AppActionType.AppFileMenuTriggerButtonOnClick }
+  | { type: AppActionType.AppFileMenuExitButtonOnClick }
+  | { type: AppActionType.AppEditMenuTriggerButtonOnClick }
+  | { type: AppActionType.AppEditMenuUndoButtonOnClick }
+  | { type: AppActionType.AppEditMenuRedoButtonOnClick }
+  | { type: AppActionType.AppHistoryMenuTriggerButtonOnClick }
+  | { type: AppActionType.AppHistoryMenuGoToButtonOnClick; frameId: string }
+  | { type: AppActionType.AppViewMenuTriggerButtonOnClick }
+  | { type: AppActionType.AppViewMenuReloadButtonOnClick }
+  | { type: AppActionType.AppViewMenuForceReloadButtonOnClick }
+  | { type: AppActionType.AppViewMenuToggleDevToolsButtonOnClick }
+  | { type: AppActionType.AppMenuOnClose }
+  | { type: AppActionType.AppRibbonTabButtonOnClick; tabId: TabId }
+  | { type: AppActionType.AppBarThemeCheckboxOnToggle; checked: boolean }
+  | { type: AppActionType.AppBarMinimizeButtonOnClick }
+  | { type: AppActionType.AppBarMaximizeButtonOnClick }
+  | { type: AppActionType.AppBarCloseButtonOnClick }
+  | { type: AppActionType.AppBarTitleBarOnDrag };
