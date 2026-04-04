@@ -1,4 +1,5 @@
-import { useAppDispatch, useTemplatesState } from '../../core/context/app-context-hooks';
+import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useTemplatesState } from '../context/use-templates-state';
 import { TemplateActionType } from '../actions/template-action-type';
 
 interface GroupsCardProps {

@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
-import {
-  useAppDispatch,
-  useTemplatesState,
-  useThemesState,
-} from '../../core/context/app-context-hooks';
+import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useTemplatesState } from '../../template/context/use-templates-state';
+import { useThemesState } from '../context/use-themes-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { getThemeRefs } from '../../../domain/state/theme/themes-state';
 import { compareVersions } from '../../../domain/utils/version';

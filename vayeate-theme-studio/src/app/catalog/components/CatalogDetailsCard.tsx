@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAppDispatch, useCatalogsState } from '../../core/context/app-context-hooks';
+import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useCatalogsState } from '../context/use-catalogs-state';
 import type { Catalog, SourceType, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 

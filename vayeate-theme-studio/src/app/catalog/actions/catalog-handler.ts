@@ -29,7 +29,7 @@ import {
   UpdateTokenKeyController,
   LoadCatalogPageController,
 } from '../../../domain/controllers/catalog-controller';
-import type { ActionHandler, CatalogAction } from '../../common/actions/handler-types';
+import type { ActionHandler, CatalogAction } from '../../core/actions/handler-types';
 import { CatalogActionType } from './catalog-action-type';
 
 @injectable()

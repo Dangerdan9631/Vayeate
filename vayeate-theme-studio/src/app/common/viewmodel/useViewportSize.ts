@@ -1,4 +1,4 @@
-import { useAppState } from '../../core/context/app-context-hooks';
+import { useAppState } from '../context/use-app-state';
 
 /** Renderer viewport from app state (updated via `WindowService` resize → `SET_VIEWPORT_SIZE`). */
 export function useViewportSize(): { width: number; height: number } {

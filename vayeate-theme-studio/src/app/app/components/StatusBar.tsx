@@ -1,4 +1,4 @@
-import { useAppState } from '../../core/context/app-context-hooks';
+import { useAppState } from '../../common/context/use-app-state';
 
 export function StatusBar() {
   const { state } = useAppState();

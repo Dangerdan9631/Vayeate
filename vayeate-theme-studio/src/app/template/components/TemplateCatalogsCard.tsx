@@ -1,4 +1,4 @@
-import { useAppDispatch } from '../../core/context/app-context-hooks';
+import { useAppDispatch } from '../../core/context/use-app-dispatch';
 import type { CatalogName, CatalogReference } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
 

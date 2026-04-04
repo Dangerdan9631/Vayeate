@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch, useCatalogsState } from '../../core/context/app-context-hooks';
+import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useCatalogsState } from '../context/use-catalogs-state';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/version';
 import { nextPatchVersion } from '../../../domain/utils/version';
