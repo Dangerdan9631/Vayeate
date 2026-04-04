@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useUndoStackViewModel } from '../viewmodel/use-undo-stack-viewmodel';
-import { useAppDispatch, useColorScheme, useMenuOpenState } from '../context/app-context-hooks';
+import { useAppDispatch, useColorScheme, useMenuOpenState } from '../../core/context/app-context-hooks';
 import { AppActionType } from '../actions/app-action-type';
 
 export function MenuBar() {

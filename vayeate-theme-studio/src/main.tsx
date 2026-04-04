@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { App } from './app/app/components/App';
+import { App } from './app/core/components/App';
 import { container } from 'tsyringe';
 import { InitializeLoggingController } from './domain/controllers/app-controller';
 import { AppConfigBootstrapService } from './gateway/services/app-config-bootstrap-service';

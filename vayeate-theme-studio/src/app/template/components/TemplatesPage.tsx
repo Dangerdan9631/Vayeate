@@ -11,7 +11,7 @@ import { TemplateCatalogsCard } from './TemplateCatalogsCard';
 import { TemplateDetailsCard } from './TemplateDetailsCard';
 import { TemplatesCard } from './TemplatesCard';
 import { VariablesCard } from './VariablesCard';
-import type { Token } from '../../../model/schemas';
+import type { Catalog, Token } from '../../../model/schemas';
 
 export function TemplatesPage() {
   const vm = useTemplateViewModel();
@@ -23,7 +23,7 @@ export function TemplatesPage() {
       return;
     }
     const loaded = vm.loadedCatalogsForTemplateRefs;
-    const allLoaded = loaded.every((c) => c !== null);
+    const allLoaded = loaded.every((c: Catalog | null) => c !== null);
     if (!allLoaded) return;
 
     const allTokens: Token[] = [];
@@ -33,9 +33,9 @@ export function TemplatesPage() {
     for (const catalog of loaded) {
       if (catalog) {
         allTokens.push(...catalog.tokens);
-        (catalog.semanticTokenTypes ?? []).forEach((t) => typesSet.add(t));
-        (catalog.semanticTokenModifiers ?? []).forEach((m) => modifiersSet.add(m));
-        (catalog.semanticTokenLanguages ?? []).forEach((l) => languagesSet.add(l));
+        (catalog.semanticTokenTypes ?? []).forEach((t: string) => typesSet.add(t));
+        (catalog.semanticTokenModifiers ?? []).forEach((m: string) => modifiersSet.add(m));
+        (catalog.semanticTokenLanguages ?? []).forEach((l: string) => languagesSet.add(l));
       }
     }
     const semanticCatalog: SemanticCatalogInfo | undefined =

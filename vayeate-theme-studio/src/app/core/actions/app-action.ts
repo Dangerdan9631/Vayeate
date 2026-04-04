@@ -1,4 +1,4 @@
-import type { TabId } from '../tabs';
+import type { TabId } from '../../app/tabs';
 import type {
   Catalog,
   CatalogName,
@@ -17,7 +17,7 @@ import type {
   TokenType,
   Version,
 } from '../../../model/schemas';
-import { AppActionType } from './app-action-type';
+import { AppActionType } from '../../app/actions/app-action-type';
 import { CatalogActionType } from '../../catalog/actions/catalog-action-type';
 import { TemplateActionType } from '../../template/actions/template-action-type';
 import { ThemeActionType } from '../../theme/actions/theme-action-type';

@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { ThemeActionType } from '../../theme/actions/theme-action-type';
 import { useViewportSize } from '../../common/viewmodel/useViewportSize';
-import { useAppDispatch, useEyedropperUiState } from '../context/app-context-hooks';
+import { useAppDispatch, useEyedropperUiState } from '../../core/context/app-context-hooks';
 
 // --- Full-screen eyedropper overlay helpers (local to this component) ---
 

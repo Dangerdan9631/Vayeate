@@ -1,5 +1,5 @@
 import { useMemo, type MouseEvent } from 'react';
-import { useAppDispatch, useCatalogsState } from '../../app/context/app-context-hooks';
+import { useAppDispatch, useCatalogsState } from '../../core/context/app-context-hooks';
 import { parseThemeJson, type BulkParseResult } from '../../../domain/utils/theme-parser';
 import { CatalogActionType } from '../actions/catalog-action-type';
 

@@ -3,15 +3,15 @@ import './styles.css';
 import { container } from 'tsyringe';
 import { LoadAppController, UnloadAppController } from '../../../domain/controllers/app-controller';
 import { AppProvider } from '../context/AppContext';
-import { ColorSchemeProvider, useActiveTab, useAppDispatch } from '../context/app-context-hooks';
+import { ColorSchemeProvider, useActiveTab, useAppDispatch } from '../../core/context/app-context-hooks';
 import { ContentArea } from './ContentArea';
-import { EyedropperOverlay } from './EyedropperOverlay';
-import { MenuBar } from './MenuBar';
-import { Ribbon } from './Ribbon';
-import { StatusBar } from './StatusBar';
+import { EyedropperOverlay } from '../../app/components/EyedropperOverlay';
+import { MenuBar } from '../../app/components/MenuBar';
+import { Ribbon } from '../../app/components/Ribbon';
+import { StatusBar } from '../../app/components/StatusBar';
 import { StyledTooltip } from '../../common/components/StyledTooltip';
-import type { TabId } from '../tabs';
-import { AppActionType } from '../actions/app-action-type';
+import type { TabId } from '../../app/tabs';
+import { AppActionType } from '../../app/actions/app-action-type';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
 function AppShell() {

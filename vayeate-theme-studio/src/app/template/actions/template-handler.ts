@@ -32,7 +32,7 @@ import {
   UpdateSemanticVariantKeyController,
   UpdateVariableGroupRefController,
 } from '../../../domain/controllers/template-controller';
-import type { ActionHandler, TemplateAction } from '../../app/actions/handler-types';
+import type { ActionHandler, TemplateAction } from '../../core/actions/handler-types';
 import { TemplateActionType } from './template-action-type';
 
 @injectable()

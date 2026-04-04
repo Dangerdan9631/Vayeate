@@ -5,7 +5,7 @@ import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
 import type { SelectedColorsDisplay } from '../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { ThemeActionType } from '../actions/theme-action-type';
-import { useAppDispatch } from '../../app/context/app-context-hooks';
+import { useAppDispatch } from '../../core/context/app-context-hooks';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
 
 /** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */

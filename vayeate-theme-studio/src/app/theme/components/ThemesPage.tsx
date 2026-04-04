@@ -75,7 +75,7 @@ export function ThemesPage() {
               colorAssignments={vm.displayColorAssignments}
               colorVariables={vm.colorVariablesFromTemplate}
               groups={vm.groupsFromTemplate}
-              checkedColorRefs={vm.checkedColorRefs}
+              checkedColorRefs={vm.checkedColorRefs as ReadonlySet<string>}
               onSetColorGroupChecked={vm.setColorGroupChecked}
               onSetColorRefsChecked={vm.setColorRefsChecked}
               selectedColorsDisplay={vm.selectedColorsDisplay}
@@ -94,8 +94,8 @@ export function ThemesPage() {
               groups={vm.groupsFromTemplate}
               orphanColorKeys={vm.orphanColorKeys}
               orphanContrastKeys={vm.orphanContrastKeys}
-              checkedColorRefs={vm.checkedColorRefs}
-              checkedContrastRefs={vm.checkedContrastRefs}
+              checkedColorRefs={vm.checkedColorRefs as ReadonlySet<string>}
+              checkedContrastRefs={vm.checkedContrastRefs as ReadonlySet<string>}
               searchValue={vm.themeVariablesSearchText}
               onSearchChange={vm.setVariablesSearchText}
               onToggleColorChecked={vm.toggleColorChecked}

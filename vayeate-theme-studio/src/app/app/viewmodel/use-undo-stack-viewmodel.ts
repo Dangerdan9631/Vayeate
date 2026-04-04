@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
 import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
 import { createUndoProcessor } from '../../../domain/core/undo-processor';
-import { useAppState } from '../context/app-context-hooks';
+import { useAppState } from '../../core/context/app-context-hooks';
 import { AppActionType } from '../actions/app-action-type';
 
 export interface UndoStackViewModel {

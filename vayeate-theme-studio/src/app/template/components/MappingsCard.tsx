@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
-import { useAppDispatch, useTemplatesState } from '../../app/context/app-context-hooks';
+import { useAppDispatch, useTemplatesState } from '../../core/context/app-context-hooks';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
 import { TemplateActionType } from '../actions/template-action-type';
 import type {

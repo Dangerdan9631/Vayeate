@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAppDispatch, useCatalogsState } from '../../app/context/app-context-hooks';
+import { useAppDispatch, useCatalogsState } from '../../core/context/app-context-hooks';
 import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';

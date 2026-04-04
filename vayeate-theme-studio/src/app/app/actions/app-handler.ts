@@ -19,7 +19,7 @@ import {
   ReloadWindowController,
   ToggleDevToolsController,
 } from '../../../domain/controllers/window-controller';
-import type { ActionHandler, AppAction } from './handler-types';
+import type { ActionHandler, AppAction } from '../../core/actions/handler-types';
 import { AppActionType } from './app-action-type';
 
 @injectable()

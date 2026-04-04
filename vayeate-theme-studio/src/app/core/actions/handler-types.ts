@@ -1,8 +1,8 @@
-import { AppActionType } from './app-action-type';
+import { AppActionType } from '../../app/actions/app-action-type';
 import { CatalogActionType } from '../../catalog/actions/catalog-action-type';
 import { TemplateActionType } from '../../template/actions/template-action-type';
 import { ThemeActionType } from '../../theme/actions/theme-action-type';
-import type { AppAction as AppActionUnion } from './app-action';
+import type { AppAction as AppActionUnion } from '../../core/actions/app-action';
 
 export type AppAction = Extract<AppActionUnion, { type: AppActionType }>;
 export type CatalogAction = Extract<AppActionUnion, { type: CatalogActionType }>;

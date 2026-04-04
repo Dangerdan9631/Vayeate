@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import type { AppAction } from './app-action';
-import { AppActionHandler } from './app-handler';
+import { AppActionHandler } from '../../app/actions/app-handler';
 import { CatalogActionHandler } from '../../catalog/actions/catalog-handler';
 import {
   isAppAction,

@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { useAppDispatch, useThemesState } from '../../app/context/app-context-hooks';
+import { useAppDispatch, useThemesState } from '../../core/context/app-context-hooks';
 import { ThemeActionType } from '../actions/theme-action-type';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;

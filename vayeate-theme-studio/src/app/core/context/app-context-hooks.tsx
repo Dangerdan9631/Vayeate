@@ -1,13 +1,13 @@
 import { useEffect, type ReactNode } from 'react';
 import { useContext, useContextSelector } from 'use-context-selector';
-import type { AppAction } from '../actions/app-action';
+import type { AppAction } from '../../core/actions/app-action';
 import type { CatalogsState } from '../../../domain/state/catalog/catalogs-state';
 import type { TemplatesState } from '../../../domain/state/template/templates-state';
 import type { ThemesState } from '../../../domain/state/theme/themes-state';
 import type { MenuOpenState, TabId } from '../../../domain/state/ui/ui-state';
 import type { EyedropperUiState } from '../../../domain/state/ui/eyedropper-ui-state';
 import type { ColorScheme } from '../../../model/schemas';
-import { AppContext, type AppContextValue } from './AppContext';
+import { AppContext, type AppContextValue } from '../../core/context/AppContext';
 
 export type { ColorScheme };
 

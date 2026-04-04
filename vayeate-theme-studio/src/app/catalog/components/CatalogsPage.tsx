@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 import { useCatalogViewModel } from '../viewmodel/use-catalog-viewmodel';
-import { useCatalogsState } from '../../app/context/app-context-hooks';
+import { useCatalogsState } from '../../core/context/app-context-hooks';
 import { BulkAddDialog } from './BulkAddDialog';
 import { CatalogDetailsCard } from './CatalogDetailsCard';
 import { CatalogsCard } from './CatalogsCard';
 import { CreateCatalogDialog } from './CreateCatalogDialog';
 import { TokensCard } from './TokensCard';
+import type { Token } from '../../../model/schemas';
 
 export function CatalogsPage() {
   const vm = useCatalogViewModel();
@@ -13,7 +14,7 @@ export function CatalogsPage() {
 
   const existingTokenKeys = useMemo(() => {
     if (!vm.catalog) return new Set<string>();
-    return new Set(vm.catalog.tokens.map((t) => `${t.type}::${t.key}`));
+    return new Set(vm.catalog.tokens.map((t: Token) => `${t.type}::${t.key}`));
   }, [vm.catalog]);
 
   return (
@@ -68,7 +69,7 @@ export function CatalogsPage() {
         />
       )}
       {bulkAddDialogOpen && (
-        <BulkAddDialog existingTokenKeys={existingTokenKeys} />
+        <BulkAddDialog existingTokenKeys={existingTokenKeys as Set<string>} />
       )}
     </>
   );

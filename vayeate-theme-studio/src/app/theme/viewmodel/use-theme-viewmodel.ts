@@ -4,7 +4,7 @@ import {
   useAppDispatch,
   useTemplatesState,
   useThemesState,
-} from '../../app/context/app-context-hooks';
+} from '../../core/context/app-context-hooks';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { getThemeRefs } from '../../../domain/state/theme/themes-state';
 import { compareVersions } from '../../../domain/utils/version';

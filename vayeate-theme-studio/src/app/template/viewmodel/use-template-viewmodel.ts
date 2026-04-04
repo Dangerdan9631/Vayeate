@@ -3,7 +3,7 @@ import {
   useAppDispatch,
   useCatalogsState,
   useTemplatesState,
-} from '../../app/context/app-context-hooks';
+} from '../../core/context/app-context-hooks';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/version';
