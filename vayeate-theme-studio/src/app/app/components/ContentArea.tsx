@@ -1,4 +1,4 @@
-import type { TabId } from '../../app/tabs';
+import type { TabId } from '../../../domain/state/ui/ui-state';
 import { CatalogsPage } from '../../catalog/components/CatalogsPage';
 import { TemplatesPage } from '../../template/components/TemplatesPage';
 import { ThemesPage } from '../../theme/components/ThemesPage';

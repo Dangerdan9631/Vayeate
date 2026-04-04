@@ -4,15 +4,15 @@ import { container } from 'tsyringe';
 import { LoadAppController, UnloadAppController } from '../../../domain/controllers/app-controller';
 import { AppProvider } from '../context/AppContext';
 import { ColorSchemeProvider, useActiveTab, useAppDispatch } from '../../core/context/app-context-hooks';
-import { ContentArea } from './ContentArea';
+import { ContentArea } from '../../app/components/ContentArea';
 import { EyedropperOverlay } from '../../app/components/EyedropperOverlay';
 import { MenuBar } from '../../app/components/MenuBar';
 import { Ribbon } from '../../app/components/Ribbon';
 import { StatusBar } from '../../app/components/StatusBar';
 import { StyledTooltip } from '../../common/components/StyledTooltip';
-import type { TabId } from '../../app/tabs';
 import { AppActionType } from '../../app/actions/app-action-type';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
+import { TabId } from '../../../domain/state/ui/ui-state';
 
 function AppShell() {
   const activeTab = useActiveTab();

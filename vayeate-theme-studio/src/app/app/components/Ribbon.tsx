@@ -1,5 +1,17 @@
 import type { MouseEvent } from 'react';
-import { TAB_DEFINITIONS, type TabId } from '../tabs';
+import { TabId } from '../../../domain/state/ui/ui-state';
+
+type TabDefinition = {
+  id: TabId;
+  label: string;
+  iconName: string;
+};
+
+const TAB_DEFINITIONS: TabDefinition[] = [
+  { id: 'catalogs', label: 'Catalogs', iconName: 'library_books' },
+  { id: 'templates', label: 'Templates', iconName: 'sticky_note_2' },
+  { id: 'themes', label: 'Themes', iconName: 'color_lens' },
+];
 
 interface RibbonProps {
   activeTab: TabId;

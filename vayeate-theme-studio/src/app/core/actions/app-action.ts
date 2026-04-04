@@ -1,4 +1,4 @@
-import type { TabId } from '../../app/tabs';
+import type { TabId } from '../../../domain/state/ui/ui-state';
 import type {
   Catalog,
   CatalogName,
