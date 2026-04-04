@@ -4,7 +4,7 @@ import { clusterColors } from '../../../../domain/utils/color-clustering';
 import { hexToHue, hslToRgb, rgbToHex } from '../../../../domain/utils/color';
 import type { SelectedColorsDisplay } from '../../../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../../../../model/theme-pane-state';
-import { ThemeActionType } from '../../../actions/action-types';
+import { ThemeActionType } from '../../../actions/theme/theme-action-type';
 import { useAppDispatch } from '../../context/app-context-hooks';
 import { TriStateCheckbox, type TriState } from '../common/TriStateCheckbox';
 

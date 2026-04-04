@@ -4,12 +4,12 @@ import {
   SetActiveTabController,
   SetColorSchemeController,
   ToggleMenuOpenController,
-} from '../../domain/controllers/app-controller';
+} from '../../../domain/controllers/app-controller';
 import {
   PerformHistoryGoToController,
   PerformRedoController,
   PerformUndoController,
-} from '../../domain/controllers/undo-controller';
+} from '../../../domain/controllers/undo-controller';
 import {
   CloseWindowController,
   DragWindowController,
@@ -18,9 +18,9 @@ import {
   MinimizeWindowController,
   ReloadWindowController,
   ToggleDevToolsController,
-} from '../../domain/controllers/window-controller';
-import type { ActionHandler, AppAction } from './handler-types';
-import { AppActionType } from './action-types';
+} from '../../../domain/controllers/window-controller';
+import type { ActionHandler, AppAction } from '../handler-types';
+import { AppActionType } from './app-action-type';
 
 @injectable()
 export class AppActionHandler implements ActionHandler<AppAction> {

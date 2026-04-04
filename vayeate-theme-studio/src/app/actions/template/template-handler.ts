@@ -31,9 +31,9 @@ import {
   UpdateContrastComparisonSourceController,
   UpdateSemanticVariantKeyController,
   UpdateVariableGroupRefController,
-} from '../../domain/controllers/template-controller';
-import type { ActionHandler, TemplateAction } from './handler-types';
-import { TemplateActionType } from './action-types';
+} from '../../../domain/controllers/template-controller';
+import type { ActionHandler, TemplateAction } from '../handler-types';
+import { TemplateActionType } from './template-action-type';
 
 @injectable()
 export class TemplateActionHandler implements ActionHandler<TemplateAction> {

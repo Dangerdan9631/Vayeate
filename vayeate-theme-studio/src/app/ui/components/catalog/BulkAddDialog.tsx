@@ -1,7 +1,7 @@
 import { useMemo, type MouseEvent } from 'react';
 import { useAppDispatch, useCatalogsState } from '../../context/app-context-hooks';
 import { parseThemeJson, type BulkParseResult } from '../../../../domain/utils/theme-parser';
-import { CatalogActionType } from '../../../actions/action-types';
+import { CatalogActionType } from '../../../actions/catalog/catalog-action-type';
 
 interface BulkAddDialogProps {
   existingTokenKeys: Set<string>;

@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { useContext, useContextSelector } from 'use-context-selector';
-import type { AppAction } from '../../actions/action-types';
+import type { AppAction } from '../../actions/app-action';
 import type { CatalogsState } from '../../../domain/state/catalog/catalogs-state';
 import type { TemplatesState } from '../../../domain/state/template/templates-state';
 import type { ThemesState } from '../../../domain/state/theme/themes-state';

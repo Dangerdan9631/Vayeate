@@ -6,7 +6,7 @@ import {
   useState,
   type MouseEvent,
 } from 'react';
-import { ThemeActionType } from '../../../actions/action-types';
+import { ThemeActionType } from '../../../actions/theme/theme-action-type';
 import { useViewportSize } from '../../../viewmodel/useViewportSize';
 import { useAppDispatch, useEyedropperUiState } from '../../context/app-context-hooks';
 

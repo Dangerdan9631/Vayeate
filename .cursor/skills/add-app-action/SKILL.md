@@ -1,6 +1,6 @@
 ---
 name: add-app-action
-description: Add a new user-triggerable app action to AppActionV2 and optionally wire handler/controller.
+description: Add a new user-triggerable app action to AppAction and optionally wire handler/controller.
 ---
 
 # Add App Action
@@ -8,11 +8,11 @@ description: Add a new user-triggerable app action to AppActionV2 and optionally
 Use this skill when:
 - the user or task asks to add a new app action
 - adding a new UI-triggered event
-- adding a new member to AppActionV2
+- adding a new member to AppAction
 
 ## What to do
 
-1. **AppActionV2**: In `vayeate-theme-studio/src/app/actions/action-types.ts`, add a member to the correct per-domain enum (`AppActionType`, `CatalogActionType`, `TemplateActionType`, or `ThemeActionType`) with the string value matching the naming convention from the Action Queue rule: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>`. Add the corresponding union member to `AppActionV2` as `{ type: XxxActionType.YourMember; ...payload }`. Use types from `../../model/schemas` where applicable (e.g. `CatalogName`, `Version`, `HexColor`, `TokenKey`). Dispatch sites and handler `switch` cases use the enum member, not a string literal.
+1. **AppAction**: In `vayeate-theme-studio/src/app/actions/app-action.ts` and the matching per-domain enum file (`actions/app/app-action-type.ts`, `actions/catalog/catalog-action-type.ts`, `actions/template/template-action-type.ts`, or `actions/theme/theme-action-type.ts`), add a member to the correct enum with the string value matching the naming convention from the Action Queue rule: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>`. Add the corresponding union member to `AppAction` as `{ type: XxxActionType.YourMember; ...payload }`. Use types from `../../model/schemas` where applicable (e.g. `CatalogName`, `Version`, `HexColor`, `TokenKey`). Dispatch sites and handler `switch` cases use the enum member, not a string literal.
 
 2. **One action = one behavior**: Do not use optional fields to branch to different behaviors within one action type. If you need different behaviors, add separate action types.
 

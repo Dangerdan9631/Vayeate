@@ -8,7 +8,7 @@ import { getCatalogRefsFromCatalogMap } from '../../domain/state/catalog/catalog
 import { getTemplateRefs } from '../../domain/state/template/templates-state';
 import { compareVersions } from '../../domain/utils/version';
 import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../domain/utils/semantic-token';
-import { TemplateActionType } from '../actions/action-types';
+import { TemplateActionType } from '../actions/template/template-action-type';
 import type {
   CatalogReference,
   ColorVariableKey,

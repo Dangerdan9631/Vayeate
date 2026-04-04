@@ -1,18 +1,17 @@
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../domain/utils/logger';
-import type { AppAction } from './action-types';
-import { AppActionHandler } from './app-handler';
-import { CatalogActionHandler } from './catalog-handler';
+import type { AppAction } from './app-action';
+import { AppActionHandler } from './app/app-handler';
+import { CatalogActionHandler } from './catalog/catalog-handler';
 import {
   isAppAction,
   isCatalogAction,
   isTemplateAction,
   isThemeAction,
 } from './handler-types';
-import { TemplateActionHandler } from './template-handler';
-import { ThemeActionHandler } from './theme-handler';
+import { TemplateActionHandler } from './template/template-handler';
+import { ThemeActionHandler } from './theme/theme-handler';
 
-/** Routes each {@link AppAction} to the correct domain handler (injected). */
 @singleton()
 export class ActionProcessor {
   private readonly log: Logger;

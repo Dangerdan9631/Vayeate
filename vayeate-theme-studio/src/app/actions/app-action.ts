@@ -17,16 +17,11 @@ import type {
   TokenType,
   Version,
 } from '../../model/schemas';
-import { AppActionType } from './app-action-type';
-import { CatalogActionType } from './catalog-action-type';
-import { TemplateActionType } from './template-action-type';
-import { ThemeActionType } from './theme-action-type';
+import { AppActionType } from './app/app-action-type';
+import { CatalogActionType } from './catalog/catalog-action-type';
+import { TemplateActionType } from './template/template-action-type';
+import { ThemeActionType } from './theme/theme-action-type';
 
-/**
- * All user-triggerable app actions (see action-queue rule for convention).
- * Discriminated union; each action has the parameters relevant for triggering it.
- * The AppAction union is the canonical list of all app action event names.
- */
 export type AppAction =
   | { type: AppActionType.AppFileMenuTriggerButtonOnClick }
   | { type: AppActionType.AppFileMenuExitButtonOnClick }

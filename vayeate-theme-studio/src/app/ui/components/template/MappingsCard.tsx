@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
 import { useAppDispatch, useTemplatesState } from '../../context/app-context-hooks';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../../domain/utils/semantic-token';
-import { TemplateActionType } from '../../../actions/action-types';
+import { TemplateActionType } from '../../../actions/template/template-action-type';
 import type {
   ColorVariable,
   ColorVariableKey,

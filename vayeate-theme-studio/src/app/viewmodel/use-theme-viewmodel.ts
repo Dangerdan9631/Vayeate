@@ -10,7 +10,7 @@ import { getThemeRefs } from '../../domain/state/theme/themes-state';
 import { compareVersions } from '../../domain/utils/version';
 import { applyHueShift } from '../../domain/utils/color';
 import { resolveColorForThemeTokenKey } from '../../domain/utils/scope-resolver';
-import { ThemeActionType, type ThemePreviewTokenRefField } from '../actions/action-types';
+import { ThemeActionType } from '../actions/theme/theme-action-type';
 import type {
   ColorAssignment,
   ContrastAssignmentValue,
@@ -19,6 +19,7 @@ import type {
   ContrastVariable,
   TemplateReference,
   Theme,
+  ThemePreviewTokenRefField,
   ThemeReference,
   TokenKey,
 } from '../../model/schemas';

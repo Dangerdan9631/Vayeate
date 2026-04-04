@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 import { useAppDispatch, useCatalogsState } from '../../context/app-context-hooks';
 import type { CatalogType } from '../../../../model/schemas';
-import { CatalogActionType } from '../../../actions/action-types';
+import { CatalogActionType } from '../../../actions/catalog/catalog-action-type';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 

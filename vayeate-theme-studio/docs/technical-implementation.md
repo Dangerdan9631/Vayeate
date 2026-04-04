@@ -56,7 +56,7 @@ The app uses a strictly layered architecture enforced by `ts-arch` tests:
   - `operations/` — Atomic units: setState + gateway/services calls (the only layer that may use gateway/services).
   - `controllers/` — Compose operations + validations; must NOT import gateway directly.
 - **`src/app/`** — UI and routing; must not depend on gateway.
-  - `actions/` — `AppActionV2` union, `ActionQueue`, per-domain `*-handler.ts`, and `handler-registry.ts` (`ActionProcessor`). Handlers route to controllers; must NOT import gateway, operations, or validations.
+  - `actions/` — `AppAction` union (`app-action.ts`), `ActionQueue`, per-domain `*-handler.ts`, and `handler-registry.ts` (`ActionProcessor`). Handlers route to controllers; must NOT import gateway, operations, or validations.
   - `viewmodel/` — State → UI derivation hooks.
   - `ui/` — React components and context providers. `AppContext.tsx` is a lean provider.
 

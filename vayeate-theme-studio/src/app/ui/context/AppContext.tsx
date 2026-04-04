@@ -1,7 +1,7 @@
 import { useCallback, useReducer, useRef, type ReactNode } from 'react';
 import { createContext } from 'use-context-selector';
 import { ActionQueue } from '../../actions/action-queue';
-import type { AppAction } from '../../actions/action-types';
+import type { AppAction } from '../../actions/app-action';
 import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';

@@ -11,7 +11,7 @@ import { Ribbon } from './components/app/Ribbon';
 import { StatusBar } from './components/app/StatusBar';
 import { StyledTooltip } from './components/common/StyledTooltip';
 import type { TabId } from './tabs';
-import { AppActionType } from '../actions/action-types';
+import { AppActionType } from '../actions/app/app-action-type';
 import type { AppConfigState } from '../../domain/state/app-config/app-config-state';
 
 function AppShell() {

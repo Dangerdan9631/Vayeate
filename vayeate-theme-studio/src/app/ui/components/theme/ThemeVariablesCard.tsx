@@ -7,7 +7,7 @@ import type {
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../../../model/schemas';
-import { ThemeActionType } from '../../../actions/action-types';
+import { ThemeActionType } from '../../../actions/theme/theme-action-type';
 import { useAppDispatch } from '../../context/app-context-hooks';
 import { TriStateCheckbox, type TriState } from '../common/TriStateCheckbox';
 

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { AppAction } from './action-types';
+import type { AppAction } from './app-action';
 import type { QueueStatusState } from '../../domain/state/ui/ui-state';
 import { QueueStatusStateSetter } from '../../domain/state/ui/queue-status-state-reducer';
 import { LoggerFactory, type Logger } from '../../domain/utils/logger';

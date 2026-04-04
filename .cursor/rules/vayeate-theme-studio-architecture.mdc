@@ -16,7 +16,7 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 |-------|----------|----------------|
 | **UI** | `src/app/ui/` | React components, pages, styles. No business logic. Dispatches one UI event per interaction. |
 | **ViewModels** | `src/app/viewmodel/` | Custom hooks that derive display data from state. |
-| **Actions + handlers** | `src/app/actions/` | `AppActionV2` discriminated union, `ActionQueue`, `handler-registry` (`ActionProcessor`), and per-domain `*-handler.ts` files. UI events only; all mutations flow through here. Handlers route to controllers only. Must NOT depend on gateway, operations, or validations. |
+| **Actions + handlers** | `src/app/actions/` | `AppAction` discriminated union (`app-action.ts`), `ActionQueue`, `handler-registry` (`ActionProcessor`), and per-domain `*-handler.ts` files. UI events only; all mutations flow through here. Handlers route to controllers only. Must NOT depend on gateway, operations, or validations. |
 | **State** | `src/domain/state/` | AppState type, reducers, initial state. Depends on model only. |
 | **Controllers** | `src/domain/controllers/` | Invoked by handlers for each action. Compose validations and operations; run validations before operations. |
 | **Validations** | `src/domain/validations/` | Functions that validate input and/or app state and return a boolean. One validator per file; subdirectories per concern (e.g. window-validations). Validations must not reference other validations. Used by controllers before invoking operations. |
@@ -77,7 +77,7 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 - `electron/preload.ts` — contextBridge exposes `electronAPI`
 - `src/app/ui/context/AppContext.tsx` — lean provider: useReducer, context providers, window event listeners, queue setup; registers slice setters/getters with tsyringe; resolves `ActionQueue` on first `dispatch`
 - `src/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor`, processes FIFO sequential async actions
-- `src/app/actions/action-types.ts` — Discriminated union `AppActionV2`. The canonical list of all app action event names.
+- `src/app/actions/app-action.ts` — Discriminated union `AppAction`. The canonical list of all app action event names.
 - `src/app/actions/handler-types.ts` — domain `Extract` aliases, type guards, `ActionHandler<T>`
 - `src/app/actions/handler-registry.ts` — `@singleton()` `ActionProcessor` (injected domain handlers) routes by `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`); `process(action)`
 - `src/app/actions/{app,catalog,template,theme}-handler.ts` — per-domain exhaustive switches; route to controllers
@@ -89,7 +89,7 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 
 ## Conventions
 
-- **New UI actions**: Add to `AppActionV2` union in `action-types.ts`. Add an exhaustive switch case in the correct domain handler (`app-handler.ts`, `catalog-handler.ts`, etc.). Invoke a controller from the handler; controller uses operations for setState, persist, undo. Add reducer cases in `reducer.ts`. Use the add-app-action skill.
+- **New UI actions**: Add to `AppAction` union in `app-action.ts`. Add an exhaustive switch case in the correct domain handler (`app-handler.ts`, `catalog-handler.ts`, etc.). Invoke a controller from the handler; controller uses operations for setState, persist, undo. Add reducer cases in `reducer.ts`. Use the add-app-action skill.
 - **One action = one behavior**: Never use optional fields to branch to different behaviors within one action type. Split overloaded actions into distinct action types.
 - **All UI events go through the action queue**: No component-owned side effects.
 - **New ViewModels**: Create hook in `app/viewmodel/`, consume `useAppState()` from `app/ui/context/app-context-hooks.tsx`, return derived data.

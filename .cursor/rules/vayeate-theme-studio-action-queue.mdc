@@ -20,7 +20,7 @@ Each UI interaction dispatches exactly one such event. The control name identifi
 
 ## Flow
 
-1. Component dispatches one event per interaction: `dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, ... })` (import the per-domain enum from `action-types.ts`)
+1. Component dispatches one event per interaction: `dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, ... })` (import the per-domain enum from `actions/app/app-action-type.ts`, `actions/catalog/catalog-action-type.ts`, `actions/template/template-action-type.ts`, or `actions/theme/theme-action-type.ts`)
 2. ActionQueue.enqueue() pushes the event to a FIFO queue
 3. Processor runs when idle; awaits each action before starting the next
 4. The **processor** (in AppContext) delegates to `ActionProcessor.process` in `handler-registry.ts`, which routes via type guards (`isAppAction`, `isCatalogAction`, etc. in `handler-types.ts`) to the correct domain handler
@@ -56,9 +56,9 @@ Use these action suffixes for each control type when naming events:
 - **List / Table**: ON_SELECT, ON_LOAD
 - **Tab**: ON_SELECT
 
-## AppActionV2 and canonical event list
+## AppAction and canonical event list
 
-- **Type definition**: `AppActionV2` is a discriminated union in `vayeate-theme-studio/src/app/actions/action-types.ts`. Each member uses `{ type: XxxActionType.SomeCase; ...payload }` where `AppActionType`, `CatalogActionType`, `TemplateActionType`, and `ThemeActionType` are string enums (runtime values preserve the legacy `APP_*` / `CATALOG_*` / etc. strings). **The `AppActionV2` union is the canonical list of all app action event names**; there is no separate list file.
+- **Type definition**: `AppAction` is a discriminated union in `vayeate-theme-studio/src/app/actions/app-action.ts`. Each member uses `{ type: XxxActionType.SomeCase; ...payload }` where `AppActionType`, `CatalogActionType`, `TemplateActionType`, and `ThemeActionType` are string enums (runtime values preserve the legacy `APP_*` / `CATALOG_*` / etc. strings). **The `AppAction` union is the canonical list of all app action event names**; there is no separate list file.
 - **Naming convention**: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>` (e.g. `CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK`). CONTEXT: APP, CATALOG, TEMPLATE, THEME. SUBCONTEXT: card/section/dialog (e.g. DETAILS, CREATE_DIALOG). CONTROL and ACTION: BUTTON → ON_CLICK, ON_DOUBLE_CLICK, ON_RIGHT_CLICK; LIST → ON_SELECT, ON_COMMIT; CHECKBOX → ON_TOGGLE; TEXT → ON_CHANGE, ON_COMMIT; SLIDER → ON_DELTA, ON_COMMIT; COLOR_PICKER → ON_SELECT, ON_COMMIT; top-level → ON_LOAD, ON_CLOSE.
 - **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`).
 - **Tests**: `useAppDispatch()` returns a no-op when used outside `AppProvider`, so components that only call `dispatch` can be tested without wrapping in `AppProvider`.
@@ -75,12 +75,12 @@ When adding or editing cases in domain handler files (`app-handler.ts`, `catalog
 ## Adding a New Action
 
 ```typescript
-// 1. action-types.ts - Add enum member + union member (same string value as before)
+// 1. app-action.ts (+ per-domain *-action-type.ts) - Add enum member + union member (same string value as before)
 export enum AppActionType {
   // ...
   MyPageMyButtonOnClick = 'MY_PAGE_MY_BUTTON_ON_CLICK',
 }
-export type AppActionV2 =
+export type AppAction =
   | ...
   | { type: AppActionType.MyPageMyButtonOnClick; payload: string };
 
@@ -95,7 +95,7 @@ case AppActionType.MyPageMyButtonOnClick: {
 }
 ```
 
-The controller invokes operations (e.g. load data, setState, persist). Handlers do not call services or setState directly. When adding a controller function for a new action, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`). Add the new member to the `AppActionV2` union in `action-types.ts` following the naming convention above; use the add-app-action skill when adding a new action.
+The controller invokes operations (e.g. load data, setState, persist). Handlers do not call services or setState directly. When adding a controller function for a new action, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`). Add the new member to the `AppAction` union in `app-action.ts` following the naming convention above; use the add-app-action skill when adding a new action.
 
 ## Rules
 
@@ -105,5 +105,5 @@ The controller invokes operations (e.g. load data, setState, persist). Handlers 
 - Handler routes each action to a controller; it does not implement business logic inline
 - Controllers compose operations; operations perform setState, persist, or undo
 - `setState` is called only via updates produced by operations (invoked through controllers); handlers and controllers must not mutate state directly
-- Use `AppStateUpdate` for state changes (separate from `AppActionV2` — actions are user intent / UI events, updates are state mutations)
+- Use `AppStateUpdate` for state changes (separate from `AppAction` — actions are user intent / UI events, updates are state mutations)
 - When adding a controller function for a new action, name it by the action (e.g. `saveCatalog`), not by the control/event (e.g. `handleSaveButtonOnClick`)

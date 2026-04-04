@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAppDispatch, useTemplatesState } from '../../context/app-context-hooks';
 import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../../../model/schemas';
 import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../../model/schemas';
-import { TemplateActionType } from '../../../actions/action-types';
+import { TemplateActionType } from '../../../actions/template/template-action-type';
 
 const UNGROUPED_KEY = '__ungrouped__';
 

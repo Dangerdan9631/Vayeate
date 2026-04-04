@@ -1,7 +1,7 @@
-import { AppActionType } from './app-action-type';
-import { CatalogActionType } from './catalog-action-type';
-import { TemplateActionType } from './template-action-type';
-import { ThemeActionType } from './theme-action-type';
+import { AppActionType } from './app/app-action-type';
+import { CatalogActionType } from './catalog/catalog-action-type';
+import { TemplateActionType } from './template/template-action-type';
+import { ThemeActionType } from './theme/theme-action-type';
 import type { AppAction as AppActionUnion } from './app-action';
 
 export type AppAction = Extract<AppActionUnion, { type: AppActionType }>;
@@ -19,7 +19,6 @@ export const isCatalogAction = (a: AppActionUnion): a is CatalogAction => catalo
 export const isTemplateAction = (a: AppActionUnion): a is TemplateAction => templateTypes.has(a.type);
 export const isThemeAction = (a: AppActionUnion): a is ThemeAction => themeTypes.has(a.type);
 
-/** Routes a slice of `AppAction` to domain controllers (constructor-injected). */
 export interface ActionHandler<T> {
   handle(action: T): Promise<void>;
 }

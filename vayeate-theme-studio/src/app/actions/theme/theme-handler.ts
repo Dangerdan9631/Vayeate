@@ -64,9 +64,9 @@ import {
   SetVariablesSelectByGroupController,
   SetVariablesSelectByTypeController,
   ToggleVariableSelectionController,
-} from '../../domain/controllers/theme-controller';
-import type { ActionHandler, ThemeAction } from './handler-types';
-import { ThemeActionType } from './action-types';
+} from '../../../domain/controllers/theme-controller';
+import type { ActionHandler, ThemeAction } from '../handler-types';
+import { ThemeActionType } from './theme-action-type';
 
 @injectable()
 export class ThemeActionHandler implements ActionHandler<ThemeAction> {

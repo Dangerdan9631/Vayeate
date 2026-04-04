@@ -3,7 +3,7 @@ import { useAppDispatch, useCatalogsState } from '../../context/app-context-hook
 import type { Catalog, Token, TokenKey, TokenType } from '../../../../model/schemas';
 import { tokenKeySchema } from '../../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../../../domain/utils/semantic-token';
-import { CatalogActionType } from '../../../actions/action-types';
+import { CatalogActionType } from '../../../actions/catalog/catalog-action-type';
 
 interface TokensCardProps {
   catalog: Catalog;

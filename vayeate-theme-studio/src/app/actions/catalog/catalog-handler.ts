@@ -28,9 +28,9 @@ import {
   UpdateSourceUrlController,
   UpdateTokenKeyController,
   LoadCatalogPageController,
-} from '../../domain/controllers/catalog-controller';
-import type { ActionHandler, CatalogAction } from './handler-types';
-import { CatalogActionType } from './action-types';
+} from '../../../domain/controllers/catalog-controller';
+import type { ActionHandler, CatalogAction } from '../handler-types';
+import { CatalogActionType } from './catalog-action-type';
 
 @injectable()
 export class CatalogActionHandler implements ActionHandler<CatalogAction> {

@@ -3,7 +3,7 @@ import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
 import type { UndoListEntry } from '../../domain/core/undo-manager-v2';
 import { createUndoProcessor } from '../../domain/core/undo-processor';
 import { useAppState } from '../ui/context/app-context-hooks';
-import { AppActionType } from '../actions/action-types';
+import { AppActionType } from '../actions/app/app-action-type';
 
 export interface UndoStackViewModel {
   canUndo: boolean;

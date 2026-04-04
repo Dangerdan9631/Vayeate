@@ -47,7 +47,7 @@ Use this file to route an AI coding agent to the right instruction files, archit
 | Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `vayeate-theme-studio/src/domain/utils/theme-exporter.ts`, `.github/skills/safe-change-validation.md` |
 | Repo-level documentation or process updates | `.github/copilot-instructions.md` | `AGENTS.md`, `.github/agent-docs/conventions.md`, `.github/agents/task-completion-hook.md` |
 | Unknown / mixed task | `AGENTS.md` | `.github/copilot-instructions.md`, relevant `.github/skills/*.md`, then target module files |
-| Adding or changing app actions / action types | `vayeate-theme-studio/src/app/actions/action-types.ts` (canonical list = `AppActionV2` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
+| Adding or changing app actions / action types | `vayeate-theme-studio/src/app/actions/app-action.ts` (canonical list = `AppAction` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
 | Adding or modifying handler routing (action → controller wiring) | `vayeate-theme-studio/src/app/actions/handler-registry.ts` | Per-domain handler: `app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`; `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | Adding or modifying Theme Studio operations | `.cursor/rules/vayeate-theme-studio-operations.mdc` | `.cursor/skills/add-or-modify-operation/SKILL.md`, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | Adding or using validations | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “Validations”) | `vayeate-theme-studio/src/domain/validations/`, controllers that use them |
@@ -79,7 +79,7 @@ Cursor skills (vayeate-theme-studio):
   - `vayeate-theme-studio/src/model/` (schemas and types; no deps on app, domain, gateway)
   - `vayeate-theme-studio/src/domain/*` (controllers, core, operations, state, utils; domain must not depend on app)
   - `vayeate-theme-studio/src/gateway/` (per-area gateways + `services/` for IPC; gateway must not depend on domain; app must not depend on gateway)
-  - `vayeate-theme-studio/src/app/actions/` (AppActionV2 union, ActionQueue, `*-handler.ts`, `handler-registry.ts`; routes actions to controllers; must NOT depend on gateway, operations, or validations)
+  - `vayeate-theme-studio/src/app/actions/` (AppAction union, ActionQueue, `*-handler.ts`, `handler-registry.ts`; routes actions to controllers; must NOT depend on gateway, operations, or validations)
   - `vayeate-theme-studio/src/app/di/` (tsyringe + `tsyringe-react` re-exports; e.g. `useResolve`, `ActionProcessor`)
   - `vayeate-theme-studio/src/app/viewmodel/` (state → UI derivation hooks)
   - `vayeate-theme-studio/src/app/ui/` (React components, pages, lean AppContext provider)
