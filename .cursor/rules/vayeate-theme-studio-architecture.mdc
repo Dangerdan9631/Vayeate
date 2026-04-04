@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Vayeate Theme Studio Architecture
 
-There is a clean separation between **UI actions** (events tied to UI controls) and **app logic**. App logic lives in fine-grained **operations** and **controllers** that compose multiple operations into a single app action. Actions placed on the queue are tied directly to individual UI events (naming: `<CONTROL>_<ACTION>`). The **handler layer** (`app/actions/*-handler.ts`) routes each action to the correct controller; controllers invoke operations. `AppContext.tsx` is a lean provider that no longer contains the action processor switch.
+There is a clean separation between **UI actions** (events tied to UI controls) and **app logic**. App logic lives in fine-grained **operations** and **controllers** that compose multiple operations into a single app action. Actions placed on the queue are tied directly to individual UI events (naming: `<CONTROL>_<ACTION>`). The **handler layer** (`src/app/{app,catalog,template,theme}/actions/*-handler.ts`) routes each action to the correct controller; controllers invoke operations. `AppContext.tsx` is a lean provider that no longer contains the action processor switch.
 
 ## Layer Overview
 
@@ -14,9 +14,9 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 
 | Layer | Location | Responsibility |
 |-------|----------|----------------|
-| **UI** | `src/app/ui/` | React components, pages, styles. No business logic. Dispatches one UI event per interaction. |
-| **ViewModels** | `src/app/viewmodel/` | Custom hooks that derive display data from state. |
-| **Actions + handlers** | `src/app/actions/` | `AppAction` discriminated union (`app-action.ts`), `ActionQueue`, `handler-registry` (`ActionProcessor`), and per-domain `*-handler.ts` files. UI events only; all mutations flow through here. Handlers route to controllers only. Must NOT depend on gateway, operations, or validations. |
+| **UI** | `src/app/{feature}/components/` | React components and pages per feature (`app`, `catalog`, `common`, `template`, `theme`). No business logic. Dispatches one UI event per interaction. |
+| **ViewModels** | `src/app/{feature}/viewmodel/` | Custom hooks that derive display data from state. |
+| **Actions + handlers** | `src/app/app/actions/` (union, queue, registry) + `src/app/{feature}/actions/` (per-domain `*-handler.ts`, `*-action-type.ts`) | `AppAction` discriminated union (`app/app/actions/app-action.ts`), `ActionQueue`, `handler-registry` (`ActionProcessor`). UI events only; handlers route to controllers only. Must NOT depend on gateway, operations, or validations. |
 | **State** | `src/domain/state/` | AppState type, reducers, initial state. Depends on model only. |
 | **Controllers** | `src/domain/controllers/` | Invoked by handlers for each action. Compose validations and operations; run validations before operations. |
 | **Validations** | `src/domain/validations/` | Functions that validate input and/or app state and return a boolean. One validator per file; subdirectories per concern (e.g. window-validations). Validations must not reference other validations. Used by controllers before invoking operations. |
@@ -38,9 +38,9 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 | `domain/validations/` | model, state | gateway, operations, controllers, app |
 | `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
 | `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
-| `app/actions/` | model, controllers | gateway, operations, validations |
-| `app/viewmodel/` | model, state, app/ui/context | controllers, operations, gateway |
-| `app/ui/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
+| `app/*/actions/` (handlers) | model, controllers | gateway, operations, validations |
+| `app/*/viewmodel/` | model, state, app/app/context | controllers, operations, gateway |
+| `app/*/components/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
 ## Data Flow
 
@@ -75,12 +75,12 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 
 - `electron/main.ts` — IPC handlers, BrowserWindow, delegates to controllers
 - `electron/preload.ts` — contextBridge exposes `electronAPI`
-- `src/app/ui/context/AppContext.tsx` — lean provider: useReducer, context providers, window event listeners, queue setup; registers slice setters/getters with tsyringe; resolves `ActionQueue` on first `dispatch`
-- `src/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor`, processes FIFO sequential async actions
-- `src/app/actions/app-action.ts` — Discriminated union `AppAction`. The canonical list of all app action event names.
-- `src/app/actions/handler-types.ts` — domain `Extract` aliases, type guards, `ActionHandler<T>`
-- `src/app/actions/handler-registry.ts` — `@singleton()` `ActionProcessor` (injected domain handlers) routes by `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`); `process(action)`
-- `src/app/actions/{app,catalog,template,theme}-handler.ts` — per-domain exhaustive switches; route to controllers
+- `src/app/app/context/AppContext.tsx` — lean provider: useReducer, context providers, window event listeners, queue setup; registers slice setters/getters with tsyringe; resolves `ActionQueue` on first `dispatch`
+- `src/app/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor`, processes FIFO sequential async actions
+- `src/app/app/actions/app-action.ts` — Discriminated union `AppAction`. The canonical list of all app action event names.
+- `src/app/app/actions/handler-types.ts` — domain `Extract` aliases, type guards, `ActionHandler<T>`
+- `src/app/app/actions/handler-registry.ts` — `@singleton()` `ActionProcessor` (injected domain handlers) routes by `isAppAction` / `isCatalogAction` / `isTemplateAction` / `isThemeAction` (see `handler-types.ts`); `process(action)`
+- `src/app/{app,catalog,template,theme}/actions/*-handler.ts` — per-domain exhaustive switches; route to controllers
 - `src/domain/` — Domain layer: controllers, core, operations, state, validations, utils. Must not depend on `src/app/`. May depend on `src/model/` and `src/gateway/`.
 - `src/domain/validations/` — Validators (one per file, subdirectories per concern). Controllers run validations before operations.
 - `src/model/` — Schemas and types. Must not depend on app, domain, or gateway.
@@ -92,7 +92,7 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 - **New UI actions**: Add to `AppAction` union in `app-action.ts`. Add an exhaustive switch case in the correct domain handler (`app-handler.ts`, `catalog-handler.ts`, etc.). Invoke a controller from the handler; controller uses operations for setState, persist, undo. Add reducer cases in `reducer.ts`. Use the add-app-action skill.
 - **One action = one behavior**: Never use optional fields to branch to different behaviors within one action type. Split overloaded actions into distinct action types.
 - **All UI events go through the action queue**: No component-owned side effects.
-- **New ViewModels**: Create hook in `app/viewmodel/`, consume `useAppState()` from `app/ui/context/app-context-hooks.tsx`, return derived data.
+- **New ViewModels**: Create hook in the feature’s `viewmodel/` folder (e.g. `src/app/catalog/viewmodel/`), consume `useAppState()` from `app/app/context/app-context-hooks.tsx`, return derived data.
 - **Renderer → Main**: Use gateway/services from operations only; app never imports gateway. Never import from `gateway/data` or `domain/controllers` in UI/viewmodel.
 - **Electron main**: Resolves safe paths for IPC; Theme Studio persistence goes through gateways + `FileSystemService`.
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`.

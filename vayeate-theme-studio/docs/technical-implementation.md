@@ -55,10 +55,10 @@ The app uses a strictly layered architecture enforced by `ts-arch` tests:
   - `validations/` — Pure input/state validators (depends on model + state).
   - `operations/` — Atomic units: setState + gateway/services calls (the only layer that may use gateway/services).
   - `controllers/` — Compose operations + validations; must NOT import gateway directly.
-- **`src/app/`** — UI and routing; must not depend on gateway.
-  - `actions/` — `AppAction` union (`app-action.ts`), `ActionQueue`, per-domain `*-handler.ts`, and `handler-registry.ts` (`ActionProcessor`). Handlers route to controllers; must NOT import gateway, operations, or validations.
-  - `viewmodel/` — State → UI derivation hooks.
-  - `ui/` — React components and context providers. `AppContext.tsx` is a lean provider.
+- **`src/app/`** — UI and routing; must not depend on gateway. Feature folders (`app`, `catalog`, `common`, `template`, `theme`) each contain `actions/`, `components/`, `context/`, and `viewmodel/`.
+  - `app/app/actions/` — `AppAction` union (`app-action.ts`), `ActionQueue`, `handler-registry.ts` (`ActionProcessor`), `handler-types.ts`, and shell `app-handler.ts`. Per-domain `*-handler.ts` and enums live under `catalog/actions/`, `template/actions/`, `theme/actions/`. Handlers route to controllers; must NOT import gateway, operations, or validations.
+  - `*/viewmodel/` — State → UI derivation hooks (per feature).
+  - `*/components/` — React components and pages. Root provider: `app/app/context/AppContext.tsx` (lean).
 
 All user-triggered mutations flow through the `ActionQueue`. `AppContext` resolves the tsyringe `ActionProcessor` (handler-registry) and calls `process(action)`, which routes by action prefix to the correct domain handler (exhaustive switch), which invokes a controller.
 

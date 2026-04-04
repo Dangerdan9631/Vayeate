@@ -2,9 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { filesOfProject } from 'tsarch';
 
 describe('handler architecture', () => {
-	it('handlers should not depend on domain/operations', async () => {
+	it('*-handler.ts under src/app should not depend on domain/operations', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/app/handlers')
+			.inFolder('src/app')
+			.matchingPattern('-handler\\.ts$')
 			.shouldNot()
 			.dependOnFiles()
 			.inFolder('src/domain/operations');
@@ -12,9 +13,10 @@ describe('handler architecture', () => {
 		expect(violations).toHaveLength(0);
 	});
 
-	it('handlers should not depend on gateway', async () => {
+	it('*-handler.ts under src/app should not depend on gateway', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/app/handlers')
+			.inFolder('src/app')
+			.matchingPattern('-handler\\.ts$')
 			.shouldNot()
 			.dependOnFiles()
 			.inFolder('src/gateway');
@@ -22,9 +24,10 @@ describe('handler architecture', () => {
 		expect(violations).toHaveLength(0);
 	});
 
-	it('handlers should not depend on domain/validations', async () => {
+	it('*-handler.ts under src/app should not depend on domain/validations', async () => {
 		const rule = filesOfProject()
-			.inFolder('src/app/handlers')
+			.inFolder('src/app')
+			.matchingPattern('-handler\\.ts$')
 			.shouldNot()
 			.dependOnFiles()
 			.inFolder('src/domain/validations');

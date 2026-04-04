@@ -28,7 +28,7 @@
 
 ## Action routing workflow
 
-- All user-triggered mutations flow through the `ActionQueue` in `app/actions/`.
+- All user-triggered mutations flow through the `ActionQueue` in `src/app/app/actions/`.
 - `AppContext` wires the queue to `ActionProcessor.process` (tsyringe `ActionProcessor` from `handler-registry.ts`).
 - `handler-registry.ts` routes each action to the correct domain handler by prefix (`APP_`, `CATALOG_`, `TEMPLATE_`, `THEME_`).
 - Each domain handler (`app-handler.ts`, etc.) routes to the appropriate controller via an exhaustive switch.

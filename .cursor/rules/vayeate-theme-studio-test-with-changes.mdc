@@ -13,13 +13,13 @@ When you change code in vayeate-theme-studio, add or update tests that cover the
 | Layer | Test location |
 |-------|----------------|
 | State | `src/domain/state/*.test.ts` |
-| Actions | `src/app/actions/*.test.ts` |
+| Actions | `src/app/**/actions/*.test.ts` |
 | Controllers | `src/domain/controllers/<controller>/<controller>.test.ts` (colocated in controller subdirectory) |
 | Validations | `src/domain/validations/<validations>/<validator>.test.ts` (colocated next to each validator file) |
 | Operations | `src/domain/operations/<operations>/<operations>.test.ts` (colocated in operation subdirectory) |
 | Gateway/services | `src/gateway/services/*.test.ts` (when adding/changing services) |
 | Gateway (theme/template/catalog/config/preview) | Colocated `*.test.ts` next to the gateway file |
-| Viewmodel | `src/app/viewmodel/*.test.tsx` |
+| Viewmodel | `src/app/**/viewmodel/*.test.tsx` |
 | UI (pages/components) | Colocated `*.test.tsx` next to the component |
 
 ## Guidelines

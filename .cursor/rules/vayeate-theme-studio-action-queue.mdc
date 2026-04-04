@@ -1,12 +1,12 @@
 ---
 description: Action queue pattern for vayeate-theme-studio
-globs: vayeate-theme-studio/src/app/actions/**/*, vayeate-theme-studio/src/app/ui/context/**/*
+globs: vayeate-theme-studio/src/app/**/actions/**/*, vayeate-theme-studio/src/app/app/context/**/*
 alwaysApply: false
 ---
 
 # Action Queue Pattern
 
-All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** (`app/actions/*-handler.ts`) routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` resolves the `@singleton()` `ActionQueue` once. `ActionQueue` injects `ActionProcessor` and `QueueStatusStateSetter`, calls `actionProcessor.process(action)` while processing, and pushes queue depth / processing flags into state via the setter. Slice `*StateSetter` / `*StateGetter` instances are registered from `AppContext` into tsyringe and injected into controllers (and similar) as needed.
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** (`src/app/{app,catalog,template,theme}/actions/*-handler.ts`) routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` resolves the `@singleton()` `ActionQueue` once. `ActionQueue` injects `ActionProcessor` and `QueueStatusStateSetter`, calls `actionProcessor.process(action)` while processing, and pushes queue depth / processing flags into state via the setter. Slice `*StateSetter` / `*StateGetter` instances are registered from `AppContext` into tsyringe and injected into controllers (and similar) as needed.
 
 ## Event Naming
 
@@ -20,7 +20,7 @@ Each UI interaction dispatches exactly one such event. The control name identifi
 
 ## Flow
 
-1. Component dispatches one event per interaction: `dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, ... })` (import the per-domain enum from `actions/app/app-action-type.ts`, `actions/catalog/catalog-action-type.ts`, `actions/template/template-action-type.ts`, or `actions/theme/theme-action-type.ts`)
+1. Component dispatches one event per interaction: `dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, ... })` (import the per-domain enum from `app/app/actions/app-action-type.ts`, `catalog/actions/catalog-action-type.ts`, `template/actions/template-action-type.ts`, or `theme/actions/theme-action-type.ts` under `src/app/`)
 2. ActionQueue.enqueue() pushes the event to a FIFO queue
 3. Processor runs when idle; awaits each action before starting the next
 4. The **processor** (in AppContext) delegates to `ActionProcessor.process` in `handler-registry.ts`, which routes via type guards (`isAppAction`, `isCatalogAction`, etc. in `handler-types.ts`) to the correct domain handler
@@ -58,7 +58,7 @@ Use these action suffixes for each control type when naming events:
 
 ## AppAction and canonical event list
 
-- **Type definition**: `AppAction` is a discriminated union in `vayeate-theme-studio/src/app/actions/app-action.ts`. Each member uses `{ type: XxxActionType.SomeCase; ...payload }` where `AppActionType`, `CatalogActionType`, `TemplateActionType`, and `ThemeActionType` are string enums (runtime values preserve the legacy `APP_*` / `CATALOG_*` / etc. strings). **The `AppAction` union is the canonical list of all app action event names**; there is no separate list file.
+- **Type definition**: `AppAction` is a discriminated union in `vayeate-theme-studio/src/app/app/actions/app-action.ts`. Each member uses `{ type: XxxActionType.SomeCase; ...payload }` where `AppActionType`, `CatalogActionType`, `TemplateActionType`, and `ThemeActionType` are string enums (runtime values preserve the legacy `APP_*` / `CATALOG_*` / etc. strings). **The `AppAction` union is the canonical list of all app action event names**; there is no separate list file.
 - **Naming convention**: `<CONTEXT>_<SUBCONTEXT>_<IDENTIFIER>_<CONTROL>_<ACTION>` (e.g. `CATALOG_DETAILS_SYNC_BUTTON_ON_CLICK`). CONTEXT: APP, CATALOG, TEMPLATE, THEME. SUBCONTEXT: card/section/dialog (e.g. DETAILS, CREATE_DIALOG). CONTROL and ACTION: BUTTON → ON_CLICK, ON_DOUBLE_CLICK, ON_RIGHT_CLICK; LIST → ON_SELECT, ON_COMMIT; CHECKBOX → ON_TOGGLE; TEXT → ON_CHANGE, ON_COMMIT; SLIDER → ON_DELTA, ON_COMMIT; COLOR_PICKER → ON_SELECT, ON_COMMIT; top-level → ON_LOAD, ON_CLOSE.
 - **Payload types**: Use schema types from `vayeate-theme-studio/src/model/schemas.ts` where applicable (e.g. `CatalogName`, `Version`, `TemplateName`, `ThemeName`, `CatalogType`, `TokenKey`, `HexColor`, `ColorVariableKey`, `ContrastVariableKey`, `ContrastValue`, `ContrastComparisonMethod`, `SourceType`, `TokenType`).
 - **Tests**: `useAppDispatch()` returns a no-op when used outside `AppProvider`, so components that only call `dispatch` can be tested without wrapping in `AppProvider`.

@@ -64,17 +64,16 @@ The following table is the definitive dependency matrix enforced by ts-arch test
 | `domain/validations/` | model, state | gateway, operations, controllers, app |
 | `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
 | `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
-| `app/actions/` | model | domain, gateway |
-| `app/handlers/` | controllers | operations, gateway, validations, state |
-| `app/viewmodel/` | model, state, app/ui/context | controllers, operations, gateway |
-| `app/ui/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
+| `app/*/actions/` (handlers) | model, controllers | gateway, operations, validations |
+| `app/*/viewmodel/` | model, state, app/app/context | controllers, operations, gateway |
+| `app/*/components/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
 ## Test files
 
 Architecture tests live in `vayeate-theme-studio/test/`:
 
-- `app.architecture.test.ts` — app layer boundaries (UI, viewmodel, actions)
-- `handler.architecture.test.ts` — handler layer boundaries (must not import gateway/operations/validations/state)
+- `app.architecture.test.ts` — app layer boundaries (per-feature `components/`, controller imports)
+- `handler.architecture.test.ts` — `*-handler.ts` under `src/app` (must not import gateway/operations/validations)
 - `domain.architecture.test.ts` — domain layer boundaries (controllers, operations, validations, state, utils, core)
 - `gateway.architecture.test.ts` — gateway layer boundaries
 - `model.architecture.test.ts` — model layer boundaries

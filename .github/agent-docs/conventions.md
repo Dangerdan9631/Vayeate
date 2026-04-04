@@ -14,7 +14,7 @@
 
 ## Handler conventions
 
-- Action routing lives in `app/actions/` (`*-handler.ts` + `handler-registry.ts`). **Never add business logic to handlers** — they route to controllers only.
+- Action routing lives under `src/app/app/actions/` (`handler-registry.ts`, `AppAction` union) and per-domain `src/app/{app,catalog,template,theme}/actions/*-handler.ts`. **Never add business logic to handlers** — they route to controllers only.
 - Each domain has one handler file: `app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`.
 - Each handler uses an exhaustive `switch` on its domain-scoped action subset (e.g. `CatalogAction`). TypeScript will error if a case is missing.
 - `handler-registry.ts` exports the `@singleton()` `ActionProcessor` class; `process(action)` routes by action type prefix to the correct handler.

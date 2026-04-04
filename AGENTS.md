@@ -42,18 +42,18 @@ Use this file to route an AI coding agent to the right instruction files, archit
 |---|---|---|
 | Theme generation or contrast logic changes | `.github/skills/theme-generation.md` | `vayeate-theme-studio/src/domain/utils/theme-generator.ts`, `vayeate-theme-studio/src/domain/utils/color.ts`, `.github/agent-docs/edge-cases.md` |
 | Catalog pin/sync/drift changes | `.github/skills/catalog-sync.md` | `vayeate-theme-studio/src/gateway/catalog/token-sync-gateway.ts`, `vayeate-theme-studio/data/catalogs/`, `.github/agent-docs/functionality.md` |
-| UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `vayeate-theme-studio/src/app/ui/App.tsx`, `.github/agent-docs/architecture.md` |
+| UI/editor behavior changes | `.github/agents/theme-studio-agent.md` | `vayeate-theme-studio/src/app/app/components/App.tsx`, `.github/agent-docs/architecture.md` |
 | Schema/model changes | `.github/agent-docs/architecture.md` | `vayeate-theme-studio/src/model/schemas.ts`, `vayeate-theme-studio/src/model/`, `.github/agent-docs/conventions.md` |
 | Safety/path/output behavior changes | `.github/agent-docs/edge-cases.md` | `vayeate-theme-studio/src/domain/utils/theme-exporter.ts`, `.github/skills/safe-change-validation.md` |
 | Repo-level documentation or process updates | `.github/copilot-instructions.md` | `AGENTS.md`, `.github/agent-docs/conventions.md`, `.github/agents/task-completion-hook.md` |
 | Unknown / mixed task | `AGENTS.md` | `.github/copilot-instructions.md`, relevant `.github/skills/*.md`, then target module files |
-| Adding or changing app actions / action types | `vayeate-theme-studio/src/app/actions/app-action.ts` (canonical list = `AppAction` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
-| Adding or modifying handler routing (action → controller wiring) | `vayeate-theme-studio/src/app/actions/handler-registry.ts` | Per-domain handler: `app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, `theme-handler.ts`; `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
+| Adding or changing app actions / action types | `vayeate-theme-studio/src/app/app/actions/app-action.ts` (canonical list = `AppAction` union), `.cursor/rules/vayeate-theme-studio-action-queue.mdc` | `.cursor/skills/add-app-action/SKILL.md` when adding a new action |
+| Adding or modifying handler routing (action → controller wiring) | `vayeate-theme-studio/src/app/app/actions/handler-registry.ts` | Per-domain handler under `src/app/{app,catalog,template,theme}/actions/*-handler.ts`; `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | Adding or modifying Theme Studio operations | `.cursor/rules/vayeate-theme-studio-operations.mdc` | `.cursor/skills/add-or-modify-operation/SKILL.md`, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
 | Adding or using validations | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “Validations”) | `vayeate-theme-studio/src/domain/validations/`, controllers that use them |
-| State / reducer structure or new state slice | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “State and reducers”) | `vayeate-theme-studio/src/domain/state/`, `vayeate-theme-studio/src/app/ui/context/AppContext.tsx` |
+| State / reducer structure or new state slice | `.cursor/rules/vayeate-theme-studio-architecture.mdc` (see “State and reducers”) | `vayeate-theme-studio/src/domain/state/`, `vayeate-theme-studio/src/app/app/context/AppContext.tsx` |
 | App changes that mutate state or files (undoable work) | `.cursor/rules/vayeate-theme-studio-undo.mdc` | Existing operations/controllers/viewmodels, `.cursor/rules/vayeate-theme-studio-architecture.mdc` |
-| Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/app/viewmodel/use-undo-stack-viewmodel.ts` when implementing UI wiring or migrating |
+| Undo / UndoManagerV2 (implement or refactor the manager) | `.cursor/skills/undo-manager-v2/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/app/app/viewmodel/use-undo-stack-viewmodel.ts` when implementing UI wiring or migrating |
 | Adding a new undo action type | `.cursor/skills/define-undo-action/SKILL.md` | `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `.cursor/rules/vayeate-theme-studio-undo.mdc` |
 
 ## Skills index
@@ -79,10 +79,8 @@ Cursor skills (vayeate-theme-studio):
   - `vayeate-theme-studio/src/model/` (schemas and types; no deps on app, domain, gateway)
   - `vayeate-theme-studio/src/domain/*` (controllers, core, operations, state, utils; domain must not depend on app)
   - `vayeate-theme-studio/src/gateway/` (per-area gateways + `services/` for IPC; gateway must not depend on domain; app must not depend on gateway)
-  - `vayeate-theme-studio/src/app/actions/` (AppAction union, ActionQueue, `*-handler.ts`, `handler-registry.ts`; routes actions to controllers; must NOT depend on gateway, operations, or validations)
+  - `vayeate-theme-studio/src/app/{app,catalog,common,template,theme}/` (orthogonal features; each has `actions/`, `components/`, `context/`, `viewmodel/`; shell wiring and `AppAction` union live under `src/app/app/actions/`)
   - `vayeate-theme-studio/src/app/di/` (tsyringe + `tsyringe-react` re-exports; e.g. `useResolve`, `ActionProcessor`)
-  - `vayeate-theme-studio/src/app/viewmodel/` (state → UI derivation hooks)
-  - `vayeate-theme-studio/src/app/ui/` (React components, pages, lean AppContext provider)
   - `vayeate-theme-studio/data/*`
 
 ## Minimum validation before handoff
