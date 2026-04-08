@@ -6,10 +6,8 @@ import {
   useState,
   type MouseEvent,
 } from 'react';
-import { ThemeActionType } from '../actions/theme-action-type';
-import { useViewportSize } from '../../common/viewmodel/use-viewport-size';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useEyedropperUiState } from '../context/use-eyedropper-ui-state';
+import { ThemeActionType } from '../../theme/actions/theme-action-type';
+import { useEyedropperOverlayViewModel } from '../viewmodel/use-eyedropper-overlay-viewmodel';
 
 // --- Full-screen eyedropper overlay helpers (local to this component) ---
 
@@ -249,9 +247,8 @@ function loupeCrosshairCenter(
 
 /** Full-screen screen snapshot overlay; driven by `state.ui.eyedropper`. */
 export function EyedropperOverlay() {
-  const dispatch = useAppDispatch();
-  const appViewport = useViewportSize();
-  const { phase, snapshot, errorMessage, contextKey } = useEyedropperUiState();
+  const { dispatch, appViewport, eyedropper } = useEyedropperOverlayViewModel();
+  const { phase, snapshot, errorMessage, contextKey } = eyedropper;
   const overlayRootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);

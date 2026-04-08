@@ -4,7 +4,6 @@ import { filesOfProject } from 'tsarch';
 const viewmodelRoots = [
 	'src/app/app/viewmodel',
 	'src/app/catalog/viewmodel',
-	'src/app/common/viewmodel',
 	'src/app/template/viewmodel',
 	'src/app/theme/viewmodel',
 ] as const;

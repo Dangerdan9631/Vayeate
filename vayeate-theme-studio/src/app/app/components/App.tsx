@@ -3,7 +3,7 @@ import { AppProvider } from '../../core/components/AppProvider';
 import { ColorSchemeProvider } from '../../core/components/ColorSchemeProvider';
 import { useAppShellViewModel } from '../viewmodel/use-app-shell-viewmodel';
 import { ContentArea } from './ContentArea';
-import { EyedropperOverlay } from '../../theme/components/EyedropperOverlay';
+import { EyedropperOverlay } from './EyedropperOverlay';
 import { MenuBar } from './MenuBar';
 import { Ribbon } from './Ribbon';
 import { StatusBar } from './StatusBar';
