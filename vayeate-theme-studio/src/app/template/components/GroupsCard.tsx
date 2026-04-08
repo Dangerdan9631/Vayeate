@@ -1,31 +1,19 @@
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useTemplatesState } from '../context/use-templates-state';
-import { TemplateActionType } from '../actions/template-action-type';
+import { useGroupsCardViewModel } from '../viewmodel/use-groups-card-viewmodel';
 
-interface GroupsCardProps {
-  groups: readonly string[];
-  groupNamesInUse: Set<string>;
-  canEdit: boolean;
-  onRemoveGroup: (name: string) => void;
-}
+export function GroupsCard() {
+  const {
+    template,
+    groups,
+    groupNamesInUse,
+    canEdit,
+    addGroupName,
+    canAdd,
+    onRemoveGroup,
+    handleAddGroupNameChange,
+    handleAddGroup,
+  } = useGroupsCardViewModel();
 
-export function GroupsCard({
-  groups,
-  groupNamesInUse,
-  canEdit,
-  onRemoveGroup,
-}: GroupsCardProps) {
-  const dispatch = useAppDispatch();
-  const { addGroupName } = useTemplatesState();
-
-  const trimmed = addGroupName.trim();
-  const canAdd = trimmed.length > 0 && !groups.includes(trimmed);
-
-  function handleAdd() {
-    if (!canAdd) return;
-    dispatch({ type: TemplateActionType.TemplateGroupAddButtonOnClick, name: trimmed });
-    dispatch({ type: TemplateActionType.TemplateGroupAddTextOnChange, value: '' });
-  }
+  if (!template) return null;
 
   return (
     <div className="tokens-card placeholder">
@@ -38,16 +26,16 @@ export function GroupsCard({
             placeholder="Group name…"
             value={addGroupName}
             onChange={(e) => {
-              dispatch({ type: TemplateActionType.TemplateGroupAddTextOnChange, value: e.target.value });
+              handleAddGroupNameChange(e.target.value);
             }}
-            onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddGroup()}
           />
           <button
             type="button"
             className="btn-icon btn-add-icon"
             title="Add group"
             disabled={!canAdd}
-            onClick={handleAdd}
+            onClick={handleAddGroup}
           >
             <span className="material-symbols-outlined">add</span>
           </button>

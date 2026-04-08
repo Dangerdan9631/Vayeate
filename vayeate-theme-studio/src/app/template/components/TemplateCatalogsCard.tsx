@@ -1,41 +1,22 @@
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import type { CatalogName, CatalogReference } from '../../../model/schemas';
-import { TemplateActionType } from '../actions/template-action-type';
+import { useTemplateCatalogsCardViewModel } from '../viewmodel/use-template-catalogs-card-viewmodel';
 
-interface TemplateCatalogsCardProps {
-  catalogNames: string[];
-  catalogVersionsByName: Record<string, CatalogReference[]>;
-  includedCatalogMap: Map<string, string>;
-  isLatestVersion: boolean;
-  includedCatalogNamesWithUpdates: string[];
-}
+export function TemplateCatalogsCard() {
+  const {
+    template,
+    catalogNamesList,
+    catalogVersionsByName,
+    includedCatalogMap,
+    isLatestVersion,
+    includedCatalogNamesWithUpdates,
+    updateAllCatalogsToLatest,
+    toggleCatalog,
+    changeCatalogVersion,
+  } = useTemplateCatalogsCardViewModel();
 
-export function TemplateCatalogsCard({
-  catalogNames,
-  catalogVersionsByName,
-  includedCatalogMap,
-  isLatestVersion,
-  includedCatalogNamesWithUpdates,
-}: TemplateCatalogsCardProps) {
-  const dispatch = useAppDispatch();
+  if (!template) return null;
+
   const showUpdateAll =
     isLatestVersion && includedCatalogNamesWithUpdates.length > 0;
-  const handleUpdateAll = () =>
-    dispatch({ type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick });
-  const handleCatalogToggle = (name: string, checked: boolean) => {
-    dispatch({
-      type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
-      catalogName: name as CatalogName,
-      checked,
-    });
-  };
-  const handleCatalogVersionChange = (name: string, value: string) => {
-    dispatch({
-      type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit,
-      catalogName: name as CatalogName,
-      value,
-    });
-  };
 
   return (
     <div className="placeholder template-catalogs-card">
@@ -45,18 +26,18 @@ export function TemplateCatalogsCard({
           <button
             type="button"
             className="btn btn-primary btn-sm"
-            onClick={handleUpdateAll}
+            onClick={updateAllCatalogsToLatest}
           >
             Update All
           </button>
         )}
       </div>
 
-      {catalogNames.length === 0 && (
+      {catalogNamesList.length === 0 && (
         <p className="empty-hint">No catalogs available. Create one on the Catalogs tab.</p>
       )}
 
-      {catalogNames.map((name) => {
+      {catalogNamesList.map((name) => {
         const included = includedCatalogMap.has(name);
         const selectedVersion = includedCatalogMap.get(name) ?? '';
         const versions = catalogVersionsByName[name] ?? [];
@@ -76,7 +57,7 @@ export function TemplateCatalogsCard({
                 className="checkbox-icon-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleCatalogToggle(name, !included);
+                  toggleCatalog(name, !included);
                 }}
               >
                 <span className="material-symbols-outlined" aria-hidden>
@@ -99,7 +80,7 @@ export function TemplateCatalogsCard({
                 className="field-select template-catalog-version"
                 value={selectedVersion}
                 onChange={(e) => {
-                  handleCatalogVersionChange(name, e.target.value);
+                  changeCatalogVersion(name, e.target.value);
                 }}
               >
                 {versions.map((ref) => (

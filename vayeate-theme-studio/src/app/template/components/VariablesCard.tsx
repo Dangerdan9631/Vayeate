@@ -1,27 +1,8 @@
 import { useState } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useTemplatesState } from '../context/use-templates-state';
+import { useVariablesCardViewModel } from '../viewmodel/use-variables-card-viewmodel';
 import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../../model/schemas';
 import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../model/schemas';
-import { TemplateActionType } from '../actions/template-action-type';
-
 const UNGROUPED_KEY = '__ungrouped__';
-
-interface VariablesCardProps {
-  colorVariables: readonly ColorVariable[];
-  contrastVariables: readonly ContrastVariable[];
-  groups: readonly string[];
-  referencedColorVarKeys: Set<string>;
-  referencedContrastVarKeys: Set<string>;
-  canEdit: boolean;
-  onAddColorVariable: (key: string, groupRef?: string | null) => void;
-  onRemoveColorVariable: (key: string) => void;
-  onAddContrastVariable: (key: string, groupRef?: string | null) => void;
-  onRemoveContrastVariable: (key: string) => void;
-  onUpdateColorVariableGroupRef: (key: string, groupRef: string | null) => void;
-  onUpdateContrastVariableGroupRef: (key: string, groupRef: string | null) => void;
-  onUpdateContrastComparisonSource: (key: string, ref: ColorVariableKey | null) => void;
-}
 
 function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean {
   const schema = type === 'color' ? colorVariableKeySchema : contrastVariableKeySchema;
@@ -414,23 +395,27 @@ function matchesSearch(key: string, searchQuery: string): boolean {
   return !q || key.toLowerCase().includes(q);
 }
 
-export function VariablesCard({
-  colorVariables,
-  contrastVariables,
-  groups,
-  referencedColorVarKeys,
-  referencedContrastVarKeys,
-  canEdit,
-  onAddColorVariable,
-  onRemoveColorVariable,
-  onAddContrastVariable,
-  onRemoveContrastVariable,
-  onUpdateColorVariableGroupRef,
-  onUpdateContrastVariableGroupRef,
-  onUpdateContrastComparisonSource,
-}: VariablesCardProps) {
-  const dispatch = useAppDispatch();
-  const { variablesSearchText } = useTemplatesState();
+export function VariablesCard() {
+  const {
+    template,
+    colorVariables,
+    contrastVariables,
+    groups,
+    referencedColorVarKeys,
+    referencedContrastVarKeys,
+    canEdit,
+    variablesSearchText,
+    onAddColorVariable,
+    onRemoveColorVariable,
+    onAddContrastVariable,
+    onRemoveContrastVariable,
+    onUpdateColorVariableGroupRef,
+    onUpdateContrastVariableGroupRef,
+    onUpdateContrastComparisonSource,
+    handleVariablesSearchChange,
+  } = useVariablesCardViewModel();
+
+  if (!template) return null;
 
   const filteredColorVariables = colorVariables
     .filter((v) => matchesSearch(v.key, variablesSearchText))
@@ -449,7 +434,7 @@ export function VariablesCard({
         placeholder="Search…"
         value={variablesSearchText}
         onChange={(e) => {
-          dispatch({ type: TemplateActionType.TemplateVariablesSearchTextOnChange, value: e.target.value });
+          handleVariablesSearchChange(e.target.value);
         }}
         aria-label="Search variables"
       />

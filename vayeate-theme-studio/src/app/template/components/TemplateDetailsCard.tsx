@@ -1,20 +1,11 @@
-import type { Template } from '../../../model/schemas';
+import { useTemplateDetailsCardViewModel } from '../viewmodel/use-template-details-card-viewmodel';
 
-interface TemplateDetailsCardProps {
-  template: Template;
-  isLatestVersion: boolean;
-  canLock: boolean;
-  onDeleteVersion: () => void;
-  onLock: () => void;
-}
+export function TemplateDetailsCard() {
+  const { template, isLatestVersion, canLock, onDeleteVersion, onLock } =
+    useTemplateDetailsCardViewModel();
 
-export function TemplateDetailsCard({
-  template,
-  isLatestVersion,
-  canLock,
-  onDeleteVersion,
-  onLock,
-}: TemplateDetailsCardProps) {
+  if (!template) return null;
+
   return (
     <div className="catalog-details-card placeholder">
       <h2>Template Details</h2>

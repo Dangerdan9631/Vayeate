@@ -1,26 +1,17 @@
-import type { TemplateReference } from '../../../model/schemas';
+import { useTemplatesCardViewModel } from '../viewmodel/use-templates-card-viewmodel';
 
-interface TemplatesCardProps {
-  templateNames: string[];
-  selectedName: string | null;
-  versionsForSelectedName: TemplateReference[];
-  selectedRef: TemplateReference | null;
-  onSelectName: (name: string) => void;
-  onSelectVersion: (version: string) => void;
-  onCreateClick: () => void;
-  isCreating: boolean;
-}
+export function TemplatesCard() {
+  const {
+    templateNames,
+    selectedName,
+    versionsForSelectedName,
+    selectedRef,
+    onSelectName,
+    onSelectVersion,
+    onCreateClick,
+    isCreating,
+  } = useTemplatesCardViewModel();
 
-export function TemplatesCard({
-  templateNames,
-  selectedName,
-  versionsForSelectedName,
-  selectedRef,
-  onSelectName,
-  onSelectVersion,
-  onCreateClick,
-  isCreating,
-}: TemplatesCardProps) {
   function handleNameChange(value: string) {
     if (value) {
       onSelectName(value);

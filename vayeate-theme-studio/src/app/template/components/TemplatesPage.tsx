@@ -1,9 +1,12 @@
+import { useContextSelector } from 'use-context-selector';
 import { useEffect, useMemo, useState } from 'react';
 import {
   useTemplateViewModel,
   computeOrphanKeys,
   type SemanticCatalogInfo,
 } from '../viewmodel/use-template-viewmodel';
+import { useTemplatesState } from '../context/use-templates-state';
+import { AppContext } from '../../core/components/AppProvider';
 import { CreateTemplateDialog } from './CreateTemplateDialog';
 import { GroupsCard } from './GroupsCard';
 import { MappingsCard } from './MappingsCard';
@@ -14,15 +17,33 @@ import { VariablesCard } from './VariablesCard';
 import type { Catalog, Token } from '../../../model/schemas';
 
 export function TemplatesPage() {
-  const vm = useTemplateViewModel();
+  useTemplateViewModel();
+  const { template, createDialogOpen } = useTemplatesState();
+
+  const loadedForDisplay = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice.loadedForDisplay;
+  });
+
+  const loadedCatalogsForTemplateRefs = useMemo(() => {
+    if (!template || template.catalogRefs.length === 0) return [];
+    return template.catalogRefs.map((ref) => {
+      const key = `${ref.name}@${ref.version}`;
+      return loadedForDisplay[key] ?? null;
+    });
+  }, [template, loadedForDisplay]);
+
   const [orphanKeys, setOrphanKeys] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!vm.template || vm.loadedCatalogsForTemplateRefs.length === 0) {
+    if (!template || loadedCatalogsForTemplateRefs.length === 0) {
       setOrphanKeys(new Set());
       return;
     }
-    const loaded = vm.loadedCatalogsForTemplateRefs;
+    const loaded = loadedCatalogsForTemplateRefs;
     const allLoaded = loaded.every((c: Catalog | null) => c !== null);
     if (!allLoaded) return;
 
@@ -46,105 +67,26 @@ export function TemplatesPage() {
             semanticTokenLanguages: [...languagesSet].sort(),
           }
         : undefined;
-    setOrphanKeys(computeOrphanKeys(vm.template.mappings, allTokens, semanticCatalog));
-  }, [vm.template, vm.loadedCatalogsForTemplateRefs]);
-
-  const canEdit = useMemo(() => {
-    return !!vm.template && vm.isLatestVersion;
-  }, [vm.template, vm.isLatestVersion]);
+    setOrphanKeys(computeOrphanKeys(template.mappings, allTokens, semanticCatalog));
+  }, [template, loadedCatalogsForTemplateRefs]);
 
   return (
     <>
       <div className="templates-page-grid">
         <div className="templates-left-col">
-          <TemplatesCard
-            templateNames={vm.templateNames}
-            selectedName={vm.selectedName}
-            versionsForSelectedName={vm.versionsForSelectedName}
-            selectedRef={vm.selectedRef}
-            onSelectName={vm.selectName}
-            onSelectVersion={(version) => {
-              if (vm.selectedName) vm.selectTemplate(vm.selectedName, version);
-            }}
-            onCreateClick={vm.openCreateDialog}
-            isCreating={vm.isCreating}
-          />
-          {vm.template && (
-            <TemplateDetailsCard
-              template={vm.template}
-              isLatestVersion={vm.isLatestVersion}
-              canLock={vm.canLock}
-              onDeleteVersion={() => {
-                if (vm.selectedRef) vm.deleteVersion(vm.selectedRef.name, vm.selectedRef.version);
-              }}
-              onLock={vm.lockTemplate}
-            />
-          )}
-          {vm.template && (
-            <TemplateCatalogsCard
-              catalogNames={vm.catalogNamesList}
-              catalogVersionsByName={vm.catalogVersionsByName}
-              includedCatalogMap={vm.includedCatalogMap}
-              isLatestVersion={vm.isLatestVersion}
-              includedCatalogNamesWithUpdates={vm.includedCatalogNamesWithUpdates}
-            />
-          )}
+          <TemplatesCard />
+          <TemplateDetailsCard />
+          <TemplateCatalogsCard />
         </div>
         <div className="templates-center-col">
-          {vm.template && (
-            <MappingsCard
-              mappingsByType={vm.mappingsByType}
-              groups={vm.template.groups}
-              colorVariables={vm.template.colorVariables}
-              contrastVariables={vm.template.contrastVariables}
-              orphanKeys={orphanKeys}
-              canEdit={canEdit}
-              onUpdateGroupRef={vm.updateMappingGroupRef}
-              onUpdateColorRef={vm.updateMappingColorRef}
-              onUpdateContrastRef={vm.updateMappingContrastRef}
-              semanticVariant={{
-                semanticTokenModifiers: vm.template.semanticTokenModifiers ?? [],
-                semanticTokenLanguages: vm.template.semanticTokenLanguages ?? [],
-                onAddSemanticVariant: vm.addSemanticVariantMapping,
-                onUpdateSemanticVariantKey: vm.updateSemanticVariantKey,
-              }}
-              onRemoveMapping={vm.removeMapping}
-            />
-          )}
+          <MappingsCard orphanKeys={orphanKeys} />
         </div>
         <div className="templates-right-col">
-          {vm.template && (
-            <GroupsCard
-              groups={vm.template.groups}
-              groupNamesInUse={vm.groupNamesInUse}
-              canEdit={canEdit}
-              onRemoveGroup={vm.removeGroup}
-            />
-          )}
-          {vm.template && (
-            <VariablesCard
-              colorVariables={vm.template.colorVariables}
-              contrastVariables={vm.template.contrastVariables}
-              groups={vm.template.groups}
-              referencedColorVarKeys={vm.referencedColorVarKeys}
-              referencedContrastVarKeys={vm.referencedContrastVarKeys}
-              canEdit={canEdit}
-              onAddColorVariable={vm.addColorVariable}
-              onRemoveColorVariable={vm.removeColorVariable}
-              onAddContrastVariable={vm.addContrastVariable}
-              onRemoveContrastVariable={vm.removeContrastVariable}
-              onUpdateColorVariableGroupRef={vm.updateColorVariableGroupRef}
-              onUpdateContrastVariableGroupRef={vm.updateContrastVariableGroupRef}
-              onUpdateContrastComparisonSource={vm.updateContrastComparisonSource}
-            />
-          )}
+          <GroupsCard />
+          <VariablesCard />
         </div>
       </div>
-      {vm.createDialogOpen && (
-        <CreateTemplateDialog
-          onCancel={vm.closeCreateDialog}
-        />
-      )}
+      {createDialogOpen && <CreateTemplateDialog />}
     </>
   );
 }

@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useTemplatesState } from '../context/use-templates-state';
+import { useMappingsCardViewModel } from '../viewmodel/use-mappings-card-viewmodel';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
-import { TemplateActionType } from '../actions/template-action-type';
 import type {
   ColorVariable,
   ColorVariableKey,
@@ -41,25 +39,6 @@ export interface SemanticVariantProps {
     modifiers: string[],
     language: string | null,
   ) => void;
-}
-
-interface MappingsCardProps {
-  mappingsByType: Record<TokenType, Mapping[]>;
-  groups: readonly string[];
-  colorVariables: readonly ColorVariable[];
-  contrastVariables: readonly ContrastVariable[];
-  orphanKeys: Set<string>;
-  canEdit: boolean;
-  onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
-  onUpdateColorRef: (
-    tokenKey: string,
-    tokenType: TokenType,
-    ref: ColorVariableKey | null,
-    isOrphan?: boolean,
-  ) => void;
-  onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
-  semanticVariant?: SemanticVariantProps;
-  onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
 }
 
 function tokenTypeLabel(tokenType: TokenType): string {
@@ -910,27 +889,28 @@ function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): st
   return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
 }
 
-export function MappingsCard({
-  mappingsByType,
-  groups,
-  colorVariables,
-  contrastVariables,
-  orphanKeys,
-  canEdit,
-  onUpdateGroupRef,
-  onUpdateColorRef,
-  onUpdateContrastRef,
-  semanticVariant,
-  onRemoveMapping,
-}: MappingsCardProps) {
-  const dispatch = useAppDispatch();
-  const templatesState = useTemplatesState();
-  const [localSearchQuery, setLocalSearchQuery] = useState('');
-  const [localSelectedColorKeys, setLocalSelectedColorKeys] = useState<string[]>([]);
-  const [localSelectedContrastKeys, setLocalSelectedContrastKeys] = useState<string[]>([]);
-  const searchQuery = templatesState?.mappingSearchText ?? localSearchQuery;
-  const selectedColorKeys = templatesState?.mappingColorVariableFilter ?? localSelectedColorKeys;
-  const selectedContrastKeys = templatesState?.mappingContrastVariableFilter ?? localSelectedContrastKeys;
+export function MappingsCard({ orphanKeys }: { orphanKeys: Set<string> }) {
+  const {
+    template,
+    mappingsByType,
+    groups,
+    colorVariables,
+    contrastVariables,
+    canEdit,
+    mappingSearchText: searchQuery,
+    mappingColorVariableFilter: selectedColorKeys,
+    mappingContrastVariableFilter: selectedContrastKeys,
+    onUpdateGroupRef,
+    onUpdateColorRef,
+    onUpdateContrastRef,
+    semanticVariant,
+    onRemoveMapping,
+    setMappingSearchText,
+    setMappingColorVariableFilter,
+    setMappingContrastVariableFilter,
+  } = useMappingsCardViewModel(orphanKeys);
+
+  if (!template) return null;
 
   const filteredMappingsByType: Record<TokenType, Mapping[]> = Object.fromEntries(
     DISPLAYED_TOKEN_TYPES.map((tt) => [
@@ -984,32 +964,20 @@ export function MappingsCard({
   }, [openFilter]);
 
   function toggleColorKey(key: string) {
-    const next = selectedColorKeys.includes(key)
+    const next = selectedColorKeys.includes(key as ColorVariableKey)
       ? selectedColorKeys.filter((k) => k !== key)
-      : [...selectedColorKeys, key];
-    if (templatesState) {
-      dispatch({ type: TemplateActionType.TemplateMappingColorVariableFilterListOnSelect, values: next as ColorVariableKey[] });
-    } else {
-      setLocalSelectedColorKeys(next);
-    }
+      : [...selectedColorKeys, key as ColorVariableKey];
+    setMappingColorVariableFilter(next);
   }
 
   function toggleContrastKey(key: string) {
-    const next = selectedContrastKeys.includes(key)
+    const next = selectedContrastKeys.includes(key as ContrastVariableKey)
       ? selectedContrastKeys.filter((k) => k !== key)
-      : [...selectedContrastKeys, key];
-    if (templatesState) {
-      dispatch({ type: TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect, values: next as ContrastVariableKey[] });
-    } else {
-      setLocalSelectedContrastKeys(next);
-    }
+      : [...selectedContrastKeys, key as ContrastVariableKey];
+    setMappingContrastVariableFilter(next);
   }
   const handleSearchTextChange = (value: string) => {
-    if (templatesState) {
-      dispatch({ type: TemplateActionType.TemplateMappingSearchTextOnChange, value });
-    } else {
-      setLocalSearchQuery(value);
-    }
+    setMappingSearchText(value);
   };
   const handleToggleColorFilterDropdown = () => setOpenFilter((v) => (v === 'color' ? null : 'color'));
   const handleToggleContrastFilterDropdown = () =>

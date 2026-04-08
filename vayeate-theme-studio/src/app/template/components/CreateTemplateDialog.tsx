@@ -1,41 +1,15 @@
-import type { MouseEvent } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useTemplatesState } from '../context/use-templates-state';
-import { TemplateActionType } from '../actions/template-action-type';
+import { useCreateTemplateDialogViewModel } from '../viewmodel/use-create-template-dialog-viewmodel';
 
-const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
-
-interface CreateTemplateDialogProps {
-  onCancel?: () => void;
-}
-
-export function CreateTemplateDialog({ onCancel }: CreateTemplateDialogProps) {
-  const dispatch = useAppDispatch();
-  const { createFormName } = useTemplatesState();
-
-  const nameValid = createFormName.length > 0 && NAME_REGEX.test(createFormName);
-  const canSubmit = nameValid;
-
-  function handleSubmit() {
-    if (!canSubmit) return;
-    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name: createFormName } });
-  }
-
-  function handleCancel() {
-    if (onCancel) {
-      onCancel();
-      return;
-    }
-    dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
-  }
-
-  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-  }
-
-  function handleNameChange(value: string) {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogNameTextOnChange, value });
-  }
+export function CreateTemplateDialog() {
+  const {
+    name,
+    canSubmit,
+    showNameError,
+    handleSubmit,
+    handleCancel,
+    handleDialogContentClick,
+    handleNameChange,
+  } = useCreateTemplateDialogViewModel();
 
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
@@ -47,12 +21,12 @@ export function CreateTemplateDialog({ onCancel }: CreateTemplateDialogProps) {
           <input
             className="field-input"
             type="text"
-            value={createFormName}
+            value={name}
             placeholder="my-template"
             onChange={(e) => handleNameChange(e.target.value)}
           />
         </label>
-        {createFormName.length > 0 && !nameValid && (
+        {showNameError && (
           <p className="field-error">Alphanumeric characters and hyphens only.</p>
         )}
 
