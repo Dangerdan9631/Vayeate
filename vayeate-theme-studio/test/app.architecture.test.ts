@@ -14,7 +14,7 @@ describe('app architecture', () => {
 		const rule = filesOfProject()
 			.inFolder('src/app')
 			.matchingPattern(
-				'^(?!src/app/app/context/AppContext)(?!src/app/app/components/App).*',
+				'^(?!src/app/core/components/AppProvider)(?!src/app/app/components/App)(?!src/app/app/viewmodel/use-app-shell-viewmodel).*',
 			)
 			.shouldNot()
 			.dependOnFiles()

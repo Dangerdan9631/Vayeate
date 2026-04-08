@@ -1,23 +1,27 @@
 import { useMemo } from 'react';
-import { useAppState } from '../../common/context/use-app-state';
+import { useContextSelector } from 'use-context-selector';
+import { AppContext } from '../../core/components/AppProvider';
 
 export interface StatusBarViewModel {
   showProgressArea: boolean;
   queueStatusText: string;
 }
 
-export function statusBarShowProgressArea(isProcessing: boolean, queueLength: number): boolean {
+function statusBarShowProgressArea(isProcessing: boolean, queueLength: number): boolean {
   return isProcessing || queueLength > 0;
 }
 
-export function statusBarQueueStatusText(queueLength: number): string {
+function statusBarQueueStatusText(queueLength: number): string {
   const total = queueLength + 1;
   return `${total} action${queueLength !== 0 ? 's' : ''} in queue`;
 }
 
 export function useStatusBarViewModel(): StatusBarViewModel {
-  const { state } = useAppState();
-  const { isProcessing, queueLength } = state.ui.queueStatus;
+  const queueStatus = useContextSelector(AppContext, (c) => c?.state.ui.queueStatus);
+  if (queueStatus === undefined) {
+    throw new Error('useStatusBarViewModel must be used within AppProvider');
+  }
+  const { isProcessing, queueLength } = queueStatus;
 
   return useMemo(
     () => ({

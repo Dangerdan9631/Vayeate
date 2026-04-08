@@ -23,7 +23,7 @@ This repository contains two connected but distinct surfaces:
 - Models/schemas: `vayeate-theme-studio/src/model/`
 - Domain core (undo): `vayeate-theme-studio/src/domain/core/` (undo-manager-v2, undo-processor). Domain utils (theme engine, color, tokenizer, etc.): `vayeate-theme-studio/src/domain/utils/`
 - Action routing — **handlers** (not AppContext): per-domain `*-handler.ts` under `vayeate-theme-studio/src/app/{app,catalog,template,theme}/actions/`; `AppAction` union, `ActionQueue`, and `handler-registry.ts` live under `vayeate-theme-studio/src/app/app/actions/`
-- UI/editor: orthogonal features under `vayeate-theme-studio/src/app/{app,catalog,common,template,theme}/` (`components/`, `viewmodel/`, `context/` per feature); `AppContext.tsx` is a lean provider under `src/app/app/context/`
+- UI/editor: orthogonal features under `vayeate-theme-studio/src/app/{app,catalog,common,template,theme}/` (`components/`, `viewmodel/`, `context/` per feature); `AppProvider.tsx` / `ColorSchemeProvider.tsx` live under `src/app/core/components/`
 - Gateway: `vayeate-theme-studio/src/gateway/` (theme/template/catalog/config/preview gateways), `vayeate-theme-studio/src/gateway/services/` (IPC)
 - Catalogs and sync: `vayeate-theme-studio/data/catalogs/`, `vayeate-theme-studio/src/gateway/catalog/token-sync-gateway.ts`
 - Legacy parity references: `scripts/fix-contrast.js`, `scripts/generate-light-themes.js`

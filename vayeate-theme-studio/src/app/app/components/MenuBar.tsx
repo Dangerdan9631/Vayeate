@@ -1,114 +1,38 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { useUndoStackViewModel } from '../../common/viewmodel/use-undo-stack-viewmodel';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
-import { useColorScheme } from '../context/use-color-scheme';
-import { useMenuOpenState } from '../context/use-menu-open-state';
-import { AppActionType } from '../actions/app-action-type';
+import { useMenuBarViewModel } from '../viewmodel/use-menubar-viewmodel';
 
 export function MenuBar() {
-  const dispatch = useAppDispatch();
-  const { theme } = useColorScheme();
-  const { fileOpen, editOpen, historyOpen, viewOpen } = useMenuOpenState();
-  const { canUndo, canRedo, frames, currentId } = useUndoStackViewModel();
-  const fileRef = useRef<HTMLDivElement>(null);
-  const editRef = useRef<HTMLDivElement>(null);
-  const historyRef = useRef<HTMLDivElement>(null);
-  const viewRef = useRef<HTMLDivElement>(null);
-  const isAnyMenuOpen = fileOpen || editOpen || historyOpen || viewOpen;
-
-  useEffect(() => {
-    if (!isAnyMenuOpen) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      const targetNode = e.target as Node;
-      const refs = [fileRef, editRef, historyRef, viewRef];
-      const clickedInsideAnyMenu = refs.some((menuRef) => menuRef.current?.contains(targetNode));
-      if (!clickedInsideAnyMenu) {
-        void dispatch({ type: AppActionType.AppMenuOnClose });
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [dispatch, isAnyMenuOpen]);
-
-  const handleUndo = useCallback(() => {
-    void dispatch({ type: AppActionType.AppEditMenuUndoButtonOnClick });
-    void dispatch({ type: AppActionType.AppMenuOnClose });
-  }, [dispatch]);
-
-  const handleRedo = useCallback(() => {
-    void dispatch({ type: AppActionType.AppEditMenuRedoButtonOnClick });
-    void dispatch({ type: AppActionType.AppMenuOnClose });
-  }, [dispatch]);
-
-  const handleHistoryClick = useCallback(
-    (frameId: string) => {
-      void dispatch({ type: AppActionType.AppHistoryMenuGoToButtonOnClick, frameId });
-      void dispatch({ type: AppActionType.AppMenuOnClose });
-    },
-    [dispatch],
-  );
-  const handleHistoryItemClick = useCallback(
-    (frameId: string) => () => {
-      handleHistoryClick(frameId);
-    },
-    [handleHistoryClick],
-  );
-
-  const handleExit = useCallback(() => {
-    void dispatch({ type: AppActionType.AppFileMenuExitButtonOnClick });
-    void dispatch({ type: AppActionType.AppMenuOnClose });
-  }, [dispatch]);
-
-  const handleFileMenuTrigger = useCallback(() => {
-    void dispatch({ type: AppActionType.AppFileMenuTriggerButtonOnClick });
-  }, [dispatch]);
-
-  const handleEditMenuTrigger = useCallback(() => {
-    void dispatch({ type: AppActionType.AppEditMenuTriggerButtonOnClick });
-  }, [dispatch]);
-
-  const handleHistoryMenuTrigger = useCallback(() => {
-    void dispatch({ type: AppActionType.AppHistoryMenuTriggerButtonOnClick });
-  }, [dispatch]);
-
-  const handleViewMenuTrigger = useCallback(() => {
-    void dispatch({ type: AppActionType.AppViewMenuTriggerButtonOnClick });
-  }, [dispatch]);
-
-  const handleReload = useCallback(() => {
-    void dispatch({ type: AppActionType.AppViewMenuReloadButtonOnClick });
-    void dispatch({ type: AppActionType.AppMenuOnClose });
-  }, [dispatch]);
-
-  const handleForceReload = useCallback(() => {
-    void dispatch({ type: AppActionType.AppViewMenuForceReloadButtonOnClick });
-    void dispatch({ type: AppActionType.AppMenuOnClose });
-  }, [dispatch]);
-
-  const handleToggleDevTools = useCallback(() => {
-    void dispatch({ type: AppActionType.AppViewMenuToggleDevToolsButtonOnClick });
-    void dispatch({ type: AppActionType.AppMenuOnClose });
-  }, [dispatch]);
-
-  const handleMinimize = useCallback(() => {
-    dispatch({ type: AppActionType.AppBarMinimizeButtonOnClick });
-  }, [dispatch]);
-
-  const handleMaximize = useCallback(() => {
-    dispatch({ type: AppActionType.AppBarMaximizeButtonOnClick });
-  }, [dispatch]);
-
-  const handleClose = useCallback(() => {
-    dispatch({ type: AppActionType.AppBarCloseButtonOnClick });
-  }, [dispatch]);
-
-  const handleThemeToggle = useCallback(() => {
-    dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle, checked: theme !== 'light' });
-  }, [dispatch, theme]);
-
-  const handleTitleBarDrag = useCallback(() => {
-    dispatch({ type: AppActionType.AppBarTitleBarOnDrag });
-  }, [dispatch]);
+  const {
+    fileOpen,
+    editOpen,
+    historyOpen,
+    viewOpen,
+    canUndo,
+    canRedo,
+    frames,
+    currentId,
+    fileRef,
+    editRef,
+    historyRef,
+    viewRef,
+    themeToggleAriaLabel,
+    themeToggleIcon,
+    handleTitleBarDrag,
+    handleThemeToggle,
+    handleMinimize,
+    handleMaximize,
+    handleClose,
+    handleFileMenuTrigger,
+    handleEditMenuTrigger,
+    handleHistoryMenuTrigger,
+    handleViewMenuTrigger,
+    handleExit,
+    handleUndo,
+    handleRedo,
+    handleHistoryItemClick,
+    handleReload,
+    handleForceReload,
+    handleToggleDevTools,
+  } = useMenuBarViewModel();
 
   return (
     <header className="menu-bar">
@@ -122,10 +46,10 @@ export function MenuBar() {
             type="button"
             className="menu-theme-toggle"
             onClick={handleThemeToggle}
-            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            aria-label={themeToggleAriaLabel}
           >
             <span className="material-symbols-outlined" aria-hidden>
-              {theme === 'light' ? 'light_mode' : 'dark_mode'}
+              {themeToggleIcon}
             </span>
           </button>
         </div>

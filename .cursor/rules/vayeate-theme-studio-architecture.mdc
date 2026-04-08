@@ -6,7 +6,7 @@ alwaysApply: false
 
 # Vayeate Theme Studio Architecture
 
-There is a clean separation between **UI actions** (events tied to UI controls) and **app logic**. App logic lives in fine-grained **operations** and **controllers** that compose multiple operations into a single app action. Actions placed on the queue are tied directly to individual UI events (naming: `<CONTROL>_<ACTION>`). The **handler layer** (`src/app/{app,catalog,template,theme}/actions/*-handler.ts`) routes each action to the correct controller; controllers invoke operations. `AppContext.tsx` is a lean provider that no longer contains the action processor switch.
+There is a clean separation between **UI actions** (events tied to UI controls) and **app logic**. App logic lives in fine-grained **operations** and **controllers** that compose multiple operations into a single app action. Actions placed on the queue are tied directly to individual UI events (naming: `<CONTROL>_<ACTION>`). The **handler layer** (`src/app/{app,catalog,template,theme}/actions/*-handler.ts`) routes each action to the correct controller; controllers invoke operations. `AppProvider.tsx` (`AppProvider` / `AppContext`) is a lean provider that no longer contains the action processor switch.
 
 ## Layer Overview
 
@@ -39,7 +39,7 @@ The **domain** layer lives under `src/domain/` and contains controllers, core, o
 | `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
 | `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
 | `app/*/actions/` (handlers) | model, controllers | gateway, operations, validations |
-| `app/*/viewmodel/` | model, state, app/app/context | controllers, operations, gateway |
+| `app/*/viewmodel/` | model, state, app/core/context, app/core/components | controllers, operations, gateway |
 | `app/*/components/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
 ## Data Flow
@@ -75,7 +75,9 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 
 - `electron/main.ts` — IPC handlers, BrowserWindow, delegates to controllers
 - `electron/preload.ts` — contextBridge exposes `electronAPI`
-- `src/app/app/context/AppContext.tsx` — lean provider: useReducer, context providers, window event listeners, queue setup; registers slice setters/getters with tsyringe; resolves `ActionQueue` on first `dispatch`
+- `src/app/core/components/AppProvider.tsx` — lean provider: useReducer, context, window event listeners, queue setup; registers slice setters/getters with tsyringe; resolves `ActionQueue` on first `dispatch`. `src/app/core/components/ColorSchemeProvider.tsx` applies `data-theme` to the document root.
+- `src/app/app/components/App.tsx` — application shell: composes providers, layout, and feature chrome (renderer entry via `src/main.tsx`).
+- `src/app/app/viewmodel/use-app-shell-viewmodel.ts` — shell viewmodel: `LoadAppController` / `UnloadAppController` and `activeTabId` for layout.
 - `src/app/app/actions/action-queue.ts` — `@singleton()` `ActionQueue` (tsyringe): injects `ActionProcessor`, processes FIFO sequential async actions
 - `src/app/app/actions/app-action.ts` — Discriminated union `AppAction`. The canonical list of all app action event names.
 - `src/app/app/actions/handler-types.ts` — domain `Extract` aliases, type guards, `ActionHandler<T>`
@@ -92,7 +94,7 @@ UI ← ViewModel ← State (each slice setter applies its slice reducer)
 - **New UI actions**: Add to `AppAction` union in `app-action.ts`. Add an exhaustive switch case in the correct domain handler (`app-handler.ts`, `catalog-handler.ts`, etc.). Invoke a controller from the handler; controller uses operations for setState, persist, undo. Add reducer cases in `reducer.ts`. Use the add-app-action skill.
 - **One action = one behavior**: Never use optional fields to branch to different behaviors within one action type. Split overloaded actions into distinct action types.
 - **All UI events go through the action queue**: No component-owned side effects.
-- **New ViewModels**: Create hook in the feature’s `viewmodel/` folder (e.g. `src/app/catalog/viewmodel/`), consume `useAppState()` from `src/app/common/context/use-app-state.ts`, return derived data.
+- **New ViewModels**: Create hook in the feature’s `viewmodel/` folder (e.g. `src/app/catalog/viewmodel/`). Read app data with `useContextSelector(AppContext, …)` from `use-context-selector` and import `AppContext` from `src/app/core/components/AppProvider.tsx` (narrow selectors; throw if the selected value is `undefined` outside `AppProvider`). Return derived data.
 - **Renderer → Main**: Use gateway/services from operations only; app never imports gateway. Never import from `gateway/data` or `domain/controllers` in UI/viewmodel.
 - **Electron main**: Resolves safe paths for IPC; Theme Studio persistence goes through gateways + `FileSystemService`.
 - **Data artifacts in repo**: Catalogs, templates, and themes live under `vayeate-theme-studio/data/{catalogs,templates,themes}/`.

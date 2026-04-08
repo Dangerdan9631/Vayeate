@@ -58,7 +58,7 @@ The app uses a strictly layered architecture enforced by `ts-arch` tests:
 - **`src/app/`** — UI and routing; must not depend on gateway. Feature folders (`app`, `catalog`, `common`, `template`, `theme`) each contain `actions/`, `components/`, `context/`, and `viewmodel/`.
   - `app/app/actions/` — `AppAction` union (`app-action.ts`), `ActionQueue`, `handler-registry.ts` (`ActionProcessor`), `handler-types.ts`, and shell `app-handler.ts`. Per-domain `*-handler.ts` and enums live under `catalog/actions/`, `template/actions/`, `theme/actions/`. Handlers route to controllers; must NOT import gateway, operations, or validations.
   - `*/viewmodel/` — State → UI derivation hooks (per feature).
-  - `*/components/` — React components and pages. Root provider: `app/app/context/AppContext.tsx` (lean).
+  - `*/components/` — React components and pages. Shell root: `app/app/components/App.tsx` (wraps `app/core/components/AppProvider.tsx` and `ColorSchemeProvider.tsx`); theme DOM attribute via `ColorSchemeProvider`.
 
 All user-triggered mutations flow through the `ActionQueue`. `AppContext` resolves the tsyringe `ActionProcessor` (handler-registry) and calls `process(action)`, which routes by action prefix to the correct domain handler (exhaustive switch), which invokes a controller.
 

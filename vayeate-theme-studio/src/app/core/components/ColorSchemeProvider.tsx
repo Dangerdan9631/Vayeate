@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { AppContext } from './AppContext';
+import { AppContext } from './AppProvider';
 
 export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const theme = useContextSelector(AppContext, (c) => c?.state.appConfig.colorScheme);

@@ -65,7 +65,7 @@ The following table is the definitive dependency matrix enforced by ts-arch test
 | `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
 | `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
 | `app/*/actions/` (handlers) | model, controllers | gateway, operations, validations |
-| `app/*/viewmodel/` | model, state, app/app/context | controllers, operations, gateway |
+| `app/*/viewmodel/` | model, state, app/core/context, app/core/components | controllers, operations, gateway |
 | `app/*/components/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
 ## Test files

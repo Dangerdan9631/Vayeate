@@ -8,7 +8,7 @@ import type {
   ContrastVariable,
 } from '../../../model/schemas';
 import { ThemeActionType } from '../actions/theme-action-type';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';

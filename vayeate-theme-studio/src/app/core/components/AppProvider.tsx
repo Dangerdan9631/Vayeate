@@ -6,7 +6,7 @@ import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 import { container } from 'tsyringe';
-import { registerAppSliceBridges } from './use-app-slice-bridge';
+import { registerAppSliceBridges } from '../context/use-app-slice-bridge';
 
 export interface AppContextValue {
   state: AppState;

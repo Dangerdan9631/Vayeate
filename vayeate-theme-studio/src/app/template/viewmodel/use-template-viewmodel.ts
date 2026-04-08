@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useCatalogsState } from '../../catalog/context/use-catalogs-state';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { useTemplatesState } from '../context/use-templates-state';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';

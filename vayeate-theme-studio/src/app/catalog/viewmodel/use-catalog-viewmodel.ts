@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { useCatalogsState } from '../context/use-catalogs-state';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/version';

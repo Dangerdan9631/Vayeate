@@ -1,6 +1,6 @@
 import { useContextSelector } from 'use-context-selector';
 import type { ThemesState } from '../../../domain/state/theme/themes-state';
-import { AppContext } from '../../core/context/AppContext';
+import { AppContext } from '../../core/components/AppProvider';
 
 export function useThemesState(): ThemesState {
   const slice = useContextSelector(AppContext, (c) => c?.state.themes);

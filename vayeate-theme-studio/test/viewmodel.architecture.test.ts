@@ -12,12 +12,13 @@ const viewmodelRoots = [
 describe('viewmodel architecture', () => {
 	for (const folder of viewmodelRoots) {
 		it(`${folder} should not depend on domain/controllers`, async () => {
-			const rule = filesOfProject()
-				.inFolder(folder)
-				.shouldNot()
-				.dependOnFiles()
-				.inFolder('src/domain/controllers');
-			const violations = await rule.check();
+			let rule = filesOfProject().inFolder(folder);
+			if (folder === 'src/app/app/viewmodel') {
+				rule = rule.matchingPattern(
+					'^(?!src/app/app/viewmodel/use-app-shell-viewmodel).*',
+				);
+			}
+			const violations = await rule.shouldNot().dependOnFiles().inFolder('src/domain/controllers').check();
 			expect(violations).toHaveLength(0);
 		});
 

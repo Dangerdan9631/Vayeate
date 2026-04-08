@@ -1,12 +1,12 @@
 ---
 description: Action queue pattern for vayeate-theme-studio
-globs: vayeate-theme-studio/src/app/**/actions/**/*, vayeate-theme-studio/src/app/app/context/**/*
+globs: vayeate-theme-studio/src/app/**/actions/**/*, vayeate-theme-studio/src/app/core/context/**/*
 alwaysApply: false
 ---
 
 # Action Queue Pattern
 
-All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** (`src/app/{app,catalog,template,theme}/actions/*-handler.ts`) routes each action to the correct controller, which composes fine-grained operations. `AppContext.tsx` resolves the `@singleton()` `ActionQueue` once. `ActionQueue` injects `ActionProcessor` and `QueueStatusStateSetter`, calls `actionProcessor.process(action)` while processing, and pushes queue depth / processing flags into state via the setter. Slice `*StateSetter` / `*StateGetter` instances are registered from `AppContext` into tsyringe and injected into controllers (and similar) as needed.
+All user-triggered mutations flow through the ActionQueue for predictable, sequential processing. There is a clean separation between **UI actions** (events on the queue) and **app logic** (controllers and operations). Only UI events are placed on the queue; the **handler layer** (`src/app/{app,catalog,template,theme}/actions/*-handler.ts`) routes each action to the correct controller, which composes fine-grained operations. `AppProvider.tsx` (`AppProvider` component) resolves the `@singleton()` `ActionQueue` once. `ActionQueue` injects `ActionProcessor` and `QueueStatusStateSetter`, calls `actionProcessor.process(action)` while processing, and pushes queue depth / processing flags into state via the setter. Slice `*StateSetter` / `*StateGetter` instances are registered from `AppContext` into tsyringe and injected into controllers (and similar) as needed.
 
 ## Event Naming
 

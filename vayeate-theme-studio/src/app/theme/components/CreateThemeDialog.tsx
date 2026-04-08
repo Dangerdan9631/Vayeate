@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { useThemesState } from '../context/use-themes-state';
 import { ThemeActionType } from '../actions/theme-action-type';
 

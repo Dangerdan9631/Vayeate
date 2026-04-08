@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { useCatalogsState } from '../context/use-catalogs-state';
 import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';

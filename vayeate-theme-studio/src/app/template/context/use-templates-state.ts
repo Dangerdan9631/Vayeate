@@ -1,6 +1,6 @@
 import { useContextSelector } from 'use-context-selector';
 import type { TemplatesState } from '../../../domain/state/template/templates-state';
-import { AppContext } from '../../core/context/AppContext';
+import { AppContext } from '../../core/components/AppProvider';
 
 export function useTemplatesState(): TemplatesState {
   const slice = useContextSelector(AppContext, (c) => c?.state.templates);

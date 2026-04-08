@@ -20,9 +20,9 @@
   - Shared helper flows within a controller domain live in `<domain>-controller/shared-flows.ts` (not `_helpers.ts`).
 - **Gateway** (`src/gateway/`; must not depend on `src/domain/`): per-area gateways (theme, template, catalog, config, preview, catalog sync) and `services/` (IPC). Gateways persist via `FileSystemService`; `gateway/data/` is reserved (empty aside from `.gitkeep`). Architecture tests still treat `gateway/data` and `gateway/services` as independent layers.
 - **App** (`src/app/`): Orthogonal feature folders (`app`, `catalog`, `common`, `template`, `theme`); each has `actions/`, `components/`, `context/`, and `viewmodel/`. Must not depend on gateway; uses state and domain only.
-  - **`app/app/actions/`**: `AppAction` discriminated union (`app-action.ts`), `ActionQueue`, `handler-registry.ts` (`ActionProcessor`), `handler-types.ts`, shell `app-handler.ts`, and `app-action-type.ts`. Per-domain handlers and enums live in `catalog/actions/`, `template/actions/`, `theme/actions/`. Handlers route to controllers only; they must NOT depend on gateway, operations, or validations. `handler-types.ts` holds domain-scoped `Extract` aliases and `ActionHandler<T>`. Slice `*StateSetter` / `*StateGetter` classes are registered from `AppContext.tsx` and injected into controllers as needed.
+  - **`app/app/actions/`**: `AppAction` discriminated union (`app-action.ts`), `ActionQueue`, `handler-registry.ts` (`ActionProcessor`), `handler-types.ts`, shell `app-handler.ts`, and `app-action-type.ts`. Per-domain handlers and enums live in `catalog/actions/`, `template/actions/`, `theme/actions/`. Handlers route to controllers only; they must NOT depend on gateway, operations, or validations. `handler-types.ts` holds domain-scoped `Extract` aliases and `ActionHandler<T>`. Slice `*StateSetter` / `*StateGetter` classes are registered from `AppProvider.tsx` (`AppContext` / `AppProvider`) and injected into controllers as needed.
   - **`*/viewmodel/`**: Custom hooks that derive display data from state (per feature).
-  - **`*/components/`**: React components and pages (per feature). Root provider: `app/app/context/AppContext.tsx` (lean; no action processor switch).
+  - **`*/components/`**: React components and pages (per feature). Application shell: `app/app/components/App.tsx` composes `app/core/components/AppProvider.tsx` (lean; no action processor switch) and `ColorSchemeProvider.tsx` (`data-theme` on the document root).
 - Core (domain): undo only.
   - undo manager: `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`
   - undo processor: `vayeate-theme-studio/src/domain/core/undo-processor.ts` (currently NOOP; full undo action types deferred)
@@ -55,7 +55,7 @@
 | `domain/operations/` | model, state, gateway/services | gateway/data, controllers, app |
 | `domain/controllers/` | model, operations, validations | gateway, state (direct), core, app |
 | `app/*/actions/` (handlers) | model, controllers | gateway, operations, validations |
-| `app/*/viewmodel/` | model, state, app/app/context | controllers, operations, gateway |
+| `app/*/viewmodel/` | model, state, app/core/context, app/core/components | controllers, operations, gateway |
 | `app/*/components/` | viewmodel, actions, handlers, model | domain (except through viewmodel), gateway |
 
 ## Data Flow

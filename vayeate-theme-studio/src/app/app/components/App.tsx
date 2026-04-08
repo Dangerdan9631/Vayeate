@@ -1,26 +1,17 @@
-import { useEffect } from 'react';
-import './styles.css';
-import { container } from 'tsyringe';
-import { LoadAppController, UnloadAppController } from '../../../domain/controllers/app-controller';
-import { AppProvider } from '../context/AppContext';
-import { ColorSchemeProvider } from '../context/color-scheme-provider';
-import { useActiveTab } from '../../app/context/use-active-tab';
-import { ContentArea } from '../../app/components/ContentArea';
+import '../../core/components/styles.css';
+import { AppProvider } from '../../core/components/AppProvider';
+import { ColorSchemeProvider } from '../../core/components/ColorSchemeProvider';
+import { useAppShellViewModel } from '../viewmodel/use-app-shell-viewmodel';
+import { ContentArea } from './ContentArea';
 import { EyedropperOverlay } from '../../theme/components/EyedropperOverlay';
-import { MenuBar } from '../../app/components/MenuBar';
-import { Ribbon } from '../../app/components/Ribbon';
-import { StatusBar } from '../../app/components/StatusBar';
+import { MenuBar } from './MenuBar';
+import { Ribbon } from './Ribbon';
+import { StatusBar } from './StatusBar';
 import { StyledTooltip } from '../../common/components/StyledTooltip';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
 function AppShell() {
-  const activeTab = useActiveTab();
-
-  useEffect(() => {
-    container.resolve(LoadAppController).run();
-    const unload = container.resolve(UnloadAppController);
-    return () => unload.run();
-  }, []);
+  const { activeTab } = useAppShellViewModel();
 
   return (
     <div className="app-shell">

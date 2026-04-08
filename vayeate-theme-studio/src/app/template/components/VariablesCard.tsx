@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAppDispatch } from '../../core/context/use-app-dispatch';
+import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { useTemplatesState } from '../context/use-templates-state';
 import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../../model/schemas';
 import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../model/schemas';

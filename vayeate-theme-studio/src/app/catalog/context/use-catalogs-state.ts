@@ -1,6 +1,6 @@
 import { useContextSelector } from 'use-context-selector';
 import type { CatalogsState } from '../../../domain/state/catalog/catalogs-state';
-import { AppContext } from '../../core/context/AppContext';
+import { AppContext } from '../../core/components/AppProvider';
 
 export function useCatalogsState(): CatalogsState {
   const slice = useContextSelector(AppContext, (c) => c?.state.catalogs);

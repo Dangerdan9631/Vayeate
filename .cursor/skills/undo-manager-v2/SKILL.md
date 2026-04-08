@@ -75,10 +75,10 @@ Read before implementing:
 
 ## Relationship to current code
 
-The app uses UndoManagerV2 (`vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/domain/core/undo-processor.ts`, `vayeate-theme-studio/src/app/app/viewmodel/use-undo-stack-viewmodel.ts`). When implementing or modifying, this skill is the spec; the undo stack viewmodel hook can be consulted for UI wiring.
+The app uses UndoManagerV2 (`vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/domain/core/undo-processor.ts`). History menu UI subscribes via `vayeate-theme-studio/src/app/app/viewmodel/use-menubar-viewmodel.ts`. When implementing or modifying, this skill is the spec; that hook can be consulted for menu/history wiring.
 
 ## References
 
 - Undo rule (`.cursor/rules/vayeate-theme-studio-undo.mdc`)
 - Architecture rule (`.cursor/rules/vayeate-theme-studio-architecture.mdc`)
-- Implementation: `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/domain/core/undo-processor.ts`, `vayeate-theme-studio/src/app/app/viewmodel/use-undo-stack-viewmodel.ts`
+- Implementation: `vayeate-theme-studio/src/domain/core/undo-manager-v2.ts`, `vayeate-theme-studio/src/domain/core/undo-processor.ts`, `vayeate-theme-studio/src/app/app/viewmodel/use-menubar-viewmodel.ts` (menu history list)
