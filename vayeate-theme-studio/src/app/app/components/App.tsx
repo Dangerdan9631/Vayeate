@@ -7,7 +7,7 @@ import { EyedropperOverlay } from '../../theme/components/EyedropperOverlay';
 import { MenuBar } from './MenuBar';
 import { Ribbon } from './Ribbon';
 import { StatusBar } from './StatusBar';
-import { StyledTooltip } from '../../common/components/StyledTooltip';
+import { StyledTooltip } from './StyledTooltip';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 
 function AppShell() {
