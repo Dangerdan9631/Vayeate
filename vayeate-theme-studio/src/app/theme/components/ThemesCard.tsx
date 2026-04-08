@@ -1,26 +1,17 @@
-import type { ThemeReference } from '../../../model/schemas';
+import { useThemesCardViewModel } from '../viewmodel/use-themes-card-viewmodel';
 
-interface ThemesCardProps {
-  themeNames: string[];
-  selectedName: string | null;
-  versionsForSelectedName: ThemeReference[];
-  selectedRef: ThemeReference | null;
-  onSelectName: (name: string) => void;
-  onSelectVersion: (version: string) => void;
-  onCreateClick: () => void;
-  isCreating: boolean;
-}
+export function ThemesCard() {
+  const {
+    themeNames,
+    selectedName,
+    versionsForSelectedName,
+    selectedRef,
+    onSelectName,
+    onSelectVersion,
+    onCreateClick,
+    isCreating,
+  } = useThemesCardViewModel();
 
-export function ThemesCard({
-  themeNames,
-  selectedName,
-  versionsForSelectedName,
-  selectedRef,
-  onSelectName,
-  onSelectVersion,
-  onCreateClick,
-  isCreating,
-}: ThemesCardProps) {
   function handleNameChange(value: string) {
     if (value) {
       onSelectName(value);

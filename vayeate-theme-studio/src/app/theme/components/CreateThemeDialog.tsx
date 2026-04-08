@@ -1,41 +1,15 @@
-import type { MouseEvent } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useThemesState } from '../context/use-themes-state';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { useCreateThemeDialogViewModel } from '../viewmodel/use-create-theme-dialog-viewmodel';
 
-const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
-
-interface CreateThemeDialogProps {
-  onCancel?: () => void;
-}
-
-export function CreateThemeDialog({ onCancel }: CreateThemeDialogProps) {
-  const dispatch = useAppDispatch();
-  const { createFormName: name } = useThemesState();
-
-  const nameValid = name.length > 0 && NAME_REGEX.test(name);
-  const canSubmit = nameValid;
-
-  function handleSubmit() {
-    if (!canSubmit) return;
-    dispatch({ type: ThemeActionType.ThemeCreateDialogOkButtonOnClick, params: { name } });
-  }
-
-  function handleCancel() {
-    if (onCancel) {
-      onCancel();
-      return;
-    }
-    dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
-  }
-
-  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-  }
-
-  function handleNameChange(value: string) {
-    dispatch({ type: ThemeActionType.ThemeCreateDialogNameTextOnChange, value });
-  }
+export function CreateThemeDialog() {
+  const {
+    name,
+    canSubmit,
+    showNameError,
+    handleSubmit,
+    handleCancel,
+    handleDialogContentClick,
+    handleNameChange,
+  } = useCreateThemeDialogViewModel();
 
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
@@ -52,7 +26,7 @@ export function CreateThemeDialog({ onCancel }: CreateThemeDialogProps) {
             onChange={(e) => handleNameChange(e.target.value)}
           />
         </label>
-        {name.length > 0 && !nameValid && (
+        {showNameError && (
           <p className="field-error">Alphanumeric characters and hyphens only.</p>
         )}
 

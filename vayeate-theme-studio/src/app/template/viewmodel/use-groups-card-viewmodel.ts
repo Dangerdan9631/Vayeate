@@ -1,13 +1,20 @@
 import { useCallback, useMemo } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useTemplatesState } from '../context/use-templates-state';
+import { AppContext } from '../../core/components/AppProvider';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/version';
 import { TemplateActionType } from '../actions/template-action-type';
 
 export function useGroupsCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, template, templateMap, addGroupName } = useTemplatesState();
+  const { selectedRef, template, templateMap, addGroupName } = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.templates;
+    if (slice === undefined) {
+      throw new Error('Template state requires AppProvider.');
+    }
+    return slice;
+  });
 
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
   const selectedName = selectedRef?.name ?? null;

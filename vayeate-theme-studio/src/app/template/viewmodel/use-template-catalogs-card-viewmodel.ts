@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/components/AppProvider';
-import { useTemplatesState } from '../context/use-templates-state';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/version';
@@ -11,7 +10,13 @@ import { TemplateActionType } from '../actions/template-action-type';
 
 export function useTemplateCatalogsCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, template, templateMap } = useTemplatesState();
+  const { selectedRef, template, templateMap } = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.templates;
+    if (slice === undefined) {
+      throw new Error('Template state requires AppProvider.');
+    }
+    return slice;
+  });
   const catalogs = useContextSelector(AppContext, (c) => {
     const slice = c?.state.catalogs;
     if (slice === undefined) {

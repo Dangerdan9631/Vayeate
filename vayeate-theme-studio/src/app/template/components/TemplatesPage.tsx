@@ -1,11 +1,10 @@
-import { useContextSelector } from 'use-context-selector';
 import { useEffect, useMemo, useState } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import {
   useTemplateViewModel,
   computeOrphanKeys,
   type SemanticCatalogInfo,
 } from '../viewmodel/use-template-viewmodel';
-import { useTemplatesState } from '../context/use-templates-state';
 import { AppContext } from '../../core/components/AppProvider';
 import { CreateTemplateDialog } from './CreateTemplateDialog';
 import { GroupsCard } from './GroupsCard';
@@ -18,7 +17,13 @@ import type { Catalog, Token } from '../../../model/schemas';
 
 export function TemplatesPage() {
   useTemplateViewModel();
-  const { template, createDialogOpen } = useTemplatesState();
+  const { template, createDialogOpen } = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.templates;
+    if (slice === undefined) {
+      throw new Error('Template state requires AppProvider.');
+    }
+    return slice;
+  });
 
   const loadedForDisplay = useContextSelector(AppContext, (c) => {
     const slice = c?.state.catalogs;

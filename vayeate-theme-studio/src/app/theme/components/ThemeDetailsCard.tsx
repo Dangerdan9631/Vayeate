@@ -1,35 +1,23 @@
-import type { Theme, TemplateReference } from '../../../model/schemas';
-import type { GenerateResult } from '../../../domain/state/theme/themes-state';
+import { useThemeDetailsCardViewModel } from '../viewmodel/use-theme-details-card-viewmodel';
 
-interface ThemeDetailsCardProps {
-  theme: Theme;
-  templateNamesList: string[];
-  templateVersionsByName: Record<string, TemplateReference[]>;
-  selectedTemplateName: string | null;
-  selectedTemplateVersion: string | null;
-  canGenerate: boolean;
-  generateResult: GenerateResult | null;
-  onDeleteVersion: () => void;
-  onGenerate: () => void;
-  onBumpVersion: () => void;
-  onChangeTemplate: (name: string, version: string) => void;
-  onChangeTemplateVersion: (version: string) => void;
-}
+export function ThemeDetailsCard() {
+  const {
+    theme,
+    templateNamesList,
+    templateVersionsByName,
+    selectedTemplateName,
+    selectedTemplateVersion,
+    canGenerate,
+    generateResult,
+    onDeleteVersion,
+    onGenerate,
+    onBumpVersion,
+    onChangeTemplate,
+    onChangeTemplateVersion,
+  } = useThemeDetailsCardViewModel();
 
-export function ThemeDetailsCard({
-  theme,
-  templateNamesList,
-  templateVersionsByName,
-  selectedTemplateName,
-  selectedTemplateVersion,
-  canGenerate,
-  generateResult,
-  onDeleteVersion,
-  onGenerate,
-  onBumpVersion,
-  onChangeTemplate,
-  onChangeTemplateVersion,
-}: ThemeDetailsCardProps) {
+  if (!theme) return null;
+
   const versionsForTemplate = selectedTemplateName
     ? templateVersionsByName[selectedTemplateName] ?? []
     : [];

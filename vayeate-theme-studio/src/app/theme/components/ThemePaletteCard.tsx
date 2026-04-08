@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../../model/schemas';
 import { clusterColors } from '../../../domain/utils/color-clustering';
 import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
-import type { SelectedColorsDisplay } from '../viewmodel/use-theme-viewmodel';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
+import { useThemePaletteCardViewModel } from '../viewmodel/use-theme-palette-card-viewmodel';
 import { ThemeActionType } from '../actions/theme-action-type';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
@@ -41,35 +41,6 @@ function validRefHexForGradient(input: string): string | null {
   if (!/^[0-9a-f]+$/.test(s) || (s.length !== 3 && s.length !== 6)) return null;
   const expanded = s.length === 3 ? s.split('').map((c) => c + c).join('') : s;
   return `#${expanded}`;
-}
-
-interface ThemePaletteCardProps {
-  hueAdjustment: number;
-  hueReferenceHex: string;
-  onHueChange: (value: number) => void;
-  onHueReferenceChange: (hex: string) => void;
-  onRecenter: () => void;
-  onHueDragStart?: () => void;
-  onHueDragEnd?: () => void;
-  applyToDark: boolean;
-  applyToLight: boolean;
-  onApplyToDarkChange: (checked: boolean) => void;
-  onApplyToLightChange: (checked: boolean) => void;
-  clusterCountK: number;
-  onClusterCountDelta: (value: number) => void;
-  onClusterCountCommit: (value: number) => void;
-  colorAssignments: readonly ColorAssignment[];
-  colorVariables: readonly ColorVariable[];
-  groups: readonly string[];
-  checkedColorRefs: ReadonlySet<string>;
-  onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
-  onSetColorRefsChecked: (refs: string[], checked: boolean) => void;
-  selectedColorsDisplay: SelectedColorsDisplay;
-  onSetSelectedColors: (hex: string) => void;
-  /** When set, color picker uses preview-on-change and one undo on close. */
-  onColorPickerOpen?: () => ThemePaneState;
-  onSetSelectedColorsPreview?: (hex: string) => void;
-  onColorPickerClose?: (snapshot: ThemePaneState) => void;
 }
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
@@ -155,33 +126,38 @@ function swatchState(refs: string[], checkedColorRefs: ReadonlySet<string>): Tri
   return 'some';
 }
 
-export function ThemePaletteCard({
-  hueAdjustment,
-  hueReferenceHex,
-  onHueChange,
-  onHueReferenceChange,
-  onRecenter,
-  onHueDragStart,
-  onHueDragEnd,
-  applyToDark,
-  applyToLight,
-  onApplyToDarkChange,
-  onApplyToLightChange,
-  clusterCountK,
-  onClusterCountDelta,
-  onClusterCountCommit,
-  colorAssignments,
-  colorVariables,
-  groups: _groups,
-  checkedColorRefs,
-  onSetColorGroupChecked,
-  onSetColorRefsChecked,
-  selectedColorsDisplay,
-  onSetSelectedColors,
-  onColorPickerOpen,
-  onSetSelectedColorsPreview,
-  onColorPickerClose,
-}: ThemePaletteCardProps) {
+export function ThemePaletteCard() {
+  const vm = useThemePaletteCardViewModel();
+  if (!vm.theme?.templateRef) return null;
+
+  const {
+    hueAdjustment,
+    hueReferenceHex,
+    onHueChange,
+    onHueReferenceChange,
+    onRecenter,
+    onHueDragStart,
+    onHueDragEnd,
+    applyToDark,
+    applyToLight,
+    onApplyToDarkChange,
+    onApplyToLightChange,
+    clusterCountK,
+    onClusterCountDelta,
+    onClusterCountCommit,
+    colorAssignments,
+    colorVariables,
+    groups: _groups,
+    checkedColorRefs,
+    onSetColorGroupChecked,
+    onSetColorRefsChecked,
+    selectedColorsDisplay,
+    onSetSelectedColors,
+    onColorPickerOpen,
+    onSetSelectedColorsPreview,
+    onColorPickerClose,
+  } = vm;
+
   const dispatch = useAppDispatch();
   const [hueRefInputValue, setHueRefInputValue] = useState(hueReferenceHex);
   const isHueDraggingRef = useRef(false);
@@ -433,9 +409,7 @@ export function ThemePaletteCard({
               disabled={selectedColorsDisplay.kind === 'none'}
               onClick={() => {
                 if (selectedColorsDisplay.kind === 'none') return;
-                if (onColorPickerOpen && onSetSelectedColorsPreview && onColorPickerClose) {
-                  colorPickerSnapshotRef.current = onColorPickerOpen();
-                }
+                colorPickerSnapshotRef.current = onColorPickerOpen();
                 setColorPickerValue(
                   selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
                 );

@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type {
-  ColorAssignment,
-  ContrastAssignment,
-  ContrastVariable,
-  Mapping,
-} from '../../../model/schemas';
+import type { ColorAssignment, ContrastAssignment } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
-import { useThemesState } from '../context/use-themes-state';
+import { useContextSelector } from 'use-context-selector';
+import { AppContext } from '../../core/components/AppProvider';
+import { useEditorPreviewsCardViewModel } from '../viewmodel/use-editor-previews-card-viewmodel';
 import { contrastRatio } from '../../../domain/utils/color';
 import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/utils/scope-resolver';
 
@@ -30,41 +27,6 @@ const DEFAULT_LIGHT_FG = '#1f1f1f';
 /** Text color for preview card chrome (heading, tab label) — not editor content. */
 const CARD_CHROME_DARK = '#cccccc';
 const CARD_CHROME_LIGHT = '#333333';
-
-interface EditorPreviewsCardProps {
-  colorAssignments: readonly ColorAssignment[];
-  contrastAssignments: readonly ContrastAssignment[];
-  contrastVariables: readonly ContrastVariable[];
-  mappings: readonly Mapping[];
-  idePrimaryTokenRef: string | null;
-  onChangeIdePrimaryTokenRef: (tokenKey: string | null) => void;
-  ideForegroundTokenRef: string | null;
-  onChangeIdeForegroundTokenRef: (tokenKey: string | null) => void;
-  themeBackgroundTokenRef: string | null;
-  onChangeThemeBackgroundTokenRef: (tokenKey: string | null) => void;
-  themeForegroundTokenRef: string | null;
-  onChangeThemeForegroundTokenRef: (tokenKey: string | null) => void;
-  lineNumberBackgroundTokenRef: string | null;
-  onChangeLineNumberBackgroundTokenRef: (tokenKey: string | null) => void;
-  lineNumberForegroundTokenRef: string | null;
-  onChangeLineNumberForegroundTokenRef: (tokenKey: string | null) => void;
-  ideTabTokenRef: string | null;
-  onChangeIdeTabTokenRef: (tokenKey: string | null) => void;
-  ideTabBarBackgroundTokenRef: string | null;
-  onChangeIdeTabBarBackgroundTokenRef: (tokenKey: string | null) => void;
-  ideTabBarForegroundTokenRef: string | null;
-  onChangeIdeTabBarForegroundTokenRef: (tokenKey: string | null) => void;
-  editorPreviewScrollbarBackgroundTokenRef: string | null;
-  onChangeEditorPreviewScrollbarBackgroundTokenRef: (tokenKey: string | null) => void;
-  editorPreviewScrollbarForegroundTokenRef: string | null;
-  onChangeEditorPreviewScrollbarForegroundTokenRef: (tokenKey: string | null) => void;
-  editorPreviewSelectionBackgroundTokenRef: string | null;
-  onChangeEditorPreviewSelectionBackgroundTokenRef: (tokenKey: string | null) => void;
-  editorPreviewMenuForegroundTokenRef: string | null;
-  onChangeEditorPreviewMenuForegroundTokenRef: (tokenKey: string | null) => void;
-  editorPreviewMenuBackgroundTokenRef: string | null;
-  onChangeEditorPreviewMenuBackgroundTokenRef: (tokenKey: string | null) => void;
-}
 
 function colorForRef(
   colorAssignments: readonly ColorAssignment[],
@@ -190,41 +152,52 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
   );
 }
 
-export function EditorPreviewsCard({
-  colorAssignments,
-  contrastAssignments,
-  contrastVariables,
-  mappings,
-  idePrimaryTokenRef,
-  onChangeIdePrimaryTokenRef,
-  ideForegroundTokenRef,
-  onChangeIdeForegroundTokenRef,
-  themeBackgroundTokenRef,
-  onChangeThemeBackgroundTokenRef,
-  themeForegroundTokenRef,
-  onChangeThemeForegroundTokenRef,
-  lineNumberBackgroundTokenRef,
-  onChangeLineNumberBackgroundTokenRef,
-  lineNumberForegroundTokenRef,
-  onChangeLineNumberForegroundTokenRef,
-  ideTabTokenRef,
-  onChangeIdeTabTokenRef,
-  ideTabBarBackgroundTokenRef,
-  onChangeIdeTabBarBackgroundTokenRef,
-  ideTabBarForegroundTokenRef,
-  onChangeIdeTabBarForegroundTokenRef,
-  editorPreviewScrollbarBackgroundTokenRef,
-  onChangeEditorPreviewScrollbarBackgroundTokenRef,
-  editorPreviewScrollbarForegroundTokenRef,
-  onChangeEditorPreviewScrollbarForegroundTokenRef,
-  editorPreviewSelectionBackgroundTokenRef,
-  onChangeEditorPreviewSelectionBackgroundTokenRef,
-  editorPreviewMenuForegroundTokenRef,
-  onChangeEditorPreviewMenuForegroundTokenRef,
-  editorPreviewMenuBackgroundTokenRef,
-  onChangeEditorPreviewMenuBackgroundTokenRef,
-}: EditorPreviewsCardProps) {
-  const previews = useThemesState().editorPreviews;
+export function EditorPreviewsCard() {
+  const vm = useEditorPreviewsCardViewModel();
+  if (!vm.theme?.templateRef) return null;
+
+  const {
+    colorAssignments,
+    contrastAssignments,
+    contrastVariables,
+    mappings,
+    idePrimaryTokenRef,
+    onChangeIdePrimaryTokenRef,
+    ideForegroundTokenRef,
+    onChangeIdeForegroundTokenRef,
+    themeBackgroundTokenRef,
+    onChangeThemeBackgroundTokenRef,
+    themeForegroundTokenRef,
+    onChangeThemeForegroundTokenRef,
+    lineNumberBackgroundTokenRef,
+    onChangeLineNumberBackgroundTokenRef,
+    lineNumberForegroundTokenRef,
+    onChangeLineNumberForegroundTokenRef,
+    ideTabTokenRef,
+    onChangeIdeTabTokenRef,
+    ideTabBarBackgroundTokenRef,
+    onChangeIdeTabBarBackgroundTokenRef,
+    ideTabBarForegroundTokenRef,
+    onChangeIdeTabBarForegroundTokenRef,
+    editorPreviewScrollbarBackgroundTokenRef,
+    onChangeEditorPreviewScrollbarBackgroundTokenRef,
+    editorPreviewScrollbarForegroundTokenRef,
+    onChangeEditorPreviewScrollbarForegroundTokenRef,
+    editorPreviewSelectionBackgroundTokenRef,
+    onChangeEditorPreviewSelectionBackgroundTokenRef,
+    editorPreviewMenuForegroundTokenRef,
+    onChangeEditorPreviewMenuForegroundTokenRef,
+    editorPreviewMenuBackgroundTokenRef,
+    onChangeEditorPreviewMenuBackgroundTokenRef,
+  } = vm;
+
+  const previews = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.themes;
+    if (slice === undefined) {
+      throw new Error('Theme state requires AppProvider.');
+    }
+    return slice.editorPreviews;
+  });
   const loadError: string | null = null;
 
   const scopeColorMap = useMemo(

@@ -7,42 +7,12 @@ import type {
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../../model/schemas';
-import { ThemeActionType } from '../actions/theme-action-type';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
+import { ThemeActionType } from '../actions/theme-action-type';
+import { useThemeVariablesCardViewModel } from '../viewmodel/use-theme-variables-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
-
-interface ThemeVariablesCardProps {
-  colorAssignments: readonly ColorAssignment[];
-  contrastAssignments: readonly ContrastAssignment[];
-  colorVariables: readonly ColorVariable[];
-  contrastVariables: readonly ContrastVariable[];
-  groups: readonly string[];
-  orphanColorKeys: Set<string>;
-  orphanContrastKeys: Set<string>;
-  checkedColorRefs: ReadonlySet<string>;
-  checkedContrastRefs: ReadonlySet<string>;
-  onToggleColorChecked: (ref: string) => void;
-  onToggleContrastChecked: (ref: string) => void;
-  onSetAllColorChecked: (checked: boolean) => void;
-  onSetAllContrastChecked: (checked: boolean) => void;
-  onSetAllVariablesChecked: (checked: boolean) => void;
-  onSetColorGroupChecked: (groupKey: string, checked: boolean) => void;
-  onSetContrastGroupChecked: (groupKey: string, checked: boolean) => void;
-  colorSectionState: TriState;
-  contrastSectionState: TriState;
-  cardState: TriState;
-  onUpdateColorDark: (colorRef: string, value: string | null) => void;
-  onUpdateColorLight: (colorRef: string, value: string | null) => void;
-  onUpdateColorUseDark: (colorRef: string, useDark: boolean) => void;
-  onUpdateContrastDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
-  onUpdateContrastLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
-  onUpdateContrastUseDark: (contrastRef: string, useDark: boolean) => void;
-  /** When provided, search is controlled from app state (themeVariablesSearchText). */
-  searchValue?: string;
-  onSearchChange?: (value: string) => void;
-}
 
 const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] = [
   { value: 'lessThan', label: '< Less than' },
@@ -833,38 +803,38 @@ function matchesSearch(key: string, searchQuery: string): boolean {
   return !q || key.toLowerCase().includes(q);
 }
 
-export function ThemeVariablesCard({
-  colorAssignments,
-  contrastAssignments,
-  colorVariables,
-  contrastVariables,
-  groups: _groups,
-  orphanColorKeys,
-  orphanContrastKeys,
-  checkedColorRefs,
-  checkedContrastRefs,
-  onToggleColorChecked,
-  onToggleContrastChecked,
-  onSetAllColorChecked,
-  onSetAllContrastChecked,
-  onSetAllVariablesChecked,
-  onSetColorGroupChecked,
-  onSetContrastGroupChecked,
-  colorSectionState,
-  contrastSectionState,
-  cardState,
-  onUpdateColorDark,
-  onUpdateColorLight,
-  onUpdateColorUseDark,
-  onUpdateContrastDark,
-  onUpdateContrastLight,
-  onUpdateContrastUseDark,
-  searchValue,
-  onSearchChange,
-}: ThemeVariablesCardProps) {
-  const [localSearch, setLocalSearch] = useState('');
-  const searchQuery = searchValue !== undefined && onSearchChange !== undefined ? searchValue : localSearch;
-  const setSearchQuery = onSearchChange ?? setLocalSearch;
+export function ThemeVariablesCard() {
+  const {
+    theme,
+    colorAssignments,
+    contrastAssignments,
+    colorVariables,
+    contrastVariables,
+    orphanColorKeys,
+    orphanContrastKeys,
+    checkedColorRefs,
+    checkedContrastRefs,
+    onToggleColorChecked,
+    onToggleContrastChecked,
+    onSetAllColorChecked,
+    onSetAllContrastChecked,
+    onSetAllVariablesChecked,
+    onSetColorGroupChecked,
+    onSetContrastGroupChecked,
+    colorSectionState,
+    contrastSectionState,
+    cardState,
+    onUpdateColorDark,
+    onUpdateColorLight,
+    onUpdateColorUseDark,
+    onUpdateContrastDark,
+    onUpdateContrastLight,
+    onUpdateContrastUseDark,
+    searchValue: searchQuery,
+    onSearchChange: setSearchQuery,
+  } = useThemeVariablesCardViewModel();
+
+  if (!theme?.templateRef) return null;
 
   const filteredColorAssignments = colorAssignments
     .filter((a) => matchesSearch(a.colorRef, searchQuery))

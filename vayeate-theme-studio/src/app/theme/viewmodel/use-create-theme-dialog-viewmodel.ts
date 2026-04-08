@@ -2,16 +2,16 @@ import type { MouseEvent } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/components/AppProvider';
-import { TemplateActionType } from '../actions/template-action-type';
+import { ThemeActionType } from '../actions/theme-action-type';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
-export function useCreateTemplateDialogViewModel() {
+export function useCreateThemeDialogViewModel() {
   const dispatch = useAppDispatch();
   const { createFormName: name } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.templates;
+    const slice = c?.state.themes;
     if (slice === undefined) {
-      throw new Error('Template state requires AppProvider.');
+      throw new Error('Theme state requires AppProvider.');
     }
     return slice;
   });
@@ -20,11 +20,11 @@ export function useCreateTemplateDialogViewModel() {
 
   function handleSubmit() {
     if (!canSubmit) return;
-    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name } });
+    dispatch({ type: ThemeActionType.ThemeCreateDialogOkButtonOnClick, params: { name } });
   }
 
   function handleCancel() {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
+    dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
   }
 
   function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
@@ -32,7 +32,7 @@ export function useCreateTemplateDialogViewModel() {
   }
 
   function handleNameChange(value: string) {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogNameTextOnChange, value });
+    dispatch({ type: ThemeActionType.ThemeCreateDialogNameTextOnChange, value });
   }
 
   const showNameError = name.length > 0 && !nameValid;
