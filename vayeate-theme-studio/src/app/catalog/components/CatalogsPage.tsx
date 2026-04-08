@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { useCatalogViewModel } from '../viewmodel/use-catalog-viewmodel';
-import { useCatalogsState } from '../context/use-catalogs-state';
+import { AppContext } from '../../core/components/AppProvider';
 import { BulkAddDialog } from './BulkAddDialog';
 import { CatalogDetailsCard } from './CatalogDetailsCard';
 import { CatalogsCard } from './CatalogsCard';
@@ -9,65 +10,32 @@ import { TokensCard } from './TokensCard';
 import type { Token } from '../../../model/schemas';
 
 export function CatalogsPage() {
-  const vm = useCatalogViewModel();
-  const bulkAddDialogOpen = useCatalogsState().bulkAddDialogOpen;
+  useCatalogViewModel();
+  const { catalog, createDialogOpen, bulkAddDialogOpen } = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice;
+  });
 
   const existingTokenKeys = useMemo(() => {
-    if (!vm.catalog) return new Set<string>();
-    return new Set(vm.catalog.tokens.map((t: Token) => `${t.type}::${t.key}`));
-  }, [vm.catalog]);
+    if (!catalog) return new Set<string>();
+    return new Set(catalog.tokens.map((t: Token) => `${t.type}::${t.key}`));
+  }, [catalog]);
 
   return (
     <>
       <div className="catalogs-page-grid">
         <div className="catalogs-left-col">
-          <CatalogsCard
-            catalogNames={vm.catalogNames}
-            selectedName={vm.selectedName}
-            versionsForSelectedName={vm.versionsForSelectedName}
-            selectedRef={vm.selectedRef}
-            onSelectName={vm.selectName}
-            onSelectVersion={(version) => {
-              if (vm.selectedName) vm.selectCatalog(vm.selectedName, version);
-            }}
-            onCreateClick={vm.openCreateDialog}
-            isCreating={vm.isCreating}
-          />
-          {vm.catalog && (
-            <CatalogDetailsCard
-              catalog={vm.catalog}
-              tokenCounts={vm.tokenCountsByType}
-              isLatestVersion={vm.isLatestVersion}
-              onDeleteVersion={() => {
-                if (vm.selectedRef) vm.deleteVersion(vm.selectedRef.name, vm.selectedRef.version);
-              }}
-              onLock={vm.lockCatalog}
-              onSync={vm.syncCatalog}
-              onRevert={() => {
-                if (vm.selectedRef) vm.revertToVersion(vm.selectedRef.name, vm.selectedRef.version);
-              }}
-            />
-          )}
+          <CatalogsCard />
+          <CatalogDetailsCard />
         </div>
         <div className="catalogs-right-col">
-          {vm.catalog && (
-            <TokensCard
-              catalog={vm.catalog}
-              tokensByType={vm.tokensByType}
-              isLatestVersion={vm.isLatestVersion}
-              onAddSemanticFromSelector={vm.addSemanticFromSelector}
-              onSetSemanticTypes={vm.setSemanticTypes}
-              onSetSemanticModifiers={vm.setSemanticModifiers}
-              onSetSemanticLanguages={vm.setSemanticLanguages}
-            />
-          )}
+          <TokensCard />
         </div>
       </div>
-      {vm.createDialogOpen && (
-        <CreateCatalogDialog
-          onCancel={vm.closeCreateDialog}
-        />
-      )}
+      {createDialogOpen && <CreateCatalogDialog />}
       {bulkAddDialogOpen && (
         <BulkAddDialog existingTokenKeys={existingTokenKeys as Set<string>} />
       )}

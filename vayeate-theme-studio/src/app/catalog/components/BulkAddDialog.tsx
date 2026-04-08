@@ -1,8 +1,4 @@
-import { useMemo, type MouseEvent } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useCatalogsState } from '../context/use-catalogs-state';
-import { parseThemeJson, type BulkParseResult } from '../../../domain/utils/theme-parser';
-import { CatalogActionType } from '../actions/catalog-action-type';
+import { useBulkAddDialogViewModel } from '../viewmodel/use-bulk-add-dialog-viewmodel';
 
 interface BulkAddDialogProps {
   existingTokenKeys: Set<string>;
@@ -10,37 +6,18 @@ interface BulkAddDialogProps {
 }
 
 export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProps) {
-  const dispatch = useAppDispatch();
-  const { bulkAddText: text } = useCatalogsState();
-
-  const parseResult = useMemo((): { result: BulkParseResult; newCount: number } | { error: string } | null => {
-    const trimmed = text.trim();
-    if (!trimmed) return null;
-    try {
-      const result = parseThemeJson(trimmed);
-      const newCount = result.tokens.filter((t) => !existingTokenKeys.has(`${t.type}::${t.key}`)).length;
-      return { result, newCount };
-    } catch (e) {
-      return { error: e instanceof Error ? e.message : String(e) };
-    }
-  }, [text, existingTokenKeys]);
-
-  const isError = parseResult !== null && 'error' in parseResult;
-  const parsed = parseResult !== null && 'result' in parseResult ? parseResult : null;
-  const canSubmit = parsed !== null && parsed.newCount > 0;
-  const handleTextChange = (value: string) =>
-    dispatch({ type: CatalogActionType.CatalogBulkAddTokensTextOnChange, value });
-  const handleSubmit = () =>
-    dispatch({ type: CatalogActionType.CatalogBulkAddTokensOkButtonOnClick });
-
-  function handleCancel() {
-    dispatch({ type: CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick });
-    onCancel?.();
-  }
-
-  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-  }
+  const {
+    text,
+    isError,
+    errorMessage,
+    parsed,
+    canSubmit,
+    duplicateCount,
+    handleTextChange,
+    handleSubmit,
+    handleCancel,
+    handleDialogContentClick,
+  } = useBulkAddDialogViewModel({ existingTokenKeys, onCancel });
 
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
@@ -59,8 +36,8 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
           onChange={(e) => handleTextChange(e.target.value)}
         />
 
-        {isError && (
-          <p className="field-error">{parseResult.error}</p>
+        {isError && errorMessage && (
+          <p className="field-error">{errorMessage}</p>
         )}
 
         {parsed && (
@@ -68,8 +45,8 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
             <span>Parsed: {parsed.result.counts.theme} theme, {parsed.result.counts['textmate token']} textmate, {parsed.result.counts['semantic token']} semantic</span>
             <span className="bulk-add-new">
               {parsed.newCount} new token{parsed.newCount !== 1 ? 's' : ''} to add
-              {parsed.result.tokens.length - parsed.newCount > 0 && (
-                <> ({parsed.result.tokens.length - parsed.newCount} already exist)</>
+              {duplicateCount > 0 && (
+                <> ({duplicateCount} already exist)</>
               )}
             </span>
           </div>

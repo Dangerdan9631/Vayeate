@@ -1,46 +1,20 @@
-import type { MouseEvent } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useCatalogsState } from '../context/use-catalogs-state';
+import { useCreateCatalogDialogViewModel } from '../viewmodel/use-create-catalog-dialog-viewmodel';
 import type { CatalogType } from '../../../model/schemas';
-import { CatalogActionType } from '../actions/catalog-action-type';
 
-const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
+export function CreateCatalogDialog() {
+  const {
+    name,
+    type,
+    nameValid,
+    canSubmit,
+    handleSubmit,
+    handleCancel,
+    handleDialogContentClick,
+    handleNameChange,
+    handleTypeChange,
+  } = useCreateCatalogDialogViewModel();
 
-interface CreateCatalogDialogProps {
-  onCancel?: () => void;
-}
-
-export function CreateCatalogDialog({ onCancel }: CreateCatalogDialogProps) {
-  const dispatch = useAppDispatch();
-  const { createFormName: name, createFormType: type } = useCatalogsState();
-
-  const nameValid = name.length > 0 && NAME_REGEX.test(name);
-  const canSubmit = nameValid;
-
-  function handleSubmit() {
-    if (!canSubmit) return;
-    dispatch({ type: CatalogActionType.CatalogCreateDialogOkButtonOnClick });
-  }
-
-  function handleCancel() {
-    if (onCancel) {
-      onCancel();
-      return;
-    }
-    dispatch({ type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick });
-  }
-
-  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-  }
-
-  function handleNameChange(value: string) {
-    dispatch({ type: CatalogActionType.CatalogCreateDialogNameTextOnChange, value });
-  }
-
-  function handleTypeChange(value: CatalogType) {
-    dispatch({ type: CatalogActionType.CatalogCreateDialogTypeListOnCommit, value });
-  }
+  const showNameError = name.length > 0 && !nameValid;
 
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
@@ -57,7 +31,7 @@ export function CreateCatalogDialog({ onCancel }: CreateCatalogDialogProps) {
             onChange={(e) => handleNameChange(e.target.value)}
           />
         </label>
-        {name.length > 0 && !nameValid && (
+        {showNameError && (
           <p className="field-error">Alphanumeric characters and hyphens only.</p>
         )}
 

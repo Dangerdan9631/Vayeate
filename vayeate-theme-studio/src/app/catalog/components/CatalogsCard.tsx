@@ -1,26 +1,17 @@
-import type { CatalogReference } from '../../../model/schemas';
+import { useCatalogsCardViewModel } from '../viewmodel/use-catalogs-card-viewmodel';
 
-interface CatalogsCardProps {
-  catalogNames: string[];
-  selectedName: string | null;
-  versionsForSelectedName: CatalogReference[];
-  selectedRef: CatalogReference | null;
-  onSelectName: (name: string) => void;
-  onSelectVersion: (version: string) => void;
-  onCreateClick: () => void;
-  isCreating: boolean;
-}
+export function CatalogsCard() {
+  const {
+    catalogNames,
+    selectedName,
+    versionsForSelectedName,
+    selectedRef,
+    onSelectName,
+    onSelectVersion,
+    onCreateClick,
+    isCreating,
+  } = useCatalogsCardViewModel();
 
-export function CatalogsCard({
-  catalogNames,
-  selectedName,
-  versionsForSelectedName,
-  selectedRef,
-  onSelectName,
-  onSelectVersion,
-  onCreateClick,
-  isCreating,
-}: CatalogsCardProps) {
   function handleNameChange(value: string) {
     if (value) {
       onSelectName(value);

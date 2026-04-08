@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useCatalogsState } from '../../catalog/context/use-catalogs-state';
+import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
+import { AppContext } from '../../core/components/AppProvider';
 import { useTemplatesState } from '../context/use-templates-state';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
@@ -34,7 +35,13 @@ export function useTemplateViewModel() {
     mappingTokenGroupSelection,
     variablesSearchText,
   } = templates;
-  const catalogs = useCatalogsState();
+  const catalogs = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice;
+  });
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogs.catalogMap), [catalogs.catalogMap]);
   const templateRefs = useMemo(() => getTemplateRefs(templates.templateMap), [templates.templateMap]);
   const { loadedForDisplay } = catalogs;

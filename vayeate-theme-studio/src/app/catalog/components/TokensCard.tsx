@@ -1,27 +1,10 @@
 import { useState } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useCatalogsState } from '../context/use-catalogs-state';
-import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
+import { useContextSelector } from 'use-context-selector';
+import { AppContext } from '../../core/components/AppProvider';
+import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from '../viewmodel/use-tokens-card-viewmodel';
+import type { Catalog, Token, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
-import { CatalogActionType } from '../actions/catalog-action-type';
-
-interface TokensCardProps {
-  catalog: Catalog;
-  tokensByType: Record<TokenType, Token[]>;
-  isLatestVersion: boolean;
-  onAddToken?: (key: string, tokenType: TokenType) => void;
-  onRemoveToken?: (key: string, tokenType: TokenType) => void;
-  onUpdateTokenKey?: (oldKey: string, newKey: string, tokenType: TokenType) => void;
-  onBulkAdd?: () => void;
-  onAddSemanticFromSelector?: (selector: string) => void;
-  onSetSemanticTypes?: (types: string[]) => void;
-  onSetSemanticModifiers?: (modifiers: string[]) => void;
-  onSetSemanticLanguages?: (languages: string[]) => void;
-}
-
-/** Sections shown in the catalog pane: Theme Tokens, Tokens, Semantic Tokens */
-const TOKEN_LIST_SECTIONS: TokenType[] = ['theme', 'textmate token'];
 
 function isValidTokenKey(value: string): boolean {
   return tokenKeySchema.safeParse(value).success;
@@ -134,11 +117,6 @@ function TokenTypeSection({
       )}
     </div>
   );
-}
-
-function matchesSearch(key: string, searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  return !q || key.toLowerCase().includes(q);
 }
 
 function canAddSemanticSelector(selector: string, catalog: Catalog): boolean {
@@ -349,56 +327,31 @@ function SemanticTokenCatalogSection({
   );
 }
 
-export function TokensCard({
-  catalog,
-  tokensByType,
-  isLatestVersion,
-  onAddSemanticFromSelector,
-  onSetSemanticTypes,
-  onSetSemanticModifiers,
-  onSetSemanticLanguages,
-}: TokensCardProps) {
-  const dispatch = useAppDispatch();
-  const tokensSearchText = useCatalogsState().tokensSearchText;
-  const canEdit = catalog.type === 'manual' && isLatestVersion;
-  const handleBulkAddClick = () =>
-    dispatch({ type: CatalogActionType.CatalogTokensBulkAddButtonOnClick });
-  const handleSearchChange = (value: string) =>
-    dispatch({ type: CatalogActionType.CatalogTokensSearchTextOnChange, value });
-  const handleAddToken = (tokenType: TokenType) => (key: string) => {
-    dispatch({
-      type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick,
-      tokenType,
-      key,
-    });
-  };
-  const handleRemoveToken = (tokenType: TokenType) => (key: string) => {
-    dispatch({
-      type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick,
-      key: key as TokenKey,
-      tokenType,
-    });
-  };
-  const handleUpdateTokenKey = (tokenType: TokenType) => (oldKey: string, newKey: string) => {
-    dispatch({
-      type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit,
-      value: newKey,
-      key: oldKey as TokenKey,
-      tokenType,
-    });
-  };
-  const handleNewTokenKeyChange = (value: string) => {
-    dispatch({ type: CatalogActionType.CatalogTokensNewTokenKeyTextOnChange, value });
-  };
+export function TokensCard() {
+  const catalog = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice.catalog;
+  });
+  const {
+    tokensSearchText,
+    filteredTokensByType,
+    canEdit,
+    handleBulkAddClick,
+    handleSearchChange,
+    handleAddToken,
+    handleRemoveToken,
+    handleUpdateTokenKey,
+    handleNewTokenKeyChange,
+    onAddSemanticFromSelector,
+    onSetSemanticTypes,
+    onSetSemanticModifiers,
+    onSetSemanticLanguages,
+  } = useTokensCardViewModel(catalog);
 
-  const filteredTokensByType = Object.fromEntries(
-    TOKEN_LIST_SECTIONS.map((tt) => [
-      tt,
-      tokensByType[tt]
-        .filter((t) => matchesSearch(t.key, tokensSearchText))
-        .sort((a, b) => a.key.localeCompare(b.key)),
-    ])
-  ) as Record<TokenType, Token[]>;
+  if (!catalog) return null;
 
   return (
     <div className="tokens-card placeholder">
@@ -422,7 +375,7 @@ export function TokensCard({
         onChange={(e) => handleSearchChange(e.target.value)}
         aria-label="Search tokens"
       />
-      {TOKEN_LIST_SECTIONS.map((tt) => (
+      {CATALOG_TOKEN_LIST_SECTIONS.map((tt) => (
         <TokenTypeSection
           key={tt}
           tokenType={tt}

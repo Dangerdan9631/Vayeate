@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useCatalogsState } from '../context/use-catalogs-state';
-import type { Catalog, SourceType, TokenType } from '../../../model/schemas';
-import { CatalogActionType } from '../actions/catalog-action-type';
+import { useContextSelector } from 'use-context-selector';
+import { useCatalogDetailsCardViewModel } from '../viewmodel/use-catalog-details-card-viewmodel';
+import { AppContext } from '../../core/components/AppProvider';
+import type { SourceType, TokenType } from '../../../model/schemas';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];
@@ -27,32 +26,41 @@ function getTokenTypeOptions(sourceType: SourceType): TokenType[] {
   return TOKEN_TYPE_OPTIONS;
 }
 
-interface CatalogDetailsCardProps {
-  catalog: Catalog;
-  tokenCounts: Record<TokenType, number>;
-  isLatestVersion: boolean;
-  onDeleteVersion: () => void;
-  onLock: () => void;
-  onSync: () => void;
-  onRevert: () => void;
-}
+export function CatalogDetailsCard() {
+  const catalog = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice.catalog;
+  });
+  const vm = useCatalogDetailsCardViewModel(catalog);
 
-export function CatalogDetailsCard({
-  catalog,
-  tokenCounts,
-  isLatestVersion,
-  onDeleteVersion,
-  onLock,
-  onSync,
-  onRevert,
-}: CatalogDetailsCardProps) {
-  const dispatch = useAppDispatch();
-  const catalogsState = useCatalogsState();
-  const newSourceUrl = catalogsState.newSourceUrl;
-  const newSourceTokenType = catalogsState.newSourceTokenType;
-  const newSourceType = catalogsState.newSourceType;
-  const [editingSourceIndex, setEditingSourceIndex] = useState<number | null>(null);
-  const [editingSourceUrl, setEditingSourceUrl] = useState('');
+  if (!catalog) return null;
+
+  const {
+    tokenCounts,
+    isLatestVersion,
+    onDeleteVersion,
+    onLock,
+    onSync,
+    onRevert,
+    newSourceUrl,
+    newSourceTokenType,
+    newSourceType,
+    editingSourceIndex,
+    editingSourceUrl,
+    setEditingSourceIndex,
+    setEditingSourceUrl,
+    commitSourceUrl,
+    commitSourceTokenType,
+    commitSourceType,
+    removeSource,
+    changeNewSourceUrl,
+    commitNewSourceTokenType,
+    commitNewSourceType,
+    addNewSource,
+  } = vm;
 
   return (
     <div className="catalog-details-card placeholder">
@@ -101,11 +109,7 @@ export function CatalogDetailsCard({
                   onBlur={(e) => {
                     const v = e.target.value.trim();
                     if (v !== source.url) {
-                      dispatch({
-                        type: CatalogActionType.CatalogDetailsSourceUrlTextOnCommit,
-                        value: v,
-                        sourceIndex: i,
-                      });
+                      commitSourceUrl(v, i);
                     }
                     setEditingSourceIndex(null);
                   }}
@@ -116,11 +120,7 @@ export function CatalogDetailsCard({
                   disabled={!isLatestVersion}
                   onChange={(e) => {
                     const value = e.target.value as TokenType;
-                    dispatch({
-                      type: CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit,
-                      value,
-                      sourceIndex: i,
-                    });
+                    commitSourceTokenType(value, i);
                   }}
                 >
                   {getTokenTypeOptions(source.type).map((t) => (
@@ -133,11 +133,7 @@ export function CatalogDetailsCard({
                   disabled={!isLatestVersion}
                   onChange={(e) => {
                     const value = e.target.value as SourceType;
-                    dispatch({
-                      type: CatalogActionType.CatalogDetailsSourceTypeListOnCommit,
-                      value,
-                      sourceIndex: i,
-                    });
+                    commitSourceType(value, i);
                   }}
                 >
                   {getSourceTypeOptions(source.tokenType).map((t) => (
@@ -148,9 +144,7 @@ export function CatalogDetailsCard({
                   type="button"
                   className="btn-icon btn-danger-icon"
                   disabled={!isLatestVersion}
-                  onClick={() => {
-                    dispatch({ type: CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick, sourceIndex: i });
-                  }}
+                  onClick={() => removeSource(i)}
                   aria-label="Remove source"
                 >
                   <span className="material-symbols-outlined">close</span>
@@ -164,33 +158,31 @@ export function CatalogDetailsCard({
                   type="text"
                   value={newSourceUrl}
                   placeholder="https://..."
-                  onChange={(e) => {
-                    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange, value: e.target.value });
-                  }}
+                  onChange={(e) => changeNewSourceUrl(e.target.value)}
                 />
                 <select
                   className="field-select source-select"
                   value={newSourceTokenType}
                   onChange={(e) => {
                     const tokenType = e.target.value as TokenType;
-                    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit, value: tokenType });
+                    commitNewSourceTokenType(tokenType);
                     if (
                       tokenType !== 'theme' &&
                       (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
                     ) {
-                      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value: 'default' });
+                      commitNewSourceType('default');
                     }
                     if (
                       tokenType !== 'semantic token' &&
                       newSourceType === 'semantic-token-registry'
                     ) {
-                      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value: 'default' });
+                      commitNewSourceType('default');
                     }
                     if (
                       tokenType !== 'textmate token' &&
                       (newSourceType === 'textmate-xml' || newSourceType === 'textmate-json')
                     ) {
-                      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value: 'default' });
+                      commitNewSourceType('default');
                     }
                   }}
                 >
@@ -202,10 +194,7 @@ export function CatalogDetailsCard({
                   className="field-select source-select"
                   value={newSourceType}
                   onChange={(e) => {
-                    dispatch({
-                      type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit,
-                      value: e.target.value as SourceType,
-                    });
+                    commitNewSourceType(e.target.value as SourceType);
                   }}
                 >
                   {getSourceTypeOptions(newSourceTokenType).map((t) => (
@@ -215,9 +204,7 @@ export function CatalogDetailsCard({
                 <button
                   type="button"
                   className="btn-icon btn-add-icon"
-                  onClick={() => {
-                    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick });
-                  }}
+                  onClick={addNewSource}
                   aria-label="Add source"
                 >
                   <span className="material-symbols-outlined">add</span>
