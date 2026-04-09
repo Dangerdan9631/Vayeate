@@ -148,25 +148,33 @@ export function useMappingsCardViewModel() {
   );
 
   const addSemanticVariantMapping = useCallback(
-    (semanticType: string, modifiers: string[], language: string | null, defaultGroupRef?: string | null) => {
+    (semanticType: string, defaultGroupRef?: string | null) => {
       dispatch({
         type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick,
         semanticType,
-        modifiers,
-        language,
         defaultGroupRef,
       });
     },
     [dispatch],
   );
 
-  const updateSemanticVariantKey = useCallback(
-    (oldKey: string, modifiers: string[], language: string | null) => {
+  const commitSemanticTokenModifiers = useCallback(
+    (oldKey: string, modifiers: string[]) => {
       dispatch({
         type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit,
         tokenKey: oldKey,
         modifiers,
-        language,
+      });
+    },
+    [dispatch],
+  );
+
+  const commitSemanticTokenLanguage = useCallback(
+    (oldKey: string, language: string | null) => {
+      dispatch({
+        type: TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit,
+        tokenKey: oldKey,
+        value: language,
       });
     },
     [dispatch],
@@ -217,7 +225,8 @@ export function useMappingsCardViewModel() {
           semanticTokenModifiers: template.semanticTokenModifiers ?? [],
           semanticTokenLanguages: template.semanticTokenLanguages ?? [],
           onAddSemanticVariant: addSemanticVariantMapping,
-          onUpdateSemanticVariantKey: updateSemanticVariantKey,
+          onCommitSemanticTokenModifiers: commitSemanticTokenModifiers,
+          onCommitSemanticTokenLanguage: commitSemanticTokenLanguage,
         };
 
   return {

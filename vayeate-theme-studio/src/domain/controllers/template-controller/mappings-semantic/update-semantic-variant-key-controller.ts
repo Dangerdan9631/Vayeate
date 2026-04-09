@@ -1,4 +1,8 @@
-import { formatSemanticSelector, parseSemanticSelector } from '../../../utils/semantic-token';
+import {
+  formatSemanticSelector,
+  parseSemanticSelector,
+  type ParsedSemanticSelector,
+} from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
@@ -20,19 +24,34 @@ export class UpdateSemanticVariantKeyController {
     private readonly templateSharedFlows: TemplateSharedFlows,
   ) {}
 
-  async run(
-    oldKey: string,
-    modifiers: string[],
-    language: string | null,
-  ): Promise<void> {
-    const template = this.templatesStateGetter.current().template;
-    if (!template) return;
-    let parsed: { type: string; modifiers: string[]; language: string | null };
+  async runAfterModifierChange(oldKey: string, modifiers: string[]): Promise<void> {
+    let parsed: ParsedSemanticSelector;
     try {
       parsed = parseSemanticSelector(oldKey);
     } catch {
       return;
     }
+    await this.runFromParsed(oldKey, parsed, modifiers, parsed.language);
+  }
+
+  async runAfterLanguageChange(oldKey: string, language: string | null): Promise<void> {
+    let parsed: ParsedSemanticSelector;
+    try {
+      parsed = parseSemanticSelector(oldKey);
+    } catch {
+      return;
+    }
+    await this.runFromParsed(oldKey, parsed, parsed.modifiers, language);
+  }
+
+  private async runFromParsed(
+    oldKey: string,
+    parsed: ParsedSemanticSelector,
+    modifiers: string[],
+    language: string | null,
+  ): Promise<void> {
+    const template = this.templatesStateGetter.current().template;
+    if (!template) return;
     const newKey = formatSemanticSelector(parsed.type, modifiers, language);
     if (!newKey || newKey === oldKey) return;
     if (newKey === parsed.type) return;

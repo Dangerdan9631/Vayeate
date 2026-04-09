@@ -1,8 +1,5 @@
 import type { Mapping } from '../../../../model/schemas';
-import {
-  formatSemanticSelector,
-  SEMANTIC_WILDCARD_TYPE,
-} from '../../../utils/semantic-token';
+import { SEMANTIC_WILDCARD_TYPE } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
@@ -26,29 +23,14 @@ export class AddSemanticVariantController {
     private readonly templateSharedFlows: TemplateSharedFlows,
   ) {}
 
-  async run(
-    type: string,
-    modifiers: string[],
-    language: string | null,
-    defaultGroupRef?: string | null,
-  ): Promise<void> {
+  async run(type: string, defaultGroupRef?: string | null): Promise<void> {
     const template = this.templatesStateGetter.current().template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const baseMapping = base.mappings.find(
       (m) => m.token.type === 'semantic token' && m.token.key === type,
     );
-    let key: string;
-    if (modifiers.length === 0 && (language === null || (language && language.trim() === ''))) {
-      key = this.generateSemanticVariantKey.execute(type);
-    } else {
-      key = formatSemanticSelector(type, modifiers, language);
-      if (!key) return;
-      const existing = template.mappings.some(
-        (m) => m.token.type === 'semantic token' && m.token.key === key,
-      );
-      if (existing) return;
-    }
+    const key = this.generateSemanticVariantKey.execute(type);
     const groupRef =
       type === SEMANTIC_WILDCARD_TYPE && defaultGroupRef !== undefined
         ? defaultGroupRef
@@ -59,7 +41,7 @@ export class AddSemanticVariantController {
       contrastVariableRef: null,
       groupRef,
     };
-    const sets = this.mergeSemanticTokenSets.execute(base, modifiers, language);
+    const sets = this.mergeSemanticTokenSets.execute(base, [], null);
     const next = this.appendSemanticVariantToTemplate.execute(
       base,
       newMapping,

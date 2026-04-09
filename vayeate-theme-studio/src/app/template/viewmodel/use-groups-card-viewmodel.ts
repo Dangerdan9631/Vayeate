@@ -68,9 +68,8 @@ export function useGroupsCardViewModel() {
 
   const handleAddGroup = useCallback(() => {
     if (!canAdd) return;
-    dispatch({ type: TemplateActionType.TemplateGroupAddButtonOnClick, name: trimmed });
-    dispatch({ type: TemplateActionType.TemplateGroupAddTextOnChange, value: '' });
-  }, [canAdd, dispatch, trimmed]);
+    dispatch({ type: TemplateActionType.TemplateGroupAddButtonOnClick });
+  }, [canAdd, dispatch]);
 
   return {
     template,

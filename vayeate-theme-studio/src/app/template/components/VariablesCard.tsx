@@ -38,6 +38,8 @@ function ColorGroupSubsection({
   groups,
   referencedKeys,
   canEdit,
+  addVariableName,
+  onAddVariableNameChange,
   onAdd,
   onRemove,
   onUpdateGroupRef,
@@ -48,12 +50,13 @@ function ColorGroupSubsection({
   groups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  onAdd: (key: string, groupRef: string | null) => void;
+  addVariableName: string;
+  onAddVariableNameChange: (value: string) => void;
+  onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [newKey, setNewKey] = useState('');
 
   return (
     <div className="tree-section">
@@ -76,21 +79,19 @@ function ColorGroupSubsection({
                 className="token-input"
                 type="text"
                 placeholder="new variable…"
-                value={newKey}
+                value={addVariableName}
                 onChange={(e) => {
-                  setNewKey(e.target.value);
+                  onAddVariableNameChange(e.target.value);
                 }}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
-                disabled={!isValidVariableKey(newKey.trim(), 'color')}
+                disabled={!isValidVariableKey(addVariableName.trim(), 'color')}
                 onClick={() => {
-                  const key = newKey.trim();
-                  if (isValidVariableKey(key, 'color')) {
-                    onAdd(key, groupRef);
-                    setNewKey('');
+                  if (isValidVariableKey(addVariableName.trim(), 'color')) {
+                    onAdd(groupRef);
                   }
                 }}
               >
@@ -141,6 +142,8 @@ function ColorVariablesSection({
   groups,
   referencedKeys,
   canEdit,
+  addVariableName,
+  onAddVariableNameChange,
   onAdd,
   onRemove,
   onUpdateGroupRef,
@@ -149,7 +152,9 @@ function ColorVariablesSection({
   groups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  onAdd: (key: string, groupRef: string | null) => void;
+  addVariableName: string;
+  onAddVariableNameChange: (value: string) => void;
+  onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
 }) {
@@ -187,6 +192,8 @@ function ColorVariablesSection({
                 groups={groups}
                 referencedKeys={referencedKeys}
                 canEdit={canEdit}
+                addVariableName={addVariableName}
+                onAddVariableNameChange={onAddVariableNameChange}
                 onAdd={onAdd}
                 onRemove={onRemove}
                 onUpdateGroupRef={onUpdateGroupRef}
@@ -207,6 +214,8 @@ function ContrastGroupSubsection({
   groups,
   referencedKeys,
   canEdit,
+  addVariableName,
+  onAddVariableNameChange,
   onAdd,
   onRemove,
   onUpdateGroupRef,
@@ -219,13 +228,14 @@ function ContrastGroupSubsection({
   groups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  onAdd: (key: string, groupRef: string | null) => void;
+  addVariableName: string;
+  onAddVariableNameChange: (value: string) => void;
+  onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
   onUpdateComparisonSource: (key: string, ref: ColorVariableKey | null) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [newKey, setNewKey] = useState('');
 
   return (
     <div className="tree-section">
@@ -248,19 +258,17 @@ function ContrastGroupSubsection({
                 className="token-input"
                 type="text"
                 placeholder="new variable…"
-                value={newKey}
-                onChange={(e) => setNewKey(e.target.value)}
+                value={addVariableName}
+                onChange={(e) => onAddVariableNameChange(e.target.value)}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
-                disabled={!isValidVariableKey(newKey.trim(), 'contrast')}
+                disabled={!isValidVariableKey(addVariableName.trim(), 'contrast')}
                 onClick={() => {
-                  const key = newKey.trim();
-                  if (isValidVariableKey(key, 'contrast')) {
-                    onAdd(key, groupRef);
-                    setNewKey('');
+                  if (isValidVariableKey(addVariableName.trim(), 'contrast')) {
+                    onAdd(groupRef);
                   }
                 }}
               >
@@ -327,6 +335,8 @@ function ContrastVariablesSection({
   groups,
   referencedKeys,
   canEdit,
+  addVariableName,
+  onAddVariableNameChange,
   onAdd,
   onRemove,
   onUpdateGroupRef,
@@ -337,7 +347,9 @@ function ContrastVariablesSection({
   groups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  onAdd: (key: string, groupRef: string | null) => void;
+  addVariableName: string;
+  onAddVariableNameChange: (value: string) => void;
+  onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
   onUpdateComparisonSource: (key: string, ref: ColorVariableKey | null) => void;
@@ -377,6 +389,8 @@ function ContrastVariablesSection({
                 groups={groups}
                 referencedKeys={referencedKeys}
                 canEdit={canEdit}
+                addVariableName={addVariableName}
+                onAddVariableNameChange={onAddVariableNameChange}
                 onAdd={onAdd}
                 onRemove={onRemove}
                 onUpdateGroupRef={onUpdateGroupRef}
@@ -405,6 +419,8 @@ export function VariablesCard() {
     referencedContrastVarKeys,
     canEdit,
     variablesSearchText,
+    addVariableName,
+    handleAddVariableNameChange,
     onAddColorVariable,
     onRemoveColorVariable,
     onAddContrastVariable,
@@ -443,7 +459,9 @@ export function VariablesCard() {
         groups={groups}
         referencedKeys={referencedColorVarKeys}
         canEdit={canEdit}
-        onAdd={(key, groupRef) => onAddColorVariable(key, groupRef)}
+        addVariableName={addVariableName}
+        onAddVariableNameChange={handleAddVariableNameChange}
+        onAdd={(groupRef) => onAddColorVariable(groupRef)}
         onRemove={(key) => onRemoveColorVariable(key)}
         onUpdateGroupRef={(key, groupRef) => onUpdateColorVariableGroupRef(key, groupRef)}
       />
@@ -453,7 +471,9 @@ export function VariablesCard() {
         groups={groups}
         referencedKeys={referencedContrastVarKeys}
         canEdit={canEdit}
-        onAdd={(key, groupRef) => onAddContrastVariable(key, groupRef)}
+        addVariableName={addVariableName}
+        onAddVariableNameChange={handleAddVariableNameChange}
+        onAdd={(groupRef) => onAddContrastVariable(groupRef)}
         onRemove={(key) => onRemoveContrastVariable(key)}
         onUpdateGroupRef={(key, groupRef) => onUpdateContrastVariableGroupRef(key, groupRef)}
         onUpdateComparisonSource={(key, ref) => onUpdateContrastComparisonSource(key, ref)}

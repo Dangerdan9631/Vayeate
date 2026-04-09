@@ -53,16 +53,16 @@ export type TemplateActions =
   | { type: TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit; value: string; tokenKey: string; tokenType: TokenType }
   | { type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit; value: ColorVariableKey; tokenKey: string; tokenType: TokenType }
   | { type: TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit; value: ContrastVariableKey | null; tokenKey: string; tokenType: TokenType }
-  | { type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick; semanticType: string; modifiers: string[]; language: string | null; defaultGroupRef?: string | null }
-  | { type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit; tokenKey: string; modifiers: string[]; language: string | null }
-  | { type: TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit; value: string; tokenKey: string; modifiers: string[] }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick; semanticType: string; defaultGroupRef?: string | null }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit; tokenKey: string; modifiers: string[] }
+  | { type: TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit; tokenKey: string; value: string | null }
   | { type: TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick; tokenKey: string; tokenType: TokenType }
   | { type: TemplateActionType.TemplateGroupAddTextOnChange; value: string }
-  | { type: TemplateActionType.TemplateGroupAddButtonOnClick; name: string }
+  | { type: TemplateActionType.TemplateGroupAddButtonOnClick }
   | { type: TemplateActionType.TemplateGroupRemoveButtonOnClick; groupId: string }
   | { type: TemplateActionType.TemplateVariablesSearchTextOnChange; value: string }
   | { type: TemplateActionType.TemplateVariablesAddVariableNameTextOnChange; value: string }
-  | { type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick; key: string; groupRef: string | null; variableKind: 'color' | 'contrast' }
+  | { type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick; groupRef: string | null; variableKind: 'color' | 'contrast' }
   | { type: TemplateActionType.TemplateVariablesGroupListOnCommit; value: string; variableKey: string }
   | { type: TemplateActionType.TemplateVariablesRemoveButtonOnClick; key: ColorVariableKey | ContrastVariableKey }
   | { type: TemplateActionType.TemplateVariablesContrastSourceListOnCommit; value: ColorVariableKey | null; contrastVariableKey: ContrastVariableKey };

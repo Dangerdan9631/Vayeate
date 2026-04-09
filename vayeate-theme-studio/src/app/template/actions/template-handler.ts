@@ -127,18 +127,13 @@ export class TemplateActionHandler {
         await this.setMappingContrastRef.run(action.tokenKey, action.tokenType, action.value);
         break;
       case TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick:
-        await this.addSemanticVariant.run(
-          action.semanticType,
-          action.modifiers,
-          action.language,
-          action.defaultGroupRef,
-        );
+        await this.addSemanticVariant.run(action.semanticType, action.defaultGroupRef);
         break;
       case TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit:
-        await this.updateSemanticVariantKey.run(action.tokenKey, action.modifiers, action.language);
+        await this.updateSemanticVariantKey.runAfterModifierChange(action.tokenKey, action.modifiers);
         break;
       case TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit:
-        await this.updateSemanticVariantKey.run(action.tokenKey, action.modifiers, action.value ?? null);
+        await this.updateSemanticVariantKey.runAfterLanguageChange(action.tokenKey, action.value);
         break;
       case TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick:
         await this.removeMapping.run(action.tokenKey, action.tokenType);
@@ -147,7 +142,7 @@ export class TemplateActionHandler {
         this.setTemplateAddGroupName.run(action.value);
         break;
       case TemplateActionType.TemplateGroupAddButtonOnClick:
-        await this.addGroupAndClearInput.run(action.name);
+        await this.addGroupAndClearInput.run();
         break;
       case TemplateActionType.TemplateGroupRemoveButtonOnClick:
         await this.removeGroup.run(action.groupId);
@@ -159,7 +154,7 @@ export class TemplateActionHandler {
         this.setTemplateAddVariableName.run(action.value);
         break;
       case TemplateActionType.TemplateVariablesAddVariableButtonOnClick:
-        await this.addVariable.run(action.key, action.groupRef, action.variableKind);
+        await this.addVariable.run(action.groupRef, action.variableKind);
         break;
       case TemplateActionType.TemplateVariablesGroupListOnCommit:
         await this.updateVariableGroupRef.run(action.variableKey, action.value || null);

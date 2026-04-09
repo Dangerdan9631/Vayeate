@@ -9,13 +9,16 @@ import { TemplateActionType } from '../actions/template-action-type';
 
 export function useVariablesCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, template, templateMap, variablesSearchText } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.templates;
-    if (slice === undefined) {
-      throw new Error('Template state requires AppProvider.');
-    }
-    return slice;
-  });
+  const { selectedRef, template, templateMap, variablesSearchText, addVariableName } = useContextSelector(
+    AppContext,
+    (c) => {
+      const slice = c?.state.templates;
+      if (slice === undefined) {
+        throw new Error('Template state requires AppProvider.');
+      }
+      return slice;
+    },
+  );
 
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
   const selectedName = selectedRef?.name ?? null;
@@ -61,11 +64,17 @@ export function useVariablesCardViewModel() {
     [dispatch],
   );
 
+  const handleAddVariableNameChange = useCallback(
+    (value: string) => {
+      dispatch({ type: TemplateActionType.TemplateVariablesAddVariableNameTextOnChange, value });
+    },
+    [dispatch],
+  );
+
   const addColorVariable = useCallback(
-    (key: string, groupRef?: string | null) => {
+    (groupRef?: string | null) => {
       dispatch({
         type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick,
-        key,
         groupRef: groupRef ?? null,
         variableKind: 'color',
       });
@@ -81,10 +90,9 @@ export function useVariablesCardViewModel() {
   );
 
   const addContrastVariable = useCallback(
-    (key: string, groupRef?: string | null) => {
+    (groupRef?: string | null) => {
       dispatch({
         type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick,
-        key,
         groupRef: groupRef ?? null,
         variableKind: 'contrast',
       });
@@ -138,6 +146,8 @@ export function useVariablesCardViewModel() {
     contrastVariables: template?.contrastVariables ?? [],
     groups: template?.groups ?? [],
     variablesSearchText,
+    addVariableName,
+    handleAddVariableNameChange,
     referencedColorVarKeys,
     referencedContrastVarKeys,
     canEdit,

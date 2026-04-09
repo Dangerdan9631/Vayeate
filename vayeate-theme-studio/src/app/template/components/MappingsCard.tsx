@@ -28,17 +28,9 @@ const DISPLAYED_TOKEN_TYPES: TokenType[] = ['theme', 'textmate token', 'semantic
 export interface SemanticVariantProps {
   semanticTokenModifiers: readonly string[];
   semanticTokenLanguages: readonly string[];
-  onAddSemanticVariant: (
-    type: string,
-    modifiers: string[],
-    language: string | null,
-    defaultGroupRef?: string | null,
-  ) => void;
-  onUpdateSemanticVariantKey: (
-    oldKey: string,
-    modifiers: string[],
-    language: string | null,
-  ) => void;
+  onAddSemanticVariant: (type: string, defaultGroupRef?: string | null) => void;
+  onCommitSemanticTokenModifiers: (oldKey: string, modifiers: string[]) => void;
+  onCommitSemanticTokenLanguage: (oldKey: string, language: string | null) => void;
 }
 
 function tokenTypeLabel(tokenType: TokenType): string {
@@ -362,15 +354,28 @@ function SemanticBlockRows({
   const type = base.token.key;
 
   const [openModifierKey, setOpenModifierKey] = useState<string | null>(null);
-  const updateVariantKeyWithOpenState = useCallback(
-    (oldKey: string, modifiers: string[], language: string | null) => {
+  const commitModifiersWithOpenState = useCallback(
+    (oldKey: string, modifiers: string[]) => {
       try {
         const parsed = parseSemanticSelector(oldKey);
-        const newKey = formatSemanticSelector(parsed.type, modifiers, language);
-        semanticVariant.onUpdateSemanticVariantKey(oldKey, modifiers, language);
+        const newKey = formatSemanticSelector(parsed.type, modifiers, parsed.language);
+        semanticVariant.onCommitSemanticTokenModifiers(oldKey, modifiers);
         if (openModifierKey === oldKey) setOpenModifierKey(newKey);
       } catch {
-        semanticVariant.onUpdateSemanticVariantKey(oldKey, modifiers, language);
+        semanticVariant.onCommitSemanticTokenModifiers(oldKey, modifiers);
+      }
+    },
+    [semanticVariant, openModifierKey],
+  );
+  const commitLanguageWithOpenState = useCallback(
+    (oldKey: string, language: string | null) => {
+      try {
+        const parsed = parseSemanticSelector(oldKey);
+        const newKey = formatSemanticSelector(parsed.type, parsed.modifiers, language);
+        semanticVariant.onCommitSemanticTokenLanguage(oldKey, language);
+        if (openModifierKey === oldKey) setOpenModifierKey(newKey);
+      } catch {
+        semanticVariant.onCommitSemanticTokenLanguage(oldKey, language);
       }
     },
     [semanticVariant, openModifierKey],
@@ -384,8 +389,6 @@ function SemanticBlockRows({
   const handleAddVariant = () =>
     semanticVariant.onAddSemanticVariant(
       type,
-      [],
-      null,
       type === SEMANTIC_WILDCARD_TYPE ? sectionGroupRef : undefined,
     );
 
@@ -501,7 +504,8 @@ function SemanticBlockRows({
           orphanKeys={orphanKeys}
           canEdit={canEdit}
           semanticVariant={semanticVariant}
-          updateVariantKey={updateVariantKeyWithOpenState}
+          commitSemanticModifiers={commitModifiersWithOpenState}
+          commitSemanticLanguage={commitLanguageWithOpenState}
           isModifierOpen={openModifierKey === m.token.key}
           onOpenModifierDropdown={() => setOpenModifierKey(m.token.key)}
           onCloseModifierDropdown={() => setOpenModifierKey(null)}
@@ -523,7 +527,8 @@ function SemanticVariantRow({
   orphanKeys,
   canEdit,
   semanticVariant,
-  updateVariantKey,
+  commitSemanticModifiers,
+  commitSemanticLanguage,
   isModifierOpen,
   onOpenModifierDropdown,
   onCloseModifierDropdown,
@@ -539,7 +544,8 @@ function SemanticVariantRow({
   orphanKeys: Set<string>;
   canEdit: boolean;
   semanticVariant: SemanticVariantProps;
-  updateVariantKey: (oldKey: string, modifiers: string[], language: string | null) => void;
+  commitSemanticModifiers: (oldKey: string, modifiers: string[]) => void;
+  commitSemanticLanguage: (oldKey: string, language: string | null) => void;
   isModifierOpen: boolean;
   onOpenModifierDropdown: () => void;
   onCloseModifierDropdown: () => void;
@@ -577,7 +583,7 @@ function SemanticVariantRow({
         pendingModifiers.length !== displayModifiers.length ||
         pendingModifiers.some((p, i) => p !== displayModifiers[i])
       ) {
-        updateVariantKey(mapping.token.key, pendingModifiers, parsed.language);
+        commitSemanticModifiers(mapping.token.key, pendingModifiers);
       }
       onCloseModifierDropdown();
     }
@@ -589,8 +595,7 @@ function SemanticVariantRow({
     pendingModifiers,
     displayModifiers,
     mapping.token.key,
-    parsed.language,
-    updateVariantKey,
+    commitSemanticModifiers,
   ]);
 
   useEffect(() => {
@@ -614,13 +619,13 @@ function SemanticVariantRow({
       pendingModifiers.length !== displayModifiers.length ||
       pendingModifiers.some((p, i) => p !== displayModifiers[i])
     ) {
-      updateVariantKey(mapping.token.key, pendingModifiers, parsed.language);
+      commitSemanticModifiers(mapping.token.key, pendingModifiers);
     }
     onCloseModifierDropdown();
   }
 
   function setLanguage(lang: string | null) {
-    updateVariantKey(mapping.token.key, displayModifiers, lang);
+    commitSemanticLanguage(mapping.token.key, lang);
   }
   const handleToggleModifierDropdown = () => {
     if (isModifierOpen) {
