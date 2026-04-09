@@ -60,7 +60,6 @@ export function useCatalogsCardViewModel() {
 
   const openCreateDialog = useCallback(() => {
     dispatch({ type: CatalogActionType.CatalogCatalogsCreateButtonOnClick });
-    dispatch({ type: CatalogActionType.CatalogCreateDialogOnOpen });
   }, [dispatch]);
 
   const onSelectVersion = useCallback(

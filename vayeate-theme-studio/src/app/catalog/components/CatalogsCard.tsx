@@ -18,10 +18,6 @@ export function CatalogsCard() {
     }
   }
 
-  function handleVersionChange(value: string) {
-    onSelectVersion(value);
-  }
-
   return (
     <div className="catalogs-card placeholder">
       <h2>Catalogs</h2>
@@ -50,7 +46,7 @@ export function CatalogsCard() {
           <select
             className="field-select"
             value={selectedRef?.version ?? ''}
-            onChange={(e) => handleVersionChange(e.target.value)}
+            onChange={(e) => onSelectVersion(e.target.value)}
           >
             {versionsForSelectedName.map((ref) => (
               <option key={ref.version} value={ref.version}>

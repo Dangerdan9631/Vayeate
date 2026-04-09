@@ -30,6 +30,7 @@ export type CatalogsStateUpdate =
   | { type: 'SET_CATALOG_NEW_SOURCE_TOKEN_TYPE'; value: TokenType }
   | { type: 'SET_CATALOG_NEW_SOURCE_TYPE'; value: SourceType }
   | { type: 'SET_CATALOG_NEW_TOKEN_KEY'; value: string }
+  | { type: 'SET_CATALOG_NEW_SEMANTIC_TOKEN_SELECTOR_TEXT'; value: string }
   | { type: 'SET_CATALOG_MAP_ENTRY'; name: string; version: string; isLoaded: boolean; catalog?: Catalog }
   | { type: 'SET_CATALOG_MAP_ENTRIES'; entries: CatalogEntryInput[] };
 
@@ -71,6 +72,11 @@ export function catalogsStateReducer(state: AppState, update: CatalogsStateUpdat
       return { ...state, catalogs: { ...state.catalogs, newSourceType: update.value } };
     case 'SET_CATALOG_NEW_TOKEN_KEY':
       return { ...state, catalogs: { ...state.catalogs, newTokenKey: update.value } };
+    case 'SET_CATALOG_NEW_SEMANTIC_TOKEN_SELECTOR_TEXT':
+      return {
+        ...state,
+        catalogs: { ...state.catalogs, newSemanticTokenSelectorText: update.value },
+      };
     case 'SET_CATALOG_MAP_ENTRY': {
       const byVersion = {
         ...state.catalogs.catalogMap[update.name],

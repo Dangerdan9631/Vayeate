@@ -76,13 +76,15 @@ export type SourceType = z.infer<typeof sourceTypeSchema>;
 export const tokenTypeSchema = z.enum(['theme', 'textmate token', 'semantic token']);
 export type TokenType = z.infer<typeof tokenTypeSchema>;
 
+export const semanticTokenRegistryListKindSchema = z.enum(['types', 'modifiers', 'languages']);
+export type SemanticTokenRegistryListKind = z.infer<typeof semanticTokenRegistryListKindSchema>;
+
 export const contrastComparisonMethodSchema = z.enum(['lessThan', 'equalTo', 'greaterThan']);
 export type ContrastComparisonMethod = z.infer<typeof contrastComparisonMethodSchema>;
 
 export const colorSchemeSchema = z.enum(['light', 'dark']);
 export type ColorScheme = z.infer<typeof colorSchemeSchema>;
 
-/** Persisted Theme Studio preferences (`data/config.json`). */
 export const appConfigSchema = z.object({
   colorScheme: colorSchemeSchema,
 });
@@ -269,19 +271,14 @@ export const themeSchema = z
     editorPreviewMenuBackgroundTokenRef: tokenKeySchema.nullable().optional().default(null),
     colorAssignments: z.array(colorAssignmentSchema).readonly(),
     contrastAssignments: z.array(contrastAssignmentSchema).readonly(),
-    /** Apply hue adjustments to dark theme colors (palette UI). */
     applyPaletteToDark: z.boolean().optional().default(true),
-    /** Apply hue adjustments to light theme colors (palette UI). */
     applyPaletteToLight: z.boolean().optional().default(true),
-    /** Cluster count (k) for palette swatch grouping; 1–12. */
     paletteClusterCountK: z.number().min(1).max(12).optional().default(5),
-    /** Group IDs included in cluster view; omit or empty = all groups. */
     paletteClusterGroupIds: z.array(z.string()).readonly().optional().default([]),
   })
   .readonly();
 export type Theme = z.infer<typeof themeSchema>;
 
-/** Theme fields that hold a preview token ref (TokenKey | null). Used by theme controller and action types. */
 export type ThemePreviewTokenRefField =
   | 'idePrimaryTokenRef'
   | 'ideForegroundTokenRef'
@@ -298,7 +295,6 @@ export type ThemePreviewTokenRefField =
   | 'editorPreviewMenuForegroundTokenRef'
   | 'editorPreviewMenuBackgroundTokenRef';
 
-/** Result of merging template mappings with catalog tokens. Used by domain and app. */
 export interface MergeMappingsResult {
   mappings: Mapping[];
   groupsToEnsure: string[];

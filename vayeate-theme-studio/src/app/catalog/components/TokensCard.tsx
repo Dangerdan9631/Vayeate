@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useContextSelector } from 'use-context-selector';
-import { AppContext } from '../../core/components/AppProvider';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from '../viewmodel/use-tokens-card-viewmodel';
-import type { Catalog, Token, TokenType } from '../../../model/schemas';
+import type { Catalog, SemanticTokenRegistryListKind, Token, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
 
@@ -133,28 +131,26 @@ function canAddSemanticSelector(selector: string, catalog: Catalog): boolean {
 function SemanticTokenCatalogSection({
   catalog,
   canEdit,
-  onAddSemanticFromSelector,
-  onSetSemanticTypes,
-  onSetSemanticModifiers,
-  onSetSemanticLanguages,
+  semanticSelectorText,
+  onSemanticSelectorTextChange,
+  onSemanticSelectorAdd,
+  onSemanticRegistryTextCommit,
+  onSemanticRegistryRemove,
 }: {
   catalog: Catalog;
   canEdit: boolean;
-  onAddSemanticFromSelector?: (selector: string) => void;
-  onSetSemanticTypes?: (types: string[]) => void;
-  onSetSemanticModifiers?: (modifiers: string[]) => void;
-  onSetSemanticLanguages?: (languages: string[]) => void;
+  semanticSelectorText: string;
+  onSemanticSelectorTextChange?: (value: string) => void;
+  onSemanticSelectorAdd?: () => void;
+  onSemanticRegistryTextCommit?: (
+    registryList: SemanticTokenRegistryListKind,
+    index: number,
+    value: string,
+  ) => void;
+  onSemanticRegistryRemove?: (registryList: SemanticTokenRegistryListKind, index: number) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectorInput, setSelectorInput] = useState('');
   const toggleCollapsed = () => setCollapsed((v) => !v);
-  const handleSelectorInputChange = (value: string) => setSelectorInput(value);
-  const handleSelectorInputKeyDown = (key: string, preventDefault: () => void) => {
-    if (key === 'Enter') {
-      preventDefault();
-      handleAddSelector();
-    }
-  };
   const types = catalog.semanticTokenTypes ?? [];
   const modifiers = catalog.semanticTokenModifiers ?? [];
   const languages = catalog.semanticTokenLanguages ?? [];
@@ -162,23 +158,16 @@ function SemanticTokenCatalogSection({
   const showSection = canEdit || hasAny;
   const addEnabled =
     canEdit &&
-    onAddSemanticFromSelector &&
-    canAddSemanticSelector(selectorInput, catalog);
-
-  if (!showSection) return null;
-
-  const handleAddSelector = () => {
-    const trimmed = selectorInput.trim();
-    if (!trimmed || !onAddSemanticFromSelector) return;
-    if (mergeSemanticSelectorInto(trimmed, {
-      types,
-      modifiers,
-      languages,
-    }) !== null) {
-      onAddSemanticFromSelector(trimmed);
-      setSelectorInput('');
+    onSemanticSelectorAdd &&
+    canAddSemanticSelector(semanticSelectorText, catalog);
+  const handleSelectorInputKeyDown = (key: string, preventDefault: () => void) => {
+    if (key === 'Enter') {
+      preventDefault();
+      if (addEnabled) onSemanticSelectorAdd?.();
     }
   };
+
+  if (!showSection) return null;
 
   return (
     <div className="tree-section">
@@ -197,14 +186,14 @@ function SemanticTokenCatalogSection({
       </button>
       {!collapsed && (
         <div className="tree-children">
-          {canEdit && onAddSemanticFromSelector && (
+          {canEdit && onSemanticSelectorTextChange && onSemanticSelectorAdd && (
             <div className="token-row token-add-row">
               <input
                 className="token-input"
                 type="text"
                 placeholder="type.modifier.modifier:language or *"
-                value={selectorInput}
-                onChange={(e) => handleSelectorInputChange(e.target.value)}
+                value={semanticSelectorText}
+                onChange={(e) => onSemanticSelectorTextChange(e.target.value)}
                 onKeyDown={(e) => handleSelectorInputKeyDown(e.key, () => e.preventDefault())}
                 aria-label="Semantic selector"
               />
@@ -213,7 +202,7 @@ function SemanticTokenCatalogSection({
                 className="btn-icon btn-add-icon"
                 title="Add"
                 disabled={!addEnabled}
-                onClick={handleAddSelector}
+                onClick={() => onSemanticSelectorAdd()}
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
@@ -222,7 +211,7 @@ function SemanticTokenCatalogSection({
           {types.map((t, i) => (
             <div key={`type-${i}-${t}`} className="token-row">
               <span className="token-label">tokenType:</span>
-              {canEdit && onSetSemanticTypes ? (
+              {canEdit && onSemanticRegistryTextCommit ? (
                 <>
                   <input
                     className="token-input"
@@ -230,10 +219,7 @@ function SemanticTokenCatalogSection({
                     defaultValue={t}
                     onBlur={(e) => {
                       const v = e.target.value.trim();
-                      if (v !== t) {
-                        const next = types.map((x, j) => (j === i ? v : x));
-                        onSetSemanticTypes(next);
-                      }
+                      if (v !== t) onSemanticRegistryTextCommit('types', i, v);
                     }}
                     aria-label={`tokenType ${i + 1}`}
                   />
@@ -241,9 +227,7 @@ function SemanticTokenCatalogSection({
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() =>
-                      onSetSemanticTypes(types.filter((_, j) => j !== i))
-                    }
+                    onClick={() => onSemanticRegistryRemove?.('types', i)}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -256,7 +240,7 @@ function SemanticTokenCatalogSection({
           {modifiers.map((m, i) => (
             <div key={`modifier-${i}-${m}`} className="token-row">
               <span className="token-label">modifier:</span>
-              {canEdit && onSetSemanticModifiers ? (
+              {canEdit && onSemanticRegistryTextCommit ? (
                 <>
                   <input
                     className="token-input"
@@ -264,10 +248,7 @@ function SemanticTokenCatalogSection({
                     defaultValue={m}
                     onBlur={(e) => {
                       const v = e.target.value.trim();
-                      if (v !== m) {
-                        const next = modifiers.map((x, j) => (j === i ? v : x));
-                        onSetSemanticModifiers(next);
-                      }
+                      if (v !== m) onSemanticRegistryTextCommit('modifiers', i, v);
                     }}
                     aria-label={`modifier ${i + 1}`}
                   />
@@ -275,9 +256,7 @@ function SemanticTokenCatalogSection({
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() =>
-                      onSetSemanticModifiers(modifiers.filter((_, j) => j !== i))
-                    }
+                    onClick={() => onSemanticRegistryRemove?.('modifiers', i)}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -290,7 +269,7 @@ function SemanticTokenCatalogSection({
           {languages.map((lang, i) => (
             <div key={`language-${i}-${lang}`} className="token-row">
               <span className="token-label">language:</span>
-              {canEdit && onSetSemanticLanguages ? (
+              {canEdit && onSemanticRegistryTextCommit ? (
                 <>
                   <input
                     className="token-input"
@@ -298,10 +277,7 @@ function SemanticTokenCatalogSection({
                     defaultValue={lang}
                     onBlur={(e) => {
                       const v = e.target.value.trim();
-                      if (v !== lang) {
-                        const next = languages.map((x, j) => (j === i ? v : x));
-                        onSetSemanticLanguages(next);
-                      }
+                      if (v !== lang) onSemanticRegistryTextCommit('languages', i, v);
                     }}
                     aria-label={`language ${i + 1}`}
                   />
@@ -309,9 +285,7 @@ function SemanticTokenCatalogSection({
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() =>
-                      onSetSemanticLanguages(languages.filter((_, j) => j !== i))
-                    }
+                    onClick={() => onSemanticRegistryRemove?.('languages', i)}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -328,15 +302,10 @@ function SemanticTokenCatalogSection({
 }
 
 export function TokensCard() {
-  const catalog = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice.catalog;
-  });
   const {
+    catalog,
     tokensSearchText,
+    newSemanticTokenSelectorText,
     filteredTokensByType,
     canEdit,
     handleBulkAddClick,
@@ -345,11 +314,11 @@ export function TokensCard() {
     handleRemoveToken,
     handleUpdateTokenKey,
     handleNewTokenKeyChange,
-    onAddSemanticFromSelector,
-    onSetSemanticTypes,
-    onSetSemanticModifiers,
-    onSetSemanticLanguages,
-  } = useTokensCardViewModel(catalog);
+    handleNewSemanticTokenSelectorTextChange,
+    handleNewSemanticTokenSelectorAdd,
+    handleSemanticRegistryTextCommit,
+    handleSemanticRegistryRemove,
+  } = useTokensCardViewModel();
 
   if (!catalog) return null;
 
@@ -390,10 +359,11 @@ export function TokensCard() {
       <SemanticTokenCatalogSection
         catalog={catalog}
         canEdit={canEdit}
-        onAddSemanticFromSelector={onAddSemanticFromSelector}
-        onSetSemanticTypes={onSetSemanticTypes}
-        onSetSemanticModifiers={onSetSemanticModifiers}
-        onSetSemanticLanguages={onSetSemanticLanguages}
+        semanticSelectorText={newSemanticTokenSelectorText}
+        onSemanticSelectorTextChange={handleNewSemanticTokenSelectorTextChange}
+        onSemanticSelectorAdd={handleNewSemanticTokenSelectorAdd}
+        onSemanticRegistryTextCommit={handleSemanticRegistryTextCommit}
+        onSemanticRegistryRemove={handleSemanticRegistryRemove}
       />
     </div>
   );

@@ -4,12 +4,9 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/components/AppProvider';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/version';
-import { nextPatchVersion } from '../../../domain/utils/version';
-import type { Catalog, Token, TokenKey, TokenType } from '../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
+import type { SemanticTokenRegistryListKind, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 
-/** Sections shown in the catalog tokens pane: Theme Tokens, Textmate Tokens */
 export const CATALOG_TOKEN_LIST_SECTIONS: TokenType[] = ['theme', 'textmate token'];
 
 function matchesSearch(key: string, searchQuery: string): boolean {
@@ -17,15 +14,22 @@ function matchesSearch(key: string, searchQuery: string): boolean {
   return !q || key.toLowerCase().includes(q);
 }
 
-export function useTokensCardViewModel(catalog: Catalog | null) {
+export function useTokensCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, catalogMap, tokensSearchText } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice;
-  });
+  const { selectedRef, catalogMap, catalog, tokensSearchText, newSemanticTokenSelectorText } =
+    useContextSelector(AppContext, (c) => {
+      const slice = c?.state.catalogs;
+      if (slice === undefined) {
+        throw new Error('Catalog state requires AppProvider.');
+      }
+      return {
+        selectedRef: slice.selectedRef,
+        catalogMap: slice.catalogMap,
+        catalog: slice.catalog,
+        tokensSearchText: slice.tokensSearchText,
+        newSemanticTokenSelectorText: slice.newSemanticTokenSelectorText,
+      };
+    });
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
   const selectedName = selectedRef?.name ?? null;
 
@@ -116,68 +120,44 @@ export function useTokensCardViewModel(catalog: Catalog | null) {
     [dispatch],
   );
 
-  const addSemanticFromSelector = useCallback(
-    (selector: string) => {
-      if (!catalog) return;
-      const current = {
-        types: catalog.semanticTokenTypes ?? [],
-        modifiers: catalog.semanticTokenModifiers ?? [],
-        languages: catalog.semanticTokenLanguages ?? [],
-      };
-      const merged = mergeSemanticSelectorInto(selector, current);
-      if (!merged) return;
-      const base = catalog.locked
-        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
-        : catalog;
-      const updated: Catalog = {
-        ...base,
-        semanticTokenTypes: merged.types,
-        semanticTokenModifiers: merged.modifiers,
-        semanticTokenLanguages: merged.languages,
-      };
-      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
+  const handleNewSemanticTokenSelectorTextChange = useCallback(
+    (value: string) => {
+      dispatch({ type: CatalogActionType.CatalogTokensNewSemanticTokenSelectorTextOnChange, value });
     },
-    [dispatch, catalog],
+    [dispatch],
   );
 
-  const setSemanticTypes = useCallback(
-    (types: string[]) => {
-      if (!catalog) return;
-      const base = catalog.locked
-        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
-        : catalog;
-      const updated: Catalog = { ...base, semanticTokenTypes: types };
-      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
+  const handleNewSemanticTokenSelectorAdd = useCallback(() => {
+    dispatch({ type: CatalogActionType.CatalogTokensNewSemanticTokenSelectorAddButtonOnClick });
+  }, [dispatch]);
+
+  const handleSemanticRegistryTextCommit = useCallback(
+    (registryList: SemanticTokenRegistryListKind, index: number, value: string) => {
+      dispatch({
+        type: CatalogActionType.CatalogTokensExistingSemanticTokenTextOnCommit,
+        registryList,
+        index,
+        value,
+      });
     },
-    [dispatch, catalog],
+    [dispatch],
   );
 
-  const setSemanticModifiers = useCallback(
-    (modifiers: string[]) => {
-      if (!catalog) return;
-      const base = catalog.locked
-        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
-        : catalog;
-      const updated: Catalog = { ...base, semanticTokenModifiers: modifiers };
-      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
+  const handleSemanticRegistryRemove = useCallback(
+    (registryList: SemanticTokenRegistryListKind, index: number) => {
+      dispatch({
+        type: CatalogActionType.CatalogTokensExistingSemanticTokenRemoveButtonOnClick,
+        registryList,
+        index,
+      });
     },
-    [dispatch, catalog],
-  );
-
-  const setSemanticLanguages = useCallback(
-    (languages: string[]) => {
-      if (!catalog) return;
-      const base = catalog.locked
-        ? { ...catalog, version: nextPatchVersion(catalog.version), locked: false }
-        : catalog;
-      const updated: Catalog = { ...base, semanticTokenLanguages: languages };
-      dispatch({ type: CatalogActionType.CatalogDetailsSaveCatalog, catalog: updated });
-    },
-    [dispatch, catalog],
+    [dispatch],
   );
 
   return {
+    catalog,
     tokensSearchText,
+    newSemanticTokenSelectorText,
     filteredTokensByType,
     canEdit,
     handleBulkAddClick,
@@ -186,9 +166,9 @@ export function useTokensCardViewModel(catalog: Catalog | null) {
     handleRemoveToken,
     handleUpdateTokenKey,
     handleNewTokenKeyChange,
-    onAddSemanticFromSelector: addSemanticFromSelector,
-    onSetSemanticTypes: setSemanticTypes,
-    onSetSemanticModifiers: setSemanticModifiers,
-    onSetSemanticLanguages: setSemanticLanguages,
+    handleNewSemanticTokenSelectorTextChange,
+    handleNewSemanticTokenSelectorAdd,
+    handleSemanticRegistryTextCommit,
+    handleSemanticRegistryRemove,
   };
 }

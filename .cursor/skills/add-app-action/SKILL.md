@@ -16,7 +16,7 @@ Use this skill when:
 
 2. **One action = one behavior**: Do not use optional fields to branch to different behaviors within one action type. If you need different behaviors, add separate action types.
 
-3. **If implementing the handler**: Add an exhaustive `switch` case using the enum member (e.g. `case CatalogActionType.CatalogDetailsSaveCatalog:`) in the correct domain handler file under `src/app/{app,catalog,template,theme}/actions/` (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`). The handler invokes a controller. Follow the Action Queue rule: controller composes operations; add reducer cases in `reducer.ts` for state updates. Name controller functions by the action (e.g. `saveCatalog`), not by the UI event.
+3. **If implementing the handler**: Add an exhaustive `switch` case using the enum member (e.g. `case CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit:`) in the correct domain handler file under `src/app/{app,catalog,template,theme}/actions/` (`app-handler.ts`, `catalog-handler.ts`, `template-handler.ts`, or `theme-handler.ts`). The handler invokes a controller. Follow the Action Queue rule: controller composes operations; add reducer cases in `reducer.ts` for state updates. Name controller functions by the action (e.g. `saveCatalog`), not by the UI event.
 
 ## References
 

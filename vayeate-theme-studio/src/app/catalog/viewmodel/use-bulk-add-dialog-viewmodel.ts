@@ -3,6 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/components/AppProvider';
 import { parseThemeJson, type BulkParseResult } from '../../../domain/utils/theme-parser';
+import type { Token } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 
 export interface BulkAddDialogViewModel {
@@ -11,7 +12,6 @@ export interface BulkAddDialogViewModel {
   errorMessage: string | null;
   parsed: { result: BulkParseResult; newCount: number } | null;
   canSubmit: boolean;
-  /** Tokens in paste that already exist (`0` when no successful parse). */
   duplicateCount: number;
   handleTextChange: (value: string) => void;
   handleSubmit: () => void;
@@ -19,12 +19,15 @@ export interface BulkAddDialogViewModel {
   handleDialogContentClick: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
-export function useBulkAddDialogViewModel(options: {
-  existingTokenKeys: Set<string>;
-  onCancel?: () => void;
-}): BulkAddDialogViewModel {
-  const { existingTokenKeys, onCancel } = options;
+export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   const dispatch = useAppDispatch();
+  const catalog = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice.catalog;
+  });
   const text = useContextSelector(AppContext, (c) => {
     const slice = c?.state.catalogs;
     if (slice === undefined) {
@@ -32,6 +35,10 @@ export function useBulkAddDialogViewModel(options: {
     }
     return slice.bulkAddText;
   });
+  const existingTokenKeys = useMemo(() => {
+    if (!catalog) return new Set<string>();
+    return new Set(catalog.tokens.map((t: Token) => `${t.type}::${t.key}`));
+  }, [catalog]);
 
   const parseOutcome = useMemo((): { result: BulkParseResult; newCount: number } | { error: string } | null => {
     const trimmed = text.trim();
@@ -64,8 +71,7 @@ export function useBulkAddDialogViewModel(options: {
 
   const handleCancel = useCallback(() => {
     void dispatch({ type: CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick });
-    onCancel?.();
-  }, [dispatch, onCancel]);
+  }, [dispatch]);
 
   const handleDialogContentClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();

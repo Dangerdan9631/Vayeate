@@ -4,12 +4,12 @@ import type { Catalog } from '../../../model/schemas';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 import { TokenSyncGateway } from '../../../gateway/catalog/token-sync-gateway';
 import {
+  CreateCatalogOperation,
+  DeleteCatalogOperation,
+  LoadCatalogOperation,
   LoadCatalogRefsOperation,
-  createCatalog,
-  deleteCatalog,
-  loadCatalog,
-  saveCatalog,
-  syncCatalog,
+  SaveCatalogOperation,
+  SyncCatalogOperation,
 } from '.';
 import { CatalogsStateSetter } from '../../state/catalog/catalogs-state-reducer';
 
@@ -52,8 +52,8 @@ describe('catalog-operations', () => {
     container.clearInstances();
   });
 
-  it('createCatalog persists new catalog, updates store, and returns ref', async () => {
-    const result = await createCatalog(setState, { name: 'c1', type: 'manual' });
+  it('CreateCatalogOperation persists new catalog, updates store, and returns ref', async () => {
+    const result = await container.resolve(CreateCatalogOperation).execute({ name: 'c1', type: 'manual' });
 
     expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledTimes(1);
     expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledWith(
@@ -86,34 +86,32 @@ describe('catalog-operations', () => {
     });
   });
 
-  it('loadCatalog loads a catalog from disk without updating app state', async () => {
-    const noopSetState = vi.fn();
-
-    const loaded = await loadCatalog(noopSetState, 'c1', '1.0.0');
+  it('LoadCatalogOperation loads a catalog from disk without updating app state', async () => {
+    const loaded = await container.resolve(LoadCatalogOperation).execute('c1', '1.0.0');
 
     expect(catalogGatewayMock.loadCatalog).toHaveBeenCalledTimes(1);
     expect(catalogGatewayMock.loadCatalog).toHaveBeenCalledWith('c1', '1.0.0');
-    expect(noopSetState).not.toHaveBeenCalled();
+    expect(setState).not.toHaveBeenCalled();
     expect(loaded).toEqual({ name: 'c1', version: '1.0.0' });
   });
 
-  it('saveCatalog calls catalogGateway.saveCatalog', async () => {
+  it('SaveCatalogOperation calls catalogGateway.saveCatalog', async () => {
     const catalog = { name: 'c1', version: '1.0.0' } as Catalog;
 
-    await saveCatalog(catalog);
+    await container.resolve(SaveCatalogOperation).execute(catalog);
 
     expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledTimes(1);
     expect(catalogGatewayMock.saveCatalog).toHaveBeenCalledWith(catalog);
   });
 
-  it('deleteCatalog calls catalogGateway.deleteCatalog', async () => {
-    await deleteCatalog('c1', '1.0.0');
+  it('DeleteCatalogOperation calls catalogGateway.deleteCatalog', async () => {
+    await container.resolve(DeleteCatalogOperation).execute('c1', '1.0.0');
 
     expect(catalogGatewayMock.deleteCatalog).toHaveBeenCalledTimes(1);
     expect(catalogGatewayMock.deleteCatalog).toHaveBeenCalledWith('c1', '1.0.0');
   });
 
-  it('syncCatalog preserves version when catalog is unlocked', async () => {
+  it('SyncCatalogOperation preserves version when catalog is unlocked', async () => {
     const catalog = {
       name: 'c1',
       version: '1.0.0',
@@ -125,7 +123,7 @@ describe('catalog-operations', () => {
       semanticTokenLanguages: [],
     } as unknown as Catalog;
 
-    const result = await syncCatalog(catalog);
+    const result = await container.resolve(SyncCatalogOperation).execute(catalog);
 
     expect(tokenSyncGatewayMock.sync).toHaveBeenCalledTimes(1);
     expect(tokenSyncGatewayMock.sync).toHaveBeenCalledWith(catalog.sources);
@@ -133,7 +131,7 @@ describe('catalog-operations', () => {
     expect(result.locked).toBe(true);
   });
 
-  it('syncCatalog bumps patch version when catalog is locked', async () => {
+  it('SyncCatalogOperation bumps patch version when catalog is locked', async () => {
     const catalog = {
       name: 'c1',
       version: '1.0.0',
@@ -145,7 +143,7 @@ describe('catalog-operations', () => {
       semanticTokenLanguages: [],
     } as unknown as Catalog;
 
-    const result = await syncCatalog(catalog);
+    const result = await container.resolve(SyncCatalogOperation).execute(catalog);
 
     expect(tokenSyncGatewayMock.sync).toHaveBeenCalledTimes(1);
     expect(result.version).toBe('1.0.1');

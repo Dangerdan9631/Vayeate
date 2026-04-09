@@ -1,21 +1,24 @@
 import { injectable } from 'tsyringe';
 import {
+  AddCatalogSemanticTokenSelectorController,
   AddNewSourceController,
   AddNewTokenController,
   BulkAddTokensController,
   CloseBulkAddDialogController,
   CloseCatalogCreateDialogController,
-  DeleteCatalogVersionController,
+  DeleteCurrentCatalogVersionController,
+  LoadCatalogPageController,
   LockCatalogController,
   OpenBulkAddDialogController,
   OpenCatalogCreateDialogController,
+  RemoveSemanticTokenListItemController,
   RemoveSourceController,
   RemoveTokenController,
   RevertCatalogToVersionController,
-  SaveCatalogController,
   SetCatalogBulkAddTextController,
   SetCatalogCreateDialogNameController,
   SetCatalogCreateDialogTypeController,
+  SetCatalogNewSemanticTokenSelectorTextController,
   SetCatalogNewSourceTokenTypeController,
   SetCatalogNewSourceTypeController,
   SetCatalogNewSourceUrlController,
@@ -23,11 +26,11 @@ import {
   SetCatalogTokensSearchTextController,
   SetSelectedCatalogController,
   SyncCatalogController,
+  UpdateSemanticTokenRegistryTextController,
   UpdateSourceTokenTypeController,
   UpdateSourceTypeController,
   UpdateSourceUrlController,
   UpdateTokenKeyController,
-  LoadCatalogPageController,
 } from '../../../domain/controllers/catalog-controller';
 import type { AppAction } from '../../core/actions/app-action';
 import { CatalogActions, CatalogActionType } from './catalog-action-type';
@@ -38,34 +41,37 @@ export const isCatalogAction = (a: AppAction): a is CatalogActions => catalogTyp
 @injectable()
 export class CatalogActionHandler {
   constructor(
-    private readonly addNewSource: AddNewSourceController,
-    private readonly addNewToken: AddNewTokenController,
-    private readonly bulkAddTokens: BulkAddTokensController,
-    private readonly closeBulkAddDialog: CloseBulkAddDialogController,
-    private readonly closeCatalogCreateDialog: CloseCatalogCreateDialogController,
-    private readonly deleteCatalogVersion: DeleteCatalogVersionController,
-    private readonly lockCatalog: LockCatalogController,
-    private readonly openBulkAddDialog: OpenBulkAddDialogController,
+    private readonly loadCatalogPage: LoadCatalogPageController,
+    private readonly setSelectedCatalog: SetSelectedCatalogController,
     private readonly openCatalogCreateDialog: OpenCatalogCreateDialogController,
-    private readonly removeSource: RemoveSourceController,
-    private readonly removeToken: RemoveTokenController,
-    private readonly revertCatalogToVersion: RevertCatalogToVersionController,
-    private readonly saveCatalog: SaveCatalogController,
-    private readonly setCatalogBulkAddText: SetCatalogBulkAddTextController,
     private readonly setCatalogCreateDialogName: SetCatalogCreateDialogNameController,
     private readonly setCatalogCreateDialogType: SetCatalogCreateDialogTypeController,
-    private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenTypeController,
-    private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeController,
-    private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlController,
-    private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyController,
-    private readonly setCatalogTokensSearchText: SetCatalogTokensSearchTextController,
-    private readonly setSelectedCatalog: SetSelectedCatalogController,
-    private readonly syncCatalog: SyncCatalogController,
+    private readonly closeCatalogCreateDialog: CloseCatalogCreateDialogController,
+    private readonly updateSourceUrl: UpdateSourceUrlController,
     private readonly updateSourceTokenType: UpdateSourceTokenTypeController,
     private readonly updateSourceType: UpdateSourceTypeController,
-    private readonly updateSourceUrl: UpdateSourceUrlController,
+    private readonly removeSource: RemoveSourceController,
+    private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlController,
+    private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenTypeController,
+    private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeController,
+    private readonly addNewSource: AddNewSourceController,
+    private readonly deleteCurrentCatalogVersion: DeleteCurrentCatalogVersionController,
+    private readonly syncCatalog: SyncCatalogController,
+    private readonly lockCatalog: LockCatalogController,
+    private readonly revertCatalogToVersion: RevertCatalogToVersionController,
+    private readonly setCatalogTokensSearchText: SetCatalogTokensSearchTextController,
+    private readonly openBulkAddDialog: OpenBulkAddDialogController,
+    private readonly setCatalogBulkAddText: SetCatalogBulkAddTextController,
+    private readonly closeBulkAddDialog: CloseBulkAddDialogController,
+    private readonly bulkAddTokens: BulkAddTokensController,
     private readonly updateTokenKey: UpdateTokenKeyController,
-    private readonly loadCatalogPage: LoadCatalogPageController,
+    private readonly removeToken: RemoveTokenController,
+    private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyController,
+    private readonly addNewToken: AddNewTokenController,
+    private readonly setCatalogNewSemanticTokenSelectorText: SetCatalogNewSemanticTokenSelectorTextController,
+    private readonly addCatalogSemanticTokenSelector: AddCatalogSemanticTokenSelectorController,
+    private readonly updateSemanticTokenRegistryText: UpdateSemanticTokenRegistryTextController,
+    private readonly removeSemanticTokenListItem: RemoveSemanticTokenListItemController,
   ) {}
 
   async handle(action: CatalogActions): Promise<void> {
@@ -79,9 +85,6 @@ export class CatalogActionHandler {
       case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
         this.openCatalogCreateDialog.run();
         break;
-      case CatalogActionType.CatalogCreateDialogOnOpen:
-        this.openCatalogCreateDialog.run();
-        break;
       case CatalogActionType.CatalogCreateDialogNameTextOnChange:
         this.setCatalogCreateDialogName.run(action.value);
         break;
@@ -93,21 +96,6 @@ export class CatalogActionHandler {
         break;
       case CatalogActionType.CatalogCreateDialogOkButtonOnClick:
         await this.closeCatalogCreateDialog.run('OK');
-        break;
-      case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
-        await this.deleteCatalogVersion.run(action.name, action.version);
-        break;
-      case CatalogActionType.CatalogDetailsSyncButtonOnClick:
-        await this.syncCatalog.run(action.catalog);
-        break;
-      case CatalogActionType.CatalogDetailsLockButtonOnClick:
-        await this.lockCatalog.run();
-        break;
-      case CatalogActionType.CatalogDetailsRevertButtonOnClick:
-        await this.revertCatalogToVersion.run(action.name, action.version);
-        break;
-      case CatalogActionType.CatalogDetailsSaveCatalog:
-        await this.saveCatalog.run(action.catalog);
         break;
       case CatalogActionType.CatalogDetailsSourceUrlTextOnCommit:
         await this.updateSourceUrl.run(action.sourceIndex, action.value);
@@ -133,11 +121,32 @@ export class CatalogActionHandler {
       case CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick:
         await this.addNewSource.run();
         break;
+      case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
+        await this.deleteCurrentCatalogVersion.run();
+        break;
+      case CatalogActionType.CatalogDetailsSyncButtonOnClick:
+        await this.syncCatalog.run();
+        break;
+      case CatalogActionType.CatalogDetailsLockButtonOnClick:
+        await this.lockCatalog.run();
+        break;
+      case CatalogActionType.CatalogDetailsRevertButtonOnClick:
+        await this.revertCatalogToVersion.run();
+        break;
       case CatalogActionType.CatalogTokensSearchTextOnChange:
         this.setCatalogTokensSearchText.run(action.value);
         break;
       case CatalogActionType.CatalogTokensBulkAddButtonOnClick:
         this.openBulkAddDialog.run();
+        break;
+      case CatalogActionType.CatalogBulkAddTokensTextOnChange:
+        this.setCatalogBulkAddText.run(action.value);
+        break;
+      case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
+        this.closeBulkAddDialog.run();
+        break;
+      case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
+        await this.bulkAddTokens.run();
         break;
       case CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit:
         await this.updateTokenKey.run(action.key, action.value, action.tokenType);
@@ -151,17 +160,21 @@ export class CatalogActionHandler {
       case CatalogActionType.CatalogTokensNewTokenAddButtonOnClick:
         await this.addNewToken.run(action.tokenType, action.key);
         break;
-      case CatalogActionType.CatalogBulkAddTokensDialogOnOpen:
-        this.openBulkAddDialog.run();
+      case CatalogActionType.CatalogTokensNewSemanticTokenSelectorTextOnChange:
+        this.setCatalogNewSemanticTokenSelectorText.run(action.value);
         break;
-      case CatalogActionType.CatalogBulkAddTokensTextOnChange:
-        this.setCatalogBulkAddText.run(action.value);
+      case CatalogActionType.CatalogTokensNewSemanticTokenSelectorAddButtonOnClick:
+        await this.addCatalogSemanticTokenSelector.run();
         break;
-      case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
-        this.closeBulkAddDialog.run();
+      case CatalogActionType.CatalogTokensExistingSemanticTokenTextOnCommit:
+        await this.updateSemanticTokenRegistryText.run(
+          action.registryList,
+          action.index,
+          action.value,
+        );
         break;
-      case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
-        await this.bulkAddTokens.run();
+      case CatalogActionType.CatalogTokensExistingSemanticTokenRemoveButtonOnClick:
+        await this.removeSemanticTokenListItem.run(action.registryList, action.index);
         break;
     }
   }

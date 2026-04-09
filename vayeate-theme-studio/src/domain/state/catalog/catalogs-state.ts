@@ -11,13 +11,11 @@ export interface CatalogEntry {
   catalog: Catalog | undefined;
 }
 
-/** Map: catalog name -> version -> entry */
 export type CatalogStoreMap = Record<string, Record<string, CatalogEntry>>;
 
 export interface CatalogsState {
   selectedRef: CatalogReference | null;
   catalog: Catalog | null;
-  /** Catalogs loaded for display (e.g. template page); key = `${name}@${version}` */
   loadedForDisplay: Record<string, Catalog>;
   isCreating: boolean;
   createDialogOpen: boolean;
@@ -30,7 +28,7 @@ export interface CatalogsState {
   newSourceTokenType: TokenType;
   newSourceType: SourceType;
   newTokenKey: string;
-  /** List/catalog index: name -> version -> loaded entry */
+  newSemanticTokenSelectorText: string;
   catalogMap: CatalogStoreMap;
 }
 
@@ -49,10 +47,10 @@ export const initialCatalogsState: CatalogsState = {
   newSourceTokenType: 'theme',
   newSourceType: 'default',
   newTokenKey: '',
+  newSemanticTokenSelectorText: '',
   catalogMap: {},
 };
 
-/** Derive catalog refs from the catalog map (sorted by name, then version). */
 export function getCatalogRefsFromCatalogMap(map: CatalogStoreMap): CatalogReference[] {
   const refs: CatalogReference[] = [];
   for (const name of Object.keys(map).sort()) {

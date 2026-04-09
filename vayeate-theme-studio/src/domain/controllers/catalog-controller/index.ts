@@ -10,7 +10,7 @@ export { OpenCatalogCreateDialogController } from './create-dialog/open-catalog-
 export { CloseCatalogCreateDialogController } from './create-dialog/close-catalog-create-dialog-controller';
 export { SetCatalogCreateDialogNameController } from './create-dialog/set-catalog-create-dialog-name-controller';
 export { SetCatalogCreateDialogTypeController } from './create-dialog/set-catalog-create-dialog-type-controller';
-export { DeleteCatalogVersionController } from './catalog-list/delete-catalog-version-controller';
+export { DeleteCurrentCatalogVersionController } from './catalog-list/delete-current-catalog-version-controller';
 
 // catalog-details
 export { SaveCatalogController } from './catalog-details/save-catalog-controller';
@@ -34,6 +34,10 @@ export { UpdateTokenKeyController } from './tokens/update-token-key-controller';
 export { RemoveTokenController } from './tokens/remove-token-controller';
 export { AddNewTokenController } from './tokens/add-new-token-controller';
 export { SetCatalogNewTokenKeyController } from './tokens/set-catalog-new-token-key-controller';
+export { SetCatalogNewSemanticTokenSelectorTextController } from './tokens/set-catalog-new-semantic-token-selector-text-controller';
+export { AddCatalogSemanticTokenSelectorController } from './tokens/add-catalog-semantic-token-selector-controller';
+export { RemoveSemanticTokenListItemController } from './tokens/remove-semantic-token-list-item-controller';
+export { UpdateSemanticTokenRegistryTextController } from './tokens/update-semantic-token-registry-text-controller';
 export { SetCatalogTokensSearchTextController } from './tokens/set-catalog-tokens-search-text-controller';
 
 // bulk-add

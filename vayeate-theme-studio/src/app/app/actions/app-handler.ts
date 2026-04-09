@@ -2,7 +2,7 @@ import { injectable } from 'tsyringe';
 import {
   CloseAllMenusController,
   SetActiveTabController,
-  SetColorSchemeController,
+  ToggleColorSchemeController,
   ToggleMenuOpenController,
 } from '../../../domain/controllers/app-controller';
 import {
@@ -38,7 +38,7 @@ export class AppActionHandler {
     private readonly toggleDevTools: ToggleDevToolsController,
     private readonly setActiveTab: SetActiveTabController,
     private readonly toggleMenuOpen: ToggleMenuOpenController,
-    private readonly setColorScheme: SetColorSchemeController,
+    private readonly toggleColorScheme: ToggleColorSchemeController,
     private readonly minimizeWindow: MinimizeWindowController,
     private readonly maximizeWindow: MaximizeWindowController,
     private readonly dragWindow: DragWindowController,
@@ -85,11 +85,9 @@ export class AppActionHandler {
       case AppActionType.AppRibbonTabButtonOnClick:
         await this.setActiveTab.run(action.tabId);
         break;
-      case AppActionType.AppBarThemeCheckboxOnToggle: {
-        const scheme = action.checked ? 'light' : 'dark';
-        await this.setColorScheme.run(scheme);
+      case AppActionType.AppBarThemeCheckboxOnToggle:
+        await this.toggleColorScheme.run();
         break;
-      }
       case AppActionType.AppBarMinimizeButtonOnClick:
         await this.minimizeWindow.run();
         break;

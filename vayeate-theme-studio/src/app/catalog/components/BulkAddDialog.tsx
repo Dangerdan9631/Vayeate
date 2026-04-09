@@ -1,11 +1,6 @@
 import { useBulkAddDialogViewModel } from '../viewmodel/use-bulk-add-dialog-viewmodel';
 
-interface BulkAddDialogProps {
-  existingTokenKeys: Set<string>;
-  onCancel?: () => void;
-}
-
-export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProps) {
+export function BulkAddDialog() {
   const {
     text,
     isError,
@@ -17,7 +12,7 @@ export function BulkAddDialog({ existingTokenKeys, onCancel }: BulkAddDialogProp
     handleSubmit,
     handleCancel,
     handleDialogContentClick,
-  } = useBulkAddDialogViewModel({ existingTokenKeys, onCancel });
+  } = useBulkAddDialogViewModel();
 
   return (
     <div className="dialog-overlay" onClick={handleCancel}>

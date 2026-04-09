@@ -181,8 +181,8 @@ export function useMenuBarViewModel(): MenuBarViewModel {
   }, [dispatch]);
 
   const handleThemeToggle = useCallback(() => {
-    dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle, checked: theme !== 'light' });
-  }, [dispatch, theme]);
+    dispatch({ type: AppActionType.AppBarThemeCheckboxOnToggle });
+  }, [dispatch]);
 
   const handleTitleBarDrag = useCallback(() => {
     dispatch({ type: AppActionType.AppBarTitleBarOnDrag });

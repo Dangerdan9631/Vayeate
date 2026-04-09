@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { findHighestVersionRefSameName, nextPatchVersion } from '../../../utils/version';
 import {
   ListCatalogRefsOperation,
@@ -12,6 +13,7 @@ import { CatalogSharedFlows } from '../shared-flows';
 @singleton()
 export class RevertCatalogToVersionController {
   constructor(
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly loadCatalogSnapshot: LoadCatalogSnapshotOperation,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly listCatalogRefs: ListCatalogRefsOperation,
@@ -20,7 +22,11 @@ export class RevertCatalogToVersionController {
     private readonly catalogSharedFlows: CatalogSharedFlows,
   ) {}
 
-  async run(name: string, version: string): Promise<void> {
+  async run(): Promise<void> {
+    const ref = this.catalogsStateGetter.current().selectedRef;
+    if (!ref) return;
+
+    const { name, version } = ref;
     const snapshot = await this.loadCatalogSnapshot.execute(name, version);
     if (!snapshot) return;
 

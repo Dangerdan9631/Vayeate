@@ -35,7 +35,7 @@ export type AppActions =
   | { type: AppActionType.AppViewMenuToggleDevToolsButtonOnClick }
   | { type: AppActionType.AppMenuOnClose }
   | { type: AppActionType.AppRibbonTabButtonOnClick; tabId: TabId }
-  | { type: AppActionType.AppBarThemeCheckboxOnToggle; checked: boolean }
+  | { type: AppActionType.AppBarThemeCheckboxOnToggle }
   | { type: AppActionType.AppBarMinimizeButtonOnClick }
   | { type: AppActionType.AppBarMaximizeButtonOnClick }
   | { type: AppActionType.AppBarCloseButtonOnClick }

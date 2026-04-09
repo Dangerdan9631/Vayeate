@@ -1,6 +1,5 @@
-import { useContextSelector } from 'use-context-selector';
+import type { ChangeEvent, FocusEvent } from 'react';
 import { useCatalogDetailsCardViewModel } from '../viewmodel/use-catalog-details-card-viewmodel';
-import { AppContext } from '../../core/components/AppProvider';
 import type { SourceType, TokenType } from '../../../model/schemas';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
@@ -27,18 +26,10 @@ function getTokenTypeOptions(sourceType: SourceType): TokenType[] {
 }
 
 export function CatalogDetailsCard() {
-  const catalog = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice.catalog;
-  });
-  const vm = useCatalogDetailsCardViewModel(catalog);
-
-  if (!catalog) return null;
+  const vm = useCatalogDetailsCardViewModel();
 
   const {
+    catalog,
     tokenCounts,
     isLatestVersion,
     onDeleteVersion,
@@ -61,6 +52,45 @@ export function CatalogDetailsCard() {
     commitNewSourceType,
     addNewSource,
   } = vm;
+
+  if (!catalog) return null;
+
+  function beginEditSourceUrl(index: number, url: string) {
+    return () => {
+      setEditingSourceIndex(index);
+      setEditingSourceUrl(url);
+    };
+  }
+
+  function finishEditSourceUrl(index: number, committedUrl: string) {
+    return (e: FocusEvent<HTMLInputElement>) => {
+      const v = e.target.value.trim();
+      if (v !== committedUrl) {
+        commitSourceUrl(v, index);
+      }
+      setEditingSourceIndex(null);
+    };
+  }
+
+  function onNewSourceTokenTypeChange(e: ChangeEvent<HTMLSelectElement>) {
+    const tokenType = e.target.value as TokenType;
+    commitNewSourceTokenType(tokenType);
+    if (
+      tokenType !== 'theme' &&
+      (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
+    ) {
+      commitNewSourceType('default');
+    }
+    if (tokenType !== 'semantic token' && newSourceType === 'semantic-token-registry') {
+      commitNewSourceType('default');
+    }
+    if (
+      tokenType !== 'textmate token' &&
+      (newSourceType === 'textmate-xml' || newSourceType === 'textmate-json')
+    ) {
+      commitNewSourceType('default');
+    }
+  }
 
   return (
     <div className="catalog-details-card placeholder">
@@ -101,27 +131,15 @@ export function CatalogDetailsCard() {
                   value={editingSourceIndex === i ? editingSourceUrl : source.url}
                   placeholder="https://..."
                   disabled={!isLatestVersion}
-                  onFocus={() => {
-                    setEditingSourceIndex(i);
-                    setEditingSourceUrl(source.url);
-                  }}
+                  onFocus={beginEditSourceUrl(i, source.url)}
                   onChange={(e) => setEditingSourceUrl(e.target.value)}
-                  onBlur={(e) => {
-                    const v = e.target.value.trim();
-                    if (v !== source.url) {
-                      commitSourceUrl(v, i);
-                    }
-                    setEditingSourceIndex(null);
-                  }}
+                  onBlur={finishEditSourceUrl(i, source.url)}
                 />
                 <select
                   className="field-select source-select"
                   value={source.tokenType}
                   disabled={!isLatestVersion}
-                  onChange={(e) => {
-                    const value = e.target.value as TokenType;
-                    commitSourceTokenType(value, i);
-                  }}
+                  onChange={(e) => commitSourceTokenType(e.target.value as TokenType, i)}
                 >
                   {getTokenTypeOptions(source.type).map((t) => (
                     <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
@@ -131,10 +149,7 @@ export function CatalogDetailsCard() {
                   className="field-select source-select"
                   value={source.type}
                   disabled={!isLatestVersion}
-                  onChange={(e) => {
-                    const value = e.target.value as SourceType;
-                    commitSourceType(value, i);
-                  }}
+                  onChange={(e) => commitSourceType(e.target.value as SourceType, i)}
                 >
                   {getSourceTypeOptions(source.tokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -163,28 +178,7 @@ export function CatalogDetailsCard() {
                 <select
                   className="field-select source-select"
                   value={newSourceTokenType}
-                  onChange={(e) => {
-                    const tokenType = e.target.value as TokenType;
-                    commitNewSourceTokenType(tokenType);
-                    if (
-                      tokenType !== 'theme' &&
-                      (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
-                    ) {
-                      commitNewSourceType('default');
-                    }
-                    if (
-                      tokenType !== 'semantic token' &&
-                      newSourceType === 'semantic-token-registry'
-                    ) {
-                      commitNewSourceType('default');
-                    }
-                    if (
-                      tokenType !== 'textmate token' &&
-                      (newSourceType === 'textmate-xml' || newSourceType === 'textmate-json')
-                    ) {
-                      commitNewSourceType('default');
-                    }
-                  }}
+                  onChange={onNewSourceTokenTypeChange}
                 >
                   {TOKEN_TYPE_OPTIONS.map((t) => (
                     <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
@@ -193,9 +187,7 @@ export function CatalogDetailsCard() {
                 <select
                   className="field-select source-select"
                   value={newSourceType}
-                  onChange={(e) => {
-                    commitNewSourceType(e.target.value as SourceType);
-                  }}
+                  onChange={(e) => commitNewSourceType(e.target.value as SourceType)}
                 >
                   {getSourceTypeOptions(newSourceTokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>

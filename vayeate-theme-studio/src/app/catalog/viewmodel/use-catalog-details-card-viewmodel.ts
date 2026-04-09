@@ -4,10 +4,10 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/components/AppProvider';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/version';
-import type { Catalog, SourceType, TokenType } from '../../../model/schemas';
+import type { SourceType, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 
-export function useCatalogDetailsCardViewModel(catalog: Catalog | null) {
+export function useCatalogDetailsCardViewModel() {
   const dispatch = useAppDispatch();
   const catalogsState = useContextSelector(AppContext, (c) => {
     const slice = c?.state.catalogs;
@@ -16,7 +16,7 @@ export function useCatalogDetailsCardViewModel(catalog: Catalog | null) {
     }
     return slice;
   });
-  const { selectedRef, catalogMap, newSourceUrl, newSourceTokenType, newSourceType } = catalogsState;
+  const { selectedRef, catalogMap, catalog, newSourceUrl, newSourceTokenType, newSourceType } = catalogsState;
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
 
   const selectedName = selectedRef?.name ?? null;
@@ -44,36 +44,22 @@ export function useCatalogDetailsCardViewModel(catalog: Catalog | null) {
   const [editingSourceIndex, setEditingSourceIndex] = useState<number | null>(null);
   const [editingSourceUrl, setEditingSourceUrl] = useState('');
 
-  const deleteVersion = useCallback(
-    (name: string, version: string) => {
-      dispatch({ type: CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick, name, version });
-    },
-    [dispatch],
-  );
-
   const lockCatalog = useCallback(() => {
     dispatch({ type: CatalogActionType.CatalogDetailsLockButtonOnClick });
   }, [dispatch]);
 
   const syncCatalog = useCallback(() => {
-    if (!catalog || catalog.type !== 'remote') return;
-    dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick, catalog });
-  }, [dispatch, catalog]);
-
-  const revertToVersion = useCallback(
-    (name: string, version: string) => {
-      dispatch({ type: CatalogActionType.CatalogDetailsRevertButtonOnClick, name, version });
-    },
-    [dispatch],
-  );
+    dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick });
+  }, [dispatch]);
 
   const onDeleteVersion = useCallback(() => {
-    if (selectedRef) deleteVersion(selectedRef.name, selectedRef.version);
-  }, [deleteVersion, selectedRef]);
+    if (!selectedRef) return;
+    dispatch({ type: CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick });
+  }, [dispatch, selectedRef]);
 
   const onRevert = useCallback(() => {
-    if (selectedRef) revertToVersion(selectedRef.name, selectedRef.version);
-  }, [revertToVersion, selectedRef]);
+    dispatch({ type: CatalogActionType.CatalogDetailsRevertButtonOnClick });
+  }, [dispatch]);
 
   const commitSourceUrl = useCallback(
     (value: string, sourceIndex: number) => {
@@ -141,6 +127,7 @@ export function useCatalogDetailsCardViewModel(catalog: Catalog | null) {
   }, [dispatch]);
 
   return {
+    catalog,
     tokenCounts,
     isLatestVersion,
     onDeleteVersion,
