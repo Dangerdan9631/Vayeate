@@ -1,5 +1,8 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import {
+  TemplatesStateGetter,
+  TemplatesStateSetter,
+} from '../../../state/template/templates-state-reducer';
 import {
   CreateTemplateOperation,
   RefreshTemplateRefsOperation,
@@ -12,6 +15,7 @@ import { templateStackId } from '../../../utils/stack-id';
 @singleton()
 export class CreateTemplateController {
   constructor(
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly templatesStateSetter: TemplatesStateSetter,
     private readonly createTemplate: CreateTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
@@ -20,11 +24,14 @@ export class CreateTemplateController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
-  async run(params: { name: string }): Promise<void> {
+  async run(): Promise<void> {
+    const name = this.templatesStateGetter.current().createFormName.trim();
+    if (!name) return;
+
     this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: true });
     this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: false });
     try {
-      const newTemplate = await this.createTemplate.execute(params);
+      const newTemplate = await this.createTemplate.execute({ name });
       await this.refreshTemplateRefs.execute();
       this.setTemplate.execute(newTemplate);
       this.setSelectedTemplateRef.execute({

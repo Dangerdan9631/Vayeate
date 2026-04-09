@@ -57,7 +57,7 @@ export function TemplateCatalogsCard() {
                 className="checkbox-icon-btn"
                 onClick={(e) => {
                   e.preventDefault();
-                  toggleCatalog(name, !included);
+                  toggleCatalog(name);
                 }}
               >
                 <span className="material-symbols-outlined" aria-hidden>

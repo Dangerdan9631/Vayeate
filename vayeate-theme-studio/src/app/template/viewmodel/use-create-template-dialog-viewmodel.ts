@@ -20,7 +20,7 @@ export function useCreateTemplateDialogViewModel() {
 
   function handleSubmit() {
     if (!canSubmit) return;
-    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick, params: { name } });
+    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick });
   }
 
   function handleCancel() {

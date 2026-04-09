@@ -34,21 +34,15 @@ export function useTemplateDetailsCardViewModel() {
     return template.mappings.every((m) => m.colorVariableRef !== null);
   }, [template, isLatestVersion]);
 
-  const deleteVersion = useCallback(
-    (name: string, version: string) => {
-      dispatch({ type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick, name, version });
-    },
-    [dispatch],
-  );
-
   const lockTemplate = useCallback(() => {
     if (!template || !canLock) return;
     dispatch({ type: TemplateActionType.TemplateDetailsLockButtonOnClick });
   }, [template, canLock, dispatch]);
 
   const onDeleteVersion = useCallback(() => {
-    if (selectedRef) deleteVersion(selectedRef.name, selectedRef.version);
-  }, [deleteVersion, selectedRef]);
+    if (!selectedRef) return;
+    dispatch({ type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick });
+  }, [dispatch, selectedRef]);
 
   return {
     template,

@@ -1,7 +1,9 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
+import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { isMappingOrphanForTemplate } from '../../../utils/orphan-mappings';
 import {
   BumpTemplateVersionForEditOperation,
   RemoveMappingFromTemplateOperation,
@@ -14,6 +16,7 @@ import { TemplateSharedFlows } from '../shared-flows';
 export class SetMappingColorRefController {
   constructor(
     private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
     private readonly setMappingColorRefOp: SetMappingColorRefOp,
@@ -25,10 +28,16 @@ export class SetMappingColorRefController {
     tokenKey: string,
     tokenType: TokenType,
     colorRef: ColorVariableKey | null,
-    isOrphan?: boolean,
   ): Promise<void> {
     const template = this.templatesStateGetter.current().template;
     if (!template) return;
+    const loadedForDisplay = this.catalogsStateGetter.current().loadedForDisplay;
+    const isOrphan = isMappingOrphanForTemplate(
+      template,
+      tokenKey,
+      tokenType,
+      loadedForDisplay,
+    );
     const base = this.bumpTemplateVersionForEdit.execute(template);
     if (colorRef === null && isOrphan) {
       const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);

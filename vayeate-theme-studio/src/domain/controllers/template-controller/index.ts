@@ -10,12 +10,11 @@ export { OpenCreateDialogController } from './template-list/open-create-dialog-c
 export { SetCreateFormNameController } from './template-list/set-create-form-name-controller';
 export { CloseCreateDialogController } from './template-list/close-create-dialog-controller';
 export { CreateTemplateController } from './template-list/create-template-controller';
-export { DeleteTemplateVersionController } from './template-list/delete-template-version-controller';
+export { DeleteCurrentTemplateVersionController } from './template-list/delete-current-template-version-controller';
 
 // template-details
 export { OpenTemplateCreateDialogController } from './template-details/open-template-create-dialog-controller';
 export { CloseTemplateCreateDialogController } from './template-details/close-template-create-dialog-controller';
-export { SaveTemplateController } from './template-details/save-template-controller';
 export { RestoreTemplateStateController } from './template-details/restore-template-state-controller';
 export { LockTemplateController } from './template-details/lock-template-controller';
 export { UpdateAllCatalogsController } from './template-details/update-all-catalogs-controller';
@@ -26,7 +25,6 @@ export { ChangeCatalogVersionController } from './template-details/change-catalo
 export { SetMappingSearchTextController } from './mappings/set-mapping-search-text-controller';
 export { SetMappingColorVariableFilterController } from './mappings/set-mapping-color-variable-filter-controller';
 export { SetMappingContrastVariableFilterController } from './mappings/set-mapping-contrast-variable-filter-controller';
-export { SetMappingTokenGroupSelectionController } from './mappings/set-mapping-token-group-selection-controller';
 export { SetMappingColorRefController } from './mappings/set-mapping-color-ref-controller';
 export { SetMappingContrastRefController } from './mappings/set-mapping-contrast-ref-controller';
 export { SetMappingGroupRefController } from './mappings/set-mapping-group-ref-controller';

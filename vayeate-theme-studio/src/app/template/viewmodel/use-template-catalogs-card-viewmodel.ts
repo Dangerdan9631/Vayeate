@@ -85,12 +85,11 @@ export function useTemplateCatalogsCardViewModel() {
   }, [template, isLatestVersion, dispatch]);
 
   const toggleCatalog = useCallback(
-    (catalogName: string, include: boolean) => {
+    (catalogName: string) => {
       if (!template) return;
       dispatch({
         type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
         catalogName: catalogName as CatalogName,
-        checked: include,
       });
     },
     [template, dispatch],

@@ -115,12 +115,7 @@ function GroupSection({
   orphanKeys: Set<string>;
   canEdit: boolean;
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
-  onUpdateColorRef: (
-    tokenKey: string,
-    tokenType: TokenType,
-    ref: ColorVariableKey | null,
-    isOrphan?: boolean,
-  ) => void;
+  onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
@@ -199,12 +194,7 @@ function MappingTypeSection({
   orphanKeys: Set<string>;
   canEdit: boolean;
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
-  onUpdateColorRef: (
-    tokenKey: string,
-    tokenType: TokenType,
-    ref: ColorVariableKey | null,
-    isOrphan?: boolean,
-  ) => void;
+  onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
@@ -221,9 +211,9 @@ function MappingTypeSection({
     (value: string) =>
       onUpdateGroupRef(m.token.key, m.token.type, value || null);
   const handleColorRefChange =
-    (m: Mapping, isOrphan: boolean) =>
+    (m: Mapping) =>
     (value: string) =>
-      onUpdateColorRef(m.token.key, m.token.type, value || null, isOrphan);
+      onUpdateColorRef(m.token.key, m.token.type, value || null);
   const handleContrastRefChange =
     (m: Mapping) =>
     (value: string) =>
@@ -304,7 +294,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.colorVariableRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) => handleColorRefChange(m, isOrphan)(e.target.value)}
+                    onChange={(e) => handleColorRefChange(m)(e.target.value)}
                   >
                     <option value="">— color —</option>
                     {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -361,12 +351,7 @@ function SemanticBlockRows({
   canEdit: boolean;
   semanticVariant: SemanticVariantProps;
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
-  onUpdateColorRef: (
-    tokenKey: string,
-    tokenType: TokenType,
-    ref: ColorVariableKey | null,
-    isOrphan?: boolean,
-  ) => void;
+  onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   onRemoveMapping: (tokenKey: string, tokenType: TokenType) => void;
 }) {
@@ -393,7 +378,7 @@ function SemanticBlockRows({
   const handleBaseGroupChange = (value: string) =>
     onUpdateGroupRef(base.token.key, base.token.type, value || null);
   const handleBaseColorChange = (value: string) =>
-    onUpdateColorRef(base.token.key, base.token.type, value || null, isBaseOrphan);
+    onUpdateColorRef(base.token.key, base.token.type, value || null);
   const handleBaseContrastChange = (value: string) =>
     onUpdateContrastRef(base.token.key, base.token.type, value || null);
   const handleAddVariant = () =>
@@ -558,12 +543,7 @@ function SemanticVariantRow({
   isModifierOpen: boolean;
   onOpenModifierDropdown: () => void;
   onCloseModifierDropdown: () => void;
-  onUpdateColorRef: (
-    tokenKey: string,
-    tokenType: TokenType,
-    ref: ColorVariableKey | null,
-    isOrphan?: boolean,
-  ) => void;
+  onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   onRemoveMapping: (tokenKey: string, tokenType: TokenType) => void;
 }) {
@@ -654,7 +634,7 @@ function SemanticVariantRow({
   const handleGroupChange = (value: string) =>
     onUpdateGroupRef(mapping.token.key, mapping.token.type, value || null);
   const handleColorChange = (value: string) =>
-    onUpdateColorRef(mapping.token.key, mapping.token.type, value || null, isOrphan);
+    onUpdateColorRef(mapping.token.key, mapping.token.type, value || null);
   const handleContrastChange = (value: string) =>
     onUpdateContrastRef(mapping.token.key, mapping.token.type, value || null);
   const handleModifierOptionClick = (mod: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
@@ -889,13 +869,14 @@ function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): st
   return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
 }
 
-export function MappingsCard({ orphanKeys }: { orphanKeys: Set<string> }) {
+export function MappingsCard() {
   const {
     template,
     mappingsByType,
     groups,
     colorVariables,
     contrastVariables,
+    orphanKeys,
     canEdit,
     mappingSearchText: searchQuery,
     mappingColorVariableFilter: selectedColorKeys,
@@ -908,31 +889,7 @@ export function MappingsCard({ orphanKeys }: { orphanKeys: Set<string> }) {
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
-  } = useMappingsCardViewModel(orphanKeys);
-
-  if (!template) return null;
-
-  const filteredMappingsByType: Record<TokenType, Mapping[]> = Object.fromEntries(
-    DISPLAYED_TOKEN_TYPES.map((tt) => [
-      tt,
-      filterMappings(
-        mappingsByType[tt],
-        searchQuery,
-        selectedColorKeys,
-        selectedContrastKeys,
-      ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
-    ])
-  ) as Record<TokenType, Mapping[]>;
-
-  const byGroup = buildByGroup(filteredMappingsByType);
-  if (semanticVariant && !byGroup.has(UNGROUPED_KEY)) {
-    byGroup.set(UNGROUPED_KEY, {
-      theme: [],
-      'textmate token': [],
-      'semantic token': [],
-    } as Record<TokenType, Mapping[]>);
-  }
-  const groupKeysInOrder = sortedGroupKeys(byGroup);
+  } = useMappingsCardViewModel();
 
   const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | null>(null);
   const colorDropdownRef = useRef<HTMLDivElement>(null);
@@ -962,6 +919,30 @@ export function MappingsCard({ orphanKeys }: { orphanKeys: Set<string> }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openFilter]);
+
+  if (!template) return null;
+
+  const filteredMappingsByType: Record<TokenType, Mapping[]> = Object.fromEntries(
+    DISPLAYED_TOKEN_TYPES.map((tt) => [
+      tt,
+      filterMappings(
+        mappingsByType[tt],
+        searchQuery,
+        selectedColorKeys,
+        selectedContrastKeys,
+      ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
+    ])
+  ) as Record<TokenType, Mapping[]>;
+
+  const byGroup = buildByGroup(filteredMappingsByType);
+  if (semanticVariant && !byGroup.has(UNGROUPED_KEY)) {
+    byGroup.set(UNGROUPED_KEY, {
+      theme: [],
+      'textmate token': [],
+      'semantic token': [],
+    } as Record<TokenType, Mapping[]>);
+  }
+  const groupKeysInOrder = sortedGroupKeys(byGroup);
 
   function toggleColorKey(key: string) {
     const next = selectedColorKeys.includes(key as ColorVariableKey)

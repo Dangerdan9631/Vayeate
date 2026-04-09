@@ -1,4 +1,4 @@
-import { CatalogName, ColorVariableKey, ContrastVariableKey, Template, TemplateName, TokenType, Version } from "../../../model/schemas";
+import { CatalogName, ColorVariableKey, ContrastVariableKey, TemplateName, TokenType, Version } from "../../../model/schemas";
 
 export enum TemplateActionType {
   TemplatePageOnLoad = 'TEMPLATE_PAGE_ON_LOAD',
@@ -13,12 +13,10 @@ export enum TemplateActionType {
   TemplateDetailsUpdateAllButtonOnClick = 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK',
   TemplateDetailsCatalogCheckboxOnToggle = 'TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE',
   TemplateDetailsCatalogVersionListOnCommit = 'TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT',
-  TemplateDetailsSaveTemplate = 'TEMPLATE_DETAILS_SAVE_TEMPLATE',
   TemplateMappingSearchTextOnChange = 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE',
   TemplateMappingColorVariableFilterListOnSelect = 'TEMPLATE_MAPPING_COLOR_VARIABLE_FILTER_LIST_ON_SELECT',
   TemplateMappingContrastVariableFilterListOnSelect = 'TEMPLATE_MAPPING_CONTRAST_VARIABLE_FILTER_LIST_ON_SELECT',
   TemplateMappingExistingTokenGroupListOnCommit = 'TEMPLATE_MAPPING_EXISTING_TOKEN_GROUP_LIST_ON_COMMIT',
-  TemplateMappingTokenGroupSelectionOnCommit = 'TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION_ON_COMMIT',
   TemplateMappingExistingTokenColorVariableListOnCommit = 'TEMPLATE_MAPPING_EXISTING_TOKEN_COLOR_VARIABLE_LIST_ON_COMMIT',
   TemplateMappingExistingTokenContrastVariableListOnCommit = 'TEMPLATE_MAPPING_EXISTING_TOKEN_CONTRAST_VARIABLE_LIST_ON_COMMIT',
   TemplateMappingSemanticTokenAddVariantButtonOnClick = 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK',
@@ -43,19 +41,17 @@ export type TemplateActions =
   | { type: TemplateActionType.TemplateCreateDialogOnOpen }
   | { type: TemplateActionType.TemplateCreateDialogNameTextOnChange; value: string }
   | { type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick }
-  | { type: TemplateActionType.TemplateCreateDialogOkButtonOnClick; params: { name: TemplateName } }
-  | { type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick; name: TemplateName; version: Version }
+  | { type: TemplateActionType.TemplateCreateDialogOkButtonOnClick }
+  | { type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick }
   | { type: TemplateActionType.TemplateDetailsLockButtonOnClick }
   | { type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick }
-  | { type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle; checked: boolean; catalogName: CatalogName }
+  | { type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle; catalogName: CatalogName }
   | { type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit; value: Version; catalogName: CatalogName }
-  | { type: TemplateActionType.TemplateDetailsSaveTemplate; template: Template }
   | { type: TemplateActionType.TemplateMappingSearchTextOnChange; value: string }
   | { type: TemplateActionType.TemplateMappingColorVariableFilterListOnSelect; values: ColorVariableKey[] }
   | { type: TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect; values: ContrastVariableKey[] }
   | { type: TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit; value: string; tokenKey: string; tokenType: TokenType }
-  | { type: TemplateActionType.TemplateMappingTokenGroupSelectionOnCommit; value: string }
-  | { type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit; value: ColorVariableKey; tokenKey: string; tokenType: TokenType; isOrphan?: boolean }
+  | { type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit; value: ColorVariableKey; tokenKey: string; tokenType: TokenType }
   | { type: TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit; value: ContrastVariableKey | null; tokenKey: string; tokenType: TokenType }
   | { type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick; semanticType: string; modifiers: string[]; language: string | null; defaultGroupRef?: string | null }
   | { type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit; tokenKey: string; modifiers: string[]; language: string | null }

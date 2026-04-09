@@ -43,10 +43,12 @@ export class ToggleCatalogController {
     private readonly templateSharedFlows: TemplateSharedFlows,
   ) {}
 
-  async run(catalogName: string, include: boolean): Promise<void> {
+  async run(catalogName: string): Promise<void> {
     const template = this.templatesStateGetter.current().template;
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
+    const currentlyIncluded = template.catalogRefs.some((r) => r.name === catalogName);
+    const include = !currentlyIncluded;
     const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
     const base = this.bumpTemplateVersionForEdit.execute(template);
     let newCatalogRefs: { name: string; version: string }[];

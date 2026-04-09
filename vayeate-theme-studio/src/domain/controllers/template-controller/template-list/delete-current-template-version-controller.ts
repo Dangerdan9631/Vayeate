@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { findNearestVersionRef } from '../../../utils/version';
 import { templateStackId } from '../../../utils/stack-id';
 import {
@@ -11,8 +12,9 @@ import {
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
 
 @singleton()
-export class DeleteTemplateVersionController {
+export class DeleteCurrentTemplateVersionController {
   constructor(
+    private readonly templatesStateGetter: TemplatesStateGetter,
     private readonly deleteTemplate: DeleteTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
@@ -21,7 +23,11 @@ export class DeleteTemplateVersionController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
-  async run(name: string, version: string): Promise<void> {
+  async run(): Promise<void> {
+    const selectedRef = this.templatesStateGetter.current().selectedRef;
+    if (!selectedRef) return;
+
+    const { name, version } = selectedRef;
     await this.deleteTemplate.execute(name, version);
     const refs = await this.refreshTemplateRefs.execute();
     const nextT = findNearestVersionRef(refs, name, version);

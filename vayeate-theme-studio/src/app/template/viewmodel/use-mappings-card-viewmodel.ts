@@ -1,18 +1,22 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/components/AppProvider';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/version';
 import type {
+  Catalog,
   ColorVariableKey,
   ContrastVariableKey,
   Mapping,
+  Token,
   TokenType,
 } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
+import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/orphan-mappings';
 
-export function useMappingsCardViewModel(orphanKeys: Set<string>) {
+export function useMappingsCardViewModel() {
+  const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();
   const templatesState = useContextSelector(AppContext, (c) => {
     const slice = c?.state.templates;
@@ -29,6 +33,58 @@ export function useMappingsCardViewModel(orphanKeys: Set<string>) {
     mappingColorVariableFilter,
     mappingContrastVariableFilter,
   } = templatesState;
+
+  const loadedForDisplay = useContextSelector(AppContext, (c) => {
+    const slice = c?.state.catalogs;
+    if (slice === undefined) {
+      throw new Error('Catalog state requires AppProvider.');
+    }
+    return slice.loadedForDisplay;
+  });
+
+  const loadedCatalogsForTemplateRefs = useMemo(() => {
+    if (!template || template.catalogRefs.length === 0) return [];
+    return template.catalogRefs.map((ref) => {
+      const key = `${ref.name}@${ref.version}`;
+      return loadedForDisplay[key] ?? null;
+    });
+  }, [template, loadedForDisplay]);
+
+  const orphanKeys = useMemo(() => {
+    if (!template || loadedCatalogsForTemplateRefs.length === 0) {
+      const empty = new Set<string>();
+      orphanKeysStashRef.current = empty;
+      return empty;
+    }
+    const loaded = loadedCatalogsForTemplateRefs;
+    const allLoaded = loaded.every((c: Catalog | null) => c !== null);
+    if (!allLoaded) {
+      return orphanKeysStashRef.current;
+    }
+    const allTokens: Token[] = [];
+    const typesSet = new Set<string>();
+    const modifiersSet = new Set<string>();
+    const languagesSet = new Set<string>();
+    for (const catalog of loaded) {
+      if (catalog) {
+        allTokens.push(...catalog.tokens);
+        (catalog.semanticTokenTypes ?? []).forEach((t: string) => typesSet.add(t));
+        (catalog.semanticTokenModifiers ?? []).forEach((m: string) => modifiersSet.add(m));
+        (catalog.semanticTokenLanguages ?? []).forEach((l: string) => languagesSet.add(l));
+      }
+    }
+    const semanticCatalog: SemanticCatalogInfo | undefined =
+      typesSet.size > 0 || modifiersSet.size > 0 || languagesSet.size > 0
+        ? {
+            semanticTokenTypes: [...typesSet].sort(),
+            semanticTokenModifiers: [...modifiersSet].sort(),
+            semanticTokenLanguages: [...languagesSet].sort(),
+          }
+        : undefined;
+    const computed = computeOrphanKeys(template.mappings, allTokens, semanticCatalog);
+    orphanKeysStashRef.current = computed;
+    return computed;
+  }, [template, loadedCatalogsForTemplateRefs]);
 
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
   const selectedName = selectedRef?.name ?? null;
@@ -56,18 +112,12 @@ export function useMappingsCardViewModel(orphanKeys: Set<string>) {
   }, [template]);
 
   const updateMappingColorRef = useCallback(
-    (
-      tokenKey: string,
-      tokenType: TokenType,
-      colorRef: ColorVariableKey | null,
-      isOrphan?: boolean,
-    ) => {
+    (tokenKey: string, tokenType: TokenType, colorRef: ColorVariableKey | null) => {
       dispatch({
         type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit,
         value: colorRef as ColorVariableKey,
         tokenKey,
         tokenType,
-        isOrphan,
       });
     },
     [dispatch],

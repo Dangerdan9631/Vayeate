@@ -6,14 +6,13 @@ import {
   ChangeCatalogVersionController,
   CloseCreateDialogController,
   CreateTemplateController,
-  DeleteTemplateVersionController,
+  DeleteCurrentTemplateVersionController,
   LoadTemplatePageController,
   LockTemplateController,
   OpenCreateDialogController,
   RemoveGroupController,
   RemoveMappingController,
   RemoveVariableController,
-  SaveTemplateController,
   SelectTemplateAndLoadController,
   SetCreateFormNameController,
   SetMappingColorRefController,
@@ -22,7 +21,6 @@ import {
   SetMappingContrastVariableFilterController,
   SetMappingGroupRefController,
   SetMappingSearchTextController,
-  SetMappingTokenGroupSelectionController,
   SetTemplateAddGroupNameController,
   SetTemplateAddVariableNameController,
   SetVariablesSearchTextController,
@@ -47,14 +45,13 @@ export class TemplateActionHandler {
     private readonly changeCatalogVersion: ChangeCatalogVersionController,
     private readonly closeCreateDialog: CloseCreateDialogController,
     private readonly createTemplate: CreateTemplateController,
-    private readonly deleteTemplateVersion: DeleteTemplateVersionController,
+    private readonly deleteCurrentTemplateVersion: DeleteCurrentTemplateVersionController,
     private readonly loadTemplatePage: LoadTemplatePageController,
     private readonly lockTemplate: LockTemplateController,
     private readonly openCreateDialog: OpenCreateDialogController,
     private readonly removeGroup: RemoveGroupController,
     private readonly removeMapping: RemoveMappingController,
     private readonly removeVariable: RemoveVariableController,
-    private readonly saveTemplate: SaveTemplateController,
     private readonly selectTemplateAndLoad: SelectTemplateAndLoadController,
     private readonly setCreateFormName: SetCreateFormNameController,
     private readonly setMappingColorRef: SetMappingColorRefController,
@@ -63,7 +60,6 @@ export class TemplateActionHandler {
     private readonly setMappingContrastVariableFilter: SetMappingContrastVariableFilterController,
     private readonly setMappingGroupRef: SetMappingGroupRefController,
     private readonly setMappingSearchText: SetMappingSearchTextController,
-    private readonly setMappingTokenGroupSelection: SetMappingTokenGroupSelectionController,
     private readonly setTemplateAddGroupName: SetTemplateAddGroupNameController,
     private readonly setTemplateAddVariableName: SetTemplateAddVariableNameController,
     private readonly setVariablesSearchText: SetVariablesSearchTextController,
@@ -95,10 +91,10 @@ export class TemplateActionHandler {
         this.closeCreateDialog.run();
         break;
       case TemplateActionType.TemplateCreateDialogOkButtonOnClick:
-        await this.createTemplate.run(action.params);
+        await this.createTemplate.run();
         break;
       case TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick:
-        await this.deleteTemplateVersion.run(action.name, action.version);
+        await this.deleteCurrentTemplateVersion.run();
         break;
       case TemplateActionType.TemplateDetailsLockButtonOnClick:
         await this.lockTemplate.run();
@@ -107,13 +103,10 @@ export class TemplateActionHandler {
         await this.updateAllCatalogs.run();
         break;
       case TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle:
-        await this.toggleCatalog.run(action.catalogName, action.checked ?? true);
+        await this.toggleCatalog.run(action.catalogName);
         break;
       case TemplateActionType.TemplateDetailsCatalogVersionListOnCommit:
         await this.changeCatalogVersion.run(action.catalogName, action.value);
-        break;
-      case TemplateActionType.TemplateDetailsSaveTemplate:
-        await this.saveTemplate.run(action.template);
         break;
       case TemplateActionType.TemplateMappingSearchTextOnChange:
         this.setMappingSearchText.run(action.value);
@@ -127,16 +120,8 @@ export class TemplateActionHandler {
       case TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit:
         await this.setMappingGroupRef.run(action.tokenKey, action.tokenType, action.value || null);
         break;
-      case TemplateActionType.TemplateMappingTokenGroupSelectionOnCommit:
-        this.setMappingTokenGroupSelection.run(action.value);
-        break;
       case TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit:
-        await this.setMappingColorRef.run(
-          action.tokenKey,
-          action.tokenType,
-          action.value,
-          action.isOrphan,
-        );
+        await this.setMappingColorRef.run(action.tokenKey, action.tokenType, action.value || null);
         break;
       case TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit:
         await this.setMappingContrastRef.run(action.tokenKey, action.tokenType, action.value);
