@@ -1,14 +1,14 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schemas';
 import { createCatalogWithParams } from '../../../../model/factories';
+import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
-import { SaveCatalogOperation } from '../catalog-details/save-catalog-operation';
 
-@injectable()
+@singleton()
 export class CreateCatalogOperation {
   constructor(
     private readonly catalogsStateSetter: CatalogsStateSetter,
-    private readonly saveCatalog: SaveCatalogOperation,
+    private readonly catalogGateway: CatalogGateway,
   ) {}
 
   async execute(params: { name: string; type: 'manual' | 'remote' }): Promise<CatalogReference> {
@@ -22,7 +22,7 @@ export class CreateCatalogOperation {
         isLoaded: true,
         catalog,
       });
-      await this.saveCatalog.execute(catalog);
+      await this.catalogGateway.saveCatalog(catalog);
       return { name: catalog.name, version: catalog.version };
     } finally {
       this.catalogsStateSetter.apply({ type: 'SET_IS_CREATING', value: false });

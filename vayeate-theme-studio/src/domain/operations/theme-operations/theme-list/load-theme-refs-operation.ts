@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 
 /** Load theme refs from data dir into themes slice (theme map entries from ref list). */
-@injectable()
+@singleton()
 export class LoadThemeRefsOperation {
   constructor(
     private readonly themesStateSetter: ThemesStateSetter,

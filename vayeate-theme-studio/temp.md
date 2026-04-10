@@ -79,7 +79,7 @@ Create an app architecture rule file that defines the high level application arc
 
 Keep all agent directive files simple, and concise. Be efficient with agent context. Include example of good and bad practices whenever appropriate.
 
-Use the following guidance to create the agent directive files:
+Use the following guidance to create the agent directive files. Do not review the existing codebase for guidance, these conventions are authoritative and should supersede any existing code:
 ---
 
 All user-triggered mutations flow through the ActionQueue for predictable, sequential processing.
@@ -175,3 +175,7 @@ All in app election IPC interaction should be handled by a service. That service
 
 All controllers, operations, validations, gateways, and services should be injected via tsyringe.
 Models should use zod for validation.
+Files should contain only a single top level export component, class, or function.
+Classes should use PascalCase for naming.
+React component should use PascalCase for naming.
+Files should use kebab-case for naming, and the name should match the top level export of the file.

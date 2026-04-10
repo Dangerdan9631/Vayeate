@@ -142,6 +142,12 @@ function createWindow(): void {
     mainWindow.loadFile(indexPath);
   }
 
+  // if (!app.isPackaged) {
+  //   mainWindow.webContents.once('did-finish-load', () => {
+  //     mainWindow?.webContents.openDevTools({ mode: 'detach' });
+  //   });
+  // }
+
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

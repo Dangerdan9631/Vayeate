@@ -1,8 +1,8 @@
-import { container, injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 
 /** Delete one theme version from disk. Single responsibility: delete. */
-@injectable()
+@singleton()
 export class DeleteThemeOperation {
   constructor(private readonly themeGateway: ThemeGateway) {}
 
@@ -10,10 +10,3 @@ export class DeleteThemeOperation {
     await this.themeGateway.deleteTheme(name, version);
   }
 }
-
-/** @deprecated Use DeleteThemeOperation class instead. */
-export async function deleteTheme(name: string, version: string): Promise<void> {
-  await container.resolve(DeleteThemeOperation).execute(name, version);
-}
-
-

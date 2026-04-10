@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
+import { AppContext } from '../../core/components/AppProvider';
 import { ThemeActionType } from '../actions/theme-action-type';
 import type { Theme } from '../../../model/schemas';
 
@@ -12,6 +14,16 @@ export function useThemeViewModel(): void {
     themePageLoadDispatched = true;
     dispatch({ type: ThemeActionType.ThemePageOnLoad });
   }, [dispatch]);
+}
+
+export function useThemesPageChromeViewModel() {
+  return useContextSelector(AppContext, (c) => {
+    const slice = c?.state.themes;
+    if (slice === undefined) {
+      throw new Error('Theme state requires AppProvider.');
+    }
+    return { saveError: slice.saveError, createDialogOpen: slice.createDialogOpen };
+  });
 }
 
 export { mergeAssignmentsFromTemplate } from '../../../domain/utils/theme-template-merge';

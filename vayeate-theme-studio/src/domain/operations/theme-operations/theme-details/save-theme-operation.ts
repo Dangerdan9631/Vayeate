@@ -1,9 +1,9 @@
-import { container, injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 
 /** Persist theme to disk only. Single responsibility: save. */
-@injectable()
+@singleton()
 export class SaveThemeOperation {
   constructor(private readonly themeGateway: ThemeGateway) {}
 
@@ -11,10 +11,3 @@ export class SaveThemeOperation {
     await this.themeGateway.saveTheme(theme);
   }
 }
-
-/** @deprecated Use SaveThemeOperation class instead. */
-export async function saveTheme(theme: Theme): Promise<void> {
-  await container.resolve(SaveThemeOperation).execute(theme);
-}
-
-

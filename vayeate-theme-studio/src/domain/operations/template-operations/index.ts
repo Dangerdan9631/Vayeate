@@ -9,6 +9,8 @@ export { SetTemplateRefsOperation } from './template-list/set-template-refs-oper
 export { SetSelectedTemplateRefOperation } from './template-list/set-selected-template-ref-operation';
 export { SetTemplateCreateFormNameOperation } from './template-list/set-template-create-form-name-operation';
 export { CreateTemplateOperation } from './template-list/create-template-operation';
+export { SetTemplateCreateDialogOpenOperation } from './template-list/set-template-create-dialog-open-operation';
+export { SetTemplateIsCreatingOperation } from './template-list/set-template-is-creating-operation';
 export { RefreshTemplateRefsOperation } from './template-list/refresh-template-refs-operation';
 export { DeleteTemplateOperation } from './template-list/delete-template-operation';
 

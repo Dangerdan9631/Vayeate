@@ -12,7 +12,7 @@ import {
 } from '../../../operations/theme-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { clearPendingSave } from '../theme-list/theme-save-state';
+import { clearPendingSave } from '../../../operations/theme-operations/theme-details/debounced-theme-gateway-save';
 import { themeStackId } from '../../../utils/stack-id';
 
 @singleton()

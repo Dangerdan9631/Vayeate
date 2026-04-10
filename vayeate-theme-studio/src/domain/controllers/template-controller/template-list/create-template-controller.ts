@@ -1,8 +1,5 @@
 import { singleton } from 'tsyringe';
-import {
-  TemplatesStateGetter,
-  TemplatesStateSetter,
-} from '../../../state/template/templates-state-reducer';
+import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import {
   CreateTemplateOperation,
   RefreshTemplateRefsOperation,
@@ -10,26 +7,29 @@ import {
   SetTemplateOperation,
 } from '../../../operations/template-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { SetTemplateCreateDialogOpenOperation } from '../../../operations/template-operations/template-list/set-template-create-dialog-open-operation';
+import { SetTemplateIsCreatingOperation } from '../../../operations/template-operations/template-list/set-template-is-creating-operation';
 import { templateStackId } from '../../../utils/stack-id';
 
 @singleton()
 export class CreateTemplateController {
   constructor(
     private readonly templatesStateGetter: TemplatesStateGetter,
-    private readonly templatesStateSetter: TemplatesStateSetter,
     private readonly createTemplate: CreateTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setTemplate: SetTemplateOperation,
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
+    private readonly setTemplateCreateDialogOpen: SetTemplateCreateDialogOpenOperation,
+    private readonly setTemplateIsCreating: SetTemplateIsCreatingOperation,
   ) {}
 
   async run(): Promise<void> {
     const name = this.templatesStateGetter.current().createFormName.trim();
     if (!name) return;
 
-    this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: true });
-    this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value: false });
+    this.setTemplateIsCreating.execute(true);
+    this.setTemplateCreateDialogOpen.execute(false);
     try {
       const newTemplate = await this.createTemplate.execute({ name });
       await this.refreshTemplateRefs.execute();
@@ -42,7 +42,7 @@ export class CreateTemplateController {
         templateStackId(newTemplate.name, newTemplate.version),
       );
     } finally {
-      this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_IS_CREATING', value: false });
+      this.setTemplateIsCreating.execute(false);
     }
   }
 }

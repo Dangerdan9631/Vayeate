@@ -11,7 +11,7 @@ import {
   LoadThemeRefsOperation,
   type RestoreThemeStateParams,
 } from '../../../operations/theme-operations';
-import { clearPendingSave } from '../theme-list/theme-save-state';
+import { clearPendingSave } from '../../../operations/theme-operations/theme-details/debounced-theme-gateway-save';
 
 @singleton()
 export class RestoreThemeStateController {

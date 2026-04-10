@@ -2,8 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ColorAssignment, ContrastAssignment } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
-import { useContextSelector } from 'use-context-selector';
-import { AppContext } from '../../core/components/AppProvider';
 import { useEditorPreviewsCardViewModel } from '../viewmodel/use-editor-previews-card-viewmodel';
 import { contrastRatio } from '../../../domain/utils/color';
 import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/utils/scope-resolver';
@@ -155,6 +153,7 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
 export function EditorPreviewsCard() {
   const vm = useEditorPreviewsCardViewModel();
   const {
+    editorPreviews: previews,
     colorAssignments,
     contrastAssignments,
     contrastVariables,
@@ -189,13 +188,6 @@ export function EditorPreviewsCard() {
     onChangeEditorPreviewMenuBackgroundTokenRef,
   } = vm;
 
-  const previews = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice.editorPreviews;
-  });
   const loadError: string | null = null;
 
   const scopeColorMap = useMemo(

@@ -1,17 +1,16 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schemas';
 import {
   LoadThemeOperation,
   SetSelectedThemeRefOperation,
-  SetThemeOperation,
   SetThemePaneSelectionsOperation,
 } from '../../../operations/theme-operations';
-import { loadTemplateSnapshot } from '../../../operations/template-operations';
+import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { SetThemeLoadedTemplateOperation } from '../../../operations/theme-operations/theme-details/set-theme-loaded-template-operation';
+import type { Theme } from '../../../../model/schemas';
 import { mergeAssignmentsFromTemplate } from '../../../utils/theme-template-merge';
 import { themeStackId } from '../../../utils/stack-id';
-import { SaveThemeController } from '../theme-details/save-theme-controller';
 
 @singleton()
 export class SelectThemeAndLoadController {
@@ -19,10 +18,10 @@ export class SelectThemeAndLoadController {
     private readonly setSelectedThemeRef: SetSelectedThemeRefOperation,
     private readonly loadTheme: LoadThemeOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
-    private readonly setTheme: SetThemeOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
-    private readonly themesStateSetter: ThemesStateSetter,
+    private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
+    private readonly setThemeLoadedTemplate: SetThemeLoadedTemplateOperation,
   ) {}
 
   async run(name: string, version: string): Promise<void> {
@@ -36,7 +35,7 @@ export class SelectThemeAndLoadController {
     }
     let templateForTheme: import('../../../../model/schemas').Template | null = null;
     if (loaded?.templateRef) {
-      const template = await loadTemplateSnapshot(
+      const template = await this.loadTemplateSnapshot.execute(
         loaded.templateRef.name,
         loaded.templateRef.version,
       );
@@ -50,12 +49,11 @@ export class SelectThemeAndLoadController {
         );
         if (missingColor || missingContrast) {
           const merged = mergeAssignmentsFromTemplate({ ...loaded } as Theme, template);
-          this.setTheme.execute(merged);
-          this.saveThemeController.run(merged);
+          this.applyThemeStateAndSchedulePersist.execute(merged);
         }
       }
     }
-    this.themesStateSetter.apply({ type: 'SET_THEME_LOADED_TEMPLATE', template: templateForTheme });
+    this.setThemeLoadedTemplate.execute(templateForTheme);
     this.setCurrentUndoStackId.execute(themeStackId(name, version));
   }
 }

@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
 import type { TabId } from '../../state/ui/ui-state';
-import { UiStateSetter } from '../../state/ui/ui-state-reducer';
+import { SetUiActiveTabOperation } from '../../operations/app-operations/set-ui-active-tab-operation';
 
 @singleton()
 export class SetActiveTabController {
-  constructor(private readonly uiStateSetter: UiStateSetter) {}
+  constructor(private readonly setUiActiveTab: SetUiActiveTabOperation) {}
 
   run(tabId: TabId): void {
-    this.uiStateSetter.apply({ type: 'SET_UI_ACTIVE_TAB_ID', tabId });
+    this.setUiActiveTab.execute(tabId);
   }
 }

@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
-import { useThemeViewModel } from '../viewmodel/use-theme-viewmodel';
+import { useThemeViewModel, useThemesPageChromeViewModel } from '../viewmodel/use-theme-viewmodel';
 import { ThemeActionType } from '../actions/theme-action-type';
 import { CreateThemeDialog } from './CreateThemeDialog';
 import { EditorPreviewsCard } from './EditorPreviewsCard';
@@ -13,13 +11,7 @@ import { ThemesCard } from './ThemesCard';
 
 export function ThemesPage() {
   useThemeViewModel();
-  const { saveError, createDialogOpen } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice;
-  });
+  const { saveError, createDialogOpen } = useThemesPageChromeViewModel();
   const dispatch = useAppDispatch();
   const dismissSaveError = useCallback(() => {
     dispatch({ type: ThemeActionType.ThemePageSaveErrorDismissButtonOnClick });

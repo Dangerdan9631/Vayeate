@@ -20,6 +20,7 @@ export function useEditorPreviewsCardViewModel() {
     checkedColorRefs: checkedColorRefsArray,
     hueAdjustment,
     loadedTemplateForTheme: loadedTemplate,
+    editorPreviews,
   } = themes;
 
   const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
@@ -104,6 +105,7 @@ export function useEditorPreviewsCardViewModel() {
 
   return {
     theme,
+    editorPreviews,
     colorAssignments: displayColorAssignments,
     contrastAssignments: theme?.contrastAssignments ?? [],
     contrastVariables: contrastVariablesFromTemplate,

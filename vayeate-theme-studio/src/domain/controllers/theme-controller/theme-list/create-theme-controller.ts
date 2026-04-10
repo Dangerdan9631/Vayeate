@@ -8,7 +8,8 @@ import {
   SetThemeCreateFormNameOperation,
 } from '../../../operations/theme-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { SetThemeCreateDialogOpenOperation } from '../../../operations/theme-operations/theme-list/set-theme-create-dialog-open-operation';
+import { SetThemeIsCreatingOperation } from '../../../operations/theme-operations/theme-list/set-theme-is-creating-operation';
 import { themeStackId } from '../../../utils/stack-id';
 
 @singleton()
@@ -21,12 +22,13 @@ export class CreateThemeController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly setThemeCreateFormName: SetThemeCreateFormNameOperation,
-    private readonly themesStateSetter: ThemesStateSetter,
+    private readonly setThemeCreateDialogOpen: SetThemeCreateDialogOpenOperation,
+    private readonly setThemeIsCreating: SetThemeIsCreatingOperation,
   ) {}
 
   async run(params: { name: string }): Promise<void> {
-    this.themesStateSetter.apply({ type: 'SET_THEME_IS_CREATING', value: true });
-    this.themesStateSetter.apply({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value: false });
+    this.setThemeIsCreating.execute(true);
+    this.setThemeCreateDialogOpen.execute(false);
     this.setThemeCreateFormName.execute('');
     try {
       const newTheme = await this.createTheme.execute(params);
@@ -39,8 +41,7 @@ export class CreateThemeController {
       );
       this.setCurrentUndoStackId.execute(themeStackId(newTheme.name, newTheme.version));
     } finally {
-      this.themesStateSetter.apply({ type: 'SET_THEME_IS_CREATING', value: false });
+      this.setThemeIsCreating.execute(false);
     }
   }
 }
-

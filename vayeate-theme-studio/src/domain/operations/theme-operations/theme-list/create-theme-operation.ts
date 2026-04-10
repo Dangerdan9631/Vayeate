@@ -1,9 +1,8 @@
-import { container, injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
-import type { ThemesStateUpdate } from '../../../state/theme/themes-state-reducer';
 
-@injectable()
+@singleton()
 export class CreateThemeOperation {
   constructor(private readonly themeGateway: ThemeGateway) {}
 
@@ -11,14 +10,3 @@ export class CreateThemeOperation {
     return await this.themeGateway.createTheme(params);
   }
 }
-
-/** @deprecated Use CreateThemeOperation class instead. */
-export async function createTheme(
-  _setState: (update: ThemesStateUpdate) => void,
-  params: { name: string },
-): Promise<Theme> {
-  return container.resolve(CreateThemeOperation).execute(params);
-}
-
-
-
