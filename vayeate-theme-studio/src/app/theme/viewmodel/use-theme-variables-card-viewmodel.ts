@@ -188,7 +188,7 @@ export function useThemeVariablesCardViewModel() {
   const updateContrastAssignmentUseDarkForLight = useCallback(
     (contrastRef: string, useDark: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesLightUseDarkCheckboxOnToggle,
+        type: ThemeActionType.ThemeVariablesContrastUseDarkForLightCheckboxOnToggle,
         ref: contrastRef,
         checked: useDark,
       });

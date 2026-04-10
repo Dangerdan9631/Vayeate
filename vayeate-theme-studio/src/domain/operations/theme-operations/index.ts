@@ -18,9 +18,6 @@ export { SaveThemeOperation, saveTheme } from './theme-details/save-theme-operat
 export { GenerateThemeOperation, generateTheme } from './theme-details/generate-theme-operation';
 
 // previews
-export { SetThemePreviewVariableFilterTextOperation, setThemePreviewVariableFilterText } from './previews/set-theme-preview-variable-filter-text-operation';
-export { SetThemePreviewVariableFilterClearOperation, setThemePreviewVariableFilterClear } from './previews/set-theme-preview-variable-filter-clear-operation';
-export { SetThemePreviewSelectedSampleKeyOperation, setThemePreviewSelectedSampleKey } from './previews/set-theme-preview-selected-sample-key-operation';
 export { LoadPreviewsOperation, loadPreviews } from './previews/load-previews-operation';
 
 // palette-hue
@@ -29,10 +26,6 @@ export { SetThemeHueReferenceHexOperation, setThemeHueReferenceHex } from './pal
 
 // pickers
 export { SetThemePaneSelectionsOperation, setThemePaneSelections } from './pickers/set-theme-pane-selections-operation';
-export { SetThemeOpenPickerContextOperation, setThemeOpenPickerContext } from './pickers/set-theme-open-picker-context-operation';
-
-// palette-color-assign
-export { SetAssignColorDraftTextOperation, setAssignColorDraftText } from './palette-color-assign/set-assign-color-draft-text-operation';
 
 // eyedropper
 export { SetEyedropperUiStateOperation } from './eyedropper/set-eyedropper-ui-state-operation';
@@ -40,4 +33,3 @@ export { LoadEyedropperSnapshotOperation } from './eyedropper/load-eyedropper-sn
 
 // variables
 export { SetThemeVariablesSearchTextOperation, setThemeVariablesSearchText } from './variables/set-theme-variables-search-text-operation';
-export { SetThemeVariableDraftTextOperation, setThemeVariableDraftText } from './variables/set-theme-variable-draft-text-operation';

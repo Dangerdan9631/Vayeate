@@ -47,7 +47,6 @@ export function useThemesCardViewModel() {
 
   const openCreateDialog = useCallback(() => {
     dispatch({ type: ThemeActionType.ThemeThemesCreateButtonOnClick });
-    dispatch({ type: ThemeActionType.ThemeCreateDialogOnOpen });
   }, [dispatch]);
 
   const onSelectVersion = useCallback(
