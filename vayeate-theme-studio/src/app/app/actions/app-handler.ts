@@ -20,6 +20,7 @@ import {
   ToggleDevToolsController,
 } from '../../../domain/controllers/window-controller';
 import type { AppAction } from '../../core/actions/app-action';
+import { EyedropperOverlayWorkflowController } from '../controllers/eyedropper-overlay-workflow-controller';
 import { AppActions, AppActionType } from './app-action-type';
 
 const appTypes = new Set<string>(Object.values(AppActionType));
@@ -42,6 +43,7 @@ export class AppActionHandler {
     private readonly minimizeWindow: MinimizeWindowController,
     private readonly maximizeWindow: MaximizeWindowController,
     private readonly dragWindow: DragWindowController,
+    private readonly eyedropperOverlayWorkflow: EyedropperOverlayWorkflowController,
   ) {}
 
   async handle(action: AppActions): Promise<void> {
@@ -99,6 +101,12 @@ export class AppActionHandler {
         break;
       case AppActionType.AppBarTitleBarOnDrag:
         await this.dragWindow.run();
+        break;
+      case AppActionType.AppEyedropperOverlayCancelButtonOnClick:
+        this.eyedropperOverlayWorkflow.cancelOverlay();
+        break;
+      case AppActionType.AppEyedropperOverlayColorPickCommitButtonOnClick:
+        this.eyedropperOverlayWorkflow.commitPick(action.hex);
         break;
     }
   }

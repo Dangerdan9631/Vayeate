@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
-import { UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { initialUiState } from '../../../state/ui/ui-state';
 import { LoadEyedropperSnapshotOperation } from './load-eyedropper-snapshot-operation';
 
 describe('LoadEyedropperSnapshotOperation', () => {
@@ -22,7 +23,8 @@ describe('LoadEyedropperSnapshotOperation', () => {
         ],
       }),
     } as unknown as ScreenshotService;
-    const op = new LoadEyedropperSnapshotOperation(uiStateSetter, screenshotService);
+    const uiStateGetter = new UiStateGetter(() => initialUiState);
+    const op = new LoadEyedropperSnapshotOperation(uiStateSetter, uiStateGetter, screenshotService);
     await op.execute('eyedropper:hue');
     expect(apply).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -31,6 +33,8 @@ describe('LoadEyedropperSnapshotOperation', () => {
           phase: 'ready',
           contextKey: 'eyedropper:hue',
           errorMessage: null,
+          result: null,
+          pendingPostCommit: null,
         }),
       }),
     );
@@ -44,7 +48,8 @@ describe('LoadEyedropperSnapshotOperation', () => {
     const screenshotService = {
       getFullDisplaySnapshot: vi.fn().mockRejectedValue(new Error('ipc failed')),
     } as unknown as ScreenshotService;
-    const op = new LoadEyedropperSnapshotOperation(uiStateSetter, screenshotService);
+    const uiStateGetter = new UiStateGetter(() => initialUiState);
+    const op = new LoadEyedropperSnapshotOperation(uiStateSetter, uiStateGetter, screenshotService);
     await op.execute('eyedropper:dark:foo');
     expect(apply).toHaveBeenCalledWith({
       type: 'SET_UI_EYEDROPPER',
@@ -53,6 +58,8 @@ describe('LoadEyedropperSnapshotOperation', () => {
         contextKey: 'eyedropper:dark:foo',
         snapshot: null,
         errorMessage: 'ipc failed',
+        result: null,
+        pendingPostCommit: null,
       },
     });
   });

@@ -2,9 +2,7 @@ import { injectable } from 'tsyringe';
 import {
   AssignColorFromPickerController,
   ClearThemeSaveErrorController,
-  CloseEyedropperOverlayController,
   CloseThemeCreateDialogController,
-  CommitEyedropperColorController,
   CreateThemeController,
   DeleteThemeVersionController,
   GenerateThemeController,
@@ -55,9 +53,7 @@ export class ThemeActionHandler {
   constructor(
     private readonly assignColorFromPicker: AssignColorFromPickerController,
     private readonly clearThemeSaveError: ClearThemeSaveErrorController,
-    private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
     private readonly closeThemeCreateDialog: CloseThemeCreateDialogController,
-    private readonly commitEyedropperColor: CommitEyedropperColorController,
     private readonly createTheme: CreateThemeController,
     private readonly deleteThemeVersion: DeleteThemeVersionController,
     private readonly generateTheme: GenerateThemeController,
@@ -236,12 +232,6 @@ export class ThemeActionHandler {
         break;
       case ThemeActionType.ThemeVariablesContrastUseDarkForLightCheckboxOnToggle:
         this.setContrastUseDarkForLight.run(action.ref, action.checked);
-        break;
-      case ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick:
-        this.closeEyedropperOverlay.run();
-        break;
-      case ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick:
-        this.commitEyedropperColor.run(action.hex);
         break;
       case ThemeActionType.ThemeDetailsPreviewTokenRefListOnCommit:
         this.setThemePreviewTokenRef.run(action.tokenRefField, action.value);

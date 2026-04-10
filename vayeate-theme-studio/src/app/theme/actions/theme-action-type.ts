@@ -57,8 +57,6 @@ export enum ThemeActionType {
   ThemeVariablesContrastLightMinTextOnCommit = 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_COMMIT',
   ThemeVariablesContrastLightMaxTextOnCommit = 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_COMMIT',
   ThemeVariablesContrastUseDarkForLightCheckboxOnToggle = 'THEME_VARIABLES_CONTRAST_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE',
-  ThemeEyedropperOverlayCancelButtonOnClick = 'THEME_EYEDROPPER_OVERLAY_CANCEL_BUTTON_ON_CLICK',
-  ThemeEyedropperOverlayColorCommitOnClick = 'THEME_EYEDROPPER_OVERLAY_COLOR_COMMIT_ON_CLICK',
   ThemeDetailsPreviewTokenRefListOnCommit = 'THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT',
 }
 
@@ -125,8 +123,6 @@ export type ThemeActions =
   | { type: ThemeActionType.ThemeVariablesContrastLightMinTextOnCommit; value: string; ref: ContrastVariableKey }
   | { type: ThemeActionType.ThemeVariablesContrastLightMaxTextOnCommit; value: string; ref: ContrastVariableKey }
   | { type: ThemeActionType.ThemeVariablesContrastUseDarkForLightCheckboxOnToggle; checked: boolean; ref: ContrastVariableKey }
-  | { type: ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick }
-  | { type: ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick; hex: HexColor }
   | {
       type: ThemeActionType.ThemeDetailsPreviewTokenRefListOnCommit;
       tokenRefField: ThemePreviewTokenRefField;

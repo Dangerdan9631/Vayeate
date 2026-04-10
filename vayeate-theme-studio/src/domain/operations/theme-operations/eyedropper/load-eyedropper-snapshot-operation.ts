@@ -2,7 +2,7 @@ import { injectable } from 'tsyringe';
 import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
-import { UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
 
 /** IPC may deliver Buffer, Uint8Array, ArrayBuffer, or Node-style `{ type, data }` depending on clone path. */
 function pngToUint8Array(png: unknown): Uint8Array {
@@ -37,6 +37,7 @@ function mapToPayload(raw: ScreenshotFullDisplaySnapshot): EyedropperSnapshotPay
 export class LoadEyedropperSnapshotOperation {
   constructor(
     private readonly uiStateSetter: UiStateSetter,
+    private readonly uiStateGetter: UiStateGetter,
     private readonly screenshotService: ScreenshotService,
   ) {}
 
@@ -44,6 +45,7 @@ export class LoadEyedropperSnapshotOperation {
     try {
       const raw = await this.screenshotService.getFullDisplaySnapshot();
       const snapshot = mapToPayload(raw);
+      const pendingPostCommit = this.uiStateGetter.current().eyedropper.pendingPostCommit;
       this.uiStateSetter.apply({
         type: 'SET_UI_EYEDROPPER',
         eyedropper: {
@@ -51,10 +53,13 @@ export class LoadEyedropperSnapshotOperation {
           contextKey,
           snapshot,
           errorMessage: null,
+          result: null,
+          pendingPostCommit,
         },
       });
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
+      const pendingPostCommit = this.uiStateGetter.current().eyedropper.pendingPostCommit;
       this.uiStateSetter.apply({
         type: 'SET_UI_EYEDROPPER',
         eyedropper: {
@@ -62,6 +67,8 @@ export class LoadEyedropperSnapshotOperation {
           contextKey,
           snapshot: null,
           errorMessage: message,
+          result: null,
+          pendingPostCommit,
         },
       });
     }

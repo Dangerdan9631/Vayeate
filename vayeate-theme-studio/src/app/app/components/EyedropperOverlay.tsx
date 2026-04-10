@@ -6,7 +6,7 @@ import {
   useState,
   type MouseEvent,
 } from 'react';
-import { ThemeActionType } from '../../theme/actions/theme-action-type';
+import { AppActionType } from '../actions/app-action-type';
 import { useEyedropperOverlayViewModel } from '../viewmodel/use-eyedropper-overlay-viewmodel';
 
 // --- Full-screen eyedropper overlay helpers (local to this component) ---
@@ -449,7 +449,7 @@ export function EyedropperOverlay() {
     if (phase === 'closed') return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        void dispatch({ type: ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick });
+        void dispatch({ type: AppActionType.AppEyedropperOverlayCancelButtonOnClick });
       }
     };
     document.addEventListener('keydown', onKey);
@@ -508,7 +508,7 @@ export function EyedropperOverlay() {
   }, [pointer, phase, snapshot, snapshotBitmapError]);
 
   const onCancel = useCallback(() => {
-    void dispatch({ type: ThemeActionType.ThemeEyedropperOverlayCancelButtonOnClick });
+    void dispatch({ type: AppActionType.AppEyedropperOverlayCancelButtonOnClick });
   }, [dispatch]);
 
   const onBackdropClick = useCallback(
@@ -555,7 +555,7 @@ export function EyedropperOverlay() {
       const data = ctx.getImageData(pt.px, pt.py, 1, 1);
       const [r, g, b] = data.data;
       const hex = rgbToHex(r, g, b);
-      void dispatch({ type: ThemeActionType.ThemeEyedropperOverlayColorCommitOnClick, hex });
+      void dispatch({ type: AppActionType.AppEyedropperOverlayColorPickCommitButtonOnClick, hex });
     },
     [dispatch, snapshot],
   );

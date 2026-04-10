@@ -15,6 +15,8 @@ export class OpenEyedropperOverlayController {
       contextKey,
       snapshot: null,
       errorMessage: null,
+      result: null,
+      pendingPostCommit: null,
     });
     await this.loadEyedropperSnapshot.execute(contextKey);
   }

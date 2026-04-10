@@ -1,4 +1,5 @@
 import { TabId } from "../../../domain/state/ui/ui-state";
+import type { HexColor } from "../../../model/schemas";
 
 export enum AppActionType {
   AppFileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',
@@ -19,6 +20,8 @@ export enum AppActionType {
   AppBarMaximizeButtonOnClick = 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK',
   AppBarCloseButtonOnClick = 'APP_BAR_CLOSE_BUTTON_ON_CLICK',
   AppBarTitleBarOnDrag = 'APP_BAR_TITLE_BAR_ON_DRAG',
+  AppEyedropperOverlayCancelButtonOnClick = 'APP_EYEDROPPER_OVERLAY_CANCEL_BUTTON_ON_CLICK',
+  AppEyedropperOverlayColorPickCommitButtonOnClick = 'APP_EYEDROPPER_OVERLAY_COLOR_PICK_COMMIT_BUTTON_ON_CLICK',
 }
 
 export type AppActions =
@@ -39,4 +42,6 @@ export type AppActions =
   | { type: AppActionType.AppBarMinimizeButtonOnClick }
   | { type: AppActionType.AppBarMaximizeButtonOnClick }
   | { type: AppActionType.AppBarCloseButtonOnClick }
-  | { type: AppActionType.AppBarTitleBarOnDrag };
+  | { type: AppActionType.AppBarTitleBarOnDrag }
+  | { type: AppActionType.AppEyedropperOverlayCancelButtonOnClick }
+  | { type: AppActionType.AppEyedropperOverlayColorPickCommitButtonOnClick; hex: HexColor };

@@ -29,6 +29,7 @@ export { SetThemePaneSelectionsOperation, setThemePaneSelections } from './picke
 
 // eyedropper
 export { SetEyedropperUiStateOperation } from './eyedropper/set-eyedropper-ui-state-operation';
+export { SetEyedropperPickResultOperation } from './eyedropper/set-eyedropper-pick-result-operation';
 export { LoadEyedropperSnapshotOperation } from './eyedropper/load-eyedropper-snapshot-operation';
 
 // variables
