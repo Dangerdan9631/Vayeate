@@ -158,16 +158,9 @@ function createWindow(): void {
   mainWindow.on('restore', () => {
     mainWindow?.webContents.send('window:restored');
   });
-  mainWindow.on('resize', () => {
-    if (mainWindow == null || mainWindow.webContents.isDestroyed()) return;
-    const bounds = mainWindow.getBounds();
-    mainWindow.webContents.send('window:resized', bounds.width, bounds.height);
-  });
-  mainWindow.on('move', () => {
-    if (mainWindow == null || mainWindow.webContents.isDestroyed()) return;
-    const bounds = mainWindow.getBounds();
-    mainWindow.webContents.send('window:moved', bounds.x, bounds.y);
-  });
+  // Do not forward BrowserWindow 'resize' / 'move' to the renderer: they fire at very high
+  // frequency during drags and would flood IPC + duplicate the browser 'resize' path (which
+  // already updates viewport size). Initial bounds come from window:getBounds on the renderer.
 }
 
 app.whenReady().then(async () => {

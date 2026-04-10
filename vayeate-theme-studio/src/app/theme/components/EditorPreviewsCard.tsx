@@ -154,8 +154,6 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
 
 export function EditorPreviewsCard() {
   const vm = useEditorPreviewsCardViewModel();
-  if (!vm.theme?.templateRef) return null;
-
   const {
     colorAssignments,
     contrastAssignments,
@@ -422,6 +420,8 @@ export function EditorPreviewsCard() {
       isSyncingScrollRef.current = false;
     });
   };
+
+  if (!vm.theme?.templateRef) return null;
 
   return (
     <div className="tokens-card theme-previews-card">

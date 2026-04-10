@@ -128,8 +128,6 @@ function swatchState(refs: string[], checkedColorRefs: ReadonlySet<string>): Tri
 
 export function ThemePaletteCard() {
   const vm = useThemePaletteCardViewModel();
-  if (!vm.theme?.templateRef) return null;
-
   const {
     hueAdjustment,
     hueReferenceHex,
@@ -293,6 +291,8 @@ export function ThemePaletteCard() {
   const handleClusterByDarkChecked = (checked: boolean) => setClusterByDark(checked);
   const handleHueReferenceEyedropper = () =>
     void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
+
+  if (!vm.theme?.templateRef) return null;
 
   return (
     <div className="catalog-details-card placeholder theme-palette-card">
