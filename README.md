@@ -50,16 +50,6 @@ This repo contains all of the files necessary for the extension.
   * `settings/Idea` - IDEA settings. See [README.md](./settings/Idea/README.md) for instructions.
 * `scripts` - Vayeate BlueShell Scripts. See [README.md](./scripts/README.md).
 
-## AI Agent conventions
-
-This repository includes repo-level AI agent files aligned for GitHub Copilot and compatible agents.
-
-- Agent entrypoint: [AGENTS.md](./AGENTS.md)
-- Copilot-native instructions: [.github/copilot-instructions.md](./.github/copilot-instructions.md)
-- Custom agent profile: [.github/agents/theme-studio-agent.md](./.github/agents/theme-studio-agent.md)
-- Architecture/functionality/edge-case/conventions docs: [.github/agent-docs](./.github/agent-docs)
-- Reusable task skills: [.github/skills](./.github/skills)
-
 ## Testing color themes
 
 * Press `F5` to open a new window with the extension loaded.

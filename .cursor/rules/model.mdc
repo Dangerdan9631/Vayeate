@@ -1,0 +1,28 @@
+---
+description: Domain models — zod schemas, types in src/model
+globs: vayeate-theme-studio/src/model/**
+alwaysApply: false
+---
+
+# Model
+
+## Rules
+
+- Domain shapes and parsers live in **`src/model/`**.
+- Use **zod** for runtime validation and inferred TypeScript types.
+- Keep models **free** of React, DI, and I/O (no `fs`, no `ipc`).
+
+## Files
+
+- **One** primary export per file; **kebab-case** filename aligned with export name.
+
+## Good / bad
+
+```ts
+// GOOD
+export const CatalogSchema = z.object({ id: z.string(), ... });
+export type Catalog = z.infer<typeof CatalogSchema>;
+
+// BAD — model imports electron ipc
+import { ipcRenderer } from 'electron';
+```

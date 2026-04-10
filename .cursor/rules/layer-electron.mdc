@@ -1,0 +1,22 @@
+---
+description: Electron main/preload — IPC and system only, no domain logic
+globs: vayeate-theme-studio/electron/**
+alwaysApply: false
+---
+
+# Layer: electron
+
+## Rules
+
+- **No business logic.** Only OS/Electron APIs, window lifecycle, and IPC wiring.
+- **All renderer IPC** from the app goes through a **service**; that service is reached via **gateway** or **operation** (not ad-hoc `ipcRenderer` scattered in domain).
+
+## Good / bad
+
+```ts
+// BAD — domain rules in main
+if (catalog.isDirty) { /* ... */ }
+
+// GOOD — main forwards invoke/handle; validation in renderer domain
+ipcMain.handle('read-file', (_, path) => fs.promises.readFile(path, 'utf8'));
+```

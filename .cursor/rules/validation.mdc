@@ -1,0 +1,30 @@
+---
+description: Validations — Validate* name, test() boolean, no throws
+globs: vayeate-theme-studio/src/domain/**/validations/**
+alwaysApply: false
+---
+
+# Validation
+
+## Contract
+
+- Name: **`Validate` + question** (e.g. `ValidateCanLockTemplate`).
+- Class-based: **tsyringe** **`@singleton()`**; inject concrete getters/state as needed — no string or symbol tokens.
+- **One** function **`test(...)`** → **`boolean`** (pass/fail).
+- **Never throw.** Controllers decide whether to throw on failure.
+- **Do not** call other validations (compose at controller if needed).
+
+## Usage
+
+- **Controllers** run before operations when needed.
+- **ViewModels** reuse the same validators for UI enable/disable and messaging.
+
+## Good / bad
+
+```ts
+// BAD
+test() { if (!x) throw new Error(); }
+
+// GOOD
+test(): boolean { return this.getter().foo != null; }
+```

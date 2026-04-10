@@ -1,0 +1,30 @@
+---
+description: Domain — controllers, operations, validations, state, utils
+globs: vayeate-theme-studio/src/domain/**
+alwaysApply: false
+---
+
+# Layer: domain
+
+## Structure per domain
+
+- `controllers/` — orchestrate validations + operations; **never** set state directly
+- `operations/` — **only** place for business logic, gateways/services, and **state writes**
+- `validations/` — `Validate*` + `test()` → boolean
+- `state/` — immutable slices, getters/setters used by operations (writes) and controllers (reads via getter)
+- `utils/` — pure helpers (no state mutation)
+
+## Invariants
+
+- Controllers **read** state via getters; **operations** apply updates via setters.
+- No domain business rules in `electron/` or raw React components.
+
+## Good / bad
+
+```ts
+// BAD — controller patches state
+this.state.catalogs = next;
+
+// GOOD — controller calls operation that uses setter
+await this.saveCatalogOp.execute({ id, data });
+```

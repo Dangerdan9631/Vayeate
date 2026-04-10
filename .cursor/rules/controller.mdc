@@ -1,0 +1,28 @@
+---
+description: Controllers — run(), UI-agnostic names, compose ops + validations
+globs: vayeate-theme-studio/src/domain/**/controllers/**
+alwaysApply: false
+---
+
+# Controller
+
+## Contract
+
+- Suffix **`Controller`**; **one** public method **`run`** (per action or use case).
+- **Inject** concrete classes via **tsyringe** **`@singleton()`** — no string or symbol tokens.
+- **Read** state with getters; **never** mutate state here.
+- Compose **validations** then **operations**; throw when validation fails if appropriate.
+
+## Naming
+
+- User-capability oriented, **no UI event names**.
+
+| Good | Bad |
+|------|-----|
+| `DeleteCurrentCatalogController` | `HandleSaveButtonClickController` |
+| `CloseWindowController` | `OnTextInputChangeController` |
+
+## Anti-patterns
+
+- Business rules beyond orchestration (belongs in **operations**).
+- Calling gateways/services directly (use **operations**).

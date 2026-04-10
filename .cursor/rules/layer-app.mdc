@@ -1,0 +1,29 @@
+---
+description: App UI — actions, handlers, components, viewmodels
+globs: vayeate-theme-studio/src/app/**
+alwaysApply: false
+---
+
+# Layer: app
+
+## Structure per domain
+
+- `actions/` — action types + **handlers** (exhaustive switch → controller only)
+- `components/` — React UI; enqueue UI actions only
+- `viewmodel/` — exposes state via `useContextSelector`; uses validations for guards
+
+## Actions
+
+- Naming: `<CONTROL>_<ACTION>` (e.g. `THEME_DETAILS_SAVE_BUTTON_ON_CLICK`).
+- **One** action per user interaction; only UI-derived or identity fields in payload (not state-derived).
+- **Handlers**: route to **controller** only; no business logic (trivial routing OK).
+
+## Good / bad
+
+```ts
+// BAD — handler mutates or implements rules
+case X: setState(...); break;
+
+// GOOD
+case X: container.resolve(FooController).run(action); break;
+```

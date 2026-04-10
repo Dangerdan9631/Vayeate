@@ -1,0 +1,36 @@
+---
+description: Services — filesystem, IPC, window; system I/O only
+globs: vayeate-theme-studio/src/gateway/services/**
+alwaysApply: false
+---
+
+# Service
+
+## Role
+
+- **System integration**: file APIs, **IPC** to main, windows, timers, etc.
+- **No** domain rules; translate platform errors to typed results where helpful.
+
+## Placement
+
+- Lives under **`src/gateway/services/`** (or equivalent `services` subtree).
+
+## Callers
+
+- **Gateways** or **operations** (per architecture); keep components free of IPC.
+
+## DI
+
+- **`@singleton()`**; inject **concrete types** only — no string or symbol tokens.
+
+## Good / bad
+
+```ts
+// GOOD
+async readText(path: string): Promise<string> { ... }
+
+// BAD — business validation
+async readText(path: string) {
+  if (!path.endsWith('.json')) throw ...
+}
+```

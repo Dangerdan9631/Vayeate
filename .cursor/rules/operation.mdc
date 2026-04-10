@@ -1,0 +1,30 @@
+---
+description: Operations — execute(), sole business logic and state mutation
+globs: vayeate-theme-studio/src/domain/**/operations/**
+alwaysApply: false
+---
+
+# Operation
+
+## Contract
+
+- Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
+- **tsyringe** **`@singleton()`**; inject gateways, services, state setter/getters as **concrete types** — no string or symbol tokens.
+- **Only** layer for **business logic** and **state mutation** (via setters).
+- May call **gateways** and **services**; **must not** call another operation.
+- Prefer **inputs from controller** over reading global state inside `execute` (keep reusable).
+
+## Scope
+
+- **One** logical atomic change; one primary entity (batch OK when inherently single action, e.g. token set).
+
+## Callers
+
+- **Controllers** only (not handlers, components, or other operations).
+
+## Good / bad
+
+| Good | Bad |
+|------|-----|
+| `DeleteCatalogOperation.execute({ catalogId })` | Operation calls `otherOp.execute` |
+| Operation uses state setter after gateway load | Controller writes slice |

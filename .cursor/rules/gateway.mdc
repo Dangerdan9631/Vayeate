@@ -1,0 +1,27 @@
+---
+description: Gateways — map system data to models; no business rules
+globs: vayeate-theme-studio/src/gateway/**
+alwaysApply: false
+---
+
+# Gateway (concept)
+
+## Role
+
+- Facade over **services**: convert **wire/raw** data ↔ **domain models** (e.g. JSON → zod parse).
+- **No** business logic; system-edge concerns (shape, defaults, errors from I/O) only.
+
+## DI
+
+- **`@singleton()`**; inject concrete **services** and other infra — no string or symbol tokens; not React.
+
+## Callers
+
+- **Operations** (preferred). Not handlers or components.
+
+## Good / bad
+
+| Good | Bad |
+|------|-----|
+| `parseCatalogJson(raw: unknown): Catalog` | Reject save because "duplicate name" |
+| Thin wrapper over `FileService` + zod | Controller calls gateway directly for writes |

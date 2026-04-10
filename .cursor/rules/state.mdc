@@ -1,0 +1,34 @@
+---
+description: App state — single aggregate, immutable slices, getter/setter access
+globs: vayeate-theme-studio/src/domain/**/state/**
+alwaysApply: false
+---
+
+# State
+
+## Shape
+
+- **One** root aggregate; **only nested slice objects** — no loose fields on root.
+- **Immutable** updates (replace slice references).
+
+## Access
+
+| Consumer | Read | Write |
+|----------|------|-------|
+| Controllers / operations | **Getter** | **Setter** (operations **only**) |
+| React | Via **viewmodel** + `useContextSelector` | Never |
+
+## Rules
+
+- Slices are **domain-owned** under `src/domain/<domain>/state/`.
+- React **never** imports setters directly.
+
+## Good / bad
+
+```ts
+// BAD — component imports setter
+import { setCatalog } from '../state';
+
+// GOOD — operation
+this.state.setCatalog(nextImmutableSlice);
+```

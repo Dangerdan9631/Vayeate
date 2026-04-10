@@ -1,0 +1,33 @@
+---
+description: Gateway layer — services (I/O) and gateways (conversion)
+globs: vayeate-theme-studio/src/gateway/**
+alwaysApply: false
+---
+
+# Layer: gateway
+
+## Services
+
+- Talk to **outside systems**: filesystem, IPC bridge, shell, native APIs.
+- **No** domain/business rules; system-oriented error handling is OK.
+
+## Gateways
+
+- **Abstractions** over services: parse/serialize, map JSON ↔ model types.
+- **No** business logic; conversion and I/O orchestration at the edge only.
+
+## Callers
+
+- **Operations** invoke gateways/services (not components/handlers).
+- **`@singleton()`** on gateway/service classes; inject **concrete types** — no string or symbol tokens.
+
+## Good / bad
+
+```ts
+// BAD — gateway decides "is catalog valid for publish"
+if (catalog.tokens.length < 5) throw ...
+
+// GOOD — gateway reads/writes bytes or IPC; operation decides validity
+const raw = await this.fileService.read(path);
+return CatalogGateway.parse(raw);
+```

@@ -1,0 +1,30 @@
+---
+description: ViewModels — useContextSelector, no inline selectors in components
+globs: vayeate-theme-studio/src/app/**/viewmodel/**
+alwaysApply: false
+---
+
+# ViewModel
+
+## Contract
+
+- Bridge **React** and **app state**: expose selected slices via **`useContextSelector`** (or hooks that wrap it).
+- **Components must not** define raw context selectors; they consume viewmodel hooks only.
+- Use **validations** for disabled states, tooltips, and guard logic aligned with controllers.
+
+## Anti-patterns
+
+- Business rules or IPC (belongs in **operations** / **gateways**).
+- Direct state mutation.
+
+## Good / bad
+
+```tsx
+// BAD — in component file
+const x = useContextSelector(ctx, (s) => s.catalog);
+
+// GOOD — in viewmodel hook
+export function useCatalogVm() {
+  return useContextSelector(AppStateContext, (s) => s.catalog);
+}
+```

@@ -1,0 +1,59 @@
+---
+description: Vayeate Theme Studio — layers, domains, action/state flow, naming
+alwaysApply: true
+---
+
+# App architecture (Vayeate Theme Studio)
+
+Scope: [`vayeate-theme-studio/`](vayeate-theme-studio/).
+
+## Layers
+
+| Layer | Role |
+|-------|------|
+| `electron/` | Main process, preload, IPC — no business logic |
+| `src/app/` | UI, actions, handlers, viewmodels |
+| `src/domain/` | Controllers, operations, validations, state, utils |
+| `src/gateway/` | Services + gateway facades over external systems |
+| `src/model/` | Domain types; **zod** for validation |
+
+## Domains (under app and domain)
+
+`app`, `catalog`, `common`, `core`, `template`, `theme`
+
+## Mutation flow
+
+```mermaid
+flowchart LR
+  UI[Component] --> AQ[ActionQueue]
+  AQ --> H[Handler]
+  H --> C[Controller]
+  C --> V[Validations]
+  C --> O[Operations]
+  O --> S[State setters]
+  S --> VM[ViewModel useContextSelector]
+  VM --> UI
+```
+
+- Only **UI events** on the queue. Handlers → controllers only (exhaustive switch).
+- **State updates only in operations.** Controllers read via getters; never set state.
+- **Business logic only in operations.** Gateways/services: system + conversion, not domain rules.
+
+## Actions
+
+- Shape: `<CONTROL>_<ACTION>` (e.g. `CATALOG_PAGE_ON_LOAD`).
+- One action per interaction; one type per component/event (reuse only for same control type with a discriminant field).
+- Payload: only user input or entity identifiers — **not** values derivable from app state.
+
+## DI and files
+
+- **tsyringe** **`@singleton()`** for controllers, operations, validations, gateways, services — inject **concrete types** directly; **no** string or symbol injection tokens.
+- **One** top-level export per file; file **kebab-case** matching export; classes/components **PascalCase**.
+
+## Good / bad
+
+| Good | Bad |
+|------|-----|
+| `CloseWindowController` | `HandleSaveButtonClickController` |
+| Operation owns state write after validation in controller | Handler contains business rules |
+| ViewModel exposes selectors | Component defines `useContextSelector` inline |
