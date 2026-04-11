@@ -28,14 +28,21 @@ export class ActionProcessor {
     this.log.debug('action', action);
     if (isAppAction(action)) {
       await this.appHandler.handle(action);
-    } else if (isCatalogAction(action)) {
-      await this.catalogHandler.handle(action);
-    } else if (isTemplateAction(action)) {
-      await this.templateHandler.handle(action);
-    } else if (isThemeAction(action)) {
-      await this.themeHandler.handle(action);
-    } else {
-      this.log.error('Unhandled action (no handler branch matched)', { action });
+      return;
     }
+    if (isCatalogAction(action)) {
+      await this.catalogHandler.handle(action);
+      return;
+    }
+    if (isTemplateAction(action)) {
+      await this.templateHandler.handle(action);
+      return;
+    }
+    if (isThemeAction(action)) {
+      await this.themeHandler.handle(action);
+      return;
+    }
+    const _exhaustive: never = action;
+    this.log.error('Unhandled action (AppAction union not exhaustive)', { action: _exhaustive });
   }
 }

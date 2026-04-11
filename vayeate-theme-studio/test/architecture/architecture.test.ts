@@ -10,7 +10,6 @@
  * | `describe(...)` | Rule file(s) |
  * |---|---|
  * | `kebab-case filenames for non-test .ts sources` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files (kebab-case modules) |
- * | `PascalCase filenames for .tsx under a components/ directory` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc), [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx`) |
  * | `*-controller.ts: one exported class ending with Controller` | [controller.mdc](../../../.cursor/rules/controller.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
  * | `*-operation.ts: one exported class ending with Operation` | [operation.mdc](../../../.cursor/rules/operation.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
  * | `validate-*.ts: one exported class starting with Validate` | [validation.mdc](../../../.cursor/rules/validation.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
@@ -19,15 +18,31 @@
  * | `*-handler.ts: one exported class ending with Handler` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure / Actions (handlers) |
  * | `use-*-viewmodel.ts: at least one exported function...` | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure (`viewmodel/`) |
  * | `components/*.tsx: exported function name matches filename stem` | [component.mdc](../../../.cursor/rules/component.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files (filename ↔ export) |
+ * | `PascalCase filenames for .tsx under src/app` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc), [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx`) |
+ * | `domain *-operation.ts: no this.<OtherOperation>.execute` | [operation.mdc](../../../.cursor/rules/operation.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
+ * | `domain *-controller.ts: no this.<OtherController>.run` | [controller.mdc](../../../.cursor/rules/controller.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
+ * | `actions/*-handler.ts: no imports from domain operations/validations/state` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — handlers |
+ * | `actions/*-action-guard.ts: one exported function` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI |
+ * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../../.cursor/rules/layer-electron.mdc) — no domain in main |
+ * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) |
+ * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § Actions (payloads) |
  */
+import { readFileSync } from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';
 import {
+  collectCtorParameterPropertyNamesWithControllerType,
+  collectCtorParameterPropertyNamesWithOperationType,
   collectExportedClassNames,
   collectExportedFunctionNames,
+  collectThisDependencyExecuteCalls,
+  collectThisDependencyRunCalls,
+  getFirstExportedClassDeclaration,
+  listElectronSourceFiles,
   listSourceFiles,
   readSourceFile,
   readTsxSourceFile,
+  srcRoot,
 } from './ast-utils';
 
 const KEBAB_STEM = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
@@ -53,6 +68,33 @@ function isViewmodelFile(name: string): boolean {
   return /^use-.+-viewmodel\.ts$/.test(name);
 }
 
+function isUnderSrcApp(file: string): boolean {
+  return path.relative(srcRoot, file).replace(/\\/g, '/').startsWith('app/');
+}
+
+const IMPORT_FROM_RE = /\bfrom\s+['"]([^'"]+)['"]/g;
+
+function forbiddenDomainImportsInSource(source: string): string[] {
+  const bad: string[] = [];
+  for (const m of source.matchAll(IMPORT_FROM_RE)) {
+    const p = m[1].replace(/\\/g, '/');
+    if (
+      p.includes('/domain/operations/') ||
+      p.includes('/domain/validations/') ||
+      p.includes('/domain/state/')
+    ) {
+      bad.push(p);
+    }
+  }
+  return bad;
+}
+
+/** Relative import path whose resolved target is the renderer src tree (e.g. ../src/...). */
+function pointsAtRendererSrcModule(spec: string): boolean {
+  const n = spec.replace(/\\/g, '/');
+  return /^(\.\.\/)+src(\/|$)/.test(n);
+}
+
 /** @see ../../../.cursor/rules/app-architecture.mdc — § DI and files (kebab-case for non-`*.tsx` modules). Sync exclusions with that section and with [model.mdc](../../../.cursor/rules/model.mdc) § Files. */
 describe('kebab-case filenames for non-test .ts sources', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
@@ -69,17 +111,17 @@ describe('kebab-case filenames for non-test .ts sources', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/app-architecture.mdc — § DI and files; [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx` in `components/`). */
-describe('PascalCase filenames for .tsx under a components/ directory', () => {
+/** @see ../../../.cursor/rules/app-architecture.mdc — § DI and files; [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx` under `src/app/`). */
+describe('PascalCase filenames for .tsx under src/app', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
     if (isExcludedTestFile(b)) return false;
-    return path.basename(path.dirname(f)) === 'components';
+    return isUnderSrcApp(f);
   });
 
   it.each(files)('%s', (file) => {
     const stem = basename(file).replace(/\.tsx$/, '');
-    expect(stem, 'component filename stem must be PascalCase').toMatch(PASCAL_STEM);
+    expect(stem, 'app *.tsx filename stem must be PascalCase').toMatch(PASCAL_STEM);
   });
 });
 
@@ -208,5 +250,123 @@ describe('components/*.tsx: exported function name matches filename stem', () =>
     const sf = readTsxSourceFile(file);
     const fnames = collectExportedFunctionNames(sf);
     expect(fnames, `expected an export function named ${stem}`).toContain(stem);
+  });
+});
+
+/** @see ../../../.cursor/rules/operation.mdc — no `Operation.execute` chaining; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow. */
+describe('domain *-operation.ts: operations do not call other operations .execute', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    if (!b.endsWith('-operation.ts')) return false;
+    const rel = path.relative(srcRoot, f).replace(/\\/g, '/');
+    return rel.startsWith('domain/');
+  });
+
+  it.each(files)('%s', (file) => {
+    const sf = readSourceFile(file);
+    const cls = getFirstExportedClassDeclaration(sf);
+    expect(cls, 'expected one exported class').toBeDefined();
+    const opDeps = collectCtorParameterPropertyNamesWithOperationType(sf, cls!);
+    const hits = collectThisDependencyExecuteCalls(sf, cls!, opDeps);
+    expect(hits, 'operations must not call this.<OtherOperation>.execute(...)').toEqual([]);
+  });
+});
+
+/** @see ../../../.cursor/rules/controller.mdc — controllers do not call other controllers; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc). */
+describe('domain *-controller.ts: controllers do not call other controllers .run', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    if (!b.endsWith('-controller.ts')) return false;
+    const rel = path.relative(srcRoot, f).replace(/\\/g, '/');
+    return rel.startsWith('domain/');
+  });
+
+  it.each(files)('%s', (file) => {
+    const sf = readSourceFile(file);
+    const cls = getFirstExportedClassDeclaration(sf);
+    expect(cls, 'expected one exported class').toBeDefined();
+    const cDeps = collectCtorParameterPropertyNamesWithControllerType(sf, cls!);
+    const hits = collectThisDependencyRunCalls(sf, cls!, cDeps);
+    expect(hits, 'controllers must not call this.<OtherController>.run(...)').toEqual([]);
+  });
+});
+
+/** @see ../../../.cursor/rules/layer-app.mdc — handlers route to controllers only. */
+describe('actions/*-handler.ts: no imports from domain operations, validations, or state', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    return /[\\/]actions[\\/].*-handler\.ts$/.test(f);
+  });
+
+  it.each(files)('%s', (file) => {
+    const src = readFileSync(file, 'utf8');
+    const bad = forbiddenDomainImportsInSource(src);
+    expect(bad, 'handler must not import domain operations, validations, or state').toEqual([]);
+  });
+});
+
+/** @see ../../../.cursor/rules/layer-app.mdc — action guards; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI (one export). */
+describe('actions/*-action-guard.ts: exactly one exported function', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    return /[\\/]actions[\\/].*-action-guard\.ts$/.test(f);
+  });
+
+  it.each(files)('%s', (file) => {
+    const sf = readSourceFile(file);
+    const fnames = collectExportedFunctionNames(sf);
+    expect(fnames, 'expected exactly one exported function').toHaveLength(1);
+  });
+});
+
+/** @see ../../../.cursor/rules/layer-electron.mdc — Electron must not depend on renderer `src/`. */
+describe('electron/*.ts: no imports from renderer src/', () => {
+  const files = listElectronSourceFiles();
+
+  it.each(files)('%s', (file) => {
+    const src = readFileSync(file, 'utf8');
+    const importers: string[] = [];
+    for (const m of src.matchAll(IMPORT_FROM_RE)) {
+      const p = m[1];
+      if (pointsAtRendererSrcModule(p)) importers.push(p);
+    }
+    expect(importers, 'electron must not import the renderer src tree').toEqual([]);
+  });
+});
+
+/** @see ../../../.cursor/rules/viewmodel.mdc — [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) (useContextSelector in viewmodels, not components). */
+describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
+  const files = listSourceFiles(['.tsx']).filter((f) => {
+    const b = basename(f);
+    if (isExcludedTestFile(b)) return false;
+    return isUnderSrcApp(f);
+  });
+
+  it.each(files)('%s', (file) => {
+    const src = readFileSync(file, 'utf8');
+    expect(src.includes('useContextSelector'), 'move selectors into a viewmodel hook').toBe(false);
+  });
+});
+
+/** @see ../../../.cursor/rules/app-architecture.mdc — § Actions (payloads: user input / ids, not state snapshots). */
+describe('actions/*-action-type.ts: no imports from domain/state', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    return /[\\/]actions[\\/].*-action-type\.ts$/.test(f);
+  });
+
+  it.each(files)('%s', (file) => {
+    const src = readFileSync(file, 'utf8');
+    const bad: string[] = [];
+    for (const m of src.matchAll(IMPORT_FROM_RE)) {
+      const p = m[1].replace(/\\/g, '/');
+      if (p.includes('/domain/state/')) bad.push(p);
+    }
+    expect(bad, 'action payloads must not be typed from domain state modules').toEqual([]);
   });
 });

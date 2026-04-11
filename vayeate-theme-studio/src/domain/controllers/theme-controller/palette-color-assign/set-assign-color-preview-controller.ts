@@ -1,15 +1,13 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
+import { SetAssignColorPreviewOperation } from '../../../operations/theme-operations/palette-color-assign/set-assign-color-preview-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color-hex';
-import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
 @singleton()
 export class SetAssignColorPreviewController {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
-    private readonly setTheme: SetThemeOperation,
+    private readonly setAssignColorPreview: SetAssignColorPreviewOperation,
   ) {}
 
   run(hex: string): void {
@@ -19,26 +17,11 @@ export class SetAssignColorPreviewController {
     const theme = state.theme;
     const checkedColorRefs = new Set(state.checkedColorRefs);
     if (!theme || checkedColorRefs.size === 0) return;
-    const applyToDark = theme.applyPaletteToDark ?? true;
-    const applyToLight = theme.applyPaletteToLight ?? true;
-    const hueAdjustment = state.hueAdjustment;
-    let workingAssignments = theme.colorAssignments;
-    if (hueAdjustment !== 0) {
-      workingAssignments = applyHueToAssignmentsFiltered(
-        theme.colorAssignments,
-        hueAdjustment / 100,
-        checkedColorRefs,
-        { applyToDark, applyToLight },
-      );
-    }
-    const newAssignments = workingAssignments.map((a) => {
-      if (!checkedColorRefs.has(a.colorRef)) return a;
-      let next = { ...a };
-      if (applyToDark) next = { ...next, dark: { value: normalized } };
-      if (applyToLight) next = { ...next, light: { value: normalized } };
-      return next;
+    this.setAssignColorPreview.execute({
+      normalizedHex: normalized,
+      theme,
+      checkedColorRefs,
+      hueAdjustment: state.hueAdjustment,
     });
-    const nextTheme: Theme = { ...theme, colorAssignments: newAssignments };
-    this.setTheme.execute(nextTheme);
   }
 }

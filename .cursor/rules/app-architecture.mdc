@@ -54,10 +54,10 @@ flowchart LR
 
 - **tsyringe** **`@singleton()`** for controllers, operations, validations, gateways, services — inject **concrete types** directly; **no** string or symbol injection tokens.
 - **One** top-level export per file.
-- **React components** under `src/app/**` (`*.tsx` in `components/` or pages): **PascalCase** filename matching the default export (see [component.mdc](component.mdc)).
+- **React components** under `src/app/**` (all `*.tsx` in the app layer): **PascalCase** filename matching the default export (see [component.mdc](component.mdc)).
 - **All other** source modules (controllers, operations, viewmodels, state, gateways, services, models, handlers, etc.): **kebab-case** filename matching export; exported **classes** **PascalCase** where applicable.
 
-**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change these bullets or exceptions, update the matching `describe` and vice versa.**
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change these bullets or exceptions, update the matching `describe` and vice versa.** The file also encodes mutation-flow checks (no operation-to-operation `execute`, no controller-to-controller `run`), handler import boundaries, `useContextSelector` only outside app `*.tsx`, action payload imports (no `domain/state`), and Electron versus renderer `src/` imports — see the table at the top of that test file.
 
 ## Good / bad
 

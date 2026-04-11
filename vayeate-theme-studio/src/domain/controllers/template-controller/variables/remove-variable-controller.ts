@@ -5,13 +5,13 @@ import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../operations/template-operations/variables-contrast/remove-contrast-variable-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
-import { referencedColorVarKeysFromTemplate } from '../../../utils/referenced-color-var-keys-from-template';
-import { referencedContrastVarKeysFromTemplate } from '../../../utils/referenced-contrast-var-keys-from-template';
+import { ValidateCanRemoveVariable } from '../../../validations/template-validations';
 
 @singleton()
 export class RemoveVariableController {
   constructor(
     private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly validateCanRemove: ValidateCanRemoveVariable,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeColorVariableFromTemplate: RemoveColorVariableOp,
     private readonly removeContrastVariableFromTemplate: RemoveContrastVariableOp,
@@ -21,11 +21,9 @@ export class RemoveVariableController {
 
   async run(key: string): Promise<void> {
     const template = this.templatesStateGetter.current().template;
-    if (!template) return;
+    if (!template || !this.validateCanRemove.test(template, key)) return;
 
     if (template.colorVariables.some((variable) => variable.key === key)) {
-      const refs = referencedColorVarKeysFromTemplate(template);
-      if (refs.has(key)) return;
       const base = this.bumpTemplateVersionForEdit.execute(template);
       const next = this.removeColorVariableFromTemplate.execute(base, key);
       await this.saveTemplate.execute(next);
@@ -33,8 +31,6 @@ export class RemoveVariableController {
       return;
     }
 
-    const refs = referencedContrastVarKeysFromTemplate(template);
-    if (refs.has(key)) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeContrastVariableFromTemplate.execute(base, key);
     await this.saveTemplate.execute(next);

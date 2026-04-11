@@ -13,6 +13,9 @@ app.whenReady().then(async () => {
   await mkdir(join(DATA_DIR, 'themes'), { recursive: true });
 
   const undoStacksDir = getUndoStacksDir();
+  // Product policy: discard persisted undo stacks on every app cold start so stacks never
+  // survive across sessions. Renderer-owned undo state is rebuilt after load; this only
+  // clears on-disk files under userData (see getUndoStacksDir).
   rmSync(undoStacksDir, { recursive: true, force: true });
   mkdirSync(undoStacksDir, { recursive: true });
 

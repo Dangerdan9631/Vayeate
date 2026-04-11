@@ -7,7 +7,7 @@ alwaysApply: false
 
 ## Contract
 
-**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update that `describe` and vice versa.**
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update `*-operation.ts: one exported class…` and vice versa.** AST checks also enforce **no `this.<OtherOperation>.execute`** under `src/domain/**` (`describe('domain *-operation.ts: operations do not call other operations .execute')`).
 
 - Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
 - **tsyringe** **`@singleton()`**; inject gateways, services, state setter/getters as **concrete types** — no string or symbol tokens.
