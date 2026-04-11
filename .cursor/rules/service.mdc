@@ -5,6 +5,8 @@ alwaysApply: false
 
 # Service
 
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change service class/file naming here, update that `describe` and vice versa.**
+
 ## Role
 
 - **System integration**: file APIs, **IPC** to main, windows, timers, etc.

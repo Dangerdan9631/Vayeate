@@ -5,6 +5,8 @@ alwaysApply: false
 
 # Layer: gateway
 
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When layer-wide gateway/service file conventions change, update those `describe` blocks and the dedicated rule files, and vice versa.**
+
 ## Services
 
 - Talk to **outside systems**: filesystem, IPC bridge, shell, native APIs.

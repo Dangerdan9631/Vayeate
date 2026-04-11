@@ -8,8 +8,13 @@ alwaysApply: false
 ## Structure per domain
 
 - `actions/` — action types + **handlers** (exhaustive switch → controller only)
+
+  **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When handler module naming or export shape changes here, update that `describe` and vice versa.**
+
 - `components/` — React UI; **PascalCase** `*.tsx` filenames per [component.mdc](component.mdc); enqueue UI actions only
 - `viewmodel/` — exposes state via `useContextSelector`; uses validations for guards
+
+  **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When viewmodel file/hook naming changes here or in [viewmodel.mdc](viewmodel.mdc), update that `describe` and vice versa.**
 
 ## Actions
 

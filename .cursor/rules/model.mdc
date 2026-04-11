@@ -15,6 +15,8 @@ alwaysApply: false
 
 - **One** primary export per file; **kebab-case** filename aligned with export name.
 
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When kebab-case or exclusion rules change there or here, update that `describe` and vice versa.**
+
 ## Good / bad
 
 ```ts

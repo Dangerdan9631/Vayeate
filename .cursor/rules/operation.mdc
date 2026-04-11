@@ -7,6 +7,8 @@ alwaysApply: false
 
 ## Contract
 
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update that `describe` and vice versa.**
+
 - Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
 - **tsyringe** **`@singleton()`**; inject gateways, services, state setter/getters as **concrete types** — no string or symbol tokens.
 - **Only** layer for **business logic** and **domain state mutation** (via setters), **except** action-queue observability state updated **only** inside `ActionQueue` (see [app-architecture.mdc](app-architecture.mdc)).

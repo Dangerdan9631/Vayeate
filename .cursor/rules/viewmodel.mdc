@@ -7,6 +7,8 @@ alwaysApply: false
 
 ## Contract
 
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When viewmodel hook/file naming changes here, update that `describe` and vice versa.**
+
 - Bridge **React** and **app state**: expose selected slices via **`useContextSelector`** (or hooks that wrap it).
 - **Components must not** define raw context selectors; they consume viewmodel hooks only.
 - Use **validations** for disabled states, tooltips, and guard logic aligned with controllers.

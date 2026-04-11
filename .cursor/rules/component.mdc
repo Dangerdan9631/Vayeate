@@ -12,6 +12,8 @@ alwaysApply: false
 - **User and lifecycle** events (clicks, inputs, **mount load**, **cleanup unload**) → **enqueue one UI action** (ActionQueue); no direct controller/operation calls from handlers.
 - Read state through **viewmodels** only; **no** business logic.
 
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change filename or export rules above, update those `describe` blocks and vice versa.**
+
 ## Anti-patterns
 
 - `useContextSelector` on app state context inside component files (use viewmodel).
