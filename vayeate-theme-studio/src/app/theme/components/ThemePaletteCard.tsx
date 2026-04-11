@@ -11,10 +11,12 @@ import {
 } from 'react';
 import type { ColorAssignment, ColorVariable } from '../../../model/schemas';
 import { clusterColors } from '../../../domain/utils/color-clustering';
-import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
+import { hexToHue, hslToRgb } from '../../../domain/utils/color-hsl';
+import { rgbToHex } from '../../../domain/utils/color-hex';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { useThemePaletteCardViewModel } from '../viewmodel/use-theme-palette-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
+import { ThemePaletteClusterColumn } from './ThemePaletteClusterColumn';
 
 /** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */
 function hueSliderGradientFromRefHex(refHex: string): string {
@@ -34,9 +36,6 @@ const UNGROUPED_KEY = '__ungrouped__';
 
 const CLUSTER_K_MIN = 1;
 const CLUSTER_K_MAX = 12;
-
-/** Delay (ms) before treating a primary swatch click as single-click; allows double-click to be detected. */
-const PRIMARY_SINGLE_CLICK_DELAY_MS = 300;
 
 function normalizeHex(hex: string): string {
   const s = hex.trim().toLowerCase();
@@ -607,140 +606,6 @@ export function ThemePaletteCard() {
               e.stopPropagation();
             }
 
-            const renderClusterColumn = (cluster: ReturnType<typeof clusterColors>[0], key: string) => {
-              const primaryRefsAll = hexToRefs.get(normalizeHex(cluster.representative)) ?? [];
-              const primaryRefs = primaryRefsAll.filter((r) => refsInGroupSet.has(r));
-              const primaryState = swatchState(primaryRefs, checkedColorRefs);
-              const allRefsInClusterSet = new Set(primaryRefs);
-              for (const hex of cluster.members) {
-                const refs = hexToRefs.get(normalizeHex(hex)) ?? [];
-                for (const r of refs) if (refsInGroupSet.has(r)) allRefsInClusterSet.add(r);
-              }
-              const allRefsInCluster = [...allRefsInClusterSet];
-              const clusterKey = `${groupKey}|${normalizeHex(cluster.representative)}`;
-              const primaryBorderClass =
-                primaryState === 'all'
-                  ? 'theme-palette-swatch-checked'
-                  : primaryState === 'some'
-                    ? 'theme-palette-swatch-partial'
-                    : 'theme-palette-swatch-unchecked';
-
-              const handlePrimaryActivate = () => {
-                const stateAtFirstClick = primaryState;
-                const pending = primaryClickPendingRef.current;
-                if (pending && pending.clusterKey === clusterKey) {
-                  clearTimeout(pending.timeoutId);
-                  primaryClickPendingRef.current = null;
-                  const checked = stateAtFirstClick === 'none' ? false : true;
-                  onSetColorRefsChecked(pending.allRefsInCluster, checked);
-                  return;
-                }
-                if (pending) {
-                  clearTimeout(pending.timeoutId);
-                  primaryClickPendingRef.current = null;
-                }
-                const timeoutId = setTimeout(() => {
-                  if (primaryClickPendingRef.current?.clusterKey === clusterKey) {
-                    handleSwatchClick(cluster.representative, refsInGroupSet);
-                    primaryClickPendingRef.current = null;
-                  }
-                }, PRIMARY_SINGLE_CLICK_DELAY_MS);
-                primaryClickPendingRef.current = {
-                  timeoutId,
-                  clusterKey,
-                  stateAtFirstClick,
-                  allRefsInCluster,
-                  primaryHex: cluster.representative,
-                  refsInGroupSet,
-                };
-              };
-
-              function onPrimarySwatchClick(e: MouseEvent<HTMLDivElement>) {
-                e.preventDefault();
-                handlePrimaryActivate();
-              }
-
-              function onPrimarySwatchContextMenu(e: MouseEvent<HTMLDivElement>) {
-                e.preventDefault();
-                copyHexToClipboard(cluster.representative);
-              }
-
-              function onPrimarySwatchKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handlePrimaryActivate();
-                }
-              }
-
-              return (
-                <div key={key} className="theme-palette-cluster-column">
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    className={`theme-palette-swatch theme-palette-swatch-primary ${primaryBorderClass}`}
-                    style={{ backgroundColor: cluster.representative }}
-                    title={
-                      primaryRefs.length > 0
-                        ? `${normalizeHex(cluster.representative)} — click to toggle variables, double-click to select cluster, right-click to copy\n${primaryRefs.join('\n')}`
-                        : `${normalizeHex(cluster.representative)} — click to toggle variables, double-click to select cluster, right-click to copy`
-                    }
-                    aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, double-click to select cluster, right-click to copy.`}
-                    onClick={onPrimarySwatchClick}
-                    onContextMenu={onPrimarySwatchContextMenu}
-                    onKeyDown={onPrimarySwatchKeyDown}
-                  />
-                  <div className="theme-palette-member-swatches">
-                    {cluster.members.map((hex, midx) => {
-                      const memberRefsAll = hexToRefs.get(normalizeHex(hex)) ?? [];
-                      const memberRefs = memberRefsAll.filter((r) => refsInGroupSet.has(r));
-                      const memberState = swatchState(memberRefs, checkedColorRefs);
-                      const memberBorderClass =
-                        memberState === 'all'
-                          ? 'theme-palette-swatch-checked'
-                          : memberState === 'some'
-                            ? 'theme-palette-swatch-partial'
-                            : 'theme-palette-swatch-unchecked';
-
-                      function onMemberSwatchClick(e: MouseEvent<HTMLDivElement>) {
-                        e.preventDefault();
-                        handleSwatchClick(hex, refsInGroupSet);
-                      }
-
-                      function onMemberSwatchContextMenu(e: MouseEvent<HTMLDivElement>) {
-                        e.preventDefault();
-                        copyHexToClipboard(hex);
-                      }
-
-                      function onMemberSwatchKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          handleSwatchClick(hex, refsInGroupSet);
-                        }
-                      }
-
-                      return (
-                        <div
-                          key={midx}
-                          role="button"
-                          tabIndex={0}
-                          className={`theme-palette-swatch theme-palette-swatch-member ${memberBorderClass}`}
-                          style={{ backgroundColor: hex }}
-                          title={
-                            memberRefs.length > 0
-                              ? `${normalizeHex(hex)} — click to toggle variables, right-click to copy\n${memberRefs.join('\n')}`
-                              : `${normalizeHex(hex)} — click to toggle variables, right-click to copy`
-                          }
-                          aria-label={`${normalizeHex(hex)}, ${memberState} selected. Click to toggle, right-click to copy.`}
-                          onClick={onMemberSwatchClick}
-                          onContextMenu={onMemberSwatchContextMenu}
-                          onKeyDown={onMemberSwatchKeyDown}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            };
             return (
               <div key={groupKey} className="theme-palette-group-block">
                 <div className="theme-palette-group-header">
@@ -754,9 +619,20 @@ export function ThemePaletteCard() {
                   <span className="theme-palette-group-label-inline">{groupLabel}</span>
                 </div>
                 <div className="theme-palette-group-swatches-row">
-                  {clusters.map((cluster, idx) =>
-                    renderClusterColumn(cluster, String(idx)),
-                  )}
+                  {clusters.map((cluster, idx) => (
+                    <ThemePaletteClusterColumn
+                      key={`${groupKey}-${idx}`}
+                      cluster={cluster}
+                      groupKey={groupKey}
+                      refsInGroupSet={refsInGroupSet}
+                      hexToRefs={hexToRefs}
+                      checkedColorRefs={checkedColorRefs}
+                      onSetColorRefsChecked={onSetColorRefsChecked}
+                      handleSwatchClick={handleSwatchClick}
+                      copyHexToClipboard={copyHexToClipboard}
+                      primaryClickPendingRef={primaryClickPendingRef}
+                    />
+                  ))}
                 </div>
               </div>
             );

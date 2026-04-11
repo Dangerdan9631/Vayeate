@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { contrastRatio } from './color';
+import { contrastRatio } from './color-wcag';
 import {
   buildScopeColorMap,
   resolveTokenColor,

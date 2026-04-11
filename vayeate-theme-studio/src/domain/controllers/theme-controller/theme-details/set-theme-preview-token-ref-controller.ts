@@ -6,7 +6,7 @@ import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operat
 import { SetThemeHueReferenceHexOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
 import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { applyHueShift } from '../../../utils/color';
+import { applyHueShift } from '../../../utils/color-hsl';
 
 /** Set a preview token ref field (THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT). Updates theme, saves, recenters hue. */
 @singleton()

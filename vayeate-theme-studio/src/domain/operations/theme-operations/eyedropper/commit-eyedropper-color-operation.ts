@@ -5,7 +5,7 @@ import { DebouncedThemePersistService } from '../../../../gateway/services/debou
 import { closedEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
 import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
 import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
-import { normalizeHexSafe } from '../../../utils/color';
+import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 const PREFIX_ASSIGN = 'eyedropper:assign:';
 const PREFIX_DARK = 'eyedropper:dark:';

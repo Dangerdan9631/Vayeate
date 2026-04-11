@@ -2,6 +2,11 @@ import type { AppState } from '../app-state';
 import type { GenerateResult, ThemeStoreMap, ThemesState } from './themes-state';
 import type { Template, Theme, ThemeReference } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
+import { deriveThemePaneFields } from '../../utils/derive-theme-pane-fields';
+
+function patchThemes(state: AppState, patch: Partial<ThemesState>): AppState {
+  return { ...state, themes: deriveThemePaneFields({ ...state.themes, ...patch }) };
+}
 
 /** Single theme entry payload for batch set. */
 export interface ThemeEntryInput {
@@ -36,68 +41,56 @@ export type ThemesStateUpdate =
 export function themesStateReducer(state: AppState, update: ThemesStateUpdate): AppState {
   switch (update.type) {
     case 'SET_SELECTED_THEME_REF':
-      return { ...state, themes: { ...state.themes, selectedRef: update.ref, hueAdjustment: 0 } };
+      return patchThemes(state, { selectedRef: update.ref, hueAdjustment: 0 });
     case 'SET_THEME':
-      return {
-        ...state,
-        themes: {
-          ...state.themes,
-          theme: update.theme,
-          ...(update.preserveHue === true ? {} : { hueAdjustment: 0 }),
-        },
-      };
+      return patchThemes(state, {
+        theme: update.theme,
+        ...(update.preserveHue === true ? {} : { hueAdjustment: 0 }),
+      });
     case 'SET_THEME_PANE_SELECTIONS':
-      return {
-        ...state,
-        themes: {
-          ...state.themes,
-          checkedColorRefs: update.checkedColorRefs,
-          checkedContrastRefs: update.checkedContrastRefs,
-        },
-      };
+      return patchThemes(state, {
+        checkedColorRefs: update.checkedColorRefs,
+        checkedContrastRefs: update.checkedContrastRefs,
+      });
     case 'SET_THEME_HUE_ADJUSTMENT':
-      return { ...state, themes: { ...state.themes, hueAdjustment: update.value } };
+      return patchThemes(state, { hueAdjustment: update.value });
     case 'SET_THEME_HUE_REFERENCE_HEX':
-      return { ...state, themes: { ...state.themes, hueReferenceHex: update.value } };
+      return patchThemes(state, { hueReferenceHex: update.value });
     case 'SET_THEME_IS_CREATING':
-      return { ...state, themes: { ...state.themes, isCreating: update.value } };
+      return patchThemes(state, { isCreating: update.value });
     case 'SET_THEME_CREATE_DIALOG_OPEN':
-      return { ...state, themes: { ...state.themes, createDialogOpen: update.value } };
+      return patchThemes(state, { createDialogOpen: update.value });
     case 'SET_THEME_CREATE_FORM_NAME':
-      return { ...state, themes: { ...state.themes, createFormName: update.value } };
+      return patchThemes(state, { createFormName: update.value });
     case 'SET_GENERATE_RESULT':
-      return { ...state, themes: { ...state.themes, generateResult: update.result } };
+      return patchThemes(state, { generateResult: update.result });
     case 'SET_THEME_SAVE_ERROR':
-      return { ...state, themes: { ...state.themes, saveError: update.error } };
+      return patchThemes(state, { saveError: update.error });
     case 'SET_ASSIGN_COLOR_DRAFT_TEXT':
-      return { ...state, themes: { ...state.themes, assignColorDraftText: update.value } };
+      return patchThemes(state, { assignColorDraftText: update.value });
     case 'SET_THEME_VARIABLES_SEARCH_TEXT':
-      return { ...state, themes: { ...state.themes, themeVariablesSearchText: update.value } };
+      return patchThemes(state, { themeVariablesSearchText: update.value });
     case 'SET_THEME_PREVIEW_VARIABLE_FILTER_TEXT':
-      return { ...state, themes: { ...state.themes, previewVariableFilterText: update.value } };
+      return patchThemes(state, { previewVariableFilterText: update.value });
     case 'SET_THEME_PREVIEW_SELECTED_SAMPLE_KEY':
-      return { ...state, themes: { ...state.themes, selectedPreviewSampleKey: update.value } };
+      return patchThemes(state, { selectedPreviewSampleKey: update.value });
     case 'SET_THEME_EDITOR_PREVIEWS':
-      return { ...state, themes: { ...state.themes, editorPreviews: update.previews } };
+      return patchThemes(state, { editorPreviews: update.previews });
     case 'SET_THEME_LOADED_TEMPLATE':
-      return { ...state, themes: { ...state.themes, loadedTemplateForTheme: update.template } };
+      return patchThemes(state, { loadedTemplateForTheme: update.template });
     case 'SET_THEME_OPEN_PICKER_CONTEXT':
-      return { ...state, themes: { ...state.themes, openPickerContext: update.context } };
+      return patchThemes(state, { openPickerContext: update.context });
     case 'SET_THEME_VARIABLE_DRAFT_TEXT':
-      return {
-        ...state,
-        themes: {
-          ...state.themes,
-          variableDraftTexts: { ...state.themes.variableDraftTexts, [update.key]: update.value },
-        },
-      };
+      return patchThemes(state, {
+        variableDraftTexts: { ...state.themes.variableDraftTexts, [update.key]: update.value },
+      });
     case 'SET_THEME_MAP_ENTRY': {
       const byVersion = {
         ...state.themes.themeMap[update.name],
         [update.version]: { isLoaded: update.isLoaded, theme: update.theme ?? undefined },
       };
       const themeMap = { ...state.themes.themeMap, [update.name]: byVersion };
-      return { ...state, themes: { ...state.themes, themeMap } };
+      return patchThemes(state, { themeMap });
     }
     case 'SET_THEME_MAP_ENTRIES': {
       const themeMap: ThemeStoreMap = {};
@@ -105,7 +98,7 @@ export function themesStateReducer(state: AppState, update: ThemesStateUpdate): 
         if (!themeMap[entry.name]) themeMap[entry.name] = {};
         themeMap[entry.name]![entry.version] = { isLoaded: entry.isLoaded, theme: entry.theme ?? undefined };
       }
-      return { ...state, themes: { ...state.themes, themeMap } };
+      return patchThemes(state, { themeMap });
     }
     default:
       return state;

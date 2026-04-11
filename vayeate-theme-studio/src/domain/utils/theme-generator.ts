@@ -3,7 +3,7 @@
  * Reuses the same color resolution and contrast logic as the preview (scope-resolver).
  */
 
-import { adjustColorToMeetContrast } from './color';
+import { adjustColorToMeetContrast } from './color-adjust-contrast';
 import type {
   ColorAssignment,
   ContrastAssignment,

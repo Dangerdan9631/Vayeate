@@ -4,7 +4,7 @@
  * against the contrast variable's comparison source color. Pure functions for use in the renderer.
  */
 
-import { adjustColorToMeetContrast } from './color';
+import { adjustColorToMeetContrast } from './color-adjust-contrast';
 import type {
   ColorAssignment,
   ContrastAssignment,

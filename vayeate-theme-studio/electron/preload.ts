@@ -1,25 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-type AppConfig = {
-  colorScheme?: 'light' | 'dark'
-};
-
-function parseAppConfig(): AppConfig | undefined {
-  const raw = ipcRenderer.sendSync('config:loadSync');
-  if (raw === null || raw === undefined || typeof raw !== 'object' || Array.isArray(raw)) {
-    return undefined;
-  }
-
-  const colorScheme = (`colorScheme` in raw && (raw['colorScheme'] === 'light' || raw['colorScheme'] === 'dark'))
-      ? raw['colorScheme'] as 'light' | 'dark'
-      : undefined;
-  
-  return {
-    colorScheme: colorScheme
-  } as AppConfig;
-}
-
-const initialAppConfig = parseAppConfig();
+/** Raw JSON from main (or null); parsed in renderer via parseInitialAppConfig. */
+const initialAppConfigRaw: unknown = ipcRenderer.sendSync('config:loadSync');
 
 const electronAPI = {
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
@@ -93,7 +75,7 @@ const electronAPI = {
     ipcRenderer.invoke('fs:listDirEntries', relativeDirPath) as Promise<
       Array<{ name: string; isDirectory: boolean }>
     >,
-  getInitialAppConfig: (): AppConfig | undefined => initialAppConfig,
+  getInitialAppConfig: (): unknown => initialAppConfigRaw,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

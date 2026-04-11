@@ -23,20 +23,20 @@
     {
       "colorRef": "abc",
       "light": {
-        "value": "#072b47"
+        "value": "#48573f"
       },
       "dark": {
-        "value": "#072b47"
+        "value": "#48573f"
       },
       "useDarkForLight": false
     },
     {
       "colorRef": "def",
       "light": {
-        "value": "#072b47"
+        "value": "#48573f"
       },
       "dark": {
-        "value": "#072b47"
+        "value": "#48573f"
       },
       "useDarkForLight": false
     }

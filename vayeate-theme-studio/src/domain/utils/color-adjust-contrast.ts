@@ -1,194 +1,11 @@
-/**
- * Color and contrast utilities for theme preview and generation.
- * WCAG 2.1 relative luminance and contrast ratio; adjust token color to meet contrast constraints.
- */
-
-export interface Rgb {
-  r: number;
-  g: number;
-  b: number;
-}
-
-export interface Hsl {
-  h: number;
-  s: number;
-  l: number;
-}
-
-export type ContrastComparisonMethod = 'lessThan' | 'equalTo' | 'greaterThan';
-
-export interface AdjustContrastOptions {
-  comparisonMethod: ContrastComparisonMethod;
-  value: number;
-  min?: number | null;
-  max?: number | null;
-}
+import type { AdjustContrastOptions } from './color-types';
+import { hexToRgb, normalizeHex, rgbToHex } from './color-hex';
+import { hslToRgb, rgbToHsl } from './color-hsl';
+import { contrastRatio, luminance } from './color-wcag';
 
 const WCAG_RATIO_MAX = 21;
 
-/**
- * Lenient hex normalizer for UI/palette input. Returns null if invalid or empty.
- */
-export function normalizeHexSafe(hex: string): string | null {
-  const s = (hex ?? '').trim().toLowerCase();
-  const withHash = s.startsWith('#') ? s : s ? `#${s}` : '';
-  if (!withHash) return null;
-  const bare = withHash.slice(1);
-  if (!/^[0-9a-f]+$/.test(bare) || (bare.length !== 3 && bare.length !== 6 && bare.length !== 8)) {
-    return null;
-  }
-  const expanded = bare.length === 3 ? bare.split('').map((c) => c + c).join('') : bare;
-  return `#${expanded}`;
-}
-
-export function normalizeHex(hex: string): string {
-  const h = hex.trim().toLowerCase();
-  if (!h.startsWith('#')) {
-    throw new Error(`Invalid hex color: ${hex}`);
-  }
-  const value = h.slice(1);
-  if (value.length === 3) {
-    return `#${value
-      .split('')
-      .map((c) => c + c)
-      .join('')}`;
-  }
-  if (value.length === 6) {
-    return `#${value}`;
-  }
-  if (value.length === 8) {
-    return `#${value}`;
-  }
-  throw new Error(`Invalid hex color length: ${hex}`);
-}
-
-export function hexToRgb(hex: string): Rgb {
-  const n = normalizeHex(hex);
-  const rgbHex = n.slice(1, 7);
-  return {
-    r: parseInt(rgbHex.slice(0, 2), 16) / 255,
-    g: parseInt(rgbHex.slice(2, 4), 16) / 255,
-    b: parseInt(rgbHex.slice(4, 6), 16) / 255,
-  };
-}
-
-/** Clamp a single channel to sRGB [0, 1]. Handles NaN/Infinity. */
-function clampChannel(value: number): number {
-  if (Number.isFinite(value)) return Math.max(0, Math.min(1, value));
-  return 0;
-}
-
-/** Clamp RGB to sRGB gamut so hex output never clips out of range. */
-function clampRgbToSrgb(rgb: Rgb): Rgb {
-  return {
-    r: clampChannel(rgb.r),
-    g: clampChannel(rgb.g),
-    b: clampChannel(rgb.b),
-  };
-}
-
-export function rgbToHex(rgb: Rgb): string {
-  const clamped = clampRgbToSrgb(rgb);
-  const toHex = (value: number) =>
-    Math.round(value * 255)
-      .toString(16)
-      .padStart(2, '0');
-  return `#${toHex(clamped.r)}${toHex(clamped.g)}${toHex(clamped.b)}`;
-}
-
-function toLinear(c: number): number {
-  return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-}
-
-export function luminance(hex: string): number {
-  const { r, g, b } = hexToRgb(hex);
-  return 0.2126 * toLinear(r) + 0.7152 * toLinear(g) + 0.0722 * toLinear(b);
-}
-
-export function contrastRatio(foreground: string, background: string): number {
-  const l1 = luminance(foreground);
-  const l2 = luminance(background);
-  const lighter = Math.max(l1, l2);
-  const darker = Math.min(l1, l2);
-  return (lighter + 0.05) / (darker + 0.05);
-}
-
-export function rgbToHsl(rgb: Rgb): Hsl {
-  const max = Math.max(rgb.r, rgb.g, rgb.b);
-  const min = Math.min(rgb.r, rgb.g, rgb.b);
-  const l = (max + min) / 2;
-
-  if (max === min) {
-    return { h: 0, s: 0, l };
-  }
-
-  const delta = max - min;
-  const s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-
-  let h = 0;
-  if (max === rgb.r) {
-    h = (rgb.g - rgb.b) / delta + (rgb.g < rgb.b ? 6 : 0);
-  } else if (max === rgb.g) {
-    h = (rgb.b - rgb.r) / delta + 2;
-  } else {
-    h = (rgb.r - rgb.g) / delta + 4;
-  }
-
-  return { h: h / 6, s, l };
-}
-
-function hueToRgb(p: number, q: number, t: number): number {
-  let x = t;
-  if (x < 0) x += 1;
-  if (x > 1) x -= 1;
-  if (x < 1 / 6) return p + (q - p) * 6 * x;
-  if (x < 1 / 2) return q;
-  if (x < 2 / 3) return p + (q - p) * (2 / 3 - x) * 6;
-  return p;
-}
-
-export function hslToRgb(hsl: Hsl): Rgb {
-  if (hsl.s === 0) {
-    return { r: hsl.l, g: hsl.l, b: hsl.l };
-  }
-
-  const q = hsl.l < 0.5 ? hsl.l * (1 + hsl.s) : hsl.l + hsl.s - hsl.l * hsl.s;
-  const p = 2 * hsl.l - q;
-
-  return {
-    r: hueToRgb(p, q, hsl.h + 1 / 3),
-    g: hueToRgb(p, q, hsl.h),
-    b: hueToRgb(p, q, hsl.h - 1 / 3),
-  };
-}
-
-/**
- * Return hue of a hex color in [0, 1]. Uses rgbToHsl; grays return 0. Invalid hex returns 0.
- */
-export function hexToHue(hex: string): number {
-  try {
-    const rgb = hexToRgb(hex);
-    const hsl = rgbToHsl(rgb);
-    return hsl.h;
-  } catch {
-    return 0;
-  }
-}
-
-/**
- * Shift hue of a hex color. shift in [-1, 1] (e.g. slider value / 100); ±1 is a full rotation.
- * Invalid hex is returned unchanged.
- */
-export function applyHueShift(hex: string, shift: number): string {
-  try {
-    const rgb = hexToRgb(hex);
-    const hsl = rgbToHsl(rgb);
-    const h = ((hsl.h + shift) % 1 + 1) % 1;
-    return rgbToHex(hslToRgb({ ...hsl, h }));
-  } catch {
-    return hex;
-  }
-}
+const BLACK = '#000000';
 
 /** Adjust foreground to have at least target contrast vs background. */
 function adjustBrightnessMin(foreground: string, background: string, target: number): string {
@@ -334,8 +151,6 @@ function adjustBrightnessToRange(
   return best;
 }
 
-const BLACK = '#000000';
-
 /**
  * Clamp color so that its contrast vs black is within [minContrast, maxContrast].
  * Min and max in contrast variables represent the allowed range for the color's contrast compared to black.
@@ -388,7 +203,11 @@ export function adjustColorToMeetContrast(
   /* Ensure result stays in sRGB; contrast math can push values outside [0,1]. */
   try {
     const rgb = hexToRgb(result);
-    return rgbToHex(clampRgbToSrgb(rgb));
+    return rgbToHex({
+      r: Math.max(0, Math.min(1, Number.isFinite(rgb.r) ? rgb.r : 0)),
+      g: Math.max(0, Math.min(1, Number.isFinite(rgb.g) ? rgb.g : 0)),
+      b: Math.max(0, Math.min(1, Number.isFinite(rgb.b) ? rgb.b : 0)),
+    });
   } catch {
     return result;
   }

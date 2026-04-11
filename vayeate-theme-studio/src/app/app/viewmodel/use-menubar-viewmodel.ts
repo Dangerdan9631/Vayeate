@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
+import type { UndoListEntry } from '../../../domain/core/undo-stack-types';
 import { AppContext } from '../../core/app-context';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppActionType } from '../actions/app-action-type';

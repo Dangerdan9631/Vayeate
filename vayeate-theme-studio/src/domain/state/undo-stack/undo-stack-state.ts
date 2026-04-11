@@ -1,4 +1,4 @@
-import type { UndoListEntry } from '../../core/undo-manager-v2';
+import type { UndoListEntry } from '../../core/undo-stack-types';
 
 /** Snapshot of undo stack list + capabilities for the menu bar (synced from IPC by operations). */
 export interface UndoMenuSnapshot {

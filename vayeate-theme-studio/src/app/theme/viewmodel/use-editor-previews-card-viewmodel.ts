@@ -4,7 +4,6 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import type { ThemePreviewTokenRefField, TokenKey } from '../../../model/schemas';
 import { ThemeActionType } from '../actions/theme-action-type';
-import { computeDisplayColorAssignments } from '../../../domain/utils/theme-pane-display';
 
 export function useEditorPreviewsCardViewModel() {
   const dispatch = useAppDispatch();
@@ -17,21 +16,10 @@ export function useEditorPreviewsCardViewModel() {
   });
   const {
     theme,
-    checkedColorRefs: checkedColorRefsArray,
-    hueAdjustment,
     loadedTemplateForTheme: loadedTemplate,
     editorPreviews,
+    paneDisplayColorAssignments,
   } = themes;
-
-  const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
-  const applyHueToDark = theme?.applyPaletteToDark ?? true;
-  const applyHueToLight = theme?.applyPaletteToLight ?? true;
-
-  const displayColorAssignments = useMemo(
-    () =>
-      computeDisplayColorAssignments(theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight),
-    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
-  );
 
   const templateMappings = useMemo(() => loadedTemplate?.mappings ?? [], [loadedTemplate]);
   const contrastVariablesFromTemplate = useMemo(
@@ -106,7 +94,7 @@ export function useEditorPreviewsCardViewModel() {
   return {
     theme,
     editorPreviews,
-    colorAssignments: displayColorAssignments,
+    colorAssignments: paneDisplayColorAssignments,
     contrastAssignments: theme?.contrastAssignments ?? [],
     contrastVariables: contrastVariablesFromTemplate,
     mappings: templateMappings,

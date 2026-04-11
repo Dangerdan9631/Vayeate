@@ -11,7 +11,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ColorAssignment, ContrastAssignment } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
 import { useEditorPreviewsCardViewModel } from '../viewmodel/use-editor-previews-card-viewmodel';
-import { contrastRatio } from '../../../domain/utils/color';
+import { contrastRatio } from '../../../domain/utils/color-wcag';
 import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/utils/scope-resolver';
 
 /** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
@@ -395,18 +395,30 @@ export function EditorPreviewsCard() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sampleDropdownOpen]);
 
-  const scrollToSample = (index: number) => {
-    virtualizer.scrollToIndex(index, { align: 'start' });
-    isSyncingScrollRef.current = true;
-    requestAnimationFrame(() => {
-      const dark = darkScrollRef.current;
-      const light = lightScrollRef.current;
-      if (dark) setScrollTop(dark.scrollTop);
-      if (dark && light) light.scrollTop = dark.scrollTop;
-      isSyncingScrollRef.current = false;
-    });
-    setSampleDropdownOpen(false);
-  };
+  const scrollToSample = useCallback(
+    (index: number) => {
+      virtualizer.scrollToIndex(index, { align: 'start' });
+      isSyncingScrollRef.current = true;
+      requestAnimationFrame(() => {
+        const dark = darkScrollRef.current;
+        const light = lightScrollRef.current;
+        if (dark) setScrollTop(dark.scrollTop);
+        if (dark && light) light.scrollTop = dark.scrollTop;
+        isSyncingScrollRef.current = false;
+      });
+      setSampleDropdownOpen(false);
+    },
+    [virtualizer],
+  );
+
+  const onSampleDropdownItemClick = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement>) => {
+      const raw = e.currentTarget.dataset.sampleIndex;
+      if (raw === undefined) return;
+      scrollToSample(Number(raw));
+    },
+    [scrollToSample],
+  );
 
   function onSampleDropdownToggleClick() {
     setSampleDropdownOpen((v) => !v);
@@ -587,22 +599,18 @@ export function EditorPreviewsCard() {
                       scrollbarColor: `${darkMenuFg} ${darkMenuBg}`,
                     }}
                   >
-                    {previews.map((p, i) => {
-                      function onDarkSampleItemClick() {
-                        scrollToSample(i);
-                      }
-                      return (
+                    {previews.map((p, i) => (
                       <button
                         key={`${p.language}/${p.fileName}`}
                         type="button"
                         role="option"
                         className="theme-preview-sample-dropdown-item"
-                        onClick={onDarkSampleItemClick}
+                        data-sample-index={i}
+                        onClick={onSampleDropdownItemClick}
                       >
                         {previewLabelByIndex(p)}
                       </button>
-                      );
-                    })}
+                    ))}
                   </div>
                 )}
               </div>
@@ -755,22 +763,18 @@ export function EditorPreviewsCard() {
                       scrollbarColor: `${lightMenuFg} ${lightMenuBg}`,
                     }}
                   >
-                    {previews.map((p, i) => {
-                      function onLightSampleItemClick() {
-                        scrollToSample(i);
-                      }
-                      return (
+                    {previews.map((p, i) => (
                       <button
                         key={`${p.language}/${p.fileName}`}
                         type="button"
                         role="option"
                         className="theme-preview-sample-dropdown-item"
-                        onClick={onLightSampleItemClick}
+                        data-sample-index={i}
+                        onClick={onSampleDropdownItemClick}
                       >
                         {previewLabelByIndex(p)}
                       </button>
-                      );
-                    })}
+                    ))}
                   </div>
                 )}
               </div>

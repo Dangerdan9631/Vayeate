@@ -1,5 +1,5 @@
 import type { ColorAssignment } from '../../model/schemas';
-import { applyHueShift } from './color';
+import { applyHueShift } from './color-hsl';
 
 export function applyHueToAssignmentsFiltered(
   assignments: readonly ColorAssignment[],

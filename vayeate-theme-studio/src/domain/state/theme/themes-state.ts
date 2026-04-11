@@ -1,5 +1,6 @@
-import type { Template, Theme, ThemeReference } from '../../../model/schemas';
+import type { ColorAssignment, Template, Theme, ThemeReference } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
+import type { SelectedColorsDisplay } from '../../../model/theme-pane-state';
 
 export interface ThemeEntry {
   isLoaded: boolean;
@@ -34,6 +35,11 @@ export interface ThemesState {
   openPickerContext: string | null;
   variableDraftTexts: Record<string, string>;
   themeMap: ThemeStoreMap;
+  /** Hue-adjusted color assignments for palette and editor preview (derived). */
+  paneDisplayColorAssignments: ColorAssignment[];
+  paneSelectedColorsDisplay: SelectedColorsDisplay;
+  orphanColorKeys: string[];
+  orphanContrastKeys: string[];
 }
 
 export const initialThemesState: ThemesState = {
@@ -57,6 +63,10 @@ export const initialThemesState: ThemesState = {
   openPickerContext: null,
   variableDraftTexts: {},
   themeMap: {},
+  paneDisplayColorAssignments: [],
+  paneSelectedColorsDisplay: { kind: 'none' },
+  orphanColorKeys: [],
+  orphanContrastKeys: [],
 };
 
 export function getThemeRefs(map: ThemeStoreMap): ThemeReference[] {

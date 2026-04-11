@@ -4,14 +4,6 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { ThemeActionType } from '../actions/theme-action-type';
 import type { ContrastAssignmentValue, ContrastComparisonMethod, ContrastValue } from '../../../model/schemas';
-import {
-  computeDisplayColorAssignments,
-} from '../../../domain/utils/theme-pane-display';
-import {
-  computeOrphanColorKeys,
-  computeOrphanContrastKeys,
-} from '../../../domain/utils/theme-orphan-keys';
-
 export function useThemeVariablesCardViewModel() {
   const dispatch = useAppDispatch();
   const themes = useContextSelector(AppContext, (c) => {
@@ -26,27 +18,17 @@ export function useThemeVariablesCardViewModel() {
     checkedColorRefs: checkedColorRefsArray,
     checkedContrastRefs: checkedContrastRefsArray,
     themeVariablesSearchText,
-    hueAdjustment,
     loadedTemplateForTheme: loadedTemplate,
+    paneDisplayColorAssignments,
+    orphanColorKeys: orphanColorKeysArray,
+    orphanContrastKeys: orphanContrastKeysArray,
   } = themes;
 
   const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
   const checkedContrastRefs = useMemo(() => new Set(checkedContrastRefsArray), [checkedContrastRefsArray]);
 
-  const applyHueToDark = theme?.applyPaletteToDark ?? true;
-  const applyHueToLight = theme?.applyPaletteToLight ?? true;
-
-  const displayColorAssignments = useMemo(
-    () =>
-      computeDisplayColorAssignments(
-        theme,
-        hueAdjustment,
-        checkedColorRefs,
-        applyHueToDark,
-        applyHueToLight,
-      ),
-    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
-  );
+  const orphanColorKeys = useMemo(() => new Set(orphanColorKeysArray), [orphanColorKeysArray]);
+  const orphanContrastKeys = useMemo(() => new Set(orphanContrastKeysArray), [orphanContrastKeysArray]);
 
   const colorVariablesFromTemplate = useMemo(
     () => loadedTemplate?.colorVariables ?? [],
@@ -59,9 +41,6 @@ export function useThemeVariablesCardViewModel() {
   );
 
   const groupsFromTemplate = useMemo(() => loadedTemplate?.groups ?? [], [loadedTemplate]);
-
-  const orphanColorKeys = useMemo(() => computeOrphanColorKeys(theme), [theme]);
-  const orphanContrastKeys = useMemo(() => computeOrphanContrastKeys(theme), [theme]);
 
   const colorSectionState = useMemo(() => {
     if (!theme?.colorAssignments.length) return 'all' as const;
@@ -301,7 +280,7 @@ export function useThemeVariablesCardViewModel() {
 
   return {
     theme,
-    colorAssignments: displayColorAssignments,
+    colorAssignments: paneDisplayColorAssignments,
     contrastAssignments: theme?.contrastAssignments ?? [],
     colorVariables: colorVariablesFromTemplate,
     contrastVariables: contrastVariablesFromTemplate,

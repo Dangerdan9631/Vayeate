@@ -3,7 +3,7 @@
  * Used when calling undoManagerV2.getOrCreate(stackId, { processor }).
  */
 
-import type { UndoAction, UndoProcessor } from './undo-manager-v2';
+import type { UndoAction, UndoProcessor } from './undo-stack-types';
 
 export function createUndoProcessor(): UndoProcessor {
   return {

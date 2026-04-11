@@ -6,11 +6,7 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
 import { ThemeActionType } from '../actions/theme-action-type';
-import {
-  computeDisplayColorAssignments,
-  computeSelectedColorsDisplay,
-  normalizeThemeHex,
-} from '../../../domain/utils/theme-pane-display';
+import { normalizeThemeHex } from '../../../domain/utils/normalize-theme-hex';
 
 export function useThemePaletteCardViewModel() {
   const dispatch = useAppDispatch();
@@ -29,6 +25,8 @@ export function useThemePaletteCardViewModel() {
     hueAdjustment,
     hueReferenceHex,
     loadedTemplateForTheme: loadedTemplate,
+    paneDisplayColorAssignments,
+    paneSelectedColorsDisplay,
   } = themes;
 
   const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
@@ -36,30 +34,6 @@ export function useThemePaletteCardViewModel() {
   const applyHueToDark = theme?.applyPaletteToDark ?? true;
   const applyHueToLight = theme?.applyPaletteToLight ?? true;
   const hueDragStartRef = useRef<{ theme: NonNullable<typeof theme>; hueAdjustment: number } | null>(null);
-
-  const displayColorAssignments = useMemo(
-    () =>
-      computeDisplayColorAssignments(
-        theme,
-        hueAdjustment,
-        checkedColorRefs,
-        applyHueToDark,
-        applyHueToLight,
-      ),
-    [theme, hueAdjustment, checkedColorRefs, applyHueToDark, applyHueToLight],
-  );
-
-  const selectedColorsDisplay = useMemo(
-    () =>
-      computeSelectedColorsDisplay(
-        theme,
-        checkedColorRefs,
-        displayColorAssignments,
-        applyHueToDark,
-        applyHueToLight,
-      ),
-    [theme, checkedColorRefs, displayColorAssignments, applyHueToDark, applyHueToLight],
-  );
 
   const lastSelectedRefForHueRef = useRef<{ name: string; version: string } | null>(null);
   useEffect(() => {
@@ -240,13 +214,13 @@ export function useThemePaletteCardViewModel() {
     clusterCountK: theme?.paletteClusterCountK ?? 5,
     onClusterCountDelta,
     onClusterCountCommit,
-    colorAssignments: displayColorAssignments,
+    colorAssignments: paneDisplayColorAssignments,
     colorVariables: colorVariablesFromTemplate,
     groups: groupsFromTemplate,
     checkedColorRefs: checkedColorRefs as ReadonlySet<string>,
     onSetColorGroupChecked: setColorGroupChecked,
     onSetColorRefsChecked: setColorRefsChecked,
-    selectedColorsDisplay,
+    selectedColorsDisplay: paneSelectedColorsDisplay,
     onSetSelectedColors: setSelectedColorsToHex,
     onColorPickerOpen: openColorPicker,
     onSetSelectedColorsPreview: setSelectedColorsPreview,

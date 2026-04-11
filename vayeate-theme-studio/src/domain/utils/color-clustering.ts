@@ -3,7 +3,8 @@
  * (medoid) per cluster and the other members of each cluster.
  */
 
-import { hexToRgb, type Rgb } from './color';
+import type { Rgb } from './color-types';
+import { hexToRgb } from './color-hex';
 
 export interface ClusterResult {
   representative: string;

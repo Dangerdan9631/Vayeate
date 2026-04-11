@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
 import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
-import { normalizeHexSafe } from '../../../utils/color';
+import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
 /** Applies bulk color text from picker/eyedropper to checked color refs and persists. */

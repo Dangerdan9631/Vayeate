@@ -1,13 +1,12 @@
 import { describe, it, expect } from 'vitest';
+import { createUndoManagerV2, undoManagerV2 } from './undo-manager-v2';
+import { createStack } from './undo-stack';
 import {
   createFrameId,
-  undoManagerV2,
-  createUndoManagerV2,
-  createStack,
+  type UndoAction,
   type UndoFrame,
   type UndoProcessor,
-  type UndoAction,
-} from './undo-manager-v2';
+} from './undo-stack-types';
 
 type RecordedCall = { type: 'apply' | 'revert'; action: UndoAction };
 
@@ -322,7 +321,7 @@ describe('createUndoManagerV2', () => {
   });
 });
 
-type FakeAdapter = import('./undo-manager-v2').UndoPersistenceAdapter & {
+type FakeAdapter = import('./undo-stack-types').UndoPersistenceAdapter & {
   saves: { stackId: string; payload: string }[];
   loads: Map<string, string>;
 };

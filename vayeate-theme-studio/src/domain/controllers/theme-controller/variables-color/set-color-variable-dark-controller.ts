@@ -4,7 +4,7 @@ import type { Theme } from '../../../../model/schemas';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { normalizeHexSafe } from '../../../utils/color';
+import { normalizeHexSafe } from '../../../utils/color-hex';
 
 @singleton()
 export class SetColorVariableDarkController {

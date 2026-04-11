@@ -1,11 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import {
-  contrastRatio,
-  adjustColorToMeetContrast,
-  applyHueShift,
-  luminance,
-  normalizeHex,
-} from './color';
+import { adjustColorToMeetContrast } from './color-adjust-contrast';
+import { normalizeHex } from './color-hex';
+import { applyHueShift } from './color-hsl';
+import { contrastRatio, luminance } from './color-wcag';
 
 describe('normalizeHex', () => {
   it('expands 3-digit hex to 6', () => {
