@@ -4,14 +4,12 @@ import type { Theme } from '../../../model/schemas';
 import { ThemeGateway } from '../../../gateway/theme/theme-gateway';
 import { initialThemesState } from '../../state/theme/themes-state';
 import { ThemesStateGetter, ThemesStateSetter } from '../../state/theme/themes-state-reducer';
-import {
-  CreateThemeOperation,
-  DeleteThemeOperation,
-  GenerateThemeOperation,
-  LoadThemeRefsOperation,
-  LoadThemeOperation,
-  SaveThemeOperation,
-} from '.';
+import { CreateThemeOperation } from './theme-list/create-theme-operation';
+import { DeleteThemeOperation } from './theme-list/delete-theme-operation';
+import { GenerateThemeOperation } from './theme-details/generate-theme-operation';
+import { LoadThemeRefsOperation } from './theme-list/load-theme-refs-operation';
+import { LoadThemeOperation } from './theme-details/load-theme-operation';
+import { SaveThemeOperation } from './theme-details/save-theme-operation';
 
 const themeGatewayMock = {
   createTheme: vi.fn(),

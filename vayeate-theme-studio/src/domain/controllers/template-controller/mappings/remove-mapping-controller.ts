@@ -1,12 +1,10 @@
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  BumpTemplateVersionForEditOperation,
-  RemoveMappingFromTemplateOperation,
-  SaveTemplateOperation,
-} from '../../../operations/template-operations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { RemoveMappingFromTemplateOperation } from '../../../operations/template-operations/mappings/remove-mapping-from-template-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class RemoveMappingController {

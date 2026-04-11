@@ -5,13 +5,11 @@ import {
 } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  BumpTemplateVersionForEditOperation,
-  MergeSemanticTokenSetsOperation,
-  SaveTemplateOperation,
-  UpdateSemanticVariantKeyInTemplateOperation,
-} from '../../../operations/template-operations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { MergeSemanticTokenSetsOperation } from '../../../operations/template-operations/mappings-semantic/merge-semantic-token-sets-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { UpdateSemanticVariantKeyInTemplateOperation } from '../../../operations/template-operations/mappings-semantic/update-semantic-variant-key-in-template-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 export type UpdateSemanticVariantKeyPayload =
   | { variant: 'modifier'; tokenKey: string; modifiers: string[] }

@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import { PerformRedoOperation, PerformUndoOperation } from '../../operations/undo-operations';
+import { PerformRedoOperation } from '../../operations/undo-operations/perform-redo-operation';
+import { PerformUndoOperation } from '../../operations/undo-operations/perform-undo-operation';
 
 @singleton()
 export class OnGlobalKeyDownEventController {

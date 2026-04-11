@@ -1,7 +1,7 @@
 import { useContextSelector } from 'use-context-selector';
 import type { EyedropperUiState } from '../../../domain/state/ui/eyedropper-ui-state';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 
 export interface EyedropperOverlayViewModel {
   dispatch: ReturnType<typeof useAppDispatch>;

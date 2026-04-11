@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import type { CatalogType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 

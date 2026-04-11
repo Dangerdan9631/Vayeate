@@ -1,14 +1,12 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
-import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
+import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
 import { closedEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
 import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
 import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
-import { scheduleDebouncedThemePersist } from '../theme-details/debounced-theme-gateway-save';
-
 const PREFIX_ASSIGN = 'eyedropper:assign:';
 const PREFIX_DARK = 'eyedropper:dark:';
 const PREFIX_LIGHT = 'eyedropper:light:';
@@ -21,7 +19,7 @@ export class CommitEyedropperColorOperation {
     private readonly uiStateSetter: UiStateSetter,
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly themesStateSetter: ThemesStateSetter,
-    private readonly themeGateway: ThemeGateway,
+    private readonly debouncedThemePersist: DebouncedThemePersistService,
   ) {}
 
   execute(): void {
@@ -90,7 +88,7 @@ export class CommitEyedropperColorOperation {
     this.themesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
     this.themesStateSetter.apply({ type: 'SET_THEME', theme: nextTheme, preserveHue: true });
     this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
-    scheduleDebouncedThemePersist(this.themeGateway, this.themesStateSetter, nextTheme);
+    this.debouncedThemePersist.schedule(nextTheme);
   }
 
   private applyColorVariableDark(ref: ColorVariableKey, value: string): void {
@@ -104,7 +102,7 @@ export class CommitEyedropperColorOperation {
     this.themesStateSetter.apply({ type: 'SET_THEME', theme: next });
     this.themesStateSetter.apply({ type: 'SET_THEME', theme: next, preserveHue: true });
     this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
-    scheduleDebouncedThemePersist(this.themeGateway, this.themesStateSetter, next);
+    this.debouncedThemePersist.schedule(next);
   }
 
   private applyColorVariableLight(ref: ColorVariableKey, value: string): void {
@@ -118,6 +116,6 @@ export class CommitEyedropperColorOperation {
     this.themesStateSetter.apply({ type: 'SET_THEME', theme: next });
     this.themesStateSetter.apply({ type: 'SET_THEME', theme: next, preserveHue: true });
     this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
-    scheduleDebouncedThemePersist(this.themeGateway, this.themesStateSetter, next);
+    this.debouncedThemePersist.schedule(next);
   }
 }

@@ -20,9 +20,6 @@ function parseAppConfig(): AppConfig | undefined {
 }
 
 const initialAppConfig = parseAppConfig();
-function getElectronInitialAppConfig(): AppConfig | undefined {
-  return initialAppConfig;
-}
 
 const electronAPI = {
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
@@ -96,7 +93,7 @@ const electronAPI = {
     ipcRenderer.invoke('fs:listDirEntries', relativeDirPath) as Promise<
       Array<{ name: string; isDirectory: boolean }>
     >,
+  getInitialAppConfig: (): AppConfig | undefined => initialAppConfig,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);
-contextBridge.exposeInMainWorld('getElectronInitialAppConfig', getElectronInitialAppConfig);

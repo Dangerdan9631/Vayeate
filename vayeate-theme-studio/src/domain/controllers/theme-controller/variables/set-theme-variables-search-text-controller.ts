@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetThemeVariablesSearchTextOperation } from '../../../operations/theme-operations';
+import { SetThemeVariablesSearchTextOperation } from '../../../operations/theme-operations/variables/set-theme-variables-search-text-operation';
 
 @singleton()
 export class SetThemeVariablesSearchTextController {

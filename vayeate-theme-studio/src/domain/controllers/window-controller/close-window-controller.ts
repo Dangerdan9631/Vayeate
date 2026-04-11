@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetWindowStateOperation } from '../../operations/window-operations';
+import { SetWindowStateOperation } from '../../operations/window-operations/set-window-state-operation';
 
 @singleton()
 export class CloseWindowController {

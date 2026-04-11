@@ -1,16 +1,14 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { parseThemeJson } from '../../../utils/theme-parser';
-import {
-  AppendTokensToCatalogOperation,
-  BumpCatalogVersionForEditOperation,
-  DeduplicateBulkTokensOperation,
-  SaveCatalogOperation,
-  SetCatalogBulkAddDialogOpenOperation,
-  SetCatalogBulkAddTextOperation,
-} from '../../../operations/catalog-operations';
+import { AppendTokensToCatalogOperation } from '../../../operations/catalog-operations/tokens/append-tokens-to-catalog-operation';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { DeduplicateBulkTokensOperation } from '../../../operations/catalog-operations/tokens/deduplicate-bulk-tokens-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { SetCatalogBulkAddDialogOpenOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-dialog-open-operation';
+import { SetCatalogBulkAddTextOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-text-operation';
 import { ValidateCanBulkAddTokens } from '../../../validations/catalog-validations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class BulkAddTokensController {

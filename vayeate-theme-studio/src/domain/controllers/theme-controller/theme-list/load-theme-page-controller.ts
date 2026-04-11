@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import { LoadPreviewsOperation } from '../../../operations/theme-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { LoadPreviewsOperation } from '../../../operations/theme-operations/previews/load-previews-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class LoadThemePageController {

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { ToggleDevToolsOperation } from '../../operations/window-operations';
+import { ToggleDevToolsOperation } from '../../operations/window-operations/toggle-dev-tools-operation';
 
 @singleton()
 export class ToggleDevToolsController {

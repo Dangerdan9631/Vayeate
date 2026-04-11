@@ -1,37 +1,16 @@
 import type { CatalogReference } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import { GetCatalogRefsOperation, LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations';
-import {
-  BumpTemplateVersionForEditOperation,
-  SaveTemplateOperation,
-} from '../../../operations/template-operations';
+import { GetCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/get-catalog-refs-operation';
+import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-snapshot-operation';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
 import { catalogVersionsByNameFromRefs } from '../../../utils/template-utils';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
-
-async function loadCatalogData(
-  loadCatalogSnapshot: LoadCatalogSnapshotOperation,
-  refs: CatalogReference[],
-): Promise<CatalogDataItem[]> {
-  const catalogData: CatalogDataItem[] = [];
-  for (const ref of refs) {
-    const catalog = await loadCatalogSnapshot.execute(ref.name, ref.version);
-    if (catalog) {
-      catalogData.push({
-        ref,
-        tokens: catalog.tokens,
-        semanticTokenTypes: catalog.semanticTokenTypes,
-        semanticTokenModifiers: catalog.semanticTokenModifiers,
-        semanticTokenLanguages: catalog.semanticTokenLanguages,
-      });
-    }
-  }
-  return catalogData;
-}
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class UpdateAllCatalogsController {
@@ -55,7 +34,19 @@ export class UpdateAllCatalogsController {
       const latest = versions?.[0];
       return latest ? { name: ref.name, version: latest.version } : ref;
     });
-    const catalogData = await loadCatalogData(this.loadCatalogSnapshot, newCatalogRefs);
+    const catalogData: CatalogDataItem[] = [];
+    for (const ref of newCatalogRefs) {
+      const catalog = await this.loadCatalogSnapshot.execute(ref.name, ref.version);
+      if (catalog) {
+        catalogData.push({
+          ref,
+          tokens: catalog.tokens,
+          semanticTokenTypes: catalog.semanticTokenTypes,
+          semanticTokenModifiers: catalog.semanticTokenModifiers,
+          semanticTokenLanguages: catalog.semanticTokenLanguages,
+        });
+      }
+    }
     const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
       mergeMappingsFromCatalogData(catalogData, base.mappings);
     const newGroups = [...(base.groups ?? [])];

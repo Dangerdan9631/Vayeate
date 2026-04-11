@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { CatalogActionType } from '../actions/catalog-action-type';
-
-let catalogPageLoadDispatched = false;
 
 export function useCatalogViewModel(): { createDialogOpen: boolean; bulkAddDialogOpen: boolean } {
   const dispatch = useAppDispatch();
+  const pageLoadDispatchedRef = useRef(false);
   const createDialogOpen = useContextSelector(AppContext, (c) => {
     const slice = c?.state.catalogs;
     if (slice === undefined) {
@@ -24,8 +23,8 @@ export function useCatalogViewModel(): { createDialogOpen: boolean; bulkAddDialo
   });
 
   useEffect(() => {
-    if (catalogPageLoadDispatched) return;
-    catalogPageLoadDispatched = true;
+    if (pageLoadDispatchedRef.current) return;
+    pageLoadDispatchedRef.current = true;
     dispatch({ type: CatalogActionType.CatalogPageOnLoad });
   }, [dispatch]);
 

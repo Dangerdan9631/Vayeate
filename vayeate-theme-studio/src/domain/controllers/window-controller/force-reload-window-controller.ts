@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { ReloadWindowOperation } from '../../operations/window-operations';
+import { ReloadWindowOperation } from '../../operations/window-operations/reload-window-operation';
 
 @singleton()
 export class ForceReloadWindowController {

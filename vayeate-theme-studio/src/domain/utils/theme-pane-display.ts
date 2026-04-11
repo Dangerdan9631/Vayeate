@@ -1,33 +1,10 @@
-import type { ColorAssignment, Theme } from '../../../model/schemas';
-import { applyHueShift } from '../../../domain/utils/color';
-import type { SelectedColorsDisplay } from '../../../model/theme-pane-state';
+import type { ColorAssignment, Theme } from '../../model/schemas';
+import type { SelectedColorsDisplay } from '../../model/theme-pane-state';
+import { applyHueToAssignmentsFiltered } from './theme-assignment-utils';
 
 export function normalizeThemeHex(hex: string): string {
   const s = (hex ?? '').trim().toLowerCase();
   return s.startsWith('#') ? s : s ? `#${s}` : '';
-}
-
-export function applyHueToAssignmentsFiltered(
-  assignments: readonly ColorAssignment[],
-  shift: number,
-  checkedRefs: ReadonlySet<string>,
-  options: { applyToDark: boolean; applyToLight: boolean },
-): ColorAssignment[] {
-  const { applyToDark, applyToLight } = options;
-  return assignments.map((a) => {
-    if (!checkedRefs.has(a.colorRef)) return a;
-    return {
-      ...a,
-      dark:
-        applyToDark && a.dark
-          ? { value: applyHueShift(a.dark.value, shift) }
-          : a.dark,
-      light:
-        applyToLight && !a.useDarkForLight && a.light
-          ? { value: applyHueShift(a.light.value, shift) }
-          : a.light,
-    };
-  });
 }
 
 export function computeDisplayColorAssignments(

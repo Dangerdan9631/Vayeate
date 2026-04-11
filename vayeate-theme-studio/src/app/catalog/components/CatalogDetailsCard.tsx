@@ -81,23 +81,7 @@ export function CatalogDetailsCard() {
   }
 
   function onNewSourceTokenTypeChange(e: ChangeEvent<HTMLSelectElement>) {
-    const tokenType = e.target.value as TokenType;
-    commitNewSourceTokenType(tokenType);
-    if (
-      tokenType !== 'theme' &&
-      (newSourceType === 'color-registry' || newSourceType === 'color-registry-set')
-    ) {
-      commitNewSourceType('default');
-    }
-    if (tokenType !== 'semantic token' && newSourceType === 'semantic-token-registry') {
-      commitNewSourceType('default');
-    }
-    if (
-      tokenType !== 'textmate token' &&
-      (newSourceType === 'textmate-xml' || newSourceType === 'textmate-json')
-    ) {
-      commitNewSourceType('default');
-    }
+    commitNewSourceTokenType(e.target.value as TokenType);
   }
 
   return (

@@ -1,35 +1,33 @@
 import { singleton } from 'tsyringe';
-import {
-  AddGroupAndClearInputController,
-  AddSemanticVariantController,
-  AddVariableController,
-  ChangeCatalogVersionController,
-  CloseCreateDialogController,
-  CreateTemplateController,
-  DeleteCurrentTemplateVersionController,
-  LoadTemplatePageController,
-  LockTemplateController,
-  OpenCreateDialogController,
-  RemoveGroupController,
-  RemoveMappingController,
-  RemoveVariableController,
-  SelectTemplateAndLoadController,
-  SetCreateFormNameController,
-  SetMappingColorRefController,
-  SetMappingColorVariableFilterController,
-  SetMappingContrastRefController,
-  SetMappingContrastVariableFilterController,
-  SetMappingGroupRefController,
-  SetMappingSearchTextController,
-  SetTemplateAddGroupNameController,
-  SetTemplateAddVariableNameController,
-  SetVariablesSearchTextController,
-  ToggleCatalogController,
-  UpdateAllCatalogsController,
-  UpdateContrastComparisonSourceController,
-  UpdateSemanticVariantKeyController,
-  UpdateVariableGroupRefController,
-} from '../../../domain/controllers/template-controller';
+import { AddGroupAndClearInputController } from '../../../domain/controllers/template-controller/groups/add-group-and-clear-input-controller';
+import { RemoveGroupController } from '../../../domain/controllers/template-controller/groups/remove-group-controller';
+import { SetTemplateAddGroupNameController } from '../../../domain/controllers/template-controller/groups/set-template-add-group-name-controller';
+import { AddSemanticVariantController } from '../../../domain/controllers/template-controller/mappings-semantic/add-semantic-variant-controller';
+import { UpdateSemanticVariantKeyController } from '../../../domain/controllers/template-controller/mappings-semantic/update-semantic-variant-key-controller';
+import { RemoveMappingController } from '../../../domain/controllers/template-controller/mappings/remove-mapping-controller';
+import { SetMappingColorRefController } from '../../../domain/controllers/template-controller/mappings/set-mapping-color-ref-controller';
+import { SetMappingColorVariableFilterController } from '../../../domain/controllers/template-controller/mappings/set-mapping-color-variable-filter-controller';
+import { SetMappingContrastRefController } from '../../../domain/controllers/template-controller/mappings/set-mapping-contrast-ref-controller';
+import { SetMappingContrastVariableFilterController } from '../../../domain/controllers/template-controller/mappings/set-mapping-contrast-variable-filter-controller';
+import { SetMappingGroupRefController } from '../../../domain/controllers/template-controller/mappings/set-mapping-group-ref-controller';
+import { SetMappingSearchTextController } from '../../../domain/controllers/template-controller/mappings/set-mapping-search-text-controller';
+import { ChangeCatalogVersionController } from '../../../domain/controllers/template-controller/template-details/change-catalog-version-controller';
+import { LockTemplateController } from '../../../domain/controllers/template-controller/template-details/lock-template-controller';
+import { ToggleCatalogController } from '../../../domain/controllers/template-controller/template-details/toggle-catalog-controller';
+import { UpdateAllCatalogsController } from '../../../domain/controllers/template-controller/template-details/update-all-catalogs-controller';
+import { CloseCreateDialogController } from '../../../domain/controllers/template-controller/template-list/close-create-dialog-controller';
+import { CreateTemplateController } from '../../../domain/controllers/template-controller/template-list/create-template-controller';
+import { DeleteCurrentTemplateVersionController } from '../../../domain/controllers/template-controller/template-list/delete-current-template-version-controller';
+import { LoadTemplatePageController } from '../../../domain/controllers/template-controller/template-list/load-template-page-controller';
+import { OpenCreateDialogController } from '../../../domain/controllers/template-controller/template-list/open-create-dialog-controller';
+import { SelectTemplateAndLoadController } from '../../../domain/controllers/template-controller/template-list/select-template-and-load-controller';
+import { SetCreateFormNameController } from '../../../domain/controllers/template-controller/template-list/set-create-form-name-controller';
+import { AddVariableController } from '../../../domain/controllers/template-controller/variables/add-variable-controller';
+import { RemoveVariableController } from '../../../domain/controllers/template-controller/variables/remove-variable-controller';
+import { SetTemplateAddVariableNameController } from '../../../domain/controllers/template-controller/variables/set-template-add-variable-name-controller';
+import { SetVariablesSearchTextController } from '../../../domain/controllers/template-controller/variables/set-variables-search-text-controller';
+import { UpdateVariableGroupRefController } from '../../../domain/controllers/template-controller/variables/update-variable-group-ref-controller';
+import { UpdateContrastComparisonSourceController } from '../../../domain/controllers/template-controller/variables-contrast/update-contrast-comparison-source-controller';
 import { TemplateActions, TemplateActionType } from './template-action-type';
 
 @singleton()
@@ -75,9 +73,6 @@ export class TemplateActionHandler {
         await this.selectTemplateAndLoad.run(action.name, action.version);
         break;
       case TemplateActionType.TemplateTemplatesCreateButtonOnClick:
-        this.openCreateDialog.run();
-        break;
-      case TemplateActionType.TemplateCreateDialogOnOpen:
         this.openCreateDialog.run();
         break;
       case TemplateActionType.TemplateCreateDialogNameTextOnChange:

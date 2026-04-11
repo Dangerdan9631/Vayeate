@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation } from '../../../operations/theme-operations';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';

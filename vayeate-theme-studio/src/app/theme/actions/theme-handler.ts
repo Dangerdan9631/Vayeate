@@ -1,47 +1,46 @@
 import { singleton } from 'tsyringe';
-import {
-  AssignColorFromPickerController,
-  ClearThemeSaveErrorController,
-  CloseThemeCreateDialogController,
-  CreateThemeController,
-  DeleteThemeVersionController,
-  GenerateThemeController,
-  IncrementThemeVersionController,
-  LoadThemePageController,
-  OpenEyedropperOverlayController,
-  OpenThemeCreateDialogController,
-  PersistCurrentThemeController,
-  RecenterHueReferenceController,
-  SelectThemeAndLoadController,
-  SelectThemeByNameController,
-  SetApplyPaletteToDarkController,
-  SetApplyPaletteToLightController,
-  SetAssignColorPreviewController,
-  SetColorUseDarkForLightController,
-  SetColorVariableDarkController,
-  SetColorVariableLightController,
-  SetContrastUseDarkForLightController,
-  SetContrastVariableDarkMaxController,
-  SetContrastVariableDarkMethodController,
-  SetContrastVariableDarkMinController,
-  SetContrastVariableDarkValueController,
-  SetContrastVariableLightMaxController,
-  SetContrastVariableLightMethodController,
-  SetContrastVariableLightMinController,
-  SetContrastVariableLightValueController,
-  SetPaletteClusterCountKController,
-  SetPaletteClusterCountKPreviewController,
-  SetThemeCreateFormNameController,
-  SetThemeHueAdjustmentController,
-  SetThemeHueReferenceHexController,
-  SetThemePreviewTokenRefController,
-  SetThemeTemplateController,
-  SetThemeVariablesSearchTextController,
-  SetVariablesSelectAllController,
-  SetVariablesSelectByGroupController,
-  SetVariablesSelectByTypeController,
-  ToggleVariableSelectionController,
-} from '../../../domain/controllers/theme-controller';
+import { OpenEyedropperOverlayController } from '../../../domain/controllers/theme-controller/eyedropper/open-eyedropper-overlay-controller';
+import { AssignColorFromPickerController } from '../../../domain/controllers/theme-controller/palette-color-assign/assign-color-from-picker-controller';
+import { SetAssignColorPreviewController } from '../../../domain/controllers/theme-controller/palette-color-assign/set-assign-color-preview-controller';
+import { CommitHueReferenceColorController } from '../../../domain/controllers/theme-controller/palette-hue/commit-hue-reference-color-controller';
+import { RecenterHueReferenceController } from '../../../domain/controllers/theme-controller/palette-hue/recenter-hue-reference-controller';
+import { SetThemeHueAdjustmentController } from '../../../domain/controllers/theme-controller/palette-hue/set-theme-hue-adjustment-controller';
+import { SetApplyPaletteToDarkController } from '../../../domain/controllers/theme-controller/palette/set-apply-palette-to-dark-controller';
+import { SetApplyPaletteToLightController } from '../../../domain/controllers/theme-controller/palette/set-apply-palette-to-light-controller';
+import { SetPaletteClusterCountKController } from '../../../domain/controllers/theme-controller/palette/set-palette-cluster-count-k-controller';
+import { SetPaletteClusterCountKPreviewController } from '../../../domain/controllers/theme-controller/palette/set-palette-cluster-count-k-preview-controller';
+import { ClearThemeSaveErrorController } from '../../../domain/controllers/theme-controller/theme-details/clear-theme-save-error-controller';
+import { GenerateThemeController } from '../../../domain/controllers/theme-controller/theme-details/generate-theme-controller';
+import { IncrementThemeVersionController } from '../../../domain/controllers/theme-controller/theme-details/increment-theme-version-controller';
+import { PersistCurrentThemeController } from '../../../domain/controllers/theme-controller/theme-details/persist-current-theme-controller';
+import { SetThemePreviewTokenRefController } from '../../../domain/controllers/theme-controller/theme-details/set-theme-preview-token-ref-controller';
+import { SetThemeTemplateController } from '../../../domain/controllers/theme-controller/theme-details/set-theme-template-controller';
+import { CloseThemeCreateDialogController } from '../../../domain/controllers/theme-controller/theme-list/close-theme-create-dialog-controller';
+import { CreateThemeController } from '../../../domain/controllers/theme-controller/theme-list/create-theme-controller';
+import { DeleteThemeVersionController } from '../../../domain/controllers/theme-controller/theme-list/delete-theme-version-controller';
+import { LoadThemePageController } from '../../../domain/controllers/theme-controller/theme-list/load-theme-page-controller';
+import { OpenThemeCreateDialogController } from '../../../domain/controllers/theme-controller/theme-list/open-theme-create-dialog-controller';
+import { SelectThemeAndLoadController } from '../../../domain/controllers/theme-controller/theme-list/select-theme-and-load-controller';
+import { SelectThemeByNameController } from '../../../domain/controllers/theme-controller/theme-list/select-theme-by-name-controller';
+import { SetThemeCreateFormNameController } from '../../../domain/controllers/theme-controller/theme-list/set-theme-create-form-name-controller';
+import { SetColorRefsSelectionBatchController } from '../../../domain/controllers/theme-controller/variables/set-color-refs-selection-batch-controller';
+import { SetThemeVariablesSearchTextController } from '../../../domain/controllers/theme-controller/variables/set-theme-variables-search-text-controller';
+import { SetVariablesSelectAllController } from '../../../domain/controllers/theme-controller/variables/set-variables-select-all-controller';
+import { SetVariablesSelectByGroupController } from '../../../domain/controllers/theme-controller/variables/set-variables-select-by-group-controller';
+import { SetVariablesSelectByTypeController } from '../../../domain/controllers/theme-controller/variables/set-variables-select-by-type-controller';
+import { ToggleVariableSelectionController } from '../../../domain/controllers/theme-controller/variables/toggle-variable-selection-controller';
+import { SetColorUseDarkForLightController } from '../../../domain/controllers/theme-controller/variables-color/set-color-use-dark-for-light-controller';
+import { SetColorVariableDarkController } from '../../../domain/controllers/theme-controller/variables-color/set-color-variable-dark-controller';
+import { SetColorVariableLightController } from '../../../domain/controllers/theme-controller/variables-color/set-color-variable-light-controller';
+import { SetContrastUseDarkForLightController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-use-dark-for-light-controller';
+import { SetContrastVariableDarkMaxController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-dark-max-controller';
+import { SetContrastVariableDarkMethodController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-dark-method-controller';
+import { SetContrastVariableDarkMinController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-dark-min-controller';
+import { SetContrastVariableDarkValueController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-dark-value-controller';
+import { SetContrastVariableLightMaxController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-light-max-controller';
+import { SetContrastVariableLightMethodController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-light-method-controller';
+import { SetContrastVariableLightMinController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-light-min-controller';
+import { SetContrastVariableLightValueController } from '../../../domain/controllers/theme-controller/variables-contrast/set-contrast-variable-light-value-controller';
 import { ThemeActions, ThemeActionType } from './theme-action-type';
 
 @singleton()
@@ -79,8 +78,9 @@ export class ThemeActionHandler {
     private readonly setPaletteClusterCountK: SetPaletteClusterCountKController,
     private readonly setPaletteClusterCountKPreview: SetPaletteClusterCountKPreviewController,
     private readonly setThemeCreateFormName: SetThemeCreateFormNameController,
+    private readonly commitHueReferenceColor: CommitHueReferenceColorController,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentController,
-    private readonly setThemeHueReferenceHex: SetThemeHueReferenceHexController,
+    private readonly setColorRefsSelectionBatch: SetColorRefsSelectionBatchController,
     private readonly setThemePreviewTokenRef: SetThemePreviewTokenRefController,
     private readonly setThemeTemplate: SetThemeTemplateController,
     private readonly setThemeVariablesSearchText: SetThemeVariablesSearchTextController,
@@ -152,8 +152,8 @@ export class ThemeActionHandler {
       case ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick:
         this.recenterHueReference.run();
         break;
-      case ThemeActionType.ThemePaletteHueReferenceColorTextOnChange:
-        this.setThemeHueReferenceHex.run(action.value);
+      case ThemeActionType.ThemePaletteHueReferenceCommit:
+        this.commitHueReferenceColor.run(action.value);
         break;
       case ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick:
         await this.openEyedropperOverlay.run('eyedropper:hue');
@@ -181,6 +181,9 @@ export class ThemeActionHandler {
         break;
       case ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle:
         this.toggleVariableSelection.run(action.checked, action.ref);
+        break;
+      case ThemeActionType.ThemePaletteColorRefsSelectionCommit:
+        this.setColorRefsSelectionBatch.run(action.refs, action.checked);
         break;
       case ThemeActionType.ThemeVariablesColorDarkTextOnCommit:
         this.setColorVariableDark.run(action.ref, action.value);

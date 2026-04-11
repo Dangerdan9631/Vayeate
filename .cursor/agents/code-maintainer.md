@@ -70,10 +70,10 @@ Scope: `vayeate-theme-studio/src/**` and `vayeate-theme-studio/electron/**` (487
 
 ## app-architecture.mdc
 
-### App shell lifecycle bypasses ActionQueue [app-architecture.mdc, lines 26–39, 46–49]
+### Multiple actions dispatched for a single user interaction [app-architecture.mdc, lines 36–39]
 
-- **File:** `vayeate-theme-studio/src/app/app/viewmodel/use-app-shell-viewmodel.ts`
-- **Violation:** UI lifecycle (`useEffect` mount/unmount) should enqueue **actions** handled by **handlers → controllers**; this hook calls `container.resolve(LoadAppController).run()` and `UnloadAppController.run()` directly, skipping the action queue and handler layer.
-- **Suggested fix:** Introduce actions such as `APP_SHELL_ON_LOAD` / `APP_SHELL_ON_UNLOAD` (or reuse existing app load actions), dispatch them through the queue, and route in `app-handler.ts` to the same controllers.
+- **File:** `vayeate-theme-studio/src/app/example/viewmodel/use-example-viewmodel.ts`
+- **Violation:** A single user gesture dispatches two distinct action types in sequence where the architecture expects one action per interaction.
+- **Suggested fix:** Consolidate into one action; route it through a single handler and controller (or one operation) so the queue processes one logical interaction per enqueue.
 
 ```

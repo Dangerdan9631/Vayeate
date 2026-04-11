@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import { SetThemeHueAdjustmentOperation, SetThemeHueReferenceHexOperation } from '../../../operations/theme-operations';
+import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SetThemeHueReferenceHexOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
 
 @singleton()
 export class CommitHueReferenceColorController {

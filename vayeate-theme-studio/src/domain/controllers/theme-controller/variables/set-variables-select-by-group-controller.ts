@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations';
-import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations/template-details/load-template-snapshot-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 const UNGROUPED_KEY = '__ungrouped__';

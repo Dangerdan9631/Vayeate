@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CloseAllMenusOperation } from '../../operations/app-operations';
+import { CloseAllMenusOperation } from '../../operations/app-operations/close-all-menus-operation';
 
 @singleton()
 export class CloseAllMenusController {

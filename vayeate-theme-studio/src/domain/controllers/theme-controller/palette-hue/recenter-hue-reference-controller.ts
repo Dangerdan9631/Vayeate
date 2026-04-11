@@ -1,10 +1,8 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import {
-  ApplyThemeStateAndSchedulePersistOperation,
-  SetThemeHueAdjustmentOperation,
-  SetThemeOperation,
-} from '../../../operations/theme-operations';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 

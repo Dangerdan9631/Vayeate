@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service';
+import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service-types';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
 import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';

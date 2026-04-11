@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { syncCatalogTokens } from './token-sync-gateway';
+import { syncCatalogTokens } from './sync-catalog-tokens';
 import type { Source } from '../../model/schemas';
 
 function mockFetch(body: string, status = 200) {
@@ -243,7 +243,6 @@ describe('syncCatalogTokens', () => {
       { url: 'https://example.com/b', type: 'default', tokenType: 'semantic token' },
     ];
     const result = await syncCatalogTokens(sources);
-    // Sorted by type then key: 'semantic token' before 'theme'
     expect(result.tokens).toEqual([
       { key: 'function', type: 'semantic token' },
       { key: 'variable', type: 'semantic token' },

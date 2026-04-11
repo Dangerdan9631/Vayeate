@@ -1,8 +1,9 @@
 import { singleton } from 'tsyringe';
-import { LoadCatalogForDisplayOperation } from '../../../operations/catalog-operations';
-import { LoadTemplateOperation, SetSelectedTemplateRefOperation } from '../../../operations/template-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { templateStackId } from '../../../utils/stack-id';
+import { LoadCatalogForDisplayOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-for-display-operation';
+import { LoadTemplateOperation } from '../../../operations/template-operations/template-details/load-template-operation';
+import { SetSelectedTemplateRefOperation } from '../../../operations/template-operations/template-list/set-selected-template-ref-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
+import { templateStackId } from '../../../utils/template-stack-id';
 
 @singleton()
 export class SelectTemplateAndLoadController {

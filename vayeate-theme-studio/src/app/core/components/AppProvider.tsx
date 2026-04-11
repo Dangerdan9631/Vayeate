@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useReducer, useRef, type MutableRefObject, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
-import { createContext } from 'use-context-selector';
 import { container } from 'tsyringe';
 import { ActionQueue } from '../actions/action-queue';
 import type { AppAction } from '../actions/app-action';
+import { AppContext, type AppContextValue } from '../app-context';
 import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
 import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
@@ -47,13 +47,6 @@ import {
   WindowStateSetter,
   windowStateReducer,
 } from '../../../domain/state/window/window-state-reducer';
-
-export interface AppContextValue {
-  state: AppState;
-  dispatch: (action: AppAction) => Promise<void>;
-}
-
-export const AppContext = createContext<AppContextValue | null>(null);
 
 interface UseAppSliceBridgeOptions<Update, Slice, Setter, Getter> {
   stateRef: MutableRefObject<AppState>;

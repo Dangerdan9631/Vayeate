@@ -1,7 +1,5 @@
-import { useCallback } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { useThemeViewModel, useThemesPageChromeViewModel } from '../viewmodel/use-theme-viewmodel';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { useThemeViewModel } from '../viewmodel/use-theme-viewmodel';
+import { useThemesPageChromeViewModel } from '../viewmodel/use-themes-page-chrome-viewmodel';
 import { CreateThemeDialog } from './CreateThemeDialog';
 import { EditorPreviewsCard } from './EditorPreviewsCard';
 import { ThemeDetailsCard } from './ThemeDetailsCard';
@@ -11,11 +9,7 @@ import { ThemesCard } from './ThemesCard';
 
 export function ThemesPage() {
   useThemeViewModel();
-  const { saveError, createDialogOpen } = useThemesPageChromeViewModel();
-  const dispatch = useAppDispatch();
-  const dismissSaveError = useCallback(() => {
-    dispatch({ type: ThemeActionType.ThemePageSaveErrorDismissButtonOnClick });
-  }, [dispatch]);
+  const { saveError, createDialogOpen, dismissSaveError } = useThemesPageChromeViewModel();
 
   return (
     <>

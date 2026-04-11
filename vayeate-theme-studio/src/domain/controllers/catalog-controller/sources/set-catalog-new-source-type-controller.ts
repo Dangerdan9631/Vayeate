@@ -1,6 +1,6 @@
 import type { SourceType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { SetCatalogNewSourceTypeOperation } from '../../../operations/catalog-operations';
+import { SetCatalogNewSourceTypeOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-type-operation';
 
 @singleton()
 export class SetCatalogNewSourceTypeController {

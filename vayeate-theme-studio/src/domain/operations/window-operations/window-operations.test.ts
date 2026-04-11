@@ -1,12 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import { WindowService } from '../../../gateway/services/window-service';
-import {
-  SetWindowStateOperation,
-  DragWindowOperation,
-  ReloadWindowOperation,
-  ToggleDevToolsOperation,
-} from '.';
+import { DragWindowOperation } from './drag-window-operation';
+import { ReloadWindowOperation } from './reload-window-operation';
+import { SetWindowStateOperation } from './set-window-state-operation';
+import { ToggleDevToolsOperation } from './toggle-dev-tools-operation';
 
 const windowServiceMock = {
   close: vi.fn(),

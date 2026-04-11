@@ -32,7 +32,7 @@ export enum ThemeActionType {
   ThemePaletteAssignColorPickerOnCommit = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_COMMIT',
   ThemePaletteAssignColorPickerOnClose = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_CLOSE',
   ThemePaletteHueReferenceRecenterButtonOnClick = 'THEME_PALETTE_HUE_REFERENCE_RECENTER_BUTTON_ON_CLICK',
-  ThemePaletteHueReferenceColorTextOnChange = 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE',
+  ThemePaletteHueReferenceCommit = 'THEME_PALETTE_HUE_REFERENCE_COMMIT',
   ThemePaletteHueReferenceColorEyedropperButtonOnClick = 'THEME_PALETTE_HUE_REFERENCE_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
   ThemePaletteHueSliderOnDelta = 'THEME_PALETTE_HUE_SLIDER_ON_DELTA',
   ThemePaletteClusterCountSliderOnDelta = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_DELTA',
@@ -42,6 +42,7 @@ export enum ThemeActionType {
   ThemeVariablesSelectVariableTypeCheckboxOnToggle = 'THEME_VARIABLES_SELECT_VARIABLE_TYPE_CHECKBOX_ON_TOGGLE',
   ThemeVariablesSelectVariableGroupCheckboxOnToggle = 'THEME_VARIABLES_SELECT_VARIABLE_GROUP_CHECKBOX_ON_TOGGLE',
   ThemeVariablesVariableSelectionCheckboxOnToggle = 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE',
+  ThemePaletteColorRefsSelectionCommit = 'THEME_PALETTE_COLOR_REFS_SELECTION_COMMIT',
   ThemeVariablesColorDarkTextOnCommit = 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_COMMIT',
   ThemeVariablesColorDarkColorEyedropperButtonOnClick = 'THEME_VARIABLES_COLOR_DARK_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
   ThemeVariablesColorLightTextOnCommit = 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_COMMIT',
@@ -80,7 +81,7 @@ export type ThemeActions =
   | { type: ThemeActionType.ThemePaletteAssignColorPickerOnCommit; value: HexColor }
   | { type: ThemeActionType.ThemePaletteAssignColorPickerOnClose }
   | { type: ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick }
-  | { type: ThemeActionType.ThemePaletteHueReferenceColorTextOnChange; value: string }
+  | { type: ThemeActionType.ThemePaletteHueReferenceCommit; value: string }
   | { type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick }
   | { type: ThemeActionType.ThemePaletteHueSliderOnDelta; value: number }
   | { type: ThemeActionType.ThemePaletteClusterCountSliderOnDelta; value: number }
@@ -92,6 +93,11 @@ export type ThemeActions =
   | {
       type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle;
       ref: ColorVariableKey | ContrastVariableKey;
+      checked: boolean;
+    }
+  | {
+      type: ThemeActionType.ThemePaletteColorRefsSelectionCommit;
+      refs: string[];
       checked: boolean;
     }
   | { type: ThemeActionType.ThemeVariablesColorDarkTextOnCommit; value: string; ref: ColorVariableKey }

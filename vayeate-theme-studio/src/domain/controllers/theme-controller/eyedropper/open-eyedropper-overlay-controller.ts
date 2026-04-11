@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import { LoadEyedropperSnapshotOperation, SetEyedropperUiStateOperation } from '../../../operations/theme-operations';
+import { LoadEyedropperSnapshotOperation } from '../../../operations/theme-operations/eyedropper/load-eyedropper-snapshot-operation';
+import { SetEyedropperUiStateOperation } from '../../../operations/theme-operations/eyedropper/set-eyedropper-ui-state-operation';
 
 @singleton()
 export class OpenEyedropperOverlayController {

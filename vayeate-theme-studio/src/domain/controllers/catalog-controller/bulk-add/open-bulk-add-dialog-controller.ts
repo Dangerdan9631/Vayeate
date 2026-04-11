@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogBulkAddDialogOpenOperation, SetCatalogBulkAddTextOperation } from '../../../operations/catalog-operations';
+import { SetCatalogBulkAddDialogOpenOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-dialog-open-operation';
+import { SetCatalogBulkAddTextOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-text-operation';
 
 @singleton()
 export class OpenBulkAddDialogController {

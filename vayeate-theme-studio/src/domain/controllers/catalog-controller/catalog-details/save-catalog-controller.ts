@@ -1,7 +1,7 @@
 import type { Catalog } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { SaveCatalogOperation } from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class SaveCatalogController {

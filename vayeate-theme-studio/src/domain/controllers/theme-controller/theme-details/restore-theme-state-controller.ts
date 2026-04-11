@@ -1,17 +1,15 @@
 import { singleton } from 'tsyringe';
-import {
-  SetThemeOperation,
-  SetThemePaneSelectionsOperation,
-  SetSelectedThemeRefOperation,
-  SetThemeHueAdjustmentOperation,
-  SetThemeHueReferenceHexOperation,
-  SetThemeSaveErrorOperation,
-  SaveThemeOperation,
-  DeleteThemeOperation,
-  ClearPendingThemeSaveOperation,
-  LoadThemeRefsOperation,
-  type RestoreThemeStateParams,
-} from '../../../operations/theme-operations';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { SetSelectedThemeRefOperation } from '../../../operations/theme-operations/theme-list/set-selected-theme-ref-operation';
+import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SetThemeHueReferenceHexOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
+import { SetThemeSaveErrorOperation } from '../../../operations/theme-operations/theme-details/set-theme-save-error-operation';
+import { SaveThemeOperation } from '../../../operations/theme-operations/theme-details/save-theme-operation';
+import { DeleteThemeOperation } from '../../../operations/theme-operations/theme-list/delete-theme-operation';
+import { ClearPendingThemeSaveOperation } from '../../../operations/theme-operations/theme-details/clear-pending-theme-save-operation';
+import { LoadThemeRefsOperation } from '../../../operations/theme-operations/theme-list/load-theme-refs-operation';
+import type { RestoreThemeStateParams } from '../../../operations/theme-operations/types';
 
 @singleton()
 export class RestoreThemeStateController {

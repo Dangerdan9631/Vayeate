@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class LoadCatalogPageController {

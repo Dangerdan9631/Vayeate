@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { createTemplateWithParams } from '../../model/factories';
+import { createTemplateWithParams } from '../../model/factories/template-factory';
 import { templateReferenceSchema, templateSchema } from '../../model/schemas';
 import type { Template, TemplateName, TemplateReference, Version } from '../../model/schemas';
 import { FileSystemService } from '../services/file-system-service';

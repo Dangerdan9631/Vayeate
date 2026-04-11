@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import type { ThemePreviewTokenRefField, TokenKey } from '../../../model/schemas';
 import { ThemeActionType } from '../actions/theme-action-type';
-import { computeDisplayColorAssignments } from './theme-pane-display';
+import { computeDisplayColorAssignments } from '../../../domain/utils/theme-pane-display';
 
 export function useEditorPreviewsCardViewModel() {
   const dispatch = useAppDispatch();

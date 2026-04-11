@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogCreateDialogDataOperation } from '../../../operations/catalog-operations';
+import { SetCatalogCreateDialogDataOperation } from '../../../operations/catalog-operations/create-dialog/set-catalog-create-dialog-data-operation';
 
 @singleton()
 export class SetCatalogCreateDialogNameController {

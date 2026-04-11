@@ -1,7 +1,7 @@
 import { useCallback, useMemo, type MouseEvent } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { parseThemeJson, type BulkParseResult } from '../../../domain/utils/theme-parser';
 import type { Token } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';

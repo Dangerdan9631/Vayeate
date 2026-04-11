@@ -1,12 +1,10 @@
 import type { SemanticTokenRegistryListKind } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import {
-  BumpCatalogVersionForEditOperation,
-  SaveCatalogOperation,
-  UpdateSemanticTokenRegistryEntryOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { UpdateSemanticTokenRegistryEntryOperation } from '../../../operations/catalog-operations/tokens/update-semantic-token-registry-entry-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class UpdateSemanticTokenRegistryTextController {

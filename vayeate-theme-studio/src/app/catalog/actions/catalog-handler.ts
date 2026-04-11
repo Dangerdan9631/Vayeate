@@ -1,37 +1,35 @@
 import { singleton } from 'tsyringe';
-import {
-  AddCatalogSemanticTokenSelectorController,
-  AddNewSourceController,
-  AddNewTokenController,
-  BulkAddTokensController,
-  CloseBulkAddDialogController,
-  CloseCatalogCreateDialogController,
-  DeleteCurrentCatalogVersionController,
-  LoadCatalogPageController,
-  LockCatalogController,
-  OpenBulkAddDialogController,
-  OpenCatalogCreateDialogController,
-  RemoveSemanticTokenListItemController,
-  RemoveSourceController,
-  RemoveTokenController,
-  RevertCatalogToVersionController,
-  SetCatalogBulkAddTextController,
-  SetCatalogCreateDialogNameController,
-  SetCatalogCreateDialogTypeController,
-  SetCatalogNewSemanticTokenSelectorTextController,
-  SetCatalogNewSourceTokenTypeController,
-  SetCatalogNewSourceTypeController,
-  SetCatalogNewSourceUrlController,
-  SetCatalogNewTokenKeyController,
-  SetCatalogTokensSearchTextController,
-  SetSelectedCatalogController,
-  SyncCatalogController,
-  UpdateSemanticTokenRegistryTextController,
-  UpdateSourceTokenTypeController,
-  UpdateSourceTypeController,
-  UpdateSourceUrlController,
-  UpdateTokenKeyController,
-} from '../../../domain/controllers/catalog-controller';
+import { BulkAddTokensController } from '../../../domain/controllers/catalog-controller/bulk-add/bulk-add-tokens-controller';
+import { CloseBulkAddDialogController } from '../../../domain/controllers/catalog-controller/bulk-add/close-bulk-add-dialog-controller';
+import { OpenBulkAddDialogController } from '../../../domain/controllers/catalog-controller/bulk-add/open-bulk-add-dialog-controller';
+import { SetCatalogBulkAddTextController } from '../../../domain/controllers/catalog-controller/bulk-add/set-catalog-bulk-add-text-controller';
+import { CloseCatalogCreateDialogController } from '../../../domain/controllers/catalog-controller/create-dialog/close-catalog-create-dialog-controller';
+import { OpenCatalogCreateDialogController } from '../../../domain/controllers/catalog-controller/create-dialog/open-catalog-create-dialog-controller';
+import { SetCatalogCreateDialogNameController } from '../../../domain/controllers/catalog-controller/create-dialog/set-catalog-create-dialog-name-controller';
+import { SetCatalogCreateDialogTypeController } from '../../../domain/controllers/catalog-controller/create-dialog/set-catalog-create-dialog-type-controller';
+import { DeleteCurrentCatalogVersionController } from '../../../domain/controllers/catalog-controller/catalog-list/delete-current-catalog-version-controller';
+import { LockCatalogController } from '../../../domain/controllers/catalog-controller/catalog-details/lock-catalog-controller';
+import { RevertCatalogToVersionController } from '../../../domain/controllers/catalog-controller/catalog-details/revert-catalog-to-version-controller';
+import { SyncCatalogController } from '../../../domain/controllers/catalog-controller/catalog-details/sync-catalog-controller';
+import { LoadCatalogPageController } from '../../../domain/controllers/catalog-controller/page/load-catalog-page-controller';
+import { SetSelectedCatalogController } from '../../../domain/controllers/catalog-controller/page/set-selected-catalog-controller';
+import { AddNewSourceController } from '../../../domain/controllers/catalog-controller/sources/add-new-source-controller';
+import { RemoveSourceController } from '../../../domain/controllers/catalog-controller/sources/remove-source-controller';
+import { SetCatalogNewSourceTokenTypeController } from '../../../domain/controllers/catalog-controller/sources/set-catalog-new-source-token-type-controller';
+import { SetCatalogNewSourceTypeController } from '../../../domain/controllers/catalog-controller/sources/set-catalog-new-source-type-controller';
+import { SetCatalogNewSourceUrlController } from '../../../domain/controllers/catalog-controller/sources/set-catalog-new-source-url-controller';
+import { UpdateSourceTokenTypeController } from '../../../domain/controllers/catalog-controller/sources/update-source-token-type-controller';
+import { UpdateSourceTypeController } from '../../../domain/controllers/catalog-controller/sources/update-source-type-controller';
+import { UpdateSourceUrlController } from '../../../domain/controllers/catalog-controller/sources/update-source-url-controller';
+import { AddCatalogSemanticTokenSelectorController } from '../../../domain/controllers/catalog-controller/tokens/add-catalog-semantic-token-selector-controller';
+import { AddNewTokenController } from '../../../domain/controllers/catalog-controller/tokens/add-new-token-controller';
+import { RemoveSemanticTokenListItemController } from '../../../domain/controllers/catalog-controller/tokens/remove-semantic-token-list-item-controller';
+import { RemoveTokenController } from '../../../domain/controllers/catalog-controller/tokens/remove-token-controller';
+import { SetCatalogNewSemanticTokenSelectorTextController } from '../../../domain/controllers/catalog-controller/tokens/set-catalog-new-semantic-token-selector-text-controller';
+import { SetCatalogNewTokenKeyController } from '../../../domain/controllers/catalog-controller/tokens/set-catalog-new-token-key-controller';
+import { SetCatalogTokensSearchTextController } from '../../../domain/controllers/catalog-controller/tokens/set-catalog-tokens-search-text-controller';
+import { UpdateSemanticTokenRegistryTextController } from '../../../domain/controllers/catalog-controller/tokens/update-semantic-token-registry-text-controller';
+import { UpdateTokenKeyController } from '../../../domain/controllers/catalog-controller/tokens/update-token-key-controller';
 import { CatalogActions, CatalogActionType } from './catalog-action-type';
 
 @singleton()

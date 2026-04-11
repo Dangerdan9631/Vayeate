@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 
 export interface StatusBarViewModel {
   showProgressArea: boolean;

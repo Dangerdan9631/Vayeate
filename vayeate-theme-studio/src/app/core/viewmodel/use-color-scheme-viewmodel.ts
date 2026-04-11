@@ -1,5 +1,5 @@
 import { useContextSelector } from 'use-context-selector';
-import { AppContext } from '../components/AppProvider';
+import { AppContext } from '../app-context';
 
 export function useColorSchemeViewModel() {
   return useContextSelector(AppContext, (c) => {

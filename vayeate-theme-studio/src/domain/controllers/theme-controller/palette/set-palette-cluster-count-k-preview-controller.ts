@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation } from '../../../operations/theme-operations';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 /** Update cluster count in state only (slider drag; no persist). */

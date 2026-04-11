@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
-import { CloseAllMenusOperation, LoadAppConfigOperation, SaveAppConfigOperation, SetColorSchemeOperation, SetMenuOpenStateOperation } from '.';
+import { CloseAllMenusOperation } from './close-all-menus-operation';
+import { LoadAppConfigOperation } from './load-app-config-operation';
+import { SaveAppConfigOperation } from './save-app-config-operation';
+import { SetColorSchemeOperation } from './set-color-scheme-operation';
+import { SetMenuOpenStateOperation } from './set-menu-open-state-operation';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { AppConfigStateGetter } from '../../state/app-config/app-config-state-reducer';
 import { AppConfigStateSetter } from '../../state/app-config/app-config-state-reducer';

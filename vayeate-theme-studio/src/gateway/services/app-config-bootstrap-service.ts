@@ -5,7 +5,8 @@ import type { AppConfig } from '../../model/schemas';
 @singleton()
 export class AppConfigBootstrapService {
   getInitialAppConfig(): AppConfig {
-    const appConfig = window.getElectronInitialAppConfig ?? {};
+    const snapshot = window.electronAPI?.getInitialAppConfig?.();
+    const appConfig = snapshot ?? {};
     return { ...initialAppState.appConfig, ...appConfig };
   }
 }

@@ -1,12 +1,10 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  BumpTemplateVersionForEditOperation,
-  RemoveGroupFromTemplateOperation,
-  SaveTemplateOperation,
-} from '../../../operations/template-operations';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { RemoveGroupFromTemplateOperation } from '../../../operations/template-operations/groups/remove-group-from-template-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
 import { groupNamesInUseFromTemplate } from '../../../utils/template-utils';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class RemoveGroupController {

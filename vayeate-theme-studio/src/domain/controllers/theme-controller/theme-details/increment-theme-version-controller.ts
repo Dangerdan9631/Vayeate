@@ -1,19 +1,17 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { nextPatchVersion } from '../../../utils/version';
-import {
-  ClearPendingThemeSaveOperation,
-  SetSelectedThemeRefOperation,
-  SetThemeHueAdjustmentOperation,
-  SaveThemeOperation,
-  SetThemeSaveErrorOperation,
-  LoadThemeRefsOperation,
-  SetThemePaneSelectionsOperation,
-  LoadThemeOperation,
-} from '../../../operations/theme-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { ClearPendingThemeSaveOperation } from '../../../operations/theme-operations/theme-details/clear-pending-theme-save-operation';
+import { SetSelectedThemeRefOperation } from '../../../operations/theme-operations/theme-list/set-selected-theme-ref-operation';
+import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SaveThemeOperation } from '../../../operations/theme-operations/theme-details/save-theme-operation';
+import { SetThemeSaveErrorOperation } from '../../../operations/theme-operations/theme-details/set-theme-save-error-operation';
+import { LoadThemeRefsOperation } from '../../../operations/theme-operations/theme-list/load-theme-refs-operation';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { LoadThemeOperation } from '../../../operations/theme-operations/theme-details/load-theme-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { themeStackId } from '../../../utils/stack-id';
+import { themeStackId } from '../../../utils/theme-stack-id';
 
 @singleton()
 export class IncrementThemeVersionController {

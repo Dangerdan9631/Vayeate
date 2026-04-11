@@ -1,7 +1,5 @@
 import { singleton } from 'tsyringe';
-import {
-  TearDownWindowServiceOperation,
-} from '../../operations/app-operations';
+import { TearDownWindowServiceOperation } from '../../operations/app-operations/tear-down-window-service-operation';
 
 @singleton()
 export class UnloadAppController {

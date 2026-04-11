@@ -1,8 +1,9 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import { LockCatalogOperation as LockCatalogTransform, SaveCatalogOperation } from '../../../operations/catalog-operations';
+import { LockCatalogOperation as LockCatalogTransform } from '../../../operations/catalog-operations/catalog-details/lock-catalog-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
 import { ValidateCanLockCatalog } from '../../../validations/catalog-validations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class LockCatalogController {

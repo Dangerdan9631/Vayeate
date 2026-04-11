@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { TemplateActionType } from '../actions/template-action-type';
-
-let templatePageLoadDispatched = false;
 
 export function useTemplateViewModel(): { createDialogOpen: boolean } {
   const dispatch = useAppDispatch();
+  const pageLoadDispatchedRef = useRef(false);
 
   const createDialogOpen = useContextSelector(AppContext, (c) => {
     const slice = c?.state.templates;
@@ -18,17 +17,10 @@ export function useTemplateViewModel(): { createDialogOpen: boolean } {
   });
 
   useEffect(() => {
-    if (templatePageLoadDispatched) return;
-    templatePageLoadDispatched = true;
+    if (pageLoadDispatchedRef.current) return;
+    pageLoadDispatchedRef.current = true;
     dispatch({ type: TemplateActionType.TemplatePageOnLoad });
   }, [dispatch]);
 
   return { createDialogOpen };
 }
-
-export type { MergeMappingsResult } from '../../../model/schemas';
-
-export {
-  computeOrphanKeys,
-  type SemanticCatalogInfo,
-} from '../../../domain/utils/orphan-mappings';

@@ -41,7 +41,7 @@ flowchart LR
 - **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
 - **Exception — action queue status and App shell:**
   - State that reflects the action queue’s own status (depth, processing flag, etc.) may be updated **only inside the `ActionQueue` implementation** (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception.
-  - App shell load and unload controllers should be invoked directly from `useEffect` calls in the AppShell component. **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up. 
+  - App shell load and unload controllers should be invoked directly from `useEffect` calls in the **AppShell** component **or** in the **app shell viewmodel** hook used exclusively by that shell (e.g. `useAppShellViewModel` in `src/app/app/viewmodel/`). **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up; colocating lifecycle in the shell’s viewmodel keeps mount/unload next to shell-only selectors without spreading `useEffect` across arbitrary components.
 
 ## Actions
 

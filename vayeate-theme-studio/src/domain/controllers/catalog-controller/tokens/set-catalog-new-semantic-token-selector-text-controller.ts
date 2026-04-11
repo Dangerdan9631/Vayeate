@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogNewSemanticTokenSelectorTextOperation } from '../../../operations/catalog-operations';
+import { SetCatalogNewSemanticTokenSelectorTextOperation } from '../../../operations/catalog-operations/tokens/set-catalog-new-semantic-token-selector-text-operation';
 
 @singleton()
 export class SetCatalogNewSemanticTokenSelectorTextController {

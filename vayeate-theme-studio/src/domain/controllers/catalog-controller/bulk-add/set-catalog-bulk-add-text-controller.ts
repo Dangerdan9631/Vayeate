@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogBulkAddTextOperation } from '../../../operations/catalog-operations';
+import { SetCatalogBulkAddTextOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-text-operation';
 
 @singleton()
 export class SetCatalogBulkAddTextController {

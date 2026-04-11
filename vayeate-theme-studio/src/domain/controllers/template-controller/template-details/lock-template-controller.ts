@@ -1,8 +1,9 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import { LockTemplateOperation as LockTemplateOperation, SaveTemplateOperation } from '../../../operations/template-operations';
+import { LockTemplateOperation as LockTemplateOperation } from '../../../operations/template-operations/template-details/lock-template-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
 import { ValidateCanLockTemplate } from '../../../validations/template-validations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class LockTemplateController {

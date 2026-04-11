@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
-import { buildThemePaneSnapshot } from '../../../model/theme-pane-state';
+import { buildThemePaneSnapshot } from '../../../domain/utils/theme-pane-utils';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
 import { ThemeActionType } from '../actions/theme-action-type';
 import {
   computeDisplayColorAssignments,
   computeSelectedColorsDisplay,
   normalizeThemeHex,
-} from './theme-pane-display';
+} from '../../../domain/utils/theme-pane-display';
 
 export function useThemePaletteCardViewModel() {
   const dispatch = useAppDispatch();
@@ -82,7 +82,7 @@ export function useThemePaletteCardViewModel() {
       '#1e1e1e',
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
-    dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorTextOnChange, value: normalized });
+    dispatch({ type: ThemeActionType.ThemePaletteHueReferenceCommit, value: normalized });
   }, [theme, loadedTemplate, selectedRef, dispatch]);
 
   const colorVariablesFromTemplate = useMemo(
@@ -134,8 +134,7 @@ export function useThemePaletteCardViewModel() {
   const setHueReferenceHex = useCallback(
     (hex: string) => {
       const normalized = normalizeThemeHex(hex) || '#FF0000';
-      dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorTextOnChange, value: normalized });
-      dispatch({ type: ThemeActionType.ThemePaletteHueSliderOnDelta, value: 0 });
+      dispatch({ type: ThemeActionType.ThemePaletteHueReferenceCommit, value: normalized });
     },
     [dispatch],
   );
@@ -167,12 +166,10 @@ export function useThemePaletteCardViewModel() {
   const setColorRefsChecked = useCallback(
     (refs: string[], checked: boolean) => {
       if (!theme || refs.length === 0) return;
-      refs.forEach((ref) => {
-        dispatch({
-          type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle,
-          ref,
-          checked,
-        });
+      dispatch({
+        type: ThemeActionType.ThemePaletteColorRefsSelectionCommit,
+        refs,
+        checked,
       });
     },
     [theme, dispatch],
@@ -200,6 +197,20 @@ export function useThemePaletteCardViewModel() {
   const closeColorPicker = useCallback(
     (_snapshot: ThemePaneState) => {
       dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnClose });
+    },
+    [dispatch],
+  );
+
+  const onHueReferenceEyedropperClick = useCallback(() => {
+    void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
+  }, [dispatch]);
+
+  const onAssignEyedropperClick = useCallback(
+    (colorRef: string) => {
+      void dispatch({
+        type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
+        colorRef,
+      });
     },
     [dispatch],
   );
@@ -240,5 +251,7 @@ export function useThemePaletteCardViewModel() {
     onColorPickerOpen: openColorPicker,
     onSetSelectedColorsPreview: setSelectedColorsPreview,
     onColorPickerClose: closeColorPicker,
+    onHueReferenceEyedropperClick,
+    onAssignEyedropperClick,
   };
 }

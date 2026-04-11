@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../../model/schemas';
-import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 /** Toggle one variable (color or contrast) in selection; ref determines which set to update. */

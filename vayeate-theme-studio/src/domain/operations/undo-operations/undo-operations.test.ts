@@ -4,13 +4,11 @@ import type { AppState } from '../../state/app-state';
 import { initialAppState } from '../../state/app-state';
 import { UndoStackStateSetter } from '../../state/undo-stack/undo-stack-state-reducer';
 import { UndoStackStateGetter } from '../../state/undo-stack/undo-stack-state-reducer';
-import {
-  ClearPersistedUndoOperation,
-  PerformUndoOperation,
-  PerformRedoOperation,
-  PerformHistoryGoToOperation,
-  SetCurrentUndoStackIdOperation,
-} from '.';
+import { ClearPersistedUndoOperation } from './clear-persisted-undo-operation';
+import { PerformHistoryGoToOperation } from './perform-history-go-to-operation';
+import { PerformRedoOperation } from './perform-redo-operation';
+import { PerformUndoOperation } from './perform-undo-operation';
+import { SetCurrentUndoStackIdOperation } from './set-current-undo-stack-id-operation';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { UndoGateway } from '../../../gateway/undo/undo-gateway';
 

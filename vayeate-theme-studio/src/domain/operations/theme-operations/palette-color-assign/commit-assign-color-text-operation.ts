@@ -1,10 +1,9 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
+import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
 import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
-import { scheduleDebouncedThemePersist } from '../theme-details/debounced-theme-gateway-save';
 
 /** Applies bulk color text from picker/eyedropper to checked color refs and persists. */
 @singleton()
@@ -12,7 +11,7 @@ export class CommitAssignColorTextOperation {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly themesStateSetter: ThemesStateSetter,
-    private readonly themeGateway: ThemeGateway,
+    private readonly debouncedThemePersist: DebouncedThemePersistService,
   ) {}
 
   execute(value: string): void {
@@ -46,6 +45,6 @@ export class CommitAssignColorTextOperation {
     this.themesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
     this.themesStateSetter.apply({ type: 'SET_THEME', theme: nextTheme, preserveHue: true });
     this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
-    scheduleDebouncedThemePersist(this.themeGateway, this.themesStateSetter, nextTheme);
+    this.debouncedThemePersist.schedule(nextTheme);
   }
 }

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { DragWindowOperation } from '../../operations/window-operations';
+import { DragWindowOperation } from '../../operations/window-operations/drag-window-operation';
 
 @singleton()
 export class DragWindowController {

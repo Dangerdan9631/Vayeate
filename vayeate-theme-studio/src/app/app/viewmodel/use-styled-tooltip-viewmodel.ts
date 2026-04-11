@@ -1,5 +1,5 @@
 import { useContextSelector } from 'use-context-selector';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 
 export interface StyledTooltipViewModel {
   viewport: { width: number; height: number };

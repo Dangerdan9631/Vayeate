@@ -7,8 +7,6 @@ import type {
   ContrastAssignmentValue,
   ContrastVariable,
 } from '../../../model/schemas';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { ThemeActionType } from '../actions/theme-action-type';
 import { useThemeVariablesCardViewModel } from '../viewmodel/use-theme-variables-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
 
@@ -76,6 +74,8 @@ function ColorAssignmentsSection({
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
+  onDarkEyedropperClick,
+  onLightEyedropperClick,
 }: {
   assignments: readonly ColorAssignment[];
   colorVariables: readonly ColorVariable[];
@@ -88,6 +88,8 @@ function ColorAssignmentsSection({
   onUpdateDark: (colorRef: string, value: string | null) => void;
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
+  onDarkEyedropperClick: (colorRef: string) => void;
+  onLightEyedropperClick: (colorRef: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const byGroup = useMemo(
@@ -156,6 +158,8 @@ function ColorAssignmentsSection({
                 onUpdateDark={onUpdateDark}
                 onUpdateLight={onUpdateLight}
                 onUpdateUseDark={onUpdateUseDark}
+                onDarkEyedropperClick={onDarkEyedropperClick}
+                onLightEyedropperClick={onLightEyedropperClick}
               />
             );
           })}
@@ -177,6 +181,8 @@ function ColorAssignmentsGroupSubsection({
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
+  onDarkEyedropperClick,
+  onLightEyedropperClick,
 }: {
   groupKey: string;
   groupLabel: string;
@@ -189,6 +195,8 @@ function ColorAssignmentsGroupSubsection({
   onUpdateDark: (colorRef: string, value: string | null) => void;
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
+  onDarkEyedropperClick: (colorRef: string) => void;
+  onLightEyedropperClick: (colorRef: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -242,6 +250,8 @@ function ColorAssignmentsGroupSubsection({
               onUpdateDark={onUpdateDark}
               onUpdateLight={onUpdateLight}
               onUpdateUseDark={onUpdateUseDark}
+              onDarkEyedropperClick={onDarkEyedropperClick}
+              onLightEyedropperClick={onLightEyedropperClick}
             />
           ))}
         </div>
@@ -258,6 +268,8 @@ function ColorAssignmentRow({
   onUpdateDark,
   onUpdateLight,
   onUpdateUseDark,
+  onDarkEyedropperClick,
+  onLightEyedropperClick,
 }: {
   assignment: ColorAssignment;
   isOrphan: boolean;
@@ -266,8 +278,9 @@ function ColorAssignmentRow({
   onUpdateDark: (colorRef: string, value: string | null) => void;
   onUpdateLight: (colorRef: string, value: string | null) => void;
   onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
+  onDarkEyedropperClick: (colorRef: string) => void;
+  onLightEyedropperClick: (colorRef: string) => void;
 }) {
-  const dispatch = useAppDispatch();
   const darkValue = assignment.dark?.value ?? '';
   const lightValue = assignment.light?.value ?? '';
   const [pendingDarkPicker, setPendingDarkPicker] = useState<string | null>(null);
@@ -316,11 +329,8 @@ function ColorAssignmentRow({
     setPendingDarkPicker(null);
   }
 
-  function onDarkEyedropperClick() {
-    void dispatch({
-      type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
-      ref: assignment.colorRef,
-    });
+  function onDarkEyedropperButtonClick() {
+    onDarkEyedropperClick(assignment.colorRef);
   }
 
   function onLightHexInputChange(e: ChangeEvent<HTMLInputElement>) {
@@ -348,12 +358,9 @@ function ColorAssignmentRow({
     setPendingLightPicker(null);
   }
 
-  function onLightEyedropperClick() {
+  function onLightEyedropperButtonClick() {
     if (assignment.useDarkForLight) return;
-    void dispatch({
-      type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
-      ref: assignment.colorRef,
-    });
+    onLightEyedropperClick(assignment.colorRef);
   }
 
   function onUseDarkForLightCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
@@ -409,7 +416,7 @@ function ColorAssignmentRow({
         className="theme-eyedropper-btn"
         title="Pick color from screen (dark)"
         aria-label="Pick dark color from screen"
-        onClick={onDarkEyedropperClick}
+        onClick={onDarkEyedropperButtonClick}
       >
         <span className="material-symbols-outlined" aria-hidden>colorize</span>
       </button>
@@ -436,7 +443,7 @@ function ColorAssignmentRow({
         disabled={assignment.useDarkForLight}
         title="Pick color from screen (light)"
         aria-label="Pick light color from screen"
-        onClick={onLightEyedropperClick}
+        onClick={onLightEyedropperButtonClick}
       >
         <span className="material-symbols-outlined" aria-hidden>colorize</span>
       </button>
@@ -962,6 +969,8 @@ export function ThemeVariablesCard() {
     onUpdateContrastDark,
     onUpdateContrastLight,
     onUpdateContrastUseDark,
+    onColorDarkEyedropperClick,
+    onColorLightEyedropperClick,
     searchValue: searchQuery,
     onSearchChange: setSearchQuery,
   } = useThemeVariablesCardViewModel();
@@ -1010,6 +1019,8 @@ export function ThemeVariablesCard() {
         onUpdateDark={onUpdateColorDark}
         onUpdateLight={onUpdateColorLight}
         onUpdateUseDark={onUpdateColorUseDark}
+        onDarkEyedropperClick={onColorDarkEyedropperClick}
+        onLightEyedropperClick={onColorLightEyedropperClick}
       />
       <ContrastAssignmentsSection
         assignments={filteredContrastAssignments}

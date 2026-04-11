@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetThemeSaveErrorOperation } from '../../../operations/theme-operations';
+import { SetThemeSaveErrorOperation } from '../../../operations/theme-operations/theme-details/set-theme-save-error-operation';
 
 @singleton()
 export class ClearThemeSaveErrorController {

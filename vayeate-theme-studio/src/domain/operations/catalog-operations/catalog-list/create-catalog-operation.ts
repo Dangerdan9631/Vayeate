@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schemas';
-import { createCatalogWithParams } from '../../../../model/factories';
+import { createCatalogWithParams } from '../../../../model/factories/catalog-factory';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 

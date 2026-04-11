@@ -1,15 +1,13 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  CreateTemplateOperation,
-  RefreshTemplateRefsOperation,
-  SetSelectedTemplateRefOperation,
-  SetTemplateOperation,
-} from '../../../operations/template-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { CreateTemplateOperation } from '../../../operations/template-operations/template-list/create-template-operation';
+import { RefreshTemplateRefsOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-operation';
+import { SetSelectedTemplateRefOperation } from '../../../operations/template-operations/template-list/set-selected-template-ref-operation';
+import { SetTemplateOperation } from '../../../operations/template-operations/template-details/set-template-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 import { SetTemplateCreateDialogOpenOperation } from '../../../operations/template-operations/template-list/set-template-create-dialog-open-operation';
 import { SetTemplateIsCreatingOperation } from '../../../operations/template-operations/template-list/set-template-is-creating-operation';
-import { templateStackId } from '../../../utils/stack-id';
+import { templateStackId } from '../../../utils/template-stack-id';
 
 @singleton()
 export class CreateTemplateController {

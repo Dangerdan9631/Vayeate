@@ -2,14 +2,12 @@ import type { Token } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import {
-  AddPlainTokenToCatalogOperation,
-  BumpCatalogVersionForEditOperation,
-  MergeSemanticSelectorsIntoCatalogOperation,
-  SaveCatalogOperation,
-  SetCatalogNewTokenKeyOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { AddPlainTokenToCatalogOperation } from '../../../operations/catalog-operations/tokens/add-plain-token-to-catalog-operation';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { MergeSemanticSelectorsIntoCatalogOperation } from '../../../operations/catalog-operations/tokens/merge-semantic-selectors-into-catalog-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { SetCatalogNewTokenKeyOperation } from '../../../operations/catalog-operations/tokens/set-catalog-new-token-key-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class AddNewTokenController {

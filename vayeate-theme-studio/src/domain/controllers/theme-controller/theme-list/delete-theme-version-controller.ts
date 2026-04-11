@@ -1,16 +1,14 @@
 import { singleton } from 'tsyringe';
 import { findNearestVersionRef } from '../../../utils/version';
-import { themeStackId } from '../../../utils/stack-id';
-import {
-  DeleteThemeOperation,
-  LoadThemeRefsOperation,
-  GetThemeRefsOperation,
-  SetSelectedThemeRefOperation,
-  LoadThemeOperation,
-  SetThemePaneSelectionsOperation,
-  SetThemeOperation,
-} from '../../../operations/theme-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { themeStackId } from '../../../utils/theme-stack-id';
+import { DeleteThemeOperation } from '../../../operations/theme-operations/theme-list/delete-theme-operation';
+import { LoadThemeRefsOperation } from '../../../operations/theme-operations/theme-list/load-theme-refs-operation';
+import { GetThemeRefsOperation } from '../../../operations/theme-operations/theme-list/get-theme-refs-operation';
+import { SetSelectedThemeRefOperation } from '../../../operations/theme-operations/theme-list/set-selected-theme-ref-operation';
+import { LoadThemeOperation } from '../../../operations/theme-operations/theme-details/load-theme-operation';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class DeleteThemeVersionController {

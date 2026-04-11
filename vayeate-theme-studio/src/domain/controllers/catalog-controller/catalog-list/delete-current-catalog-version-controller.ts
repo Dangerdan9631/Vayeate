@@ -1,14 +1,12 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { findNearestVersionRef } from '../../../utils/version';
-import { catalogStackId } from '../../../utils/stack-id';
-import {
-  DeleteCatalogOperation,
-  LoadCatalogOperation,
-  RefreshCatalogRefsOperation,
-  SetSelectedCatalogOperation,
-} from '../../../operations/catalog-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { catalogStackId } from '../../../utils/catalog-stack-id';
+import { DeleteCatalogOperation } from '../../../operations/catalog-operations/catalog-list/delete-catalog-operation';
+import { LoadCatalogOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-operation';
+import { RefreshCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-operation';
+import { SetSelectedCatalogOperation } from '../../../operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class DeleteCurrentCatalogVersionController {

@@ -1,13 +1,16 @@
 import { useCallback, useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { ThemeActionType } from '../actions/theme-action-type';
 import type { ContrastAssignmentValue, ContrastComparisonMethod, ContrastValue } from '../../../model/schemas';
 import {
   computeDisplayColorAssignments,
-} from './theme-pane-display';
-import { computeOrphanColorKeys, computeOrphanContrastKeys } from './use-theme-viewmodel';
+} from '../../../domain/utils/theme-pane-display';
+import {
+  computeOrphanColorKeys,
+  computeOrphanContrastKeys,
+} from '../../../domain/utils/theme-orphan-keys';
 
 export function useThemeVariablesCardViewModel() {
   const dispatch = useAppDispatch();
@@ -276,6 +279,26 @@ export function useThemeVariablesCardViewModel() {
     [dispatch],
   );
 
+  const onColorDarkEyedropperClick = useCallback(
+    (colorRef: string) => {
+      void dispatch({
+        type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
+        ref: colorRef,
+      });
+    },
+    [dispatch],
+  );
+
+  const onColorLightEyedropperClick = useCallback(
+    (colorRef: string) => {
+      void dispatch({
+        type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
+        ref: colorRef,
+      });
+    },
+    [dispatch],
+  );
+
   return {
     theme,
     colorAssignments: displayColorAssignments,
@@ -305,5 +328,7 @@ export function useThemeVariablesCardViewModel() {
     onUpdateContrastDark: updateContrastAssignmentDark,
     onUpdateContrastLight: updateContrastAssignmentLight,
     onUpdateContrastUseDark: updateContrastAssignmentUseDarkForLight,
+    onColorDarkEyedropperClick,
+    onColorLightEyedropperClick,
   };
 }

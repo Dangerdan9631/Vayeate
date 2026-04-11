@@ -2,14 +2,12 @@ import type { Mapping } from '../../../../model/schemas';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  AppendSemanticVariantToTemplateOperation,
-  BumpTemplateVersionForEditOperation,
-  GenerateSemanticVariantKeyOperation,
-  MergeSemanticTokenSetsOperation,
-  SaveTemplateOperation,
-} from '../../../operations/template-operations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { AppendSemanticVariantToTemplateOperation } from '../../../operations/template-operations/mappings-semantic/append-semantic-variant-to-template-operation';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { GenerateSemanticVariantKeyOperation } from '../../../operations/template-operations/mappings-semantic/generate-semantic-variant-key-operation';
+import { MergeSemanticTokenSetsOperation } from '../../../operations/template-operations/mappings-semantic/merge-semantic-token-sets-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class AddSemanticVariantController {

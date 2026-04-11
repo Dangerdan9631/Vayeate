@@ -1,12 +1,10 @@
 import type { Template } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import {
-  DeleteTemplateOperation,
-  RefreshTemplateRefsOperation,
-  SaveTemplateOperation,
-  SetSelectedTemplateRefOperation,
-  SetTemplateOperation,
-} from '../../../operations/template-operations';
+import { DeleteTemplateOperation } from '../../../operations/template-operations/template-list/delete-template-operation';
+import { RefreshTemplateRefsOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { SetSelectedTemplateRefOperation } from '../../../operations/template-operations/template-list/set-selected-template-ref-operation';
+import { SetTemplateOperation } from '../../../operations/template-operations/template-details/set-template-operation';
 
 @singleton()
 export class RestoreTemplateStateController {

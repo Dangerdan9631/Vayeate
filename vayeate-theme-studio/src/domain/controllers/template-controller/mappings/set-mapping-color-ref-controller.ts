@@ -4,13 +4,11 @@ import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { isMappingOrphanForTemplate } from '../../../utils/orphan-mappings';
-import {
-  BumpTemplateVersionForEditOperation,
-  RemoveMappingFromTemplateOperation,
-  SaveTemplateOperation,
-  SetMappingColorRefOperation as SetMappingColorRefOp,
-} from '../../../operations/template-operations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { RemoveMappingFromTemplateOperation } from '../../../operations/template-operations/mappings/remove-mapping-from-template-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { SetMappingColorRefOperation as SetMappingColorRefOp } from '../../../operations/template-operations/mappings/set-mapping-color-ref-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class SetMappingColorRefController {

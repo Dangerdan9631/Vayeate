@@ -1,12 +1,10 @@
 import type { TokenKey, TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import {
-  BumpCatalogVersionForEditOperation,
-  RemoveTokenFromCatalogOperation,
-  SaveCatalogOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { RemoveTokenFromCatalogOperation } from '../../../operations/catalog-operations/tokens/remove-token-from-catalog-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class RemoveTokenController {

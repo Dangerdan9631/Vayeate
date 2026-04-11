@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetTemplateCreateFormNameOperation } from '../../../operations/template-operations';
+import { SetTemplateCreateFormNameOperation } from '../../../operations/template-operations/template-list/set-template-create-form-name-operation';
 
 @singleton()
 export class SetCreateFormNameController {

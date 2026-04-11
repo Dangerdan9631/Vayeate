@@ -1,12 +1,10 @@
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import {
-  BumpCatalogVersionForEditOperation,
-  SaveCatalogOperation,
-  UpdateTokenKeyInCatalogOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { UpdateTokenKeyInCatalogOperation } from '../../../operations/catalog-operations/tokens/update-token-key-in-catalog-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class UpdateTokenKeyController {

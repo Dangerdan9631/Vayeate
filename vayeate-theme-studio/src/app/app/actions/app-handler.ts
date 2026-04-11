@@ -19,10 +19,8 @@ import {
   ReloadWindowController,
   ToggleDevToolsController,
 } from '../../../domain/controllers/window-controller';
-import {
-  CloseEyedropperOverlayController,
-  CommitEyedropperOverlayPickController,
-} from '../../../domain/controllers/theme-controller';
+import { CloseEyedropperOverlayController } from '../../../domain/controllers/theme-controller/eyedropper/close-eyedropper-overlay-controller';
+import { CommitEyedropperOverlayPickController } from '../../../domain/controllers/theme-controller/eyedropper/commit-eyedropper-overlay-pick-controller';
 import { AppActions, AppActionType } from './app-action-type';
 
 @singleton()

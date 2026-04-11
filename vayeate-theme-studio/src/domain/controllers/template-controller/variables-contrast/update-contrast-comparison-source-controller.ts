@@ -1,12 +1,10 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  BumpTemplateVersionForEditOperation,
-  SaveTemplateOperation,
-  UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceOp,
-} from '../../../operations/template-operations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceOp } from '../../../operations/template-operations/variables-contrast/update-contrast-comparison-source-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class UpdateContrastComparisonSourceController {

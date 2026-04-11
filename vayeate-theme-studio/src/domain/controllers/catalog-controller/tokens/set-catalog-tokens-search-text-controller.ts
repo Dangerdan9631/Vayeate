@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogTokensSearchTextOperation } from '../../../operations/catalog-operations';
+import { SetCatalogTokensSearchTextOperation } from '../../../operations/catalog-operations/tokens/set-catalog-tokens-search-text-operation';
 
 @singleton()
 export class SetCatalogTokensSearchTextController {

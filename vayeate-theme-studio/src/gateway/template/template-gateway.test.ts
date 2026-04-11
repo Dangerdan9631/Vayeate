@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { createTemplateWithParams } from '../../model/factories';
+import { createTemplateWithParams } from '../../model/factories/template-factory';
 import { TemplateGateway } from './template-gateway';
 import type { FileSystemService } from '../services/file-system-service';
 

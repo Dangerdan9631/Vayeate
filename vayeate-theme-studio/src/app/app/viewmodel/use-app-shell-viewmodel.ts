@@ -3,7 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { LoadAppController, UnloadAppController } from '../../../domain/controllers/app-controller';
 import type { TabId } from '../../../model/tab-id';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 
 export interface AppShellViewModel {
   activeTab: TabId;

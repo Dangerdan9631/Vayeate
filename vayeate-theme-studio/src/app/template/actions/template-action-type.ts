@@ -4,7 +4,6 @@ export enum TemplateActionType {
   TemplatePageOnLoad = 'TEMPLATE_PAGE_ON_LOAD',
   TemplateTemplatesListOnCommit = 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT',
   TemplateTemplatesCreateButtonOnClick = 'TEMPLATE_TEMPLATES_CREATE_BUTTON_ON_CLICK',
-  TemplateCreateDialogOnOpen = 'TEMPLATE_CREATE_DIALOG_ON_OPEN',
   TemplateCreateDialogNameTextOnChange = 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE',
   TemplateCreateDialogCancelButtonOnClick = 'TEMPLATE_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK',
   TemplateCreateDialogOkButtonOnClick = 'TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK',
@@ -38,7 +37,6 @@ export type TemplateActions =
   | { type: TemplateActionType.TemplatePageOnLoad }
   | { type: TemplateActionType.TemplateTemplatesListOnCommit; name: TemplateName; version: Version }
   | { type: TemplateActionType.TemplateTemplatesCreateButtonOnClick }
-  | { type: TemplateActionType.TemplateCreateDialogOnOpen }
   | { type: TemplateActionType.TemplateCreateDialogNameTextOnChange; value: string }
   | { type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick }
   | { type: TemplateActionType.TemplateCreateDialogOkButtonOnClick }

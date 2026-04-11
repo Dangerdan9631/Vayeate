@@ -3,14 +3,12 @@ import { container } from 'tsyringe';
 import type { Catalog } from '../../../model/schemas';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 import { TokenSyncGateway } from '../../../gateway/catalog/token-sync-gateway';
-import {
-  CreateCatalogOperation,
-  DeleteCatalogOperation,
-  LoadCatalogOperation,
-  LoadCatalogRefsOperation,
-  SaveCatalogOperation,
-  SyncCatalogOperation,
-} from '.';
+import { CreateCatalogOperation } from './catalog-list/create-catalog-operation';
+import { DeleteCatalogOperation } from './catalog-list/delete-catalog-operation';
+import { LoadCatalogOperation } from './catalog-details/load-catalog-operation';
+import { LoadCatalogRefsOperation } from './catalog-list/load-catalog-refs-operation';
+import { SaveCatalogOperation } from './catalog-details/save-catalog-operation';
+import { SyncCatalogOperation } from './catalog-details/sync-catalog-operation';
 import { CatalogsStateSetter } from '../../state/catalog/catalogs-state-reducer';
 
 const catalogGatewayMock = {

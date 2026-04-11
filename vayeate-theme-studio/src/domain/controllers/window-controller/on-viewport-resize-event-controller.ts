@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations';
+import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations/apply-window-state-update-operation';
 
 @singleton()
 export class OnViewportResizeEventController {

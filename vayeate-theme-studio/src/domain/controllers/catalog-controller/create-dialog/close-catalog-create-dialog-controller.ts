@@ -1,13 +1,11 @@
 import { singleton } from 'tsyringe';
-import {
-  CloseCatalogCreateDialogOperation,
-  CreateCatalogOperation,
-  GetCatalogCreateDialogDataOperation,
-  SetCatalogCreateDialogDataOperation,
-  SetSelectedCatalogOperation,
-} from '../../../operations/catalog-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { catalogStackId } from '../../../utils/stack-id';
+import { CloseCatalogCreateDialogOperation } from '../../../operations/catalog-operations/create-dialog/close-catalog-create-dialog-operation';
+import { CreateCatalogOperation } from '../../../operations/catalog-operations/catalog-list/create-catalog-operation';
+import { GetCatalogCreateDialogDataOperation } from '../../../operations/catalog-operations/create-dialog/get-catalog-create-dialog-data-operation';
+import { SetCatalogCreateDialogDataOperation } from '../../../operations/catalog-operations/create-dialog/set-catalog-create-dialog-data-operation';
+import { SetSelectedCatalogOperation } from '../../../operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
+import { catalogStackId } from '../../../utils/catalog-stack-id';
 
 export type CatalogCreateDialogOutcome = 'OK' | 'Cancel';
 

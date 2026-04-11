@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogNewSourceUrlOperation } from '../../../operations/catalog-operations';
+import { SetCatalogNewSourceUrlOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-url-operation';
 
 @singleton()
 export class SetCatalogNewSourceUrlController {

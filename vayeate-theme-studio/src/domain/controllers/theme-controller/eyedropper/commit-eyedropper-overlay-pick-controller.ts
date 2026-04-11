@@ -1,7 +1,8 @@
 import { singleton } from 'tsyringe';
 import type { HexColor } from '../../../../model/schemas';
 import { EnqueueAppActionOperation } from '../../../operations/app-operations/enqueue-app-action-operation';
-import { CommitEyedropperColorOperation, SetEyedropperPickResultOperation } from '../../../operations/theme-operations';
+import { CommitEyedropperColorOperation } from '../../../operations/theme-operations/eyedropper/commit-eyedropper-color-operation';
+import { SetEyedropperPickResultOperation } from '../../../operations/theme-operations/eyedropper/set-eyedropper-pick-result-operation';
 import { UiStateGetter } from '../../../state/ui/ui-state-reducer';
 
 /** Queued pick commit for app-shell overlay: stash hex, apply to theme, then optional follow-up action. */

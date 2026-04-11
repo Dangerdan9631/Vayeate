@@ -1,15 +1,13 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations';
-import {
-  BumpTemplateVersionForEditOperation,
-  SaveTemplateOperation,
-} from '../../../operations/template-operations';
+import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-snapshot-operation';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
 import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 async function loadCatalogData(
   loadCatalogSnapshot: LoadCatalogSnapshotOperation,

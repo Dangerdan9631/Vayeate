@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { PerformUndoOperation } from '../../operations/undo-operations';
+import { PerformUndoOperation } from '../../operations/undo-operations/perform-undo-operation';
 
 @singleton()
 export class PerformUndoController {

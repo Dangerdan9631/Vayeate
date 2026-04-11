@@ -1,12 +1,10 @@
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import {
-  BumpTemplateVersionForEditOperation,
-  SaveTemplateOperation,
-  SetMappingGroupRefOperation as SetMappingGroupRefOp,
-} from '../../../operations/template-operations';
-import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
+import { SetMappingGroupRefOperation as SetMappingGroupRefOp } from '../../../operations/template-operations/mappings/set-mapping-group-ref-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()
 export class SetMappingGroupRefController {

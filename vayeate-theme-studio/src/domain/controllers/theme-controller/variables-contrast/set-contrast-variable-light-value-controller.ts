@@ -2,10 +2,8 @@ import { singleton } from 'tsyringe';
 import type { ContrastValue } from '../../../../model/schemas';
 import type { ContrastVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
-import {
-  ApplyThemeStateAndSchedulePersistOperation,
-  SetThemeOperation,
-} from '../../../operations/theme-operations';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { parseContrastValue, updateContrastAssignment } from '../../../utils/contrast-utils';
 

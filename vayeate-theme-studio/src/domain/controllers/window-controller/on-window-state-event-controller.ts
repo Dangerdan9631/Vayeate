@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { WindowStateEvent } from '../../../gateway/services/window-service';
-import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations';
+import type { WindowStateEvent } from '../../../gateway/services/window-service-types';
+import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations/apply-window-state-update-operation';
 
 @singleton()
 export class OnWindowStateEventController {

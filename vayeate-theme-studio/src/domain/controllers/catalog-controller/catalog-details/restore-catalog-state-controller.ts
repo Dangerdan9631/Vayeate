@@ -1,6 +1,8 @@
 import type { Catalog } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { DeleteCatalogOperation, RefreshCatalogRefsOperation, SetCatalogOperation } from '../../../operations/catalog-operations';
+import { DeleteCatalogOperation } from '../../../operations/catalog-operations/catalog-list/delete-catalog-operation';
+import { RefreshCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-operation';
+import { SetCatalogOperation } from '../../../operations/catalog-operations/catalog-details/set-catalog-operation';
 
 @singleton()
 export class RestoreCatalogStateController {

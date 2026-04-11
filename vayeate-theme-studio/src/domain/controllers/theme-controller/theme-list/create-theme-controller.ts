@@ -1,16 +1,14 @@
 import { singleton } from 'tsyringe';
-import {
-  CreateThemeOperation,
-  LoadThemeRefsOperation,
-  SetThemeOperation,
-  SetSelectedThemeRefOperation,
-  SetThemePaneSelectionsOperation,
-  SetThemeCreateFormNameOperation,
-} from '../../../operations/theme-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { CreateThemeOperation } from '../../../operations/theme-operations/theme-list/create-theme-operation';
+import { LoadThemeRefsOperation } from '../../../operations/theme-operations/theme-list/load-theme-refs-operation';
+import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
+import { SetSelectedThemeRefOperation } from '../../../operations/theme-operations/theme-list/set-selected-theme-ref-operation';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { SetThemeCreateFormNameOperation } from '../../../operations/theme-operations/theme-list/set-theme-create-form-name-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 import { SetThemeCreateDialogOpenOperation } from '../../../operations/theme-operations/theme-list/set-theme-create-dialog-open-operation';
 import { SetThemeIsCreatingOperation } from '../../../operations/theme-operations/theme-list/set-theme-is-creating-operation';
-import { themeStackId } from '../../../utils/stack-id';
+import { themeStackId } from '../../../utils/theme-stack-id';
 
 @singleton()
 export class CreateThemeController {

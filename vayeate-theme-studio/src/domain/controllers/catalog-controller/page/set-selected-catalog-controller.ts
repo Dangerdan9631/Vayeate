@@ -1,7 +1,8 @@
 import { singleton } from 'tsyringe';
-import { LoadCatalogOperation, SetSelectedCatalogOperation } from '../../../operations/catalog-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { catalogStackId } from '../../../utils/stack-id';
+import { LoadCatalogOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-operation';
+import { SetSelectedCatalogOperation } from '../../../operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
+import { catalogStackId } from '../../../utils/catalog-stack-id';
 
 @singleton()
 export class SetSelectedCatalogController {

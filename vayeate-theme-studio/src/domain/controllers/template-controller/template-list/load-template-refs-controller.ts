@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { LoadTemplateRefsOperation } from '../../../operations/template-operations';
+import { LoadTemplateRefsOperation } from '../../../operations/template-operations/template-list/load-template-refs-operation';
 
 @singleton()
 export class LoadTemplateRefsController {

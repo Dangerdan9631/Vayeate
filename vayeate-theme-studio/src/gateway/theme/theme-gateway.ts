@@ -5,7 +5,7 @@ import {
   stringifyTheme,
   toSafeFileName,
 } from '../../domain/utils/theme-export-format';
-import { createThemeWithParams } from '../../model/factories';
+import { createThemeWithParams } from '../../model/factories/theme-factory';
 import { themeReferenceSchema, themeSchema } from '../../model/schemas';
 import type { Theme, ThemeName, ThemeReference, Version } from '../../model/schemas';
 import { FileSystemService } from '../services/file-system-service';

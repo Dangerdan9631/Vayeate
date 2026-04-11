@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/version';
 import type { SemanticTokenRegistryListKind, Token, TokenKey, TokenType } from '../../../model/schemas';

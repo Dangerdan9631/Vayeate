@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { createCatalogWithParams } from '../../model/factories';
+import { createCatalogWithParams } from '../../model/factories/catalog-factory';
 import { CatalogGateway } from './catalog-gateway';
 import type { FileSystemService } from '../services/file-system-service';
 

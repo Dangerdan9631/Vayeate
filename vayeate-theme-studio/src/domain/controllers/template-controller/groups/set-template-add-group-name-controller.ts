@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetTemplateAddGroupNameOperation } from '../../../operations/template-operations';
+import { SetTemplateAddGroupNameOperation } from '../../../operations/template-operations/variables/set-template-add-group-name-operation';
 
 /** Store draft value for the "add group" name input. */
 @singleton()

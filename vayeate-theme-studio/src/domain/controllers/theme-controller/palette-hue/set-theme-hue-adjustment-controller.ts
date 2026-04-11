@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations';
+import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 
 @singleton()
 export class SetThemeHueAdjustmentController {

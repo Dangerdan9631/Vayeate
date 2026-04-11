@@ -1,15 +1,13 @@
 import type { Source } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import {
-  AddSourceToCatalogOperation,
-  BumpCatalogVersionForEditOperation,
-  SaveCatalogOperation,
-  SetCatalogNewSourceTokenTypeOperation,
-  SetCatalogNewSourceTypeOperation,
-  SetCatalogNewSourceUrlOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { AddSourceToCatalogOperation } from '../../../operations/catalog-operations/sources/add-source-to-catalog-operation';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { SetCatalogNewSourceTokenTypeOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-token-type-operation';
+import { SetCatalogNewSourceTypeOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-type-operation';
+import { SetCatalogNewSourceUrlOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-url-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class AddNewSourceController {

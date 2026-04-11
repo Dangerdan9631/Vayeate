@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { GenerateThemeOperation } from '../../../operations/theme-operations';
+import { GenerateThemeOperation } from '../../../operations/theme-operations/theme-details/generate-theme-operation';
 
 @singleton()
 export class GenerateThemeController {

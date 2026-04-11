@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { UiStateGetter } from '../../state/ui/ui-state-reducer';
-import { type MenuId, SetMenuOpenStateOperation } from '../../operations/app-operations';
+import type { MenuId } from '../../operations/app-operations/set-menu-open-state-operation';
+import { SetMenuOpenStateOperation } from '../../operations/app-operations/set-menu-open-state-operation';
 
 @singleton()
 export class ToggleMenuOpenController {

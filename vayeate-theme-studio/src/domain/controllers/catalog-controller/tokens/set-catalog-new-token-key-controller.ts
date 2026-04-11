@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogNewTokenKeyOperation } from '../../../operations/catalog-operations';
+import { SetCatalogNewTokenKeyOperation } from '../../../operations/catalog-operations/tokens/set-catalog-new-token-key-operation';
 
 @singleton()
 export class SetCatalogNewTokenKeyController {

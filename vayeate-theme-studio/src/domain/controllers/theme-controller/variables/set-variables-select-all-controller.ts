@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 
 @singleton()

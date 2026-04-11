@@ -1,12 +1,10 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import {
-  BumpCatalogVersionForEditOperation,
-  MergeSemanticSelectorsIntoCatalogOperation,
-  SaveCatalogOperation,
-  SetCatalogNewSemanticTokenSelectorTextOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { MergeSemanticSelectorsIntoCatalogOperation } from '../../../operations/catalog-operations/tokens/merge-semantic-selectors-into-catalog-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { SetCatalogNewSemanticTokenSelectorTextOperation } from '../../../operations/catalog-operations/tokens/set-catalog-new-semantic-token-selector-text-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class AddCatalogSemanticTokenSelectorController {

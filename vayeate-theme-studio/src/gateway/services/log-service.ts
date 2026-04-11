@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
-
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+import type { LogLevel } from './log-service-types';
 
 const LEVEL_ORDER: Record<LogLevel, number> = {
   debug: 0,

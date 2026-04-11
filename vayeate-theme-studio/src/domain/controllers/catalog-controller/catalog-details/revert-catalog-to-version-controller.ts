@@ -1,14 +1,12 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { findHighestVersionRefSameName, nextPatchVersion } from '../../../utils/version';
-import {
-  ListCatalogRefsOperation,
-  LoadCatalogSnapshotOperation,
-  LockHeadCatalogIfUnlockedOperation,
-  RevertCatalogOperation,
-  SaveCatalogOperation,
-} from '../../../operations/catalog-operations';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
+import { ListCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/list-catalog-refs-operation';
+import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-snapshot-operation';
+import { LockHeadCatalogIfUnlockedOperation } from '../../../operations/catalog-operations/catalog-details/lock-head-catalog-if-unlocked-operation';
+import { RevertCatalogOperation } from '../../../operations/catalog-operations/catalog-details/revert-catalog-operation';
+import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()
 export class RevertCatalogToVersionController {

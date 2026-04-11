@@ -3,7 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
 import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
 import { createUndoProcessor } from '../../../domain/core/undo-processor';
-import { AppContext } from '../../core/components/AppProvider';
+import { AppContext } from '../../core/app-context';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppActionType } from '../actions/app-action-type';
 

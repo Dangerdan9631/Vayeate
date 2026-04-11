@@ -1,14 +1,12 @@
 import { singleton } from 'tsyringe';
-import {
-  ApplyThemeStateAndSchedulePersistOperation,
-  LoadThemeOperation,
-  SetSelectedThemeRefOperation,
-  SetThemeLoadedTemplateOperation,
-  SetThemePaneSelectionsOperation,
-} from '../../../operations/theme-operations';
-import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
-import { themeStackId } from '../../../utils/stack-id';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { LoadThemeOperation } from '../../../operations/theme-operations/theme-details/load-theme-operation';
+import { SetSelectedThemeRefOperation } from '../../../operations/theme-operations/theme-list/set-selected-theme-ref-operation';
+import { SetThemeLoadedTemplateOperation } from '../../../operations/theme-operations/theme-details/set-theme-loaded-template-operation';
+import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations/template-details/load-template-snapshot-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
+import { themeStackId } from '../../../utils/theme-stack-id';
 
 @singleton()
 export class SelectThemeAndLoadController {

@@ -1,15 +1,13 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { findNearestVersionRef } from '../../../utils/version';
-import { templateStackId } from '../../../utils/stack-id';
-import {
-  DeleteTemplateOperation,
-  LoadTemplateOperation,
-  RefreshTemplateRefsOperation,
-  SetSelectedTemplateRefOperation,
-  SetTemplateOperation,
-} from '../../../operations/template-operations';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
+import { templateStackId } from '../../../utils/template-stack-id';
+import { DeleteTemplateOperation } from '../../../operations/template-operations/template-list/delete-template-operation';
+import { LoadTemplateOperation } from '../../../operations/template-operations/template-details/load-template-operation';
+import { RefreshTemplateRefsOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-operation';
+import { SetSelectedTemplateRefOperation } from '../../../operations/template-operations/template-list/set-selected-template-ref-operation';
+import { SetTemplateOperation } from '../../../operations/template-operations/template-details/set-template-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class DeleteCurrentTemplateVersionController {

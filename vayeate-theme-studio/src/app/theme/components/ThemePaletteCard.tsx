@@ -14,8 +14,6 @@ import { clusterColors } from '../../../domain/utils/color-clustering';
 import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { useThemePaletteCardViewModel } from '../viewmodel/use-theme-palette-card-viewmodel';
-import { ThemeActionType } from '../actions/theme-action-type';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
 
 /** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */
@@ -164,9 +162,10 @@ export function ThemePaletteCard() {
     onColorPickerOpen,
     onSetSelectedColorsPreview,
     onColorPickerClose,
+    onHueReferenceEyedropperClick,
+    onAssignEyedropperClick,
   } = vm;
 
-  const dispatch = useAppDispatch();
   const [hueRefInputValue, setHueRefInputValue] = useState(hueReferenceHex);
   const isHueDraggingRef = useRef(false);
   const hueSliderStyleRef = useRef<HTMLStyleElement | null>(null);
@@ -296,8 +295,7 @@ export function ThemePaletteCard() {
   const handleClusterCountDeltaValue = (value: string) => onClusterCountDelta(Number(value));
   const handleClusterCountCommitCurrent = () => onClusterCountCommit(clusterCountK);
   const handleClusterByDarkChecked = (checked: boolean) => setClusterByDark(checked);
-  const handleHueReferenceEyedropper = () =>
-    void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
+  const handleHueReferenceEyedropper = onHueReferenceEyedropperClick;
 
   function onApplyToDarkCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
     handleApplyToDarkChangeChecked(e.target.checked);
@@ -356,10 +354,7 @@ export function ThemePaletteCard() {
     if (selectedColorsDisplay.kind === 'none') return;
     const firstRef = [...checkedColorRefs][0];
     if (!firstRef) return;
-    void dispatch({
-      type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
-      colorRef: firstRef,
-    });
+    onAssignEyedropperClick(firstRef);
   }
 
   function onHueRefInputChange(e: ChangeEvent<HTMLInputElement>) {
