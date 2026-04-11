@@ -1,6 +1,5 @@
 ---
-description: Operations — execute(), sole business logic and state mutation
-globs: vayeate-theme-studio/src/domain/**/operations/**
+description: Rules for authoring and modifing Operations
 alwaysApply: false
 ---
 

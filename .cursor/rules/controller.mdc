@@ -1,6 +1,5 @@
 ---
-description: Controllers — run(), UI-agnostic names, compose ops + validations
-globs: vayeate-theme-studio/src/domain/**/controllers/**
+description: Rules for authoring and modifing controllers
 alwaysApply: false
 ---
 

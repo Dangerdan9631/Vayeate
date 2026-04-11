@@ -1,6 +1,5 @@
 ---
-description: Domain models — zod schemas, types in src/model
-globs: vayeate-theme-studio/src/model/**
+description: Rules for authoring and modifing Domain models
 alwaysApply: false
 ---
 

@@ -1,6 +1,5 @@
 ---
-description: App state — single aggregate, immutable slices, getter/setter access
-globs: vayeate-theme-studio/src/domain/**/state/**
+description: Rules for authoring and modifing react components App state
 alwaysApply: false
 ---
 

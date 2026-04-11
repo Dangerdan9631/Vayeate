@@ -1,6 +1,5 @@
 ---
-description: Gateway layer — services (I/O) and gateways (conversion)
-globs: vayeate-theme-studio/src/gateway/**
+description: Rules for authoring and modifing Gateway types: services and gateways
 alwaysApply: false
 ---
 

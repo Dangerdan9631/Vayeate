@@ -1,6 +1,5 @@
 ---
-description: React components — PascalCase, actions only, no domain logic
-globs: vayeate-theme-studio/src/app/**/*.tsx
+description: Rules for authoring and modifing react components
 alwaysApply: false
 ---
 

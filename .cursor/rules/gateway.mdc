@@ -1,6 +1,5 @@
 ---
-description: Gateways — map system data to models; no business rules
-globs: vayeate-theme-studio/src/gateway/**
+description: Rules for authoring and modifing gateways
 alwaysApply: false
 ---
 

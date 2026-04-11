@@ -1,6 +1,5 @@
 ---
-description: Validations — Validate* name, test() boolean, no throws
-globs: vayeate-theme-studio/src/domain/**/validations/**
+description: Rules for authoring and modifing Validations
 alwaysApply: false
 ---
 

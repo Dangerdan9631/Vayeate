@@ -1,6 +1,5 @@
 ---
-description: ViewModels — useContextSelector, no inline selectors in components
-globs: vayeate-theme-studio/src/app/**/viewmodel/**
+description: Rules for authoring and modifing react components ViewModels
 alwaysApply: false
 ---
 

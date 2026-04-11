@@ -1,6 +1,5 @@
 ---
-description: Services — filesystem, IPC, window; system I/O only
-globs: vayeate-theme-studio/src/gateway/services/**
+description: Rules for authoring and modifing Services
 alwaysApply: false
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: Vayeate Theme Studio — layers, domains, action/state flow, naming
+description: Describes Vayeate Theme Studio app architecture including layers, domains, flows, and naming
 alwaysApply: true
 ---
 

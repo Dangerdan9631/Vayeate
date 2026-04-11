@@ -1,6 +1,5 @@
 ---
-description: Domain — controllers, operations, validations, state, utils
-globs: vayeate-theme-studio/src/domain/**
+description: Rules for authoring and modifing Domain types: controllers, operations, validations, state, utils
 alwaysApply: false
 ---
 

@@ -1,6 +1,5 @@
 ---
-description: Electron main/preload — IPC and system only, no domain logic
-globs: vayeate-theme-studio/electron/**
+description: Rules for authoring and modifing Electron files
 alwaysApply: false
 ---
 

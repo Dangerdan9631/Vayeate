@@ -1,20 +1,18 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ApplyThemeStateAndSchedulePersistOperation } from '../theme-details/apply-theme-state-and-schedule-persist-operation';
-import { SetThemeOperation } from '../theme-details/set-theme-operation';
-import { SetThemeHueAdjustmentOperation } from '../palette-hue/set-theme-hue-adjustment-operation';
-import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
+import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
+import { scheduleDebouncedThemePersist } from '../theme-details/debounced-theme-gateway-save';
 
 /** Applies bulk color text from picker/eyedropper to checked color refs and persists. */
 @singleton()
 export class CommitAssignColorTextOperation {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
-    private readonly setTheme: SetThemeOperation,
-    private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
-    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
+    private readonly themesStateSetter: ThemesStateSetter,
+    private readonly themeGateway: ThemeGateway,
   ) {}
 
   execute(value: string): void {
@@ -45,8 +43,9 @@ export class CommitAssignColorTextOperation {
     });
     const base = { ...theme };
     const nextTheme: Theme = { ...base, colorAssignments: newAssignments };
-    this.setThemeHueAdjustment.execute(0);
-    this.setTheme.execute(nextTheme);
-    this.applyThemeStateAndSchedulePersist.execute(nextTheme);
+    this.themesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
+    this.themesStateSetter.apply({ type: 'SET_THEME', theme: nextTheme, preserveHue: true });
+    this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
+    scheduleDebouncedThemePersist(this.themeGateway, this.themesStateSetter, nextTheme);
   }
 }

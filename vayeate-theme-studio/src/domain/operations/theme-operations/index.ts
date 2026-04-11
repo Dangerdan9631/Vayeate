@@ -7,7 +7,6 @@ export { SetThemeCreateFormNameOperation } from './theme-list/set-theme-create-f
 export { SetThemeCreateDialogOpenOperation } from './theme-list/set-theme-create-dialog-open-operation';
 export { SetThemeIsCreatingOperation } from './theme-list/set-theme-is-creating-operation';
 export { LoadThemeRefsOperation } from './theme-list/load-theme-refs-operation';
-export { SelectThemeAndLoadOperation } from './theme-list/select-theme-and-load-operation';
 export { CreateThemeOperation } from './theme-list/create-theme-operation';
 export { DeleteThemeOperation } from './theme-list/delete-theme-operation';
 export { GetThemeRefsOperation } from './theme-list/get-theme-refs-operation';

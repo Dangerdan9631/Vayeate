@@ -1,6 +1,5 @@
 ---
-description: App UI — actions, handlers, components, viewmodels
-globs: vayeate-theme-studio/src/app/**
+description: Rules for authoring and modifing Ui types: actions, handlers, components, viewmodels
 alwaysApply: false
 ---
 
