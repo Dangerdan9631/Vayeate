@@ -96,7 +96,7 @@ export class ThemeActionHandler {
         await this.loadThemePage.run();
         break;
       case ThemeActionType.ThemePageSaveErrorDismissButtonOnClick:
-        this.clearThemeSaveError.run();
+        await this.clearThemeSaveError.run();
         break;
       case ThemeActionType.ThemeThemesNameListOnCommit:
         await this.selectThemeByName.run(action.name);
@@ -105,13 +105,13 @@ export class ThemeActionHandler {
         await this.selectThemeAndLoad.run(action.name, action.version);
         break;
       case ThemeActionType.ThemeThemesCreateButtonOnClick:
-        this.openThemeCreateDialog.run();
+        await this.openThemeCreateDialog.run();
         break;
       case ThemeActionType.ThemeCreateDialogNameTextOnChange:
-        this.setThemeCreateFormName.run(action.value);
+        await this.setThemeCreateFormName.run(action.value);
         break;
       case ThemeActionType.ThemeCreateDialogCancelButtonOnClick:
-        this.closeThemeCreateDialog.run();
+        await this.closeThemeCreateDialog.run();
         break;
       case ThemeActionType.ThemeCreateDialogOkButtonOnClick:
         await this.createTheme.run(action.params);
@@ -132,103 +132,103 @@ export class ThemeActionHandler {
         await this.generateTheme.run();
         break;
       case ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle:
-        this.setApplyPaletteToDark.run(action.checked);
+        await this.setApplyPaletteToDark.run(action.checked);
         break;
       case ThemeActionType.ThemePaletteApplyToLightCheckboxOnToggle:
-        this.setApplyPaletteToLight.run(action.checked);
+        await this.setApplyPaletteToLight.run(action.checked);
         break;
       case ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick:
         await this.openEyedropperOverlay.run(`eyedropper:assign:${action.colorRef}`);
         break;
       case ThemeActionType.ThemePaletteAssignColorPickerOnSelect:
-        this.setAssignColorPreview.run(action.value);
+        await this.setAssignColorPreview.run(action.value);
         break;
       case ThemeActionType.ThemePaletteAssignColorPickerOnCommit:
-        this.assignColorFromPicker.run(action.value);
+        await this.assignColorFromPicker.run(action.value);
         break;
       case ThemeActionType.ThemePaletteAssignColorPickerOnClose:
-        this.persistCurrentTheme.run();
+        await this.persistCurrentTheme.run();
         break;
       case ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick:
-        this.recenterHueReference.run();
+        await this.recenterHueReference.run();
         break;
       case ThemeActionType.ThemePaletteHueReferenceCommit:
-        this.commitHueReferenceColor.run(action.value);
+        await this.commitHueReferenceColor.run(action.value);
         break;
       case ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick:
         await this.openEyedropperOverlay.run('eyedropper:hue');
         break;
       case ThemeActionType.ThemePaletteHueSliderOnDelta:
-        this.setThemeHueAdjustment.run(action.value);
+        await this.setThemeHueAdjustment.run(action.value);
         break;
       case ThemeActionType.ThemePaletteClusterCountSliderOnDelta:
-        this.setPaletteClusterCountKPreview.run(action.value);
+        await this.setPaletteClusterCountKPreview.run(action.value);
         break;
       case ThemeActionType.ThemePaletteClusterCountSliderOnCommit:
-        this.setPaletteClusterCountK.run(action.value);
+        await this.setPaletteClusterCountK.run(action.value);
         break;
       case ThemeActionType.ThemeVariablesSearchTextOnChange:
-        this.setThemeVariablesSearchText.run(action.value);
+        await this.setThemeVariablesSearchText.run(action.value);
         break;
       case ThemeActionType.ThemeVariablesSelectAllCheckboxOnToggle:
-        this.setVariablesSelectAll.run(action.checked);
+        await this.setVariablesSelectAll.run(action.checked);
         break;
       case ThemeActionType.ThemeVariablesSelectVariableTypeCheckboxOnToggle:
-        this.setVariablesSelectByType.run(action.checked, action.variableType);
+        await this.setVariablesSelectByType.run(action.checked, action.variableType);
         break;
       case ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle:
         await this.setVariablesSelectByGroup.run(action.checked, action.groupId);
         break;
       case ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle:
-        this.toggleVariableSelection.run(action.checked, action.ref);
+        await this.toggleVariableSelection.run(action.checked, action.ref);
         break;
       case ThemeActionType.ThemePaletteColorRefsSelectionCommit:
-        this.setColorRefsSelectionBatch.run(action.refs, action.checked);
+        await this.setColorRefsSelectionBatch.run(action.refs, action.checked);
         break;
       case ThemeActionType.ThemeVariablesColorDarkTextOnCommit:
-        this.setColorVariableDark.run(action.ref, action.value);
+        await this.setColorVariableDark.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick:
         await this.openEyedropperOverlay.run(`eyedropper:dark:${action.ref}`);
         break;
       case ThemeActionType.ThemeVariablesColorLightTextOnCommit:
-        this.setColorVariableLight.run(action.ref, action.value);
+        await this.setColorVariableLight.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick:
         await this.openEyedropperOverlay.run(`eyedropper:light:${action.ref}`);
         break;
       case ThemeActionType.ThemeVariablesColorUseDarkForLightCheckboxOnToggle:
-        this.setColorUseDarkForLight.run(action.ref, action.checked);
+        await this.setColorUseDarkForLight.run(action.ref, action.checked);
         break;
       case ThemeActionType.ThemeVariablesContrastDarkValueTextOnCommit:
-        this.setContrastVariableDarkValue.run(action.ref, action.value);
+        await this.setContrastVariableDarkValue.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastDarkMethodListOnCommit:
-        this.setContrastVariableDarkMethod.run(action.ref, action.value);
+        await this.setContrastVariableDarkMethod.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastDarkMinTextOnCommit:
-        this.setContrastVariableDarkMin.run(action.ref, action.value);
+        await this.setContrastVariableDarkMin.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastDarkMaxTextOnCommit:
-        this.setContrastVariableDarkMax.run(action.ref, action.value);
+        await this.setContrastVariableDarkMax.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastLightValueTextOnCommit:
-        this.setContrastVariableLightValue.run(action.ref, action.value);
+        await this.setContrastVariableLightValue.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastLightMethodListOnCommit:
-        this.setContrastVariableLightMethod.run(action.ref, action.value);
+        await this.setContrastVariableLightMethod.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastLightMinTextOnCommit:
-        this.setContrastVariableLightMin.run(action.ref, action.value);
+        await this.setContrastVariableLightMin.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastLightMaxTextOnCommit:
-        this.setContrastVariableLightMax.run(action.ref, action.value);
+        await this.setContrastVariableLightMax.run(action.ref, action.value);
         break;
       case ThemeActionType.ThemeVariablesContrastUseDarkForLightCheckboxOnToggle:
-        this.setContrastUseDarkForLight.run(action.ref, action.checked);
+        await this.setContrastUseDarkForLight.run(action.ref, action.checked);
         break;
       case ThemeActionType.ThemeDetailsPreviewTokenRefListOnCommit:
-        this.setThemePreviewTokenRef.run(action.tokenRefField, action.value);
+        await this.setThemePreviewTokenRef.run(action.tokenRefField, action.value);
         break;
     }
   }

@@ -52,13 +52,13 @@ export class AppActionHandler {
         await this.syncUndoMenuState.run();
         break;
       case AppActionType.AppFileMenuTriggerButtonOnClick:
-        this.toggleMenuOpen.run('file');
+        await this.toggleMenuOpen.run('file');
         break;
       case AppActionType.AppFileMenuExitButtonOnClick:
         await this.closeWindow.run();
         break;
       case AppActionType.AppEditMenuTriggerButtonOnClick:
-        this.toggleMenuOpen.run('edit');
+        await this.toggleMenuOpen.run('edit');
         break;
       case AppActionType.AppEditMenuUndoButtonOnClick:
         await this.performUndo.run();
@@ -67,13 +67,13 @@ export class AppActionHandler {
         await this.performRedo.run();
         break;
       case AppActionType.AppHistoryMenuTriggerButtonOnClick:
-        this.toggleMenuOpen.run('history');
+        await this.toggleMenuOpen.run('history');
         break;
       case AppActionType.AppHistoryMenuGoToButtonOnClick:
         await this.performHistoryGoTo.run(action.frameId);
         break;
       case AppActionType.AppViewMenuTriggerButtonOnClick:
-        this.toggleMenuOpen.run('view');
+        await this.toggleMenuOpen.run('view');
         break;
       case AppActionType.AppViewMenuReloadButtonOnClick:
         await this.reloadWindow.run();
@@ -85,7 +85,7 @@ export class AppActionHandler {
         await this.toggleDevTools.run();
         break;
       case AppActionType.AppMenuOnClose:
-        this.closeAllMenus.run();
+        await this.closeAllMenus.run();
         break;
       case AppActionType.AppRibbonTabButtonOnClick:
         await this.setActiveTab.run(action.tabId);
@@ -106,10 +106,10 @@ export class AppActionHandler {
         await this.dragWindow.run();
         break;
       case AppActionType.AppEyedropperOverlayCancelButtonOnClick:
-        this.closeEyedropperOverlay.run();
+        await this.closeEyedropperOverlay.run();
         break;
       case AppActionType.AppEyedropperOverlayColorPickCommitButtonOnClick:
-        this.commitEyedropperOverlayPick.run(action.hex);
+        await this.commitEyedropperOverlayPick.run(action.hex);
         break;
     }
   }

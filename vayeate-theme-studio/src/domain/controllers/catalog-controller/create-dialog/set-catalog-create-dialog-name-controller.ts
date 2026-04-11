@@ -5,7 +5,7 @@ import { SetCatalogCreateDialogDataOperation } from '../../../operations/catalog
 export class SetCatalogCreateDialogNameController {
   constructor(private readonly setCatalogCreateDialogData: SetCatalogCreateDialogDataOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setCatalogCreateDialogData.execute({ name: value });
   }
 }

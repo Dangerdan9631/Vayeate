@@ -73,13 +73,13 @@ export class TemplateActionHandler {
         await this.selectTemplateAndLoad.run(action.name, action.version);
         break;
       case TemplateActionType.TemplateTemplatesCreateButtonOnClick:
-        this.openCreateDialog.run();
+        await this.openCreateDialog.run();
         break;
       case TemplateActionType.TemplateCreateDialogNameTextOnChange:
-        this.setCreateFormName.run(action.value);
+        await this.setCreateFormName.run(action.value);
         break;
       case TemplateActionType.TemplateCreateDialogCancelButtonOnClick:
-        this.closeCreateDialog.run();
+        await this.closeCreateDialog.run();
         break;
       case TemplateActionType.TemplateCreateDialogOkButtonOnClick:
         await this.createTemplate.run();
@@ -100,13 +100,13 @@ export class TemplateActionHandler {
         await this.changeCatalogVersion.run(action.catalogName, action.value);
         break;
       case TemplateActionType.TemplateMappingSearchTextOnChange:
-        this.setMappingSearchText.run(action.value);
+        await this.setMappingSearchText.run(action.value);
         break;
       case TemplateActionType.TemplateMappingColorVariableFilterListOnSelect:
-        this.setMappingColorVariableFilter.run(action.values);
+        await this.setMappingColorVariableFilter.run(action.values);
         break;
       case TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect:
-        this.setMappingContrastVariableFilter.run(action.values);
+        await this.setMappingContrastVariableFilter.run(action.values);
         break;
       case TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit:
         await this.setMappingGroupRef.run(action.tokenKey, action.tokenType, action.value || null);
@@ -138,7 +138,7 @@ export class TemplateActionHandler {
         await this.removeMapping.run(action.tokenKey, action.tokenType);
         break;
       case TemplateActionType.TemplateGroupAddTextOnChange:
-        this.setTemplateAddGroupName.run(action.value);
+        await this.setTemplateAddGroupName.run(action.value);
         break;
       case TemplateActionType.TemplateGroupAddButtonOnClick:
         await this.addGroupAndClearInput.run();
@@ -147,10 +147,10 @@ export class TemplateActionHandler {
         await this.removeGroup.run(action.groupId);
         break;
       case TemplateActionType.TemplateVariablesSearchTextOnChange:
-        this.setVariablesSearchText.run(action.value);
+        await this.setVariablesSearchText.run(action.value);
         break;
       case TemplateActionType.TemplateVariablesAddVariableNameTextOnChange:
-        this.setTemplateAddVariableName.run(action.value);
+        await this.setTemplateAddVariableName.run(action.value);
         break;
       case TemplateActionType.TemplateVariablesAddVariableButtonOnClick:
         await this.addVariable.run(action.groupRef, action.variableKind);

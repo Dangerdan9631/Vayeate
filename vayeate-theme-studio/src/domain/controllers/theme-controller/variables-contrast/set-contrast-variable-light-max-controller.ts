@@ -14,7 +14,7 @@ export class SetContrastVariableLightMaxController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(ref: ContrastVariableKey | undefined, value: string): void {
+  async run(ref: ContrastVariableKey | undefined, value: string): Promise<void> {
     const theme = this.themesStateGetter.current().theme;
     if (!theme || ref == null) return;
     const num = value === '' || value == null ? null : parseContrastValue(value);

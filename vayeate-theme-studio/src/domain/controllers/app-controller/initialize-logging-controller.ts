@@ -4,7 +4,7 @@ import { InitializeLogServiceOperation } from '../../operations/app-operations/i
 @singleton()
 export class InitializeLoggingController {
   constructor(private readonly initializeLogService: InitializeLogServiceOperation) { }
-  run(): void {
+  async run(): Promise<void> {
     this.initializeLogService.execute();
   }
 }

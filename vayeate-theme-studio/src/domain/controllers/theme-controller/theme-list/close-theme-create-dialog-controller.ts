@@ -5,7 +5,7 @@ import { SetThemeCreateDialogOpenOperation } from '../../../operations/theme-ope
 export class CloseThemeCreateDialogController {
   constructor(private readonly setThemeCreateDialogOpen: SetThemeCreateDialogOpenOperation) {}
 
-  run(): void {
+  async run(): Promise<void> {
     this.setThemeCreateDialogOpen.execute(false);
   }
 }

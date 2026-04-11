@@ -10,7 +10,7 @@ export class SetAssignColorPreviewController {
     private readonly setAssignColorPreview: SetAssignColorPreviewOperation,
   ) {}
 
-  run(hex: string): void {
+  async run(hex: string): Promise<void> {
     const normalized = normalizeHexSafe(hex);
     if (!normalized) return;
     const state = this.themesStateGetter.current();

@@ -9,7 +9,7 @@ export class OnGlobalKeyDownEventController {
     private readonly performRedo: PerformRedoOperation,
   ) {}
 
-  run(e: KeyboardEvent): void {
+  async run(e: KeyboardEvent): Promise<void> {
     if (!(e.ctrlKey || e.metaKey)) return;
 
     if (e.key === 'z') {

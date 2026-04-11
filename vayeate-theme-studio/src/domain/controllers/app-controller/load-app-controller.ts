@@ -17,7 +17,7 @@ export class LoadAppController {
     private readonly initializeWindowService: InitializeWindowServiceOperation,
   ) { }
   
-  run(): void {
+  async run(): Promise<void> {
     void this.clearPersistedUndo.execute();
     void this.loadAppConfig.execute();
     void this.loadCatalogRefs.execute();

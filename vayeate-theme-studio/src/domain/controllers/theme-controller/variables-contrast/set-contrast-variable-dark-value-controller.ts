@@ -15,7 +15,7 @@ export class SetContrastVariableDarkValueController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(ref: ContrastVariableKey | undefined, value: ContrastValue): void {
+  async run(ref: ContrastVariableKey | undefined, value: ContrastValue): Promise<void> {
     const theme = this.themesStateGetter.current().theme;
     if (!theme || ref == null) return;
     const num = typeof value === 'number' ? value : parseContrastValue(String(value));

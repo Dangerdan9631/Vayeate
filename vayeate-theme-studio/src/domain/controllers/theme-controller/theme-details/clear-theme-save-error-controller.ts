@@ -5,7 +5,7 @@ import { SetThemeSaveErrorOperation } from '../../../operations/theme-operations
 export class ClearThemeSaveErrorController {
   constructor(private readonly setThemeSaveError: SetThemeSaveErrorOperation) {}
 
-  run(): void {
+  async run(): Promise<void> {
     this.setThemeSaveError.execute(null);
   }
 }

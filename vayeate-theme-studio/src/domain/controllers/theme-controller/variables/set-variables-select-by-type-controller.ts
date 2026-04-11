@@ -9,7 +9,7 @@ export class SetVariablesSelectByTypeController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
-  run(checked?: boolean, variableType?: string): void {
+  async run(checked?: boolean, variableType?: string): Promise<void> {
     const state = this.themesStateGetter.current();
     const theme = state.theme;
     if (!theme) return;

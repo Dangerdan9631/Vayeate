@@ -8,7 +8,7 @@ export class SetMappingContrastVariableFilterController {
     private readonly setTemplateMappingContrastVariableFilter: SetTemplateMappingContrastVariableFilterOperation,
   ) {}
 
-  run(values: ContrastVariableKey[]): void {
+  async run(values: ContrastVariableKey[]): Promise<void> {
     this.setTemplateMappingContrastVariableFilter.execute(values);
   }
 }

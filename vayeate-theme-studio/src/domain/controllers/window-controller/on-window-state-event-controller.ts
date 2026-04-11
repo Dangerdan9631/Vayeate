@@ -6,7 +6,7 @@ import { ApplyWindowStateUpdateOperation } from '../../operations/window-operati
 export class OnWindowStateEventController {
   constructor(private readonly applyWindowStateUpdate: ApplyWindowStateUpdateOperation) {}
 
-  run(event: WindowStateEvent): void {
+  async run(event: WindowStateEvent): Promise<void> {
     switch (event) {
       case 'minimized':
         this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_MINIMIZED', value: true });

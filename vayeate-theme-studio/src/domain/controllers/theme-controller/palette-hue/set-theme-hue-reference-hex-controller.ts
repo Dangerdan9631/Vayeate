@@ -5,7 +5,7 @@ import { SetThemeHueReferenceHexOperation } from '../../../operations/theme-oper
 export class SetThemeHueReferenceHexController {
   constructor(private readonly setThemeHueReferenceHex: SetThemeHueReferenceHexOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setThemeHueReferenceHex.execute(value);
   }
 }

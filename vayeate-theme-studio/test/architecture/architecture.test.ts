@@ -11,6 +11,7 @@
  * |---|---|
  * | `kebab-case filenames for non-test .ts sources` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files (kebab-case modules) |
  * | `*-controller.ts: one exported class ending with Controller` | [controller.mdc](../../../.cursor/rules/controller.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
+ * | `*-controller.ts: run method is async` | [controller.mdc](../../../.cursor/rules/controller.mdc) |
  * | `*-operation.ts: one exported class ending with Operation` | [operation.mdc](../../../.cursor/rules/operation.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
  * | `validate-*.ts: one exported class starting with Validate` | [validation.mdc](../../../.cursor/rules/validation.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
  * | `*-gateway.ts: one exported class ending with Gateway` | [gateway.mdc](../../../.cursor/rules/gateway.mdc), [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) |
@@ -38,7 +39,9 @@ import {
   collectThisDependencyExecuteCalls,
   collectThisDependencyRunCalls,
   getFirstExportedClassDeclaration,
+  getRunMethodDeclaration,
   listElectronSourceFiles,
+  methodHasAsyncModifier,
   listSourceFiles,
   readSourceFile,
   readTsxSourceFile,
@@ -138,6 +141,24 @@ describe('*-controller.ts: one exported class ending with Controller', () => {
     const classes = collectExportedClassNames(sf);
     expect(classes, 'expected exactly one exported class').toHaveLength(1);
     expect(classes[0]).toMatch(/Controller$/);
+  });
+});
+
+/** @see ../../../.cursor/rules/controller.mdc — § Contract (`async run`). */
+describe('*-controller.ts: run method is async', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    return b.endsWith('-controller.ts');
+  });
+
+  it.each(files)('%s', (file) => {
+    const sf = readSourceFile(file);
+    const cls = getFirstExportedClassDeclaration(sf);
+    expect(cls, 'expected one exported class').toBeDefined();
+    const runMethod = getRunMethodDeclaration(cls!);
+    expect(runMethod, 'Controller must declare a run(...) method').toBeDefined();
+    expect(methodHasAsyncModifier(runMethod!), 'run must be declared async').toBe(true);
   });
 });
 

@@ -6,7 +6,7 @@ import { SetCatalogNewSourceTypeOperation } from '../../../operations/catalog-op
 export class SetCatalogNewSourceTypeController {
   constructor(private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeOperation) {}
 
-  run(value: SourceType): void {
+  async run(value: SourceType): Promise<void> {
     this.setCatalogNewSourceType.execute(value);
   }
 }

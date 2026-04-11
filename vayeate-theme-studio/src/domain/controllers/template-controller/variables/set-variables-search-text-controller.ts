@@ -5,7 +5,7 @@ import { SetTemplateVariablesSearchTextOperation } from '../../../operations/tem
 export class SetVariablesSearchTextController {
   constructor(private readonly setTemplateVariablesSearchText: SetTemplateVariablesSearchTextOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setTemplateVariablesSearchText.execute(value);
   }
 }

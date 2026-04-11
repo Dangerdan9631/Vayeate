@@ -6,7 +6,7 @@ import { SetEyedropperUiStateOperation } from '../../../operations/theme-operati
 export class CloseEyedropperOverlayController {
   constructor(private readonly setEyedropperUiState: SetEyedropperUiStateOperation) {}
 
-  run(): void {
+  async run(): Promise<void> {
     this.setEyedropperUiState.execute(closedEyedropperUiState);
   }
 }

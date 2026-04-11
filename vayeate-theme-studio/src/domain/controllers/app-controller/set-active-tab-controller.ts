@@ -6,7 +6,7 @@ import { SetUiActiveTabOperation } from '../../operations/app-operations/set-ui-
 export class SetActiveTabController {
   constructor(private readonly setUiActiveTab: SetUiActiveTabOperation) {}
 
-  run(tabId: TabId): void {
+  async run(tabId: TabId): Promise<void> {
     this.setUiActiveTab.execute(tabId);
   }
 }

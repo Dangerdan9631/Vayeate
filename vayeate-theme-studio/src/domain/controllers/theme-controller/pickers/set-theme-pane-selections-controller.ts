@@ -5,7 +5,7 @@ import { SetThemePaneSelectionsOperation } from '../../../operations/theme-opera
 export class SetThemePaneSelectionsController {
   constructor(private readonly setThemePaneSelections: SetThemePaneSelectionsOperation) {}
 
-  run(checkedColorRefs: string[], checkedContrastRefs: string[]): void {
+  async run(checkedColorRefs: string[], checkedContrastRefs: string[]): Promise<void> {
     this.setThemePaneSelections.execute(checkedColorRefs, checkedContrastRefs);
   }
 }

@@ -15,7 +15,7 @@ export class SetContrastVariableLightMethodController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(ref: ContrastVariableKey | undefined, value: ContrastComparisonMethod): void {
+  async run(ref: ContrastVariableKey | undefined, value: ContrastComparisonMethod): Promise<void> {
     const theme = this.themesStateGetter.current().theme;
     if (!theme || ref == null) return;
     const newAssignments = updateContrastAssignment(theme.contrastAssignments, ref, 'light', {

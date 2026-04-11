@@ -77,13 +77,13 @@ export class CatalogActionHandler {
         await this.setSelectedCatalog.run(action.name, action.version);
         break;
       case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
-        this.openCatalogCreateDialog.run();
+        await this.openCatalogCreateDialog.run();
         break;
       case CatalogActionType.CatalogCreateDialogNameTextOnChange:
-        this.setCatalogCreateDialogName.run(action.value);
+        await this.setCatalogCreateDialogName.run(action.value);
         break;
       case CatalogActionType.CatalogCreateDialogTypeListOnCommit:
-        this.setCatalogCreateDialogType.run(action.value);
+        await this.setCatalogCreateDialogType.run(action.value);
         break;
       case CatalogActionType.CatalogCreateDialogCancelButtonOnClick:
         await this.closeCatalogCreateDialog.run('Cancel');
@@ -104,13 +104,13 @@ export class CatalogActionHandler {
         await this.removeSource.run(action.sourceIndex);
         break;
       case CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange:
-        this.setCatalogNewSourceUrl.run(action.value);
+        await this.setCatalogNewSourceUrl.run(action.value);
         break;
       case CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit:
-        this.setCatalogNewSourceTokenType.run(action.value);
+        await this.setCatalogNewSourceTokenType.run(action.value);
         break;
       case CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit:
-        this.setCatalogNewSourceType.run(action.value);
+        await this.setCatalogNewSourceType.run(action.value);
         break;
       case CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick:
         await this.addNewSource.run();
@@ -128,16 +128,16 @@ export class CatalogActionHandler {
         await this.revertCatalogToVersion.run();
         break;
       case CatalogActionType.CatalogTokensSearchTextOnChange:
-        this.setCatalogTokensSearchText.run(action.value);
+        await this.setCatalogTokensSearchText.run(action.value);
         break;
       case CatalogActionType.CatalogTokensBulkAddButtonOnClick:
-        this.openBulkAddDialog.run();
+        await this.openBulkAddDialog.run();
         break;
       case CatalogActionType.CatalogBulkAddTokensTextOnChange:
-        this.setCatalogBulkAddText.run(action.value);
+        await this.setCatalogBulkAddText.run(action.value);
         break;
       case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
-        this.closeBulkAddDialog.run();
+        await this.closeBulkAddDialog.run();
         break;
       case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
         await this.bulkAddTokens.run();
@@ -149,13 +149,13 @@ export class CatalogActionHandler {
         await this.removeToken.run(action.key, action.tokenType);
         break;
       case CatalogActionType.CatalogTokensNewTokenKeyTextOnChange:
-        this.setCatalogNewTokenKey.run(action.value);
+        await this.setCatalogNewTokenKey.run(action.value);
         break;
       case CatalogActionType.CatalogTokensNewTokenAddButtonOnClick:
         await this.addNewToken.run(action.tokenType, action.key);
         break;
       case CatalogActionType.CatalogTokensNewSemanticTokenSelectorTextOnChange:
-        this.setCatalogNewSemanticTokenSelectorText.run(action.value);
+        await this.setCatalogNewSemanticTokenSelectorText.run(action.value);
         break;
       case CatalogActionType.CatalogTokensNewSemanticTokenSelectorAddButtonOnClick:
         await this.addCatalogSemanticTokenSelector.run();

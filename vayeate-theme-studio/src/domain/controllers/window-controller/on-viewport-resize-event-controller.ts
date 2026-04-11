@@ -5,7 +5,7 @@ import { ApplyWindowStateUpdateOperation } from '../../operations/window-operati
 export class OnViewportResizeEventController {
   constructor(private readonly applyWindowStateUpdate: ApplyWindowStateUpdateOperation) {}
 
-  run(size: { width: number; height: number }): void {
+  async run(size: { width: number; height: number }): Promise<void> {
     this.applyWindowStateUpdate.execute({ type: 'SET_VIEWPORT_SIZE', size });
   }
 }

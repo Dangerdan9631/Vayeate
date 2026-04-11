@@ -5,7 +5,7 @@ import { SetCatalogBulkAddTextOperation } from '../../../operations/catalog-oper
 export class SetCatalogBulkAddTextController {
   constructor(private readonly setCatalogBulkAddText: SetCatalogBulkAddTextOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setCatalogBulkAddText.execute(value);
   }
 }

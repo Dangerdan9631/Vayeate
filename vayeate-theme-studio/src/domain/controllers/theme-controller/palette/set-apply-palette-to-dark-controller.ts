@@ -12,7 +12,7 @@ export class SetApplyPaletteToDarkController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(checked: boolean): void {
+  async run(checked: boolean): Promise<void> {
     const theme = this.themesStateGetter.current().theme;
     if (!theme) return;
     const next: Theme = { ...theme, applyPaletteToDark: checked };

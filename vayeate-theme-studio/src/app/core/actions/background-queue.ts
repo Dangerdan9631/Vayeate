@@ -1,0 +1,60 @@
+import { singleton } from 'tsyringe';
+import type { BackgroundQueueStatusState } from '../../../domain/state/ui/ui-state';
+import { BackgroundQueueStatusStateSetter } from '../../../domain/state/ui/background-queue-status-state-reducer';
+import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
+
+interface QueuedWork {
+  run: () => void | Promise<void>;
+  resolve: () => void;
+}
+
+@singleton()
+export class BackgroundQueue {
+  private queue: QueuedWork[] = [];
+  private processing = false;
+  private readonly log: Logger;
+
+  constructor(
+    private readonly backgroundQueueStatusSetter: BackgroundQueueStatusStateSetter,
+    loggerFactory: LoggerFactory,
+  ) {
+    this.log = loggerFactory.create('BackgroundQueue');
+  }
+
+  enqueue(work: () => void | Promise<void>): Promise<void> {
+    return new Promise((resolve) => {
+      this.queue.push({ run: work, resolve });
+      this.emitStatus();
+      this.process();
+    });
+  }
+
+  private async process(): Promise<void> {
+    if (this.processing || this.queue.length === 0) return;
+    this.processing = true;
+    this.emitStatus();
+
+    while (this.queue.length > 0) {
+      const { run, resolve } = this.queue.shift()!;
+      this.emitStatus();
+      try {
+        await run();
+      } catch (err) {
+        this.log.error('Error running background work:', err);
+      } finally {
+        resolve();
+      }
+    }
+
+    this.processing = false;
+    this.emitStatus();
+  }
+
+  private emitStatus(): void {
+    const backgroundQueueStatus: BackgroundQueueStatusState = {
+      isProcessing: this.processing,
+      queueLength: this.queue.length,
+    };
+    this.backgroundQueueStatusSetter.apply(backgroundQueueStatus);
+  }
+}

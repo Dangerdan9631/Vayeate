@@ -5,7 +5,7 @@ import { ApplyWindowStateUpdateOperation } from '../../operations/window-operati
 export class OnWindowMoveEventController {
   constructor(private readonly applyWindowStateUpdate: ApplyWindowStateUpdateOperation) {}
 
-  run(position: { x: number; y: number }): void {
+  async run(position: { x: number; y: number }): Promise<void> {
     this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_POSITION', position });
   }
 }

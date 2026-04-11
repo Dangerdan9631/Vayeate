@@ -6,7 +6,7 @@ import { SetTemplateCreateDialogOpenOperation } from '../../../operations/templa
 export class CloseCreateDialogController {
   constructor(private readonly setTemplateCreateDialogOpen: SetTemplateCreateDialogOpenOperation) {}
 
-  run(): void {
+  async run(): Promise<void> {
     this.setTemplateCreateDialogOpen.execute(false);
   }
 }

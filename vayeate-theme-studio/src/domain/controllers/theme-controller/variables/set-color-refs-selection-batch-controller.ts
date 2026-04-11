@@ -10,7 +10,7 @@ export class SetColorRefsSelectionBatchController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
-  run(refs: readonly string[], checked: boolean): void {
+  async run(refs: readonly string[], checked: boolean): Promise<void> {
     const state = this.themesStateGetter.current();
     if (!state.theme || refs.length === 0) return;
     const colorSet = new Set(state.checkedColorRefs);

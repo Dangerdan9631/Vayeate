@@ -6,7 +6,7 @@ import { container } from 'tsyringe';
 import { InitializeLoggingController } from './domain/controllers/app-controller';
 import { AppConfigBootstrapService } from './gateway/services/app-config-bootstrap-service';
 
-container.resolve(InitializeLoggingController).run();
+void container.resolve(InitializeLoggingController).run();
 const initialAppConfig = container.resolve(AppConfigBootstrapService).getInitialAppConfig();
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');

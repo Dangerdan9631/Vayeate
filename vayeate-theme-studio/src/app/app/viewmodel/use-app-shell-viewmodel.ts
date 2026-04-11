@@ -13,9 +13,11 @@ export function useAppShellViewModel(): AppShellViewModel {
   const activeTab = useContextSelector(AppContext, (c) => c?.state.ui.activeTabId);
 
   useEffect(() => {
-    container.resolve(LoadAppController).run();
+    void container.resolve(LoadAppController).run();
     const unload = container.resolve(UnloadAppController);
-    return () => unload.run();
+    return () => {
+      void unload.run();
+    };
   }, []);
 
   return useMemo(() => {

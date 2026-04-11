@@ -29,5 +29,7 @@ alwaysApply: false
 case X: setState(...); break;
 
 // GOOD
-case X: container.resolve(FooController).run(action); break;
+case X:
+  await container.resolve(FooController).run(action);
+  break;
 ```

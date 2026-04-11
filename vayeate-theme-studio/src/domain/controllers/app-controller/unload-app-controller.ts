@@ -6,7 +6,7 @@ export class UnloadAppController {
   constructor(
     private readonly tearDownWindowService: TearDownWindowServiceOperation,
   ) { }
-  run(): void {
+  async run(): Promise<void> {
     this.tearDownWindowService.execute();
     // TODO: Uncomment this when undo is implemented
     // void this.clearPersistedUndo.execute();

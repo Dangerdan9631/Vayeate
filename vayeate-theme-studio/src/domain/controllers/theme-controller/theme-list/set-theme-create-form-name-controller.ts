@@ -5,7 +5,7 @@ import { SetThemeCreateFormNameOperation } from '../../../operations/theme-opera
 export class SetThemeCreateFormNameController {
   constructor(private readonly setThemeCreateFormName: SetThemeCreateFormNameOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setThemeCreateFormName.execute(value);
   }
 }

@@ -10,7 +10,7 @@ export class ToggleMenuOpenController {
     private readonly setMenuOpenState: SetMenuOpenStateOperation,
   ) {}
 
-  run(menuId: MenuId): void {
+  async run(menuId: MenuId): Promise<void> {
     const ui = this.uiStateGetter.current();
     const keyByMenuId = {
       file: 'fileOpen',

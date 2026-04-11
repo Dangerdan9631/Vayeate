@@ -13,7 +13,7 @@ export class SetColorUseDarkForLightController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(ref: ColorVariableKey | undefined, checked: boolean | undefined): void {
+  async run(ref: ColorVariableKey | undefined, checked: boolean | undefined): Promise<void> {
     const theme = this.themesStateGetter.current().theme;
     if (!theme || ref == null) return;
     const useDark = checked === true;

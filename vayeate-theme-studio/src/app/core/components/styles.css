@@ -1653,7 +1653,20 @@ body {
 
 .status-bar-right {
   width: 20%;
-  min-width: 160px;
+  min-width: 280px;
+}
+
+.status-queue-cluster {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.status-queue-cluster > .status-progress-area {
+  flex: 1;
+  min-width: 0;
 }
 
 .status-progress-area {

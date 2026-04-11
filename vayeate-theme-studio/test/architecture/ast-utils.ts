@@ -55,6 +55,21 @@ export function getFirstExportedClassDeclaration(sf: ts.SourceFile): ts.ClassDec
   return undefined;
 }
 
+/** The `run` method on a controller class, if declared as a simple method (not a signature-only member). */
+export function getRunMethodDeclaration(cls: ts.ClassDeclaration): ts.MethodDeclaration | undefined {
+  for (const member of cls.members) {
+    if (!ts.isMethodDeclaration(member) || !member.name) continue;
+    if (ts.isIdentifier(member.name) && member.name.text === 'run') {
+      return member;
+    }
+  }
+  return undefined;
+}
+
+export function methodHasAsyncModifier(method: ts.MethodDeclaration): boolean {
+  return method.modifiers?.some((m) => m.kind === ts.SyntaxKind.AsyncKeyword) ?? false;
+}
+
 const OPERATION_TYPE_RE = /\b[A-Za-z][A-Za-z0-9]*Operation\b/;
 const CONTROLLER_TYPE_RE = /\b[A-Za-z][A-Za-z0-9]*Controller\b/;
 

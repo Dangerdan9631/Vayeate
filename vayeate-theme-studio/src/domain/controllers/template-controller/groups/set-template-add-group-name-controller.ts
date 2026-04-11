@@ -6,7 +6,7 @@ import { SetTemplateAddGroupNameOperation } from '../../../operations/template-o
 export class SetTemplateAddGroupNameController {
   constructor(private readonly setTemplateAddGroupName: SetTemplateAddGroupNameOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setTemplateAddGroupName.execute(value);
   }
 }

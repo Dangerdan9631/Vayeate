@@ -7,7 +7,7 @@ export class SetCatalogNewSemanticTokenSelectorTextController {
     private readonly setCatalogNewSemanticTokenSelectorText: SetCatalogNewSemanticTokenSelectorTextOperation,
   ) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setCatalogNewSemanticTokenSelectorText.execute(value);
   }
 }

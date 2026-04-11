@@ -15,7 +15,7 @@ export class RecenterHueReferenceController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(): void {
+  async run(): Promise<void> {
     const state = this.themesStateGetter.current();
     const theme = state.theme;
     const hueAdjustment = state.hueAdjustment;

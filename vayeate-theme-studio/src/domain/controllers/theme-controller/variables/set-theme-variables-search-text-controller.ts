@@ -5,7 +5,7 @@ import { SetThemeVariablesSearchTextOperation } from '../../../operations/theme-
 export class SetThemeVariablesSearchTextController {
   constructor(private readonly setThemeVariablesSearchText: SetThemeVariablesSearchTextOperation) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setThemeVariablesSearchText.execute(value);
   }
 }

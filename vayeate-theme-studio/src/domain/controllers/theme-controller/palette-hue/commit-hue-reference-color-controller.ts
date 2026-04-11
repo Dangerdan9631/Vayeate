@@ -9,7 +9,7 @@ export class CommitHueReferenceColorController {
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
   ) {}
 
-  run(value: string): void {
+  async run(value: string): Promise<void> {
     this.setThemeHueReferenceHex.execute(value);
     this.setThemeHueAdjustment.execute(0);
   }

@@ -11,7 +11,7 @@ export class ToggleVariableSelectionController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
-  run(checked: boolean, ref: ColorVariableKey | ContrastVariableKey): void {
+  async run(checked: boolean, ref: ColorVariableKey | ContrastVariableKey): Promise<void> {
     const state = this.themesStateGetter.current();
     const theme = state.theme;
     if (!theme) return;
