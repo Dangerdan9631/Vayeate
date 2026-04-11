@@ -1,4 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react';
 import type { ColorAssignment, ColorVariable } from '../../../model/schemas';
 import { clusterColors } from '../../../domain/utils/color-clustering';
 import { hexToHue, hslToRgb, rgbToHex } from '../../../domain/utils/color';
@@ -185,14 +195,11 @@ export function ThemePaletteCard() {
     }
   }, [hueRefInputValue, hueReferenceHex, onHueReferenceChange]);
 
-  const handleHueRefKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        (e.target as HTMLInputElement).blur();
-      }
-    },
-    [],
-  );
+  const handleHueRefKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      (e.target as HTMLInputElement).blur();
+    }
+  }, []);
 
   const handleHuePointerUp = useCallback(() => {
     if (!isHueDraggingRef.current) return;
@@ -292,6 +299,85 @@ export function ThemePaletteCard() {
   const handleHueReferenceEyedropper = () =>
     void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
 
+  function onApplyToDarkCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
+    handleApplyToDarkChangeChecked(e.target.checked);
+  }
+
+  function onApplyToLightCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
+    handleApplyToLightChangeChecked(e.target.checked);
+  }
+
+  function onPendingHexInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setPendingHex(e.target.value);
+  }
+
+  function onPendingHexInputBlur(e: FocusEvent<HTMLInputElement>) {
+    if (selectedColorsDisplay.kind === 'mixed') return;
+    const v = e.target.value.trim();
+    if (v && /^#?[0-9a-fA-F]{6}$/.test(v.replace(/^#/, ''))) {
+      const normalized = v.startsWith('#') ? v : `#${v}`;
+      onSetSelectedColors(normalized);
+      setColorPickerValue(normalized);
+      setPendingHex(null);
+    } else {
+      setPendingHex(null);
+    }
+  }
+
+  function onPaletteNativeColorInputChange(e: ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value;
+    setColorPickerValue(v);
+    setPendingHex(v);
+    if (colorPickerSnapshotRef.current != null && onSetSelectedColorsPreview) {
+      onSetSelectedColorsPreview(v);
+    } else {
+      onSetSelectedColors(v);
+    }
+  }
+
+  function onPaletteNativeColorInputBlur() {
+    if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
+      onColorPickerClose(colorPickerSnapshotRef.current);
+      colorPickerSnapshotRef.current = null;
+    }
+  }
+
+  function onPaletteColorSwatchButtonClick() {
+    if (selectedColorsDisplay.kind === 'none') return;
+    colorPickerSnapshotRef.current = onColorPickerOpen();
+    setColorPickerValue(
+      selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
+    );
+    setPendingHex(null);
+    paletteColorInputRef.current?.click();
+  }
+
+  function onAssignEyedropperButtonClick() {
+    if (selectedColorsDisplay.kind === 'none') return;
+    const firstRef = [...checkedColorRefs][0];
+    if (!firstRef) return;
+    void dispatch({
+      type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
+      colorRef: firstRef,
+    });
+  }
+
+  function onHueRefInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleHueRefInputValueChange(e.target.value);
+  }
+
+  function onHueSliderChange(e: ChangeEvent<HTMLInputElement>) {
+    handleHueChangeValue(e.target.value);
+  }
+
+  function onClusterCountSliderChange(e: ChangeEvent<HTMLInputElement>) {
+    handleClusterCountDeltaValue(e.target.value);
+  }
+
+  function onClusterByDarkCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
+    handleClusterByDarkChecked(e.target.checked);
+  }
+
   if (!vm.theme?.templateRef) return null;
 
   return (
@@ -315,7 +401,7 @@ export function ThemePaletteCard() {
             <input
               type="checkbox"
               checked={applyToDark}
-              onChange={(e) => handleApplyToDarkChangeChecked(e.target.checked)}
+              onChange={onApplyToDarkCheckboxChange}
               aria-label="Apply adjustments to dark theme colors"
             />
             <span className="material-symbols-outlined" aria-hidden>dark_mode</span>
@@ -331,7 +417,7 @@ export function ThemePaletteCard() {
             <input
               type="checkbox"
               checked={applyToLight}
-              onChange={(e) => handleApplyToLightChangeChecked(e.target.checked)}
+              onChange={onApplyToLightCheckboxChange}
               aria-label="Apply adjustments to light theme colors"
             />
             <span className="material-symbols-outlined" aria-hidden>light_mode</span>
@@ -352,19 +438,8 @@ export function ThemePaletteCard() {
                     ? selectedColorsDisplay.hex
                     : ''
             }
-            onChange={(e) => setPendingHex(e.target.value)}
-            onBlur={(e) => {
-              if (selectedColorsDisplay.kind === 'mixed') return;
-              const v = e.target.value.trim();
-              if (v && /^#?[0-9a-fA-F]{6}$/.test(v.replace(/^#/, ''))) {
-                const normalized = v.startsWith('#') ? v : `#${v}`;
-                onSetSelectedColors(normalized);
-                setColorPickerValue(normalized);
-                setPendingHex(null);
-              } else {
-                setPendingHex(null);
-              }
-            }}
+            onChange={onPendingHexInputChange}
+            onBlur={onPendingHexInputBlur}
             aria-label="Hex color"
           />
           <div className="theme-palette-color-swatch-wrap">
@@ -377,22 +452,8 @@ export function ThemePaletteCard() {
                   ? (pendingHex.startsWith('#') ? pendingHex : `#${pendingHex}`).slice(0, 7)
                   : (colorPickerValue.startsWith('#') ? colorPickerValue : `#${colorPickerValue}`).slice(0, 7)
               }
-              onChange={(e) => {
-                const v = e.target.value;
-                setColorPickerValue(v);
-                setPendingHex(v);
-                if (colorPickerSnapshotRef.current != null && onSetSelectedColorsPreview) {
-                  onSetSelectedColorsPreview(v);
-                } else {
-                  onSetSelectedColors(v);
-                }
-              }}
-              onBlur={() => {
-                if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
-                  onColorPickerClose(colorPickerSnapshotRef.current);
-                  colorPickerSnapshotRef.current = null;
-                }
-              }}
+              onChange={onPaletteNativeColorInputChange}
+              onBlur={onPaletteNativeColorInputBlur}
               disabled={selectedColorsDisplay.kind === 'none'}
               aria-label="Color"
             />
@@ -407,15 +468,7 @@ export function ThemePaletteCard() {
                     : 'Click to open color picker for selected variables'
               }
               disabled={selectedColorsDisplay.kind === 'none'}
-              onClick={() => {
-                if (selectedColorsDisplay.kind === 'none') return;
-                colorPickerSnapshotRef.current = onColorPickerOpen();
-                setColorPickerValue(
-                  selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
-                );
-                setPendingHex(null);
-                paletteColorInputRef.current?.click();
-              }}
+              onClick={onPaletteColorSwatchButtonClick}
               aria-label={
                 selectedColorsDisplay.kind === 'none'
                   ? 'Select palette swatches to set color'
@@ -432,15 +485,7 @@ export function ThemePaletteCard() {
             type="button"
             className="theme-palette-btn theme-eyedropper-btn"
             disabled={selectedColorsDisplay.kind === 'none'}
-            onClick={() => {
-              if (selectedColorsDisplay.kind === 'none') return;
-              const firstRef = [...checkedColorRefs][0];
-              if (!firstRef) return;
-              void dispatch({
-                type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
-                colorRef: firstRef,
-              });
-            }}
+            onClick={onAssignEyedropperButtonClick}
             title="Pick color from anywhere on screen"
             aria-label="Pick color from screen"
           >
@@ -460,7 +505,7 @@ export function ThemePaletteCard() {
             type="text"
             className="theme-palette-hue-ref-input"
             value={hueRefInputValue}
-            onChange={(e) => handleHueRefInputValueChange(e.target.value)}
+            onChange={onHueRefInputChange}
             onBlur={handleHueRefBlur}
             onKeyDown={handleHueRefKeyDown}
             aria-label="Hue reference color (hex)"
@@ -489,7 +534,7 @@ export function ThemePaletteCard() {
           max={100}
           step={1}
           value={hueAdjustment}
-          onChange={(e) => handleHueChangeValue(e.target.value)}
+          onChange={onHueSliderChange}
           onPointerDown={handleHuePointerDown}
           aria-label="Hue adjustment"
           aria-valuemin={-100}
@@ -511,7 +556,7 @@ export function ThemePaletteCard() {
             max={CLUSTER_K_MAX}
             step={1}
             value={clusterCountK}
-            onChange={(e) => handleClusterCountDeltaValue(e.target.value)}
+            onChange={onClusterCountSliderChange}
             onPointerUp={handleClusterCountCommitCurrent}
             onMouseUp={handleClusterCountCommitCurrent}
             aria-label="Cluster count (k)"
@@ -532,7 +577,7 @@ export function ThemePaletteCard() {
           <input
             type="checkbox"
             checked={clusterByDark}
-            onChange={(e) => handleClusterByDarkChecked(e.target.checked)}
+            onChange={onClusterByDarkCheckboxChange}
             aria-label={clusterByDark ? 'Cluster by dark theme colors' : 'Cluster by light theme colors'}
           />
           <span className="material-symbols-outlined" aria-hidden>
@@ -558,6 +603,15 @@ export function ThemePaletteCard() {
                     ? 'none'
                     : 'some';
             const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+
+            function onGroupTriStateChange(checked: boolean) {
+              onSetColorGroupChecked(groupKey, checked);
+            }
+
+            function onGroupCheckboxClickCapture(e: MouseEvent) {
+              e.stopPropagation();
+            }
+
             const renderClusterColumn = (cluster: ReturnType<typeof clusterColors>[0], key: string) => {
               const primaryRefsAll = hexToRefs.get(normalizeHex(cluster.representative)) ?? [];
               const primaryRefs = primaryRefsAll.filter((r) => refsInGroupSet.has(r));
@@ -606,6 +660,23 @@ export function ThemePaletteCard() {
                 };
               };
 
+              function onPrimarySwatchClick(e: MouseEvent<HTMLDivElement>) {
+                e.preventDefault();
+                handlePrimaryActivate();
+              }
+
+              function onPrimarySwatchContextMenu(e: MouseEvent<HTMLDivElement>) {
+                e.preventDefault();
+                copyHexToClipboard(cluster.representative);
+              }
+
+              function onPrimarySwatchKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handlePrimaryActivate();
+                }
+              }
+
               return (
                 <div key={key} className="theme-palette-cluster-column">
                   <div
@@ -619,20 +690,9 @@ export function ThemePaletteCard() {
                         : `${normalizeHex(cluster.representative)} — click to toggle variables, double-click to select cluster, right-click to copy`
                     }
                     aria-label={`${normalizeHex(cluster.representative)}, ${primaryState} selected. Click to toggle, double-click to select cluster, right-click to copy.`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePrimaryActivate();
-                    }}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      copyHexToClipboard(cluster.representative);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handlePrimaryActivate();
-                      }
-                    }}
+                    onClick={onPrimarySwatchClick}
+                    onContextMenu={onPrimarySwatchContextMenu}
+                    onKeyDown={onPrimarySwatchKeyDown}
                   />
                   <div className="theme-palette-member-swatches">
                     {cluster.members.map((hex, midx) => {
@@ -645,6 +705,24 @@ export function ThemePaletteCard() {
                           : memberState === 'some'
                             ? 'theme-palette-swatch-partial'
                             : 'theme-palette-swatch-unchecked';
+
+                      function onMemberSwatchClick(e: MouseEvent<HTMLDivElement>) {
+                        e.preventDefault();
+                        handleSwatchClick(hex, refsInGroupSet);
+                      }
+
+                      function onMemberSwatchContextMenu(e: MouseEvent<HTMLDivElement>) {
+                        e.preventDefault();
+                        copyHexToClipboard(hex);
+                      }
+
+                      function onMemberSwatchKeyDown(e: KeyboardEvent<HTMLDivElement>) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleSwatchClick(hex, refsInGroupSet);
+                        }
+                      }
+
                       return (
                         <div
                           key={midx}
@@ -658,20 +736,9 @@ export function ThemePaletteCard() {
                               : `${normalizeHex(hex)} — click to toggle variables, right-click to copy`
                           }
                           aria-label={`${normalizeHex(hex)}, ${memberState} selected. Click to toggle, right-click to copy.`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleSwatchClick(hex, refsInGroupSet);
-                          }}
-                          onContextMenu={(e) => {
-                            e.preventDefault();
-                            copyHexToClipboard(hex);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              handleSwatchClick(hex, refsInGroupSet);
-                            }
-                          }}
+                          onClick={onMemberSwatchClick}
+                          onContextMenu={onMemberSwatchContextMenu}
+                          onKeyDown={onMemberSwatchKeyDown}
                         />
                       );
                     })}
@@ -684,8 +751,8 @@ export function ThemePaletteCard() {
                 <div className="theme-palette-group-header">
                   <TriStateCheckbox
                     state={groupState}
-                    onChange={(checked) => onSetColorGroupChecked(groupKey, checked)}
-                    onClickCapture={(e) => e.stopPropagation()}
+                    onChange={onGroupTriStateChange}
+                    onClickCapture={onGroupCheckboxClickCapture}
                     ariaLabel={`Select all in group: ${groupLabel}`}
                     className="theme-palette-group-checkbox"
                   />

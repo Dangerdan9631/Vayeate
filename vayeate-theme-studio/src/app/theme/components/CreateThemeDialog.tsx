@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useCreateThemeDialogViewModel } from '../viewmodel/use-create-theme-dialog-viewmodel';
 
 export function CreateThemeDialog() {
@@ -11,6 +12,10 @@ export function CreateThemeDialog() {
     handleNameChange,
   } = useCreateThemeDialogViewModel();
 
+  function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleNameChange(e.target.value);
+  }
+
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
       <div className="dialog-content" onClick={handleDialogContentClick}>
@@ -23,7 +28,7 @@ export function CreateThemeDialog() {
             type="text"
             value={name}
             placeholder="my-theme"
-            onChange={(e) => handleNameChange(e.target.value)}
+            onChange={onNameInputChange}
           />
         </label>
         {showNameError && (

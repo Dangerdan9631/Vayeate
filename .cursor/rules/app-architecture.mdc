@@ -37,9 +37,11 @@ flowchart LR
 
 - Only **UI-originated signals** on the queue — pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). Handlers → controllers only (exhaustive switch).
 - **State updates only in operations.** Controllers read via getters; never set state.
-- **Exception — action queue status:** State that reflects the action queue’s own status (depth, processing flag, etc.) may be updated **only inside the `ActionQueue` implementation** (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception; all other domain state still updates **only** in operations.
 - **Business logic only in operations.** Gateways/services: system + conversion, not domain rules.
 - **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
+- **Exception — action queue status and App shell:**
+  - State that reflects the action queue’s own status (depth, processing flag, etc.) may be updated **only inside the `ActionQueue` implementation** (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception.
+  - App shell load and unload controllers should be invoked directly from `useEffect` calls in the AppShell component. **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up. 
 
 ## Actions
 

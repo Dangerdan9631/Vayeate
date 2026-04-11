@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import { useMappingsCardViewModel } from '../viewmodel/use-mappings-card-viewmodel';
 import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
 import type {
@@ -252,6 +259,18 @@ function MappingTypeSection({
               const isOrphan = orphanKeys.has(mKey);
               const isBlockingLock = !m.colorVariableRef;
 
+              function onMappingGroupRefSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+                handleGroupRefChange(m)(e.target.value);
+              }
+
+              function onMappingColorRefSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+                handleColorRefChange(m)(e.target.value);
+              }
+
+              function onMappingContrastRefSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+                handleContrastRefChange(m)(e.target.value);
+              }
+
               return (
                 <div
                   key={mKey}
@@ -261,7 +280,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.groupRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) => handleGroupRefChange(m)(e.target.value)}
+                    onChange={onMappingGroupRefSelectChange}
                     title="Group"
                   >
                     <option value="">Ungrouped</option>
@@ -286,7 +305,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.colorVariableRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) => handleColorRefChange(m)(e.target.value)}
+                    onChange={onMappingColorRefSelectChange}
                   >
                     <option value="">— color —</option>
                     {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -299,7 +318,7 @@ function MappingTypeSection({
                     className="field-select mapping-var-select"
                     value={m.contrastVariableRef ?? ''}
                     disabled={!canEdit}
-                    onChange={(e) => handleContrastRefChange(m)(e.target.value)}
+                    onChange={onMappingContrastRefSelectChange}
                   >
                     <option value="">— contrast —</option>
                     {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -386,6 +405,19 @@ function SemanticBlockRows({
     onUpdateColorRef(base.token.key, base.token.type, value || null);
   const handleBaseContrastChange = (value: string) =>
     onUpdateContrastRef(base.token.key, base.token.type, value || null);
+
+  function onBaseGroupSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleBaseGroupChange(e.target.value);
+  }
+
+  function onBaseColorSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleBaseColorChange(e.target.value);
+  }
+
+  function onBaseContrastSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleBaseContrastChange(e.target.value);
+  }
+
   const handleAddVariant = () =>
     semanticVariant.onAddSemanticVariant(
       type,
@@ -417,7 +449,7 @@ function SemanticBlockRows({
             className="field-select mapping-var-select mapping-col-group"
             value={base.groupRef ?? ''}
             disabled={!canEdit}
-            onChange={(e) => handleBaseGroupChange(e.target.value)}
+            onChange={onBaseGroupSelectChange}
             title="Group"
           >
             <option value="">Ungrouped</option>
@@ -455,7 +487,7 @@ function SemanticBlockRows({
               className="field-select mapping-var-select mapping-col-color"
               value={base.colorVariableRef ?? ''}
               disabled={!canEdit}
-              onChange={(e) => handleBaseColorChange(e.target.value)}
+              onChange={onBaseColorSelectChange}
             >
               <option value="">— color —</option>
               {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -468,7 +500,7 @@ function SemanticBlockRows({
               className="field-select mapping-var-select mapping-col-contrast"
               value={base.contrastVariableRef ?? ''}
               disabled={!canEdit}
-              onChange={(e) => handleBaseContrastChange(e.target.value)}
+              onChange={onBaseContrastSelectChange}
             >
               <option value="">— contrast —</option>
               {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -493,27 +525,35 @@ function SemanticBlockRows({
           </div>
         )}
       </div>
-      {variants.map((m, idx) => (
-        <SemanticVariantRow
-          key={`${base.token.key}::v::${idx}`}
-          mapping={m}
-          groups={groups}
-          onUpdateGroupRef={onUpdateGroupRef}
-          colorVariables={colorVariables}
-          contrastVariables={contrastVariables}
-          orphanKeys={orphanKeys}
-          canEdit={canEdit}
-          semanticVariant={semanticVariant}
-          commitSemanticModifiers={commitModifiersWithOpenState}
-          commitSemanticLanguage={commitLanguageWithOpenState}
-          isModifierOpen={openModifierKey === m.token.key}
-          onOpenModifierDropdown={() => setOpenModifierKey(m.token.key)}
-          onCloseModifierDropdown={() => setOpenModifierKey(null)}
-          onUpdateColorRef={onUpdateColorRef}
-          onUpdateContrastRef={onUpdateContrastRef}
-          onRemoveMapping={onRemoveMapping}
-        />
-      ))}
+      {variants.map((m, idx) => {
+        function onOpenModifierDropdown() {
+          setOpenModifierKey(m.token.key);
+        }
+        function onCloseModifierDropdown() {
+          setOpenModifierKey(null);
+        }
+        return (
+          <SemanticVariantRow
+            key={`${base.token.key}::v::${idx}`}
+            mapping={m}
+            groups={groups}
+            onUpdateGroupRef={onUpdateGroupRef}
+            colorVariables={colorVariables}
+            contrastVariables={contrastVariables}
+            orphanKeys={orphanKeys}
+            canEdit={canEdit}
+            semanticVariant={semanticVariant}
+            commitSemanticModifiers={commitModifiersWithOpenState}
+            commitSemanticLanguage={commitLanguageWithOpenState}
+            isModifierOpen={openModifierKey === m.token.key}
+            onOpenModifierDropdown={onOpenModifierDropdown}
+            onCloseModifierDropdown={onCloseModifierDropdown}
+            onUpdateColorRef={onUpdateColorRef}
+            onUpdateContrastRef={onUpdateContrastRef}
+            onRemoveMapping={onRemoveMapping}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -642,6 +682,19 @@ function SemanticVariantRow({
     onUpdateColorRef(mapping.token.key, mapping.token.type, value || null);
   const handleContrastChange = (value: string) =>
     onUpdateContrastRef(mapping.token.key, mapping.token.type, value || null);
+
+  function onVariantGroupSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleGroupChange(e.target.value);
+  }
+
+  function onVariantColorSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleColorChange(e.target.value);
+  }
+
+  function onVariantContrastSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleContrastChange(e.target.value);
+  }
+
   const handleModifierOptionClick = (mod: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     toggleModifier(mod);
@@ -673,7 +726,7 @@ function SemanticVariantRow({
             className="field-select mapping-var-select mapping-col-group"
             value={mapping.groupRef ?? ''}
             disabled={!canEdit}
-            onChange={(e) => handleGroupChange(e.target.value)}
+            onChange={onVariantGroupSelectChange}
             title="Group"
           >
             <option value="">Ungrouped</option>
@@ -781,7 +834,7 @@ function SemanticVariantRow({
           className="field-select mapping-var-select mapping-col-color"
           value={mapping.colorVariableRef ?? ''}
           disabled={!canEdit}
-          onChange={(e) => handleColorChange(e.target.value)}
+          onChange={onVariantColorSelectChange}
         >
           <option value="">— color —</option>
           {[...colorVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -794,7 +847,7 @@ function SemanticVariantRow({
           className="field-select mapping-var-select mapping-col-contrast"
           value={mapping.contrastVariableRef ?? ''}
           disabled={!canEdit}
-          onChange={(e) => handleContrastChange(e.target.value)}
+          onChange={onVariantContrastSelectChange}
         >
           <option value="">— contrast —</option>
           {[...contrastVariables].sort((a, b) => a.key.localeCompare(b.key)).map((v) => (
@@ -965,6 +1018,11 @@ export function MappingsCard() {
   const handleSearchTextChange = (value: string) => {
     setMappingSearchText(value);
   };
+
+  function onMappingSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleSearchTextChange(e.target.value);
+  }
+
   const handleToggleColorFilterDropdown = () => setOpenFilter((v) => (v === 'color' ? null : 'color'));
   const handleToggleContrastFilterDropdown = () =>
     setOpenFilter((v) => (v === 'contrast' ? null : 'contrast'));
@@ -986,7 +1044,7 @@ export function MappingsCard() {
           className="mappings-filter-search"
           placeholder="Search…"
           value={searchQuery}
-          onChange={(e) => handleSearchTextChange(e.target.value)}
+          onChange={onMappingSearchInputChange}
           aria-label="Search mappings"
         />
         <div className="mappings-filter-dropdown-wrap" ref={colorDropdownRef}>

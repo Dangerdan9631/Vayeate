@@ -1,3 +1,4 @@
+import type { ChangeEvent, MouseEvent } from 'react';
 import { useTemplateCatalogsCardViewModel } from '../viewmodel/use-template-catalogs-card-viewmodel';
 
 export function TemplateCatalogsCard() {
@@ -46,6 +47,15 @@ export function TemplateCatalogsCard() {
           isLatestVersion &&
           includedCatalogNamesWithUpdates.includes(name);
 
+        function onCatalogCheckboxClick(e: MouseEvent<HTMLButtonElement>) {
+          e.preventDefault();
+          toggleCatalog(name);
+        }
+
+        function onCatalogVersionSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+          changeCatalogVersion(name, e.target.value);
+        }
+
         return (
           <div key={name} className="template-catalog-row">
             <label className="template-catalog-check">
@@ -55,10 +65,7 @@ export function TemplateCatalogsCard() {
                 aria-checked={included}
                 aria-label={`Include catalog ${name}`}
                 className="checkbox-icon-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggleCatalog(name);
-                }}
+                onClick={onCatalogCheckboxClick}
               >
                 <span className="material-symbols-outlined" aria-hidden>
                   {included ? 'check_box' : 'check_box_outline_blank'}
@@ -79,9 +86,7 @@ export function TemplateCatalogsCard() {
               <select
                 className="field-select template-catalog-version"
                 value={selectedVersion}
-                onChange={(e) => {
-                  changeCatalogVersion(name, e.target.value);
-                }}
+                onChange={onCatalogVersionSelectChange}
               >
                 {versions.map((ref) => (
                   <option key={ref.version} value={ref.version}>

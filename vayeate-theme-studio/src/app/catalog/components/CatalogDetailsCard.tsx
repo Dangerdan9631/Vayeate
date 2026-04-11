@@ -72,6 +72,14 @@ export function CatalogDetailsCard() {
     };
   }
 
+  function onNewSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
+    changeNewSourceUrl(e.target.value);
+  }
+
+  function onNewSourceTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    commitNewSourceType(e.target.value as SourceType);
+  }
+
   function onNewSourceTokenTypeChange(e: ChangeEvent<HTMLSelectElement>) {
     const tokenType = e.target.value as TokenType;
     commitNewSourceTokenType(tokenType);
@@ -127,6 +135,19 @@ export function CatalogDetailsCard() {
               function onRemoveSourceButtonClick() {
                 removeSource(i);
               }
+
+              function onEditSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
+                setEditingSourceUrl(e.target.value);
+              }
+
+              function onSourceTokenTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+                commitSourceTokenType(e.target.value as TokenType, i);
+              }
+
+              function onSourceTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+                commitSourceType(e.target.value as SourceType, i);
+              }
+
               return (
                 <div className="source-row" key={i}>
                   <input
@@ -136,14 +157,14 @@ export function CatalogDetailsCard() {
                     placeholder="https://..."
                     disabled={!isLatestVersion}
                     onFocus={beginEditSourceUrl(i, source.url)}
-                    onChange={(e) => setEditingSourceUrl(e.target.value)}
+                    onChange={onEditSourceUrlInputChange}
                     onBlur={finishEditSourceUrl(i, source.url)}
                   />
                   <select
                     className="field-select source-select"
                     value={source.tokenType}
                     disabled={!isLatestVersion}
-                    onChange={(e) => commitSourceTokenType(e.target.value as TokenType, i)}
+                    onChange={onSourceTokenTypeSelectChange}
                   >
                     {getTokenTypeOptions(source.type).map((t) => (
                       <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
@@ -153,7 +174,7 @@ export function CatalogDetailsCard() {
                     className="field-select source-select"
                     value={source.type}
                     disabled={!isLatestVersion}
-                    onChange={(e) => commitSourceType(e.target.value as SourceType, i)}
+                    onChange={onSourceTypeSelectChange}
                   >
                     {getSourceTypeOptions(source.tokenType).map((t) => (
                       <option key={t} value={t}>{t}</option>
@@ -178,7 +199,7 @@ export function CatalogDetailsCard() {
                   type="text"
                   value={newSourceUrl}
                   placeholder="https://..."
-                  onChange={(e) => changeNewSourceUrl(e.target.value)}
+                  onChange={onNewSourceUrlInputChange}
                 />
                 <select
                   className="field-select source-select"
@@ -192,7 +213,7 @@ export function CatalogDetailsCard() {
                 <select
                   className="field-select source-select"
                   value={newSourceType}
-                  onChange={(e) => commitNewSourceType(e.target.value as SourceType)}
+                  onChange={onNewSourceTypeSelectChange}
                 >
                   {getSourceTypeOptions(newSourceTokenType).map((t) => (
                     <option key={t} value={t}>{t}</option>

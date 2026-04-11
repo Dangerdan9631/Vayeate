@@ -1,3 +1,4 @@
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useGroupsCardViewModel } from '../viewmodel/use-groups-card-viewmodel';
 
 export function GroupsCard() {
@@ -15,6 +16,16 @@ export function GroupsCard() {
 
   if (!template) return null;
 
+  function onAddGroupNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleAddGroupNameChange(e.target.value);
+  }
+
+  function onAddGroupNameKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') {
+      handleAddGroup();
+    }
+  }
+
   return (
     <div className="tokens-card placeholder">
       <h2>Groups</h2>
@@ -25,10 +36,8 @@ export function GroupsCard() {
             type="text"
             placeholder="Group name…"
             value={addGroupName}
-            onChange={(e) => {
-              handleAddGroupNameChange(e.target.value);
-            }}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddGroup()}
+            onChange={onAddGroupNameInputChange}
+            onKeyDown={onAddGroupNameKeyDown}
           />
           <button
             type="button"

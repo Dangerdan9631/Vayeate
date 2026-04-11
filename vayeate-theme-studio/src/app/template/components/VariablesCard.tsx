@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useVariablesCardViewModel } from '../viewmodel/use-variables-card-viewmodel';
 import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../../model/schemas';
 import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../model/schemas';
@@ -58,12 +58,26 @@ function ColorGroupSubsection({
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
+  function onColorGroupTreeHeaderClick() {
+    setCollapsed((c) => !c);
+  }
+
+  function onAddVariableNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    onAddVariableNameChange(e.target.value);
+  }
+
+  function onAddColorVariableButtonClick() {
+    if (isValidVariableKey(addVariableName.trim(), 'color')) {
+      onAdd(groupRef);
+    }
+  }
+
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={onColorGroupTreeHeaderClick}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -80,34 +94,33 @@ function ColorGroupSubsection({
                 type="text"
                 placeholder="new variable…"
                 value={addVariableName}
-                onChange={(e) => {
-                  onAddVariableNameChange(e.target.value);
-                }}
+                onChange={onAddVariableNameInputChange}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
                 disabled={!isValidVariableKey(addVariableName.trim(), 'color')}
-                onClick={() => {
-                  if (isValidVariableKey(addVariableName.trim(), 'color')) {
-                    onAdd(groupRef);
-                  }
-                }}
+                onClick={onAddColorVariableButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
             </div>
           )}
-          {colorVariables.map((v) => (
+          {colorVariables.map((v) => {
+            function onColorVariableGroupRefChange(e: ChangeEvent<HTMLSelectElement>) {
+              onUpdateGroupRef(v.key, e.target.value || null);
+            }
+            function onRemoveColorVariableClick() {
+              onRemove(v.key);
+            }
+            return (
             <div key={v.key} className="variable-row">
               <select
                 className="field-select mapping-var-select"
                 value={v.groupRef ?? ''}
                 disabled={!canEdit}
-                onChange={(e) =>
-                  onUpdateGroupRef(v.key, e.target.value || null)
-                }
+                onChange={onColorVariableGroupRefChange}
                 title="Group"
               >
                 <option value="">Ungrouped</option>
@@ -124,13 +137,14 @@ function ColorGroupSubsection({
                   className="btn-icon btn-danger-icon"
                   title={referencedKeys.has(v.key) ? 'Cannot remove: variable is referenced' : 'Remove'}
                   disabled={referencedKeys.has(v.key)}
-                  onClick={() => onRemove(v.key)}
+                  onClick={onRemoveColorVariableClick}
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -163,12 +177,16 @@ function ColorVariablesSection({
   const groupKeysInOrder = sortedGroupKeys(byGroup);
   const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
 
+  function onColorVariablesSectionHeaderClick() {
+    setCollapsed((c) => !c);
+  }
+
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={onColorVariablesSectionHeaderClick}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -237,12 +255,26 @@ function ContrastGroupSubsection({
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
+  function onContrastGroupTreeHeaderClick() {
+    setCollapsed((c) => !c);
+  }
+
+  function onContrastAddVariableNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    onAddVariableNameChange(e.target.value);
+  }
+
+  function onAddContrastVariableButtonClick() {
+    if (isValidVariableKey(addVariableName.trim(), 'contrast')) {
+      onAdd(groupRef);
+    }
+  }
+
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={onContrastGroupTreeHeaderClick}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -259,32 +291,36 @@ function ContrastGroupSubsection({
                 type="text"
                 placeholder="new variable…"
                 value={addVariableName}
-                onChange={(e) => onAddVariableNameChange(e.target.value)}
+                onChange={onContrastAddVariableNameInputChange}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
                 disabled={!isValidVariableKey(addVariableName.trim(), 'contrast')}
-                onClick={() => {
-                  if (isValidVariableKey(addVariableName.trim(), 'contrast')) {
-                    onAdd(groupRef);
-                  }
-                }}
+                onClick={onAddContrastVariableButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
             </div>
           )}
-          {contrastVariables.map((v) => (
+          {contrastVariables.map((v) => {
+            function onContrastVariableGroupRefChange(e: ChangeEvent<HTMLSelectElement>) {
+              onUpdateGroupRef(v.key, e.target.value || null);
+            }
+            function onComparisonSourceChange(e: ChangeEvent<HTMLSelectElement>) {
+              onUpdateComparisonSource(v.key, e.target.value || null);
+            }
+            function onRemoveContrastVariableClick() {
+              onRemove(v.key);
+            }
+            return (
             <div key={v.key} className="variable-row">
               <select
                 className="field-select mapping-var-select"
                 value={v.groupRef ?? ''}
                 disabled={!canEdit}
-                onChange={(e) =>
-                  onUpdateGroupRef(v.key, e.target.value || null)
-                }
+                onChange={onContrastVariableGroupRefChange}
                 title="Group"
               >
                 <option value="">Ungrouped</option>
@@ -299,9 +335,7 @@ function ContrastGroupSubsection({
                 className="field-select variable-comparison-select"
                 value={v.comparisonSourceRef ?? ''}
                 disabled={!canEdit}
-                onChange={(e) =>
-                  onUpdateComparisonSource(v.key, e.target.value || null)
-                }
+                onChange={onComparisonSourceChange}
               >
                 <option value="">— source —</option>
                 {colorVariables.map((cv) => (
@@ -316,13 +350,14 @@ function ContrastGroupSubsection({
                   className="btn-icon btn-danger-icon"
                   title={referencedKeys.has(v.key) ? 'Cannot remove: variable is referenced' : 'Remove'}
                   disabled={referencedKeys.has(v.key)}
-                  onClick={() => onRemove(v.key)}
+                  onClick={onRemoveContrastVariableClick}
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -359,12 +394,16 @@ function ContrastVariablesSection({
   const groupKeysInOrder = sortedGroupKeys(byGroup);
   const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
 
+  function onContrastVariablesSectionHeaderClick() {
+    setCollapsed((c) => !c);
+  }
+
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={() => setCollapsed(!collapsed)}
+        onClick={onContrastVariablesSectionHeaderClick}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -441,6 +480,38 @@ export function VariablesCard() {
     .sort((a, b) => a.key.localeCompare(b.key));
   const sortedColorVariables = [...colorVariables].sort((a, b) => a.key.localeCompare(b.key));
 
+  function onVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleVariablesSearchChange(e.target.value);
+  }
+
+  function onColorVariablesSectionAdd(groupRef: string | null) {
+    onAddColorVariable(groupRef);
+  }
+
+  function onColorVariablesSectionRemove(key: string) {
+    onRemoveColorVariable(key);
+  }
+
+  function onColorVariablesSectionUpdateGroupRef(key: string, groupRef: string | null) {
+    onUpdateColorVariableGroupRef(key, groupRef);
+  }
+
+  function onContrastVariablesSectionAdd(groupRef: string | null) {
+    onAddContrastVariable(groupRef);
+  }
+
+  function onContrastVariablesSectionRemove(key: string) {
+    onRemoveContrastVariable(key);
+  }
+
+  function onContrastVariablesSectionUpdateGroupRef(key: string, groupRef: string | null) {
+    onUpdateContrastVariableGroupRef(key, groupRef);
+  }
+
+  function onContrastVariablesSectionUpdateComparisonSource(key: string, ref: ColorVariableKey | null) {
+    onUpdateContrastComparisonSource(key, ref);
+  }
+
   return (
     <div className="tokens-card placeholder">
       <h2>Variables</h2>
@@ -449,9 +520,7 @@ export function VariablesCard() {
         className="card-search-input"
         placeholder="Search…"
         value={variablesSearchText}
-        onChange={(e) => {
-          handleVariablesSearchChange(e.target.value);
-        }}
+        onChange={onVariablesSearchInputChange}
         aria-label="Search variables"
       />
       <ColorVariablesSection
@@ -461,9 +530,9 @@ export function VariablesCard() {
         canEdit={canEdit}
         addVariableName={addVariableName}
         onAddVariableNameChange={handleAddVariableNameChange}
-        onAdd={(groupRef) => onAddColorVariable(groupRef)}
-        onRemove={(key) => onRemoveColorVariable(key)}
-        onUpdateGroupRef={(key, groupRef) => onUpdateColorVariableGroupRef(key, groupRef)}
+        onAdd={onColorVariablesSectionAdd}
+        onRemove={onColorVariablesSectionRemove}
+        onUpdateGroupRef={onColorVariablesSectionUpdateGroupRef}
       />
       <ContrastVariablesSection
         contrastVariables={filteredContrastVariables}
@@ -473,10 +542,10 @@ export function VariablesCard() {
         canEdit={canEdit}
         addVariableName={addVariableName}
         onAddVariableNameChange={handleAddVariableNameChange}
-        onAdd={(groupRef) => onAddContrastVariable(groupRef)}
-        onRemove={(key) => onRemoveContrastVariable(key)}
-        onUpdateGroupRef={(key, groupRef) => onUpdateContrastVariableGroupRef(key, groupRef)}
-        onUpdateComparisonSource={(key, ref) => onUpdateContrastComparisonSource(key, ref)}
+        onAdd={onContrastVariablesSectionAdd}
+        onRemove={onContrastVariablesSectionRemove}
+        onUpdateGroupRef={onContrastVariablesSectionUpdateGroupRef}
+        onUpdateComparisonSource={onContrastVariablesSectionUpdateComparisonSource}
       />
     </div>
   );

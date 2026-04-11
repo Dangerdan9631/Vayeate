@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useCreateCatalogDialogViewModel } from '../viewmodel/use-create-catalog-dialog-viewmodel';
 import type { CatalogType } from '../../../model/schemas';
 
@@ -16,6 +17,14 @@ export function CreateCatalogDialog() {
 
   const showNameError = name.length > 0 && !nameValid;
 
+  function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleNameChange(e.target.value);
+  }
+
+  function onTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleTypeChange(e.target.value as CatalogType);
+  }
+
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
       <div className="dialog-content" onClick={handleDialogContentClick}>
@@ -28,7 +37,7 @@ export function CreateCatalogDialog() {
             type="text"
             value={name}
             placeholder="my-catalog"
-            onChange={(e) => handleNameChange(e.target.value)}
+            onChange={onNameInputChange}
           />
         </label>
         {showNameError && (
@@ -40,7 +49,7 @@ export function CreateCatalogDialog() {
           <select
             className="field-select"
             value={type}
-            onChange={(e) => handleTypeChange(e.target.value as CatalogType)}
+            onChange={onTypeSelectChange}
           >
             <option value="manual">Manual</option>
             <option value="remote">Remote</option>

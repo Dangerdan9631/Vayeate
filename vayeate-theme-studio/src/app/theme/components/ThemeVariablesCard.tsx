@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
 import type {
   ColorAssignment,
   ColorVariable,
@@ -96,20 +96,28 @@ function ColorAssignmentsSection({
   );
   const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
 
+  function onColorSectionTriStateClickCapture(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  function onColorAssignmentsSectionHeaderToggleClick() {
+    setCollapsed((c) => !c);
+  }
+
   return (
     <div className="tree-section">
       <div className="tree-header tree-header-with-checkbox">
         <TriStateCheckbox
           state={sectionState}
           onChange={onSetAllColorChecked}
-          onClickCapture={(e) => e.stopPropagation()}
+          onClickCapture={onColorSectionTriStateClickCapture}
           ariaLabel="Select all color variables"
           className="tree-section-checkbox"
         />
         <button
           type="button"
           className="tree-header-toggle"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onColorAssignmentsSectionHeaderToggleClick}
           aria-expanded={!collapsed}
         >
           <span className="material-symbols-outlined tree-chevron">
@@ -184,20 +192,32 @@ function ColorAssignmentsGroupSubsection({
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
+  function onColorGroupTriStateChange(checked: boolean) {
+    onSetColorGroupChecked(groupKey, checked);
+  }
+
+  function onColorGroupTriStateClickCapture(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  function onColorGroupHeaderToggleClick() {
+    setCollapsed((c) => !c);
+  }
+
   return (
     <div className="tree-section">
       <div className="tree-header tree-header-with-checkbox">
         <TriStateCheckbox
           state={groupState}
-          onChange={(checked) => onSetColorGroupChecked(groupKey, checked)}
-          onClickCapture={(e) => e.stopPropagation()}
+          onChange={onColorGroupTriStateChange}
+          onClickCapture={onColorGroupTriStateClickCapture}
           ariaLabel={`Select all in group: ${groupLabel}`}
           className="tree-section-checkbox"
         />
         <button
           type="button"
           className="tree-header-toggle"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onColorGroupHeaderToggleClick}
           aria-expanded={!collapsed}
         >
           <span className="material-symbols-outlined tree-chevron">
@@ -264,6 +284,82 @@ function ColorAssignmentRow({
   const hasGenerationIssue =
     assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
 
+  function onColorRowToggleClick() {
+    onToggleChecked(assignment.colorRef);
+  }
+
+  function onColorRowToggleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      onToggleChecked(assignment.colorRef);
+    }
+  }
+
+  function onDarkHexInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setPendingDarkHex(e.target.value);
+  }
+
+  function onDarkHexInputBlur(e: FocusEvent<HTMLInputElement>) {
+    const v = e.target.value.trim() || null;
+    onUpdateDark(assignment.colorRef, v);
+    setPendingDarkHex(null);
+  }
+
+  function onDarkPickerInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setPendingDarkPicker(e.target.value);
+  }
+
+  function onDarkPickerInputBlur(e: FocusEvent<HTMLInputElement>) {
+    let v = e.target.value.trim() || null;
+    if (v && darkValue.length === 9) v = v + darkValue.slice(7, 9);
+    onUpdateDark(assignment.colorRef, v);
+    setPendingDarkPicker(null);
+  }
+
+  function onDarkEyedropperClick() {
+    void dispatch({
+      type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
+      ref: assignment.colorRef,
+    });
+  }
+
+  function onLightHexInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setPendingLightHex(e.target.value);
+  }
+
+  function onLightHexInputBlur(e: FocusEvent<HTMLInputElement>) {
+    if (!assignment.useDarkForLight) {
+      const v = e.target.value.trim() || null;
+      onUpdateLight(assignment.colorRef, v);
+    }
+    setPendingLightHex(null);
+  }
+
+  function onLightPickerInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setPendingLightPicker(e.target.value);
+  }
+
+  function onLightPickerInputBlur() {
+    if (!assignment.useDarkForLight) {
+      let v = (pendingLightPicker ?? lightValue) || null;
+      if (v && lightValue.length === 9) v = v + lightValue.slice(7, 9);
+      onUpdateLight(assignment.colorRef, v);
+    }
+    setPendingLightPicker(null);
+  }
+
+  function onLightEyedropperClick() {
+    if (assignment.useDarkForLight) return;
+    void dispatch({
+      type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
+      ref: assignment.colorRef,
+    });
+  }
+
+  function onUseDarkForLightCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
+    onUpdateUseDark(assignment.colorRef, e.target.checked);
+  }
+
   return (
     <div
       className={`theme-color-row theme-color-row--has-eyedropper ${isOrphan ? 'theme-row-orphan' : ''}`}
@@ -275,13 +371,8 @@ function ColorAssignmentRow({
         aria-label={`Include ${assignment.colorRef} in palette adjustments`}
         title="Include in palette adjustments"
         className="theme-var-check-wrap checkbox-icon-btn"
-        onClick={() => onToggleChecked(assignment.colorRef)}
-        onKeyDown={(e) => {
-          if (e.key === ' ' || e.key === 'Enter') {
-            e.preventDefault();
-            onToggleChecked(assignment.colorRef);
-          }
-        }}
+        onClick={onColorRowToggleClick}
+        onKeyDown={onColorRowToggleKeyDown}
       >
         <span className="material-symbols-outlined" aria-hidden>
           {checked ? 'check_box' : 'check_box_outline_blank'}
@@ -303,36 +394,22 @@ function ColorAssignmentRow({
         type="text"
         placeholder="#000000"
         value={displayDarkHex}
-        onChange={(e) => setPendingDarkHex(e.target.value)}
-        onBlur={(e) => {
-          const v = e.target.value.trim() || null;
-          onUpdateDark(assignment.colorRef, v);
-          setPendingDarkHex(null);
-        }}
+        onChange={onDarkHexInputChange}
+        onBlur={onDarkHexInputBlur}
       />
       <input
         type="color"
         className="theme-color-picker"
         value={pickerValueDark}
-        onChange={(e) => setPendingDarkPicker(e.target.value)}
-        onBlur={(e) => {
-          let v = e.target.value.trim() || null;
-          if (v && darkValue.length === 9) v = v + darkValue.slice(7, 9);
-          onUpdateDark(assignment.colorRef, v);
-          setPendingDarkPicker(null);
-        }}
+        onChange={onDarkPickerInputChange}
+        onBlur={onDarkPickerInputBlur}
       />
       <button
         type="button"
         className="theme-eyedropper-btn"
         title="Pick color from screen (dark)"
         aria-label="Pick dark color from screen"
-        onClick={() => {
-          void dispatch({
-            type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
-            ref: assignment.colorRef,
-          });
-        }}
+        onClick={onDarkEyedropperClick}
       >
         <span className="material-symbols-outlined" aria-hidden>colorize</span>
       </button>
@@ -342,29 +419,16 @@ function ColorAssignmentRow({
         placeholder="#ffffff"
         value={displayLightHex}
         disabled={assignment.useDarkForLight}
-        onChange={(e) => setPendingLightHex(e.target.value)}
-        onBlur={(e) => {
-          if (!assignment.useDarkForLight) {
-            const v = e.target.value.trim() || null;
-            onUpdateLight(assignment.colorRef, v);
-          }
-          setPendingLightHex(null);
-        }}
+        onChange={onLightHexInputChange}
+        onBlur={onLightHexInputBlur}
       />
       <input
         type="color"
         className="theme-color-picker"
         value={pickerValueLight}
         disabled={assignment.useDarkForLight}
-        onChange={(e) => setPendingLightPicker(e.target.value)}
-        onBlur={() => {
-          if (!assignment.useDarkForLight) {
-            let v = (pendingLightPicker ?? lightValue) || null;
-            if (v && lightValue.length === 9) v = v + lightValue.slice(7, 9);
-            onUpdateLight(assignment.colorRef, v);
-          }
-          setPendingLightPicker(null);
-        }}
+        onChange={onLightPickerInputChange}
+        onBlur={onLightPickerInputBlur}
       />
       <button
         type="button"
@@ -372,13 +436,7 @@ function ColorAssignmentRow({
         disabled={assignment.useDarkForLight}
         title="Pick color from screen (light)"
         aria-label="Pick light color from screen"
-        onClick={() => {
-          if (assignment.useDarkForLight) return;
-          void dispatch({
-            type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
-            ref: assignment.colorRef,
-          });
-        }}
+        onClick={onLightEyedropperClick}
       >
         <span className="material-symbols-outlined" aria-hidden>colorize</span>
       </button>
@@ -393,7 +451,7 @@ function ColorAssignmentRow({
         <input
           type="checkbox"
           checked={assignment.useDarkForLight}
-          onChange={(e) => onUpdateUseDark(assignment.colorRef, e.target.checked)}
+          onChange={onUseDarkForLightCheckboxChange}
           aria-label="Use dark value for light theme"
         />
         <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
@@ -438,20 +496,28 @@ function ContrastAssignmentsSection({
   );
   const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
 
+  function onContrastSectionTriStateClickCapture(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  function onContrastAssignmentsSectionHeaderToggleClick() {
+    setCollapsed((c) => !c);
+  }
+
   return (
     <div className="tree-section">
       <div className="tree-header tree-header-with-checkbox">
         <TriStateCheckbox
           state={sectionState}
           onChange={onSetAllContrastChecked}
-          onClickCapture={(e) => e.stopPropagation()}
+          onClickCapture={onContrastSectionTriStateClickCapture}
           ariaLabel="Select all contrast variables"
           className="tree-section-checkbox"
         />
         <button
           type="button"
           className="tree-header-toggle"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onContrastAssignmentsSectionHeaderToggleClick}
           aria-expanded={!collapsed}
         >
           <span className="material-symbols-outlined tree-chevron">
@@ -529,20 +595,32 @@ function ContrastAssignmentsGroupSubsection({
 }) {
   const [collapsed, setCollapsed] = useState(false);
 
+  function onContrastGroupTriStateChange(checked: boolean) {
+    onSetContrastGroupChecked(groupKey, checked);
+  }
+
+  function onContrastGroupTriStateClickCapture(e: MouseEvent) {
+    e.stopPropagation();
+  }
+
+  function onContrastGroupHeaderToggleClick() {
+    setCollapsed((c) => !c);
+  }
+
   return (
     <div className="tree-section">
       <div className="tree-header tree-header-with-checkbox">
         <TriStateCheckbox
           state={groupState}
-          onChange={(checked) => onSetContrastGroupChecked(groupKey, checked)}
-          onClickCapture={(e) => e.stopPropagation()}
+          onChange={onContrastGroupTriStateChange}
+          onClickCapture={onContrastGroupTriStateClickCapture}
           ariaLabel={`Select all in group: ${groupLabel}`}
           className="tree-section-checkbox"
         />
         <button
           type="button"
           className="tree-header-toggle"
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onContrastGroupHeaderToggleClick}
           aria-expanded={!collapsed}
         >
           <span className="material-symbols-outlined tree-chevron">
@@ -609,6 +687,95 @@ function ContrastAssignmentRow({
   const hasGenerationIssue =
     assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
 
+  function onContrastRowToggleClick() {
+    onToggleChecked(ref);
+  }
+
+  function onContrastRowToggleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      onToggleChecked(ref);
+    }
+  }
+
+  function onContrastUseDarkCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
+    onUpdateUseDark(ref, e.target.checked);
+  }
+
+  function onContrastValueDarkInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setEditValueDark(e.target.value);
+  }
+
+  function onContrastValueDarkInputBlur(e: FocusEvent<HTMLInputElement>) {
+    const v = e.target.value ? parseFloat(e.target.value) : null;
+    onUpdateDark(ref, 'value', v);
+    setEditValueDark(null);
+  }
+
+  function onContrastMethodDarkSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onUpdateDark(ref, 'comparisonMethod', e.target.value as ContrastComparisonMethod);
+  }
+
+  function onContrastValueLightInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setEditValueLight(e.target.value);
+  }
+
+  function onContrastValueLightInputBlur(e: FocusEvent<HTMLInputElement>) {
+    if (!assignment.useDarkForLight) {
+      const v = e.target.value ? parseFloat(e.target.value) : null;
+      onUpdateLight(ref, 'value', v);
+    }
+    setEditValueLight(null);
+  }
+
+  function onContrastMethodLightSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onUpdateLight(ref, 'comparisonMethod', e.target.value as ContrastComparisonMethod);
+  }
+
+  function onContrastMinDarkInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setEditMinDark(e.target.value);
+  }
+
+  function onContrastMinDarkInputBlur(e: FocusEvent<HTMLInputElement>) {
+    const v = e.target.value ? parseFloat(e.target.value) : null;
+    onUpdateDark(ref, 'min', v);
+    setEditMinDark(null);
+  }
+
+  function onContrastMaxDarkInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setEditMaxDark(e.target.value);
+  }
+
+  function onContrastMaxDarkInputBlur(e: FocusEvent<HTMLInputElement>) {
+    const v = e.target.value ? parseFloat(e.target.value) : null;
+    onUpdateDark(ref, 'max', v);
+    setEditMaxDark(null);
+  }
+
+  function onContrastMinLightInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setEditMinLight(e.target.value);
+  }
+
+  function onContrastMinLightInputBlur(e: FocusEvent<HTMLInputElement>) {
+    if (!assignment.useDarkForLight) {
+      const v = e.target.value ? parseFloat(e.target.value) : null;
+      onUpdateLight(ref, 'min', v);
+    }
+    setEditMinLight(null);
+  }
+
+  function onContrastMaxLightInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setEditMaxLight(e.target.value);
+  }
+
+  function onContrastMaxLightInputBlur(e: FocusEvent<HTMLInputElement>) {
+    if (!assignment.useDarkForLight) {
+      const v = e.target.value ? parseFloat(e.target.value) : null;
+      onUpdateLight(ref, 'max', v);
+    }
+    setEditMaxLight(null);
+  }
+
   return (
     <div className={`theme-contrast-block ${isOrphan ? 'theme-row-orphan' : ''}`}>
       <div className="theme-contrast-row1">
@@ -619,13 +786,8 @@ function ContrastAssignmentRow({
           aria-label={`Include ${ref} in palette adjustments`}
           title="Include in palette adjustments"
           className="theme-var-check-wrap checkbox-icon-btn"
-          onClick={() => onToggleChecked(ref)}
-          onKeyDown={(e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
-              e.preventDefault();
-              onToggleChecked(ref);
-            }
-          }}
+          onClick={onContrastRowToggleClick}
+          onKeyDown={onContrastRowToggleKeyDown}
         >
           <span className="material-symbols-outlined" aria-hidden>
             {checked ? 'check_box' : 'check_box_outline_blank'}
@@ -659,7 +821,7 @@ function ContrastAssignmentRow({
           <input
             type="checkbox"
             checked={assignment.useDarkForLight}
-            onChange={(e) => onUpdateUseDark(ref, e.target.checked)}
+            onChange={onContrastUseDarkCheckboxChange}
             aria-label="Use dark value for light theme"
           />
           <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
@@ -680,17 +842,13 @@ function ContrastAssignmentRow({
           max="10"
           placeholder="Value"
           value={editValueDark ?? (dark?.value ?? '')}
-          onChange={(e) => setEditValueDark(e.target.value)}
-          onBlur={(e) => {
-            const v = e.target.value ? parseFloat(e.target.value) : null;
-            onUpdateDark(ref, 'value', v);
-            setEditValueDark(null);
-          }}
+          onChange={onContrastValueDarkInputChange}
+          onBlur={onContrastValueDarkInputBlur}
         />
         <select
           className="field-select theme-contrast-method"
           value={dark?.comparisonMethod ?? 'greaterThan'}
-          onChange={(e) => onUpdateDark(ref, 'comparisonMethod', e.target.value as ContrastComparisonMethod)}
+          onChange={onContrastMethodDarkSelectChange}
         >
           {COMPARISON_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>
@@ -705,20 +863,14 @@ function ContrastAssignmentRow({
           placeholder="Value"
           value={assignment.useDarkForLight ? (dark?.value ?? '') : (editValueLight ?? (light?.value ?? ''))}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => setEditValueLight(e.target.value)}
-          onBlur={(e) => {
-            if (!assignment.useDarkForLight) {
-              const v = e.target.value ? parseFloat(e.target.value) : null;
-              onUpdateLight(ref, 'value', v);
-            }
-            setEditValueLight(null);
-          }}
+          onChange={onContrastValueLightInputChange}
+          onBlur={onContrastValueLightInputBlur}
         />
         <select
           className="field-select theme-contrast-method"
           value={assignment.useDarkForLight ? (dark?.comparisonMethod ?? 'greaterThan') : (light?.comparisonMethod ?? 'greaterThan')}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => onUpdateLight(ref, 'comparisonMethod', e.target.value as ContrastComparisonMethod)}
+          onChange={onContrastMethodLightSelectChange}
         >
           {COMPARISON_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>{o.label}</option>
@@ -735,12 +887,8 @@ function ContrastAssignmentRow({
           max="10"
           placeholder="Min"
           value={editMinDark ?? (dark?.min ?? '')}
-          onChange={(e) => setEditMinDark(e.target.value)}
-          onBlur={(e) => {
-            const v = e.target.value ? parseFloat(e.target.value) : null;
-            onUpdateDark(ref, 'min', v);
-            setEditMinDark(null);
-          }}
+          onChange={onContrastMinDarkInputChange}
+          onBlur={onContrastMinDarkInputBlur}
         />
         <input
           className="field-input theme-contrast-minmax"
@@ -750,12 +898,8 @@ function ContrastAssignmentRow({
           max="10"
           placeholder="Max"
           value={editMaxDark ?? (dark?.max ?? '')}
-          onChange={(e) => setEditMaxDark(e.target.value)}
-          onBlur={(e) => {
-            const v = e.target.value ? parseFloat(e.target.value) : null;
-            onUpdateDark(ref, 'max', v);
-            setEditMaxDark(null);
-          }}
+          onChange={onContrastMaxDarkInputChange}
+          onBlur={onContrastMaxDarkInputBlur}
         />
         <input
           className="field-input theme-contrast-minmax"
@@ -766,14 +910,8 @@ function ContrastAssignmentRow({
           placeholder="Min"
           value={assignment.useDarkForLight ? (dark?.min ?? '') : (editMinLight ?? (light?.min ?? ''))}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => setEditMinLight(e.target.value)}
-          onBlur={(e) => {
-            if (!assignment.useDarkForLight) {
-              const v = e.target.value ? parseFloat(e.target.value) : null;
-              onUpdateLight(ref, 'min', v);
-            }
-            setEditMinLight(null);
-          }}
+          onChange={onContrastMinLightInputChange}
+          onBlur={onContrastMinLightInputBlur}
         />
         <input
           className="field-input theme-contrast-minmax"
@@ -784,14 +922,8 @@ function ContrastAssignmentRow({
           placeholder="Max"
           value={assignment.useDarkForLight ? (dark?.max ?? '') : (editMaxLight ?? (light?.max ?? ''))}
           disabled={assignment.useDarkForLight}
-          onChange={(e) => setEditMaxLight(e.target.value)}
-          onBlur={(e) => {
-            if (!assignment.useDarkForLight) {
-              const v = e.target.value ? parseFloat(e.target.value) : null;
-              onUpdateLight(ref, 'max', v);
-            }
-            setEditMaxLight(null);
-          }}
+          onChange={onContrastMaxLightInputChange}
+          onBlur={onContrastMaxLightInputBlur}
         />
       </div>
     </div>
@@ -843,6 +975,10 @@ export function ThemeVariablesCard() {
     .filter((a) => matchesSearch(a.contrastVariableRef, searchQuery))
     .sort((a, b) => a.contrastVariableRef.localeCompare(b.contrastVariableRef));
 
+  function onThemeVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setSearchQuery(e.target.value);
+  }
+
   return (
     <div className="tokens-card placeholder">
       <div className="theme-variables-card-header">
@@ -859,7 +995,7 @@ export function ThemeVariablesCard() {
         className="card-search-input"
         placeholder="Search…"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={onThemeVariablesSearchInputChange}
         aria-label="Search variables"
       />
       <ColorAssignmentsSection

@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useCatalogsCardViewModel } from '../viewmodel/use-catalogs-card-viewmodel';
 
 export function CatalogsCard() {
@@ -18,6 +19,14 @@ export function CatalogsCard() {
     }
   }
 
+  function onNameSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleNameChange(e.target.value);
+  }
+
+  function onVersionSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onSelectVersion(e.target.value);
+  }
+
   return (
     <div className="catalogs-card placeholder">
       <h2>Catalogs</h2>
@@ -27,7 +36,7 @@ export function CatalogsCard() {
         <select
           className="field-select"
           value={selectedName ?? ''}
-          onChange={(e) => handleNameChange(e.target.value)}
+          onChange={onNameSelectChange}
         >
           <option value="" disabled>
             Select a catalog…
@@ -46,7 +55,7 @@ export function CatalogsCard() {
           <select
             className="field-select"
             value={selectedRef?.version ?? ''}
-            onChange={(e) => onSelectVersion(e.target.value)}
+            onChange={onVersionSelectChange}
           >
             {versionsForSelectedName.map((ref) => (
               <option key={ref.version} value={ref.version}>

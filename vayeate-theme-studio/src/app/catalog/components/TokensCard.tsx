@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ChangeEvent, type FocusEvent, type KeyboardEvent } from 'react';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from '../viewmodel/use-tokens-card-viewmodel';
 import type { Catalog, SemanticTokenRegistryListKind, Token, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
@@ -45,6 +45,10 @@ function TokenTypeSection({
   };
   const handleRemoveClick = (key: string) => () => onRemove(key);
 
+  function onNewKeyInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleNewKeyChange(e.target.value);
+  }
+
   const label =
     tokenType === 'theme'
       ? 'Theme Tokens'
@@ -66,7 +70,11 @@ function TokenTypeSection({
 
       {!collapsed && (
         <div className="tree-children">
-          {tokens.map((t) => (
+          {tokens.map((t) => {
+            function onTokenRowBlur(e: FocusEvent<HTMLInputElement>) {
+              handleTokenBlur(t.key, e.target.value);
+            }
+            return (
             <div key={t.key} className="token-row">
               {isManual ? (
                 <>
@@ -74,7 +82,7 @@ function TokenTypeSection({
                     className="token-input"
                     type="text"
                     defaultValue={t.key}
-                    onBlur={(e) => handleTokenBlur(t.key, e.target.value)}
+                    onBlur={onTokenRowBlur}
                   />
                   <button
                     type="button"
@@ -89,7 +97,8 @@ function TokenTypeSection({
                 <span className="token-text">{t.key}</span>
               )}
             </div>
-          ))}
+            );
+          })}
 
           {isManual && (
             <div className="token-row token-add-row">
@@ -98,7 +107,7 @@ function TokenTypeSection({
                 type="text"
                 placeholder="new key…"
                 value={newKey}
-                onChange={(e) => handleNewKeyChange(e.target.value)}
+                onChange={onNewKeyInputChange}
               />
               <button
                 type="button"
@@ -167,6 +176,18 @@ function SemanticTokenCatalogSection({
     }
   };
 
+  function onSemanticSelectorInputChange(e: ChangeEvent<HTMLInputElement>) {
+    onSemanticSelectorTextChange?.(e.target.value);
+  }
+
+  function onSemanticSelectorInputKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    handleSelectorInputKeyDown(e.key, () => e.preventDefault());
+  }
+
+  function onSemanticSelectorAddButtonClick() {
+    onSemanticSelectorAdd?.();
+  }
+
   if (!showSection) return null;
 
   return (
@@ -193,8 +214,8 @@ function SemanticTokenCatalogSection({
                 type="text"
                 placeholder="type.modifier.modifier:language or *"
                 value={semanticSelectorText}
-                onChange={(e) => onSemanticSelectorTextChange(e.target.value)}
-                onKeyDown={(e) => handleSelectorInputKeyDown(e.key, () => e.preventDefault())}
+                onChange={onSemanticSelectorInputChange}
+                onKeyDown={onSemanticSelectorInputKeyDown}
                 aria-label="Semantic selector"
               />
               <button
@@ -202,13 +223,21 @@ function SemanticTokenCatalogSection({
                 className="btn-icon btn-add-icon"
                 title="Add"
                 disabled={!addEnabled}
-                onClick={() => onSemanticSelectorAdd()}
+                onClick={onSemanticSelectorAddButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
             </div>
           )}
-          {types.map((t, i) => (
+          {types.map((t, i) => {
+            function onTypeRowBlur(e: FocusEvent<HTMLInputElement>) {
+              const v = e.target.value.trim();
+              if (v !== t) onSemanticRegistryTextCommit?.('types', i, v);
+            }
+            function onTypeRemoveClick() {
+              onSemanticRegistryRemove?.('types', i);
+            }
+            return (
             <div key={`type-${i}-${t}`} className="token-row">
               <span className="token-label">tokenType:</span>
               {canEdit && onSemanticRegistryTextCommit ? (
@@ -217,17 +246,14 @@ function SemanticTokenCatalogSection({
                     className="token-input"
                     type="text"
                     defaultValue={t}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim();
-                      if (v !== t) onSemanticRegistryTextCommit('types', i, v);
-                    }}
+                    onBlur={onTypeRowBlur}
                     aria-label={`tokenType ${i + 1}`}
                   />
                   <button
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() => onSemanticRegistryRemove?.('types', i)}
+                    onClick={onTypeRemoveClick}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -236,8 +262,17 @@ function SemanticTokenCatalogSection({
                 <span className="token-text">{t}</span>
               )}
             </div>
-          ))}
-          {modifiers.map((m, i) => (
+            );
+          })}
+          {modifiers.map((m, i) => {
+            function onModifierRowBlur(e: FocusEvent<HTMLInputElement>) {
+              const v = e.target.value.trim();
+              if (v !== m) onSemanticRegistryTextCommit?.('modifiers', i, v);
+            }
+            function onModifierRemoveClick() {
+              onSemanticRegistryRemove?.('modifiers', i);
+            }
+            return (
             <div key={`modifier-${i}-${m}`} className="token-row">
               <span className="token-label">modifier:</span>
               {canEdit && onSemanticRegistryTextCommit ? (
@@ -246,17 +281,14 @@ function SemanticTokenCatalogSection({
                     className="token-input"
                     type="text"
                     defaultValue={m}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim();
-                      if (v !== m) onSemanticRegistryTextCommit('modifiers', i, v);
-                    }}
+                    onBlur={onModifierRowBlur}
                     aria-label={`modifier ${i + 1}`}
                   />
                   <button
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() => onSemanticRegistryRemove?.('modifiers', i)}
+                    onClick={onModifierRemoveClick}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -265,8 +297,17 @@ function SemanticTokenCatalogSection({
                 <span className="token-text">{m}</span>
               )}
             </div>
-          ))}
-          {languages.map((lang, i) => (
+            );
+          })}
+          {languages.map((lang, i) => {
+            function onLanguageRowBlur(e: FocusEvent<HTMLInputElement>) {
+              const v = e.target.value.trim();
+              if (v !== lang) onSemanticRegistryTextCommit?.('languages', i, v);
+            }
+            function onLanguageRemoveClick() {
+              onSemanticRegistryRemove?.('languages', i);
+            }
+            return (
             <div key={`language-${i}-${lang}`} className="token-row">
               <span className="token-label">language:</span>
               {canEdit && onSemanticRegistryTextCommit ? (
@@ -275,17 +316,14 @@ function SemanticTokenCatalogSection({
                     className="token-input"
                     type="text"
                     defaultValue={lang}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim();
-                      if (v !== lang) onSemanticRegistryTextCommit('languages', i, v);
-                    }}
+                    onBlur={onLanguageRowBlur}
                     aria-label={`language ${i + 1}`}
                   />
                   <button
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={() => onSemanticRegistryRemove?.('languages', i)}
+                    onClick={onLanguageRemoveClick}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -294,7 +332,8 @@ function SemanticTokenCatalogSection({
                 <span className="token-text">{lang}</span>
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

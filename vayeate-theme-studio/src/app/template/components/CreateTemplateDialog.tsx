@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useCreateTemplateDialogViewModel } from '../viewmodel/use-create-template-dialog-viewmodel';
 
 export function CreateTemplateDialog() {
@@ -11,6 +12,10 @@ export function CreateTemplateDialog() {
     handleNameChange,
   } = useCreateTemplateDialogViewModel();
 
+  function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    handleNameChange(e.target.value);
+  }
+
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
       <div className="dialog-content" onClick={handleDialogContentClick}>
@@ -23,7 +28,7 @@ export function CreateTemplateDialog() {
             type="text"
             value={name}
             placeholder="my-template"
-            onChange={(e) => handleNameChange(e.target.value)}
+            onChange={onNameInputChange}
           />
         </label>
         {showNameError && (

@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useThemeDetailsCardViewModel } from '../viewmodel/use-theme-details-card-viewmodel';
 
 export function ThemeDetailsCard() {
@@ -21,6 +22,18 @@ export function ThemeDetailsCard() {
   const versionsForTemplate = selectedTemplateName
     ? templateVersionsByName[selectedTemplateName] ?? []
     : [];
+
+  function onTemplateSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    const name = e.target.value;
+    if (name) {
+      const version = templateVersionsByName[name]?.[0]?.version ?? '';
+      onChangeTemplate(name, version);
+    }
+  }
+
+  function onTemplateVersionSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onChangeTemplateVersion(e.target.value);
+  }
 
   return (
     <div className="catalog-details-card placeholder">
@@ -46,13 +59,7 @@ export function ThemeDetailsCard() {
           <select
             className="field-select"
             value={selectedTemplateName ?? ''}
-            onChange={(e) => {
-              const name = e.target.value;
-              if (name) {
-                const version = templateVersionsByName[name]?.[0]?.version ?? '';
-                onChangeTemplate(name, version);
-              }
-            }}
+            onChange={onTemplateSelectChange}
           >
             <option value="" disabled>
               Select a template…
@@ -71,10 +78,7 @@ export function ThemeDetailsCard() {
             <select
               className="field-select"
               value={selectedTemplateVersion ?? ''}
-              onChange={(e) => {
-                const version = e.target.value;
-                onChangeTemplateVersion(version);
-              }}
+              onChange={onTemplateVersionSelectChange}
             >
               {versionsForTemplate.map((ref) => (
                 <option key={ref.version} value={ref.version}>

@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useThemesCardViewModel } from '../viewmodel/use-themes-card-viewmodel';
 
 export function ThemesCard() {
@@ -22,6 +23,14 @@ export function ThemesCard() {
     onSelectVersion(value);
   }
 
+  function onNameSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleNameChange(e.target.value);
+  }
+
+  function onVersionSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleVersionChange(e.target.value);
+  }
+
   return (
     <div className="catalogs-card placeholder">
       <h2>Themes</h2>
@@ -31,7 +40,7 @@ export function ThemesCard() {
         <select
           className="field-select"
           value={selectedName ?? ''}
-          onChange={(e) => handleNameChange(e.target.value)}
+          onChange={onNameSelectChange}
         >
           <option value="" disabled>
             Select a theme…
@@ -50,7 +59,7 @@ export function ThemesCard() {
           <select
             className="field-select"
             value={selectedRef?.version ?? ''}
-            onChange={(e) => handleVersionChange(e.target.value)}
+            onChange={onVersionSelectChange}
           >
             {versionsForSelectedName.map((ref) => (
               <option key={ref.version} value={ref.version}>

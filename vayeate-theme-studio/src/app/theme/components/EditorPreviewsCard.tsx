@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ColorAssignment, ContrastAssignment } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
@@ -84,6 +84,20 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
     return options.filter((k) => k.toLowerCase().includes(q));
   }, [options, filter]);
 
+  function onTokenSelectToggleClick() {
+    setIsOpen((o) => !o);
+  }
+
+  function onTokenFilterInputChange(e: ChangeEvent<HTMLInputElement>) {
+    setFilter(e.target.value);
+  }
+
+  function onTokenSelectClearClick() {
+    onChange(null);
+    setIsOpen(false);
+    setFilter('');
+  }
+
   return (
     <div className="theme-preview-token-select-wrap" ref={wrapRef}>
       <label className="field-row theme-preview-field theme-preview-field-stacked">
@@ -92,7 +106,7 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
           <button
             type="button"
             className="field-select theme-preview-token-select-btn"
-            onClick={() => setIsOpen((o) => !o)}
+            onClick={onTokenSelectToggleClick}
             aria-expanded={isOpen}
             aria-haspopup="listbox"
             aria-label={label}
@@ -105,7 +119,7 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
                 type="text"
                 className="theme-preview-token-filter"
                 value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                onChange={onTokenFilterInputChange}
                 placeholder="Type to filter…"
                 aria-label="Filter tokens"
                 autoFocus
@@ -113,11 +127,7 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
               <button
                 type="button"
                 className="theme-preview-token-clear"
-                onClick={() => {
-                  onChange(null);
-                  setIsOpen(false);
-                  setFilter('');
-                }}
+                onClick={onTokenSelectClearClick}
               >
                 Clear
               </button>
@@ -125,21 +135,24 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
                 {filtered.length === 0 ? (
                   <div className="theme-preview-token-empty">No matching tokens</div>
                 ) : (
-                  filtered.map((k) => (
+                  filtered.map((k) => {
+                    function onTokenOptionClick() {
+                      onChange(k);
+                      setIsOpen(false);
+                      setFilter('');
+                    }
+                    return (
                     <div
                       key={k}
                       role="option"
                       aria-selected={value === k}
                       className="mappings-filter-check theme-preview-token-option"
-                      onClick={() => {
-                        onChange(k);
-                        setIsOpen(false);
-                        setFilter('');
-                      }}
+                      onClick={onTokenOptionClick}
                     >
                       {k}
                     </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
@@ -385,6 +398,10 @@ export function EditorPreviewsCard() {
     setSampleDropdownOpen(false);
   };
 
+  function onSampleDropdownToggleClick() {
+    setSampleDropdownOpen((v) => !v);
+  }
+
   const handleDarkScroll = () => {
     const el = darkScrollRef.current;
     const other = lightScrollRef.current;
@@ -543,7 +560,7 @@ export function EditorPreviewsCard() {
                   type="button"
                   className="theme-preview-sample-dropdown-btn"
                   style={{ backgroundColor: darkIdeTabBarBg, color: darkIdeTabBarFg, borderColor: darkIdeTabBarFg }}
-                  onClick={() => setSampleDropdownOpen((v) => !v)}
+                  onClick={onSampleDropdownToggleClick}
                   aria-expanded={sampleDropdownOpen}
                   aria-haspopup="listbox"
                   aria-label="Show sample list"
@@ -560,17 +577,22 @@ export function EditorPreviewsCard() {
                       scrollbarColor: `${darkMenuFg} ${darkMenuBg}`,
                     }}
                   >
-                    {previews.map((p, i) => (
+                    {previews.map((p, i) => {
+                      function onDarkSampleItemClick() {
+                        scrollToSample(i);
+                      }
+                      return (
                       <button
                         key={`${p.language}/${p.fileName}`}
                         type="button"
                         role="option"
                         className="theme-preview-sample-dropdown-item"
-                        onClick={() => scrollToSample(i)}
+                        onClick={onDarkSampleItemClick}
                       >
                         {previewLabelByIndex(p)}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -706,7 +728,7 @@ export function EditorPreviewsCard() {
                   type="button"
                   className="theme-preview-sample-dropdown-btn"
                   style={{ backgroundColor: lightIdeTabBarBg, color: lightIdeTabBarFg, borderColor: lightIdeTabBarFg }}
-                  onClick={() => setSampleDropdownOpen((v) => !v)}
+                  onClick={onSampleDropdownToggleClick}
                   aria-expanded={sampleDropdownOpen}
                   aria-haspopup="listbox"
                   aria-label="Show sample list"
@@ -723,17 +745,22 @@ export function EditorPreviewsCard() {
                       scrollbarColor: `${lightMenuFg} ${lightMenuBg}`,
                     }}
                   >
-                    {previews.map((p, i) => (
+                    {previews.map((p, i) => {
+                      function onLightSampleItemClick() {
+                        scrollToSample(i);
+                      }
+                      return (
                       <button
                         key={`${p.language}/${p.fileName}`}
                         type="button"
                         role="option"
                         className="theme-preview-sample-dropdown-item"
-                        onClick={() => scrollToSample(i)}
+                        onClick={onLightSampleItemClick}
                       >
                         {previewLabelByIndex(p)}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>

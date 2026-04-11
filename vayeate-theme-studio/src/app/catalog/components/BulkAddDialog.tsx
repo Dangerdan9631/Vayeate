@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useBulkAddDialogViewModel } from '../viewmodel/use-bulk-add-dialog-viewmodel';
 
 export function BulkAddDialog() {
@@ -14,6 +15,10 @@ export function BulkAddDialog() {
     handleDialogContentClick,
   } = useBulkAddDialogViewModel();
 
+  function onTextareaChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    handleTextChange(e.target.value);
+  }
+
   return (
     <div className="dialog-overlay" onClick={handleCancel}>
       <div className="dialog-content dialog-wide" onClick={handleDialogContentClick}>
@@ -28,7 +33,7 @@ export function BulkAddDialog() {
           rows={12}
           value={text}
           placeholder='{"colors": { ... }, "tokenColors": [ ... ], "semanticTokenColors": { ... }}'
-          onChange={(e) => handleTextChange(e.target.value)}
+          onChange={onTextareaChange}
         />
 
         {isError && errorMessage && (
