@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
-import { nextPatchVersion } from '../../../utils/version';
+import { nextPatchVersion } from '../../../utils/next-patch-version';
 
 @singleton()
 export class BumpTemplateVersionForEditOperation {

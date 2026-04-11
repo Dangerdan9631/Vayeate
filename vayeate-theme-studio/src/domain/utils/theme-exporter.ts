@@ -6,13 +6,11 @@
 import { writeFile, rename, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { GeneratedTheme } from './theme-generator';
-import {
-  assertValidThemeFileName,
-  stringifyTheme,
-  toSafeFileName,
-} from './theme-export-format';
+import { assertValidThemeFileName } from './assert-valid-theme-file-name';
+import { stringifyTheme } from './stringify-theme';
+import { toSafeFileName } from './to-safe-theme-file-name';
 
-export { assertValidThemeFileName } from './theme-export-format';
+export { assertValidThemeFileName } from './assert-valid-theme-file-name';
 
 async function writeAtomic(targetPath: string, content: string): Promise<void> {
   const tempPath = `${targetPath}.tmp`;

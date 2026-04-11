@@ -1,10 +1,8 @@
 import { singleton } from 'tsyringe';
 import { generateThemePair } from '../../domain/utils/theme-generator';
-import {
-  assertValidThemeFileName,
-  stringifyTheme,
-  toSafeFileName,
-} from '../../domain/utils/theme-export-format';
+import { assertValidThemeFileName } from '../../domain/utils/assert-valid-theme-file-name';
+import { stringifyTheme } from '../../domain/utils/stringify-theme';
+import { toSafeFileName } from '../../domain/utils/to-safe-theme-file-name';
 import { createThemeWithParams } from '../../model/factories/theme-factory';
 import { themeReferenceSchema, themeSchema } from '../../model/schemas';
 import type { Theme, ThemeName, ThemeReference, Version } from '../../model/schemas';

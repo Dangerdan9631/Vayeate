@@ -1,9 +1,10 @@
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { SourceType, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 
@@ -126,6 +127,58 @@ export function useCatalogDetailsCardViewModel() {
     dispatch({ type: CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick });
   }, [dispatch]);
 
+  const onExistingSourceUrlFocus = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      const i = Number(e.currentTarget.dataset.sourceIndex);
+      if (Number.isNaN(i) || !catalog) return;
+      const url = catalog.sources[i]?.url ?? '';
+      setEditingSourceIndex(i);
+      setEditingSourceUrl(url);
+    },
+    [catalog],
+  );
+
+  const onExistingSourceUrlBlur = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      const i = Number(e.currentTarget.dataset.sourceIndex);
+      if (Number.isNaN(i) || !catalog) return;
+      const committedUrl = catalog.sources[i]?.url ?? '';
+      const v = e.target.value.trim();
+      if (v !== committedUrl) {
+        commitSourceUrl(v, i);
+      }
+      setEditingSourceIndex(null);
+    },
+    [catalog, commitSourceUrl],
+  );
+
+  const onExistingSourceTokenTypeChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      const i = Number(e.currentTarget.dataset.sourceIndex);
+      if (Number.isNaN(i)) return;
+      commitSourceTokenType(e.target.value as TokenType, i);
+    },
+    [commitSourceTokenType],
+  );
+
+  const onExistingSourceTypeChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      const i = Number(e.currentTarget.dataset.sourceIndex);
+      if (Number.isNaN(i)) return;
+      commitSourceType(e.target.value as SourceType, i);
+    },
+    [commitSourceType],
+  );
+
+  const onRemoveExistingSourceClick = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      const i = Number(e.currentTarget.dataset.sourceIndex);
+      if (Number.isNaN(i)) return;
+      removeSource(i);
+    },
+    [removeSource],
+  );
+
   return {
     catalog,
     tokenCounts,
@@ -149,5 +202,10 @@ export function useCatalogDetailsCardViewModel() {
     commitNewSourceTokenType,
     commitNewSourceType,
     addNewSource,
+    onExistingSourceUrlFocus,
+    onExistingSourceUrlBlur,
+    onExistingSourceTokenTypeChange,
+    onExistingSourceTypeChange,
+    onRemoveExistingSourceClick,
   };
 }

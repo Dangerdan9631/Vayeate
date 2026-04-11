@@ -7,3 +7,4 @@ export { InitializeLoggingController } from './initialize-logging-controller';
 export { OnGlobalKeyDownEventController } from './on-global-key-down-event-controller';
 export { ToggleMenuOpenController } from './toggle-menu-open-controller';
 export { CloseAllMenusController } from './close-all-menus-controller';
+export { SyncUndoMenuStateController } from './sync-undo-menu-state-controller';

@@ -3,7 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogReference } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 

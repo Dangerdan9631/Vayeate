@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import { findNearestVersionRef } from '../../../utils/version';
+import { findNearestVersionRef } from '../../../utils/find-nearest-version-ref';
 import { catalogStackId } from '../../../utils/catalog-stack-id';
 import { DeleteCatalogOperation } from '../../../operations/catalog-operations/catalog-list/delete-catalog-operation';
 import { LoadCatalogOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-operation';

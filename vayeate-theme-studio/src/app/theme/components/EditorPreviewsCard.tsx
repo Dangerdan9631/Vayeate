@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ColorAssignment, ContrastAssignment } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
@@ -98,6 +106,14 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
     setFilter('');
   }
 
+  const onTokenOptionClick = useCallback((e: ReactMouseEvent<HTMLDivElement>) => {
+    const k = e.currentTarget.dataset.tokenKey;
+    if (!k) return;
+    onChange(k);
+    setIsOpen(false);
+    setFilter('');
+  }, [onChange]);
+
   return (
     <div className="theme-preview-token-select-wrap" ref={wrapRef}>
       <label className="field-row theme-preview-field theme-preview-field-stacked">
@@ -135,24 +151,18 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
                 {filtered.length === 0 ? (
                   <div className="theme-preview-token-empty">No matching tokens</div>
                 ) : (
-                  filtered.map((k) => {
-                    function onTokenOptionClick() {
-                      onChange(k);
-                      setIsOpen(false);
-                      setFilter('');
-                    }
-                    return (
+                  filtered.map((k) => (
                     <div
                       key={k}
                       role="option"
                       aria-selected={value === k}
                       className="mappings-filter-check theme-preview-token-option"
+                      data-token-key={k}
                       onClick={onTokenOptionClick}
                     >
                       {k}
                     </div>
-                    );
-                  })
+                  ))
                 )}
               </div>
             </div>

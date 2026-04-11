@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { findNearestVersionRef } from '../../../utils/version';
+import { findNearestVersionRef } from '../../../utils/find-nearest-version-ref';
 import { themeStackId } from '../../../utils/theme-stack-id';
 import { DeleteThemeOperation } from '../../../operations/theme-operations/theme-list/delete-theme-operation';
 import { LoadThemeRefsOperation } from '../../../operations/theme-operations/theme-list/load-theme-refs-operation';

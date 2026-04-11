@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
-import { findHighestVersionRefSameName, nextPatchVersion } from '../../../utils/version';
+import { findHighestVersionRefSameName } from '../../../utils/find-highest-version-ref-same-name';
+import { nextPatchVersion } from '../../../utils/next-patch-version';
 import { ListCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/list-catalog-refs-operation';
 import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-snapshot-operation';
 import { LockHeadCatalogIfUnlockedOperation } from '../../../operations/catalog-operations/catalog-details/lock-head-catalog-if-unlocked-operation';

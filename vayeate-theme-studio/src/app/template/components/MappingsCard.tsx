@@ -648,11 +648,11 @@ function SemanticVariantRow({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [languageOpen]);
 
-  function toggleModifier(mod: string) {
+  const toggleModifier = useCallback((mod: string) => {
     setPendingModifiers((prev) =>
       prev.includes(mod) ? prev.filter((m) => m !== mod) : [...prev, mod].sort(),
     );
-  }
+  }, []);
 
   function commitModifiersAndClose() {
     if (
@@ -664,9 +664,12 @@ function SemanticVariantRow({
     onCloseModifierDropdown();
   }
 
-  function setLanguage(lang: string | null) {
-    commitSemanticLanguage(mapping.token.key, lang);
-  }
+  const setLanguage = useCallback(
+    (lang: string | null) => {
+      commitSemanticLanguage(mapping.token.key, lang);
+    },
+    [mapping.token.key, commitSemanticLanguage],
+  );
   const handleToggleModifierDropdown = () => {
     if (isModifierOpen) {
       commitModifiersAndClose();
@@ -695,18 +698,27 @@ function SemanticVariantRow({
     handleContrastChange(e.target.value);
   }
 
-  const handleModifierOptionClick = (mod: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    toggleModifier(mod);
-  };
-  const handleLanguageNoneClick = (e: ReactMouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setLanguage(null);
-  };
-  const handleLanguageOptionClick = (lang: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setLanguage(lang);
-  };
+  const handleModifierOptionClick = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      const mod = e.currentTarget.getAttribute('data-modifier');
+      if (mod) toggleModifier(mod);
+    },
+    [toggleModifier],
+  );
+
+  const handleLanguageOptionClick = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      if (e.currentTarget.hasAttribute('data-language-none')) {
+        setLanguage(null);
+        return;
+      }
+      const lang = e.currentTarget.getAttribute('data-language');
+      if (lang) setLanguage(lang);
+    },
+    [setLanguage],
+  );
 
   const modifiersForDisplay = isModifierOpen ? pendingModifiers : displayModifiers;
 
@@ -763,7 +775,8 @@ function SemanticVariantRow({
                     aria-checked={pendingModifiers.includes(mod)}
                     aria-label={`Include modifier ${mod}`}
                     className="checkbox-icon-btn"
-                    onClick={handleModifierOptionClick(mod)}
+                    data-modifier={mod}
+                    onClick={handleModifierOptionClick}
                   >
                     <span className="material-symbols-outlined" aria-hidden>
                       {pendingModifiers.includes(mod) ? 'check_box' : 'check_box_outline_blank'}
@@ -798,7 +811,8 @@ function SemanticVariantRow({
                     aria-checked={parsed.language === null}
                     aria-label="No specific language"
                     className="checkbox-icon-btn"
-                    onClick={handleLanguageNoneClick}
+                    data-language-none
+                    onClick={handleLanguageOptionClick}
                   >
                     <span className="material-symbols-outlined" aria-hidden>
                       {parsed.language === null ? 'check_box' : 'check_box_outline_blank'}
@@ -814,7 +828,8 @@ function SemanticVariantRow({
                       aria-checked={parsed.language === lang}
                       aria-label={`Language: ${lang}`}
                       className="checkbox-icon-btn"
-                      onClick={handleLanguageOptionClick(lang)}
+                      data-language={lang}
+                      onClick={handleLanguageOptionClick}
                     >
                       <span className="material-symbols-outlined" aria-hidden>
                         {parsed.language === lang ? 'check_box' : 'check_box_outline_blank'}
@@ -978,6 +993,38 @@ export function MappingsCard() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [openFilter]);
 
+  const toggleColorKey = useCallback(
+    (key: string) => {
+      const next = selectedColorKeys.includes(key as ColorVariableKey)
+        ? selectedColorKeys.filter((k) => k !== key)
+        : [...selectedColorKeys, key as ColorVariableKey];
+      setMappingColorVariableFilter(next);
+    },
+    [selectedColorKeys, setMappingColorVariableFilter],
+  );
+
+  const toggleContrastKey = useCallback(
+    (key: string) => {
+      const next = selectedContrastKeys.includes(key as ContrastVariableKey)
+        ? selectedContrastKeys.filter((k) => k !== key)
+        : [...selectedContrastKeys, key as ContrastVariableKey];
+      setMappingContrastVariableFilter(next);
+    },
+    [selectedContrastKeys, setMappingContrastVariableFilter],
+  );
+
+  const handleColorFilterOptionClick = useCallback((e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const key = e.currentTarget.dataset.filterKey;
+    if (key) toggleColorKey(key);
+  }, [toggleColorKey]);
+
+  const handleContrastFilterOptionClick = useCallback((e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const key = e.currentTarget.dataset.filterKey;
+    if (key) toggleContrastKey(key);
+  }, [toggleContrastKey]);
+
   if (!template) return null;
 
   const filteredMappingsByType: Record<TokenType, Mapping[]> = Object.fromEntries(
@@ -1002,19 +1049,6 @@ export function MappingsCard() {
   }
   const groupKeysInOrder = sortedGroupKeys(byGroup);
 
-  function toggleColorKey(key: string) {
-    const next = selectedColorKeys.includes(key as ColorVariableKey)
-      ? selectedColorKeys.filter((k) => k !== key)
-      : [...selectedColorKeys, key as ColorVariableKey];
-    setMappingColorVariableFilter(next);
-  }
-
-  function toggleContrastKey(key: string) {
-    const next = selectedContrastKeys.includes(key as ContrastVariableKey)
-      ? selectedContrastKeys.filter((k) => k !== key)
-      : [...selectedContrastKeys, key as ContrastVariableKey];
-    setMappingContrastVariableFilter(next);
-  }
   const handleSearchTextChange = (value: string) => {
     setMappingSearchText(value);
   };
@@ -1026,14 +1060,6 @@ export function MappingsCard() {
   const handleToggleColorFilterDropdown = () => setOpenFilter((v) => (v === 'color' ? null : 'color'));
   const handleToggleContrastFilterDropdown = () =>
     setOpenFilter((v) => (v === 'contrast' ? null : 'contrast'));
-  const handleColorFilterOptionClick = (key: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    toggleColorKey(key);
-  };
-  const handleContrastFilterOptionClick = (key: string) => (e: ReactMouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    toggleContrastKey(key);
-  };
 
   return (
     <div className="tokens-card placeholder">
@@ -1076,7 +1102,8 @@ export function MappingsCard() {
                       aria-checked={selectedColorKeys.includes(v.key)}
                       aria-label={`Filter by color variable ${v.key}`}
                       className="checkbox-icon-btn"
-                      onClick={handleColorFilterOptionClick(v.key)}
+                      data-filter-key={v.key}
+                      onClick={handleColorFilterOptionClick}
                     >
                       <span className="material-symbols-outlined" aria-hidden>
                         {selectedColorKeys.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}
@@ -1118,7 +1145,8 @@ export function MappingsCard() {
                       aria-checked={selectedContrastKeys.includes(v.key)}
                       aria-label={`Filter by contrast variable ${v.key}`}
                       className="checkbox-icon-btn"
-                      onClick={handleContrastFilterOptionClick(v.key)}
+                      data-filter-key={v.key}
+                      onClick={handleContrastFilterOptionClick}
                     >
                       <span className="material-symbols-outlined" aria-hidden>
                         {selectedContrastKeys.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}

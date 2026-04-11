@@ -3,7 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import type {
   Catalog,
   ColorVariableKey,
@@ -13,7 +13,7 @@ import type {
   TokenType,
 } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
-import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/orphan-mappings';
+import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 
 export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());

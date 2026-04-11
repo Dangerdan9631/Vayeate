@@ -3,7 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getThemeRefs } from '../../../domain/state/theme/themes-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import { ThemeActionType } from '../actions/theme-action-type';
 
 export function useThemesCardViewModel() {

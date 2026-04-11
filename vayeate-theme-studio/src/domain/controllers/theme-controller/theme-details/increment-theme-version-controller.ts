@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { nextPatchVersion } from '../../../utils/version';
+import { nextPatchVersion } from '../../../utils/next-patch-version';
 import { ClearPendingThemeSaveOperation } from '../../../operations/theme-operations/theme-details/clear-pending-theme-save-operation';
 import { SetSelectedThemeRefOperation } from '../../../operations/theme-operations/theme-list/set-selected-theme-ref-operation';
 import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';

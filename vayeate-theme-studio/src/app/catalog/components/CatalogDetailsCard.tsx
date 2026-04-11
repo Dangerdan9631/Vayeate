@@ -1,4 +1,4 @@
-import type { ChangeEvent, FocusEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import { useCatalogDetailsCardViewModel } from '../viewmodel/use-catalog-details-card-viewmodel';
 import type { SourceType, TokenType } from '../../../model/schemas';
 
@@ -41,36 +41,19 @@ export function CatalogDetailsCard() {
     newSourceType,
     editingSourceIndex,
     editingSourceUrl,
-    setEditingSourceIndex,
     setEditingSourceUrl,
-    commitSourceUrl,
-    commitSourceTokenType,
-    commitSourceType,
-    removeSource,
     changeNewSourceUrl,
     commitNewSourceTokenType,
     commitNewSourceType,
     addNewSource,
+    onExistingSourceUrlFocus,
+    onExistingSourceUrlBlur,
+    onExistingSourceTokenTypeChange,
+    onExistingSourceTypeChange,
+    onRemoveExistingSourceClick,
   } = vm;
 
   if (!catalog) return null;
-
-  function beginEditSourceUrl(index: number, url: string) {
-    return () => {
-      setEditingSourceIndex(index);
-      setEditingSourceUrl(url);
-    };
-  }
-
-  function finishEditSourceUrl(index: number, committedUrl: string) {
-    return (e: FocusEvent<HTMLInputElement>) => {
-      const v = e.target.value.trim();
-      if (v !== committedUrl) {
-        commitSourceUrl(v, index);
-      }
-      setEditingSourceIndex(null);
-    };
-  }
 
   function onNewSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
     changeNewSourceUrl(e.target.value);
@@ -116,20 +99,8 @@ export function CatalogDetailsCard() {
           <span className="field-label">Sources</span>
           <div className="sources-table">
             {catalog.sources.map((source, i) => {
-              function onRemoveSourceButtonClick() {
-                removeSource(i);
-              }
-
               function onEditSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
                 setEditingSourceUrl(e.target.value);
-              }
-
-              function onSourceTokenTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-                commitSourceTokenType(e.target.value as TokenType, i);
-              }
-
-              function onSourceTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-                commitSourceType(e.target.value as SourceType, i);
               }
 
               return (
@@ -137,18 +108,20 @@ export function CatalogDetailsCard() {
                   <input
                     className="field-input source-url-input"
                     type="text"
+                    data-source-index={i}
                     value={editingSourceIndex === i ? editingSourceUrl : source.url}
                     placeholder="https://..."
                     disabled={!isLatestVersion}
-                    onFocus={beginEditSourceUrl(i, source.url)}
+                    onFocus={onExistingSourceUrlFocus}
                     onChange={onEditSourceUrlInputChange}
-                    onBlur={finishEditSourceUrl(i, source.url)}
+                    onBlur={onExistingSourceUrlBlur}
                   />
                   <select
                     className="field-select source-select"
+                    data-source-index={i}
                     value={source.tokenType}
                     disabled={!isLatestVersion}
-                    onChange={onSourceTokenTypeSelectChange}
+                    onChange={onExistingSourceTokenTypeChange}
                   >
                     {getTokenTypeOptions(source.type).map((t) => (
                       <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
@@ -156,9 +129,10 @@ export function CatalogDetailsCard() {
                   </select>
                   <select
                     className="field-select source-select"
+                    data-source-index={i}
                     value={source.type}
                     disabled={!isLatestVersion}
-                    onChange={onSourceTypeSelectChange}
+                    onChange={onExistingSourceTypeChange}
                   >
                     {getSourceTypeOptions(source.tokenType).map((t) => (
                       <option key={t} value={t}>{t}</option>
@@ -167,8 +141,9 @@ export function CatalogDetailsCard() {
                   <button
                     type="button"
                     className="btn-icon btn-danger-icon"
+                    data-source-index={i}
                     disabled={!isLatestVersion}
-                    onClick={onRemoveSourceButtonClick}
+                    onClick={onRemoveExistingSourceClick}
                     aria-label="Remove source"
                   >
                     <span className="material-symbols-outlined">close</span>

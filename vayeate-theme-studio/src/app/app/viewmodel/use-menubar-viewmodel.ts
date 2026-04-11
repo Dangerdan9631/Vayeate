@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { undoManagerV2 } from '../../../domain/core/undo-manager-v2';
 import type { UndoListEntry } from '../../../domain/core/undo-manager-v2';
-import { createUndoProcessor } from '../../../domain/core/undo-processor';
 import { AppContext } from '../../core/app-context';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppActionType } from '../actions/app-action-type';
@@ -44,49 +42,25 @@ export function useMenuBarViewModel(): MenuBarViewModel {
   const dispatch = useAppDispatch();
   const currentStackId = useContextSelector(AppContext, (c) => c?.state.undoStack.currentUndoStackId);
   const undoListVersion = useContextSelector(AppContext, (c) => c?.state.undoStack.undoListVersion);
+  const undoMenu = useContextSelector(AppContext, (c) => c?.state.undoStack.undoMenu);
   const theme = useContextSelector(AppContext, (c) => c?.state.appConfig.colorScheme);
   const menuOpen = useContextSelector(AppContext, (c) => c?.state.ui.menuOpen);
-  if (currentStackId === undefined || undoListVersion === undefined || theme === undefined || menuOpen === undefined) {
+  if (
+    currentStackId === undefined ||
+    undoListVersion === undefined ||
+    undoMenu === undefined ||
+    theme === undefined ||
+    menuOpen === undefined
+  ) {
     throw new Error('useMenuBarViewModel must be used within AppProvider');
   }
   const { fileOpen, editOpen, historyOpen, viewOpen } = menuOpen;
-  const [undoMenuState, setUndoMenuState] = useState<{
-    frames: UndoListEntry[];
-    currentId: string | null;
-    canUndo: boolean;
-    canRedo: boolean;
-  }>({ frames: [], currentId: null, canUndo: false, canRedo: false });
+  const { frames, currentId, canUndo, canRedo } = undoMenu;
 
   useEffect(() => {
-    if (!currentStackId) {
-      setUndoMenuState({ frames: [], currentId: null, canUndo: false, canRedo: false });
-      return;
-    }
-    let cancelled = false;
-    const processor = createUndoProcessor();
-    undoManagerV2
-      .getOrCreate(currentStackId, { processor })
-      .then((stack) => {
-        if (cancelled) return;
-        const list = stack.list();
-        setUndoMenuState({
-          frames: list.frames,
-          currentId: list.currentId,
-          canUndo: stack.canUndo,
-          canRedo: stack.canRedo,
-        });
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setUndoMenuState({ frames: [], currentId: null, canUndo: false, canRedo: false });
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [currentStackId, undoListVersion]);
+    void dispatch({ type: AppActionType.AppMenubarUndoMenuSync });
+  }, [currentStackId, undoListVersion, dispatch]);
 
-  const { canUndo, canRedo, frames, currentId } = undoMenuState;
   const fileRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);

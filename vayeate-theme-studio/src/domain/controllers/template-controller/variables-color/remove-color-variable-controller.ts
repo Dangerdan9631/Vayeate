@@ -3,7 +3,7 @@ import { TemplatesStateGetter } from '../../../state/template/templates-state-re
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../operations/template-operations/variables-color/remove-color-variable-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
-import { referencedColorVarKeysFromTemplate } from '../../../utils/template-utils';
+import { referencedColorVarKeysFromTemplate } from '../../../utils/referenced-color-var-keys-from-template';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()

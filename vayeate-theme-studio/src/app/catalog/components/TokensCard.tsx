@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type FocusEvent, type KeyboardEvent } from 'react';
+import { useCallback, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from '../viewmodel/use-tokens-card-viewmodel';
 import type { Catalog, SemanticTokenRegistryListKind, Token, TokenType } from '../../../model/schemas';
 import { tokenKeySchema } from '../../../model/schemas';
@@ -20,9 +20,9 @@ function TokenTypeSection({
   tokenType: TokenType;
   tokens: Token[];
   isManual: boolean;
-  onAdd: (key: string) => void;
-  onRemove: (key: string) => void;
-  onUpdateKey: (oldKey: string, newKey: string) => void;
+  onAdd: (tokenType: TokenType, key: string) => void;
+  onRemove: (tokenType: TokenType, key: string) => void;
+  onUpdateKey: (tokenType: TokenType, oldKey: string, newKey: string) => void;
   onNewKeyChange?: (value: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -35,15 +35,27 @@ function TokenTypeSection({
   const handleAddClick = () => {
     const key = newKey.trim();
     if (isValidTokenKey(key)) {
-      onAdd(key);
+      onAdd(tokenType, key);
       setNewKey('');
     }
   };
-  const handleTokenBlur = (oldKey: string, value: string) => {
-    const v = value.trim();
-    if (v && v !== oldKey && isValidTokenKey(v)) onUpdateKey(oldKey, v);
-  };
-  const handleRemoveClick = (key: string) => () => onRemove(key);
+
+  const onTokenRowBlur = useCallback(
+    (e: FocusEvent<HTMLInputElement>) => {
+      const oldKey = e.currentTarget.dataset.tokenKey;
+      const v = e.target.value.trim();
+      if (oldKey && v && v !== oldKey && isValidTokenKey(v)) onUpdateKey(tokenType, oldKey, v);
+    },
+    [onUpdateKey, tokenType],
+  );
+
+  const onRemoveButtonClick = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      const key = e.currentTarget.dataset.tokenKey;
+      if (key) onRemove(tokenType, key);
+    },
+    [onRemove, tokenType],
+  );
 
   function onNewKeyInputChange(e: ChangeEvent<HTMLInputElement>) {
     handleNewKeyChange(e.target.value);
@@ -70,17 +82,14 @@ function TokenTypeSection({
 
       {!collapsed && (
         <div className="tree-children">
-          {tokens.map((t) => {
-            function onTokenRowBlur(e: FocusEvent<HTMLInputElement>) {
-              handleTokenBlur(t.key, e.target.value);
-            }
-            return (
+          {tokens.map((t) => (
             <div key={t.key} className="token-row">
               {isManual ? (
                 <>
                   <input
                     className="token-input"
                     type="text"
+                    data-token-key={t.key}
                     defaultValue={t.key}
                     onBlur={onTokenRowBlur}
                   />
@@ -88,7 +97,8 @@ function TokenTypeSection({
                     type="button"
                     className="btn-icon btn-danger-icon"
                     title="Remove"
-                    onClick={handleRemoveClick(t.key)}
+                    data-token-key={t.key}
+                    onClick={onRemoveButtonClick}
                   >
                     <span className="material-symbols-outlined">close</span>
                   </button>
@@ -97,8 +107,7 @@ function TokenTypeSection({
                 <span className="token-text">{t.key}</span>
               )}
             </div>
-            );
-          })}
+          ))}
 
           {isManual && (
             <div className="token-row token-add-row">
@@ -389,9 +398,9 @@ export function TokensCard() {
           tokenType={tt}
           tokens={filteredTokensByType[tt]}
           isManual={canEdit}
-          onAdd={handleAddToken(tt)}
-          onRemove={handleRemoveToken(tt)}
-          onUpdateKey={handleUpdateTokenKey(tt)}
+          onAdd={handleAddToken}
+          onRemove={handleRemoveToken}
+          onUpdateKey={handleUpdateTokenKey}
           onNewKeyChange={handleNewTokenKeyChange}
         />
       ))}

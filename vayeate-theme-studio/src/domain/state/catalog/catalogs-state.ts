@@ -6,6 +6,14 @@ import type {
   TokenType,
 } from '../../../model/schemas';
 
+/** Snapshot of bulk-add JSON parse for the dialog (updated when bulk add text changes in-domain). */
+export interface CatalogBulkAddParseSnapshot {
+  errorMessage: string | null;
+  counts: Record<TokenType, number> | null;
+  newCount: number;
+  duplicateCount: number;
+}
+
 export interface CatalogEntry {
   isLoaded: boolean;
   catalog: Catalog | undefined;
@@ -23,6 +31,7 @@ export interface CatalogsState {
   createFormType: CatalogType;
   bulkAddDialogOpen: boolean;
   bulkAddText: string;
+  bulkAddParse: CatalogBulkAddParseSnapshot | null;
   tokensSearchText: string;
   newSourceUrl: string;
   newSourceTokenType: TokenType;
@@ -42,6 +51,7 @@ export const initialCatalogsState: CatalogsState = {
   createFormType: 'manual',
   bulkAddDialogOpen: false,
   bulkAddText: '',
+  bulkAddParse: null,
   tokensSearchText: '',
   newSourceUrl: '',
   newSourceTokenType: 'theme',

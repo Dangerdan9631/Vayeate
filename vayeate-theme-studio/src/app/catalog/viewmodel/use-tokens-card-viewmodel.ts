@@ -3,7 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { SemanticTokenRegistryListKind, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 
@@ -80,7 +80,7 @@ export function useTokensCardViewModel() {
   );
 
   const handleAddToken = useCallback(
-    (tokenType: TokenType) => (key: string) => {
+    (tokenType: TokenType, key: string) => {
       dispatch({
         type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick,
         tokenType,
@@ -91,7 +91,7 @@ export function useTokensCardViewModel() {
   );
 
   const handleRemoveToken = useCallback(
-    (tokenType: TokenType) => (key: string) => {
+    (tokenType: TokenType, key: string) => {
       dispatch({
         type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick,
         key: key as TokenKey,
@@ -102,7 +102,7 @@ export function useTokensCardViewModel() {
   );
 
   const handleUpdateTokenKey = useCallback(
-    (tokenType: TokenType) => (oldKey: string, newKey: string) => {
+    (tokenType: TokenType, oldKey: string, newKey: string) => {
       dispatch({
         type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit,
         value: newKey,

@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe';
 import {
   CloseAllMenusController,
   SetActiveTabController,
+  SyncUndoMenuStateController,
   ToggleColorSchemeController,
   ToggleMenuOpenController,
 } from '../../../domain/controllers/app-controller';
@@ -42,10 +43,14 @@ export class AppActionHandler {
     private readonly dragWindow: DragWindowController,
     private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
     private readonly commitEyedropperOverlayPick: CommitEyedropperOverlayPickController,
+    private readonly syncUndoMenuState: SyncUndoMenuStateController,
   ) {}
 
   async handle(action: AppActions): Promise<void> {
     switch (action.type) {
+      case AppActionType.AppMenubarUndoMenuSync:
+        await this.syncUndoMenuState.run();
+        break;
       case AppActionType.AppFileMenuTriggerButtonOnClick:
         this.toggleMenuOpen.run('file');
         break;

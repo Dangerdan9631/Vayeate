@@ -3,7 +3,7 @@ import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import { TemplateActionType } from '../actions/template-action-type';
 
 export function useGroupsCardViewModel() {

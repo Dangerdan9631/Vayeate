@@ -7,7 +7,7 @@ import { SetThemeLoadedTemplateOperation } from '../../../operations/theme-opera
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations/template-details/load-template-snapshot-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
-import { findBestVersionRef } from '../../../utils/version';
+import { findBestVersionRef } from '../../../utils/find-best-version-ref';
 import { themeStackId } from '../../../utils/theme-stack-id';
 
 @singleton()

@@ -1,9 +1,10 @@
 import type { AppState } from '../app-state';
-import type { UndoStackState } from './undo-stack-state';
+import type { UndoMenuSnapshot, UndoStackState } from './undo-stack-state';
 
 export type UndoStackStateUpdate =
   | { type: 'SET_CURRENT_UNDO_STACK_ID'; stackId: string | null }
-  | { type: 'SET_UNDO_LIST_VERSION'; value: number };
+  | { type: 'SET_UNDO_LIST_VERSION'; value: number }
+  | { type: 'SET_UNDO_MENU_SNAPSHOT'; snapshot: UndoMenuSnapshot };
 
 export function undoStackStateReducer(state: AppState, update: UndoStackStateUpdate): AppState {
   switch (update.type) {
@@ -11,6 +12,8 @@ export function undoStackStateReducer(state: AppState, update: UndoStackStateUpd
       return { ...state, undoStack: { ...state.undoStack, currentUndoStackId: update.stackId } };
     case 'SET_UNDO_LIST_VERSION':
       return { ...state, undoStack: { ...state.undoStack, undoListVersion: update.value } };
+    case 'SET_UNDO_MENU_SNAPSHOT':
+      return { ...state, undoStack: { ...state.undoStack, undoMenu: update.snapshot } };
     default:
       return state;
   }

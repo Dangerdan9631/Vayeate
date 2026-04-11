@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
-import { nextPatchVersion } from '../../../utils/version';
+import { nextPatchVersion } from '../../../utils/next-patch-version';
 
 @singleton()
 export class BumpCatalogVersionForEditOperation {

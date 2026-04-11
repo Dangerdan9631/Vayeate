@@ -9,7 +9,7 @@ import {
   mergeMappingsFromCatalogData,
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
-import { catalogVersionsByNameFromRefs } from '../../../utils/template-utils';
+import { catalogVersionsByNameFromRefs } from '../../../utils/catalog-versions-by-name-from-refs';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()

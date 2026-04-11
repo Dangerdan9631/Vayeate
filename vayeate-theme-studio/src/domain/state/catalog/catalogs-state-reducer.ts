@@ -1,5 +1,5 @@
 import type { AppState } from '../app-state';
-import type { CatalogStoreMap, CatalogsState } from './catalogs-state';
+import type { CatalogBulkAddParseSnapshot, CatalogStoreMap, CatalogsState } from './catalogs-state';
 import type {
   Catalog,
   CatalogReference,
@@ -24,7 +24,7 @@ export type CatalogsStateUpdate =
   | { type: 'SET_CATALOG_CREATE_FORM_NAME'; value: string }
   | { type: 'SET_CATALOG_CREATE_FORM_TYPE'; value: CatalogType }
   | { type: 'SET_CATALOG_BULK_ADD_DIALOG_OPEN'; value: boolean }
-  | { type: 'SET_CATALOG_BULK_ADD_TEXT'; value: string }
+  | { type: 'SET_CATALOG_BULK_ADD_TEXT'; value: string; preview: CatalogBulkAddParseSnapshot | null }
   | { type: 'SET_CATALOG_TOKENS_SEARCH_TEXT'; value: string }
   | { type: 'SET_CATALOG_NEW_SOURCE_URL'; value: string }
   | { type: 'SET_CATALOG_NEW_SOURCE_TOKEN_TYPE'; value: TokenType }
@@ -61,7 +61,14 @@ export function catalogsStateReducer(state: AppState, update: CatalogsStateUpdat
     case 'SET_CATALOG_BULK_ADD_DIALOG_OPEN':
       return { ...state, catalogs: { ...state.catalogs, bulkAddDialogOpen: update.value } };
     case 'SET_CATALOG_BULK_ADD_TEXT':
-      return { ...state, catalogs: { ...state.catalogs, bulkAddText: update.value } };
+      return {
+        ...state,
+        catalogs: {
+          ...state.catalogs,
+          bulkAddText: update.value,
+          bulkAddParse: update.preview,
+        },
+      };
     case 'SET_CATALOG_TOKENS_SEARCH_TEXT':
       return { ...state, catalogs: { ...state.catalogs, tokensSearchText: update.value } };
     case 'SET_CATALOG_NEW_SOURCE_URL':

@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import { findNearestVersionRef } from '../../../utils/version';
+import { findNearestVersionRef } from '../../../utils/find-nearest-version-ref';
 import { templateStackId } from '../../../utils/template-stack-id';
 import { DeleteTemplateOperation } from '../../../operations/template-operations/template-list/delete-template-operation';
 import { LoadTemplateOperation } from '../../../operations/template-operations/template-details/load-template-operation';

@@ -4,7 +4,7 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
-import { compareVersions } from '../../../domain/utils/version';
+import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogName, CatalogReference } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
 

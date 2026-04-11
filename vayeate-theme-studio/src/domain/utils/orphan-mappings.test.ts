@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Catalog, Mapping, Template, Token } from '../../model/schemas';
-import { computeOrphanKeys, isMappingOrphanForTemplate } from './orphan-mappings';
+import { computeOrphanKeys } from './compute-orphan-keys';
+import { isMappingOrphanForTemplate } from './is-mapping-orphan-for-template';
 
 describe('orphan-mappings', () => {
   it('computeOrphanKeys includes theme token missing from catalog', () => {

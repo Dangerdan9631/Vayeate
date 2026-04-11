@@ -3,7 +3,7 @@ import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import { isMappingOrphanForTemplate } from '../../../utils/orphan-mappings';
+import { isMappingOrphanForTemplate } from '../../../utils/is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveMappingFromTemplateOperation } from '../../../operations/template-operations/mappings/remove-mapping-from-template-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
