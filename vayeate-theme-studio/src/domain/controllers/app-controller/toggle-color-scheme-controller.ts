@@ -15,6 +15,6 @@ export class ToggleColorSchemeController {
     const current = this.appConfigStateGetter.current().colorScheme;
     const next = current === 'light' ? 'dark' : 'light';
     this.setColorScheme.execute(next);
-    await this.saveAppConfig.execute();
+    this.saveAppConfig.execute();
   }
 }

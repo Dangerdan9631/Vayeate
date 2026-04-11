@@ -11,6 +11,6 @@ export class SetColorSchemeController {
 
   async run(scheme: 'light' | 'dark'): Promise<void> {
     this.setColorScheme.execute(scheme);
-    await this.saveAppConfig.execute();
+    this.saveAppConfig.execute();
   }
 }

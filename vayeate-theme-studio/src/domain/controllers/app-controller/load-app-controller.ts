@@ -18,11 +18,11 @@ export class LoadAppController {
   ) { }
   
   async run(): Promise<void> {
-    void this.clearPersistedUndo.execute();
-    void this.loadAppConfig.execute();
-    void this.loadCatalogRefs.execute();
-    void this.loadTemplateRefs.execute();
-    void this.loadThemeRefs.execute();
+    this.clearPersistedUndo.execute();
+    this.loadAppConfig.execute();
+    this.loadCatalogRefs.execute();
+    this.loadTemplateRefs.execute();
+    this.loadThemeRefs.execute();
     this.initializeWindowService.execute();
   }
 }

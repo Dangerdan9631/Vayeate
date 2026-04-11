@@ -3,6 +3,7 @@ import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
 import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
 
 /** IPC may deliver Buffer, Uint8Array, ArrayBuffer, or Node-style `{ type, data }` depending on clone path. */
 function pngToUint8Array(png: unknown): Uint8Array {
@@ -39,38 +40,41 @@ export class LoadEyedropperSnapshotOperation {
     private readonly uiStateSetter: UiStateSetter,
     private readonly uiStateGetter: UiStateGetter,
     private readonly screenshotService: ScreenshotService,
+    private readonly backgroundQueueGateway: BackgroundQueueGateway,
   ) {}
 
-  async execute(contextKey: string): Promise<void> {
-    try {
-      const raw = await this.screenshotService.getFullDisplaySnapshot();
-      const snapshot = mapToPayload(raw);
-      const pendingPostCommit = this.uiStateGetter.current().eyedropper.pendingPostCommit;
-      this.uiStateSetter.apply({
-        type: 'SET_UI_EYEDROPPER',
-        eyedropper: {
-          phase: 'ready',
-          contextKey,
-          snapshot,
-          errorMessage: null,
-          result: null,
-          pendingPostCommit,
-        },
-      });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : String(e);
-      const pendingPostCommit = this.uiStateGetter.current().eyedropper.pendingPostCommit;
-      this.uiStateSetter.apply({
-        type: 'SET_UI_EYEDROPPER',
-        eyedropper: {
-          phase: 'error',
-          contextKey,
-          snapshot: null,
-          errorMessage: message,
-          result: null,
-          pendingPostCommit,
-        },
-      });
-    }
+  execute(contextKey: string): void {
+    this.backgroundQueueGateway.enqueue(async() => {
+      try {
+        const raw = await this.screenshotService.getFullDisplaySnapshot();
+        const snapshot = mapToPayload(raw);
+        const pendingPostCommit = this.uiStateGetter.current().eyedropper.pendingPostCommit;
+        this.uiStateSetter.apply({
+          type: 'SET_UI_EYEDROPPER',
+          eyedropper: {
+            phase: 'ready',
+            contextKey,
+            snapshot,
+            errorMessage: null,
+            result: null,
+            pendingPostCommit,
+          },
+        });
+      } catch (e) {
+        const message = e instanceof Error ? e.message : String(e);
+        const pendingPostCommit = this.uiStateGetter.current().eyedropper.pendingPostCommit;
+        this.uiStateSetter.apply({
+          type: 'SET_UI_EYEDROPPER',
+          eyedropper: {
+            phase: 'error',
+            contextKey,
+            snapshot: null,
+            errorMessage: message,
+            result: null,
+            pendingPostCommit,
+          },
+        });
+      }
+    });
   }
 }

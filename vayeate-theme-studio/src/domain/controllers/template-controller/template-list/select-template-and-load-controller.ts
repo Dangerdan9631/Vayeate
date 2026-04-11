@@ -20,7 +20,7 @@ export class SelectTemplateAndLoadController {
     const template = await this.loadTemplate.execute(name, version);
     if (template?.catalogRefs?.length) {
       for (const r of template.catalogRefs) {
-        await this.loadCatalogForDisplay.execute(r.name, r.version);
+        this.loadCatalogForDisplay.execute(r.name, r.version);
       }
     }
     this.setCurrentUndoStackId.execute(templateStackId(name, version));
