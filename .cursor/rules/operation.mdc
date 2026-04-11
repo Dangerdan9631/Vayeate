@@ -10,7 +10,7 @@ alwaysApply: false
 
 - Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
 - **tsyringe** **`@singleton()`**; inject gateways, services, state setter/getters as **concrete types** — no string or symbol tokens.
-- **Only** layer for **business logic** and **state mutation** (via setters).
+- **Only** layer for **business logic** and **domain state mutation** (via setters), **except** action-queue observability state updated **only** inside `ActionQueue` (see [app-architecture.mdc](app-architecture.mdc)).
 - May call **gateways** and **services**; **must not** call another operation.
 - Prefer **inputs from controller** over reading global state inside `execute` (keep reusable).
 
@@ -20,7 +20,7 @@ alwaysApply: false
 
 ## Callers
 
-- **Controllers** only (not handlers, components, or other operations).
+- **Controllers** only (not handlers, components, or other operations). Each controller **must not** call another controller — same “no chaining peers” idea as operations ([controller.mdc](controller.mdc)).
 
 ## Good / bad
 

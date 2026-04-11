@@ -2,7 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Theme } from '../../../model/schemas';
 import { ThemeGateway } from '../../../gateway/theme/theme-gateway';
-import { ThemesStateSetter } from '../../state/theme/themes-state-reducer';
+import { initialThemesState } from '../../state/theme/themes-state';
+import { ThemesStateGetter, ThemesStateSetter } from '../../state/theme/themes-state-reducer';
 import {
   CreateThemeOperation,
   DeleteThemeOperation,
@@ -93,9 +94,18 @@ describe('theme-operations', () => {
 
   it('GenerateThemeOperation sets success result when generation succeeds', async () => {
     const setState = vi.fn();
-    const op = new GenerateThemeOperation(new ThemesStateSetter(setState), container.resolve(ThemeGateway));
+    const themeWithTemplate = {
+      name: 'th1',
+      version: '1.0.0',
+      templateRef: { name: 't1', version: '1.0.0' },
+    } as Theme;
+    const getter = new ThemesStateGetter(() => ({
+      ...initialThemesState,
+      theme: themeWithTemplate,
+    }));
+    const op = new GenerateThemeOperation(getter, new ThemesStateSetter(setState), container.resolve(ThemeGateway));
 
-    await op.execute('th1', '1.0.0', 't1', '1.0.0');
+    await op.execute();
 
     expect(themeGatewayMock.generateTheme).toHaveBeenCalledTimes(1);
     expect(themeGatewayMock.generateTheme).toHaveBeenCalledWith('th1', '1.0.0', 't1', '1.0.0');
@@ -113,9 +123,18 @@ describe('theme-operations', () => {
   it('GenerateThemeOperation sets failure result when generation throws', async () => {
     vi.mocked(themeGatewayMock.generateTheme).mockRejectedValue(new Error('generation failed'));
     const setState = vi.fn();
-    const op = new GenerateThemeOperation(new ThemesStateSetter(setState), container.resolve(ThemeGateway));
+    const themeWithTemplate = {
+      name: 'th1',
+      version: '1.0.0',
+      templateRef: { name: 't1', version: '1.0.0' },
+    } as Theme;
+    const getter = new ThemesStateGetter(() => ({
+      ...initialThemesState,
+      theme: themeWithTemplate,
+    }));
+    const op = new GenerateThemeOperation(getter, new ThemesStateSetter(setState), container.resolve(ThemeGateway));
 
-    await op.execute('th1', '1.0.0', 't1', '1.0.0');
+    await op.execute();
 
     expect(themeGatewayMock.generateTheme).toHaveBeenCalledTimes(1);
     expect(setState).toHaveBeenNthCalledWith(1, { type: 'SET_GENERATE_RESULT', result: null });

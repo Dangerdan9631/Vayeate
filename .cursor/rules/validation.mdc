@@ -12,7 +12,7 @@ alwaysApply: false
 - Class-based: **tsyringe** **`@singleton()`**; inject concrete getters/state as needed — no string or symbol tokens.
 - **One** function **`test(...)`** → **`boolean`** (pass/fail).
 - **Never throw.** Controllers decide whether to throw on failure.
-- **Do not** call other validations (compose at controller if needed).
+- **Do not** call other validations (compose at controller if needed — i.e. sequence multiple `Validate*` calls in one controller, not by calling another controller).
 
 ## Usage
 

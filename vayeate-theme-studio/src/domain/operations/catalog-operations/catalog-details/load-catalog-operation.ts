@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 
 /** Load catalog JSON from disk. Does not mutate app state. */
-@injectable()
+@singleton()
 export class LoadCatalogOperation {
   constructor(private readonly catalogGateway: CatalogGateway) {}
 

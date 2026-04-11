@@ -27,13 +27,12 @@ export enum ThemeActionType {
   ThemeDetailsGenerateButtonOnClick = 'THEME_DETAILS_GENERATE_BUTTON_ON_CLICK',
   ThemePaletteApplyToDarkCheckboxOnToggle = 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE',
   ThemePaletteApplyToLightCheckboxOnToggle = 'THEME_PALETTE_APPLY_TO_LIGHT_CHECKBOX_ON_TOGGLE',
-  // ThemePaletteAssignColorTextOnCommit = 'THEME_PALETTE_ASSIGN_COLOR_TEXT_ON_COMMIT', ???
   ThemePaletteAssignColorEyedropperButtonOnClick = 'THEME_PALETTE_ASSIGN_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
-  ThemePaletteAssignColorPickerOnSelect = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_SELECT', // ??
+  ThemePaletteAssignColorPickerOnSelect = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_SELECT',
   ThemePaletteAssignColorPickerOnCommit = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_COMMIT',
-  ThemePaletteAssignColorPickerOnClose = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_CLOSE', // Remove
+  ThemePaletteAssignColorPickerOnClose = 'THEME_PALETTE_ASSIGN_COLOR_PICKER_ON_CLOSE',
   ThemePaletteHueReferenceRecenterButtonOnClick = 'THEME_PALETTE_HUE_REFERENCE_RECENTER_BUTTON_ON_CLICK',
-  ThemePaletteHueReferenceColorTextOnChange = 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE', // ON COMMIT??
+  ThemePaletteHueReferenceColorTextOnChange = 'THEME_PALETTE_HUE_REFERENCE_COLOR_TEXT_ON_CHANGE',
   ThemePaletteHueReferenceColorEyedropperButtonOnClick = 'THEME_PALETTE_HUE_REFERENCE_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
   ThemePaletteHueSliderOnDelta = 'THEME_PALETTE_HUE_SLIDER_ON_DELTA',
   ThemePaletteClusterCountSliderOnDelta = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_DELTA',
@@ -73,13 +72,7 @@ export type ThemeActions =
   | { type: ThemeActionType.ThemeDetailsTemplateVersionListOnCommit; name: TemplateName; version: Version }
   | { type: ThemeActionType.ThemeDetailsDeleteVersionButtonOnClick; name: ThemeName; version: Version }
   | { type: ThemeActionType.ThemeDetailsIncrementVersionButtonOnClick }
-  | {
-      type: ThemeActionType.ThemeDetailsGenerateButtonOnClick;
-      themeName: ThemeName;
-      themeVersion: Version;
-      templateName: TemplateName;
-      templateVersion: Version;
-    }
+  | { type: ThemeActionType.ThemeDetailsGenerateButtonOnClick }
   | { type: ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle; checked: boolean }
   | { type: ThemeActionType.ThemePaletteApplyToLightCheckboxOnToggle; checked: boolean }
   | { type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick; colorRef: string }

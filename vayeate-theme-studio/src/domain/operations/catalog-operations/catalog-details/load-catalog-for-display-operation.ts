@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
-@injectable()
+@singleton()
 export class LoadCatalogForDisplayOperation {
   constructor(
     private readonly CatalogsStateSetter: CatalogsStateSetter,

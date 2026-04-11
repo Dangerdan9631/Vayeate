@@ -1,10 +1,10 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { TokenSyncGateway } from '../../../../gateway/catalog/token-sync-gateway';
 import { nextPatchVersion } from '../../../utils/version';
 
 /** Sync tokens from sources and return updated catalog. No setState, no save. Single responsibility: sync. */
-@injectable()
+@singleton()
 export class SyncCatalogOperation {
   constructor(private readonly tokenSyncGateway: TokenSyncGateway) {}
 

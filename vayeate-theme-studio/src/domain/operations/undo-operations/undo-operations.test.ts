@@ -9,7 +9,7 @@ import {
   PerformUndoOperation,
   PerformRedoOperation,
   PerformHistoryGoToOperation,
-  setCurrentUndoStackId,
+  SetCurrentUndoStackIdOperation,
 } from '.';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { UndoGateway } from '../../../gateway/undo/undo-gateway';
@@ -89,11 +89,12 @@ describe('undo-operations', () => {
     expect(undoManagerV2.getOrCreate).not.toHaveBeenCalled();
   });
 
-  it('setCurrentUndoStackId calls setState with SET_CURRENT_UNDO_STACK_ID', () => {
-    setCurrentUndoStackId(setState, 'new-stack');
+  it('SetCurrentUndoStackIdOperation calls setState with SET_CURRENT_UNDO_STACK_ID', () => {
+    const op = new SetCurrentUndoStackIdOperation(undoStackStateSetter);
+    op.execute('new-stack');
     expect(setState).toHaveBeenCalledWith({ type: 'SET_CURRENT_UNDO_STACK_ID', stackId: 'new-stack' });
     setState.mockClear();
-    setCurrentUndoStackId(setState, null);
+    op.execute(null);
     expect(setState).toHaveBeenCalledWith({ type: 'SET_CURRENT_UNDO_STACK_ID', stackId: null });
   });
 

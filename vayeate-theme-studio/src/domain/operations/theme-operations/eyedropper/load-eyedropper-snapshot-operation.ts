@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
@@ -33,7 +33,7 @@ function mapToPayload(raw: ScreenshotFullDisplaySnapshot): EyedropperSnapshotPay
 }
 
 /** Fetch full-display PNG snapshot via main process and store in `ui.eyedropper` as `ready` or `error`. */
-@injectable()
+@singleton()
 export class LoadEyedropperSnapshotOperation {
   constructor(
     private readonly uiStateSetter: UiStateSetter,

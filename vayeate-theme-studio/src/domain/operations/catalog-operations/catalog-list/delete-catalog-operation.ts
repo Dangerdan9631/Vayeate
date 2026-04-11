@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 
 /** Delete one catalog version from disk. Single responsibility: delete. */
-@injectable()
+@singleton()
 export class DeleteCatalogOperation {
   constructor(private readonly catalogGateway: CatalogGateway) {}
 

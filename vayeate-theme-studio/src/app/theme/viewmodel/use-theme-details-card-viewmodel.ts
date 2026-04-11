@@ -60,13 +60,7 @@ export function useThemeDetailsCardViewModel() {
     if (!canGenerate || !theme?.templateRef) {
       return;
     }
-    dispatch({
-      type: ThemeActionType.ThemeDetailsGenerateButtonOnClick,
-      themeName: theme.name,
-      themeVersion: theme.version,
-      templateName: theme.templateRef.name,
-      templateVersion: theme.templateRef.version,
-    });
+    dispatch({ type: ThemeActionType.ThemeDetailsGenerateButtonOnClick });
   }, [canGenerate, dispatch, theme]);
 
   const bumpVersion = useCallback(() => {

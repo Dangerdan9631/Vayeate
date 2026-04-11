@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import {
   CloseAllMenusController,
   SetActiveTabController,
@@ -19,14 +19,13 @@ import {
   ReloadWindowController,
   ToggleDevToolsController,
 } from '../../../domain/controllers/window-controller';
-import type { AppAction } from '../../core/actions/app-action';
-import { EyedropperOverlayWorkflowController } from '../controllers/eyedropper-overlay-workflow-controller';
+import {
+  CloseEyedropperOverlayController,
+  CommitEyedropperOverlayPickController,
+} from '../../../domain/controllers/theme-controller';
 import { AppActions, AppActionType } from './app-action-type';
 
-const appTypes = new Set<string>(Object.values(AppActionType));
-export const isAppAction = (a: AppAction): a is AppActions => appTypes.has(a.type);
-
-@injectable()
+@singleton()
 export class AppActionHandler {
   constructor(
     private readonly closeWindow: CloseWindowController,
@@ -43,7 +42,8 @@ export class AppActionHandler {
     private readonly minimizeWindow: MinimizeWindowController,
     private readonly maximizeWindow: MaximizeWindowController,
     private readonly dragWindow: DragWindowController,
-    private readonly eyedropperOverlayWorkflow: EyedropperOverlayWorkflowController,
+    private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
+    private readonly commitEyedropperOverlayPick: CommitEyedropperOverlayPickController,
   ) {}
 
   async handle(action: AppActions): Promise<void> {
@@ -103,10 +103,10 @@ export class AppActionHandler {
         await this.dragWindow.run();
         break;
       case AppActionType.AppEyedropperOverlayCancelButtonOnClick:
-        this.eyedropperOverlayWorkflow.cancelOverlay();
+        this.closeEyedropperOverlay.run();
         break;
       case AppActionType.AppEyedropperOverlayColorPickCommitButtonOnClick:
-        this.eyedropperOverlayWorkflow.commitPick(action.hex);
+        this.commitEyedropperOverlayPick.run(action.hex);
         break;
     }
   }

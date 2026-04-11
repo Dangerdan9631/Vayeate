@@ -6,7 +6,7 @@ import {
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
 import { groupNamesInUseFromTemplate } from '../../../utils/template-utils';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class RemoveGroupController {
@@ -15,7 +15,7 @@ export class RemoveGroupController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeGroupFromTemplate: RemoveGroupFromTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(groupId: string): Promise<void> {
@@ -26,6 +26,6 @@ export class RemoveGroupController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeGroupFromTemplate.execute(base, groupId);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

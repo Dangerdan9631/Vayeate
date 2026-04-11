@@ -9,7 +9,7 @@ import {
   SetCatalogNewSourceTypeOperation,
   SetCatalogNewSourceUrlOperation,
 } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class AddNewSourceController {
@@ -21,7 +21,7 @@ export class AddNewSourceController {
     private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly addSourceToCatalog: AddSourceToCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -37,7 +37,7 @@ export class AddNewSourceController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.addSourceToCatalog.execute(base, source);
     await this.saveCatalog.execute(updated);
-    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     this.setCatalogNewSourceUrl.execute('');
     this.setCatalogNewSourceTokenType.execute('theme');
     this.setCatalogNewSourceType.execute('default');

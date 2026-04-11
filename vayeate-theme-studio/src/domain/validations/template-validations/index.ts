@@ -1,1 +1,1 @@
-export { canLockTemplate } from './canLockTemplate';
+export { ValidateCanLockTemplate } from './validate-can-lock-template';

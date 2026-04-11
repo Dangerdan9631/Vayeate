@@ -1,26 +1,40 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
-import { AddColorVariableController } from '../variables-color/add-color-variable-controller';
-import { AddContrastVariableController } from '../variables-contrast/add-contrast-variable-controller';
-import { SetTemplateAddVariableNameController } from './set-template-add-variable-name-controller';
+import {
+  AddColorVariableOperation as AddColorVariableOp,
+  AddContrastVariableOperation as AddContrastVariableOp,
+  BumpTemplateVersionForEditOperation,
+  RefreshTemplateRefsAndSelectOperation,
+  SaveTemplateOperation,
+  SetTemplateAddVariableNameOperation,
+} from '../../../operations/template-operations';
 
 @singleton()
 export class AddVariableController {
   constructor(
     private readonly templatesStateGetter: TemplatesStateGetter,
-    private readonly addColorVariable: AddColorVariableController,
-    private readonly addContrastVariable: AddContrastVariableController,
-    private readonly setTemplateAddVariableName: SetTemplateAddVariableNameController,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
+    private readonly addColorVariableToTemplate: AddColorVariableOp,
+    private readonly addContrastVariableToTemplate: AddContrastVariableOp,
+    private readonly saveTemplate: SaveTemplateOperation,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+    private readonly setTemplateAddVariableName: SetTemplateAddVariableNameOperation,
   ) {}
 
   async run(groupRef: string | null, variableKind: 'color' | 'contrast'): Promise<void> {
     const key = this.templatesStateGetter.current().addVariableName.trim();
     if (!key) return;
+    const template = this.templatesStateGetter.current().template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    let next;
     if (variableKind === 'contrast') {
-      await this.addContrastVariable.run(key, groupRef);
+      next = this.addContrastVariableToTemplate.execute(base, key, groupRef);
     } else {
-      await this.addColorVariable.run(key, groupRef);
+      next = this.addColorVariableToTemplate.execute(base, key, groupRef);
     }
-    this.setTemplateAddVariableName.run('');
+    await this.saveTemplate.execute(next);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.setTemplateAddVariableName.execute('');
   }
 }

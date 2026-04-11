@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { ColorVariable, Template } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class AddColorVariableOperation {
   execute(
     template: Template,

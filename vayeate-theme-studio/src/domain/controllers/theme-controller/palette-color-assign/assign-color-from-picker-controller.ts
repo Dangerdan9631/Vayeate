@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { CommitAssignColorTextController } from './commit-assign-color-text-controller';
+import { CommitAssignColorTextOperation } from '../../../operations/theme-operations';
 
 @singleton()
 export class AssignColorFromPickerController {
-  constructor(private readonly commitAssignColorText: CommitAssignColorTextController) {}
+  constructor(private readonly commitAssignColorText: CommitAssignColorTextOperation) {}
 
   run(hex: string, _ref?: string): void {
-    this.commitAssignColorText.run(hex);
+    this.commitAssignColorText.execute(hex);
   }
 }

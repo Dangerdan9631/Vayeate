@@ -8,8 +8,8 @@ alwaysApply: false
 
 ## Structure per domain
 
-- `controllers/` — orchestrate validations + operations; **never** set state directly
-- `operations/` — **only** place for business logic, gateways/services, and **state writes**
+- `controllers/` — run validations then operations only (**must not** invoke other controllers); **never** set state directly
+- `operations/` — **only** place for business logic, gateways/services, and **state writes** (**exception:** queue-status slice updates invoked **only** from `ActionQueue` in app core — see [app-architecture.mdc](app-architecture.mdc))
 - `validations/` — `Validate*` + `test()` → boolean
 - `state/` — immutable slices, getters/setters used by operations (writes) and controllers (reads via getter)
 - `utils/` — pure helpers (no state mutation)

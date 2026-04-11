@@ -8,6 +8,7 @@ import { CloseCatalogCreateDialogOperation } from './create-dialog/close-catalog
 import { LoadCatalogRefsOperation } from './catalog-list/load-catalog-refs-operation';
 import { CreateCatalogOperation } from './catalog-list/create-catalog-operation';
 import { RefreshCatalogRefsOperation } from './catalog-list/refresh-catalog-refs-operation';
+import { RefreshCatalogRefsAndSelectOperation } from './catalog-list/refresh-catalog-refs-and-select-operation';
 import { DeleteCatalogOperation } from './catalog-list/delete-catalog-operation';
 import { ListCatalogRefsOperation } from './catalog-list/list-catalog-refs-operation';
 import { GetCatalogRefsOperation } from './catalog-list/get-catalog-refs-operation';
@@ -57,6 +58,7 @@ export {
   LoadCatalogRefsOperation,
   CreateCatalogOperation,
   RefreshCatalogRefsOperation,
+  RefreshCatalogRefsAndSelectOperation,
   DeleteCatalogOperation,
   ListCatalogRefsOperation,
   GetCatalogRefsOperation,

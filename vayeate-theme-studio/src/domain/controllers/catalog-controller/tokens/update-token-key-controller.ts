@@ -6,7 +6,7 @@ import {
   SaveCatalogOperation,
   UpdateTokenKeyInCatalogOperation,
 } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class UpdateTokenKeyController {
@@ -15,7 +15,7 @@ export class UpdateTokenKeyController {
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateTokenKeyInCatalog: UpdateTokenKeyInCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(oldKey: string, newKey: string, tokenType: TokenType): Promise<void> {
@@ -24,6 +24,6 @@ export class UpdateTokenKeyController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateTokenKeyInCatalog.execute(base, oldKey, newKey, tokenType);
     await this.saveCatalog.execute(updated);
-    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

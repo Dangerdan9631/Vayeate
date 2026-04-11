@@ -6,7 +6,7 @@ import {
   RemoveMappingFromTemplateOperation,
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class RemoveMappingController {
@@ -15,7 +15,7 @@ export class RemoveMappingController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(tokenKey: string, tokenType: TokenType): Promise<void> {
@@ -24,6 +24,6 @@ export class RemoveMappingController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

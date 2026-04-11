@@ -6,7 +6,7 @@ import {
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
 import { referencedColorVarKeysFromTemplate } from '../../../utils/template-utils';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class RemoveColorVariableController {
@@ -15,7 +15,7 @@ export class RemoveColorVariableController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeColorVariableFromTemplate: RemoveColorVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(key: string): Promise<void> {
@@ -26,6 +26,6 @@ export class RemoveColorVariableController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeColorVariableFromTemplate.execute(base, key);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

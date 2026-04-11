@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 
 /** Load catalog from disk without updating state. Single responsibility: read. */
-@injectable()
+@singleton()
 export class LoadCatalogSnapshotOperation {
   constructor(private readonly catalogGateway: CatalogGateway) {}
 

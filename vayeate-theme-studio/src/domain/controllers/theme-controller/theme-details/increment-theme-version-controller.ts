@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { nextPatchVersion } from '../../../utils/version';
 import {
+  ClearPendingThemeSaveOperation,
   SetSelectedThemeRefOperation,
   SetThemeHueAdjustmentOperation,
   SaveThemeOperation,
@@ -12,7 +13,6 @@ import {
 } from '../../../operations/theme-operations';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { clearPendingSave } from '../../../operations/theme-operations/theme-details/debounced-theme-gateway-save';
 import { themeStackId } from '../../../utils/stack-id';
 
 @singleton()
@@ -26,6 +26,7 @@ export class IncrementThemeVersionController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTheme: LoadThemeOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
+    private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
     private readonly themesStateGetter: ThemesStateGetter,
   ) {}
 
@@ -35,7 +36,7 @@ export class IncrementThemeVersionController {
     if (!theme) return;
     const newVersion = nextPatchVersion(theme.version);
     const bumped: Theme = { ...theme, version: newVersion };
-    clearPendingSave();
+    this.clearPendingThemeSave.execute();
     this.setThemeHueAdjustment.execute(0);
     try {
       await this.saveTheme.execute(bumped);

@@ -9,7 +9,7 @@ import {
   MergeSemanticTokenSetsOperation,
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class AddSemanticVariantController {
@@ -20,7 +20,7 @@ export class AddSemanticVariantController {
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
     private readonly appendSemanticVariantToTemplate: AppendSemanticVariantToTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(type: string, defaultGroupRef?: string | null): Promise<void> {
@@ -49,6 +49,6 @@ export class AddSemanticVariantController {
       sets.semanticTokenLanguages,
     );
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

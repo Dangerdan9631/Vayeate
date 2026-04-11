@@ -10,7 +10,6 @@ export { DeleteThemeVersionController } from './theme-list/delete-theme-version-
 export { SetThemeCreateFormNameController } from './theme-list/set-theme-create-form-name-controller';
 
 // theme-details
-export { SaveThemeController } from './theme-details/save-theme-controller';
 export { RestoreThemeStateController } from './theme-details/restore-theme-state-controller';
 export { ClearThemeSaveErrorController } from './theme-details/clear-theme-save-error-controller';
 export { IncrementThemeVersionController } from './theme-details/increment-theme-version-controller';
@@ -26,7 +25,6 @@ export { SetPaletteClusterCountKPreviewController } from './palette/set-palette-
 export { SetPaletteClusterCountKController } from './palette/set-palette-cluster-count-k-controller';
 
 // palette-color-assign
-export { CommitAssignColorTextController } from './palette-color-assign/commit-assign-color-text-controller';
 export { AssignColorFromPickerController } from './palette-color-assign/assign-color-from-picker-controller';
 export { SetAssignColorPreviewController } from './palette-color-assign/set-assign-color-preview-controller';
 
@@ -65,4 +63,4 @@ export { SetThemePaneSelectionsController } from './pickers/set-theme-pane-selec
 // eyedropper
 export { OpenEyedropperOverlayController } from './eyedropper/open-eyedropper-overlay-controller';
 export { CloseEyedropperOverlayController } from './eyedropper/close-eyedropper-overlay-controller';
-export { CommitEyedropperColorController } from './eyedropper/commit-eyedropper-color-controller';
+export { CommitEyedropperOverlayPickController } from './eyedropper/commit-eyedropper-overlay-pick-controller';

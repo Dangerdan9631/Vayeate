@@ -6,7 +6,7 @@ import {
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
 import { referencedContrastVarKeysFromTemplate } from '../../../utils/template-utils';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class RemoveContrastVariableController {
@@ -15,7 +15,7 @@ export class RemoveContrastVariableController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeContrastVariableFromTemplate: RemoveContrastVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(key: string): Promise<void> {
@@ -26,6 +26,6 @@ export class RemoveContrastVariableController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeContrastVariableFromTemplate.execute(base, key);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

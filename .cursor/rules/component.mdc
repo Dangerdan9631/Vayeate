@@ -8,9 +8,9 @@ alwaysApply: false
 
 ## Contract
 
-- **PascalCase** functional components; **one** default export component per file (file **kebab-case**).
+- **PascalCase** functional components; **one** default export component per file; **PascalCase** filename matching the component (e.g. `ThemeDetailsCard.tsx`).
 - Each event prop references a **named function** (`onClick={onMenuThemeToggleClick}`), not an inline arrow on the JSX element.
-- User events → **enqueue one UI action** (ActionQueue); no direct controller/operation calls from JSX handlers.
+- **User and lifecycle** events (clicks, inputs, **mount load**, **cleanup unload**) → **enqueue one UI action** (ActionQueue); no direct controller/operation calls from handlers.
 - Read state through **viewmodels** only; **no** business logic.
 
 ## Anti-patterns

@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
 /** Load catalog refs from data dir into store (set catalog entries from ref list). */
-@injectable()
+@singleton()
 export class LoadCatalogRefsOperation {
   constructor(
     private readonly catalogsStateSetter: CatalogsStateSetter,

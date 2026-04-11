@@ -1,10 +1,10 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schemas';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
 /** List catalogs and set entries in store. Single responsibility: refresh ref list. */
-@injectable()
+@singleton()
 export class RefreshCatalogRefsOperation {
   constructor(
     private readonly catalogsStateSetter: CatalogsStateSetter,

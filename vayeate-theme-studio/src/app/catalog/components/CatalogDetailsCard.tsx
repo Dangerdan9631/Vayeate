@@ -123,49 +123,54 @@ export function CatalogDetailsCard() {
         <div className="sources-section">
           <span className="field-label">Sources</span>
           <div className="sources-table">
-            {catalog.sources.map((source, i) => (
-              <div className="source-row" key={i}>
-                <input
-                  className="field-input source-url-input"
-                  type="text"
-                  value={editingSourceIndex === i ? editingSourceUrl : source.url}
-                  placeholder="https://..."
-                  disabled={!isLatestVersion}
-                  onFocus={beginEditSourceUrl(i, source.url)}
-                  onChange={(e) => setEditingSourceUrl(e.target.value)}
-                  onBlur={finishEditSourceUrl(i, source.url)}
-                />
-                <select
-                  className="field-select source-select"
-                  value={source.tokenType}
-                  disabled={!isLatestVersion}
-                  onChange={(e) => commitSourceTokenType(e.target.value as TokenType, i)}
-                >
-                  {getTokenTypeOptions(source.type).map((t) => (
-                    <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
-                  ))}
-                </select>
-                <select
-                  className="field-select source-select"
-                  value={source.type}
-                  disabled={!isLatestVersion}
-                  onChange={(e) => commitSourceType(e.target.value as SourceType, i)}
-                >
-                  {getSourceTypeOptions(source.tokenType).map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  className="btn-icon btn-danger-icon"
-                  disabled={!isLatestVersion}
-                  onClick={() => removeSource(i)}
-                  aria-label="Remove source"
-                >
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              </div>
-            ))}
+            {catalog.sources.map((source, i) => {
+              function onRemoveSourceButtonClick() {
+                removeSource(i);
+              }
+              return (
+                <div className="source-row" key={i}>
+                  <input
+                    className="field-input source-url-input"
+                    type="text"
+                    value={editingSourceIndex === i ? editingSourceUrl : source.url}
+                    placeholder="https://..."
+                    disabled={!isLatestVersion}
+                    onFocus={beginEditSourceUrl(i, source.url)}
+                    onChange={(e) => setEditingSourceUrl(e.target.value)}
+                    onBlur={finishEditSourceUrl(i, source.url)}
+                  />
+                  <select
+                    className="field-select source-select"
+                    value={source.tokenType}
+                    disabled={!isLatestVersion}
+                    onChange={(e) => commitSourceTokenType(e.target.value as TokenType, i)}
+                  >
+                    {getTokenTypeOptions(source.type).map((t) => (
+                      <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
+                    ))}
+                  </select>
+                  <select
+                    className="field-select source-select"
+                    value={source.type}
+                    disabled={!isLatestVersion}
+                    onChange={(e) => commitSourceType(e.target.value as SourceType, i)}
+                  >
+                    {getSourceTypeOptions(source.tokenType).map((t) => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="btn-icon btn-danger-icon"
+                    disabled={!isLatestVersion}
+                    onClick={onRemoveSourceButtonClick}
+                    aria-label="Remove source"
+                  >
+                    <span className="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+              );
+            })}
             {isLatestVersion && (
               <div className="source-row source-add-row">
                 <input

@@ -9,8 +9,8 @@ import {
   SetCatalogBulkAddDialogOpenOperation,
   SetCatalogBulkAddTextOperation,
 } from '../../../operations/catalog-operations';
-import { canBulkAddTokens } from '../../../validations/catalog-validations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { ValidateCanBulkAddTokens } from '../../../validations/catalog-validations';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class BulkAddTokensController {
@@ -22,14 +22,15 @@ export class BulkAddTokensController {
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly deduplicateBulkTokens: DeduplicateBulkTokensOperation,
     private readonly appendTokensToCatalog: AppendTokensToCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly validateCanBulkAddTokens: ValidateCanBulkAddTokens,
   ) {}
 
   async run(): Promise<void> {
     const state = this.catalogsStateGetter.current();
     const catalog = state.catalog;
     const text = state.bulkAddText?.trim();
-    if (!canBulkAddTokens(catalog, text)) return;
+    if (!catalog || !text || !this.validateCanBulkAddTokens.test(catalog, text)) return;
     try {
       const result = parseThemeJson(text!);
       const unique = this.deduplicateBulkTokens.execute(catalog, result.tokens);
@@ -37,7 +38,7 @@ export class BulkAddTokensController {
       const base = this.bumpCatalogVersionForEdit.execute(catalog);
       const updated = this.appendTokensToCatalog.execute(base, unique);
       await this.saveCatalog.execute(updated);
-      await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+      await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     } finally {
       this.setCatalogBulkAddDialogOpen.execute(false);
       this.setCatalogBulkAddText.execute('');

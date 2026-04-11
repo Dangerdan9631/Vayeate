@@ -1,8 +1,5 @@
 export { catalogStackId } from '../../utils/stack-id';
 
-// shared-flows
-export { CatalogSharedFlows } from './shared-flows';
-
 // catalog-list
 export { LoadCatalogPageController } from './page/load-catalog-page-controller';
 export { SetSelectedCatalogController } from './page/set-selected-catalog-controller';

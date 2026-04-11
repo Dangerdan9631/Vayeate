@@ -1,16 +1,18 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation } from '../../../operations/theme-operations';
+import {
+  ApplyThemeStateAndSchedulePersistOperation,
+  SetThemeOperation,
+} from '../../../operations/theme-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { SaveThemeController } from '../theme-details/save-theme-controller';
 
 @singleton()
 export class SetColorUseDarkForLightController {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   run(ref: ColorVariableKey | undefined, checked: boolean | undefined): void {
@@ -22,6 +24,6 @@ export class SetColorUseDarkForLightController {
     );
     const next: Theme = { ...theme, colorAssignments: newAssignments };
     this.setTheme.execute(next);
-    this.saveThemeController.run(next);
+    this.applyThemeStateAndSchedulePersist.execute(next);
   }
 }

@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template, TokenType } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class RemoveMappingFromTemplateOperation {
   execute(
     template: Template,

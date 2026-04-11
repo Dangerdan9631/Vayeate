@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { ContrastVariable, Template } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class AddContrastVariableOperation {
   execute(
     template: Template,

@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { mergeSemanticSelectorInto } from '../../../utils/semantic-token';
 
-@injectable()
+@singleton()
 export class MergeSemanticSelectorsIntoCatalogOperation {
   execute(catalog: Catalog, tokenKey: string): Catalog | null {
     const current = {

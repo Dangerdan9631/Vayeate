@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog, TokenType } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class UpdateSourceTokenTypeInCatalogOperation {
   execute(catalog: Catalog, sourceIndex: number, value: TokenType): Catalog {
     const sources = catalog.sources.map((s, i) =>

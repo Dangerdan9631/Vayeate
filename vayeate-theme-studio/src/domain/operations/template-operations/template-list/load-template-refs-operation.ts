@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 /** Load template refs from data dir into templates slice (template map entries from ref list). */
-@injectable()
+@singleton()
 export class LoadTemplateRefsOperation {
   constructor(
     private readonly templatesStateSetter: TemplatesStateSetter,

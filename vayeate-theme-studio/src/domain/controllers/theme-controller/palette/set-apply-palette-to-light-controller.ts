@@ -1,15 +1,17 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation } from '../../../operations/theme-operations';
+import {
+  ApplyThemeStateAndSchedulePersistOperation,
+  SetThemeOperation,
+} from '../../../operations/theme-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
-import { SaveThemeController } from '../theme-details/save-theme-controller';
 
 @singleton()
 export class SetApplyPaletteToLightController {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   run(checked: boolean): void {
@@ -17,6 +19,6 @@ export class SetApplyPaletteToLightController {
     if (!theme) return;
     const next: Theme = { ...theme, applyPaletteToLight: checked };
     this.setTheme.execute(next);
-    this.saveThemeController.run(next);
+    this.applyThemeStateAndSchedulePersist.execute(next);
   }
 }

@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog, TokenType } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class UpdateTokenKeyInCatalogOperation {
   execute(catalog: Catalog, oldKey: string, newKey: string, tokenType: TokenType): Catalog {
     return {

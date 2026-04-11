@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
-@injectable()
+@singleton()
 export class SetTemplateCreateFormNameOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

@@ -6,7 +6,7 @@ import {
   SaveCatalogOperation,
   SetCatalogNewSemanticTokenSelectorTextOperation,
 } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class AddCatalogSemanticTokenSelectorController {
@@ -16,7 +16,7 @@ export class AddCatalogSemanticTokenSelectorController {
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly mergeSemanticSelectorsIntoCatalog: MergeSemanticSelectorsIntoCatalogOperation,
     private readonly setCatalogNewSemanticTokenSelectorText: SetCatalogNewSemanticTokenSelectorTextOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -30,7 +30,7 @@ export class AddCatalogSemanticTokenSelectorController {
     if (!merged) return;
 
     await this.saveCatalog.execute(merged);
-    await this.catalogSharedFlows.refreshRefsAndSelect(merged.name, merged.version);
+    await this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
     this.setCatalogNewSemanticTokenSelectorText.execute('');
   }
 }

@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
-@injectable()
+@singleton()
 export class SetTemplateOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

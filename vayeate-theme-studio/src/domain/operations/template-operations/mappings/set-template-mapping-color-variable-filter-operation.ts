@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
-@injectable()
+@singleton()
 export class SetTemplateMappingColorVariableFilterOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

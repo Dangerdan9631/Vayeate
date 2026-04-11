@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import {
   AddGroupAndClearInputController,
   AddSemanticVariantController,
@@ -30,13 +30,9 @@ import {
   UpdateSemanticVariantKeyController,
   UpdateVariableGroupRefController,
 } from '../../../domain/controllers/template-controller';
-import type { AppAction } from '../../core/actions/app-action';
 import { TemplateActions, TemplateActionType } from './template-action-type';
 
-const templateTypes = new Set<string>(Object.values(TemplateActionType));
-export const isTemplateAction = (a: AppAction): a is TemplateActions => templateTypes.has(a.type);
-
-@injectable()
+@singleton()
 export class TemplateActionHandler {
   constructor(
     private readonly addGroupAndClearInput: AddGroupAndClearInputController,
@@ -130,10 +126,18 @@ export class TemplateActionHandler {
         await this.addSemanticVariant.run(action.semanticType, action.defaultGroupRef);
         break;
       case TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit:
-        await this.updateSemanticVariantKey.runAfterModifierChange(action.tokenKey, action.modifiers);
+        await this.updateSemanticVariantKey.run({
+          variant: 'modifier',
+          tokenKey: action.tokenKey,
+          modifiers: action.modifiers,
+        });
         break;
       case TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit:
-        await this.updateSemanticVariantKey.runAfterLanguageChange(action.tokenKey, action.value);
+        await this.updateSemanticVariantKey.run({
+          variant: 'language',
+          tokenKey: action.tokenKey,
+          language: action.value,
+        });
         break;
       case TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick:
         await this.removeMapping.run(action.tokenKey, action.tokenType);

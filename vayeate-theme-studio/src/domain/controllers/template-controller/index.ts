@@ -1,6 +1,3 @@
-// shared-flows
-export { TemplateSharedFlows } from './shared-flows';
-
 // template-list
 export { templateStackId } from '../../utils/stack-id';
 export { LoadTemplateRefsController } from './template-list/load-template-refs-controller';
@@ -13,8 +10,6 @@ export { CreateTemplateController } from './template-list/create-template-contro
 export { DeleteCurrentTemplateVersionController } from './template-list/delete-current-template-version-controller';
 
 // template-details
-export { OpenTemplateCreateDialogController } from './template-details/open-template-create-dialog-controller';
-export { CloseTemplateCreateDialogController } from './template-details/close-template-create-dialog-controller';
 export { RestoreTemplateStateController } from './template-details/restore-template-state-controller';
 export { LockTemplateController } from './template-details/lock-template-controller';
 export { UpdateAllCatalogsController } from './template-details/update-all-catalogs-controller';

@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
@@ -7,7 +7,7 @@ export type SetCatalogCreateDialogDataOptions = {
   type?: CatalogType;
 };
 
-@injectable()
+@singleton()
 export class SetCatalogCreateDialogDataOperation {
   constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
 

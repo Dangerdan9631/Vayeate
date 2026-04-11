@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class UpdateSemanticVariantKeyInTemplateOperation {
   execute(
     template: Template,

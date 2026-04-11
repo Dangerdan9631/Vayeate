@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { SourceType } from '../../../../model/schemas';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
-@injectable()
+@singleton()
 export class SetCatalogNewSourceTypeOperation {
   constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
 

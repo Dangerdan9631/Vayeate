@@ -6,7 +6,7 @@ import {
   SaveTemplateOperation,
   SetMappingGroupRefOperation as SetMappingGroupRefOp,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class SetMappingGroupRefController {
@@ -15,7 +15,7 @@ export class SetMappingGroupRefController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly setMappingGroupRefOp: SetMappingGroupRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(
@@ -28,6 +28,6 @@ export class SetMappingGroupRefController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingGroupRefOp.execute(base, tokenKey, tokenType, groupRef);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

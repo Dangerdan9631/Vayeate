@@ -11,7 +11,11 @@ import {
   SaveTemplateOperation,
   UpdateSemanticVariantKeyInTemplateOperation,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
+
+export type UpdateSemanticVariantKeyPayload =
+  | { variant: 'modifier'; tokenKey: string; modifiers: string[] }
+  | { variant: 'language'; tokenKey: string; language: string | null };
 
 @singleton()
 export class UpdateSemanticVariantKeyController {
@@ -21,27 +25,21 @@ export class UpdateSemanticVariantKeyController {
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
     private readonly updateSemanticVariantKeyInTemplate: UpdateSemanticVariantKeyInTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
-  async runAfterModifierChange(oldKey: string, modifiers: string[]): Promise<void> {
+  async run(payload: UpdateSemanticVariantKeyPayload): Promise<void> {
     let parsed: ParsedSemanticSelector;
     try {
-      parsed = parseSemanticSelector(oldKey);
+      parsed = parseSemanticSelector(payload.tokenKey);
     } catch {
       return;
     }
-    await this.runFromParsed(oldKey, parsed, modifiers, parsed.language);
-  }
-
-  async runAfterLanguageChange(oldKey: string, language: string | null): Promise<void> {
-    let parsed: ParsedSemanticSelector;
-    try {
-      parsed = parseSemanticSelector(oldKey);
-    } catch {
-      return;
+    if (payload.variant === 'modifier') {
+      await this.runFromParsed(payload.tokenKey, parsed, payload.modifiers, parsed.language);
+    } else {
+      await this.runFromParsed(payload.tokenKey, parsed, parsed.modifiers, payload.language);
     }
-    await this.runFromParsed(oldKey, parsed, parsed.modifiers, language);
   }
 
   private async runFromParsed(
@@ -69,6 +67,6 @@ export class UpdateSemanticVariantKeyController {
       sets.semanticTokenLanguages,
     );
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

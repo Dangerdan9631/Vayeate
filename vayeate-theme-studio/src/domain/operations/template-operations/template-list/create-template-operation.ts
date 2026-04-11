@@ -1,8 +1,8 @@
 import type { Template } from '../../../../model/schemas';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class CreateTemplateOperation {
   constructor(private readonly templateGateway: TemplateGateway) {}
 

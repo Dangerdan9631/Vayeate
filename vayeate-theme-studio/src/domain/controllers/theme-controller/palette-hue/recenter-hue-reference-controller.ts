@@ -1,9 +1,12 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation, SetThemeHueAdjustmentOperation } from '../../../operations/theme-operations';
+import {
+  ApplyThemeStateAndSchedulePersistOperation,
+  SetThemeHueAdjustmentOperation,
+  SetThemeOperation,
+} from '../../../operations/theme-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
-import { SaveThemeController } from '../theme-details/save-theme-controller';
 
 @singleton()
 export class RecenterHueReferenceController {
@@ -11,7 +14,7 @@ export class RecenterHueReferenceController {
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   run(): void {
@@ -33,7 +36,7 @@ export class RecenterHueReferenceController {
     );
     const nextTheme: Theme = { ...theme, colorAssignments: newAssignments };
     this.setTheme.execute(nextTheme);
-    this.saveThemeController.run(nextTheme);
+    this.applyThemeStateAndSchedulePersist.execute(nextTheme);
     this.setThemeHueAdjustment.execute(0);
   }
 }

@@ -1,3 +1,4 @@
+export { EnqueueAppActionOperation } from './enqueue-app-action-operation';
 export { SetUiActiveTabOperation } from './set-ui-active-tab-operation';
 export { SetColorSchemeOperation } from './set-color-scheme-operation';
 export { LoadAppConfigOperation } from './load-app-config-operation';

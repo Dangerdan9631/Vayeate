@@ -47,6 +47,9 @@ export function GroupsCard() {
         )}
         {[...groups].sort((a, b) => a.localeCompare(b)).map((name) => {
           const inUse = groupNamesInUse.has(name);
+          function onRemoveGroupButtonClick() {
+            onRemoveGroup(name);
+          }
           return (
             <div key={name} className="variable-row">
               <span className="variable-name">{name}</span>
@@ -56,7 +59,7 @@ export function GroupsCard() {
                   className="btn-icon btn-danger-icon"
                   title={inUse ? 'Cannot remove: group has mappings or variables' : 'Remove group'}
                   disabled={inUse}
-                  onClick={() => onRemoveGroup(name)}
+                  onClick={onRemoveGroupButtonClick}
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>

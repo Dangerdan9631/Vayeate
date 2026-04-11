@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { LockCatalogOperation as LockCatalogTransform, SaveCatalogOperation } from '../../../operations/catalog-operations';
-import { canLockCatalog } from '../../../validations/catalog-validations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { ValidateCanLockCatalog } from '../../../validations/catalog-validations';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class LockCatalogController {
@@ -10,14 +10,15 @@ export class LockCatalogController {
     private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly lockCatalogTransform: LockCatalogTransform,
     private readonly saveCatalog: SaveCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly validateCanLockCatalog: ValidateCanLockCatalog,
   ) {}
 
   async run(): Promise<void> {
     const catalog = this.catalogsStateGetter.current().catalog;
-    if (!canLockCatalog(catalog)) return;
+    if (!catalog || !this.validateCanLockCatalog.test(catalog)) return;
     const updated = this.lockCatalogTransform.execute(catalog);
     await this.saveCatalog.execute(updated);
-    await this.catalogSharedFlows.refreshRefsAndSelect(catalog.name, catalog.version);
+    await this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
   }
 }

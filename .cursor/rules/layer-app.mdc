@@ -9,13 +9,13 @@ alwaysApply: false
 ## Structure per domain
 
 - `actions/` — action types + **handlers** (exhaustive switch → controller only)
-- `components/` — React UI; enqueue UI actions only
+- `components/` — React UI; **PascalCase** `*.tsx` filenames per [component.mdc](component.mdc); enqueue UI actions only
 - `viewmodel/` — exposes state via `useContextSelector`; uses validations for guards
 
 ## Actions
 
 - Naming: `<CONTROL>_<ACTION>` (e.g. `THEME_DETAILS_SAVE_BUTTON_ON_CLICK`).
-- **One** action per user interaction; only UI-derived or identity fields in payload (not state-derived).
+- **One** action per **user or lifecycle** interaction (clicks, inputs, **mount load**, **unmount/cleanup unload**, etc.); only UI-derived or identity fields in payload (not state-derived).
 - **Handlers**: route to **controller** only; no business logic (trivial routing OK).
 
 ## Good / bad

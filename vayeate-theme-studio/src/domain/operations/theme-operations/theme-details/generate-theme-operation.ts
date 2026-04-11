@@ -1,21 +1,26 @@
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { singleton } from 'tsyringe';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 
 /** Generate theme files via service and report result in state. */
 @singleton()
 export class GenerateThemeOperation {
   constructor(
+    private readonly themesStateGetter: ThemesStateGetter,
     private readonly themesStateSetter: ThemesStateSetter,
     private readonly themeGateway: ThemeGateway,
   ) {}
 
-  async execute(
-    themeName: string,
-    themeVersion: string,
-    templateName: string,
-    templateVersion: string,
-  ): Promise<void> {
+  async execute(): Promise<void> {
+    const { theme } = this.themesStateGetter.current();
+    const templateRef = theme?.templateRef;
+    if (!theme || !templateRef) {
+      return;
+    }
+    const themeName = theme.name;
+    const themeVersion = theme.version;
+    const templateName = templateRef.name;
+    const templateVersion = templateRef.version;
     this.themesStateSetter.apply({ type: 'SET_GENERATE_RESULT', result: null });
     try {
       const { darkPath, lightPath } = await this.themeGateway.generateTheme(

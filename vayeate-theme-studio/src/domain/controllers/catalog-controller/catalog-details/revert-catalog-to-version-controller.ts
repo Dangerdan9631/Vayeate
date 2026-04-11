@@ -8,7 +8,7 @@ import {
   RevertCatalogOperation,
   SaveCatalogOperation,
 } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class RevertCatalogToVersionController {
@@ -19,7 +19,7 @@ export class RevertCatalogToVersionController {
     private readonly listCatalogRefs: ListCatalogRefsOperation,
     private readonly lockHeadCatalogIfUnlocked: LockHeadCatalogIfUnlockedOperation,
     private readonly revertCatalog: RevertCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -44,6 +44,6 @@ export class RevertCatalogToVersionController {
     const newVersion = highestRef ? nextPatchVersion(highestRef.version) : nextPatchVersion(version);
     const reverted = this.revertCatalog.execute(snapshot, newVersion);
     await this.saveCatalog.execute(reverted);
-    await this.catalogSharedFlows.refreshRefsAndSelect(reverted.name, reverted.version);
+    await this.refreshCatalogRefsAndSelect.execute(reverted.name, reverted.version);
   }
 }

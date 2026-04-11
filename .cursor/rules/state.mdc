@@ -16,12 +16,14 @@ alwaysApply: false
 | Consumer | Read | Write |
 |----------|------|-------|
 | Controllers / operations | **Getter** | **Setter** (operations **only**) |
+| `ActionQueue` (`src/app/core/actions/`) | Via existing accessors if needed | **Queue status only** — dedicated setter invoked **only** from `ActionQueue` (see [app-architecture.mdc](app-architecture.mdc)) |
 | React | Via **viewmodel** + `useContextSelector` | Never |
 
 ## Rules
 
 - Slices are **domain-owned** under `src/domain/<domain>/state/`.
 - React **never** imports setters directly.
+- **Do not** call the queue-status setter from components, handlers, controllers, or operations — **only** from `ActionQueue`.
 
 ## Good / bad
 

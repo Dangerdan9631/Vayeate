@@ -10,7 +10,7 @@ import {
   type CatalogDataItem,
 } from '../../../utils/template-catalog-merge';
 import { catalogVersionsByNameFromRefs } from '../../../utils/template-utils';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 async function loadCatalogData(
   loadCatalogSnapshot: LoadCatalogSnapshotOperation,
@@ -40,7 +40,7 @@ export class ToggleCatalogController {
     private readonly loadCatalogSnapshot: LoadCatalogSnapshotOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(catalogName: string): Promise<void> {
@@ -93,6 +93,6 @@ export class ToggleCatalogController {
       semanticTokenLanguages,
     };
     await this.saveTemplate.execute(updated);
-    await this.templateSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    await this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version);
   }
 }

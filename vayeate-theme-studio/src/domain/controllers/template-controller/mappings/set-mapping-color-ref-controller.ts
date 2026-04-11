@@ -10,7 +10,7 @@ import {
   SaveTemplateOperation,
   SetMappingColorRefOperation as SetMappingColorRefOp,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class SetMappingColorRefController {
@@ -21,7 +21,7 @@ export class SetMappingColorRefController {
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
     private readonly setMappingColorRefOp: SetMappingColorRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(
@@ -42,11 +42,11 @@ export class SetMappingColorRefController {
     if (colorRef === null && isOrphan) {
       const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
       await this.saveTemplate.execute(next);
-      await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+      await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
       return;
     }
     const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

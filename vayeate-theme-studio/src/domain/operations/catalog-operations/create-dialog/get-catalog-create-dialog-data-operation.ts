@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 
@@ -8,7 +8,7 @@ export type CatalogCreateDialogData = {
 };
 
 /** Read current catalog create-dialog draft fields from app state. */
-@injectable()
+@singleton()
 export class GetCatalogCreateDialogDataOperation {
   constructor(private readonly catalogsStateGetter: CatalogsStateGetter) {}
 

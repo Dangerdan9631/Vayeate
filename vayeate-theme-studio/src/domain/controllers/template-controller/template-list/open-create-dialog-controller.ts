@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { OpenTemplateCreateDialogController } from '../template-details/open-template-create-dialog-controller';
+import { SetTemplateCreateDialogOpenOperation } from '../../../operations/template-operations';
 
 /** Open create dialog and reset form (V2: CREATE_BUTTON or CREATE_DIALOG_ON_OPEN). */
 @singleton()
 export class OpenCreateDialogController {
-  constructor(private readonly openTemplateCreateDialog: OpenTemplateCreateDialogController) {}
+  constructor(private readonly setTemplateCreateDialogOpen: SetTemplateCreateDialogOpenOperation) {}
 
   run(): void {
-    this.openTemplateCreateDialog.run();
+    this.setTemplateCreateDialogOpen.execute(true);
   }
 }

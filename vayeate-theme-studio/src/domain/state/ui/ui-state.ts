@@ -1,6 +1,7 @@
+import type { TabId } from '../../../model/tab-id';
 import { closedEyedropperUiState, type EyedropperUiState } from './eyedropper-ui-state';
 
-export type TabId = 'catalogs' | 'templates' | 'themes';
+export type { TabId } from '../../../model/tab-id';
 
 export interface QueueStatusState {
   isProcessing: boolean;

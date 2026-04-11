@@ -8,10 +8,10 @@ import {
   SetThemeSaveErrorOperation,
   SaveThemeOperation,
   DeleteThemeOperation,
+  ClearPendingThemeSaveOperation,
   LoadThemeRefsOperation,
   type RestoreThemeStateParams,
 } from '../../../operations/theme-operations';
-import { clearPendingSave } from '../../../operations/theme-operations/theme-details/debounced-theme-gateway-save';
 
 @singleton()
 export class RestoreThemeStateController {
@@ -25,11 +25,12 @@ export class RestoreThemeStateController {
     private readonly saveTheme: SaveThemeOperation,
     private readonly deleteTheme: DeleteThemeOperation,
     private readonly loadThemeRefs: LoadThemeRefsOperation,
+    private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
   ) {}
 
   async run(params: RestoreThemeStateParams): Promise<void> {
     if (params.theme !== undefined && params.theme !== null) {
-      clearPendingSave();
+      this.clearPendingThemeSave.execute();
     }
     if (params.theme !== undefined) {
       this.setTheme.execute(params.theme);

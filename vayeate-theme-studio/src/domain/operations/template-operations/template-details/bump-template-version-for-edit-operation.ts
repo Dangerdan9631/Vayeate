@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
 import { nextPatchVersion } from '../../../utils/version';
 
-@injectable()
+@singleton()
 export class BumpTemplateVersionForEditOperation {
   execute(t: Template): Template {
     if (t.locked) {

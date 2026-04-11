@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog, SemanticTokenRegistryListKind } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class UpdateSemanticTokenRegistryEntryOperation {
   execute(catalog: Catalog, kind: SemanticTokenRegistryListKind, index: number, value: string): Catalog {
     const field =

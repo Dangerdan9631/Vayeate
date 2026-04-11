@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template, TokenType } from '../../../../model/schemas';
 import { parseSemanticSelector } from '../../../utils/semantic-token';
 
-@injectable()
+@singleton()
 export class SetMappingGroupRefOperation {
   execute(
     template: Template,

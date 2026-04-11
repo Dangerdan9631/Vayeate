@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog, CatalogReference } from '../../../../model/schemas';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
@@ -7,7 +7,7 @@ import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reduc
  * Sets the catalog pane selection: selected ref and loaded catalog in app state.
  * When `catalog` is omitted, reads the catalog from the catalog map entry for `ref` (must be loaded).
  */
-@injectable()
+@singleton()
 export class SetSelectedCatalogOperation {
   constructor(
     private readonly catalogsStateSetter: CatalogsStateSetter,

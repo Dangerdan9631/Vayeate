@@ -5,8 +5,8 @@ import {
   SaveCatalogOperation,
   UpdateSourceUrlInCatalogOperation,
 } from '../../../operations/catalog-operations';
-import { canUpdateCatalogSource } from '../../../validations/catalog-validations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { ValidateCanUpdateCatalogSource } from '../../../validations/catalog-validations';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class UpdateSourceUrlController {
@@ -15,15 +15,16 @@ export class UpdateSourceUrlController {
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSourceUrlInCatalog: UpdateSourceUrlInCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly validateCanUpdateCatalogSource: ValidateCanUpdateCatalogSource,
   ) {}
 
   async run(sourceIndex: number, value: string): Promise<void> {
     const catalog = this.catalogsStateGetter.current().catalog;
-    if (!canUpdateCatalogSource(catalog, sourceIndex)) return;
+    if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceUrlInCatalog.execute(base, sourceIndex, value);
     await this.saveCatalog.execute(updated);
-    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

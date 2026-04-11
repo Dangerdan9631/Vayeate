@@ -9,10 +9,3 @@ export class SetCurrentUndoStackIdOperation {
     this.undoStackStateSetter.apply({ type: 'SET_CURRENT_UNDO_STACK_ID', stackId });
   }
 }
-
-export function setCurrentUndoStackId(
-  setUndoStackState: import('../../state/undo-stack/undo-stack-state-reducer').SetUndoStackState,
-  stackId: string | null,
-): void {
-  setUndoStackState({ type: 'SET_CURRENT_UNDO_STACK_ID', stackId });
-}

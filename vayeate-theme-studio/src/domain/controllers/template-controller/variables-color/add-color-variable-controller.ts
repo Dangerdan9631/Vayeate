@@ -5,7 +5,7 @@ import {
   BumpTemplateVersionForEditOperation,
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class AddColorVariableController {
@@ -14,7 +14,7 @@ export class AddColorVariableController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addColorVariableToTemplate: AddColorVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(key: string, groupRef?: string | null): Promise<void> {
@@ -23,6 +23,6 @@ export class AddColorVariableController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addColorVariableToTemplate.execute(base, key, groupRef);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

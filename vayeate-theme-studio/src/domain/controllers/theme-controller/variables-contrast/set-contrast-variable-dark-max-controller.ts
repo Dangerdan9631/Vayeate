@@ -1,17 +1,19 @@
 import { singleton } from 'tsyringe';
 import type { ContrastVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
-import { SetThemeOperation } from '../../../operations/theme-operations';
+import {
+  ApplyThemeStateAndSchedulePersistOperation,
+  SetThemeOperation,
+} from '../../../operations/theme-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { parseContrastValue, updateContrastAssignment } from '../../../utils/contrast-utils';
-import { SaveThemeController } from '../theme-details/save-theme-controller';
 
 @singleton()
 export class SetContrastVariableDarkMaxController {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   run(ref: ContrastVariableKey | undefined, value: string): void {
@@ -23,6 +25,6 @@ export class SetContrastVariableDarkMaxController {
     });
     const next: Theme = { ...theme, contrastAssignments: newAssignments };
     this.setTheme.execute(next);
-    this.saveThemeController.run(next);
+    this.applyThemeStateAndSchedulePersist.execute(next);
   }
 }

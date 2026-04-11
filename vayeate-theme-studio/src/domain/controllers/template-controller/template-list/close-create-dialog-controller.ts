@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { CloseTemplateCreateDialogController } from '../template-details/close-template-create-dialog-controller';
+import { SetTemplateCreateDialogOpenOperation } from '../../../operations/template-operations';
 
 /** Close create dialog and clear form (V2: CANCEL_BUTTON). */
 @singleton()
 export class CloseCreateDialogController {
-  constructor(private readonly closeTemplateCreateDialog: CloseTemplateCreateDialogController) {}
+  constructor(private readonly setTemplateCreateDialogOpen: SetTemplateCreateDialogOpenOperation) {}
 
   run(): void {
-    this.closeTemplateCreateDialog.run();
+    this.setTemplateCreateDialogOpen.execute(false);
   }
 }

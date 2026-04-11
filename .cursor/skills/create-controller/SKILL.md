@@ -13,7 +13,7 @@ Follow conventions in [`.cursor/rules/controller.mdc`](../../rules/controller.md
 
 1. Pick domain folder: `vayeate-theme-studio/src/domain/<domain>/controllers/`.
 2. Name file **kebab-case** matching class (e.g. `delete-current-catalog-controller.ts` → `DeleteCurrentCatalogController`).
-3. Add **`@singleton()`** class with **`run(...)`** only; inject concrete operation, validation, and state getter types — no string or symbol tokens.
+3. Add **`@singleton()`** class with **`run(...)`** only; inject concrete operation, validation, and state getter types — no string or symbol tokens — **do not** inject or call other controllers.
 4. Wire **handler** to `container.resolve(...).run(action)` — no logic in handler.
 
 ## Skeleton
@@ -41,4 +41,5 @@ export class ExampleController {
 
 - [ ] UI-agnostic name; suffix `Controller`
 - [ ] No state mutation; only `run`
+- [ ] Does not call or inject other controllers
 - [ ] Rules in [controller.mdc](../../rules/controller.mdc) satisfied

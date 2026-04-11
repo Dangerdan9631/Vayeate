@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { ContrastVariableKey } from '../../../../model/schemas';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
-@injectable()
+@singleton()
 export class SetTemplateMappingContrastVariableFilterOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

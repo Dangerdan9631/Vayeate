@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Mapping, Template } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class AppendSemanticVariantToTemplateOperation {
   execute(
     template: Template,

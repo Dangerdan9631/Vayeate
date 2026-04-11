@@ -1,9 +1,9 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
-@injectable()
+@singleton()
 export class LoadTemplateOperation {
   constructor(
     private readonly TemplatesStateSetter: TemplatesStateSetter,

@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
 import { SaveCatalogOperation, SyncCatalogOperation } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class SyncCatalogController {
@@ -9,7 +9,7 @@ export class SyncCatalogController {
     private readonly catalogsStateGetter: CatalogsStateGetter,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly syncCatalog: SyncCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -18,6 +18,6 @@ export class SyncCatalogController {
 
     const synced = await this.syncCatalog.execute(catalog);
     await this.saveCatalog.execute(synced);
-    await this.catalogSharedFlows.refreshRefsAndSelect(synced.name, synced.version);
+    await this.refreshCatalogRefsAndSelect.execute(synced.name, synced.version);
   }
 }

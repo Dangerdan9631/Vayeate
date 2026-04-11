@@ -1,8 +1,8 @@
 import type { TemplateReference } from '../../../../model/schemas';
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
-@injectable()
+@singleton()
 export class SetSelectedTemplateRefOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

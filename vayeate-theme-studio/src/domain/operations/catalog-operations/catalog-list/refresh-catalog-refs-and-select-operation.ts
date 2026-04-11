@@ -1,15 +1,18 @@
-import { injectable } from 'tsyringe';
-import { LoadCatalogOperation, RefreshCatalogRefsOperation, SetSelectedCatalogOperation } from '../../operations/catalog-operations';
+import { singleton } from 'tsyringe';
+import { LoadCatalogOperation } from '../catalog-details/load-catalog-operation';
+import { RefreshCatalogRefsOperation } from './refresh-catalog-refs-operation';
+import { SetSelectedCatalogOperation } from './set-selected-catalog-operation';
 
-@injectable()
-export class CatalogSharedFlows {
+/** After catalog mutations, refresh refs from disk and optionally select a catalog by name/version. */
+@singleton()
+export class RefreshCatalogRefsAndSelectOperation {
   constructor(
     private readonly refreshCatalogRefs: RefreshCatalogRefsOperation,
     private readonly setSelectedCatalog: SetSelectedCatalogOperation,
     private readonly loadCatalog: LoadCatalogOperation,
   ) {}
 
-  async refreshRefsAndSelect(selectName?: string, selectVersion?: string): Promise<void> {
+  async execute(selectName?: string, selectVersion?: string): Promise<void> {
     const refs = await this.refreshCatalogRefs.execute();
     if (selectName && selectVersion) {
       const match = refs.find((r) => r.name === selectName && r.version === selectVersion);

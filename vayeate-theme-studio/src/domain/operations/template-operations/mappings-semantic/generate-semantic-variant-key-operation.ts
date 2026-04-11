@@ -1,6 +1,6 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class GenerateSemanticVariantKeyOperation {
   /** Unique placeholder key for an empty semantic variant row. */
   execute(type: string): string {

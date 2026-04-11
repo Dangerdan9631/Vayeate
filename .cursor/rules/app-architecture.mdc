@@ -35,20 +35,25 @@ flowchart LR
   VM --> UI
 ```
 
-- Only **UI events** on the queue. Handlers → controllers only (exhaustive switch).
+- Only **UI-originated signals** on the queue — pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). Handlers → controllers only (exhaustive switch).
 - **State updates only in operations.** Controllers read via getters; never set state.
+- **Exception — action queue status:** State that reflects the action queue’s own status (depth, processing flag, etc.) may be updated **only inside the `ActionQueue` implementation** (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception; all other domain state still updates **only** in operations.
 - **Business logic only in operations.** Gateways/services: system + conversion, not domain rules.
+- **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
 
 ## Actions
 
 - Shape: `<CONTROL>_<ACTION>` (e.g. `CATALOG_PAGE_ON_LOAD`).
-- One action per interaction; one type per component/event (reuse only for same control type with a discriminant field).
+- One action per **user or lifecycle** interaction; one type per component/event (reuse only for same control type with a discriminant field).
+- **Lifecycle:** Page, panel, window, and dialog **load** and **unload** are valid action sources — enqueue the same way as click handlers (e.g. `useEffect` cleanup for unload). Treat them as **UI-originated**, not back doors around the queue.
 - Payload: only user input or entity identifiers — **not** values derivable from app state.
 
 ## DI and files
 
 - **tsyringe** **`@singleton()`** for controllers, operations, validations, gateways, services — inject **concrete types** directly; **no** string or symbol injection tokens.
-- **One** top-level export per file; file **kebab-case** matching export; classes/components **PascalCase**.
+- **One** top-level export per file.
+- **React components** under `src/app/**` (`*.tsx` in `components/` or pages): **PascalCase** filename matching the default export (see [component.mdc](component.mdc)).
+- **All other** source modules (controllers, operations, viewmodels, state, gateways, services, models, handlers, etc.): **kebab-case** filename matching export; exported **classes** **PascalCase** where applicable.
 
 ## Good / bad
 

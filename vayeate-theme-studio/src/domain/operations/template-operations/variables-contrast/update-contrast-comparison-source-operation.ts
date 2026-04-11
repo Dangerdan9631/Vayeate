@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { ColorVariableKey, Template } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class UpdateContrastComparisonSourceOperation {
   execute(
   template: Template,

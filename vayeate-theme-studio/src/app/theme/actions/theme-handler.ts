@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import {
   AssignColorFromPickerController,
   ClearThemeSaveErrorController,
@@ -42,13 +42,9 @@ import {
   SetVariablesSelectByTypeController,
   ToggleVariableSelectionController,
 } from '../../../domain/controllers/theme-controller';
-import type { AppAction } from '../../core/actions/app-action';
 import { ThemeActions, ThemeActionType } from './theme-action-type';
 
-const themeTypes = new Set<string>(Object.values(ThemeActionType));
-export const isThemeAction = (a: AppAction): a is ThemeActions => themeTypes.has(a.type);
-
-@injectable()
+@singleton()
 export class ThemeActionHandler {
   constructor(
     private readonly assignColorFromPicker: AssignColorFromPickerController,
@@ -133,12 +129,7 @@ export class ThemeActionHandler {
         await this.incrementThemeVersion.run();
         break;
       case ThemeActionType.ThemeDetailsGenerateButtonOnClick:
-        await this.generateTheme.run(
-          action.themeName,
-          action.themeVersion,
-          action.templateName,
-          action.templateVersion,
-        );
+        await this.generateTheme.run();
         break;
       case ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle:
         this.setApplyPaletteToDark.run(action.checked);

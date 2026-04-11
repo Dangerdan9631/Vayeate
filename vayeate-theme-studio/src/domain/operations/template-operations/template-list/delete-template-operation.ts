@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 
 /** Delete one template version from disk. Single responsibility: delete. */
-@injectable()
+@singleton()
 export class DeleteTemplateOperation {
   constructor(private readonly templateGateway: TemplateGateway) {}
 

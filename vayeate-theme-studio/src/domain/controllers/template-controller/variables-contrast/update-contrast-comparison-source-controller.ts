@@ -6,7 +6,7 @@ import {
   SaveTemplateOperation,
   UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceOp,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class UpdateContrastComparisonSourceController {
@@ -15,7 +15,7 @@ export class UpdateContrastComparisonSourceController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly updateContrastComparisonSourceOp: UpdateContrastComparisonSourceOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(
@@ -31,6 +31,6 @@ export class UpdateContrastComparisonSourceController {
       comparisonSourceRef,
     );
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

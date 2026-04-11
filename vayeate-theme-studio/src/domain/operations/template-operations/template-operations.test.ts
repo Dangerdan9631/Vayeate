@@ -2,14 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { container } from 'tsyringe';
 import type { Template } from '../../../model/schemas';
 import { TemplateGateway } from '../../../gateway/template/template-gateway';
-import {
-  LoadTemplateRefsOperation,
-  createTemplate,
-  deleteTemplate,
-  loadTemplate,
-  refreshTemplateRefs,
-  saveTemplate,
-} from '.';
+import { LoadTemplateRefsOperation } from './template-list/load-template-refs-operation';
+import { CreateTemplateOperation } from './template-list/create-template-operation';
+import { DeleteTemplateOperation } from './template-list/delete-template-operation';
+import { LoadTemplateOperation } from './template-details/load-template-operation';
+import { RefreshTemplateRefsOperation } from './template-list/refresh-template-refs-operation';
+import { SaveTemplateOperation } from './template-details/save-template-operation';
 import { TemplatesStateSetter } from '../../state/template/templates-state-reducer';
 
 const templateGatewayMock = {
@@ -34,9 +32,8 @@ describe('template-operations', () => {
     vi.clearAllMocks();
   });
 
-  it('createTemplate calls templateGateway.createTemplate and returns template', async () => {
-    const setState = vi.fn();
-    const result = await createTemplate(setState, { name: 't1' });
+  it('CreateTemplateOperation calls templateGateway.createTemplate and returns template', async () => {
+    const result = await container.resolve(CreateTemplateOperation).execute({ name: 't1' });
 
     expect(templateGatewayMock.createTemplate).toHaveBeenCalledTimes(1);
     expect(templateGatewayMock.createTemplate).toHaveBeenCalledWith({ name: 't1' });
@@ -56,10 +53,13 @@ describe('template-operations', () => {
     });
   });
 
-  it('loadTemplate loads a template and updates state', async () => {
+  it('LoadTemplateOperation loads a template and updates state', async () => {
     const setState = vi.fn();
 
-    const loaded = await loadTemplate(setState, 't1', '1.0.0');
+    const loaded = await new LoadTemplateOperation(
+      new TemplatesStateSetter(setState),
+      container.resolve(TemplateGateway),
+    ).execute('t1', '1.0.0');
 
     expect(templateGatewayMock.loadTemplate).toHaveBeenCalledTimes(1);
     expect(templateGatewayMock.loadTemplate).toHaveBeenCalledWith('t1', '1.0.0');
@@ -70,26 +70,29 @@ describe('template-operations', () => {
     expect(loaded).toEqual({ name: 't1', version: '1.0.0' });
   });
 
-  it('saveTemplate calls templateGateway.saveTemplate', async () => {
+  it('SaveTemplateOperation calls templateGateway.saveTemplate', async () => {
     const template = { name: 't1', version: '1.0.0' } as Template;
 
-    await saveTemplate(template);
+    await container.resolve(SaveTemplateOperation).execute(template);
 
     expect(templateGatewayMock.saveTemplate).toHaveBeenCalledTimes(1);
     expect(templateGatewayMock.saveTemplate).toHaveBeenCalledWith(template);
   });
 
-  it('deleteTemplate calls templateGateway.deleteTemplate', async () => {
-    await deleteTemplate('t1', '1.0.0');
+  it('DeleteTemplateOperation calls templateGateway.deleteTemplate', async () => {
+    await container.resolve(DeleteTemplateOperation).execute('t1', '1.0.0');
 
     expect(templateGatewayMock.deleteTemplate).toHaveBeenCalledTimes(1);
     expect(templateGatewayMock.deleteTemplate).toHaveBeenCalledWith('t1', '1.0.0');
   });
 
-  it('refreshTemplateRefs returns refs and sets store entries', async () => {
+  it('RefreshTemplateRefsOperation returns refs and sets store entries', async () => {
     const setStoreState = vi.fn();
 
-    const refs = await refreshTemplateRefs(setStoreState);
+    const refs = await new RefreshTemplateRefsOperation(
+      new TemplatesStateSetter(setStoreState),
+      container.resolve(TemplateGateway),
+    ).execute();
 
     expect(templateGatewayMock.listTemplates).toHaveBeenCalledTimes(1);
     expect(setStoreState).toHaveBeenCalledWith({

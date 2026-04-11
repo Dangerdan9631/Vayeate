@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class AddGroupToTemplateOperation {
   execute(template: Template, name: string): Template | null {
     const trimmed = name.trim();

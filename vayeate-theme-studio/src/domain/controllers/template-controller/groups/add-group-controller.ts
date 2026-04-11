@@ -5,7 +5,7 @@ import {
   BumpTemplateVersionForEditOperation,
   SaveTemplateOperation,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class AddGroupController {
@@ -14,7 +14,7 @@ export class AddGroupController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addGroupToTemplate: AddGroupToTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(name: string): Promise<void> {
@@ -24,6 +24,6 @@ export class AddGroupController {
     const next = this.addGroupToTemplate.execute(base, name);
     if (!next) return;
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

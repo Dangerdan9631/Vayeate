@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import {
   AddCatalogSemanticTokenSelectorController,
   AddNewSourceController,
@@ -32,13 +32,9 @@ import {
   UpdateSourceUrlController,
   UpdateTokenKeyController,
 } from '../../../domain/controllers/catalog-controller';
-import type { AppAction } from '../../core/actions/app-action';
 import { CatalogActions, CatalogActionType } from './catalog-action-type';
 
-const catalogTypes = new Set<string>(Object.values(CatalogActionType));
-export const isCatalogAction = (a: AppAction): a is CatalogActions => catalogTypes.has(a.type);
-
-@injectable()
+@singleton()
 export class CatalogActionHandler {
   constructor(
     private readonly loadCatalogPage: LoadCatalogPageController,

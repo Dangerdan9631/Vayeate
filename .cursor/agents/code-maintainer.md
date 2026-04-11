@@ -38,5 +38,7 @@ End with a **Summary** (e.g. blocking vs style counts).
 ## Process
 
 1. Tie each finding to the **specific rule** violated.
-2. Prefer **actionable** fixes (move / delete / rename).
+2. Prefer **actionable** fixes (move / delete / rename). For `src/app/**/*.tsx`, include **filename** checks per [component.mdc](../rules/component.mdc) (PascalCase matching the default export).
 3. Flag legacy code that predates rules unless the user asked to grandfather it.
+4. When checking [state.mdc](../rules/state.mdc) / [operation.mdc](../rules/operation.mdc), **allow** queue-status updates **only** when the write path is **`ActionQueue` → queue status setter** per [app-architecture.mdc](../rules/app-architecture.mdc).
+5. When reviewing `vayeate-theme-studio/src/domain/**/controllers/`, flag calls to another controller’s `run` or `container.resolve` of a `*Controller` inside a controller ([controller.mdc](../rules/controller.mdc)).

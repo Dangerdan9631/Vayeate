@@ -6,7 +6,7 @@ import {
   SaveCatalogOperation,
   UpdateSemanticTokenRegistryEntryOperation,
 } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class UpdateSemanticTokenRegistryTextController {
@@ -15,7 +15,7 @@ export class UpdateSemanticTokenRegistryTextController {
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSemanticTokenRegistryEntry: UpdateSemanticTokenRegistryEntryOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(kind: SemanticTokenRegistryListKind, index: number, value: string): Promise<void> {
@@ -24,6 +24,6 @@ export class UpdateSemanticTokenRegistryTextController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSemanticTokenRegistryEntry.execute(base, kind, index, value);
     await this.saveCatalog.execute(updated);
-    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

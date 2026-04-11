@@ -1,4 +1,4 @@
-import { TabId } from "../../../domain/state/ui/ui-state";
+import type { TabId } from '../../../model/tab-id';
 import type { HexColor } from "../../../model/schemas";
 
 export enum AppActionType {

@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 /** Store draft value for the "add group" name input. */
-@injectable()
+@singleton()
 export class SetTemplateAddGroupNameOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog, Token } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class DeduplicateBulkTokensOperation {
   execute(catalog: Catalog, incoming: Token[]): Token[] {
     const existingKeys = new Set(catalog.tokens.map((t) => `${t.type}::${t.key}`));

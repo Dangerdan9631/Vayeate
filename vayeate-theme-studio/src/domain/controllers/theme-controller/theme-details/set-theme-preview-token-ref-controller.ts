@@ -1,10 +1,14 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import type { ThemePreviewTokenRefField } from '../../../../model/schemas';
-import { SetThemeOperation, SetThemeHueAdjustmentOperation, SetThemeHueReferenceHexOperation } from '../../../operations/theme-operations';
+import {
+  ApplyThemeStateAndSchedulePersistOperation,
+  SetThemeHueAdjustmentOperation,
+  SetThemeHueReferenceHexOperation,
+  SetThemeOperation,
+} from '../../../operations/theme-operations';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { applyHueShift } from '../../../utils/color';
-import { SaveThemeController } from './save-theme-controller';
 
 /** Set a preview token ref field (THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT). Updates theme, saves, recenters hue. */
 @singleton()
@@ -12,7 +16,7 @@ export class SetThemePreviewTokenRefController {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
     private readonly setThemeHueReferenceHex: SetThemeHueReferenceHexOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
   ) {}
@@ -22,7 +26,7 @@ export class SetThemePreviewTokenRefController {
     if (!theme) return;
     const next: Theme = { ...theme, [tokenRefField]: value };
     this.setTheme.execute(next);
-    this.saveThemeController.run(next);
+    this.applyThemeStateAndSchedulePersist.execute(next);
     const themeState = this.themesStateGetter.current();
     const hueRef = themeState.hueReferenceHex ?? '';
     const hueAdjustment = themeState.hueAdjustment ?? 0;

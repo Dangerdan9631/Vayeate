@@ -1,10 +1,14 @@
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import type { AppAction } from './app-action';
-import { AppActionHandler, isAppAction } from '../../app/actions/app-handler';
-import { CatalogActionHandler, isCatalogAction } from '../../catalog/actions/catalog-handler';
-import { TemplateActionHandler, isTemplateAction } from '../../template/actions/template-handler';
-import { ThemeActionHandler, isThemeAction } from '../../theme/actions/theme-handler';
+import { AppActionHandler } from '../../app/actions/app-handler';
+import { isAppAction } from '../../app/actions/app-action-guard';
+import { CatalogActionHandler } from '../../catalog/actions/catalog-handler';
+import { isCatalogAction } from '../../catalog/actions/catalog-action-guard';
+import { TemplateActionHandler } from '../../template/actions/template-handler';
+import { isTemplateAction } from '../../template/actions/template-action-guard';
+import { ThemeActionHandler } from '../../theme/actions/theme-handler';
+import { isThemeAction } from '../../theme/actions/theme-action-guard';
 
 @singleton()
 export class ActionProcessor {
@@ -30,6 +34,8 @@ export class ActionProcessor {
       await this.templateHandler.handle(action);
     } else if (isThemeAction(action)) {
       await this.themeHandler.handle(action);
+    } else {
+      this.log.error('Unhandled action (no handler branch matched)', { action });
     }
   }
 }

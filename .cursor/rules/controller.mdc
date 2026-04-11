@@ -12,6 +12,7 @@ alwaysApply: false
 - **Inject** concrete classes via **tsyringe** **`@singleton()`** — no string or symbol tokens.
 - **Read** state with getters; **never** mutate state here.
 - Compose **validations** then **operations**; throw when validation fails if appropriate.
+- **Must not** call another controller’s `run` (or resolve another `*Controller`). Orchestration is **validations → operations** only; multi-step domain work belongs in operations (or separate UI actions), not controller chains.
 
 ## Naming
 
@@ -26,3 +27,4 @@ alwaysApply: false
 
 - Business rules beyond orchestration (belongs in **operations**).
 - Calling gateways/services directly (use **operations**).
+- Chaining controllers (`this.otherController.run(...)`) — use operations or separate actions instead.

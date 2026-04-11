@@ -1,8 +1,7 @@
 import { singleton } from 'tsyringe';
 import { SetWindowStateOperation } from '../../operations/window-operations';
-import { WindowStateGetter } from '../../state/window/window-state-reducer';
 import { LoggerFactory, type Logger } from '../../utils/logger';
-import { canRestoreWindow } from '../../validations/window-validations';
+import { ValidateCanRestoreWindow } from '../../validations/window-validations';
 
 @singleton()
 export class RestoreWindowController {
@@ -10,14 +9,14 @@ export class RestoreWindowController {
 
   constructor(
     private readonly setWindowState: SetWindowStateOperation,
-    private readonly windowStateGetter: WindowStateGetter,
+    private readonly validateCanRestore: ValidateCanRestoreWindow,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('WindowController');
   }
 
   async run(): Promise<void> {
-    if (!canRestoreWindow(() => this.windowStateGetter.current())) {
+    if (!this.validateCanRestore.test()) {
       this.log.warn('restoreWindow skipped: validation failed (window not maximized or minimized)');
       return;
     }

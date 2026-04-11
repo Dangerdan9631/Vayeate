@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
 
-@injectable()
+@singleton()
 export class SetCatalogNewTokenKeyOperation {
   constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
 

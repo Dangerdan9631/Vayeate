@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
 
 /** Store draft value for the "add variable" name input. */
-@injectable()
+@singleton()
 export class SetTemplateAddVariableNameOperation {
   constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
 

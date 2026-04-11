@@ -1,24 +1,23 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import {
-  SetThemeOperation,
-  SetThemeHueAdjustmentOperation,
-} from '../../../operations/theme-operations';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../theme-details/apply-theme-state-and-schedule-persist-operation';
+import { SetThemeOperation } from '../theme-details/set-theme-operation';
+import { SetThemeHueAdjustmentOperation } from '../palette-hue/set-theme-hue-adjustment-operation';
 import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
-import { SaveThemeController } from '../theme-details/save-theme-controller';
 
+/** Applies bulk color text from picker/eyedropper to checked color refs and persists. */
 @singleton()
-export class CommitAssignColorTextController {
+export class CommitAssignColorTextOperation {
   constructor(
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly setTheme: SetThemeOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
-    private readonly saveThemeController: SaveThemeController,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  run(value: string): void {
+  execute(value: string): void {
     const normalized = normalizeHexSafe(value);
     if (!normalized) return;
     const state = this.themesStateGetter.current();
@@ -48,6 +47,6 @@ export class CommitAssignColorTextController {
     const nextTheme: Theme = { ...base, colorAssignments: newAssignments };
     this.setThemeHueAdjustment.execute(0);
     this.setTheme.execute(nextTheme);
-    this.saveThemeController.run(nextTheme);
+    this.applyThemeStateAndSchedulePersist.execute(nextTheme);
   }
 }

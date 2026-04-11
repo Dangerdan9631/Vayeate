@@ -1,8 +1,8 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 import { nextPatchVersion } from '../../../utils/version';
 
-@injectable()
+@singleton()
 export class BumpCatalogVersionForEditOperation {
   execute(catalog: Catalog): Catalog {
     return catalog.locked

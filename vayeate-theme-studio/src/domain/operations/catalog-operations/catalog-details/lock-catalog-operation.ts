@@ -1,7 +1,7 @@
-import { injectable } from 'tsyringe';
+import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schemas';
 
-@injectable()
+@singleton()
 export class LockCatalogOperation {
   execute(catalog: Catalog): Catalog {
     return { ...catalog, locked: true };

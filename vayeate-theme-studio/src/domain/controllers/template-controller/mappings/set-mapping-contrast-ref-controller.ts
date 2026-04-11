@@ -6,7 +6,7 @@ import {
   SaveTemplateOperation,
   SetMappingContrastRefOperation as SetMappingContrastRefOp,
 } from '../../../operations/template-operations';
-import { TemplateSharedFlows } from '../shared-flows';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations';
 
 @singleton()
 export class SetMappingContrastRefController {
@@ -15,7 +15,7 @@ export class SetMappingContrastRefController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly setMappingContrastRefOp: SetMappingContrastRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
-    private readonly templateSharedFlows: TemplateSharedFlows,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
   async run(
@@ -28,6 +28,6 @@ export class SetMappingContrastRefController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingContrastRefOp.execute(base, tokenKey, tokenType, contrastVariableRef);
     await this.saveTemplate.execute(next);
-    await this.templateSharedFlows.refreshRefsAndSelect(next.name, next.version);
+    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

@@ -9,7 +9,7 @@ import {
   SaveCatalogOperation,
   SetCatalogNewTokenKeyOperation,
 } from '../../../operations/catalog-operations';
-import { CatalogSharedFlows } from '../shared-flows';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations';
 
 @singleton()
 export class AddNewTokenController {
@@ -20,7 +20,7 @@ export class AddNewTokenController {
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly addPlainTokenToCatalog: AddPlainTokenToCatalogOperation,
     private readonly mergeSemanticSelectorsIntoCatalog: MergeSemanticSelectorsIntoCatalogOperation,
-    private readonly catalogSharedFlows: CatalogSharedFlows,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
   async run(tokenType: TokenType, key?: string): Promise<void> {
@@ -34,7 +34,7 @@ export class AddNewTokenController {
       const merged = this.mergeSemanticSelectorsIntoCatalog.execute(base, tokenKey);
       if (!merged) return;
       await this.saveCatalog.execute(merged);
-      await this.catalogSharedFlows.refreshRefsAndSelect(merged.name, merged.version);
+      await this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
       this.setCatalogNewTokenKey.execute('');
       return;
     }
@@ -43,7 +43,7 @@ export class AddNewTokenController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.addPlainTokenToCatalog.execute(base, newToken);
     await this.saveCatalog.execute(updated);
-    await this.catalogSharedFlows.refreshRefsAndSelect(updated.name, updated.version);
+    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     this.setCatalogNewTokenKey.execute('');
   }
 }

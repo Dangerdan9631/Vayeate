@@ -1,16 +1,19 @@
 import { singleton } from 'tsyringe';
+import { SaveAppConfigOperation, SetColorSchemeOperation } from '../../operations/app-operations';
 import { AppConfigStateGetter } from '../../state/app-config/app-config-state-reducer';
-import { SetColorSchemeController } from './set-color-scheme-controller';
 
 @singleton()
 export class ToggleColorSchemeController {
   constructor(
     private readonly appConfigStateGetter: AppConfigStateGetter,
-    private readonly setColorScheme: SetColorSchemeController,
+    private readonly setColorScheme: SetColorSchemeOperation,
+    private readonly saveAppConfig: SaveAppConfigOperation,
   ) {}
 
   async run(): Promise<void> {
     const current = this.appConfigStateGetter.current().colorScheme;
-    await this.setColorScheme.run(current === 'light' ? 'dark' : 'light');
+    const next = current === 'light' ? 'dark' : 'light';
+    this.setColorScheme.execute(next);
+    await this.saveAppConfig.execute();
   }
 }
