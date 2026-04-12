@@ -23,11 +23,6 @@ import {
   themesStateReducer,
 } from '../../../domain/state/theme/themes-state-reducer';
 import {
-  AppConfigStateGetter,
-  AppConfigStateSetter,
-  appConfigStateReducer,
-} from '../../../domain/state/app-config/app-config-state-reducer';
-import {
   UndoStackStateGetter,
   UndoStackStateSetter,
   undoStackStateReducer,
@@ -132,16 +127,6 @@ export function AppProvider({ children, initialAppConfig }: { children: ReactNod
     selectSlice: (s: AppState) => s.themes,
     SetterClass: ThemesStateSetter,
     GetterClass: ThemesStateGetter,
-  });
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: appConfigStateReducer,
-    selectSlice: (s: AppState) => s.appConfig,
-    SetterClass: AppConfigStateSetter,
-    GetterClass: AppConfigStateGetter,
   });
 
   useAppSliceBridge({

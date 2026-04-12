@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { AppConfigStateSetter } from '../../state/app-config/app-config-state-reducer';
+import { AppConfigStore } from '../../state/app-config/app-config-store';
 
 @singleton()
 export class SetColorSchemeOperation {
-  constructor(private readonly appConfigStateSetter: AppConfigStateSetter) {}
+  constructor(private readonly appConfigStore: AppConfigStore) {}
 
   execute(scheme: 'light' | 'dark'): void {
-    this.appConfigStateSetter.apply({ type: 'SET_COLOR_SCHEME', scheme });
+    this.appConfigStore.getState().setColorScheme(scheme);
   }
 }

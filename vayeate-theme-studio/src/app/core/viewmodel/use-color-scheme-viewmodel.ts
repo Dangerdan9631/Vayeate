@@ -1,12 +1,9 @@
-import { useContextSelector } from 'use-context-selector';
-import { AppContext } from '../app-context';
+import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
+
+const appConfigStore = container.resolve(AppConfigStore);
 
 export function useColorSchemeViewModel() {
-  return useContextSelector(AppContext, (c) => {
-    const theme = c?.state.appConfig.colorScheme;
-    if (theme === undefined) {
-      throw new Error('ColorSchemeProvider must be used within AppProvider');
-    }
-    return theme;
-  });
+  return useStore(appConfigStore.api, (state) => state.config.colorScheme);
 }

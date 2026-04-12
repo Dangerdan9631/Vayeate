@@ -1,23 +1,20 @@
 import { singleton } from 'tsyringe';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
-import { AppConfigStateSetter } from '../../state/app-config/app-config-state-reducer';
 import { BackgroundQueueGateway } from '../../../gateway/background-queue-gateway';
+import { AppConfigStore } from '../../state/app-config/app-config-store';
 
 @singleton()
 export class LoadAppConfigOperation {
   constructor(
     private readonly configGateway: ConfigGateway,
-    private readonly appConfigStateSetter: AppConfigStateSetter,
     private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly appConfigStore: AppConfigStore,
   ) {}
 
   execute(): void {
     this.backgroundQueueGateway.enqueue(async() => {
       const config = await this.configGateway.load();
-      this.appConfigStateSetter.apply({
-        type: 'SET_APP_CONFIG_STATE',
-        config: { colorScheme: config.colorScheme },
-      });
+      this.appConfigStore.getState().setConfig(config);
     });
   }
 }
