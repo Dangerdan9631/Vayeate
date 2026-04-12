@@ -39,7 +39,7 @@ export function templatesStateReducer(state: AppState, update: TemplatesStateUpd
     case 'SET_TEMPLATE_IS_CREATING':
       return { ...state, templates: { ...state.templates, isCreating: update.value } };
     case 'SET_TEMPLATE_CREATE_DIALOG_OPEN':
-      return { ...state, templates: { ...state.templates, createDialogOpen: update.value } };
+      return { ...state, templates: { ...state.templates, isCreateDialogOpen: update.value } };
     case 'SET_TEMPLATE_CREATE_FORM_NAME':
       return { ...state, templates: { ...state.templates, createFormName: update.value } };
     case 'SET_TEMPLATE_MAPPING_SEARCH_TEXT':

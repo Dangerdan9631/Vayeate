@@ -16,7 +16,7 @@ export interface TemplatesState {
   selectedRef: TemplateReference | null;
   template: Template | null;
   isCreating: boolean;
-  createDialogOpen: boolean;
+  isCreateDialogOpen: boolean;
   createFormName: string;
   mappingSearchText: string;
   mappingColorVariableFilter: ColorVariableKey[];
@@ -32,7 +32,7 @@ export const initialTemplatesState: TemplatesState = {
   selectedRef: null,
   template: null,
   isCreating: false,
-  createDialogOpen: false,
+  isCreateDialogOpen: false,
   createFormName: '',
   mappingSearchText: '',
   mappingColorVariableFilter: [],

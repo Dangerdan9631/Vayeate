@@ -8,7 +8,7 @@ import { TemplatesCard } from './TemplatesCard';
 import { VariablesCard } from './VariablesCard';
 
 export function TemplatesPage() {
-  const { createDialogOpen } = useTemplateViewModel();
+  const { isCreateDialogOpen } = useTemplateViewModel();
 
   return (
     <>
@@ -26,7 +26,7 @@ export function TemplatesPage() {
           <VariablesCard />
         </div>
       </div>
-      {createDialogOpen && <CreateTemplateDialog />}
+      {isCreateDialogOpen && <CreateTemplateDialog />}
     </>
   );
 }

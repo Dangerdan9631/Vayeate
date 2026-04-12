@@ -1,24 +1,34 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { useCreateTemplateDialogViewModel } from '../viewmodel/use-create-template-dialog-viewmodel';
+import { TemplateActionType } from '../actions/template-action-type';
 
 export function CreateTemplateDialog() {
   const {
     name,
     canSubmit,
     showNameError,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
-    handleNameChange,
+    dispatch,
   } = useCreateTemplateDialogViewModel();
 
+  function onDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
   function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    handleNameChange(e.target.value);
+    dispatch({ type: TemplateActionType.TemplateCreateDialogNameTextOnChange, value: e.target.value });
+  }
+
+  function onDialogCancel() {
+    dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
+  }
+
+  function onDialogSubmit() {
+    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick });
   }
 
   return (
-    <div className="dialog-overlay" onClick={handleCancel}>
-      <div className="dialog-content" onClick={handleDialogContentClick}>
+    <div className="dialog-overlay" onClick={onDialogCancel}>
+      <div className="dialog-content" onClick={onDialogContentClick}>
         <h3>Create New Template</h3>
 
         <label className="field-row">
@@ -39,7 +49,7 @@ export function CreateTemplateDialog() {
           <button
             type="button"
             className="btn-secondary"
-            onClick={handleCancel}
+            onClick={onDialogCancel}
           >
             Cancel
           </button>
@@ -47,7 +57,7 @@ export function CreateTemplateDialog() {
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={handleSubmit}
+            onClick={onDialogSubmit}
           >
             OK
           </button>

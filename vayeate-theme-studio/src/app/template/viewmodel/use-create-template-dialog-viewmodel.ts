@@ -1,10 +1,10 @@
-import type { MouseEvent } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
-import { TemplateActionType } from '../actions/template-action-type';
+import { ValidateIsTemplateNameValid } from '../../../domain/validations/template-validations/validate-is-template-name-valid';
+import { container } from 'tsyringe';
 
-const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
+const validateIsTemplateNameValid = container.resolve(ValidateIsTemplateNameValid);
 
 export function useCreateTemplateDialogViewModel() {
   const dispatch = useAppDispatch();
@@ -15,35 +15,14 @@ export function useCreateTemplateDialogViewModel() {
     }
     return slice;
   });
-  const nameValid = name.length > 0 && NAME_REGEX.test(name);
+  const nameValid = validateIsTemplateNameValid.test(name);
   const canSubmit = nameValid;
-
-  function handleSubmit() {
-    if (!canSubmit) return;
-    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick });
-  }
-
-  function handleCancel() {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
-  }
-
-  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-  }
-
-  function handleNameChange(value: string) {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogNameTextOnChange, value });
-  }
-
   const showNameError = name.length > 0 && !nameValid;
 
   return {
     name,
     canSubmit,
     showNameError,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
-    handleNameChange,
+    dispatch,
   };
 }

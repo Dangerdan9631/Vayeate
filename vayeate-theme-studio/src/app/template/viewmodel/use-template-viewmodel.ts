@@ -4,16 +4,16 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { TemplateActionType } from '../actions/template-action-type';
 
-export function useTemplateViewModel(): { createDialogOpen: boolean } {
+export function useTemplateViewModel(): { isCreateDialogOpen: boolean } {
   const dispatch = useAppDispatch();
   const pageLoadDispatchedRef = useRef(false);
 
-  const createDialogOpen = useContextSelector(AppContext, (c) => {
+  const isCreateDialogOpen = useContextSelector(AppContext, (c) => {
     const slice = c?.state.templates;
     if (slice === undefined) {
       throw new Error('Template state requires AppProvider.');
     }
-    return slice.createDialogOpen;
+    return slice.isCreateDialogOpen;
   });
 
   useEffect(() => {
@@ -22,5 +22,5 @@ export function useTemplateViewModel(): { createDialogOpen: boolean } {
     dispatch({ type: TemplateActionType.TemplatePageOnLoad });
   }, [dispatch]);
 
-  return { createDialogOpen };
+  return { isCreateDialogOpen: isCreateDialogOpen };
 }

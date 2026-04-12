@@ -1,0 +1,16 @@
+import { singleton } from 'tsyringe';
+import { SetTemplateCreateDialogOpenOperation } from '../../../operations/template-operations/template-list/set-template-create-dialog-open-operation';
+import { SetTemplateCreateFormNameOperation } from '../../../operations/template-operations/template-list/set-template-create-form-name-operation';
+
+@singleton()
+export class OpenCreateDialogController {
+  constructor(
+    private readonly setTemplateCreateDialogOpen: SetTemplateCreateDialogOpenOperation,
+    private readonly setTemplateCreateFormName: SetTemplateCreateFormNameOperation
+  ) { }
+
+  async run(): Promise<void> {
+    this.setTemplateCreateFormName.execute("");
+    this.setTemplateCreateDialogOpen.execute(true);
+  }
+}

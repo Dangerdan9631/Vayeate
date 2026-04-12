@@ -15,13 +15,13 @@ import { ChangeCatalogVersionController } from '../../../domain/controllers/temp
 import { LockTemplateController } from '../../../domain/controllers/template-controller/template-details/lock-template-controller';
 import { ToggleCatalogController } from '../../../domain/controllers/template-controller/template-details/toggle-catalog-controller';
 import { UpdateAllCatalogsController } from '../../../domain/controllers/template-controller/template-details/update-all-catalogs-controller';
-import { CloseCreateDialogController } from '../../../domain/controllers/template-controller/template-list/close-create-dialog-controller';
+import { CloseCreateDialogController } from '../../../domain/controllers/template-controller/create-dialog/close-create-dialog-controller';
 import { CreateTemplateController } from '../../../domain/controllers/template-controller/template-list/create-template-controller';
 import { DeleteCurrentTemplateVersionController } from '../../../domain/controllers/template-controller/template-list/delete-current-template-version-controller';
 import { LoadTemplatePageController } from '../../../domain/controllers/template-controller/template-list/load-template-page-controller';
-import { OpenCreateDialogController } from '../../../domain/controllers/template-controller/template-list/open-create-dialog-controller';
+import { OpenCreateDialogController } from '../../../domain/controllers/template-controller/create-dialog/open-create-dialog-controller';
 import { SelectTemplateAndLoadController } from '../../../domain/controllers/template-controller/template-list/select-template-and-load-controller';
-import { SetCreateFormNameController } from '../../../domain/controllers/template-controller/template-list/set-create-form-name-controller';
+import { SetCreateFormNameController } from '../../../domain/controllers/template-controller/create-dialog/set-create-form-name-controller';
 import { AddVariableController } from '../../../domain/controllers/template-controller/variables/add-variable-controller';
 import { RemoveVariableController } from '../../../domain/controllers/template-controller/variables/remove-variable-controller';
 import { SetTemplateAddVariableNameController } from '../../../domain/controllers/template-controller/variables/set-template-add-variable-name-controller';
