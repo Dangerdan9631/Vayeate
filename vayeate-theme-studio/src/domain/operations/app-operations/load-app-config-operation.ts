@@ -12,9 +12,10 @@ export class LoadAppConfigOperation {
   ) {}
 
   execute(): void {
-    this.backgroundQueueGateway.enqueue(async() => {
-      const config = await this.configGateway.load();
+    this.backgroundQueueGateway.enqueue(
+      async () => {
+        const config = await this.configGateway.load();
       this.appConfigStore.getState().setConfig(config);
-    });
+    }, 'Loading app config');
   }
 }

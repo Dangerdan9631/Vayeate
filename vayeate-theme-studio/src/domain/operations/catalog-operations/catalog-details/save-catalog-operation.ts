@@ -14,7 +14,7 @@ export class SaveCatalogOperation {
   execute(catalog: Catalog): void {
     this.backgroundQueueGateway.enqueue(async() => {
       await this.catalogGateway.saveCatalog(catalog);
-    });
+    }, `Saving catalog ${catalog.name} ${catalog.version}`);
   }
 }
 

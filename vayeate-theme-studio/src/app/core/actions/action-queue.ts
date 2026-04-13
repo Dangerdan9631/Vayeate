@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import type { AppAction } from './app-action';
-import type { QueueStatusState } from '../../../domain/state/ui/ui-state';
-import { QueueStatusStateSetter } from '../../../domain/state/ui/queue-status-state-reducer';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import { ActionProcessor } from './action-processor';
+import { ActionQueueStore } from '../../../domain/state/ui/action-queue-store';
+import { ActionQueueState } from '../../../domain/state/ui/action-queue-state';
 
 interface QueuedAction {
   action: AppAction;
@@ -18,7 +18,7 @@ export class ActionQueue {
 
   constructor(
     private readonly actionProcessor: ActionProcessor,
-    private readonly queueStatusSetter: QueueStatusStateSetter,
+    private readonly actionQueueStore: ActionQueueStore,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('ActionQueue');
@@ -54,10 +54,12 @@ export class ActionQueue {
   }
 
   private emitStatus(): void {
-    const queueStatus: QueueStatusState = {
+    const description = this.queue.length > 0 ? this.queue[0].action.type : undefined;
+    const actionQueueStatus: ActionQueueState = {
       isProcessing: this.processing,
       queueLength: this.queue.length,
+      description,
     };
-    this.queueStatusSetter.apply(queueStatus);
+    this.actionQueueStore.getState().setState(actionQueueStatus);
   }
 }

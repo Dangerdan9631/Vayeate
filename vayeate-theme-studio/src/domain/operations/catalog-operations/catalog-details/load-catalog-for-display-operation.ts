@@ -15,7 +15,7 @@ export class LoadCatalogForDisplayOperation {
     this.backgroundQueueGateway.enqueue(async() => {
       const loaded = await this.catalogGateway.loadCatalog(name, version);
       this.CatalogsStateSetter.apply({ type: 'SET_LOADED_CATALOG_FOR_DISPLAY', name, version, catalog: loaded });
-    });
+    }, `Loading catalog ${name} ${version}`);
   }
 }
 

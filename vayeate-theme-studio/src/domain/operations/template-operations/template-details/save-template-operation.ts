@@ -14,7 +14,7 @@ export class SaveTemplateOperation {
   execute(template: Template): void {
     this.backgroundQueueGateway.enqueue(async() => {
       await this.templateGateway.saveTemplate(template);
-    });
+    }, `Saving template ${template.name} ${template.version}`);
   }
 }
 

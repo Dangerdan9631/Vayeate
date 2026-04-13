@@ -19,6 +19,6 @@ export class LoadTemplateRefsOperation {
         type: 'SET_TEMPLATE_MAP_ENTRIES',
         entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
       });
-    });
+    }, 'Loading templates');
   }
 }

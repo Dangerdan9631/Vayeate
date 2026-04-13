@@ -14,6 +14,6 @@ export class SaveThemeOperation {
   execute(theme: Theme): void {
     this.backgroundQueueGateway.enqueue(async() => {
       await this.themeGateway.saveTheme(theme);
-    });
+    }, `Saving theme ${theme.name} ${theme.version}`);
   }
 }

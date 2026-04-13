@@ -6,9 +6,9 @@ import { container, singleton } from 'tsyringe';
  */
 @singleton()
 export class BackgroundQueueGateway {
-  enqueue(work: () => void | Promise<void>): Promise<void> {
+  enqueue(work: () => void | Promise<void>, description: string): Promise<void> {
     return import('../app/core/actions/background-queue').then(({ BackgroundQueue }) =>
-      container.resolve(BackgroundQueue).enqueue(work),
+      container.resolve(BackgroundQueue).enqueue(work, description),
     );
   }
 }

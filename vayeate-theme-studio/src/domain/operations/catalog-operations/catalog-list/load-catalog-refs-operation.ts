@@ -19,6 +19,6 @@ export class LoadCatalogRefsOperation {
         type: 'SET_CATALOG_MAP_ENTRIES',
         entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })),
       });
-    });
+    }, 'Loading catalogs');
   }
 }

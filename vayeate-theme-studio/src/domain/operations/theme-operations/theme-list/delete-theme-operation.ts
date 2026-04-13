@@ -13,6 +13,6 @@ export class DeleteThemeOperation {
   execute(name: string, version: string): void {
     this.backgroundQueueGateway.enqueue(async() => {
       await this.themeGateway.deleteTheme(name, version);
-    });
+    }, `Deleting theme ${name} ${version}`);
   }
 }

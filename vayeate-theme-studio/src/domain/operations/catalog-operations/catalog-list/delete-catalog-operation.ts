@@ -13,7 +13,7 @@ export class DeleteCatalogOperation {
   execute(name: string, version: string): void {
     this.backgroundQueueGateway.enqueue(async() => {
       await this.catalogGateway.deleteCatalog(name, version);
-    });
+    }, `Deleting catalog ${name} ${version}`);
   }
 }
 

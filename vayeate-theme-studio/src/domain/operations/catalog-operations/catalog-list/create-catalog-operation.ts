@@ -26,7 +26,7 @@ export class CreateCatalogOperation {
       });
       this.backgroundQueueGateway.enqueue(async() => {
         await this.catalogGateway.saveCatalog(catalog);
-      });
+      }, `Saving catalog ${catalog.name} ${catalog.version}`);
       return { name: catalog.name, version: catalog.version };
     } finally {
       this.catalogsStateSetter.apply({ type: 'SET_IS_CREATING', value: false });

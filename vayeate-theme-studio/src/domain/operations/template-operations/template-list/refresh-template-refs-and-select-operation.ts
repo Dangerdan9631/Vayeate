@@ -27,6 +27,6 @@ export class RefreshTemplateRefsAndSelectOperation {
         this.templatesStateSetter.apply({ type: 'SET_TEMPLATE', template });
         }
       }
-    });
+    }, `Refreshing template ${selectName} ${selectVersion}`);
   }
 }

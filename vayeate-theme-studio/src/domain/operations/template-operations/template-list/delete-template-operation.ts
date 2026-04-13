@@ -13,6 +13,6 @@ export class DeleteTemplateOperation {
     execute(name: string, version: string): void {
     this.backgroundQueueGateway.enqueue(async() => {
       await this.templateGateway.deleteTemplate(name, version);
-    });
+    }, `Deleting template ${name} ${version}`);
   }
 }

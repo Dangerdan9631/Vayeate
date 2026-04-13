@@ -27,6 +27,6 @@ export class RefreshCatalogRefsAndSelectOperation {
           this.catalogsStateSetter.apply({ type: 'SET_CATALOG', catalog });
         }
       }
-    });
+    }, `Refreshing catalog ${selectName} ${selectVersion}`);
   }
 }

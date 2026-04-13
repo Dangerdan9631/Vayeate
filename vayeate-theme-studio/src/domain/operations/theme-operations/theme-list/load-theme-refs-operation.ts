@@ -19,7 +19,7 @@ export class LoadThemeRefsOperation {
         type: 'SET_THEME_MAP_ENTRIES',
         entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),
       });
-    });
+    }, 'Loading themes');
   }
 }
 

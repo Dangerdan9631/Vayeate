@@ -1,9 +1,10 @@
 import { singleton } from 'tsyringe';
-import type { BackgroundQueueStatusState } from '../../../domain/state/ui/ui-state';
-import { BackgroundQueueStatusStateSetter } from '../../../domain/state/ui/background-queue-status-state-reducer';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
+import { BackgroundQueueStore } from '../../../domain/state/ui/background-queue-store';
+import { BackgroundQueueState } from '../../../domain/state/ui/background-queue-state';
 
 interface QueuedWork {
+  description: string;
   run: () => void | Promise<void>;
   resolve: () => void;
 }
@@ -15,15 +16,15 @@ export class BackgroundQueue {
   private readonly log: Logger;
 
   constructor(
-    private readonly backgroundQueueStatusSetter: BackgroundQueueStatusStateSetter,
+    private readonly backgroundQueueStore: BackgroundQueueStore,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('BackgroundQueue');
   }
 
-  enqueue(work: () => void | Promise<void>): Promise<void> {
+  enqueue(work: () => void | Promise<void>, description: string): Promise<void> {
     return new Promise((resolve) => {
-      this.queue.push({ run: work, resolve });
+      this.queue.push({ description, run: work, resolve });
       this.emitStatus();
       this.process();
     });
@@ -51,10 +52,12 @@ export class BackgroundQueue {
   }
 
   private emitStatus(): void {
-    const backgroundQueueStatus: BackgroundQueueStatusState = {
+    const description = this.queue.length > 0 ? this.queue[0].description : undefined;
+    const backgroundQueueStatus: BackgroundQueueState = {
       isProcessing: this.processing,
       queueLength: this.queue.length,
+      description,
     };
-    this.backgroundQueueStatusSetter.apply(backgroundQueueStatus);
+    this.backgroundQueueStore.getState().setState(backgroundQueueStatus);
   }
 }

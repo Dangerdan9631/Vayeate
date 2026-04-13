@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useReducer, useRef, type MutableRefObject, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 import { container } from 'tsyringe';
-import { ActionQueue } from '../actions/action-queue';
 import type { AppAction } from '../actions/app-action';
 import { AppContext, type AppContextValue } from '../app-context';
 import type { AppState } from '../../../domain/state/app-state';
@@ -33,27 +32,17 @@ import {
   uiStateReducer,
 } from '../../../domain/state/ui/ui-state-reducer';
 import {
-  QueueStatusStateGetter,
-  QueueStatusStateSetter,
-  queueStatusStateReducer,
-} from '../../../domain/state/ui/queue-status-state-reducer';
-import {
-  BackgroundQueueStatusStateGetter,
-  BackgroundQueueStatusStateSetter,
-  backgroundQueueStatusStateReducer,
-} from '../../../domain/state/ui/background-queue-status-state-reducer';
-import {
   WindowStateGetter,
   WindowStateSetter,
   windowStateReducer,
 } from '../../../domain/state/window/window-state-reducer';
+import { ActionQueue } from '../actions/action-queue';
 
 interface UseAppSliceBridgeOptions<Update, Slice, Setter, Getter> {
   stateRef: MutableRefObject<AppState>;
   replaceState: (next: AppState) => void;
   getState: () => AppState;
   reducer: (state: AppState, update: Update) => AppState;
-  /** Stable selector. */
   selectSlice: (state: AppState) => Slice;
   SetterClass: new (set: (update: Update) => void) => Setter;
   GetterClass: new (get: () => Slice) => Getter;
@@ -147,31 +136,6 @@ export function AppProvider({ children, initialAppConfig }: { children: ReactNod
     selectSlice: (s: AppState) => s.ui,
     SetterClass: UiStateSetter,
     GetterClass: UiStateGetter,
-  });
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: (appState, queueStatus) =>
-      queueStatusStateReducer(appState, { type: 'SET_QUEUE_STATUS', queueStatus }),
-    selectSlice: (s: AppState) => s.ui.queueStatus,
-    SetterClass: QueueStatusStateSetter,
-    GetterClass: QueueStatusStateGetter,
-  });
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: (appState, backgroundQueueStatus) =>
-      backgroundQueueStatusStateReducer(appState, {
-        type: 'SET_BACKGROUND_QUEUE_STATUS',
-        backgroundQueueStatus,
-      }),
-    selectSlice: (s: AppState) => s.ui.backgroundQueueStatus,
-    SetterClass: BackgroundQueueStatusStateSetter,
-    GetterClass: BackgroundQueueStatusStateGetter,
   });
 
   useAppSliceBridge({

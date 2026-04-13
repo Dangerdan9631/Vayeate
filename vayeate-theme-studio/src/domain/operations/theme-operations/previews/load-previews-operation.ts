@@ -20,6 +20,6 @@ export class LoadPreviewsOperation {
       } catch {
         this.ThemesStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews: [] });
       }
-    });
+    }, 'Loading previews');
   }
 }

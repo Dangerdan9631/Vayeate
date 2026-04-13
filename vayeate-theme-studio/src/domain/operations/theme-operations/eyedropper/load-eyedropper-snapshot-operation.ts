@@ -75,6 +75,6 @@ export class LoadEyedropperSnapshotOperation {
           },
         });
       }
-    });
+    }, 'Loading eyedropper snapshot');
   }
 }

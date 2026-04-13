@@ -43,6 +43,6 @@ export class GenerateThemeOperation {
         const message = err instanceof Error ? err.message : String(err);
         this.themesStateSetter.apply({ type: 'SET_GENERATE_RESULT', result: { success: false, message } });
       }
-    });
+    }, `Generating theme ${themeName} ${themeVersion}`);
   }
 }
