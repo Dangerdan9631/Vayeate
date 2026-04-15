@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { UndoStackStateSetter } from '../../state/undo-stack/undo-stack-state-reducer';
+import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 
 @singleton()
 export class SetCurrentUndoStackIdOperation {
-  constructor(private readonly undoStackStateSetter: UndoStackStateSetter) {}
+  constructor(private readonly undoStackStore: UndoStackStore) {}
 
   execute(stackId: string | null): void {
-    this.undoStackStateSetter.apply({ type: 'SET_CURRENT_UNDO_STACK_ID', stackId });
+    this.undoStackStore.getStore().setCurrentUndoStackId(stackId);
   }
 }

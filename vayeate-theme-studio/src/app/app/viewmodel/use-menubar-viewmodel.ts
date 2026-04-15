@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import type { UndoListEntry } from '../../../domain/core/undo-stack-types';
-import { AppContext } from '../../core/app-context';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppActionType } from '../actions/app-action-type';
 import { UiStore } from '../../../domain/state/ui/ui-store';
@@ -9,9 +7,12 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
 import { WindowStore } from '../../../domain/state/window/window-store';
+import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
 
 const uiStore = container.resolve(UiStore);
 const appConfigStore = container.resolve(AppConfigStore);
+const undoStackStore = container.resolve(UndoStackStore);
+const windowStore = container.resolve(WindowStore); 
 
 export interface MenuBarViewModel {
   fileOpen: boolean;
@@ -50,11 +51,10 @@ export interface MenuBarViewModel {
 
 export function useMenuBarViewModel(): MenuBarViewModel {
   const dispatch = useAppDispatch();
-  const windowStore = container.resolve(WindowStore);
   const isMaximized = useStore(windowStore.api, (state) => state.state.isMaximized);
-  const currentStackId = useContextSelector(AppContext, (c) => c?.state.undoStack.currentUndoStackId);
-  const undoListVersion = useContextSelector(AppContext, (c) => c?.state.undoStack.undoListVersion);
-  const undoMenu = useContextSelector(AppContext, (c) => c?.state.undoStack.undoMenu);
+  const currentStackId = useStore(undoStackStore.api, (state) => state.state.currentUndoStackId);
+  const undoListVersion = useStore(undoStackStore.api, (state) => state.state.undoListVersion);
+  const undoMenu = useStore(undoStackStore.api, (state) => state.state.undoMenu);
   const theme = useStore(appConfigStore.api, (state) => state.config.colorScheme);
   const menuOpen = useStore(uiStore.api, (state) => state.state.menuOpen);
   if (

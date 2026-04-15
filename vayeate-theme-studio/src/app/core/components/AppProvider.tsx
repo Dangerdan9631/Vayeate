@@ -20,11 +20,6 @@ import {
   ThemesStateSetter,
   themesStateReducer,
 } from '../../../domain/state/theme/themes-state-reducer';
-import {
-  UndoStackStateGetter,
-  UndoStackStateSetter,
-  undoStackStateReducer,
-} from '../../../domain/state/undo-stack/undo-stack-state-reducer';
 import { ActionQueue } from '../actions/action-queue';
 
 interface UseAppSliceBridgeOptions<Update, Slice, Setter, Getter> {
@@ -104,16 +99,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     selectSlice: (s: AppState) => s.themes,
     SetterClass: ThemesStateSetter,
     GetterClass: ThemesStateGetter,
-  });
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: undoStackStateReducer,
-    selectSlice: (s: AppState) => s.undoStack,
-    SetterClass: UndoStackStateSetter,
-    GetterClass: UndoStackStateGetter,
   });
 
   const queueRef = useRef<ActionQueue | null>(null);

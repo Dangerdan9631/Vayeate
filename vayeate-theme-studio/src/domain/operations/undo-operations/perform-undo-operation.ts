@@ -1,21 +1,19 @@
 import { singleton } from 'tsyringe';
-import { UndoStackStateSetter } from '../../state/undo-stack/undo-stack-state-reducer';
-import { UndoStackStateGetter } from '../../state/undo-stack/undo-stack-state-reducer';
+import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
 
 @singleton()
 export class PerformUndoOperation {
   constructor(
-    private readonly undoStackStateSetter: UndoStackStateSetter,
-    private readonly undoStackStateGetter: UndoStackStateGetter,
+    private readonly undoStackStore: UndoStackStore,
   ) {}
 
   async execute(): Promise<void> {
-    const snap = this.undoStackStateGetter.current();
+    const snap = this.undoStackStore.getStore().state;
     const stackId = snap.currentUndoStackId;
     if (!stackId) return;
     const stack = await undoManagerV2.getOrCreate(stackId);
     stack.undo();
-    this.undoStackStateSetter.apply({ type: 'SET_UNDO_LIST_VERSION', value: snap.undoListVersion + 1 });
+    this.undoStackStore.getStore().setUndoListVersion(snap.undoListVersion + 1);
   }
 }
