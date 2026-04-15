@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
-import { BackgroundQueueStore } from '../../../domain/state/ui/background-queue-store';
-import { BackgroundQueueState } from '../../../domain/state/ui/background-queue-state';
+import { BackgroundQueueUiStore } from '../../../domain/state/ui/background-queue-ui-store';
+import { BackgroundQueueUiState } from '../../../domain/state/ui/background-queue-ui-state';
 
 interface QueuedWork {
   description: string;
@@ -16,7 +16,7 @@ export class BackgroundQueue {
   private readonly log: Logger;
 
   constructor(
-    private readonly backgroundQueueStore: BackgroundQueueStore,
+    private readonly backgroundQueueStore: BackgroundQueueUiStore,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('BackgroundQueue');
@@ -53,7 +53,7 @@ export class BackgroundQueue {
 
   private emitStatus(): void {
     const description = this.queue.length > 0 ? this.queue[0].description : undefined;
-    const backgroundQueueStatus: BackgroundQueueState = {
+    const backgroundQueueStatus: BackgroundQueueUiState = {
       isProcessing: this.processing,
       queueLength: this.queue.length,
       description,

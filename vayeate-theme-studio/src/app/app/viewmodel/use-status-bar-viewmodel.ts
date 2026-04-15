@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
-import { BackgroundQueueStore } from '../../../domain/state/ui/background-queue-store';
+import { BackgroundQueueUiStore } from '../../../domain/state/ui/background-queue-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { ActionQueueStore } from '../../../domain/state/ui/action-queue-store';
+import { ActionQueueUiStore } from '../../../domain/state/ui/action-queue-ui-store';
 
-const actionQueueStore = container.resolve(ActionQueueStore);
-const backgroundQueueStore = container.resolve(BackgroundQueueStore);
+const actionQueueStore = container.resolve(ActionQueueUiStore);
+const backgroundQueueStore = container.resolve(BackgroundQueueUiStore);
 
 export interface StatusBarViewModel {
   showStatusCluster: boolean;
