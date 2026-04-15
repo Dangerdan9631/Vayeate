@@ -6,14 +6,12 @@ import type { ThemesState } from './theme/themes-state';
 import { initialThemesState } from './theme/themes-state';
 import type { UndoStackState } from './undo-stack/undo-stack-state';
 import { initialUndoStackState } from './undo-stack/undo-stack-state';
-import { initialWindowState, type WindowState } from './window/window-state';
 
 export interface AppState {
   catalogs: CatalogsState;
   templates: TemplatesState;
   themes: ThemesState;
   undoStack: UndoStackState;
-  window: WindowState;
 }
 
 export const initialAppState: AppState = {
@@ -21,5 +19,4 @@ export const initialAppState: AppState = {
   templates: initialTemplatesState,
   themes: initialThemesState,
   undoStack: initialUndoStackState,
-  window: initialWindowState,
 };

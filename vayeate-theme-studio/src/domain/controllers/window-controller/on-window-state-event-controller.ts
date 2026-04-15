@@ -1,24 +1,24 @@
 import { singleton } from 'tsyringe';
 import type { WindowStateEvent } from '../../../gateway/services/window-service-types';
-import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations/apply-window-state-update-operation';
+import { WindowStore } from '../../state/window/window-store';
 
 @singleton()
 export class OnWindowStateEventController {
-  constructor(private readonly applyWindowStateUpdate: ApplyWindowStateUpdateOperation) {}
+  constructor(private readonly windowStore: WindowStore) {}
 
   async run(event: WindowStateEvent): Promise<void> {
     switch (event) {
       case 'minimized':
-        this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_MINIMIZED', value: true });
+        this.windowStore.getStore().setWindowMinimized(true);
         break;
       case 'maximized':
-        this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_MAXIMIZED', value: true });
+        this.windowStore.getStore().setWindowMaximized(true);
         break;
       case 'unmaximized':
-        this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_MAXIMIZED', value: false });
+        this.windowStore.getStore().setWindowMaximized(false);
         break;
       case 'restored':
-        this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_MINIMIZED', value: false });
+        this.windowStore.getStore().setWindowMinimized(false);
         break;
     }
   }

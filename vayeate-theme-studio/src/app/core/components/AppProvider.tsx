@@ -25,11 +25,6 @@ import {
   UndoStackStateSetter,
   undoStackStateReducer,
 } from '../../../domain/state/undo-stack/undo-stack-state-reducer';
-import {
-  WindowStateGetter,
-  WindowStateSetter,
-  windowStateReducer,
-} from '../../../domain/state/window/window-state-reducer';
 import { ActionQueue } from '../actions/action-queue';
 
 interface UseAppSliceBridgeOptions<Update, Slice, Setter, Getter> {
@@ -119,16 +114,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     selectSlice: (s: AppState) => s.undoStack,
     SetterClass: UndoStackStateSetter,
     GetterClass: UndoStackStateGetter,
-  });
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: windowStateReducer,
-    selectSlice: (s: AppState) => s.window,
-    SetterClass: WindowStateSetter,
-    GetterClass: WindowStateGetter,
   });
 
   const queueRef = useRef<ActionQueue | null>(null);

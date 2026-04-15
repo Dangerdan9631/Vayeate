@@ -8,6 +8,7 @@ import { UiStore } from '../../../domain/state/ui/ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
+import { WindowStore } from '../../../domain/state/window/window-store';
 
 const uiStore = container.resolve(UiStore);
 const appConfigStore = container.resolve(AppConfigStore);
@@ -21,6 +22,7 @@ export interface MenuBarViewModel {
   canRedo: boolean;
   frames: UndoListEntry[];
   currentId: string | null;
+  isMaximized: boolean;
   fileRef: RefObject<HTMLDivElement>;
   editRef: RefObject<HTMLDivElement>;
   historyRef: RefObject<HTMLDivElement>;
@@ -31,6 +33,7 @@ export interface MenuBarViewModel {
   handleThemeToggle: () => void;
   handleMinimize: () => void;
   handleMaximize: () => void;
+  handleRestore: () => void;
   handleClose: () => void;
   handleFileMenuTrigger: () => void;
   handleEditMenuTrigger: () => void;
@@ -47,6 +50,8 @@ export interface MenuBarViewModel {
 
 export function useMenuBarViewModel(): MenuBarViewModel {
   const dispatch = useAppDispatch();
+  const windowStore = container.resolve(WindowStore);
+  const isMaximized = useStore(windowStore.api, (state) => state.state.isMaximized);
   const currentStackId = useContextSelector(AppContext, (c) => c?.state.undoStack.currentUndoStackId);
   const undoListVersion = useContextSelector(AppContext, (c) => c?.state.undoStack.undoListVersion);
   const undoMenu = useContextSelector(AppContext, (c) => c?.state.undoStack.undoMenu);
@@ -157,6 +162,10 @@ export function useMenuBarViewModel(): MenuBarViewModel {
     dispatch({ type: AppActionType.AppBarMaximizeButtonOnClick });
   }, [dispatch]);
 
+  const handleRestore = useCallback(() => {
+    dispatch({ type: AppActionType.AppBarRestoreButtonOnClick });
+  }, [dispatch]);
+
   const handleClose = useCallback(() => {
     dispatch({ type: AppActionType.AppBarCloseButtonOnClick });
   }, [dispatch]);
@@ -185,6 +194,7 @@ export function useMenuBarViewModel(): MenuBarViewModel {
     canRedo,
     frames,
     currentId,
+    isMaximized,
     fileRef,
     editRef,
     historyRef,
@@ -195,6 +205,7 @@ export function useMenuBarViewModel(): MenuBarViewModel {
     handleThemeToggle,
     handleMinimize,
     handleMaximize,
+    handleRestore,
     handleClose,
     handleFileMenuTrigger,
     handleEditMenuTrigger,

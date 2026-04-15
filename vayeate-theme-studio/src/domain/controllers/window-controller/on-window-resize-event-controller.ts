@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations/apply-window-state-update-operation';
+import { WindowStore } from '../../state/window/window-store';
 
 @singleton()
 export class OnWindowResizeEventController {
-  constructor(private readonly applyWindowStateUpdate: ApplyWindowStateUpdateOperation) {}
+  constructor(private readonly windowStore: WindowStore) {}
 
   async run(size: { width: number; height: number }): Promise<void> {
-    this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_SIZE', size });
+    this.windowStore.getStore().setWindowSize(size);
   }
 }
 

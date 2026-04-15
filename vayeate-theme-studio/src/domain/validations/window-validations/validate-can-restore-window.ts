@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { WindowStateGetter } from '../../state/window/window-state-reducer';
+import { WindowStore } from '../../state/window/window-store';
 
 @singleton()
 export class ValidateCanRestoreWindow {
-  constructor(private readonly windowStateGetter: WindowStateGetter) {}
+  constructor(private readonly windowStore: WindowStore) {}
 
   test(): boolean {
-    const { isMaximized, isMinimized } = this.windowStateGetter.current();
+    const { isMaximized, isMinimized } = this.windowStore.getStore().state;
     return isMaximized || isMinimized;
   }
 }

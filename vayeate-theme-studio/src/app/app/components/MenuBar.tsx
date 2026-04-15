@@ -10,6 +10,7 @@ export function MenuBar() {
     canRedo,
     frames,
     currentId,
+    isMaximized,
     fileRef,
     editRef,
     historyRef,
@@ -20,6 +21,7 @@ export function MenuBar() {
     handleThemeToggle,
     handleMinimize,
     handleMaximize,
+    handleRestore,
     handleClose,
     handleFileMenuTrigger,
     handleEditMenuTrigger,
@@ -62,14 +64,26 @@ export function MenuBar() {
           >
             <span className="material-symbols-outlined" aria-hidden>minimize</span>
           </button>
+          {!isMaximized && (
           <button
             type="button"
             className="window-control window-control-maximize"
             onClick={handleMaximize}
             aria-label="Maximize"
           >
-            <span className="material-symbols-outlined" aria-hidden>crop_square</span>
+            <span className="material-symbols-outlined" aria-hidden>fit_screen</span>
           </button>
+          )}
+          {isMaximized && (
+            <button
+              type="button"
+              className="window-control window-control-restore"
+              onClick={handleRestore}
+              aria-label="Restore"
+            >
+              <span className="material-symbols-outlined" aria-hidden>fullscreen_exit</span>
+            </button>
+          )}
           <button
             type="button"
             className="window-control window-control-close"

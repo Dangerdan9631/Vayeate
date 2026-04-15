@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ApplyWindowStateUpdateOperation } from '../../operations/window-operations/apply-window-state-update-operation';
+import { WindowStore } from '../../state/window/window-store';
 
 @singleton()
 export class OnWindowMoveEventController {
-  constructor(private readonly applyWindowStateUpdate: ApplyWindowStateUpdateOperation) {}
+  constructor(private readonly windowStore: WindowStore) {}
 
   async run(position: { x: number; y: number }): Promise<void> {
-    this.applyWindowStateUpdate.execute({ type: 'SET_WINDOW_POSITION', position });
+    this.windowStore.getStore().setWindowPosition(position);
   }
 }
 

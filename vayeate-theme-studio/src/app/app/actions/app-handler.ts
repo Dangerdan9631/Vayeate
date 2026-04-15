@@ -18,6 +18,7 @@ import {
   MaximizeWindowController,
   MinimizeWindowController,
   ReloadWindowController,
+  RestoreWindowController,
   ToggleDevToolsController,
 } from '../../../domain/controllers/window-controller';
 import { CloseEyedropperOverlayController } from '../../../domain/controllers/theme-controller/eyedropper/close-eyedropper-overlay-controller';
@@ -41,6 +42,7 @@ export class AppActionHandler {
     private readonly minimizeWindow: MinimizeWindowController,
     private readonly maximizeWindow: MaximizeWindowController,
     private readonly dragWindow: DragWindowController,
+    private readonly restoreWindow: RestoreWindowController,
     private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
     private readonly commitEyedropperOverlayPick: CommitEyedropperOverlayPickController,
     private readonly syncUndoMenuState: SyncUndoMenuStateController,
@@ -98,6 +100,9 @@ export class AppActionHandler {
         break;
       case AppActionType.AppBarMaximizeButtonOnClick:
         await this.maximizeWindow.run();
+        break;
+      case AppActionType.AppBarRestoreButtonOnClick:
+        await this.restoreWindow.run();
         break;
       case AppActionType.AppBarCloseButtonOnClick:
         await this.closeWindow.run();

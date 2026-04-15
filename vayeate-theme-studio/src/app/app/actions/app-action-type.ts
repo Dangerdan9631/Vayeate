@@ -19,6 +19,7 @@ export enum AppActionType {
   AppBarThemeCheckboxOnToggle = 'APP_BAR_THEME_CHECKBOX_ON_TOGGLE',
   AppBarMinimizeButtonOnClick = 'APP_BAR_MINIMIZE_BUTTON_ON_CLICK',
   AppBarMaximizeButtonOnClick = 'APP_BAR_MAXIMIZE_BUTTON_ON_CLICK',
+  AppBarRestoreButtonOnClick = 'APP_BAR_RESTORE_BUTTON_ON_CLICK',
   AppBarCloseButtonOnClick = 'APP_BAR_CLOSE_BUTTON_ON_CLICK',
   AppBarTitleBarOnDrag = 'APP_BAR_TITLE_BAR_ON_DRAG',
   AppEyedropperOverlayCancelButtonOnClick = 'APP_EYEDROPPER_OVERLAY_CANCEL_BUTTON_ON_CLICK',
@@ -43,6 +44,7 @@ export type AppActions =
   | { type: AppActionType.AppBarThemeCheckboxOnToggle }
   | { type: AppActionType.AppBarMinimizeButtonOnClick }
   | { type: AppActionType.AppBarMaximizeButtonOnClick }
+  | { type: AppActionType.AppBarRestoreButtonOnClick }
   | { type: AppActionType.AppBarCloseButtonOnClick }
   | { type: AppActionType.AppBarTitleBarOnDrag }
   | { type: AppActionType.AppEyedropperOverlayCancelButtonOnClick }
