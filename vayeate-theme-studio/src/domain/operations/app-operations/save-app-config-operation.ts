@@ -13,7 +13,7 @@ export class SaveAppConfigOperation {
   ) {}
 
   execute(): void {
-    const appConfigState = this.appConfigStore.getState().config;
+    const appConfigState = this.appConfigStore.getStore().config;
     this.backgroundQueueGateway.enqueue(async () => {
         this.configGateway.save(
           appConfigSchema.parse(appConfigState),

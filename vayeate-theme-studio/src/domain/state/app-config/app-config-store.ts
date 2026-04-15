@@ -15,11 +15,11 @@ export class AppConfigStore {
     private store = createStore<AppConfigStoreState>()(
         immer((set): AppConfigStoreState => ({
             config: initialAppConfigState,
-            setConfig: (appConfig: AppConfigState) => set((state: AppConfigStoreState) => {
-                state.config = appConfig;
+            setConfig: (appConfig: AppConfigState) => set((storeState: AppConfigStoreState) => {
+                storeState.config = appConfig;
             }),
-            setColorScheme: (colorScheme: ColorScheme) => set((state: AppConfigStoreState) => {
-                state.config.colorScheme = colorScheme;
+            setColorScheme: (colorScheme: ColorScheme) => set((storeState: AppConfigStoreState) => {
+                storeState.config.colorScheme = colorScheme;
             })
         }))
     );
@@ -28,7 +28,7 @@ export class AppConfigStore {
         return this.store;
     }
 
-    getState(): AppConfigStoreState {
+    getStore(): AppConfigStoreState {
         return this.store.getState();
     }
 }

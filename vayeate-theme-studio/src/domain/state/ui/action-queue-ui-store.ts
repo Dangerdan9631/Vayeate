@@ -13,8 +13,8 @@ export class ActionQueueUiStore {
     private store = createStore<ActionQueueUiStoreState>()(
         immer((set): ActionQueueUiStoreState => ({
             state: initialActionQueueUiState,
-            setState: (actionQueueUiState: ActionQueueUiState) => set((state: ActionQueueUiStoreState) => {
-                state.state = actionQueueUiState;
+            setState: (actionQueueUiState: ActionQueueUiState) => set((storeState: ActionQueueUiStoreState) => {
+                storeState.state = actionQueueUiState;
             }),
         }))
     );
@@ -23,7 +23,7 @@ export class ActionQueueUiStore {
         return this.store;
     }
 
-    getState(): ActionQueueUiStoreState {
+    getStore(): ActionQueueUiStoreState {
         return this.store.getState();
     }
 }

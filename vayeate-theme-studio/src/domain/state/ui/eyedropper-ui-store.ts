@@ -13,8 +13,8 @@ export class EyedropperUiStore {
     private store = createStore<EyedropperUiStoreState>()(
         immer((set): EyedropperUiStoreState => ({
             state: initialEyedropperUiState,
-            setState: (eyedropperUiState: EyedropperUiState) => set((state: EyedropperUiStoreState) => {
-                state.state = eyedropperUiState;
+            setState: (eyedropperUiState: EyedropperUiState) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state = eyedropperUiState;
             }),
         }))
     );
@@ -23,7 +23,7 @@ export class EyedropperUiStore {
         return this.store;
     }
 
-    getState(): EyedropperUiStoreState {
+    getStore(): EyedropperUiStoreState {
         return this.store.getState();
     }
 }

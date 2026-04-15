@@ -58,6 +58,6 @@ export class BackgroundQueue {
       queueLength: this.queue.length,
       description,
     };
-    this.backgroundQueueStore.getState().setState(backgroundQueueStatus);
+    this.backgroundQueueStore.getStore().setState(backgroundQueueStatus);
   }
 }

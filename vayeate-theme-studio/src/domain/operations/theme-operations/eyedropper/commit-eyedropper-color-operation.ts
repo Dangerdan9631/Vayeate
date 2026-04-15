@@ -22,13 +22,13 @@ export class CommitEyedropperColorOperation {
   ) {}
 
   execute(): void {
-    const { contextKey, result: hex } = this.eyedropperUiStore.getState().state;
+    const { contextKey, result: hex } = this.eyedropperUiStore.getStore().state;
     if (hex === null) {
-      this.eyedropperUiStore.getState().setState(initialEyedropperUiState);
+      this.eyedropperUiStore.getStore().setState(initialEyedropperUiState);
       return;
     }
     if (!contextKey) {
-      this.eyedropperUiStore.getState().setState(initialEyedropperUiState);
+      this.eyedropperUiStore.getStore().setState(initialEyedropperUiState);
       return;
     }
     try {
@@ -52,7 +52,7 @@ export class CommitEyedropperColorOperation {
         return;
       }
     } finally {
-      this.eyedropperUiStore.getState().setState(initialEyedropperUiState);
+      this.eyedropperUiStore.getStore().setState(initialEyedropperUiState);
     }
   }
 

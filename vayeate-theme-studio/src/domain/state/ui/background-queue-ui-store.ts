@@ -13,8 +13,8 @@ interface BackgroundQueueUiStoreState {
     private store = createStore<BackgroundQueueUiStoreState>()(
         immer((set): BackgroundQueueUiStoreState => ({
             state: initialBackgroundQueueUiState,
-            setState: (backgroundQueueState: BackgroundQueueUiState) => set((state: BackgroundQueueUiStoreState) => {
-                state.state = backgroundQueueState;
+            setState: (backgroundQueueState: BackgroundQueueUiState) => set((storeState: BackgroundQueueUiStoreState) => {
+                storeState.state = backgroundQueueState;
             }),
         }))
     );
@@ -23,7 +23,7 @@ interface BackgroundQueueUiStoreState {
         return this.store;
     }
 
-    getState(): BackgroundQueueUiStoreState {
+    getStore(): BackgroundQueueUiStoreState {
         return this.store.getState();
     }
 }

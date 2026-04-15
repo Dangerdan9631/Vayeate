@@ -16,7 +16,7 @@ export class CommitEyedropperOverlayPickController {
   ) {}
 
   async run(hex: HexColor): Promise<void> {
-    const followUp = this.eyedropperUiStore.getState().state.pendingPostCommit;
+    const followUp = this.eyedropperUiStore.getStore().state.pendingPostCommit;
     this.setEyedropperPickResult.execute(hex);
     this.commitEyedropperColor.execute();
     if (followUp !== null) {

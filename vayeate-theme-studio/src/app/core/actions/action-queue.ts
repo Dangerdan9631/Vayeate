@@ -60,6 +60,6 @@ export class ActionQueue {
       queueLength: this.queue.length,
       description,
     };
-    this.actionQueueStore.getState().setState(actionQueueStatus);
+    this.actionQueueStore.getStore().setState(actionQueueStatus);
   }
 }

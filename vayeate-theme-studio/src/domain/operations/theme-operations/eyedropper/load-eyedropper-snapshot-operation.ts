@@ -45,8 +45,8 @@ export class LoadEyedropperSnapshotOperation {
       try {
         const raw = await this.screenshotService.getFullDisplaySnapshot();
         const snapshot = mapToPayload(raw);
-        const pendingPostCommit = this.eyedropperUiStore.getState().state.pendingPostCommit;
-        this.eyedropperUiStore.getState().setState({
+        const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
+        this.eyedropperUiStore.getStore().setState({
             phase: 'ready',
             contextKey,
             snapshot,
@@ -56,8 +56,8 @@ export class LoadEyedropperSnapshotOperation {
         });
       } catch (e) {
         const message = e instanceof Error ? e.message : String(e);
-        const pendingPostCommit = this.eyedropperUiStore.getState().state.pendingPostCommit;
-        this.eyedropperUiStore.getState().setState({
+        const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
+        this.eyedropperUiStore.getStore().setState({
             phase: 'error',
             contextKey,
             snapshot: null,

@@ -10,7 +10,7 @@ export class SetEyedropperPickResultOperation {
   ) {}
 
   execute(hex: HexColor): void {
-    const ed = this.eyedropperUiStore.getState().state;
-    this.eyedropperUiStore.getState().setState({ ...ed, result: hex, pendingPostCommit: null });
+    const ed = this.eyedropperUiStore.getStore().state;
+    this.eyedropperUiStore.getStore().setState({ ...ed, result: hex, pendingPostCommit: null });
   }
 }

@@ -8,6 +8,6 @@ export class SetEyedropperUiStateOperation {
   constructor(private readonly eyedropperUiStore: EyedropperUiStore) {}
 
   execute(eyedropper: EyedropperUiState): void {
-    this.eyedropperUiStore.getState().setState(eyedropper);
+    this.eyedropperUiStore.getStore().setState(eyedropper);
   }
 }

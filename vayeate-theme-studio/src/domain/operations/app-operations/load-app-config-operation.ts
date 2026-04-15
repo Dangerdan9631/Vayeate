@@ -15,7 +15,7 @@ export class LoadAppConfigOperation {
     this.backgroundQueueGateway.enqueue(
       async () => {
         const config = await this.configGateway.load();
-      this.appConfigStore.getState().setConfig(config);
+      this.appConfigStore.getStore().setConfig(config);
     }, 'Loading app config');
   }
 }
