@@ -4,6 +4,13 @@ import type { UndoListEntry } from '../../../domain/core/undo-stack-types';
 import { AppContext } from '../../core/app-context';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppActionType } from '../actions/app-action-type';
+import { UiStore } from '../../../domain/state/ui/ui-store';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
+import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
+
+const uiStore = container.resolve(UiStore);
+const appConfigStore = container.resolve(AppConfigStore);
 
 export interface MenuBarViewModel {
   fileOpen: boolean;
@@ -43,8 +50,8 @@ export function useMenuBarViewModel(): MenuBarViewModel {
   const currentStackId = useContextSelector(AppContext, (c) => c?.state.undoStack.currentUndoStackId);
   const undoListVersion = useContextSelector(AppContext, (c) => c?.state.undoStack.undoListVersion);
   const undoMenu = useContextSelector(AppContext, (c) => c?.state.undoStack.undoMenu);
-  const theme = useContextSelector(AppContext, (c) => c?.state.appConfig.colorScheme);
-  const menuOpen = useContextSelector(AppContext, (c) => c?.state.ui.menuOpen);
+  const theme = useStore(appConfigStore.api, (state) => state.config.colorScheme);
+  const menuOpen = useStore(uiStore.api, (state) => state.state.menuOpen);
   if (
     currentStackId === undefined ||
     undoListVersion === undefined ||

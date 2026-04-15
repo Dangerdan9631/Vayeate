@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { initialAppState } from '../../domain/state/app-state';
 import { parseInitialAppConfig } from '../../model/parse-initial-app-config';
-import type { AppConfig } from '../../model/schemas';
+import { AppConfigStore } from '../../domain/state/app-config/app-config-store';
 
 @singleton()
 export class AppConfigBootstrapService {
-  getInitialAppConfig(): AppConfig {
+  constructor(private readonly appConfigStore: AppConfigStore) {}
+  getInitialAppConfig(): void {
     const snapshot = window.electronAPI?.getInitialAppConfig?.();
     const parsed = parseInitialAppConfig(snapshot);
-    return { ...initialAppState.appConfig, ...parsed };
+    this.appConfigStore.getStore().setConfig({ ...this.appConfigStore.getStore().config, ...parsed });
   }
 }

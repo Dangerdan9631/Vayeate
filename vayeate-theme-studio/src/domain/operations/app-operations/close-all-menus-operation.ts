@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { UiStateSetter } from '../../state/ui/ui-state-reducer';
+import { UiStore } from '../../state/ui/ui-store';
 
 @singleton()
 export class CloseAllMenusOperation {
-  constructor(private readonly uiStateSetter: UiStateSetter) {}
+  constructor(private readonly uiStore: UiStore) {}
 
   execute(): void {
-    this.uiStateSetter.apply({ type: 'SET_UI_ALL_MENUS_CLOSED' });
+    this.uiStore.getStore().setAllMenusClosed();
   }
 }

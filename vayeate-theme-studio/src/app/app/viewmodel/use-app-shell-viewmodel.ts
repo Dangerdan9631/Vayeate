@@ -1,16 +1,18 @@
-import { useContextSelector } from 'use-context-selector';
 import { useEffect, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { LoadAppController, UnloadAppController } from '../../../domain/controllers/app-controller';
 import type { TabId } from '../../../model/tab-id';
-import { AppContext } from '../../core/app-context';
+import { UiStore } from '../../../domain/state/ui/ui-store';
+import { useStore } from 'zustand';
+
+const uiStore = container.resolve(UiStore);
 
 export interface AppShellViewModel {
   activeTab: TabId;
 }
 
 export function useAppShellViewModel(): AppShellViewModel {
-  const activeTab = useContextSelector(AppContext, (c) => c?.state.ui.activeTabId);
+  const activeTab = useStore(uiStore.api, (state) => state.state.activeTabId);
 
   useEffect(() => {
     void container.resolve(LoadAppController).run();

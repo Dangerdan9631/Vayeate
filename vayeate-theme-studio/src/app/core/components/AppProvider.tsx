@@ -5,7 +5,6 @@ import type { AppAction } from '../actions/app-action';
 import { AppContext, type AppContextValue } from '../app-context';
 import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
-import type { AppConfigState } from '../../../domain/state/app-config/app-config-state';
 import {
   CatalogsStateGetter,
   CatalogsStateSetter,
@@ -26,11 +25,6 @@ import {
   UndoStackStateSetter,
   undoStackStateReducer,
 } from '../../../domain/state/undo-stack/undo-stack-state-reducer';
-import {
-  UiStateGetter,
-  UiStateSetter,
-  uiStateReducer,
-} from '../../../domain/state/ui/ui-state-reducer';
 import {
   WindowStateGetter,
   WindowStateSetter,
@@ -78,11 +72,10 @@ function useAppSliceBridge<Update, Slice, Setter, Getter>(
   container.registerInstance(GetterClass, getter);
 }
 
-export function AppProvider({ children, initialAppConfig }: { children: ReactNode; initialAppConfig: AppConfigState }) {
+export function AppProvider({ children }: { children: ReactNode }) {
   const [state, replaceState] = useReducer(
     (_state: AppState, nextState: AppState): AppState => nextState,
     initialAppState,
-    (base): AppState => ({ ...base, appConfig: initialAppConfig }),
   );
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -126,16 +119,6 @@ export function AppProvider({ children, initialAppConfig }: { children: ReactNod
     selectSlice: (s: AppState) => s.undoStack,
     SetterClass: UndoStackStateSetter,
     GetterClass: UndoStackStateGetter,
-  });
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: uiStateReducer,
-    selectSlice: (s: AppState) => s.ui,
-    SetterClass: UiStateSetter,
-    GetterClass: UiStateGetter,
   });
 
   useAppSliceBridge({

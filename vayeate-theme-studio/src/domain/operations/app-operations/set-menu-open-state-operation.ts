@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { UiStateSetter } from '../../state/ui/ui-state-reducer';
+import { UiStore } from '../../state/ui/ui-store';
 
 export type MenuId = 'file' | 'edit' | 'history' | 'view';
 
 @singleton()
 export class SetMenuOpenStateOperation {
-  constructor(private readonly uiStateSetter: UiStateSetter) {}
+  constructor(private readonly uiStore: UiStore) {}
 
   execute(menuId: MenuId, isOpen: boolean): void {
-    this.uiStateSetter.apply({ type: 'SET_UI_MENU_OPEN_STATE', menuId, isOpen });
+    this.uiStore.getStore().setMenuOpenState(menuId, isOpen);
   }
 }
