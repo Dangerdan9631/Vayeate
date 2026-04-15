@@ -1,5 +1,4 @@
 import type { TabId } from '../../../model/tab-id';
-import { closedEyedropperUiState, type EyedropperUiState } from './eyedropper-ui-state';
 
 export type { TabId } from '../../../model/tab-id';
 
@@ -13,7 +12,6 @@ export interface MenuOpenState {
 export interface UiState {
   activeTabId: TabId;
   menuOpen: MenuOpenState;
-  eyedropper: EyedropperUiState;
 }
 
 export const initialUiState: UiState = {
@@ -23,6 +21,5 @@ export const initialUiState: UiState = {
     editOpen: false,
     historyOpen: false,
     viewOpen: false,
-  },
-  eyedropper: closedEyedropperUiState,
+  }
 };

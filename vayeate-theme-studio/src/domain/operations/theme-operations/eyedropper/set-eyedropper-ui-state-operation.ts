@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { EyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
-import { UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
 
 /** Replace the full `ui.eyedropper` slice. */
 @singleton()
 export class SetEyedropperUiStateOperation {
-  constructor(private readonly uiStateSetter: UiStateSetter) {}
+  constructor(private readonly eyedropperUiStore: EyedropperUiStore) {}
 
   execute(eyedropper: EyedropperUiState): void {
-    this.uiStateSetter.apply({ type: 'SET_UI_EYEDROPPER', eyedropper });
+    this.eyedropperUiStore.getState().setState(eyedropper);
   }
 }

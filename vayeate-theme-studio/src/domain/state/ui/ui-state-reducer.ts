@@ -1,5 +1,4 @@
 import type { AppState } from '../app-state';
-import type { EyedropperUiState } from './eyedropper-ui-state';
 import type { TabId, UiState } from './ui-state';
 
 export type UiStateUpdate =
@@ -9,8 +8,7 @@ export type UiStateUpdate =
       type: 'SET_UI_MENU_OPEN_STATE';
       menuId: 'file' | 'edit' | 'history' | 'view';
       isOpen: boolean;
-    }
-  | { type: 'SET_UI_EYEDROPPER'; eyedropper: EyedropperUiState };
+    };
 
 export function uiStateReducer(state: AppState, update: UiStateUpdate): AppState {
   switch (update.type) {
@@ -45,8 +43,6 @@ export function uiStateReducer(state: AppState, update: UiStateUpdate): AppState
         },
       };
     }
-    case 'SET_UI_EYEDROPPER':
-      return { ...state, ui: { ...state.ui, eyedropper: update.eyedropper } };
     default:
       return state;
   }

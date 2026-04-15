@@ -15,10 +15,6 @@ export interface EyedropperSnapshotPayload {
   displays: EyedropperDisplayEntryPayload[];
 }
 
-/**
- * JSON-shaped stash for a follow-up queue event after pick+commit (matches `AppAction` at runtime;
- * kept structural here so domain state does not depend on app action types).
- */
 export type EyedropperPendingPostCommit = Record<string, unknown> & { type: string };
 
 export interface EyedropperUiState {
@@ -30,7 +26,7 @@ export interface EyedropperUiState {
   pendingPostCommit: EyedropperPendingPostCommit | null;
 }
 
-export const closedEyedropperUiState: EyedropperUiState = {
+export const initialEyedropperUiState: EyedropperUiState = {
   phase: 'closed',
   contextKey: null,
   snapshot: null,

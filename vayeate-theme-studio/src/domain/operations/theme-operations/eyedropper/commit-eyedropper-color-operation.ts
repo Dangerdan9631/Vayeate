@@ -2,11 +2,11 @@ import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
 import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
-import { closedEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
-import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { initialEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
 import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
+import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
 const PREFIX_ASSIGN = 'eyedropper:assign:';
 const PREFIX_DARK = 'eyedropper:dark:';
 const PREFIX_LIGHT = 'eyedropper:light:';
@@ -15,21 +15,20 @@ const PREFIX_LIGHT = 'eyedropper:light:';
 @singleton()
 export class CommitEyedropperColorOperation {
   constructor(
-    private readonly uiStateGetter: UiStateGetter,
-    private readonly uiStateSetter: UiStateSetter,
+    private readonly eyedropperUiStore: EyedropperUiStore,
     private readonly themesStateGetter: ThemesStateGetter,
     private readonly themesStateSetter: ThemesStateSetter,
     private readonly debouncedThemePersist: DebouncedThemePersistService,
   ) {}
 
   execute(): void {
-    const { contextKey, result: hex } = this.uiStateGetter.current().eyedropper;
+    const { contextKey, result: hex } = this.eyedropperUiStore.getState().state;
     if (hex === null) {
-      this.uiStateSetter.apply({ type: 'SET_UI_EYEDROPPER', eyedropper: closedEyedropperUiState });
+      this.eyedropperUiStore.getState().setState(initialEyedropperUiState);
       return;
     }
     if (!contextKey) {
-      this.uiStateSetter.apply({ type: 'SET_UI_EYEDROPPER', eyedropper: closedEyedropperUiState });
+      this.eyedropperUiStore.getState().setState(initialEyedropperUiState);
       return;
     }
     try {
@@ -53,7 +52,7 @@ export class CommitEyedropperColorOperation {
         return;
       }
     } finally {
-      this.uiStateSetter.apply({ type: 'SET_UI_EYEDROPPER', eyedropper: closedEyedropperUiState });
+      this.eyedropperUiStore.getState().setState(initialEyedropperUiState);
     }
   }
 

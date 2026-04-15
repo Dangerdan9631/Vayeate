@@ -1,20 +1,16 @@
 import { singleton } from 'tsyringe';
 import type { HexColor } from '../../../../model/schemas';
-import { UiStateGetter, UiStateSetter } from '../../../state/ui/ui-state-reducer';
+import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
 
 /** Merge `result` into the current `ui.eyedropper` slice (full replace of the slice). */
 @singleton()
 export class SetEyedropperPickResultOperation {
   constructor(
-    private readonly uiStateGetter: UiStateGetter,
-    private readonly uiStateSetter: UiStateSetter,
+    private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 
   execute(hex: HexColor): void {
-    const ed = this.uiStateGetter.current().eyedropper;
-    this.uiStateSetter.apply({
-      type: 'SET_UI_EYEDROPPER',
-      eyedropper: { ...ed, result: hex, pendingPostCommit: null },
-    });
+    const ed = this.eyedropperUiStore.getState().state;
+    this.eyedropperUiStore.getState().setState({ ...ed, result: hex, pendingPostCommit: null });
   }
 }
