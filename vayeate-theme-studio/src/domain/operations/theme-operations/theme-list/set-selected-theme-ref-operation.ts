@@ -1,12 +1,14 @@
 import { singleton } from 'tsyringe';
 import type { ThemeReference } from '../../../../model/schemas';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetSelectedThemeRefOperation {
-  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly ThemesStore: ThemesStore) {}
 
   execute(ref: ThemeReference | null): void {
-    this.ThemesStateSetter.apply({ type: 'SET_SELECTED_THEME_REF', ref });
+    this.ThemesStore.getStore().setSelectedRef(ref);
   }
 }
+
+

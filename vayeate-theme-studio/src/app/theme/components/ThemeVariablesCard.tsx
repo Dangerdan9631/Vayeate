@@ -978,11 +978,11 @@ export function ThemeVariablesCard() {
   if (!theme?.templateRef) return null;
 
   const filteredColorAssignments = colorAssignments
-    .filter((a) => matchesSearch(a.colorRef, searchQuery))
-    .sort((a, b) => a.colorRef.localeCompare(b.colorRef));
+    .filter((a: ColorAssignment) => matchesSearch(a.colorRef, searchQuery))
+    .sort((a: ColorAssignment, b: ColorAssignment) => a.colorRef.localeCompare(b.colorRef));
   const filteredContrastAssignments = contrastAssignments
-    .filter((a) => matchesSearch(a.contrastVariableRef, searchQuery))
-    .sort((a, b) => a.contrastVariableRef.localeCompare(b.contrastVariableRef));
+    .filter((a: ContrastAssignment) => matchesSearch(a.contrastVariableRef, searchQuery))
+    .sort((a: ContrastAssignment, b: ContrastAssignment) => a.contrastVariableRef.localeCompare(b.contrastVariableRef));
 
   function onThemeVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.target.value);

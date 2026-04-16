@@ -1,12 +1,14 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetThemeOperation {
-  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly ThemesStore: ThemesStore) {}
 
   execute(theme: Theme | null, preserveHue?: boolean): void {
-    this.ThemesStateSetter.apply({ type: 'SET_THEME', theme, preserveHue });
+    this.ThemesStore.getStore().setTheme(theme, preserveHue);
   }
 }
+
+

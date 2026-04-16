@@ -1,20 +1,20 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations/template-details/load-template-snapshot-operation';
-import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 const UNGROUPED_KEY = '__ungrouped__';
 
 @singleton()
 export class SetVariablesSelectByGroupController {
   constructor(
-    private readonly themesStateGetter: ThemesStateGetter,
+    private readonly themesStateGetter: ThemesStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
   ) {}
 
   async run(checked?: boolean, groupId?: string): Promise<void> {
-    const state = this.themesStateGetter.current();
+    const state = this.themesStateGetter.getStore().state;
     const theme = state.theme;
     if (!theme?.templateRef || groupId == null) return;
     const template = await this.loadTemplateSnapshot.execute(
@@ -36,3 +36,5 @@ export class SetVariablesSelectByGroupController {
     this.setThemePaneSelections.execute([...nextColor], [...nextContrast]);
   }
 }
+
+

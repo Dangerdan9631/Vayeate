@@ -1,11 +1,13 @@
 import { singleton } from 'tsyringe';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetGenerateResultOperation {
-  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly ThemesStore: ThemesStore) {}
 
   execute(result: { success: boolean; message: string } | null): void {
-    this.ThemesStateSetter.apply({ type: 'SET_GENERATE_RESULT', result });
+    this.ThemesStore.getStore().setGenerateResult(result);
   }
 }
+
+

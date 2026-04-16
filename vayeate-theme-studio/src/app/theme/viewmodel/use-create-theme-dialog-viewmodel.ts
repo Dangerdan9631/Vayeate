@@ -1,20 +1,16 @@
 import type { MouseEvent } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
+import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { ThemeActionType } from '../actions/theme-action-type';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
+const themesStore = container.resolve(ThemesStore);
 
 export function useCreateThemeDialogViewModel() {
   const dispatch = useAppDispatch();
-  const { createFormName: name } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice;
-  });
+  const name = useStore(themesStore.api, (state): string => state.state.createFormName);
   const nameValid = name.length > 0 && NAME_REGEX.test(name);
   const canSubmit = nameValid;
 
@@ -47,3 +43,4 @@ export function useCreateThemeDialogViewModel() {
     handleNameChange,
   };
 }
+

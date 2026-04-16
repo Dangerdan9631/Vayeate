@@ -1,15 +1,11 @@
 import { singleton } from 'tsyringe';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetThemePaneSelectionsOperation {
-  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly ThemesStore: ThemesStore) {}
 
   execute(checkedColorRefs: string[], checkedContrastRefs: string[]): void {
-    this.ThemesStateSetter.apply({
-      type: 'SET_THEME_PANE_SELECTIONS',
-      checkedColorRefs,
-      checkedContrastRefs,
-    });
+    this.ThemesStore.getStore().setThemePaneSelections(checkedColorRefs, checkedContrastRefs);
   }
 }

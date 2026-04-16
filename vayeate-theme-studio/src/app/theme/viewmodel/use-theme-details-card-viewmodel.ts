@@ -1,26 +1,22 @@
 import { useCallback, useMemo } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
-import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { TemplateReference } from '../../../model/schemas';
-import { ThemeActionType } from '../actions/theme-action-type';
-import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { compareVersions } from '../../../domain/utils/compare-versions';
+import type { ColorAssignment, ContrastAssignment, TemplateReference } from '../../../model/schemas';
+import { ThemeActionType } from '../actions/theme-action-type';
 
 const templatesStore = container.resolve(TemplatesStore);
+const themesStore = container.resolve(ThemesStore);
 
 export function useThemeDetailsCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, theme, generateResult } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice;
-  });
+  const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
+  const theme = useStore(themesStore.api, (state) => state.state.theme);
+  const generateResult = useStore(themesStore.api, (state) => state.state.generateResult);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
 
@@ -47,10 +43,10 @@ export function useThemeDetailsCardViewModel() {
   const canGenerate = useMemo(() => {
     if (!theme || !theme.templateRef) return false;
     const allColorAssigned = theme.colorAssignments.every(
-      (a) => a.dark !== null && (a.useDarkForLight || a.light !== null),
+      (a: ColorAssignment) => a.dark !== null && (a.useDarkForLight || a.light !== null),
     );
     const allContrastAssigned = theme.contrastAssignments.every(
-      (a) => a.dark !== null && (a.useDarkForLight || a.light !== null),
+      (a: ContrastAssignment) => a.dark !== null && (a.useDarkForLight || a.light !== null),
     );
     return allColorAssigned && allContrastAssigned;
   }, [theme]);
@@ -118,3 +114,4 @@ export function useThemeDetailsCardViewModel() {
     onChangeTemplateVersion: changeTemplateVersion,
   };
 }
+

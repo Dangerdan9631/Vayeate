@@ -1,17 +1,17 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
-import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 /** Applies checked state to many color variable refs in one state update (single user gesture). */
 @singleton()
 export class SetColorRefsSelectionBatchController {
   constructor(
-    private readonly themesStateGetter: ThemesStateGetter,
+    private readonly themesStateGetter: ThemesStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
   async run(refs: readonly string[], checked: boolean): Promise<void> {
-    const state = this.themesStateGetter.current();
+    const state = this.themesStateGetter.getStore().state;
     if (!state.theme || refs.length === 0) return;
     const colorSet = new Set(state.checkedColorRefs);
     for (const ref of refs) {
@@ -21,3 +21,5 @@ export class SetColorRefsSelectionBatchController {
     this.setThemePaneSelections.execute([...colorSet], state.checkedContrastRefs);
   }
 }
+
+

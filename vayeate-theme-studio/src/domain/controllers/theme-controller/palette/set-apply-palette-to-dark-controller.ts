@@ -2,21 +2,22 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
-import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetApplyPaletteToDarkController {
   constructor(
-    private readonly themesStateGetter: ThemesStateGetter,
+    private readonly themesStateGetter: ThemesStore,
     private readonly setTheme: SetThemeOperation,
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   async run(checked: boolean): Promise<void> {
-    const theme = this.themesStateGetter.current().theme;
+    const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const next: Theme = { ...theme, applyPaletteToDark: checked };
     this.setTheme.execute(next);
     this.applyThemeStateAndSchedulePersist.execute(next);
   }
 }
+

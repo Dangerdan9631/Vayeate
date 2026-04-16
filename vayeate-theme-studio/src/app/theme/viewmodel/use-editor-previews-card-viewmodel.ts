@@ -1,25 +1,19 @@
 import { useCallback, useMemo } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import type { ThemePreviewTokenRefField, TokenKey } from '../../../model/schemas';
+import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { ThemeActionType } from '../actions/theme-action-type';
+
+const themesStore = container.resolve(ThemesStore);
 
 export function useEditorPreviewsCardViewModel() {
   const dispatch = useAppDispatch();
-  const themes = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice;
-  });
-  const {
-    theme,
-    loadedTemplateForTheme: loadedTemplate,
-    editorPreviews,
-    paneDisplayColorAssignments,
-  } = themes;
+  const theme = useStore(themesStore.api, (state) => state.state.theme);
+  const loadedTemplate = useStore(themesStore.api, (state) => state.state.loadedTemplateForTheme);
+  const editorPreviews = useStore(themesStore.api, (state) => state.state.editorPreviews);
+  const paneDisplayColorAssignments = useStore(themesStore.api, (state) => state.state.paneDisplayColorAssignments);
 
   const templateMappings = useMemo(() => loadedTemplate?.mappings ?? [], [loadedTemplate]);
   const contrastVariablesFromTemplate = useMemo(
@@ -128,3 +122,4 @@ export function useEditorPreviewsCardViewModel() {
     onChangeEditorPreviewMenuBackgroundTokenRef: changeEditorPreviewMenuBackgroundTokenRef,
   };
 }
+

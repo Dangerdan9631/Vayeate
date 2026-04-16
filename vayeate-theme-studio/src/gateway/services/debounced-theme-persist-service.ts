@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../model/schemas';
 import { ThemeGateway } from '../theme/theme-gateway';
-import { ThemesStateSetter } from '../../domain/state/theme/themes-state-reducer';
+import { ThemesStore } from '../../domain/state/theme/themes-store';
 
 const SAVE_THEME_DEBOUNCE_MS = 400;
 
@@ -16,7 +16,7 @@ export class DebouncedThemePersistService {
 
   constructor(
     private readonly themeGateway: ThemeGateway,
-    private readonly themesStateSetter: ThemesStateSetter,
+    private readonly themesStateSetter: ThemesStore,
   ) {}
 
   cancel(): void {
@@ -38,9 +38,11 @@ export class DebouncedThemePersistService {
       if (toSave) {
         this.themeGateway.saveTheme(toSave).catch((err) => {
           const message = err instanceof Error ? err.message : String(err);
-          this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: message });
+          this.themesStateSetter.getStore().setSaveError(message);
         });
       }
     }, SAVE_THEME_DEBOUNCE_MS);
   }
 }
+
+

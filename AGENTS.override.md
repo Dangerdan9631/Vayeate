@@ -4,7 +4,7 @@
 
 Use the project-specific directives under `.cursor/rules/` when working in this repository.
 
-Apply the architecture and implementation rules in `.cursor/rules/`, especially:
+**Always** read and follow the architecture and implementation rules in `.cursor/rules/`:
 
 - `.cursor/rules/app-architecture.mdc`
 - `.cursor/rules/component.mdc`

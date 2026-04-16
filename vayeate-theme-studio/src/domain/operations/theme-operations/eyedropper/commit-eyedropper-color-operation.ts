@@ -3,7 +3,7 @@ import type { ColorVariableKey } from '../../../../model/schemas';
 import type { Theme } from '../../../../model/schemas';
 import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
 import { initialEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
-import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
@@ -16,8 +16,8 @@ const PREFIX_LIGHT = 'eyedropper:light:';
 export class CommitEyedropperColorOperation {
   constructor(
     private readonly eyedropperUiStore: EyedropperUiStore,
-    private readonly themesStateGetter: ThemesStateGetter,
-    private readonly themesStateSetter: ThemesStateSetter,
+    private readonly themesStateGetter: ThemesStore,
+    private readonly themesStateSetter: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistService,
   ) {}
 
@@ -33,8 +33,8 @@ export class CommitEyedropperColorOperation {
     }
     try {
       if (contextKey === 'eyedropper:hue') {
-        this.themesStateSetter.apply({ type: 'SET_THEME_HUE_REFERENCE_HEX', value: hex });
-        this.themesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
+        this.themesStateSetter.getStore().setHueReferenceHex(hex);
+        this.themesStateSetter.getStore().setHueAdjustment(0);
         return;
       }
       if (contextKey.startsWith(PREFIX_ASSIGN)) {
@@ -59,7 +59,7 @@ export class CommitEyedropperColorOperation {
   private commitAssignColorText(value: string): void {
     const normalized = normalizeHexSafe(value);
     if (!normalized) return;
-    const state = this.themesStateGetter.current();
+    const state = this.themesStateGetter.getStore().state;
     const theme = state.theme;
     const checkedColorRefs = new Set(state.checkedColorRefs);
     if (!theme || checkedColorRefs.size === 0) return;
@@ -84,37 +84,39 @@ export class CommitEyedropperColorOperation {
     });
     const base = { ...theme };
     const nextTheme: Theme = { ...base, colorAssignments: newAssignments };
-    this.themesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: nextTheme, preserveHue: true });
-    this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
+    this.themesStateSetter.getStore().setHueAdjustment(0);
+    this.themesStateSetter.getStore().setTheme(nextTheme, true);
+    this.themesStateSetter.getStore().setSaveError(null);
     this.debouncedThemePersist.schedule(nextTheme);
   }
 
   private applyColorVariableDark(ref: ColorVariableKey, value: string): void {
-    const theme = this.themesStateGetter.current().theme;
+    const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const normalized = normalizeHexSafe(value);
     const newAssignments = theme.colorAssignments.map((a) =>
       a.colorRef === ref ? { ...a, dark: normalized !== null ? { value: normalized } : null } : a,
     );
     const next: Theme = { ...theme, colorAssignments: newAssignments };
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: next });
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: next, preserveHue: true });
-    this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
+    this.themesStateSetter.getStore().setTheme(next);
+    this.themesStateSetter.getStore().setTheme(next, true);
+    this.themesStateSetter.getStore().setSaveError(null);
     this.debouncedThemePersist.schedule(next);
   }
 
   private applyColorVariableLight(ref: ColorVariableKey, value: string): void {
-    const theme = this.themesStateGetter.current().theme;
+    const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const normalized = normalizeHexSafe(value);
     const newAssignments = theme.colorAssignments.map((a) =>
       a.colorRef === ref ? { ...a, light: normalized !== null ? { value: normalized } : null } : a,
     );
     const next: Theme = { ...theme, colorAssignments: newAssignments };
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: next });
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: next, preserveHue: true });
-    this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
+    this.themesStateSetter.getStore().setTheme(next);
+    this.themesStateSetter.getStore().setTheme(next, true);
+    this.themesStateSetter.getStore().setSaveError(null);
     this.debouncedThemePersist.schedule(next);
   }
 }
+
+

@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
 /** Live palette preview for assign-color (checked refs only); does not persist. */
 @singleton()
 export class SetAssignColorPreviewOperation {
-  constructor(private readonly themesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly themesStateSetter: ThemesStore) {}
 
   execute(args: {
     normalizedHex: string;
@@ -34,6 +34,8 @@ export class SetAssignColorPreviewOperation {
       return next;
     });
     const nextTheme: Theme = { ...theme, colorAssignments: newAssignments };
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: nextTheme });
+    this.themesStateSetter.getStore().setTheme(nextTheme);
   }
 }
+
+

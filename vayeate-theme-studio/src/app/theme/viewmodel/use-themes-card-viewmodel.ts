@@ -1,20 +1,19 @@
 import { useCallback, useMemo } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { getThemeRefs } from '../../../domain/state/theme/themes-state';
+import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import { ThemeActionType } from '../actions/theme-action-type';
 
+const themesStore = container.resolve(ThemesStore);
+
 export function useThemesCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, isCreating, themeMap } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice;
-  });
+  const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
+  const isCreating = useStore(themesStore.api, (state) => state.state.isCreating);
+  const themeMap = useStore(themesStore.api, (state) => state.state.themeMap);
   const themeRefs = useMemo(() => getThemeRefs(themeMap), [themeMap]);
 
   const themeNames = useMemo(() => {
@@ -67,3 +66,4 @@ export function useThemesCardViewModel() {
     isCreating,
   };
 }
+

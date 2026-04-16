@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schemas';
 import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
-import { ThemesStateGetter, ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
@@ -9,15 +9,15 @@ import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-u
 @singleton()
 export class CommitAssignColorTextOperation {
   constructor(
-    private readonly themesStateGetter: ThemesStateGetter,
-    private readonly themesStateSetter: ThemesStateSetter,
+    private readonly themesStateGetter: ThemesStore,
+    private readonly themesStateSetter: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistService,
   ) {}
 
   execute(value: string): void {
     const normalized = normalizeHexSafe(value);
     if (!normalized) return;
-    const state = this.themesStateGetter.current();
+    const state = this.themesStateGetter.getStore().state;
     const theme = state.theme;
     const checkedColorRefs = new Set(state.checkedColorRefs);
     if (!theme || checkedColorRefs.size === 0) return;
@@ -42,9 +42,11 @@ export class CommitAssignColorTextOperation {
     });
     const base = { ...theme };
     const nextTheme: Theme = { ...base, colorAssignments: newAssignments };
-    this.themesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value: 0 });
-    this.themesStateSetter.apply({ type: 'SET_THEME', theme: nextTheme, preserveHue: true });
-    this.themesStateSetter.apply({ type: 'SET_THEME_SAVE_ERROR', error: null });
+    this.themesStateSetter.getStore().setHueAdjustment(0);
+    this.themesStateSetter.getStore().setTheme(nextTheme, true);
+    this.themesStateSetter.getStore().setSaveError(null);
     this.debouncedThemePersist.schedule(nextTheme);
   }
 }
+
+

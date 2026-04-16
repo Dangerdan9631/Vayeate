@@ -1,8 +1,4 @@
 import type { Theme } from '../../../model/schemas';
-import type { ThemesStateUpdate } from '../../state/theme/themes-state-reducer';
-
-/** @deprecated Backward compatibility — use injected ThemesStateSetter */
-export type SetState = (update: ThemesStateUpdate) => void;
 
 export interface RestoreThemeStateParams {
   theme?: Theme | null;
@@ -12,3 +8,5 @@ export interface RestoreThemeStateParams {
   hueReferenceHex?: string;
   deleteThemeVersionOnRestore?: { name: string; version: string };
 }
+
+

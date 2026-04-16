@@ -8,7 +8,7 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type { ColorAssignment, ContrastAssignment } from '../../../model/schemas';
+import type { ColorAssignment, ContrastAssignment, ContrastVariable, Mapping } from '../../../model/schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
 import { useEditorPreviewsCardViewModel } from '../viewmodel/use-editor-previews-card-viewmodel';
 import { contrastRatio } from '../../../domain/utils/color-wcag';
@@ -227,14 +227,14 @@ export function EditorPreviewsCard() {
     () =>
       [...new Set(
         mappings
-          .filter((m) => m.token.type === 'theme' && m.colorVariableRef != null)
-          .map((m) => m.token.key),
-      )].sort((a, b) => a.localeCompare(b)),
+          .filter((m: Mapping) => m.token.type === 'theme' && m.colorVariableRef != null)
+          .map((m: Mapping) => m.token.key),
+      )].sort((a, b) => (a as string).localeCompare(b as string)),
     [mappings],
   );
 
   const resolvedPreviews = useMemo((): ResolvedPreview[] => {
-    return previews.map((preview) => ({
+    return previews.map((preview: TokenizedPreview) => ({
       previewKey: `${preview.language}/${preview.fileName}`,
       lines: preview.lines.map((line) => ({
         tokens: line.tokens.map((token) => {
@@ -250,7 +250,7 @@ export function EditorPreviewsCard() {
               const assigned = mode === 'dark' ? entry.assignedDark : entry.assignedLight;
               const resolved = mode === 'dark' ? entry.darkColor : entry.lightColor;
               if (entry.contrastVariableRef) {
-                const cv = contrastVariables.find((v) => v.key === entry.contrastVariableRef);
+                const cv = contrastVariables.find((v: ContrastVariable) => v.key === entry.contrastVariableRef);
                 const comparisonSourceRef = cv?.comparisonSourceRef ?? null;
                 const comparisonSourceColor = comparisonSourceRef
                   ? colorForRef(colorAssignments, comparisonSourceRef, mode, '')
@@ -357,7 +357,7 @@ export function EditorPreviewsCard() {
   /** When scroll container has no size (e.g. jsdom, initial layout), virtualizer returns no items; show first N so content is visible. */
   const fallbackIndices =
     previews.length > 0 && virtualItems.length === 0
-      ? previews.map((_, i) => i).slice(0, 10)
+      ? previews.map((_: TokenizedPreview, i: number) => i).slice(0, 10)
       : null;
 
   /** Index of the sample at the top of the scroll view (for sticky bar label). Use the item that contains scrollTop, or the last item that starts before scrollTop (e.g. when in padding between items). */
@@ -463,86 +463,86 @@ export function EditorPreviewsCard() {
           label="IDE Foreground"
           value={ideForegroundTokenRef}
           onChange={onChangeIdeForegroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="IDE Background"
           value={idePrimaryTokenRef}
           onChange={onChangeIdePrimaryTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Editor Foreground"
           value={themeForegroundTokenRef}
           onChange={onChangeThemeForegroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Editor Background"
           value={themeBackgroundTokenRef}
           onChange={onChangeThemeBackgroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Line Number Foreground"
           value={lineNumberForegroundTokenRef}
           onChange={onChangeLineNumberForegroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Line Number Background"
           value={lineNumberBackgroundTokenRef}
           onChange={onChangeLineNumberBackgroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Scrollbar Foreground"
           value={editorPreviewScrollbarForegroundTokenRef}
           onChange={onChangeEditorPreviewScrollbarForegroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Scrollbar Background"
           value={editorPreviewScrollbarBackgroundTokenRef}
           onChange={onChangeEditorPreviewScrollbarBackgroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="IDE Current Tab Color"
           value={ideTabTokenRef}
           onChange={onChangeIdeTabTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="IDE Tab Bar Foreground"
           value={ideTabBarForegroundTokenRef}
           onChange={onChangeIdeTabBarForegroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="IDE Tab Bar Background"
           value={ideTabBarBackgroundTokenRef}
           onChange={onChangeIdeTabBarBackgroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <FilterableTokenSelect
           label="Selection Background"
           value={editorPreviewSelectionBackgroundTokenRef}
           onChange={onChangeEditorPreviewSelectionBackgroundTokenRef}
-          options={themeTokenKeys}
+          options={themeTokenKeys as string[]}
         />
         <div className="theme-preview-fields theme-preview-fields-menu-row">
           <FilterableTokenSelect
             label="Menu Foreground"
             value={editorPreviewMenuForegroundTokenRef}
             onChange={onChangeEditorPreviewMenuForegroundTokenRef}
-            options={themeTokenKeys}
+            options={themeTokenKeys as string[]}
           />
           <FilterableTokenSelect
             label="Menu Background"
             value={editorPreviewMenuBackgroundTokenRef}
             onChange={onChangeEditorPreviewMenuBackgroundTokenRef}
-            options={themeTokenKeys}
+            options={themeTokenKeys as string[]}
           />
         </div>
       </div>
@@ -599,7 +599,7 @@ export function EditorPreviewsCard() {
                       scrollbarColor: `${darkMenuFg} ${darkMenuBg}`,
                     }}
                   >
-                    {previews.map((p, i) => (
+                    {previews.map((p: TokenizedPreview, i: number) => (
                       <button
                         key={`${p.language}/${p.fileName}`}
                         type="button"
@@ -633,7 +633,7 @@ export function EditorPreviewsCard() {
                 </span>
               </div>
             ) : fallbackIndices ? (
-              fallbackIndices.map((idx) => {
+              fallbackIndices.map((idx: number) => {
                 const preview = previews[idx];
                 const resolved = resolvedPreviews[idx];
                 const key = `${preview.language}/${preview.fileName}`;
@@ -763,7 +763,7 @@ export function EditorPreviewsCard() {
                       scrollbarColor: `${lightMenuFg} ${lightMenuBg}`,
                     }}
                   >
-                    {previews.map((p, i) => (
+                    {previews.map((p: TokenizedPreview, i: number) => (
                       <button
                         key={`${p.language}/${p.fileName}`}
                         type="button"
@@ -797,7 +797,7 @@ export function EditorPreviewsCard() {
                 </span>
               </div>
             ) : fallbackIndices ? (
-              fallbackIndices.map((idx) => {
+              fallbackIndices.map((idx: number) => {
                 const preview = previews[idx];
                 const resolved = resolvedPreviews[idx];
                 const key = `${preview.language}/${preview.fileName}`;

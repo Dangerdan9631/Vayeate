@@ -1,11 +1,13 @@
 import { singleton } from 'tsyringe';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetThemeCreateDialogOpenOperation {
-  constructor(private readonly themesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly themesStateSetter: ThemesStore) {}
 
   execute(value: boolean): void {
-    this.themesStateSetter.apply({ type: 'SET_THEME_CREATE_DIALOG_OPEN', value });
+    this.themesStateSetter.getStore().setCreateDialogOpen(value);
   }
 }
+
+

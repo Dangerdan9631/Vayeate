@@ -1,11 +1,13 @@
 import { singleton } from 'tsyringe';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetThemeIsCreatingOperation {
-  constructor(private readonly themesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly themesStateSetter: ThemesStore) {}
 
   execute(value: boolean): void {
-    this.themesStateSetter.apply({ type: 'SET_THEME_IS_CREATING', value });
+    this.themesStateSetter.getStore().setIsCreating(value);
   }
 }
+
+

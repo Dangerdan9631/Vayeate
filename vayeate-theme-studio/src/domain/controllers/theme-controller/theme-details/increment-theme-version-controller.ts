@@ -10,7 +10,7 @@ import { LoadThemeRefsOperation } from '../../../operations/theme-operations/the
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadThemeOperation } from '../../../operations/theme-operations/theme-details/load-theme-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
-import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 import { themeStackId } from '../../../utils/theme-stack-id';
 
 @singleton()
@@ -25,11 +25,11 @@ export class IncrementThemeVersionController {
     private readonly loadTheme: LoadThemeOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
-    private readonly themesStateGetter: ThemesStateGetter,
+    private readonly themesStateGetter: ThemesStore,
   ) {}
 
   async run(): Promise<void> {
-    const state = this.themesStateGetter.current();
+    const state = this.themesStateGetter.getStore().state;
     const theme = state.theme;
     if (!theme) return;
     const newVersion = nextPatchVersion(theme.version);
@@ -55,6 +55,8 @@ export class IncrementThemeVersionController {
     this.setCurrentUndoStackId.execute(themeStackId(theme.name, newVersion));
   }
 }
+
+
 
 
 

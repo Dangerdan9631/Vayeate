@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
+import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { ThemeActionType } from '../actions/theme-action-type';
+
+const themesStore = container.resolve(ThemesStore);
 
 export function useThemesPageChromeViewModel() {
   const dispatch = useAppDispatch();
@@ -10,13 +13,9 @@ export function useThemesPageChromeViewModel() {
     void dispatch({ type: ThemeActionType.ThemePageSaveErrorDismissButtonOnClick });
   }, [dispatch]);
 
-  const chrome = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return { saveError: slice.saveError, createDialogOpen: slice.createDialogOpen };
-  });
+  const saveError = useStore(themesStore.api, (state) => state.state.saveError);
+  const createDialogOpen = useStore(themesStore.api, (state) => state.state.createDialogOpen);
 
-  return { ...chrome, dismissSaveError };
+  return { saveError, createDialogOpen, dismissSaveError };
 }
+

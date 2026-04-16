@@ -1,11 +1,13 @@
 import { singleton } from 'tsyringe';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetThemeHueAdjustmentOperation {
-  constructor(private readonly ThemesStateSetter: ThemesStateSetter) {}
+  constructor(private readonly ThemesStore: ThemesStore) {}
 
   execute(value: number): void {
-    this.ThemesStateSetter.apply({ type: 'SET_THEME_HUE_ADJUSTMENT', value });
+    this.ThemesStore.getStore().setHueAdjustment(value);
   }
 }
+
+

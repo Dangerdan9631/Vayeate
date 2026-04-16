@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import { PreviewGateway } from '../../../../gateway/preview/preview-gateway';
-import { ThemesStateSetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
 
 /** Load tokenized preview files and set them in state. */
 @singleton()
 export class LoadPreviewsOperation {
   constructor(
-    private readonly ThemesStateSetter: ThemesStateSetter,
+    private readonly ThemesStore: ThemesStore,
     private readonly previewGateway: PreviewGateway,
     private readonly backgroundQueueGateway: BackgroundQueueGateway,
   ) {}
@@ -16,10 +16,12 @@ export class LoadPreviewsOperation {
     this.backgroundQueueGateway.enqueue(async() => {
     try {
       const previews = await this.previewGateway.loadPreviews();
-      this.ThemesStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews });
+      this.ThemesStore.getStore().setEditorPreviews(previews);
       } catch {
-        this.ThemesStateSetter.apply({ type: 'SET_THEME_EDITOR_PREVIEWS', previews: [] });
+        this.ThemesStore.getStore().setEditorPreviews([]);
       }
     }, 'Loading previews');
   }
 }
+
+

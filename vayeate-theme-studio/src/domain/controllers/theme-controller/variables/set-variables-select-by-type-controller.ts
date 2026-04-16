@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
-import { ThemesStateGetter } from '../../../state/theme/themes-state-reducer';
+import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()
 export class SetVariablesSelectByTypeController {
   constructor(
-    private readonly themesStateGetter: ThemesStateGetter,
+    private readonly themesStateGetter: ThemesStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
   async run(checked?: boolean, variableType?: string): Promise<void> {
-    const state = this.themesStateGetter.current();
+    const state = this.themesStateGetter.getStore().state;
     const theme = state.theme;
     if (!theme) return;
     const colorRefs = state.checkedColorRefs;
@@ -25,3 +25,5 @@ export class SetVariablesSelectByTypeController {
     this.setThemePaneSelections.execute(nextColor, nextContrast);
   }
 }
+
+

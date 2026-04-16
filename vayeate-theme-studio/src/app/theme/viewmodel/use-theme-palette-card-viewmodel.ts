@@ -1,35 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { buildThemePaneSnapshot } from '../../../domain/utils/theme-pane-utils';
+import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
 import { ThemeActionType } from '../actions/theme-action-type';
 import { normalizeThemeHex } from '../../../domain/utils/normalize-theme-hex';
 
+const themesStore = container.resolve(ThemesStore);
+
 export function useThemePaletteCardViewModel() {
   const dispatch = useAppDispatch();
-  const themes = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.themes;
-    if (slice === undefined) {
-      throw new Error('Theme state requires AppProvider.');
-    }
-    return slice;
-  });
-  const {
-    selectedRef,
-    theme,
-    checkedColorRefs: checkedColorRefsArray,
-    checkedContrastRefs: checkedContrastRefsArray,
-    hueAdjustment,
-    hueReferenceHex,
-    loadedTemplateForTheme: loadedTemplate,
-    paneDisplayColorAssignments,
-    paneSelectedColorsDisplay,
-  } = themes;
-
-  const checkedColorRefs = useMemo(() => new Set(checkedColorRefsArray), [checkedColorRefsArray]);
+  const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
+  const theme = useStore(themesStore.api, (state) => state.state.theme);
+  const checkedColorRefsArray = useStore(themesStore.api, (state) => state.state.checkedColorRefs);
+  const checkedContrastRefsArray = useStore(themesStore.api, (state) => state.state.checkedContrastRefs);
+  const hueAdjustment = useStore(themesStore.api, (state) => state.state.hueAdjustment);
+  const hueReferenceHex = useStore(themesStore.api, (state) => state.state.hueReferenceHex);
+  const loadedTemplate = useStore(themesStore.api, (state) => state.state.loadedTemplateForTheme);
+  const paneDisplayColorAssignments = useStore(themesStore.api, (state) => state.state.paneDisplayColorAssignments);
+  const paneSelectedColorsDisplay = useStore(themesStore.api, (state) => state.state.paneSelectedColorsDisplay);
+  const checkedColorRefs = useMemo(() => new Set<string>(checkedColorRefsArray), [checkedColorRefsArray]);
 
   const applyHueToDark = theme?.applyPaletteToDark ?? true;
   const applyHueToLight = theme?.applyPaletteToLight ?? true;
@@ -229,3 +222,4 @@ export function useThemePaletteCardViewModel() {
     onAssignEyedropperClick,
   };
 }
+
