@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
 
 /** Load template refs from data dir into templates slice (template map entries from ref list). */
 @singleton()
 export class LoadTemplateRefsOperation {
   constructor(
-    private readonly templatesStateSetter: TemplatesStateSetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly templateGateway: TemplateGateway,
     private readonly backgroundQueueGateway: BackgroundQueueGateway,
   ) {}
@@ -15,10 +15,9 @@ export class LoadTemplateRefsOperation {
   execute(): void {
     this.backgroundQueueGateway.enqueue(async() => {
       const refs = await this.templateGateway.listTemplates();
-      this.templatesStateSetter.apply({
-        type: 'SET_TEMPLATE_MAP_ENTRIES',
-        entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
-      });
+      this.templatesStore.getStore().setTemplateMapEntries(
+        refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
+      );
     }, 'Loading templates');
   }
 }

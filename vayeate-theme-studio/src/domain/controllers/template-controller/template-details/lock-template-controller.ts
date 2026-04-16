@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { LockTemplateOperation as LockTemplateOperation } from '../../../operations/template-operations/template-details/lock-template-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
 import { ValidateCanLockTemplate } from '../../../validations/template-validations';
@@ -8,7 +8,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/templ
 @singleton()
 export class LockTemplateController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly lockTemplateOperation: LockTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -16,7 +16,7 @@ export class LockTemplateController {
   ) {}
 
   async run(): Promise<void> {
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template || !this.validateCanLockTemplate.test(template)) return;
     const updated = this.lockTemplateOperation.execute(template);
     await this.saveTemplate.execute(updated);

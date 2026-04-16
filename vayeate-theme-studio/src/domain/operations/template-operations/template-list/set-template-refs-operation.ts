@@ -1,15 +1,14 @@
 import type { TemplateReference } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 
 @singleton()
 export class SetTemplateRefsOperation {
-  constructor(private readonly templatesStateSetter: TemplatesStateSetter) {}
+  constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(refs: TemplateReference[]): void {
-    this.templatesStateSetter.apply({
-      type: 'SET_TEMPLATE_MAP_ENTRIES',
-      entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
-    });
+    this.templatesStore.getStore().setTemplateMapEntries(
+      refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
+    );
   }
 }

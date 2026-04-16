@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 
 /** Store draft value for the "add group" name input. */
 @singleton()
 export class SetTemplateAddGroupNameOperation {
-  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
+  constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(value: string): void {
-    this.TemplatesStateSetter.apply({ type: 'SET_TEMPLATE_ADD_GROUP_NAME', value });
+    this.templatesStore.getStore().setAddGroupName(value);
   }
 }
 

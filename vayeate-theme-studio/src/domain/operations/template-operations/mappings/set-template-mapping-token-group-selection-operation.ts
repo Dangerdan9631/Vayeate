@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 
 @singleton()
 export class SetTemplateMappingTokenGroupSelectionOperation {
-  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
+  constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(value: string): void {
-    this.TemplatesStateSetter.apply({ type: 'SET_TEMPLATE_MAPPING_TOKEN_GROUP_SELECTION', value });
+    this.templatesStore.getStore().setMappingTokenGroupSelection(value);
   }
 }
 

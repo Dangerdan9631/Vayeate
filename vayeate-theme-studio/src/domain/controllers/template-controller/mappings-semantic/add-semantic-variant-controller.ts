@@ -1,7 +1,7 @@
 import type { Mapping } from '../../../../model/schemas';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { AppendSemanticVariantToTemplateOperation } from '../../../operations/template-operations/mappings-semantic/append-semantic-variant-to-template-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { GenerateSemanticVariantKeyOperation } from '../../../operations/template-operations/mappings-semantic/generate-semantic-variant-key-operation';
@@ -12,7 +12,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/templ
 @singleton()
 export class AddSemanticVariantController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly generateSemanticVariantKey: GenerateSemanticVariantKeyOperation,
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
@@ -22,7 +22,7 @@ export class AddSemanticVariantController {
   ) {}
 
   async run(type: string, defaultGroupRef?: string | null): Promise<void> {
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const baseMapping = base.mappings.find(

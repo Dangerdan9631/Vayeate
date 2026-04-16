@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { AddColorVariableOperation as AddColorVariableOp } from '../../../operations/template-operations/variables-color/add-color-variable-operation';
 import { AddContrastVariableOperation as AddContrastVariableOp } from '../../../operations/template-operations/variables-contrast/add-contrast-variable-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
@@ -10,7 +10,7 @@ import { SetTemplateAddVariableNameOperation } from '../../../operations/templat
 @singleton()
 export class AddVariableController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addColorVariableToTemplate: AddColorVariableOp,
     private readonly addContrastVariableToTemplate: AddContrastVariableOp,
@@ -20,9 +20,9 @@ export class AddVariableController {
   ) {}
 
   async run(groupRef: string | null, variableKind: 'color' | 'contrast'): Promise<void> {
-    const key = this.templatesStateGetter.current().addVariableName.trim();
+    const key = this.templatesStore.getStore().state.addVariableName.trim();
     if (!key) return;
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     let next;

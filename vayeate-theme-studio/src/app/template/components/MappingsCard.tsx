@@ -996,7 +996,7 @@ export function MappingsCard() {
   const toggleColorKey = useCallback(
     (key: string) => {
       const next = selectedColorKeys.includes(key as ColorVariableKey)
-        ? selectedColorKeys.filter((k) => k !== key)
+        ? selectedColorKeys.filter((k: ColorVariableKey) => k !== key)
         : [...selectedColorKeys, key as ColorVariableKey];
       setMappingColorVariableFilter(next);
     },
@@ -1006,7 +1006,7 @@ export function MappingsCard() {
   const toggleContrastKey = useCallback(
     (key: string) => {
       const next = selectedContrastKeys.includes(key as ContrastVariableKey)
-        ? selectedContrastKeys.filter((k) => k !== key)
+        ? selectedContrastKeys.filter((k: ContrastVariableKey) => k !== key)
         : [...selectedContrastKeys, key as ContrastVariableKey];
       setMappingContrastVariableFilter(next);
     },

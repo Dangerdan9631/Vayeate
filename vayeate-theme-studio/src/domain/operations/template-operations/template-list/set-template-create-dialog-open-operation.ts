@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 
 @singleton()
 export class SetTemplateCreateDialogOpenOperation {
-  constructor(private readonly templatesStateSetter: TemplatesStateSetter) {}
+  constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(value: boolean): void {
-    this.templatesStateSetter.apply({ type: 'SET_TEMPLATE_CREATE_DIALOG_OPEN', value });
+    this.templatesStore.getStore().setCreateDialogOpen(value);
   }
 }

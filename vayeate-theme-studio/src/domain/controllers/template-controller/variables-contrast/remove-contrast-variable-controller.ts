@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../operations/template-operations/variables-contrast/remove-contrast-variable-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
@@ -9,7 +9,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/templ
 @singleton()
 export class RemoveContrastVariableController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeContrastVariableFromTemplate: RemoveContrastVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -17,7 +17,7 @@ export class RemoveContrastVariableController {
   ) {}
 
   async run(key: string): Promise<void> {
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const refs = referencedContrastVarKeysFromTemplate(template);
     if (refs.has(key)) return;

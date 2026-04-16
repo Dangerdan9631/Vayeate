@@ -4,7 +4,7 @@ import {
   type ParsedSemanticSelector,
 } from '../../../utils/semantic-token';
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { MergeSemanticTokenSetsOperation } from '../../../operations/template-operations/mappings-semantic/merge-semantic-token-sets-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
@@ -18,7 +18,7 @@ export type UpdateSemanticVariantKeyPayload =
 @singleton()
 export class UpdateSemanticVariantKeyController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
     private readonly updateSemanticVariantKeyInTemplate: UpdateSemanticVariantKeyInTemplateOperation,
@@ -46,7 +46,7 @@ export class UpdateSemanticVariantKeyController {
     modifiers: string[],
     language: string | null,
   ): Promise<void> {
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const newKey = formatSemanticSelector(parsed.type, modifiers, language);
     if (!newKey || newKey === oldKey) return;

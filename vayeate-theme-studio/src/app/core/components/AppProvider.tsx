@@ -6,11 +6,6 @@ import { AppContext, type AppContextValue } from '../app-context';
 import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
 import {
-  TemplatesStateGetter,
-  TemplatesStateSetter,
-  templatesStateReducer,
-} from '../../../domain/state/template/templates-state-reducer';
-import {
   ThemesStateGetter,
   ThemesStateSetter,
   themesStateReducer,
@@ -65,16 +60,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const stateRef = useRef(state);
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: templatesStateReducer,
-    selectSlice: (s: AppState) => s.templates,
-    SetterClass: TemplatesStateSetter,
-    GetterClass: TemplatesStateGetter,
-  });
 
   useAppSliceBridge({
     stateRef,

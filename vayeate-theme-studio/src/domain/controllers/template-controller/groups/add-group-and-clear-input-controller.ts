@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { AddGroupToTemplateOperation } from '../../../operations/template-operations/groups/add-group-to-template-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
@@ -9,7 +9,7 @@ import { SetTemplateAddGroupNameOperation } from '../../../operations/template-o
 @singleton()
 export class AddGroupAndClearInputController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addGroupToTemplate: AddGroupToTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -18,9 +18,9 @@ export class AddGroupAndClearInputController {
   ) {}
 
   async run(): Promise<void> {
-    const name = this.templatesStateGetter.current().addGroupName.trim();
+    const name = this.templatesStore.getStore().state.addGroupName.trim();
     if (!name) return;
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addGroupToTemplate.execute(base, name);

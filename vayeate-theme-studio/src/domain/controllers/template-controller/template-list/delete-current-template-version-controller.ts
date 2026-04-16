@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { findNearestVersionRef } from '../../../utils/find-nearest-version-ref';
 import { templateStackId } from '../../../utils/template-stack-id';
 import { DeleteTemplateOperation } from '../../../operations/template-operations/template-list/delete-template-operation';
@@ -12,7 +12,7 @@ import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operati
 @singleton()
 export class DeleteCurrentTemplateVersionController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly deleteTemplate: DeleteTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
@@ -22,7 +22,7 @@ export class DeleteCurrentTemplateVersionController {
   ) {}
 
   async run(): Promise<void> {
-    const selectedRef = this.templatesStateGetter.current().selectedRef;
+    const selectedRef = this.templatesStore.getStore().state.selectedRef;
     if (!selectedRef) return;
 
     const { name, version } = selectedRef;

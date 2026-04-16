@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { CreateTemplateOperation } from '../../../operations/template-operations/template-list/create-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-operation';
 import { SetSelectedTemplateRefOperation } from '../../../operations/template-operations/template-list/set-selected-template-ref-operation';
@@ -12,7 +12,7 @@ import { templateStackId } from '../../../utils/template-stack-id';
 @singleton()
 export class CreateTemplateController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly createTemplate: CreateTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setTemplate: SetTemplateOperation,
@@ -23,7 +23,7 @@ export class CreateTemplateController {
   ) {}
 
   async run(): Promise<void> {
-    const name = this.templatesStateGetter.current().createFormName.trim();
+    const name = this.templatesStore.getStore().state.createFormName.trim();
     if (!name) return;
 
     this.setTemplateIsCreating.execute(true);

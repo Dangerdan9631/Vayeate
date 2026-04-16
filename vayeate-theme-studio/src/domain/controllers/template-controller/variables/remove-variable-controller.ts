@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../operations/template-operations/variables-color/remove-color-variable-operation';
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../operations/template-operations/variables-contrast/remove-contrast-variable-operation';
@@ -10,7 +10,7 @@ import { ValidateCanRemoveVariable } from '../../../validations/template-validat
 @singleton()
 export class RemoveVariableController {
   constructor(
-    private readonly templatesStateGetter: TemplatesStateGetter,
+    private readonly templatesStore: TemplatesStore,
     private readonly validateCanRemove: ValidateCanRemoveVariable,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeColorVariableFromTemplate: RemoveColorVariableOp,
@@ -20,7 +20,7 @@ export class RemoveVariableController {
   ) {}
 
   async run(key: string): Promise<void> {
-    const template = this.templatesStateGetter.current().template;
+    const template = this.templatesStore.getStore().state.template;
     if (!template || !this.validateCanRemove.test(template, key)) return;
 
     if (template.colorVariables.some((variable) => variable.key === key)) {

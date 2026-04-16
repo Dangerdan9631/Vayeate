@@ -1,13 +1,13 @@
 import type { TemplateReference } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { TemplatesStateSetter } from '../../../state/template/templates-state-reducer';
+import { TemplatesStore } from '../../../state/template/templates-store';
 
 @singleton()
 export class SetSelectedTemplateRefOperation {
-  constructor(private readonly TemplatesStateSetter: TemplatesStateSetter) {}
+  constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(ref: TemplateReference | null): void {
-    this.TemplatesStateSetter.apply({ type: 'SET_SELECTED_TEMPLATE_REF', ref });
+    this.templatesStore.getStore().setSelectedRef(ref);
   }
 }
 

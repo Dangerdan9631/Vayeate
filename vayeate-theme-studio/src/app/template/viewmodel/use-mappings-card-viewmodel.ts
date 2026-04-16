@@ -1,49 +1,42 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { useContextSelector } from 'use-context-selector';
+import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type {
   Catalog,
+  CatalogReference,
   ColorVariableKey,
   ContrastVariableKey,
   Mapping,
+  Template,
   Token,
   TokenType,
 } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
-import { useStore } from 'zustand';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { container } from 'tsyringe';
 
 const catalogsStore = container.resolve(CatalogsStore);
+const templatesStore = container.resolve(TemplatesStore);
 
 export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();
-  const templatesState = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.templates;
-    if (slice === undefined) {
-      throw new Error('Template state requires AppProvider.');
-    }
-    return slice;
-  });
-  const {
-    selectedRef,
-    template,
-    templateMap,
-    mappingSearchText,
-    mappingColorVariableFilter,
-    mappingContrastVariableFilter,
-  } = templatesState;
+  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
+  const template: Template | null = useStore(templatesStore.api, (state) => state.state.template);
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
+  const mappingSearchText = useStore(templatesStore.api, (state) => state.state.mappingSearchText);
+  const mappingColorVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingColorVariableFilter);
+  const mappingContrastVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingContrastVariableFilter);
 
   const loadedForDisplay = useStore(catalogsStore.api, (state) => state.state.loadedForDisplay);
 
   const loadedCatalogsForTemplateRefs = useMemo(() => {
     if (!template || template.catalogRefs.length === 0) return [];
-    return template.catalogRefs.map((ref) => {
+    return template.catalogRefs.map((ref: CatalogReference) => {
       const key = `${ref.name}@${ref.version}`;
       return loadedForDisplay[key] ?? null;
     });

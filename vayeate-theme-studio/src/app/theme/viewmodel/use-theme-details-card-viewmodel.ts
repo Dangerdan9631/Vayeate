@@ -1,11 +1,16 @@
 import { useCallback, useMemo } from 'react';
 import { useContextSelector } from 'use-context-selector';
+import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppContext } from '../../core/app-context';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { TemplateReference } from '../../../model/schemas';
 import { ThemeActionType } from '../actions/theme-action-type';
+import { container } from 'tsyringe';
+import { TemplatesStore } from '../../../domain/state/template/templates-store';
+
+const templatesStore = container.resolve(TemplatesStore);
 
 export function useThemeDetailsCardViewModel() {
   const dispatch = useAppDispatch();
@@ -16,13 +21,7 @@ export function useThemeDetailsCardViewModel() {
     }
     return slice;
   });
-  const { templateMap } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.templates;
-    if (slice === undefined) {
-      throw new Error('Template state requires AppProvider.');
-    }
-    return slice;
-  });
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
 
   const templateNamesList = useMemo(() => {

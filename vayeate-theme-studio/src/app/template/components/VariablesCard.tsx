@@ -473,12 +473,14 @@ export function VariablesCard() {
   if (!template) return null;
 
   const filteredColorVariables = colorVariables
-    .filter((v) => matchesSearch(v.key, variablesSearchText))
-    .sort((a, b) => a.key.localeCompare(b.key));
+    .filter((v: ColorVariable) => matchesSearch(v.key, variablesSearchText))
+    .sort((a: ColorVariable, b: ColorVariable) => a.key.localeCompare(b.key));
   const filteredContrastVariables = contrastVariables
-    .filter((v) => matchesSearch(v.key, variablesSearchText))
-    .sort((a, b) => a.key.localeCompare(b.key));
-  const sortedColorVariables = [...colorVariables].sort((a, b) => a.key.localeCompare(b.key));
+    .filter((v: ContrastVariable) => matchesSearch(v.key, variablesSearchText))
+    .sort((a: ContrastVariable, b: ContrastVariable) => a.key.localeCompare(b.key));
+  const sortedColorVariables = [...colorVariables].sort(
+    (a: ColorVariable, b: ColorVariable) => a.key.localeCompare(b.key),
+  );
 
   function onVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
     handleVariablesSearchChange(e.target.value);
