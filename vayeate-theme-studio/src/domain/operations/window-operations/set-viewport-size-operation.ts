@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
 import { WindowStore } from '../../state/window/window-store';
+import type { Size } from '../../state/window/window-state';
 
 @singleton()
-export class OnViewportResizeEventController {
+export class SetViewportSizeOperation {
   constructor(private readonly windowStore: WindowStore) {}
 
-  async run(size: { width: number; height: number }): Promise<void> {
+  execute(size: Size): void {
     this.windowStore.getStore().setViewportSize(size);
   }
 }
-

@@ -3,10 +3,10 @@ import type { WindowStateEvent } from '../../../gateway/services/window-service-
 import { WindowStore } from '../../state/window/window-store';
 
 @singleton()
-export class OnWindowStateEventController {
+export class SetWindowDisplayStateOperation {
   constructor(private readonly windowStore: WindowStore) {}
 
-  async run(event: WindowStateEvent): Promise<void> {
+  execute(event: WindowStateEvent): void {
     switch (event) {
       case 'minimized':
         this.windowStore.getStore().setWindowMinimized(true);
@@ -20,7 +20,10 @@ export class OnWindowStateEventController {
       case 'restored':
         this.windowStore.getStore().setWindowMinimized(false);
         break;
+      default: {
+        const _exhaustive: never = event;
+        void _exhaustive;
+      }
     }
   }
 }
-

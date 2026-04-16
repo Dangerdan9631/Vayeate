@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
 import { WindowStore } from '../../state/window/window-store';
+import type { Position } from '../../state/window/window-state';
 
 @singleton()
-export class OnWindowMoveEventController {
+export class SetWindowPositionOperation {
   constructor(private readonly windowStore: WindowStore) {}
 
-  async run(position: { x: number; y: number }): Promise<void> {
+  execute(position: Position): void {
     this.windowStore.getStore().setWindowPosition(position);
   }
 }
-

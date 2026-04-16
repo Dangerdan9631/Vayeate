@@ -87,7 +87,9 @@ export class CommitEyedropperColorOperation {
     this.themesStateSetter.getStore().setHueAdjustment(0);
     this.themesStateSetter.getStore().setTheme(nextTheme, true);
     this.themesStateSetter.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(nextTheme);
+    this.debouncedThemePersist.schedule(nextTheme, (message) => {
+      this.themesStateSetter.getStore().setSaveError(message);
+    });
   }
 
   private applyColorVariableDark(ref: ColorVariableKey, value: string): void {
@@ -101,7 +103,9 @@ export class CommitEyedropperColorOperation {
     this.themesStateSetter.getStore().setTheme(next);
     this.themesStateSetter.getStore().setTheme(next, true);
     this.themesStateSetter.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(next);
+    this.debouncedThemePersist.schedule(next, (message) => {
+      this.themesStateSetter.getStore().setSaveError(message);
+    });
   }
 
   private applyColorVariableLight(ref: ColorVariableKey, value: string): void {
@@ -115,8 +119,9 @@ export class CommitEyedropperColorOperation {
     this.themesStateSetter.getStore().setTheme(next);
     this.themesStateSetter.getStore().setTheme(next, true);
     this.themesStateSetter.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(next);
+    this.debouncedThemePersist.schedule(next, (message) => {
+      this.themesStateSetter.getStore().setSaveError(message);
+    });
   }
 }
-
 

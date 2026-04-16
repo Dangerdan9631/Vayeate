@@ -14,6 +14,8 @@ export class ApplyThemeStateAndSchedulePersistOperation {
   execute(theme: Theme): void {
     this.themesStateSetter.getStore().setTheme(theme, true);
     this.themesStateSetter.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(theme);
+    this.debouncedThemePersist.schedule(theme, (message) => {
+      this.themesStateSetter.getStore().setSaveError(message);
+    });
   }
 }

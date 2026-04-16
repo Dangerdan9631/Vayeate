@@ -45,8 +45,9 @@ export class CommitAssignColorTextOperation {
     this.themesStateSetter.getStore().setHueAdjustment(0);
     this.themesStateSetter.getStore().setTheme(nextTheme, true);
     this.themesStateSetter.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(nextTheme);
+    this.debouncedThemePersist.schedule(nextTheme, (message) => {
+      this.themesStateSetter.getStore().setSaveError(message);
+    });
   }
 }
-
 

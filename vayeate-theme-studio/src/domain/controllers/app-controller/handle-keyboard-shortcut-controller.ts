@@ -3,7 +3,7 @@ import { PerformRedoOperation } from '../../operations/undo-operations/perform-r
 import { PerformUndoOperation } from '../../operations/undo-operations/perform-undo-operation';
 
 @singleton()
-export class OnGlobalKeyDownEventController {
+export class HandleKeyboardShortcutController {
   constructor(
     private readonly performUndo: PerformUndoOperation,
     private readonly performRedo: PerformRedoOperation,
@@ -28,4 +28,3 @@ export class OnGlobalKeyDownEventController {
     }
   }
 }
-

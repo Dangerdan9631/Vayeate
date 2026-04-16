@@ -368,6 +368,10 @@ export function TokensCard() {
     handleSemanticRegistryRemove,
   } = useTokensCardViewModel();
 
+  function onSearchChange(e: ChangeEvent<HTMLInputElement>) {
+    handleSearchChange(e.target.value);
+  }
+
   if (!catalog) return null;
 
   return (
@@ -389,7 +393,7 @@ export function TokensCard() {
         className="card-search-input"
         placeholder="Search…"
         value={tokensSearchText}
-        onChange={(e) => handleSearchChange(e.target.value)}
+        onChange={onSearchChange}
         aria-label="Search tokens"
       />
       {CATALOG_TOKEN_LIST_SECTIONS.map((tt) => (
