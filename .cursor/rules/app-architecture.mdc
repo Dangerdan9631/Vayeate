@@ -13,7 +13,7 @@ Scope: [`vayeate-theme-studio/`](vayeate-theme-studio/).
 |-------|------|
 | `electron/` | Main process, preload, IPC — no business logic |
 | `src/app/` | UI, actions, handlers, viewmodels |
-| `src/domain/` | Controllers, operations, validations, state, utils |
+| `src/domain/` | Controllers, operations, validations, zustand stores, utils |
 | `src/gateway/` | Services + gateway facades over external systems |
 | `src/model/` | Domain types; **zod** for validation |
 
@@ -30,18 +30,28 @@ flowchart LR
   H --> C[Controller]
   C --> V[Validations]
   C --> O[Operations]
-  O --> S[State setters]
-  S --> VM[ViewModel useContextSelector]
+  C --> S1[Store snapshot reads]
+  O --> S2[Store methods]
+  S2 --> VM[ViewModel useStore selector]
   VM --> UI
 ```
 
 - Only **UI-originated signals** on the queue — pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). Handlers → controllers only (exhaustive switch).
-- **State updates only in operations.** Controllers read via getters; never set state.
+- **State updates only in operations.** Controllers and validations may read store snapshots; never set state.
 - **Business logic only in operations.** Gateways/services: system + conversion, not domain rules.
 - **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
 - **Exception — action queue status and App shell:**
   - State that reflects the action queue’s own status (depth, processing flag, etc.) may be updated **only inside the `ActionQueue` implementation** (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception.
   - App shell load and unload controllers should be invoked directly from `useEffect` calls in the **AppShell** component **or** in the **app shell viewmodel** hook used exclusively by that shell (e.g. `useAppShellViewModel` in `src/app/app/viewmodel/`). **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up; colocating lifecycle in the shell’s viewmodel keeps mount/unload next to shell-only selectors without spreading `useEffect` across arbitrary components.
+
+## Store conventions
+
+- Store classes live under `src/domain/state/<domain>/`.
+- Name files in **kebab-case** with a `-store.ts` suffix and export one `@singleton()` class.
+- Build stores with `createStore(...)` from `zustand/vanilla` and `immer(...)` from `zustand/middleware/immer`.
+- Expose `api` for React subscriptions and `getStore()` for domain-layer reads and writes.
+- Viewmodels subscribe with `useStore(store.api, selector)`; components should not subscribe directly.
+- Controllers and validations read store snapshots; operations perform writes through store methods.
 
 ## Actions
 
@@ -57,7 +67,7 @@ flowchart LR
 - **React components** under `src/app/**` (all `*.tsx` in the app layer): **PascalCase** filename matching the default export (see [component.mdc](component.mdc)).
 - **All other** source modules (controllers, operations, viewmodels, state, gateways, services, models, handlers, etc.): **kebab-case** filename matching export; exported **classes** **PascalCase** where applicable.
 
-**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change these bullets or exceptions, update the matching `describe` and vice versa.** The file also encodes mutation-flow checks (no operation-to-operation `execute`, no controller-to-controller `run`), handler import boundaries, `useContextSelector` only outside app `*.tsx`, action payload imports (no `domain/state`), and Electron versus renderer `src/` imports — see the table at the top of that test file.
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change these bullets or exceptions, update the matching `describe` and vice versa.** The file should continue to encode mutation-flow checks (no operation-to-operation `execute`, no controller-to-controller `run`), handler import boundaries, action payload imports (no `domain/state`), and Electron versus renderer `src/` imports — see the table at the top of that test file.
 
 ## Good / bad
 
@@ -65,4 +75,4 @@ flowchart LR
 |------|-----|
 | `CloseWindowController` | `HandleSaveButtonClickController` |
 | Operation owns state write after validation in controller | Handler contains business rules |
-| ViewModel exposes selectors | Component defines `useContextSelector` inline |
+| ViewModel exposes selectors | Component defines `useStore(...)` inline |

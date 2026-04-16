@@ -22,4 +22,4 @@ description: Adds or changes a React component in Vayeate Theme Studio app layer
 - [ ] Action type follows `<CONTROL>_<ACTION>`; payload not state-derived
 - [ ] Event props reference named handler functions only — no inline arrows on JSX elements
 - [ ] Lifecycle load/unload (if any) enqueue actions like other UI events — no direct controller/operation calls
-- [ ] No business logic; no direct state setters
+- [ ] No business logic; no direct store writes or subscriptions

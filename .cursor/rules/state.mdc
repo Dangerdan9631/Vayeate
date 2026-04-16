@@ -1,35 +1,45 @@
 ---
-description: Rules for authoring and modifing react components App state
+description: Rules for authoring and modifing domain zustand stores
 alwaysApply: false
 ---
 
 # State
 
-## Shape
+## Store shape
 
-- **One** root aggregate; **only nested slice objects** — no loose fields on root.
-- **Immutable** updates (replace slice references).
+- State lives in domain-owned **zustand vanilla stores** under `src/domain/state/**`.
+- Use `createStore(...)` with **`immer(...)`** middleware.
+- Each store exposes:
+  - One data root such as `state` or `config`
+  - Store-owned mutation methods like `setSelectedRef`, `setConfig`, `setMenuOpenState`
+  - `api` getter for React subscriptions
+  - `getStore()` returning the current store snapshot plus mutation methods
 
 ## Access
 
 | Consumer | Read | Write |
 |----------|------|-------|
-| Controllers / operations | **Getter** | **Setter** (operations **only**) |
-| `ActionQueue` (`src/app/core/actions/`) | Via existing accessors if needed | **Queue status only** — dedicated setter invoked **only** from `ActionQueue` (see [app-architecture.mdc](app-architecture.mdc)) |
-| React | Via **viewmodel** + `useContextSelector` | Never |
+| Controllers / validations | `this.someStore.getStore().state` (or sibling data root like `config`) | Never |
+| Operations | `this.someStore.getStore().state` (or sibling data root like `config`) | `this.someStore.getStore().setX(...)` |
+| `ActionQueue` (`src/app/core/actions/`) | Via existing store accessors if needed | Queue observability state only — updated inside queue implementation (see [app-architecture.mdc](app-architecture.mdc)) |
+| React | Via viewmodel hooks + `useStore(store.api, selector)` | Never |
 
 ## Rules
 
-- Slices are **domain-owned** under `src/domain/<domain>/state/`.
-- React **never** imports setters directly.
-- **Do not** call the queue-status setter from components, handlers, controllers, or operations — **only** from `ActionQueue`.
+- Stores are **domain-owned** and should stay free of React imports.
+- Keep mutation methods on the store class; components never import or call store mutation methods directly.
+- Controllers and validations may read store snapshots, but only operations mutate domain state.
+- Prefer narrow store methods over ad-hoc whole-object replacement unless a full snapshot reset is the intended behavior.
+- **Do not** update queue-status or queue-observability store state from components, handlers, controllers, or normal operations — only from the queue implementation.
 
 ## Good / bad
 
 ```ts
-// BAD — component imports setter
-import { setCatalog } from '../state';
+// BAD — component subscribes directly and mutates state
+const catalog = catalogsStore.getStore().state.catalog;
+catalogsStore.getStore().setCatalog(next);
 
-// GOOD — operation
-this.state.setCatalog(nextImmutableSlice);
+// GOOD — viewmodel + operation boundaries
+const catalog = useStore(catalogsStore.api, (store) => store.state.catalog);
+this.catalogsStore.getStore().setCatalog(nextCatalog);
 ```

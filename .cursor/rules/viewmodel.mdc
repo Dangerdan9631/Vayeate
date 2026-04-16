@@ -7,10 +7,10 @@ alwaysApply: false
 
 ## Contract
 
-**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When viewmodel hook/file naming changes here, update `use-*-viewmodel.ts: at least one exported function…` and vice versa.** A separate `describe` forbids **`useContextSelector` in `src/app` `*.tsx`** (components use viewmodels for selectors).
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When viewmodel hook/file naming changes here, update `use-*-viewmodel.ts: at least one exported function…` and vice versa.** Components should keep subscriptions inside viewmodels rather than inline in `*.tsx`.
 
-- Bridge **React** and **app state**: expose selected slices via **`useContextSelector`** (or hooks that wrap it).
-- **Components must not** define raw context selectors; they consume viewmodel hooks only.
+- Bridge **React** and domain stores: expose selected store values via **`useStore(store.api, selector)`**.
+- **Components must not** define raw store subscriptions inline; they consume viewmodel hooks only.
 - Use **validations** for disabled states, tooltips, and guard logic aligned with controllers.
 
 ## Anti-patterns
@@ -22,10 +22,10 @@ alwaysApply: false
 
 ```tsx
 // BAD — in component file
-const x = useContextSelector(ctx, (s) => s.catalog);
+const x = useStore(catalogsStore.api, (store) => store.state.catalog);
 
 // GOOD — in viewmodel hook
 export function useCatalogVm() {
-  return useContextSelector(AppStateContext, (s) => s.catalog);
+  return useStore(catalogsStore.api, (store) => store.state.catalog);
 }
 ```

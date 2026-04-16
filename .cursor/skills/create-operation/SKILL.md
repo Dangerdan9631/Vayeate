@@ -13,7 +13,7 @@ description: Adds or changes a domain Operation in Vayeate Theme Studio. Use whe
 
 1. Place in `vayeate-theme-studio/src/domain/<domain>/operations/`.
 2. Kebab-case file; export one **`SomethingOperation`** with **`execute(...)`** only.
-3. **`@singleton()`**; inject concrete gateways, services, state setter/getters — no string or symbol tokens.
+3. **`@singleton()`**; inject concrete gateways, services, and store classes — no string or symbol tokens.
 4. Implement **single** logical change; call **no** other operations.
 
 ## Skeleton
@@ -23,7 +23,7 @@ import { singleton } from 'tsyringe';
 
 @singleton()
 export class ExampleOperation {
-  constructor(/* state setter, gateways */) {}
+  constructor(/* store, gateways */) {}
 
   execute(args: { /* explicit inputs */ }): void {}
 }
@@ -33,4 +33,4 @@ export class ExampleOperation {
 
 - [ ] Only controllers invoke this operation
 - [ ] No `otherOperation.execute`
-- [ ] State writes only here (via setter), not in controller
+- [ ] Store writes only here (via store method), not in controller

@@ -1,6 +1,6 @@
 ---
 name: create-state
-description: Adds or changes domain state slices and accessors in Vayeate Theme Studio. Use when introducing new app state shape or getters/setters.
+description: Adds or changes domain zustand stores in Vayeate Theme Studio. Use when introducing new app state shape, store methods, or store wiring.
 ---
 
 # Create / modify State
@@ -11,14 +11,17 @@ description: Adds or changes domain state slices and accessors in Vayeate Theme 
 
 ## Workflow
 
-1. Place slice types and reducers/helpers under `vayeate-theme-studio/src/domain/<domain>/state/`.
-2. Ensure root aggregate holds **only** nested slices (no ad-hoc root fields).
-3. Expose **immutable** updates: **getter** for reads, **setter** used **only** from operations. **Exception:** queue-status wiring consumed **only** by `ActionQueue` (see [app-architecture.mdc](../../rules/app-architecture.mdc)); do not expose that setter to handlers or operations.
-4. Wire slice into the single app state aggregate and context provider per existing app pattern.
+1. Place state shape helpers and the store class under `vayeate-theme-studio/src/domain/state/<domain>/`.
+2. Create a `@singleton()` `*-store.ts` class built with `createStore(...)` and `immer(...)`.
+3. Expose one data root such as `state` or `config`, store-owned mutation methods, an `api` getter, and `getStore()`.
+4. Keep writes inside store methods that operations call through `this.someStore.getStore().setX(...)`.
+5. **Exception:** queue-status wiring is owned by `ActionQueue` / background queue implementations (see [app-architecture.mdc](../../rules/app-architecture.mdc)); do not route those updates through ordinary domain operations.
 
 ## Checklist
 
 - [ ] No React imports in state modules
-- [ ] Components never import setters
-- [ ] Controllers read via getter; operations write via setter
-- [ ] If adding queue-status fields, only `ActionQueue` invokes the dedicated setter — not operations
+- [ ] Store file uses `zustand/vanilla` + `zustand/middleware/immer`
+- [ ] Components never call store mutation methods directly
+- [ ] Controllers/validations read snapshots; operations write through store methods
+- [ ] Store exposes `api` and `getStore()`
+- [ ] If adding queue-status fields, only `ActionQueue` or the queue implementation updates them

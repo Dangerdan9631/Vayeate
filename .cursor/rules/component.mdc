@@ -16,7 +16,7 @@ alwaysApply: false
 
 ## Anti-patterns
 
-- `useContextSelector` on app state context inside component files (use viewmodel).
+- `useStore(...)` subscriptions or other direct store reads inside component files (use viewmodel).
 - Payloads that duplicate state (pass only user input + ids).
 
 ## Good / bad

@@ -12,22 +12,22 @@ description: Adds or changes an app ViewModel hook in Vayeate Theme Studio. Use 
 ## Workflow
 
 1. Place under `vayeate-theme-studio/src/app/<domain>/viewmodel/` (or `common` / `core` as appropriate).
-2. Export hooks that wrap **`useContextSelector`** for needed slices only.
+2. Export hooks that wrap **`useStore(store.api, selector)`** for needed slices only.
 3. Import **validations** for disabled/visible logic; do **not** call operations/controllers from hooks.
 4. Keep one primary hook module per concern; kebab-case file name.
 
 ## Skeleton
 
 ```ts
-import { useContextSelector } from 'use-context-selector';
-import { AppStateContext } from '...';
+import { useStore } from 'zustand';
+import { CatalogsStore } from '...';
 
 export function useExampleVm() {
-  return useContextSelector(AppStateContext, (s) => s.example.slice);
+  return useStore(catalogsStore.api, (store) => store.state.exampleSlice);
 }
 ```
 
 ## Checklist
 
-- [ ] No selectors defined inline in `.tsx` components for app state
+- [ ] No store subscriptions defined inline in `.tsx` components
 - [ ] No IPC or domain mutations
