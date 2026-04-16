@@ -1,9 +1,9 @@
 export { SetActiveTabController } from './set-active-tab-controller';
 export { SetColorSchemeController } from './set-color-scheme-controller';
 export { ToggleColorSchemeController } from './toggle-color-scheme-controller';
+export { BootstrapAppController } from './bootstrap-app-controller';
 export { LoadAppController } from './load-app-controller';
 export { UnloadAppController } from './unload-app-controller';
-export { InitializeLoggingController } from './initialize-logging-controller';
 export { OnGlobalKeyDownEventController } from './on-global-key-down-event-controller';
 export { ToggleMenuOpenController } from './toggle-menu-open-controller';
 export { CloseAllMenusController } from './close-all-menus-controller';

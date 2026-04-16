@@ -3,11 +3,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/app/components/App';
 import { container } from 'tsyringe';
-import { InitializeLoggingController } from './domain/controllers/app-controller';
-import { AppConfigBootstrapService } from './gateway/services/app-config-bootstrap-service';
+import { BootstrapAppController } from './domain/controllers/app-controller';
 
-void container.resolve(InitializeLoggingController).run();
-void container.resolve(AppConfigBootstrapService).getInitialAppConfig();
+void container.resolve(BootstrapAppController).run();
 
 const appRoot = document.querySelector<HTMLDivElement>('#app');
 if (appRoot) {
