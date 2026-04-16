@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { parseThemeJson } from '../../../utils/theme-parser';
 import { AppendTokensToCatalogOperation } from '../../../operations/catalog-operations/tokens/append-tokens-to-catalog-operation';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
@@ -13,7 +13,7 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalo
 @singleton()
 export class BulkAddTokensController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogBulkAddDialogOpen: SetCatalogBulkAddDialogOpenOperation,
     private readonly setCatalogBulkAddText: SetCatalogBulkAddTextOperation,
@@ -25,9 +25,8 @@ export class BulkAddTokensController {
   ) {}
 
   async run(): Promise<void> {
-    const state = this.catalogsStateGetter.current();
-    const catalog = state.catalog;
-    const text = state.bulkAddText?.trim();
+    const catalog = this.catalogsStore.getStore().state.catalog;
+    const text = this.catalogsStore.getStore().state.bulkAddText?.trim();
     if (!catalog || !text || !this.validateCanBulkAddTokens.test(catalog, text)) return;
     try {
       const result = parseThemeJson(text!);

@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 @singleton()
 export class SetCatalogTokensSearchTextOperation {
-  constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
+  constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(value: string): void {
-    this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_TOKENS_SEARCH_TEXT', value });
+    this.catalogsStore.getStore().setTokensSearchText(value);
   }
 }
 

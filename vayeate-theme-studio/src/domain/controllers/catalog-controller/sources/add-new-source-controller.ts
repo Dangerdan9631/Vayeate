@@ -1,6 +1,6 @@
 import type { Source } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { AddSourceToCatalogOperation } from '../../../operations/catalog-operations/sources/add-source-to-catalog-operation';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
@@ -12,7 +12,7 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalo
 @singleton()
 export class AddNewSourceController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlOperation,
     private readonly setCatalogNewSourceTokenType: SetCatalogNewSourceTokenTypeOperation,
@@ -23,7 +23,7 @@ export class AddNewSourceController {
   ) {}
 
   async run(): Promise<void> {
-    const state = this.catalogsStateGetter.current();
+    const state = this.catalogsStore.getStore().state;
     const catalog = state.catalog;
     const url = state.newSourceUrl?.trim();
     if (!catalog || !url) return;

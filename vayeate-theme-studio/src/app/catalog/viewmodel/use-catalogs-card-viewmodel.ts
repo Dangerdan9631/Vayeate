@@ -1,21 +1,20 @@
 import { useCallback, useMemo } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogReference } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
+import { container } from 'tsyringe';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { useStore } from 'zustand';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 export function useCatalogsCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, isCreating, catalogMap } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice;
-  });
+  const selectedRef = useStore(catalogsStore.api, (state) => state.state.selectedRef);
+  const isCreating = useStore(catalogsStore.api, (state) => state.state.isCreating);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogMap);
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
 
   const catalogNames = useMemo(() => {

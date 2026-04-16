@@ -1,7 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Catalog, CatalogReference } from '../../../../model/schemas';
-import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 /**
  * Sets the catalog pane selection: selected ref and loaded catalog in app state.
@@ -10,31 +9,30 @@ import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reduc
 @singleton()
 export class SetSelectedCatalogOperation {
   constructor(
-    private readonly catalogsStateSetter: CatalogsStateSetter,
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
   ) {}
 
   execute(ref: CatalogReference | null, catalog?: Catalog | null): void {
     if (ref === null) {
-      this.catalogsStateSetter.apply({ type: 'SET_SELECTED_REF', ref: null });
-      this.catalogsStateSetter.apply({ type: 'SET_CATALOG', catalog: null });
+      this.catalogsStore.getStore().setSelectedRef(null);
+      this.catalogsStore.getStore().setCatalog(null);
       return;
     }
 
     if (catalog !== undefined) {
-      this.catalogsStateSetter.apply({ type: 'SET_SELECTED_REF', ref });
-      this.catalogsStateSetter.apply({ type: 'SET_CATALOG', catalog });
+      this.catalogsStore.getStore().setSelectedRef(ref);
+      this.catalogsStore.getStore().setCatalog(catalog);
       return;
     }
 
-    const fromMap = this.catalogsStateGetter.current().catalogMap[ref.name]?.[ref.version]?.catalog;
+    const fromMap = this.catalogsStore.getStore().state.catalogMap[ref.name]?.[ref.version]?.catalog;
     if (!fromMap) {
       throw new Error(
         `SetSelectedCatalogOperation: no catalog in catalog map for ${ref.name}@${ref.version}; pass catalog or load from disk first`,
       );
     }
 
-    this.catalogsStateSetter.apply({ type: 'SET_SELECTED_REF', ref });
-    this.catalogsStateSetter.apply({ type: 'SET_CATALOG', catalog: fromMap });
+    this.catalogsStore.getStore().setSelectedRef(ref);
+    this.catalogsStore.getStore().setCatalog(fromMap);
   }
 }

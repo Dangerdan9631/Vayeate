@@ -1,23 +1,24 @@
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { SourceType, TokenType } from '../../../model/schemas';
+import type { Catalog, SourceType, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
+import { container } from 'tsyringe';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { useStore } from 'zustand';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 export function useCatalogDetailsCardViewModel() {
   const dispatch = useAppDispatch();
-  const catalogsState = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice;
-  });
-  const { selectedRef, catalogMap, catalog, newSourceUrl, newSourceTokenType, newSourceType } = catalogsState;
+  const selectedRef = useStore(catalogsStore.api, (state) => state.state.selectedRef);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogMap);
+  const catalog: Catalog = useStore(catalogsStore.api, (state) => state.state.catalog);
+  const newSourceUrl = useStore(catalogsStore.api, (state) => state.state.newSourceUrl);
+  const newSourceTokenType = useStore(catalogsStore.api, (state) => state.state.newSourceTokenType);
+  const newSourceType = useStore(catalogsStore.api, (state) => state.state.newSourceType);
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
 
   const selectedName = selectedRef?.name ?? null;

@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { SourceType } from '../../../../model/schemas';
-import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 @singleton()
 export class SetCatalogNewSourceTypeOperation {
-  constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
+  constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(value: SourceType): void {
-    this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_NEW_SOURCE_TYPE', value });
+    this.catalogsStore.getStore().setNewSourceType(value);
   }
 }
 

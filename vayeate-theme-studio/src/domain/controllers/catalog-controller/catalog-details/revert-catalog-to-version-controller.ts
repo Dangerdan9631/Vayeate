@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { findHighestVersionRefSameName } from '../../../utils/find-highest-version-ref-same-name';
 import { nextPatchVersion } from '../../../utils/next-patch-version';
 import { ListCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/list-catalog-refs-operation';
@@ -12,7 +12,7 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalo
 @singleton()
 export class RevertCatalogToVersionController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly loadCatalogSnapshot: LoadCatalogSnapshotOperation,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly listCatalogRefs: ListCatalogRefsOperation,
@@ -22,7 +22,7 @@ export class RevertCatalogToVersionController {
   ) {}
 
   async run(): Promise<void> {
-    const ref = this.catalogsStateGetter.current().selectedRef;
+    const ref = this.catalogsStore.getStore().state.selectedRef;
     if (!ref) return;
 
     const { name, version } = ref;

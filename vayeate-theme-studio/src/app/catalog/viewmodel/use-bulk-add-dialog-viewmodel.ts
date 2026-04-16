@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import type { BulkParseResult } from '../../../domain/utils/theme-parser';
-import type { Token } from '../../../model/schemas';
+import type { Catalog, Token } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 export interface BulkAddDialogViewModel {
   text: string;
@@ -21,27 +24,9 @@ export interface BulkAddDialogViewModel {
 
 export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   const dispatch = useAppDispatch();
-  const catalog = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice.catalog;
-  });
-  const text = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice.bulkAddText;
-  });
-  const bulkAddParse = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice.bulkAddParse;
-  });
+  const catalog: Catalog = useStore(catalogsStore.api, (state) => state.state.catalog);
+  const text = useStore(catalogsStore.api, (state) => state.state.bulkAddText);
+  const bulkAddParse = useStore(catalogsStore.api, (state) => state.state.bulkAddParse);
 
   const catalogTokenSignature = useMemo(
     () => (catalog ? catalog.tokens.map((t) => `${t.type}::${t.key}`).join('\0') : ''),

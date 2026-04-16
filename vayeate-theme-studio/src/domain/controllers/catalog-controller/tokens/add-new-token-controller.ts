@@ -1,7 +1,7 @@
 import type { Token } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { AddPlainTokenToCatalogOperation } from '../../../operations/catalog-operations/tokens/add-plain-token-to-catalog-operation';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { MergeSemanticSelectorsIntoCatalogOperation } from '../../../operations/catalog-operations/tokens/merge-semantic-selectors-into-catalog-operation';
@@ -12,7 +12,7 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalo
 @singleton()
 export class AddNewTokenController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
@@ -22,7 +22,7 @@ export class AddNewTokenController {
   ) {}
 
   async run(tokenType: TokenType, key?: string): Promise<void> {
-    const state = this.catalogsStateGetter.current();
+    const state = this.catalogsStore.getStore().state;
     const catalog = state.catalog;
     const tokenKey = (key ?? state.newTokenKey)?.trim();
     if (!catalog || !tokenKey) return;

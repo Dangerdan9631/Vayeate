@@ -14,6 +14,11 @@ import type {
 } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
+import { useStore } from 'zustand';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { container } from 'tsyringe';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
@@ -34,13 +39,7 @@ export function useMappingsCardViewModel() {
     mappingContrastVariableFilter,
   } = templatesState;
 
-  const loadedForDisplay = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice.loadedForDisplay;
-  });
+  const loadedForDisplay = useStore(catalogsStore.api, (state) => state.state.loadedForDisplay);
 
   const loadedCatalogsForTemplateRefs = useMemo(() => {
     if (!template || template.catalogRefs.length === 0) return [];

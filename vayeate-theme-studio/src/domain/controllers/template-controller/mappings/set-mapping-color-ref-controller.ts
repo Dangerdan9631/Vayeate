@@ -1,7 +1,7 @@
 import type { ColorVariableKey } from '../../../../model/schemas';
 import type { TokenType } from '../../../../model/schemas';
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { TemplatesStateGetter } from '../../../state/template/templates-state-reducer';
 import { isMappingOrphanForTemplate } from '../../../utils/is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
@@ -14,7 +14,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/templ
 export class SetMappingColorRefController {
   constructor(
     private readonly templatesStateGetter: TemplatesStateGetter,
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
     private readonly setMappingColorRefOp: SetMappingColorRefOp,
@@ -29,7 +29,7 @@ export class SetMappingColorRefController {
   ): Promise<void> {
     const template = this.templatesStateGetter.current().template;
     if (!template) return;
-    const loadedForDisplay = this.catalogsStateGetter.current().loadedForDisplay;
+    const loadedForDisplay = this.catalogsStore.getStore().state.loadedForDisplay;
     const isOrphan = isMappingOrphanForTemplate(
       template,
       tokenKey,

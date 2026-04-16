@@ -7,6 +7,11 @@ import { getTemplateRefs } from '../../../domain/state/template/templates-state'
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogName, CatalogReference } from '../../../model/schemas';
 import { TemplateActionType } from '../actions/template-action-type';
+import { container } from 'tsyringe';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { useStore } from 'zustand';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 export function useTemplateCatalogsCardViewModel() {
   const dispatch = useAppDispatch();
@@ -17,14 +22,6 @@ export function useTemplateCatalogsCardViewModel() {
     }
     return slice;
   });
-  const catalogs = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice;
-  });
-
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
   const selectedName = selectedRef?.name ?? null;
 
@@ -39,8 +36,8 @@ export function useTemplateCatalogsCardViewModel() {
     return best !== null && best.version === selectedRef.version;
   }, [templateRefs, selectedRef, selectedName]);
 
+  const catalogs = useStore(catalogsStore.api, (state) => state.state);
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogs.catalogMap), [catalogs.catalogMap]);
-
   const catalogNamesList = useMemo(() => {
     const names = new Set(catalogRefs.map((r) => r.name));
     return [...names].sort();

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
 import { UpdateSourceUrlInCatalogOperation } from '../../../operations/catalog-operations/sources/update-source-url-in-catalog-operation';
@@ -9,7 +9,7 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalo
 @singleton()
 export class UpdateSourceUrlController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSourceUrlInCatalog: UpdateSourceUrlInCatalogOperation,
@@ -18,7 +18,7 @@ export class UpdateSourceUrlController {
   ) {}
 
   async run(sourceIndex: number, value: string): Promise<void> {
-    const catalog = this.catalogsStateGetter.current().catalog;
+    const catalog = this.catalogsStore.getStore().state.catalog;
     if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceUrlInCatalog.execute(base, sourceIndex, value);

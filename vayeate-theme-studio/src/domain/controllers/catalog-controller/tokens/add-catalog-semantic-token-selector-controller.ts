@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { MergeSemanticSelectorsIntoCatalogOperation } from '../../../operations/catalog-operations/tokens/merge-semantic-selectors-into-catalog-operation';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
@@ -9,7 +9,7 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalo
 @singleton()
 export class AddCatalogSemanticTokenSelectorController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly mergeSemanticSelectorsIntoCatalog: MergeSemanticSelectorsIntoCatalogOperation,
@@ -18,7 +18,7 @@ export class AddCatalogSemanticTokenSelectorController {
   ) {}
 
   async run(): Promise<void> {
-    const state = this.catalogsStateGetter.current();
+    const state = this.catalogsStore.getStore().state;
     const catalog = state.catalog;
     const selector = state.newSemanticTokenSelectorText?.trim();
     if (!catalog || !selector) return;

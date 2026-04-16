@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 export type CatalogCreateDialogData = {
   createFormName: string;
@@ -10,10 +10,10 @@ export type CatalogCreateDialogData = {
 /** Read current catalog create-dialog draft fields from app state. */
 @singleton()
 export class GetCatalogCreateDialogDataOperation {
-  constructor(private readonly catalogsStateGetter: CatalogsStateGetter) {}
+  constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(): CatalogCreateDialogData {
-    const { createFormName, createFormType } = this.catalogsStateGetter.current();
+    const { createFormName, createFormType } = this.catalogsStore.getStore().state;
     return { createFormName, createFormType };
   }
 }

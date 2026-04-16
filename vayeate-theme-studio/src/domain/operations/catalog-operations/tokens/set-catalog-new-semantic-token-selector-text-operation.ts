@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 @singleton()
 export class SetCatalogNewSemanticTokenSelectorTextOperation {
-  constructor(private readonly catalogsStateSetter: CatalogsStateSetter) {}
+  constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(value: string): void {
-    this.catalogsStateSetter.apply({ type: 'SET_CATALOG_NEW_SEMANTIC_TOKEN_SELECTOR_TEXT', value });
+    this.catalogsStore.getStore().setNewSemanticTokenSelectorText(value);
   }
 }

@@ -1,16 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schemas';
-import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 @singleton()
 export class SetCatalogRefsOperation {
-  constructor(private readonly catalogsStateSetter: CatalogsStateSetter) {}
+  constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(refs: CatalogReference[]): void {
-    this.catalogsStateSetter.apply({
-      type: 'SET_CATALOG_MAP_ENTRIES',
-      entries: refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })),
-    });
+    this.catalogsStore.getStore().setCatalogMapEntries(refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })));
   }
 }
 

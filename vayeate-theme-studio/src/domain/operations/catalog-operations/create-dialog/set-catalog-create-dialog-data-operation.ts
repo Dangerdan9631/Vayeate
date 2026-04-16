@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { CatalogType } from '../../../../model/schemas';
-import { CatalogsStateSetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 export type SetCatalogCreateDialogDataOptions = {
   name?: string;
@@ -9,14 +9,14 @@ export type SetCatalogCreateDialogDataOptions = {
 
 @singleton()
 export class SetCatalogCreateDialogDataOperation {
-  constructor(private readonly CatalogsStateSetter: CatalogsStateSetter) {}
+  constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(options: SetCatalogCreateDialogDataOptions): void {
     if (options.name !== undefined) {
-      this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_NAME', value: options.name });
+      this.catalogsStore.getStore().setCreateFormName(options.name);
     }
     if (options.type !== undefined) {
-      this.CatalogsStateSetter.apply({ type: 'SET_CATALOG_CREATE_FORM_TYPE', value: options.type });
+      this.catalogsStore.getStore().setCreateFormType(options.type);
     }
   }
 }

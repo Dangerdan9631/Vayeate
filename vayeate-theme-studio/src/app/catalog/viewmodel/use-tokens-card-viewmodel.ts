@@ -1,11 +1,14 @@
 import { useCallback, useMemo } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { SemanticTokenRegistryListKind, Token, TokenKey, TokenType } from '../../../model/schemas';
+import type { Catalog, SemanticTokenRegistryListKind, Token, TokenKey, TokenType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
+import { container } from 'tsyringe';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { useStore } from 'zustand';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 export const CATALOG_TOKEN_LIST_SECTIONS: TokenType[] = ['theme', 'textmate token'];
 
@@ -16,20 +19,11 @@ function matchesSearch(key: string, searchQuery: string): boolean {
 
 export function useTokensCardViewModel() {
   const dispatch = useAppDispatch();
-  const { selectedRef, catalogMap, catalog, tokensSearchText, newSemanticTokenSelectorText } =
-    useContextSelector(AppContext, (c) => {
-      const slice = c?.state.catalogs;
-      if (slice === undefined) {
-        throw new Error('Catalog state requires AppProvider.');
-      }
-      return {
-        selectedRef: slice.selectedRef,
-        catalogMap: slice.catalogMap,
-        catalog: slice.catalog,
-        tokensSearchText: slice.tokensSearchText,
-        newSemanticTokenSelectorText: slice.newSemanticTokenSelectorText,
-      };
-    });
+  const selectedRef = useStore(catalogsStore.api, (state) => state.state.selectedRef);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogMap);
+  const catalog: Catalog = useStore(catalogsStore.api, (state) => state.state.catalog);
+  const tokensSearchText = useStore(catalogsStore.api, (state) => state.state.tokensSearchText);
+  const newSemanticTokenSelectorText = useStore(catalogsStore.api, (state) => state.state.newSemanticTokenSelectorText);
   const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
   const selectedName = selectedRef?.name ?? null;
 

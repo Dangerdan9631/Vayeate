@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStateGetter } from '../../../state/catalog/catalogs-state-reducer';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { findNearestVersionRef } from '../../../utils/find-nearest-version-ref';
 import { catalogStackId } from '../../../utils/catalog-stack-id';
 import { DeleteCatalogOperation } from '../../../operations/catalog-operations/catalog-list/delete-catalog-operation';
@@ -11,7 +11,7 @@ import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operati
 @singleton()
 export class DeleteCurrentCatalogVersionController {
   constructor(
-    private readonly catalogsStateGetter: CatalogsStateGetter,
+    private readonly catalogsStore: CatalogsStore,
     private readonly deleteCatalog: DeleteCatalogOperation,
     private readonly refreshCatalogRefs: RefreshCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
@@ -20,7 +20,7 @@ export class DeleteCurrentCatalogVersionController {
   ) {}
 
   async run(): Promise<void> {
-    const ref = this.catalogsStateGetter.current().selectedRef;
+    const ref = this.catalogsStore.getStore().state.selectedRef;
     if (!ref) return;
 
     const { name, version } = ref;

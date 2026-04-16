@@ -1,21 +1,19 @@
 import type { MouseEvent } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { AppContext } from '../../core/app-context';
 import type { CatalogType } from '../../../model/schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
+import { container } from 'tsyringe';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { useStore } from 'zustand';
+
+const catalogsStore = container.resolve(CatalogsStore);
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
 export function useCreateCatalogDialogViewModel() {
   const dispatch = useAppDispatch();
-  const { createFormName: name, createFormType: type } = useContextSelector(AppContext, (c) => {
-    const slice = c?.state.catalogs;
-    if (slice === undefined) {
-      throw new Error('Catalog state requires AppProvider.');
-    }
-    return slice;
-  });
+  const name = useStore(catalogsStore.api, (state) => state.state.createFormName);
+  const type = useStore(catalogsStore.api, (state) => state.state.createFormType);
   const nameValid = name.length > 0 && NAME_REGEX.test(name);
   const canSubmit = nameValid;
 

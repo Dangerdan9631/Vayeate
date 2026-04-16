@@ -6,11 +6,6 @@ import { AppContext, type AppContextValue } from '../app-context';
 import type { AppState } from '../../../domain/state/app-state';
 import { initialAppState } from '../../../domain/state/app-state';
 import {
-  CatalogsStateGetter,
-  CatalogsStateSetter,
-  catalogsStateReducer,
-} from '../../../domain/state/catalog/catalogs-state-reducer';
-import {
   TemplatesStateGetter,
   TemplatesStateSetter,
   templatesStateReducer,
@@ -70,16 +65,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const stateRef = useRef(state);
   stateRef.current = state;
   const getState = useCallback(() => stateRef.current, []);
-
-  useAppSliceBridge({
-    stateRef,
-    replaceState,
-    getState,
-    reducer: catalogsStateReducer,
-    selectSlice: (s: AppState) => s.catalogs,
-    SetterClass: CatalogsStateSetter,
-    GetterClass: CatalogsStateGetter,
-  });
 
   useAppSliceBridge({
     stateRef,
