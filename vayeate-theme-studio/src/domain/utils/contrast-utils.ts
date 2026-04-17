@@ -1,4 +1,4 @@
-import type { ContrastAssignment, ContrastAssignmentValue } from '../../model/schemas';
+import type { ContrastAssignment, ContrastAssignmentValue } from '../../model/schema/theme-schemas';
 
 export function parseContrastValue(v: string | number): number | null {
   const n = typeof v === 'number' ? v : Number.parseFloat(String(v));

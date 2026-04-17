@@ -1,4 +1,4 @@
-import type { ColorScheme } from '../../../model/schemas';
+import type { ColorScheme } from '../../../model/schema/primitives';
 export interface AppConfigState {
   colorScheme: ColorScheme;
 }

@@ -1,4 +1,4 @@
-import type { Template } from '../schemas';
+import type { Template } from '../schema/template-schemas';
 
 export interface CreateTemplateParams {
   name: string;

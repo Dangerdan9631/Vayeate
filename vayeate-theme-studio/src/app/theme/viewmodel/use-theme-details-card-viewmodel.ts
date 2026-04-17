@@ -6,7 +6,7 @@ import { getTemplateRefs } from '../../../domain/state/template/templates-state'
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { ColorAssignment, ContrastAssignment, TemplateReference } from '../../../model/schemas';
+import type { ColorAssignment, ContrastAssignment, TemplateReference } from '../../../model/schema/theme-schemas';
 import { ThemeActionType } from '../actions/theme-action-type';
 
 const templatesStore = container.resolve(TemplatesStore);

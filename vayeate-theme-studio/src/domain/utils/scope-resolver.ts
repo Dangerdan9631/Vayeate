@@ -5,12 +5,8 @@
  */
 
 import { adjustColorToMeetContrast } from './color-adjust-contrast';
-import type {
-  ColorAssignment,
-  ContrastAssignment,
-  ContrastVariable,
-  Mapping,
-} from '../../model/schemas';
+import type { ContrastVariable, Mapping } from '../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment } from '../../model/schema/theme-schemas';
 
 export interface ScopeColorMapEntry {
   segments: string[];

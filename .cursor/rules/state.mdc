@@ -21,7 +21,6 @@ alwaysApply: false
 |----------|------|-------|
 | Controllers / validations | `this.someStore.getStore().state` (or sibling data root like `config`) | Never |
 | Operations | `this.someStore.getStore().state` (or sibling data root like `config`) | `this.someStore.getStore().setX(...)` |
-| `ActionQueue` (`src/app/core/actions/`) | Via existing store accessors if needed | Queue observability state only — updated inside queue implementation (see [app-architecture.mdc](app-architecture.mdc)) |
 | React | Via viewmodel hooks + `useStore(store.api, selector)` | Never |
 
 ## Rules

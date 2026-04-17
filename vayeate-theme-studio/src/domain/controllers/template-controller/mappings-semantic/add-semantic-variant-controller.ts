@@ -1,5 +1,5 @@
-import type { Mapping } from '../../../../model/schemas';
-import { SEMANTIC_WILDCARD_TYPE } from '../../../utils/semantic-token';
+import type { Mapping } from '../../../../model/schema/template-schemas';
+import { SEMANTIC_WILDCARD_TYPE } from '../../../../model/semantic-token-constants';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
 import { AppendSemanticVariantToTemplateOperation } from '../../../operations/template-operations/mappings-semantic/append-semantic-variant-to-template-operation';

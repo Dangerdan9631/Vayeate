@@ -1,4 +1,4 @@
-import { CatalogName, ColorVariableKey, ContrastVariableKey, TemplateName, TokenType, Version } from "../../../model/schemas";
+import { CatalogName, ColorVariableKey, ContrastVariableKey, TemplateName, TokenType, Version } from "../../../model/schema/primitives";
 
 export enum TemplateActionType {
   TemplatePageOnLoad = 'TEMPLATE_PAGE_ON_LOAD',

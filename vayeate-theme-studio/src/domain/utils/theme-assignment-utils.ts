@@ -1,4 +1,4 @@
-import type { ColorAssignment } from '../../model/schemas';
+import type { ColorAssignment } from '../../model/schema/theme-schemas';
 import { applyHueShift } from './color-hsl';
 
 export function applyHueToAssignmentsFiltered(

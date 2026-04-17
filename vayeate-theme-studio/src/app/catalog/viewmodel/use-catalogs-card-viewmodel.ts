@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { CatalogReference } from '../../../model/schemas';
+import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { CatalogActionType } from '../actions/catalog-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';

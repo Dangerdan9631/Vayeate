@@ -1,4 +1,4 @@
-import type { TokenType } from '../../../../model/schemas';
+import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';

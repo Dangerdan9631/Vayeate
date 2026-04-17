@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { useCreateCatalogDialogViewModel } from '../viewmodel/use-create-catalog-dialog-viewmodel';
-import type { CatalogType } from '../../../model/schemas';
+import { CatalogType } from '../../../model/schema/primitives';
 
 export function CreateCatalogDialog() {
   const {

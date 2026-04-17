@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { ColorVariableKey } from '../../../../model/schemas';
+import type { ColorVariableKey } from '../../../../model/schema/primitives';
 import { TemplatesStore } from '../../../state/template/templates-store';
 
 @singleton()

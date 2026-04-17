@@ -1,10 +1,7 @@
-import { parseSemanticSelector } from './semantic-token';
-import type {
-  CatalogReference,
-  Mapping,
-  MergeMappingsResult,
-  Token,
-} from '../../model/schemas';
+import { parseSemanticSelector } from '../../model/parse-semantic-selector';
+import type { Token } from '../../model/schema/catalog';
+import type { CatalogReference, Mapping } from '../../model/schema/template-schemas';
+import type { MergeMappingsResult } from '../../model/schema/theme-schemas';
 
 /** Pre-loaded catalog data for mergeMappingsFromCatalogData. */
 export interface CatalogDataItem {

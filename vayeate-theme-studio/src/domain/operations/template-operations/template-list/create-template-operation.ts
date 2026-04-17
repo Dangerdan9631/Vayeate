@@ -1,4 +1,4 @@
-import type { Template } from '../../../../model/schemas';
+import type { Template } from '../../../../model/schema/template-schemas';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { singleton } from 'tsyringe';
 

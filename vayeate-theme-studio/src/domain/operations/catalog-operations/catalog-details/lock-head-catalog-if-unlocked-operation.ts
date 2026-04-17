@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
 
 /** If `head` exists and is not locked, return a locked copy to persist; otherwise null. */
 @singleton()

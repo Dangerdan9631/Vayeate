@@ -3,7 +3,7 @@ import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
 import { SyncCatalogOperation } from '../../../operations/catalog-operations/catalog-details/sync-catalog-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
-import { ValidateSyncCatalog } from '../../../validations/catalog-validations';
+import { ValidateSyncCatalog } from '../../../validations/catalog-validations/validate-sync-catalog';
 
 @singleton()
 export class SyncCatalogController {

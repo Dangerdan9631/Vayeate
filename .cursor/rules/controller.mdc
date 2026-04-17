@@ -17,7 +17,7 @@ alwaysApply: false
 
 ## Naming
 
-- User-capability oriented, **no UI event names**.
+- App domain action oriented, **no UI event names**.
 
 | Good | Bad |
 |------|-----|

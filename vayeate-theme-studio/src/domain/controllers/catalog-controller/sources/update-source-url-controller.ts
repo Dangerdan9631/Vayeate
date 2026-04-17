@@ -3,7 +3,7 @@ import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
 import { UpdateSourceUrlInCatalogOperation } from '../../../operations/catalog-operations/sources/update-source-url-in-catalog-operation';
-import { ValidateCanUpdateCatalogSource } from '../../../validations/catalog-validations';
+import { ValidateCanUpdateCatalogSource } from '../../../validations/catalog-validations/validate-can-update-catalog-source';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()

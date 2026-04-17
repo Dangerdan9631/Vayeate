@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { HexColor } from '../../../../model/schemas';
+import type { HexColor } from '../../../../model/schema/primitives';
 import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
 
 /** Merge `result` into the current `ui.eyedropper` slice (full replace of the slice). */

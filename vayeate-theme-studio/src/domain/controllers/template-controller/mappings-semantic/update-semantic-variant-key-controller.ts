@@ -1,8 +1,6 @@
-import {
-  formatSemanticSelector,
-  parseSemanticSelector,
-  type ParsedSemanticSelector,
-} from '../../../utils/semantic-token';
+import { formatSemanticSelector } from '../../../../model/format-semantic-selector';
+import { parseSemanticSelector } from '../../../../model/parse-semantic-selector';
+import { ParsedSemanticSelector } from '../../../../model/semantic-selector-types';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';

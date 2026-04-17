@@ -1,4 +1,4 @@
-import type { CatalogReference } from '../../../../model/schemas';
+import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
 import { GetCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/get-catalog-refs-operation';

@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
 import { LockTemplateOperation as LockTemplateOperation } from '../../../operations/template-operations/template-details/lock-template-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
-import { ValidateCanLockTemplate } from '../../../validations/template-validations';
+import { ValidateCanLockTemplate } from '../../../validations/template-validations/validate-can-lock-template';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 @singleton()

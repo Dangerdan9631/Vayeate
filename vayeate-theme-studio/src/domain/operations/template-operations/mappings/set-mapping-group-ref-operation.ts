@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
-import type { Template, TokenType } from '../../../../model/schemas';
-import { parseSemanticSelector } from '../../../utils/semantic-token';
+import type { TokenType } from '../../../../model/schema/primitives';
+import type { Template } from '../../../../model/schema/template-schemas';
+import { parseSemanticSelector } from '../../../../model/parse-semantic-selector';
 
 @singleton()
 export class SetMappingGroupRefOperation {

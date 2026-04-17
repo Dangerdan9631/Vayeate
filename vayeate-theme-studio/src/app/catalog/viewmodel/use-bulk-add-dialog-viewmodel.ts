@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import type { BulkParseResult } from '../../../domain/utils/theme-parser';
-import type { Catalog, Token } from '../../../model/schemas';
+import type { Catalog, Token } from '../../../model/schema/catalog';
 import { CatalogActionType } from '../actions/catalog-action-type';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { container } from 'tsyringe';

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Catalog, Source } from '../../../../model/schemas';
+import type { Catalog, Source } from '../../../../model/schema/catalog';
 
 @singleton()
 export class AddSourceToCatalogOperation {

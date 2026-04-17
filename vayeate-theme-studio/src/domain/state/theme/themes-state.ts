@@ -1,4 +1,5 @@
-import type { ColorAssignment, Template, Theme, ThemeReference } from '../../../model/schemas';
+import type { Template } from '../../../model/schema/template-schemas';
+import type { ColorAssignment, Theme, ThemeReference } from '../../../model/schema/theme-schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
 import type { SelectedColorsDisplay } from '../../../model/theme-pane-state';
 

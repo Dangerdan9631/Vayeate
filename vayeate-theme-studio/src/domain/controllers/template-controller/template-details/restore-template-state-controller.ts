@@ -1,4 +1,4 @@
-import type { Template } from '../../../../model/schemas';
+import type { Template } from '../../../../model/schema/template-schemas';
 import { singleton } from 'tsyringe';
 import { DeleteTemplateOperation } from '../../../operations/template-operations/template-list/delete-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-operation';

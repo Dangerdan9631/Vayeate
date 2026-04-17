@@ -4,7 +4,8 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { ThemeActionType } from '../actions/theme-action-type';
-import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue, ContrastComparisonMethod, ContrastValue } from '../../../model/schemas';
+import type { ContrastComparisonMethod, ContrastValue } from '../../../model/schema/primitives';
+import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
 
 const themesStore = container.resolve(ThemesStore);
 

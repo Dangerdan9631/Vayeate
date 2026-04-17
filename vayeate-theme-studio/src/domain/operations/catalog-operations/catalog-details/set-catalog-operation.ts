@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 @singleton()

@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { ColorVariableKey } from '../../../../model/schemas';
-import type { Theme } from '../../../../model/schemas';
+import type { ColorVariableKey } from '../../../../model/schema/primitives';
+import type { Theme } from '../../../../model/schema/theme-schemas';
 import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
 import { initialEyedropperUiState } from '../../../state/ui/eyedropper-ui-state';
 import { ThemesStore } from '../../../state/theme/themes-store';

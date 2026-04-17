@@ -1,4 +1,4 @@
-import type { ContrastVariableKey } from '../../../../model/schemas';
+import type { ContrastVariableKey } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { SetTemplateMappingContrastVariableFilterOperation } from '../../../operations/template-operations/mappings/set-template-mapping-contrast-variable-filter-operation';
 

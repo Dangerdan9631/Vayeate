@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { AppConfig } from '../../model/schemas';
+import type { AppConfig } from '../../model/schema/primitives';
 import { FileSystemService } from '../services/file-system-service';
 
 /** Package-relative path: Theme Studio root `data/config.json`. */

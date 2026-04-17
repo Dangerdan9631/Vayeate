@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schemas';
+import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemesStore } from '../../../state/theme/themes-store';
 
 @singleton()

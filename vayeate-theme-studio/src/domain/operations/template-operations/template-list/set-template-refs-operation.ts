@@ -1,4 +1,4 @@
-import type { TemplateReference } from '../../../../model/schemas';
+import type { TemplateReference } from '../../../../model/schema/theme-schemas';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
 

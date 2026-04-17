@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
-import type { SemanticTokenRegistryListKind } from '../../../../model/schemas';
+import type { SemanticTokenRegistryListKind } from '../../../../model/schema/primitives';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { RemoveSemanticTokenListItemOperation } from '../../../operations/catalog-operations/tokens/remove-semantic-token-list-item-operation';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';

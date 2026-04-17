@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { Catalog, SemanticTokenRegistryListKind } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
+import type { SemanticTokenRegistryListKind } from '../../../../model/schema/primitives';
 
 @singleton()
 export class UpdateSemanticTokenRegistryEntryOperation {

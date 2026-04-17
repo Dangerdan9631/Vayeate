@@ -2,12 +2,9 @@ import { castDraft } from 'immer';
 import { createStore } from 'zustand/vanilla';
 import { immer } from 'zustand/middleware/immer';
 import { singleton } from 'tsyringe';
-import type {
-  ColorVariableKey,
-  ContrastVariableKey,
-  Template,
-  TemplateReference,
-} from '../../../model/schemas';
+import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
+import type { Template } from '../../../model/schema/template-schemas';
+import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import { initialTemplatesState, type TemplateStoreMap, type TemplatesState } from './templates-state';
 
 export interface TemplateEntryInput {

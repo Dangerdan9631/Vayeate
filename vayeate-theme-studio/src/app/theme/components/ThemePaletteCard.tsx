@@ -9,7 +9,8 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from 'react';
-import type { ColorAssignment, ColorVariable } from '../../../model/schemas';
+import type { ColorVariable } from '../../../model/schema/template-schemas';
+import type { ColorAssignment } from '../../../model/schema/theme-schemas';
 import { clusterColors } from '../../../domain/utils/color-clustering';
 import { hexToHue, hslToRgb } from '../../../domain/utils/color-hsl';
 import { rgbToHex } from '../../../domain/utils/color-hex';

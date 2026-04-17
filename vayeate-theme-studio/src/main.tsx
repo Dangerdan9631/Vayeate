@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/app/components/App';
 import { container } from 'tsyringe';
-import { BootstrapAppController } from './domain/controllers/app-controller';
+import { BootstrapAppController } from './domain/controllers/app-controller/bootstrap-app-controller';
 
 void container.resolve(BootstrapAppController).run();
 

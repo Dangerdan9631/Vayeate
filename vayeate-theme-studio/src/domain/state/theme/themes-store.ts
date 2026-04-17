@@ -3,7 +3,8 @@ import { singleton } from 'tsyringe';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 import type { TokenizedPreview } from '../../../model/preview-types';
-import type { Template, Theme, ThemeReference } from '../../../model/schemas';
+import type { Template } from '../../../model/schema/template-schemas';
+import type { Theme, ThemeReference } from '../../../model/schema/theme-schemas';
 import { deriveThemePaneFields } from '../../utils/derive-theme-pane-fields';
 import { initialThemesState, type GenerateResult, type ThemeStoreMap, type ThemesState } from './themes-state';
 

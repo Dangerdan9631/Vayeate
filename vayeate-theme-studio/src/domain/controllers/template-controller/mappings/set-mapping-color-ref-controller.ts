@@ -1,5 +1,5 @@
-import type { ColorVariableKey } from '../../../../model/schemas';
-import type { TokenType } from '../../../../model/schemas';
+import type { ColorVariableKey } from '../../../../model/schema/primitives';
+import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { TemplatesStore } from '../../../state/template/templates-store';

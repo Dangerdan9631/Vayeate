@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schemas';
+import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
 

@@ -3,7 +3,7 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schemas';
+import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
 import { TemplateActionType } from '../actions/template-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';

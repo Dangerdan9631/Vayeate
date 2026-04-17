@@ -1,4 +1,4 @@
-import type { Theme } from '../../../model/schemas';
+import type { Theme } from '../../../model/schema/theme-schemas';
 
 export interface RestoreThemeStateParams {
   theme?: Theme | null;

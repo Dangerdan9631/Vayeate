@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import type { ContrastValue } from '../../../../model/schemas';
-import type { ContrastVariableKey } from '../../../../model/schemas';
-import type { Theme } from '../../../../model/schemas';
+import type { ContrastValue } from '../../../../model/schema/primitives';
+import type { ContrastVariableKey } from '../../../../model/schema/primitives';
+import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStore } from '../../../state/theme/themes-store';

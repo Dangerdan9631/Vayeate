@@ -1,4 +1,4 @@
-import type { CatalogType } from '../../../../model/schemas';
+import type { CatalogType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { SetCatalogCreateDialogDataOperation } from '../../../operations/catalog-operations/create-dialog/set-catalog-create-dialog-data-operation';
 

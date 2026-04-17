@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { SetWindowStateOperation } from '../../operations/window-operations/set-window-state-operation';
 import { LoggerFactory, type Logger } from '../../utils/logger';
-import { ValidateCanRestoreWindow } from '../../validations/window-validations';
+import { ValidateCanRestoreWindow } from '../../validations/window-validations/validate-can-restore-window';
 
 @singleton()
 export class RestoreWindowController {

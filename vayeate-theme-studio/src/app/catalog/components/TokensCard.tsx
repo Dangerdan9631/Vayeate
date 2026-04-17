@@ -1,8 +1,10 @@
 import { useCallback, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from '../viewmodel/use-tokens-card-viewmodel';
-import type { Catalog, SemanticTokenRegistryListKind, Token, TokenType } from '../../../model/schemas';
-import { tokenKeySchema } from '../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../../domain/utils/semantic-token';
+import { mergeSemanticSelectorInto } from '../../../model/merge-semantic-selector-into';
+import { Catalog } from '../../../model/schema/catalog';
+import { TokenType } from '../../../model/schema/primitives';
+import { tokenKeySchema, SemanticTokenRegistryListKind } from '../../../model/schema/primitives';
+import { Token } from '../../../model/schema/catalog';
 
 function isValidTokenKey(value: string): boolean {
   return tokenKeySchema.safeParse(value).success;

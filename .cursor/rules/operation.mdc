@@ -11,7 +11,6 @@ alwaysApply: false
 
 - Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
 - **tsyringe** **`@singleton()`**; inject gateways, services, and store classes as **concrete types** — no string or symbol tokens.
-- **Only** layer for **business logic** and **domain state mutation** (via store methods), **except** action-queue observability state updated **only** inside `ActionQueue` (see [app-architecture.mdc](app-architecture.mdc)).
 - May call **gateways** and **services**; **must not** call another operation.
 - **Exception:** `InitializeWindowServiceOperation` may inject controller classes solely to register `WindowService.init(...)` callbacks for renderer window/global-input events. Keep this exception narrow: registration only, no additional orchestration logic, and no copying this pattern to other operations without updating the architecture rules.
 - Prefer **inputs from controller** over reading store state inside `execute` when practical (keep reusable).

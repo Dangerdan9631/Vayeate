@@ -1,4 +1,4 @@
-import type { ColorAssignment, Theme } from '../../model/schemas';
+import type { ColorAssignment, Theme } from '../../model/schema/theme-schemas';
 import type { SelectedColorsDisplay } from '../../model/theme-pane-state';
 import { normalizeThemeHex } from './normalize-theme-hex';
 

@@ -2,9 +2,9 @@ import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
 import { CatalogBulkAddParseSnapshot, CatalogStoreMap, initialCatalogsState, type CatalogsState } from "./catalogs-state";
-import { Catalog } from "../../../model/catalog";
-import { CatalogType } from "../../../model/catalog";
-import { CatalogReference, SourceType, TokenType } from "../../../model/schema";
+import type { Catalog } from "../../../model/schema/catalog";
+import type { CatalogReference } from "../../../model/schema/template-schemas";
+import type { CatalogType, SourceType, TokenType } from "../../../model/schema/primitives";
 
 export interface CatalogEntryInput {
     name: string;

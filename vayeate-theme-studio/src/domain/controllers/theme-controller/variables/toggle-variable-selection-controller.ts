@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { ColorVariableKey, ContrastVariableKey } from '../../../../model/schemas';
+import type { ColorVariableKey, ContrastVariableKey } from '../../../../model/schema/primitives';
 import { SetThemePaneSelectionsOperation } from '../../../operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { ThemesStore } from '../../../state/theme/themes-store';
 

@@ -1,4 +1,6 @@
-import type { Catalog, Template, Theme } from '../model/schemas';
+import type { Catalog } from '../model/schema/catalog';
+import type { Template } from '../model/schema/template-schemas';
+import type { Theme } from '../model/schema/theme-schemas';
 
 /**
  * Writes a catalog JSON file at `data/catalogs/<name>-<version>.json`.

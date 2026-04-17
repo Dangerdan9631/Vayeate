@@ -1,4 +1,5 @@
-import type { Token, TokenType } from '../../model/schemas';
+import type { Token } from '../../model/schema/catalog';
+import type { TokenType } from '../../model/schema/primitives';
 
 interface ThemeJson {
   colors?: Record<string, unknown>;

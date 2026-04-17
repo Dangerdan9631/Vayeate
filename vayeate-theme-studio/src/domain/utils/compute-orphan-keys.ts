@@ -1,5 +1,7 @@
-import type { Mapping, Token } from '../../model/schemas';
-import { parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from './semantic-token';
+import type { Token } from '../../model/schema/catalog';
+import type { Mapping } from '../../model/schema/template-schemas';
+import { parseSemanticSelector } from '../../model/parse-semantic-selector';
+import { SEMANTIC_WILDCARD_TYPE } from '../../model/semantic-token-constants';
 
 export interface SemanticCatalogInfo {
   semanticTokenTypes: string[];

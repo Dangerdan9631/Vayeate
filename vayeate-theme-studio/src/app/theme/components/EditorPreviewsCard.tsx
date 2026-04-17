@@ -8,7 +8,8 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type { ColorAssignment, ContrastAssignment, ContrastVariable, Mapping } from '../../../model/schemas';
+import type { ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment } from '../../../model/schema/theme-schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
 import { useEditorPreviewsCardViewModel } from '../viewmodel/use-editor-previews-card-viewmodel';
 import { contrastRatio } from '../../../domain/utils/color-wcag';

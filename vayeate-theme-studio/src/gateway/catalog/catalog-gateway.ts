@@ -1,6 +1,9 @@
 import { singleton } from 'tsyringe';
-import { catalogReferenceSchema, catalogSchema } from '../../model/schemas';
-import type { Catalog, CatalogName, CatalogReference, Version } from '../../model/schemas';
+import { catalogSchema } from '../../model/schema/catalog';
+import { catalogReferenceSchema } from '../../model/schema/template-schemas';
+import type { Catalog } from '../../model/schema/catalog';
+import type { CatalogName, Version } from '../../model/schema/primitives';
+import type { CatalogReference } from '../../model/schema/template-schemas';
 import { FileSystemService } from '../services/file-system-service';
 
 /** Package-relative path: Theme Studio root `data/catalogs/`. */

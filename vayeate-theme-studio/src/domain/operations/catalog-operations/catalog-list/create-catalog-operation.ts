@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { CatalogReference } from '../../../../model/schemas';
+import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { createCatalogWithParams } from '../../../../model/factories/catalog-factory';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';

@@ -17,9 +17,10 @@ Scope: [`vayeate-theme-studio/`](vayeate-theme-studio/).
 | `src/gateway/` | Services + gateway facades over external systems |
 | `src/model/` | Domain types; **zod** for validation |
 
-## Domains (under app and domain)
+## Feature and concept folders
 
-`app`, `catalog`, `common`, `core`, `template`, `theme`
+- Under `src/app/`, organize UI code by app-facing feature folders such as `app`, `catalog`, `common`, `core`, `template`, and `theme`.
+- Under `src/domain/`, organize by domain concepts such as `controllers`, `operations`, `validations`, `state`, `utils`, and `core`.
 
 ## Mutation flow
 
@@ -28,21 +29,29 @@ flowchart LR
   UI[Component] --> AQ[ActionQueue]
   AQ --> H[Handler]
   H --> C[Controller]
+  C --> BQ[Background Queue]
   C --> V[Validations]
   C --> O[Operations]
   C --> S1[Store snapshot reads]
+  BQ --> O
   O --> S2[Store methods]
+  O --> G[Gateways]
+  G --> S[Services]
+  S --> E[Electron IPC]
+  S --> S3[System calls]
+  S4[System Events] --> S
+  S --> O
   S2 --> VM[ViewModel useStore selector]
   VM --> UI
 ```
 
-- Only **UI-originated signals** on the queue — pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). Handlers → controllers only (exhaustive switch).
+- Only **UI-originated signals** on the action queue - pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). Handlers only call controllers, one per action type.
 - **State updates only in operations.** Controllers and validations may read store snapshots; never set state.
-- **Business logic only in operations.** Gateways/services: system + conversion, not domain rules.
+- **Business logic only in operations.** Gateways/services: system + conversion, not business domain rules.
 - **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
 - **Exception — action queue status and App shell:**
-  - State that reflects the action queue’s own status (depth, processing flag, etc.) may be updated **only inside the `ActionQueue` implementation** (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception.
-  - App shell load and unload controllers should be invoked directly from `useEffect` calls in the **AppShell** component **or** in the **app shell viewmodel** hook used exclusively by that shell (e.g. `useAppShellViewModel` in `src/app/app/viewmodel/`). **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up; colocating lifecycle in the shell’s viewmodel keeps mount/unload next to shell-only selectors without spreading `useEffect` across arbitrary components.
+  - Operations to update state that reflects the action queue’s own status (depth, processing flag, etc.) may be invoked from inside the `ActionQueue` implementation (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception.
+  - App shell load and unload controllers should be invoked directly from `useEffect` calls in the **app shell viewmodel** hook used exclusively by that shell (e.g. `useAppShellViewModel` in `src/app/app/viewmodel/`). **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up; colocating lifecycle in the shell’s viewmodel keeps mount/unload next to shell-only selectors without spreading `useEffect` across arbitrary components.
   - `InitializeWindowServiceOperation` may inject controller classes **only** to adapt renderer window/global-input callbacks into existing controller entry points when calling `WindowService.init(...)`. **Rationale:** these callbacks originate from Electron/window system events rather than from a React component interaction, and the operation acts as the one-time registration boundary for that system integration. This exception does **not** allow general controller-to-controller orchestration or arbitrary controller injection into other operations.
 
 ## Store conventions
@@ -65,7 +74,7 @@ flowchart LR
 
 - **tsyringe** **`@singleton()`** for controllers, operations, validations, gateways, services — inject **concrete types** directly; **no** string or symbol injection tokens.
 - **One** top-level export per file.
-- **React components** under `src/app/**` (all `*.tsx` in the app layer): **PascalCase** filename matching the default export (see [component.mdc](component.mdc)).
+- **React components** under `src/app/**` (all `*.tsx` in the app layer): **PascalCase** filename matching the exported component function name (see [component.mdc](component.mdc)).
 - **All other** source modules (controllers, operations, viewmodels, state, gateways, services, models, handlers, etc.): **kebab-case** filename matching export; exported **classes** **PascalCase** where applicable.
 
 **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change these bullets or exceptions, update the matching `describe` and vice versa.** The file should continue to encode mutation-flow checks (no operation-to-operation `execute`, no controller-to-controller `run`), handler import boundaries, action payload imports (no `domain/state`), and Electron versus renderer `src/` imports — see the table at the top of that test file.

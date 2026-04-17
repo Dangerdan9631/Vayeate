@@ -4,13 +4,8 @@
  */
 
 import { adjustColorToMeetContrast } from './color-adjust-contrast';
-import type {
-  ColorAssignment,
-  ContrastAssignment,
-  Mapping,
-  Template,
-  Theme,
-} from '../../model/schemas';
+import type { Mapping, Template } from '../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
 
 export interface TokenColorRule {
   name: string;

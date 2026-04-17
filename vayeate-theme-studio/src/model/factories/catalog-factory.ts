@@ -1,4 +1,5 @@
-import type { Catalog, CatalogType } from '../schemas';
+import type { Catalog } from '../schema/catalog';
+import type { CatalogType } from '../schema/primitives';
 
 export interface CreateCatalogParams {
   name: string;

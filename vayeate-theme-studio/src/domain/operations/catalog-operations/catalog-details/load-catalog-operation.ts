@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 
 /** Load catalog JSON from disk. Does not mutate app state. */

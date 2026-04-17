@@ -1,4 +1,4 @@
-import type { Theme } from '../schemas';
+import type { Theme } from '../schema/theme-schemas';
 
 export interface CreateThemeParams {
   name: string;

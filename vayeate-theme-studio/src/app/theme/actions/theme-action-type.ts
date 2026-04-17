@@ -1,15 +1,5 @@
-import {
-  ThemeName,
-  Version,
-  TemplateName,
-  ThemePreviewTokenRefField,
-  TokenKey,
-  HexColor,
-  ColorVariableKey,
-  ContrastVariableKey,
-  ContrastValue,
-  ContrastComparisonMethod,
-} from '../../../model/schemas';
+import { ThemeName, Version, TemplateName, TokenKey, HexColor, ColorVariableKey, ContrastVariableKey, ContrastValue, ContrastComparisonMethod } from '../../../model/schema/primitives';
+import { ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
 
 export enum ThemeActionType {
   ThemePageOnLoad = 'THEME_PAGE_ON_LOAD',

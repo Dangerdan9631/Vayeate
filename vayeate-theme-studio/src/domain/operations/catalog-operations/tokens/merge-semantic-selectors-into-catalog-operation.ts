@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schemas';
-import { mergeSemanticSelectorInto } from '../../../utils/semantic-token';
+import type { Catalog } from '../../../../model/schema/catalog';
+import { mergeSemanticSelectorInto } from '../../../../model/merge-semantic-selector-into';
 
 @singleton()
 export class MergeSemanticSelectorsIntoCatalogOperation {

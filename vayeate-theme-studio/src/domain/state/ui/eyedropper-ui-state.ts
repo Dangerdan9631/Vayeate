@@ -1,4 +1,4 @@
-import type { HexColor } from '../../../model/schemas';
+import type { HexColor } from '../../../model/schema/primitives';
 
 export type EyedropperPhase = 'closed' | 'loading' | 'ready' | 'error';
 export interface EyedropperDisplayEntryPayload {

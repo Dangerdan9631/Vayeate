@@ -7,15 +7,11 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { useMappingsCardViewModel } from '../viewmodel/use-mappings-card-viewmodel';
-import { formatSemanticSelector, parseSemanticSelector, SEMANTIC_WILDCARD_TYPE } from '../../../domain/utils/semantic-token';
-import type {
-  ColorVariable,
-  ColorVariableKey,
-  ContrastVariable,
-  ContrastVariableKey,
-  Mapping,
-  TokenType,
-} from '../../../model/schemas';
+import { formatSemanticSelector } from '../../../model/format-semantic-selector';
+import { parseSemanticSelector } from '../../../model/parse-semantic-selector';
+import { SEMANTIC_WILDCARD_TYPE } from '../../../model/semantic-token-constants';
+import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 
 const UNGROUPED_KEY = '__ungrouped__';
 

@@ -1,4 +1,4 @@
-import type { Template } from '../../model/schemas';
+import type { Template } from '../../model/schema/template-schemas';
 
 export function groupNamesInUseFromTemplate(t: Template): Set<string> {
   const s = new Set<string>();

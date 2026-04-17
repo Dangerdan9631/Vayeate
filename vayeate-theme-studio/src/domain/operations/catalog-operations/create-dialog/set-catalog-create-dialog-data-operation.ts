@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { CatalogType } from '../../../../model/schemas';
+import type { CatalogType } from '../../../../model/schema/primitives';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 export type SetCatalogCreateDialogDataOptions = {

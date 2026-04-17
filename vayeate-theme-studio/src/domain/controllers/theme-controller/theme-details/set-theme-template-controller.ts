@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { TemplateName, Version } from '../../../../model/schemas';
+import type { TemplateName, Version } from '../../../../model/schema/primitives';
 import { LoadTemplateSnapshotOperation } from '../../../operations/template-operations/template-details/load-template-snapshot-operation';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../../operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeLoadedTemplateOperation } from '../../../operations/theme-operations/theme-details/set-theme-loaded-template-operation';

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Template } from '../../../model/schemas';
+import type { Template } from '../../../model/schema/template-schemas';
 import { referencedColorVarKeysFromTemplate } from '../../utils/referenced-color-var-keys-from-template';
 import { referencedContrastVarKeysFromTemplate } from '../../utils/referenced-contrast-var-keys-from-template';
 

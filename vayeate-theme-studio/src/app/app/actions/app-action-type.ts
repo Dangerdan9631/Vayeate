@@ -1,5 +1,5 @@
 import type { TabId } from '../../../model/tab-id';
-import type { HexColor } from "../../../model/schemas";
+import type { HexColor } from "../../../model/schema/primitives";
 
 export enum AppActionType {
   AppMenubarUndoMenuSync = 'APP_MENUBAR_UNDO_MENU_SYNC',

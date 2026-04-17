@@ -1,6 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { useCatalogDetailsCardViewModel } from '../viewmodel/use-catalog-details-card-viewmodel';
-import type { SourceType, TokenType } from '../../../model/schemas';
+import { TokenType, SourceType } from '../../../model/schema/primitives';
 
 const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];

@@ -1,4 +1,4 @@
-import type { Catalog } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
 import { singleton } from 'tsyringe';
 import { DeleteCatalogOperation } from '../../../operations/catalog-operations/catalog-list/delete-catalog-operation';
 import { RefreshCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-operation';

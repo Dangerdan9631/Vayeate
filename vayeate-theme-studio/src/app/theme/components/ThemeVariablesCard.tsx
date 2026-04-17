@@ -1,12 +1,7 @@
 import { useMemo, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
-import type {
-  ColorAssignment,
-  ColorVariable,
-  ContrastAssignment,
-  ContrastComparisonMethod,
-  ContrastAssignmentValue,
-  ContrastVariable,
-} from '../../../model/schemas';
+import type { ContrastComparisonMethod } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
 import { useThemeVariablesCardViewModel } from '../viewmodel/use-theme-variables-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/components/TriStateCheckbox';
 

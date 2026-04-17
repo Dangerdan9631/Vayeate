@@ -2,7 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import type { ThemePreviewTokenRefField, TokenKey } from '../../../model/schemas';
+import type { TokenKey } from '../../../model/schema/primitives';
+import type { ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { ThemeActionType } from '../actions/theme-action-type';
 

@@ -1,4 +1,4 @@
-import type { Source } from '../../../../model/schemas';
+import type { Source } from '../../../../model/schema/catalog';
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { AddSourceToCatalogOperation } from '../../../operations/catalog-operations/sources/add-source-to-catalog-operation';

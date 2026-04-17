@@ -1,4 +1,4 @@
-import type { CatalogReference } from '../../model/schemas';
+import type { CatalogReference } from '../../model/schema/template-schemas';
 import { compareVersions } from './compare-versions';
 
 /** Build catalog refs grouped by name, sorted by version descending (latest first). */

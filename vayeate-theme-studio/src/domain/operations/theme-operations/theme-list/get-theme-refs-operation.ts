@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { getThemeRefs } from '../../../state/theme/themes-state';
-import type { ThemeReference } from '../../../../model/schemas';
+import type { ThemeReference } from '../../../../model/schema/theme-schemas';
 import { ThemesStore } from '../../../state/theme/themes-store';
 
 /** Read current theme refs from state. Use in controllers instead of importing domain/state directly. */

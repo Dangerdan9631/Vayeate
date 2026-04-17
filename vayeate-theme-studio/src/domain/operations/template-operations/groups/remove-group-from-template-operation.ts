@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Template } from '../../../../model/schemas';
+import type { Template } from '../../../../model/schema/template-schemas';
 
 @singleton()
 export class RemoveGroupFromTemplateOperation {

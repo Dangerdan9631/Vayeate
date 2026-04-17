@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Source } from '../../model/schemas';
+import type { Source } from '../../model/schema/catalog';
 import { syncCatalogTokens, type SyncCatalogResult } from '../../domain/utils/sync-catalog-tokens';
 import { WebService } from '../services/web-service';
 

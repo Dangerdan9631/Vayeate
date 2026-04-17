@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { Template, TokenType } from '../../../../model/schemas';
+import type { TokenType } from '../../../../model/schema/primitives';
+import type { Template } from '../../../../model/schema/template-schemas';
 
 @singleton()
 export class SetMappingContrastRefOperation {

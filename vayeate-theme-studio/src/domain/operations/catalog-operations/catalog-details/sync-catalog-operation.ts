@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
 import { TokenSyncGateway } from '../../../../gateway/catalog/token-sync-gateway';
 import { nextPatchVersion } from '../../../utils/next-patch-version';
 

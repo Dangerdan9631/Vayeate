@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Mapping, Template } from '../../../../model/schemas';
+import type { Mapping, Template } from '../../../../model/schema/template-schemas';
 
 @singleton()
 export class AppendSemanticVariantToTemplateOperation {

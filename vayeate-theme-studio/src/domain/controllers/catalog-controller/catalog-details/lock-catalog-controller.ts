@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { LockCatalogOperation as LockCatalogTransform } from '../../../operations/catalog-operations/catalog-details/lock-catalog-operation';
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
-import { ValidateCanLockCatalog } from '../../../validations/catalog-validations';
+import { ValidateCanLockCatalog } from '../../../validations/catalog-validations/validate-can-lock-catalog';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()

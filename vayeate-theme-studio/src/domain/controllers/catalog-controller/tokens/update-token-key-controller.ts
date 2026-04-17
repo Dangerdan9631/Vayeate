@@ -1,4 +1,4 @@
-import type { TokenType } from '../../../../model/schemas';
+import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';

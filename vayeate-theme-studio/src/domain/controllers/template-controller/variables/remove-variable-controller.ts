@@ -5,7 +5,7 @@ import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../operations/template-operations/variables-contrast/remove-contrast-variable-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
-import { ValidateCanRemoveVariable } from '../../../validations/template-validations';
+import { ValidateCanRemoveVariable } from '../../../validations/template-validations/validate-can-remove-variable';
 
 @singleton()
 export class RemoveVariableController {

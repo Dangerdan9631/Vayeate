@@ -7,7 +7,7 @@ import { DeduplicateBulkTokensOperation } from '../../../operations/catalog-oper
 import { SaveCatalogOperation } from '../../../operations/catalog-operations/catalog-details/save-catalog-operation';
 import { SetCatalogBulkAddDialogOpenOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-dialog-open-operation';
 import { SetCatalogBulkAddTextOperation } from '../../../operations/catalog-operations/bulk-add/set-catalog-bulk-add-text-operation';
-import { ValidateCanBulkAddTokens } from '../../../validations/catalog-validations';
+import { ValidateCanBulkAddTokens } from '../../../validations/catalog-validations/validate-can-bulk-add-tokens';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 
 @singleton()

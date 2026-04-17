@@ -1,7 +1,8 @@
 import { useState, type ChangeEvent } from 'react';
 import { useVariablesCardViewModel } from '../viewmodel/use-variables-card-viewmodel';
-import type { ColorVariable, ColorVariableKey, ContrastVariable } from '../../../model/schemas';
-import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../model/schemas';
+import type { ColorVariableKey } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
+import { colorVariableKeySchema, contrastVariableKeySchema } from '../../../model/schema/primitives';
 const UNGROUPED_KEY = '__ungrouped__';
 
 function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean {

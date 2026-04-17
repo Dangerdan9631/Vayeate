@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { ContrastVariableKey } from '../../../../model/schemas';
+import type { ContrastVariableKey } from '../../../../model/schema/primitives';
 import { TemplatesStore } from '../../../state/template/templates-store';
 
 @singleton()

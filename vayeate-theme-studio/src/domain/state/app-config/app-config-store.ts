@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { createStore } from 'zustand/vanilla';
 import { immer } from 'zustand/middleware/immer';
 import { AppConfigState, initialAppConfigState } from './app-config-state';
-import { ColorScheme } from '../../../model/schema';
+import type { ColorScheme } from '../../../model/schema/primitives';
 
 interface AppConfigStoreState {
     config: AppConfigState;

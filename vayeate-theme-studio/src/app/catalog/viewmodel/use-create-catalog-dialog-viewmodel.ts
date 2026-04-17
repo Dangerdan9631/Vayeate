@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import type { CatalogType } from '../../../model/schemas';
+import type { CatalogType } from '../../../model/schema/primitives';
 import { CatalogActionType } from '../actions/catalog-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';

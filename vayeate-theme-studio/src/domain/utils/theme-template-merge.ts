@@ -1,9 +1,5 @@
-import type {
-  ColorAssignment,
-  ContrastAssignment,
-  Template,
-  Theme,
-} from '../../model/schemas';
+import type { Template } from '../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
 
 /**
  * Merge template color/contrast variables and mappings into a theme.

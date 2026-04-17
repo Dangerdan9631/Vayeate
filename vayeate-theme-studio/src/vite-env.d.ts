@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { AppConfig } from './model/schemas';
+import type { AppConfig } from './model/schema/primitives';
 
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;

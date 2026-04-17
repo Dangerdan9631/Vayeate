@@ -1,11 +1,9 @@
 import { singleton } from 'tsyringe';
 import { WindowService } from '../../../gateway/services/window-service';
-import {
-  SyncViewportSizeController,
-  SyncWindowDisplayStateController,
-  SyncWindowPositionController,
-  SyncWindowSizeController,
-} from '../../controllers/window-controller';
+import { SyncViewportSizeController } from '../../controllers/window-controller/sync-viewport-size-controller';
+import { SyncWindowDisplayStateController } from '../../controllers/window-controller/sync-window-display-state-controller';
+import { SyncWindowPositionController } from '../../controllers/window-controller/sync-window-position-controller';
+import { SyncWindowSizeController } from '../../controllers/window-controller/sync-window-size-controller';
 import { HandleKeyboardShortcutController } from '../../controllers/app-controller/handle-keyboard-shortcut-controller';
 
 @singleton()

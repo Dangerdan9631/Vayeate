@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { HexColor } from '../../../../model/schemas';
+import type { HexColor } from '../../../../model/schema/primitives';
 import { EnqueueAppActionOperation } from '../../../operations/app-operations/enqueue-app-action-operation';
 import { CommitEyedropperColorOperation } from '../../../operations/theme-operations/eyedropper/commit-eyedropper-color-operation';
 import { SetEyedropperPickResultOperation } from '../../../operations/theme-operations/eyedropper/set-eyedropper-pick-result-operation';

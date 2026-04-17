@@ -1,4 +1,4 @@
-import type { Catalog } from '../../../model/schemas';
+import type { Catalog } from '../../../model/schema/catalog';
 
 export interface CatalogPaneState {
   catalog: Catalog | null;

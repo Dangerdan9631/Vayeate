@@ -1,5 +1,5 @@
 import type { ThemePaneState } from '../../model/theme-pane-state';
-import type { Theme } from '../../model/schemas';
+import type { Theme } from '../../model/schema/theme-schemas';
 
 export function buildThemePaneSnapshot(
   theme: Theme | null,

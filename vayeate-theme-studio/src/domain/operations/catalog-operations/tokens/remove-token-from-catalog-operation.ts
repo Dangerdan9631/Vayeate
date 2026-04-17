@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { Catalog, TokenKey, TokenType } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
+import type { TokenKey, TokenType } from '../../../../model/schema/primitives';
 
 @singleton()
 export class RemoveTokenFromCatalogOperation {

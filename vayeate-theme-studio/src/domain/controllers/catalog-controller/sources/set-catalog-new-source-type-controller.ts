@@ -1,4 +1,4 @@
-import type { SourceType } from '../../../../model/schemas';
+import type { SourceType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { SetCatalogNewSourceTypeOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-type-operation';
 

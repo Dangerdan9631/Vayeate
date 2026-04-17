@@ -10,8 +10,6 @@ import { assertValidThemeFileName } from './assert-valid-theme-file-name';
 import { stringifyTheme } from './stringify-theme';
 import { toSafeFileName } from './to-safe-theme-file-name';
 
-export { assertValidThemeFileName } from './assert-valid-theme-file-name';
-
 async function writeAtomic(targetPath: string, content: string): Promise<void> {
   const tempPath = `${targetPath}.tmp`;
   await writeFile(tempPath, content, 'utf8');

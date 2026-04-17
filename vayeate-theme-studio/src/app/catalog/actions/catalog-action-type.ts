@@ -1,12 +1,7 @@
-import {
-  CatalogName,
-  CatalogType,
-  SemanticTokenRegistryListKind,
-  SourceType,
-  TokenType,
-  Version,
-  TokenKey,
-} from "../../../model/schemas";
+import { CatalogName, CatalogType, SourceType, TokenType, Version } from "../../../model/schema/primitives";
+import { SemanticTokenRegistryListKind } from "../../../model/schema/primitives";
+import { TokenKey } from "../../../model/schema/primitives";
+
 
 export enum CatalogActionType {
   CatalogPageOnLoad = 'CATALOG_PAGE_ON_LOAD',

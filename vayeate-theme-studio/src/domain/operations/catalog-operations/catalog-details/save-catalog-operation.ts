@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schemas';
+import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
 

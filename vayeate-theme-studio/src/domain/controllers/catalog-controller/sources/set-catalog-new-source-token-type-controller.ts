@@ -1,4 +1,4 @@
-import type { TokenType } from '../../../../model/schemas';
+import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { SetCatalogNewSourceTokenTypeOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-token-type-operation';
 import { SetCatalogNewSourceTypeOperation } from '../../../operations/catalog-operations/sources/set-catalog-new-source-type-operation';

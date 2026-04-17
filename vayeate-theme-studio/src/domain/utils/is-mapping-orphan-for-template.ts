@@ -1,4 +1,6 @@
-import type { Catalog, Template, Token, TokenType } from '../../model/schemas';
+import type { Catalog, Token } from '../../model/schema/catalog';
+import type { TokenType } from '../../model/schema/primitives';
+import type { Template } from '../../model/schema/template-schemas';
 import { computeOrphanKeys, type SemanticCatalogInfo } from './compute-orphan-keys';
 
 /**

@@ -1,5 +1,6 @@
-import type { Source, Token, TokenType } from '../../model/schemas';
-import { parseSemanticSelector } from '../../model/semantic-token';
+import type { Source, Token } from '../../model/schema/catalog';
+import type { TokenType } from '../../model/schema/primitives';
+import { parseSemanticSelector } from '../../model/parse-semantic-selector';
 
 const BACKTICK_RE = /`([^`]+)`/g;
 const CODE_TAG_RE = /<code>([^<]+)<\/code>/gi;

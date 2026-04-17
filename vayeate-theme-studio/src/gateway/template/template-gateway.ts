@@ -1,7 +1,10 @@
 import { singleton } from 'tsyringe';
 import { createTemplateWithParams } from '../../model/factories/template-factory';
-import { templateReferenceSchema, templateSchema } from '../../model/schemas';
-import type { Template, TemplateName, TemplateReference, Version } from '../../model/schemas';
+import { templateSchema } from '../../model/schema/template-schemas';
+import { templateReferenceSchema } from '../../model/schema/theme-schemas';
+import type { TemplateName, Version } from '../../model/schema/primitives';
+import type { Template } from '../../model/schema/template-schemas';
+import type { TemplateReference } from '../../model/schema/theme-schemas';
 import { FileSystemService } from '../services/file-system-service';
 
 const TEMPLATES_RELATIVE_DIR = 'data/templates';

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { appConfigSchema } from '../../../model/schemas';
+import { appConfigSchema } from '../../../model/schema/primitives';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { BackgroundQueueGateway } from '../../../gateway/background-queue-gateway';
 import { AppConfigStore } from '../../state/app-config/app-config-store';

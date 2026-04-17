@@ -7,7 +7,7 @@ alwaysApply: false
 
 ## Contract
 
-- **PascalCase** functional components; **one** default export component per file; **PascalCase** filename matching the component (e.g. `ThemeDetailsCard.tsx`).
+- **PascalCase** functional components; **one** exported component function per file; **PascalCase** filename stem matching the exported component name (e.g. `ThemeDetailsCard.tsx` exports `ThemeDetailsCard`).
 - Each event prop references a **named function** (`onClick={onMenuThemeToggleClick}`), not an inline arrow on the JSX element.
 - **User and lifecycle** events (clicks, inputs, **mount load**, **cleanup unload**) → **enqueue one UI action** (ActionQueue); no direct controller/operation calls from handlers.
 - Read state through **viewmodels** only; **no** business logic.

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../model/schemas';
+import type { Theme } from '../../model/schema/theme-schemas';
 import { ThemeGateway } from '../theme/theme-gateway';
 
 const SAVE_THEME_DEBOUNCE_MS = 400;

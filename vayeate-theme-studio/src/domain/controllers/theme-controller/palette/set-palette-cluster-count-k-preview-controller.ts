@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schemas';
+import type { Theme } from '../../../../model/schema/theme-schemas';
 import { SetThemeOperation } from '../../../operations/theme-operations/theme-details/set-theme-operation';
 import { ThemesStore } from '../../../state/theme/themes-store';
 

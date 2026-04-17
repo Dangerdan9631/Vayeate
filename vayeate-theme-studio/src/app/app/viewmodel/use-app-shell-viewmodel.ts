@@ -1,9 +1,10 @@
 import { useEffect, useMemo } from 'react';
 import { container } from 'tsyringe';
-import { LoadAppController, UnloadAppController } from '../../../domain/controllers/app-controller';
 import type { TabId } from '../../../model/tab-id';
 import { UiStore } from '../../../domain/state/ui/ui-store';
 import { useStore } from 'zustand';
+import { LoadAppController } from '../../../domain/controllers/app-controller/load-app-controller';
+import { UnloadAppController } from '../../../domain/controllers/app-controller/unload-app-controller';
 
 const uiStore = container.resolve(UiStore);
 

@@ -6,7 +6,7 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import { TemplateActionType } from '../actions/template-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
-import type { Mapping } from '../../../model/schemas';
+import type { Mapping } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
 

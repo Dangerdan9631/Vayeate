@@ -1,9 +1,6 @@
-import type {
-  ColorVariableKey,
-  ContrastVariableKey,
-  Template,
-  TemplateReference,
-} from '../../../model/schemas';
+import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
+import type { Template } from '../../../model/schema/template-schemas';
+import type { TemplateReference } from '../../../model/schema/theme-schemas';
 
 export interface TemplateEntry {
   isLoaded: boolean;

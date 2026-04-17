@@ -1,5 +1,5 @@
-import { appConfigSchema } from './schemas';
-import type { AppConfig } from './schemas';
+import { appConfigSchema } from './schema/primitives';
+import type { AppConfig } from './schema/primitives';
 
 /**
  * Narrow sync IPC config payload to partial app config (renderer / gateway).

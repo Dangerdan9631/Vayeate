@@ -4,8 +4,9 @@ import { assertValidThemeFileName } from '../../domain/utils/assert-valid-theme-
 import { stringifyTheme } from '../../domain/utils/stringify-theme';
 import { toSafeFileName } from '../../domain/utils/to-safe-theme-file-name';
 import { createThemeWithParams } from '../../model/factories/theme-factory';
-import { themeReferenceSchema, themeSchema } from '../../model/schemas';
-import type { Theme, ThemeName, ThemeReference, Version } from '../../model/schemas';
+import { themeReferenceSchema, themeSchema } from '../../model/schema/theme-schemas';
+import type { ThemeName, Version } from '../../model/schema/primitives';
+import type { Theme, ThemeReference } from '../../model/schema/theme-schemas';
 import { FileSystemService } from '../services/file-system-service';
 import { TemplateGateway } from '../template/template-gateway';
 

@@ -43,8 +43,8 @@ Group by **rule** (or concept). Per issue:
 5. Ensure that each file is reviewed by verifying that it is checked off the checklist.
 
 **Do not make any changes to the codebase.** Only generate a report of the findings.
-**Every file** in scope must be reviewed and have findings included in the report file.
-**Every file** in scope must be checked off the checklist before completing the audit.
+**Every file** in scope must be reviewed and checked off the checklist before completing the audit.
+Include report entries **only** for files with actual rule violations or gaps worth fixing.
 **Always** perform a full audit of all files in scope and all rules. Do not skip any files or rules. 
 **Never** perform a prioritized audit, a selective audit, sample files, or only target high risk rules.
 

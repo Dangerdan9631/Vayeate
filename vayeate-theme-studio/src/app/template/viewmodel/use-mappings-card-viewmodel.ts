@@ -3,16 +3,9 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import type {
-  Catalog,
-  CatalogReference,
-  ColorVariableKey,
-  ContrastVariableKey,
-  Mapping,
-  Template,
-  Token,
-  TokenType,
-} from '../../../model/schemas';
+import type { Catalog, Token } from '../../../model/schema/catalog';
+import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
+import type { CatalogReference, Mapping, Template } from '../../../model/schema/template-schemas';
 import { TemplateActionType } from '../actions/template-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';

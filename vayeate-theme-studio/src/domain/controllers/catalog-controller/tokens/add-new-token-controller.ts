@@ -1,5 +1,5 @@
-import type { Token } from '../../../../model/schemas';
-import type { TokenType } from '../../../../model/schemas';
+import type { Token } from '../../../../model/schema/catalog';
+import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { AddPlainTokenToCatalogOperation } from '../../../operations/catalog-operations/tokens/add-plain-token-to-catalog-operation';

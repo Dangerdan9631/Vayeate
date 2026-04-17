@@ -1,4 +1,4 @@
-import type { ColorAssignment, Theme } from '../../model/schemas';
+import type { ColorAssignment, Theme } from '../../model/schema/theme-schemas';
 import { applyHueToAssignmentsFiltered } from './theme-assignment-utils';
 
 export function computeDisplayColorAssignments(

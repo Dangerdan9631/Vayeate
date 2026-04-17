@@ -5,8 +5,9 @@ alwaysApply: false
 
 # Layer: domain
 
-## Structure per domain
+## Top-level domain structure
 
+- `src/domain/` is organized by top-level concepts first: `controllers/`, `operations/`, `validations/`, `state/`, `utils/`, and `core/`. Feature or capability grouping happens underneath those concept folders (for example controller families under `controllers/`).
 - `controllers/` — run validations then operations only (**must not** invoke other controllers); **never** set store state directly
 
   **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change controller class/file naming here, update that `describe` and vice versa.**
@@ -15,6 +16,7 @@ alwaysApply: false
 - `validations/` — `Validate*` + `test()` → boolean
 - `state/` — zustand store classes plus state shape/helpers
 - `utils/` — pure helpers (no state mutation)
+- `core/` — shared domain-layer primitives and infrastructure helpers that support multiple domain concepts without introducing renderer or Electron business logic
 
 ## Invariants
 
