@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import type { TabId } from '../../../model/tab-id';
+import type { TabId } from '../../../domain/state/ui/ui-state';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { AppActionType } from '../actions/app-action-type';
 

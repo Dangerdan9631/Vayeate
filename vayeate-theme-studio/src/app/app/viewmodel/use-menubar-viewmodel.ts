@@ -8,6 +8,7 @@ import { useStore } from 'zustand';
 import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
 import { WindowStore } from '../../../domain/state/window/window-store';
 import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
+import { MenuId } from '../../../domain/state/ui/ui-state';
 
 const uiStore = container.resolve(UiStore);
 const appConfigStore = container.resolve(AppConfigStore);
@@ -52,32 +53,20 @@ export interface MenuBarViewModel {
 export function useMenuBarViewModel(): MenuBarViewModel {
   const dispatch = useAppDispatch();
   const isMaximized = useStore(windowStore.api, (state) => state.state.isMaximized);
-  const currentStackId = useStore(undoStackStore.api, (state) => state.state.currentUndoStackId);
-  const undoListVersion = useStore(undoStackStore.api, (state) => state.state.undoListVersion);
   const undoMenu = useStore(undoStackStore.api, (state) => state.state.undoMenu);
   const theme = useStore(appConfigStore.api, (state) => state.config.colorScheme);
-  const menuOpen = useStore(uiStore.api, (state) => state.state.menuOpen);
-  if (
-    currentStackId === undefined ||
-    undoListVersion === undefined ||
-    undoMenu === undefined ||
-    theme === undefined ||
-    menuOpen === undefined
-  ) {
-    throw new Error('useMenuBarViewModel must be used within AppProvider');
-  }
-  const { fileOpen, editOpen, historyOpen, viewOpen } = menuOpen;
+  const openMenu = useStore(uiStore.api, (state) => state.state.openMenu);
   const { frames, currentId, canUndo, canRedo } = undoMenu;
-
-  useEffect(() => {
-    void dispatch({ type: AppActionType.AppMenubarUndoMenuOnLoad });
-  }, [currentStackId, undoListVersion, dispatch]);
 
   const fileRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);
   const historyRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
-  const isAnyMenuOpen = fileOpen || editOpen || historyOpen || viewOpen;
+  const isAnyMenuOpen = openMenu !== null;
+  const fileOpen = openMenu === 'file';
+  const editOpen = openMenu === 'edit';
+  const historyOpen = openMenu === 'history';
+  const viewOpen = openMenu === 'view';
 
   useEffect(() => {
     if (!isAnyMenuOpen) return;

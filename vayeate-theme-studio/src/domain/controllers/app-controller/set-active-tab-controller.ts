@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { TabId } from '../../../model/tab-id';
+import type { TabId } from '../../state/ui/ui-state';
 import { SetUiActiveTabOperation } from '../../operations/app-operations/set-ui-active-tab-operation';
 
 @singleton()

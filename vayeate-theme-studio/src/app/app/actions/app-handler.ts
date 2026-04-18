@@ -4,7 +4,6 @@ import { CommitEyedropperOverlayPickController } from '../../../domain/controlle
 import { AppActions, AppActionType } from './app-action-type';
 import { CloseAllMenusController } from '../../../domain/controllers/app-controller/close-all-menus-controller';
 import { SetActiveTabController } from '../../../domain/controllers/app-controller/set-active-tab-controller';
-import { LoadUndoHistoryController } from '../../../domain/controllers/app-controller/sync-undo-menu-state-controller';
 import { ToggleColorSchemeController } from '../../../domain/controllers/app-controller/toggle-color-scheme-controller';
 import { ToggleMenuOpenController } from '../../../domain/controllers/app-controller/toggle-menu-open-controller';
 import { PerformHistoryGoToController } from '../../../domain/controllers/undo-controller/perform-history-go-to-controller';
@@ -39,14 +38,10 @@ export class AppActionHandler {
     private readonly restoreWindow: RestoreWindowController,
     private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
     private readonly commitEyedropperOverlayPick: CommitEyedropperOverlayPickController,
-    private readonly loadUndoHistory: LoadUndoHistoryController,
   ) {}
 
   async handle(action: AppActions): Promise<void> {
     switch (action.type) {
-      case AppActionType.AppMenubarUndoMenuOnLoad:
-        await this.loadUndoHistory.run();
-        break;
       case AppActionType.AppFileMenuTriggerButtonOnClick:
         await this.toggleMenuOpen.run('file');
         break;

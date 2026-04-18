@@ -1,13 +1,13 @@
 import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
-import { TabId, UiState, initialUiState } from "./ui-state";
+import { MenuId, TabId, UiState, initialUiState } from "./ui-state";
 
 interface UiStoreState {
     state: UiState;
     setActiveTabId: (tabId: TabId) => void;
-    setAllMenusClosed: () => void;
-    setMenuOpenState: (menuId: 'file' | 'edit' | 'history' | 'view', isOpen: boolean) => void;
+    closeMenus: () => void;
+    openMenu: (menuId: MenuId) => void;
 }
 
 @singleton()
@@ -18,23 +18,11 @@ export class UiStore {
             setActiveTabId: (tabId: TabId) => set((storeState: UiStoreState) => {
                 storeState.state.activeTabId = tabId;
             }),
-            setAllMenusClosed: () => set((storeState: UiStoreState) => {
-                storeState.state.menuOpen = {
-                    fileOpen: false,
-                    editOpen: false,
-                    historyOpen: false,
-                    viewOpen: false,
-                };
+            closeMenus: () => set((storeState: UiStoreState) => {
+                storeState.state.openMenu = null;
             }),
-            setMenuOpenState: (menuId: 'file' | 'edit' | 'history' | 'view', isOpen: boolean) => set((storeState: UiStoreState) => {
-                const menuKeyById = {
-                    file: 'fileOpen',
-                    edit: 'editOpen',
-                    history: 'historyOpen',
-                    view: 'viewOpen',
-                } as const;
-                const menuKey = menuKeyById[menuId];
-                storeState.state.menuOpen[menuKey] = isOpen;
+            openMenu: (menuId: MenuId) => set((storeState: UiStoreState) => {
+                storeState.state.openMenu = menuId;
             }),
         }))
     );

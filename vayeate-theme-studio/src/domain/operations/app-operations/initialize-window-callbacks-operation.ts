@@ -7,7 +7,7 @@ import { SyncWindowSizeController } from '../../controllers/window-controller/sy
 import { HandleKeyboardShortcutController } from '../../controllers/app-controller/handle-keyboard-shortcut-controller';
 
 @singleton()
-export class InitializeWindowServiceOperation {
+export class InitializeWindowCallbacksOperation {
   constructor(
     private readonly windowService: WindowService,
     private readonly syncWindowDisplayState: SyncWindowDisplayStateController,
