@@ -2,7 +2,6 @@ import type { Catalog } from '../../../model/schema/catalog';
 import type { CatalogType, SourceType, TokenType } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 
-/** Snapshot of bulk-add JSON parse for the dialog (updated when bulk add text changes in-domain). */
 export interface CatalogBulkAddParseSnapshot {
   errorMessage: string | null;
   counts: Record<TokenType, number> | null;

@@ -99,7 +99,11 @@ export class CatalogsStore {
             }),
             setCatalogMapEntries: (entries: CatalogEntryInput[]) => set((storeState: CatalogsStoreState) => {
                 storeState.state.catalogMap = entries.reduce((acc, entry) => {
-                    acc[entry.name] = { [entry.version]: { isLoaded: entry.isLoaded, catalog: entry.catalog } };
+                    if (!acc[entry.name]) {
+                        acc[entry.name] = {};
+                    }
+
+                    acc[entry.name][entry.version] = { isLoaded: entry.isLoaded, catalog: entry.catalog };
                     return acc;
                 }, {} as CatalogStoreMap);
             }),

@@ -3,7 +3,6 @@ import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
-/** Load catalog refs from data dir into store (set catalog entries from ref list). */
 @singleton()
 export class LoadCatalogRefsOperation {
   constructor(

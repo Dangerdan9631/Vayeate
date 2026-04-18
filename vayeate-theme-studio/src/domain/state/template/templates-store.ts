@@ -101,7 +101,7 @@ export class TemplatesStore {
             if (!acc[entry.name]) {
               acc[entry.name] = {};
             }
-            acc[entry.name]![entry.version] = {
+            acc[entry.name][entry.version] = {
               isLoaded: entry.isLoaded,
               template: castDraft(entry.template ?? undefined),
             };
