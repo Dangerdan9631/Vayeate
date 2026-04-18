@@ -18,8 +18,8 @@ export class RestoreCatalogStateController {
   ): Promise<void> {
     this.setCatalog.execute(catalog);
     if (deleteVersionOnRestore) {
-      await this.deleteCatalog.execute(deleteVersionOnRestore.name, deleteVersionOnRestore.version);
-      await this.refreshCatalogRefs.execute();
+      this.deleteCatalog.execute(deleteVersionOnRestore.name, deleteVersionOnRestore.version);
+      this.refreshCatalogRefs.execute();
     }
   }
 }

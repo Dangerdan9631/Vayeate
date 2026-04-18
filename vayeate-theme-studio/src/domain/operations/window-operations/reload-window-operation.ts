@@ -5,11 +5,11 @@ import { WindowService } from '../../../gateway/services/window-service';
 export class ReloadWindowOperation {
   constructor(private readonly windowService: WindowService) {}
 
-  async execute(force = false): Promise<void> {
+  execute(force = false): void {
     if (force) {
-      await this.windowService.reloadForce();
+      void this.windowService.reloadForce();
     } else {
-      await this.windowService.reload();
+      void this.windowService.reload();
     }
   }
 }

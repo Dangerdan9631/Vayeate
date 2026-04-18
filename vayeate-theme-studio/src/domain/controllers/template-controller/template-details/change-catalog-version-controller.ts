@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
-import { LoadCatalogSnapshotOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-snapshot-operation';
+import { LoadCatalogOperation } from '../../../operations/catalog-operations/catalog-details/load-catalog-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../operations/template-operations/template-details/save-template-operation';
 import {
@@ -10,12 +10,12 @@ import {
 import { RefreshTemplateRefsAndSelectOperation } from '../../../operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 
 async function loadCatalogData(
-  loadCatalogSnapshot: LoadCatalogSnapshotOperation,
+  loadCatalog: LoadCatalogOperation,
   refs: readonly { name: string; version: string }[],
 ): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
   for (const ref of refs) {
-    const catalog = await loadCatalogSnapshot.execute(ref.name, ref.version);
+    const catalog = await loadCatalog.execute(ref.name, ref.version);
     if (catalog) {
       catalogData.push({
         ref,
@@ -33,7 +33,7 @@ async function loadCatalogData(
 export class ChangeCatalogVersionController {
   constructor(
     private readonly templatesStore: TemplatesStore,
-    private readonly loadCatalogSnapshot: LoadCatalogSnapshotOperation,
+    private readonly loadCatalog: LoadCatalogOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -46,7 +46,7 @@ export class ChangeCatalogVersionController {
     const newCatalogRefs = base.catalogRefs.map((r) =>
       r.name === catalogName ? { ...r, version: newVersion } : r,
     );
-    const catalogData = await loadCatalogData(this.loadCatalogSnapshot, newCatalogRefs);
+    const catalogData = await loadCatalogData(this.loadCatalog, newCatalogRefs);
     const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
       mergeMappingsFromCatalogData(catalogData, base.mappings);
     const newGroups = [...(base.groups ?? [])];
@@ -61,7 +61,7 @@ export class ChangeCatalogVersionController {
       semanticTokenModifiers,
       semanticTokenLanguages,
     };
-    await this.saveTemplate.execute(updated);
-    await this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version);
+    this.saveTemplate.execute(updated);
+    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version);
   }
 }

@@ -15,11 +15,11 @@ export class LockCatalogController {
     private readonly validateCanLockCatalog: ValidateCanLockCatalog,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const catalog = this.catalogsStore.getStore().state.catalog;
     if (!catalog || !this.validateCanLockCatalog.test(catalog)) return;
     const updated = this.lockCatalogTransform.execute(catalog);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
   }
 }

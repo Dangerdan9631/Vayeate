@@ -5,7 +5,7 @@ import { GenerateThemeOperation } from '../../../operations/theme-operations/the
 export class GenerateThemeController {
   constructor(private readonly generateTheme: GenerateThemeOperation) {}
 
-  async run(): Promise<void> {
-    await this.generateTheme.execute();
+  run(): void {
+    this.generateTheme.execute();
   }
 }

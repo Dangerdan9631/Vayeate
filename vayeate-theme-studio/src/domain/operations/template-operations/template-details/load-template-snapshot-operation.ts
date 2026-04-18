@@ -6,7 +6,6 @@ import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 export class LoadTemplateSnapshotOperation {
   constructor(private readonly templateGateway: TemplateGateway) {}
 
-  /** Load template from disk without updating state. Single responsibility: read. */
   async execute(name: string, version: string): Promise<Template | null> {
     return this.templateGateway.loadTemplate(name, version);
   }

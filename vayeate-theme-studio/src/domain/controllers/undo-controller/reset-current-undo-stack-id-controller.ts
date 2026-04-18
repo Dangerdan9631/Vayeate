@@ -6,7 +6,7 @@ import { SetCurrentUndoStackIdOperation } from '../../operations/undo-operations
 export class ResetCurrentUndoStackIdController {
   constructor(private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation) {}
 
-  async run(): Promise<void> {
+  run(): void {
     this.setCurrentUndoStackId.execute(null);
   }
 }

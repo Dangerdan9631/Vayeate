@@ -13,7 +13,7 @@ Follow conventions in [`.cursor/rules/controller.mdc`](../../rules/controller.md
 
 1. Pick domain folder: `vayeate-theme-studio/src/domain/<domain>/controllers/`.
 2. Name file **kebab-case** matching class (e.g. `delete-current-catalog-controller.ts` → `DeleteCurrentCatalogController`).
-3. Add **`@singleton()`** class with **`async run(...): Promise<…>`** only; inject concrete operation, validation, and store classes as needed — no string or symbol tokens — **do not** inject or call other controllers.
+3. Add **`@singleton()`** class with **`run(...): …`** only; inject concrete operation, validation, and store classes as needed — no string or symbol tokens — **do not** inject or call other controllers.
 4. Wire **handler** to `await container.resolve(...).run(action)` — no logic in handler.
 
 ## Skeleton
@@ -30,7 +30,7 @@ export class ExampleController {
     private readonly validate: ValidateCanDoExample,
   ) {}
 
-  async run(input: { /* action payload */ }): Promise<void> {
+  run(input: { /* action payload */ }): void {
     if (!this.validate.test(input)) throw new Error('Validation failed');
     this.op.execute({ /* mapped args */ });
   }

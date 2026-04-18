@@ -12,7 +12,7 @@ export class SetPaletteClusterCountKController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  async run(value: number): Promise<void> {
+  run(value: number): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const k = Math.max(1, Math.min(12, value));

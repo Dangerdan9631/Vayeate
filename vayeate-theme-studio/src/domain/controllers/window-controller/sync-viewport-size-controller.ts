@@ -6,7 +6,7 @@ import { SetViewportSizeOperation } from '../../operations/window-operations/set
 export class SyncViewportSizeController {
   constructor(private readonly setViewportSize: SetViewportSizeOperation) {}
 
-  async run(size: Size): Promise<void> {
+  run(size: Size): void {
     this.setViewportSize.execute(size);
   }
 }

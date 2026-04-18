@@ -18,7 +18,7 @@ import { UpdateAllCatalogsController } from '../../../domain/controllers/templat
 import { CloseCreateDialogController } from '../../../domain/controllers/template-controller/create-dialog/close-create-dialog-controller';
 import { CreateTemplateController } from '../../../domain/controllers/template-controller/template-list/create-template-controller';
 import { DeleteCurrentTemplateVersionController } from '../../../domain/controllers/template-controller/template-list/delete-current-template-version-controller';
-import { LoadTemplatePageController } from '../../../domain/controllers/template-controller/template-list/load-template-page-controller';
+import { LoadTemplatePageController } from '../../../domain/controllers/lifecycle/load-template-page-controller';
 import { OpenCreateDialogController } from '../../../domain/controllers/template-controller/create-dialog/open-create-dialog-controller';
 import { SelectTemplateAndLoadController } from '../../../domain/controllers/template-controller/template-list/select-template-and-load-controller';
 import { SetCreateFormNameController } from '../../../domain/controllers/template-controller/create-dialog/set-create-form-name-controller';

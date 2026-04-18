@@ -3,7 +3,6 @@ import type { CatalogReference } from '../../../../model/schema/template-schemas
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
-/** List catalogs and set entries in store. Single responsibility: refresh ref list. */
 @singleton()
 export class RefreshCatalogRefsOperation {
   constructor(

@@ -7,12 +7,12 @@ import { AppConfigStore } from '../../state/app-config/app-config-store';
 export class LoadAppConfigOperation {
   constructor(
     private readonly configGateway: ConfigGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
     private readonly appConfigStore: AppConfigStore,
   ) {}
 
   execute(): void {
-    this.backgroundQueueGateway.execute(
+    this.enqueueBackgroundAction.execute(
       async () => {
         const config = await this.configGateway.load();
       this.appConfigStore.getStore().setConfig(config);

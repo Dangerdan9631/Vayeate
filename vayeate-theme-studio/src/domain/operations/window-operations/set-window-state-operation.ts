@@ -11,19 +11,19 @@ export type SetWindowStateTarget = 'close' | 'minimize' | 'maximize' | 'restore'
 export class SetWindowStateOperation {
   constructor(private readonly windowService: WindowService) {}
 
-  async execute(state: SetWindowStateTarget): Promise<void> {
+  execute(state: SetWindowStateTarget): void {
     switch (state) {
       case 'close':
-        await this.windowService.close();
+        void this.windowService.close();
         break;
       case 'minimize':
-        await this.windowService.minimize();
+        void this.windowService.minimize();
         break;
       case 'maximize':
-        await this.windowService.maximize();
+        void this.windowService.maximize();
         break;
       case 'restore':
-        await this.windowService.restore();
+        void this.windowService.restore();
         break;
       default: {
         const _exhaustive: never = state;

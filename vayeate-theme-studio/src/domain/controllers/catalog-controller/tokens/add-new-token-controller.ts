@@ -21,7 +21,7 @@ export class AddNewTokenController {
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
-  async run(tokenType: TokenType, key?: string): Promise<void> {
+  run(tokenType: TokenType, key?: string): void {
     const state = this.catalogsStore.getStore().state;
     const catalog = state.catalog;
     const tokenKey = (key ?? state.newTokenKey)?.trim();
@@ -31,8 +31,8 @@ export class AddNewTokenController {
       const base = this.bumpCatalogVersionForEdit.execute(catalog);
       const merged = this.mergeSemanticSelectorsIntoCatalog.execute(base, tokenKey);
       if (!merged) return;
-      await this.saveCatalog.execute(merged);
-      await this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
+      this.saveCatalog.execute(merged);
+      this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
       this.setCatalogNewTokenKey.execute('');
       return;
     }
@@ -40,8 +40,8 @@ export class AddNewTokenController {
     const newToken: Token = { key: tokenKey, type: tokenType };
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.addPlainTokenToCatalog.execute(base, newToken);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     this.setCatalogNewTokenKey.execute('');
   }
 }

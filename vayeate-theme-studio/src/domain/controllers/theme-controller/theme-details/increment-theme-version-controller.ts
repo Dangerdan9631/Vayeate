@@ -37,13 +37,13 @@ export class IncrementThemeVersionController {
     this.clearPendingThemeSave.execute();
     this.setThemeHueAdjustment.execute(0);
     try {
-      await this.saveTheme.execute(bumped);
+      this.saveTheme.execute(bumped);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       this.setThemeSaveError.execute(message);
       return;
     }
-    await this.loadThemeRefs.execute();
+    this.loadThemeRefs.execute();
     this.setSelectedThemeRef.execute({ name: theme.name, version: newVersion });
     const loaded = await this.loadTheme.execute(theme.name, newVersion);
     if (loaded) {

@@ -15,7 +15,7 @@ export class SetContrastVariableDarkMethodController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  async run(ref: ContrastVariableKey | undefined, value: ContrastComparisonMethod): Promise<void> {
+  run(ref: ContrastVariableKey | undefined, value: ContrastComparisonMethod): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme || ref == null) return;
     const newAssignments = updateContrastAssignment(theme.contrastAssignments, ref, 'dark', {

@@ -6,7 +6,7 @@ import { SetTemplateAddVariableNameOperation } from '../../../operations/templat
 export class SetTemplateAddVariableNameController {
   constructor(private readonly setTemplateAddVariableName: SetTemplateAddVariableNameOperation) {}
 
-  async run(value: string): Promise<void> {
+  run(value: string): void {
     this.setTemplateAddVariableName.execute(value);
   }
 }

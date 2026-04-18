@@ -5,7 +5,7 @@ import { SetCatalogTokensSearchTextOperation } from '../../../operations/catalog
 export class SetCatalogTokensSearchTextController {
   constructor(private readonly setCatalogTokensSearchText: SetCatalogTokensSearchTextOperation) {}
 
-  async run(value: string): Promise<void> {
+  run(value: string): void {
     this.setCatalogTokensSearchText.execute(value);
   }
 }

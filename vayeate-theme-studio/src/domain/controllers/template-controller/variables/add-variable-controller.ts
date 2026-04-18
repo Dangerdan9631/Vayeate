@@ -19,7 +19,7 @@ export class AddVariableController {
     private readonly setTemplateAddVariableName: SetTemplateAddVariableNameOperation,
   ) {}
 
-  async run(groupRef: string | null, variableKind: 'color' | 'contrast'): Promise<void> {
+  run(groupRef: string | null, variableKind: 'color' | 'contrast'): void {
     const key = this.templatesStore.getStore().state.addVariableName.trim();
     if (!key) return;
     const template = this.templatesStore.getStore().state.template;
@@ -31,8 +31,8 @@ export class AddVariableController {
     } else {
       next = this.addColorVariableToTemplate.execute(base, key, groupRef);
     }
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
     this.setTemplateAddVariableName.execute('');
   }
 }

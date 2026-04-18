@@ -37,11 +37,11 @@ export class LoadEyedropperSnapshotOperation {
   constructor(
     private readonly eyedropperUiStore: EyedropperUiStore,
     private readonly screenshotService: ScreenshotService,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(contextKey: string): void {
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
       try {
         const raw = await this.screenshotService.getFullDisplaySnapshot();
         const snapshot = mapToPayload(raw);

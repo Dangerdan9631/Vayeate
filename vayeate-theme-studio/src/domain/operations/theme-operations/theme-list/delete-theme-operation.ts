@@ -7,11 +7,11 @@ import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-b
 export class DeleteThemeOperation {
   constructor(
     private readonly themeGateway: ThemeGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(name: string, version: string): void {
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
       await this.themeGateway.deleteTheme(name, version);
     }, `Deleting theme ${name} ${version}`);
   }

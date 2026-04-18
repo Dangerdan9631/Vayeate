@@ -24,7 +24,7 @@ export class BulkAddTokensController {
     private readonly validateCanBulkAddTokens: ValidateCanBulkAddTokens,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const catalog = this.catalogsStore.getStore().state.catalog;
     const text = this.catalogsStore.getStore().state.bulkAddText?.trim();
     if (!catalog || !text || !this.validateCanBulkAddTokens.test(catalog, text)) return;
@@ -34,8 +34,8 @@ export class BulkAddTokensController {
       if (unique.length === 0) return;
       const base = this.bumpCatalogVersionForEdit.execute(catalog);
       const updated = this.appendTokensToCatalog.execute(base, unique);
-      await this.saveCatalog.execute(updated);
-      await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+      this.saveCatalog.execute(updated);
+      this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     } finally {
       this.setCatalogBulkAddDialogOpen.execute(false);
       this.setCatalogBulkAddText.execute('');

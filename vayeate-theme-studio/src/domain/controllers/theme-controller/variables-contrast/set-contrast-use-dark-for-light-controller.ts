@@ -13,7 +13,7 @@ export class SetContrastUseDarkForLightController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  async run(ref: ContrastVariableKey | undefined, checked: boolean | undefined): Promise<void> {
+  run(ref: ContrastVariableKey | undefined, checked: boolean | undefined): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme || ref == null) return;
     const useDark = checked === true;

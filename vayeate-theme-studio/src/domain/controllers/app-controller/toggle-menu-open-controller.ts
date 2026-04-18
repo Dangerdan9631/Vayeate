@@ -12,7 +12,7 @@ export class ToggleMenuOpenController {
     private readonly closeMenus: CloseMenusOperation,
   ) {}
 
-  async run(menuId: MenuId): Promise<void> {
+  run(menuId: MenuId): void {
     const openMenu = this.uiStore.getStore().state.openMenu;
 
     if (openMenu === menuId) {

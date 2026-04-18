@@ -15,11 +15,11 @@ export class MaximizeWindowController {
     this.log = loggerFactory.create('WindowController');
   }
 
-  async run(): Promise<void> {
+  run(): void {
     if (!this.validateCanMaximize.test()) {
       this.log.warn('maximizeWindow skipped: validation failed (window already maximized)');
       return;
     }
-    await this.setWindowState.execute('maximize');
+    this.setWindowState.execute('maximize');
   }
 }

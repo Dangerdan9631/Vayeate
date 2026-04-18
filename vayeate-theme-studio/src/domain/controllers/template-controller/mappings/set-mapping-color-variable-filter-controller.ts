@@ -8,7 +8,7 @@ export class SetMappingColorVariableFilterController {
     private readonly setTemplateMappingColorVariableFilter: SetTemplateMappingColorVariableFilterOperation,
   ) {}
 
-  async run(values: ColorVariableKey[]): Promise<void> {
+  run(values: ColorVariableKey[]): void {
     this.setTemplateMappingColorVariableFilter.execute(values);
   }
 }

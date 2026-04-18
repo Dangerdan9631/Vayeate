@@ -5,7 +5,7 @@ import { PerformRedoOperation } from '../../operations/undo-operations/perform-r
 export class PerformRedoController {
   constructor(private readonly performRedo: PerformRedoOperation) {}
 
-  async run(): Promise<void> {
-    await this.performRedo.execute();
+  run(): void {
+    this.performRedo.execute();
   }
 }

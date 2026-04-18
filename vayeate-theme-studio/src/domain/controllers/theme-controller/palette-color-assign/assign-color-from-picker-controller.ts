@@ -5,7 +5,7 @@ import { CommitAssignColorTextOperation } from '../../../operations/theme-operat
 export class AssignColorFromPickerController {
   constructor(private readonly commitAssignColorText: CommitAssignColorTextOperation) {}
 
-  async run(hex: string, _ref?: string): Promise<void> {
+  run(hex: string, _ref?: string): void {
     this.commitAssignColorText.execute(hex);
   }
 }

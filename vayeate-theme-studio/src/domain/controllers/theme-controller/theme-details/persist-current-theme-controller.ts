@@ -10,7 +10,7 @@ export class PersistCurrentThemeController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (theme) this.applyThemeStateAndSchedulePersist.execute(theme);
   }

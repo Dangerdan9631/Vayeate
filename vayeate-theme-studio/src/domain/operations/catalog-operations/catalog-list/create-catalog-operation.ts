@@ -10,7 +10,7 @@ export class CreateCatalogOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogGateway: CatalogGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(params: { name: string; type: 'manual' | 'remote' }): CatalogReference {
@@ -18,7 +18,7 @@ export class CreateCatalogOperation {
     try {
       const catalog = createCatalogWithParams(params);
       this.catalogsStore.getStore().setCatalogMapEntry(catalog.name, catalog.version, true, catalog);
-      this.backgroundQueueGateway.execute(async() => {
+      this.enqueueBackgroundAction.execute(async() => {
         await this.catalogGateway.saveCatalog(catalog);
       }, `Saving catalog ${catalog.name} ${catalog.version}`);
       return { name: catalog.name, version: catalog.version };

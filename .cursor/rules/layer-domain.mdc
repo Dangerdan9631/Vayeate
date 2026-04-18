@@ -30,5 +30,5 @@ alwaysApply: false
 this.catalogsStore.getStore().setCatalog(next);
 
 // GOOD — controller calls operation that uses store method
-await this.saveCatalogOp.execute({ id, data });
+this.saveCatalogOp.execute({ id, data });
 ```

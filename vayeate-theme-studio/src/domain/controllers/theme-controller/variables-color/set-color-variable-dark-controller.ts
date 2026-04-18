@@ -14,7 +14,7 @@ export class SetColorVariableDarkController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  async run(ref: ColorVariableKey | undefined, value: string): Promise<void> {
+  run(ref: ColorVariableKey | undefined, value: string): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme || !ref) return;
     const normalized = normalizeHexSafe(value);

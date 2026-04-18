@@ -6,7 +6,7 @@ import { SetWindowDisplayStateOperation } from '../../operations/window-operatio
 export class SyncWindowDisplayStateController {
   constructor(private readonly setWindowDisplayState: SetWindowDisplayStateOperation) {}
 
-  async run(event: WindowStateEvent): Promise<void> {
+  run(event: WindowStateEvent): void {
     this.setWindowDisplayState.execute(event);
   }
 }

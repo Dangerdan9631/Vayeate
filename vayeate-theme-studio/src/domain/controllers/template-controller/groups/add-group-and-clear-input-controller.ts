@@ -17,7 +17,7 @@ export class AddGroupAndClearInputController {
     private readonly setTemplateAddGroupName: SetTemplateAddGroupNameOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const name = this.templatesStore.getStore().state.addGroupName.trim();
     if (!name) return;
     const template = this.templatesStore.getStore().state.template;
@@ -25,8 +25,8 @@ export class AddGroupAndClearInputController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addGroupToTemplate.execute(base, name);
     if (!next) return;
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
     this.setTemplateAddGroupName.execute('');
   }
 }

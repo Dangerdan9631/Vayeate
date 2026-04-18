@@ -9,11 +9,11 @@ export class RefreshCatalogRefsAndSelectOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogGateway: CatalogGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(selectName?: string, selectVersion?: string): void {
-    this.backgroundQueueGateway.execute(async () => {
+    this.enqueueBackgroundAction.execute(async () => {
       const refs = await this.catalogGateway.listCatalogs();
       this.catalogsStore.getStore().setCatalogMapEntries(refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })));
       if (selectName && selectVersion) {

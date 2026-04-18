@@ -5,7 +5,7 @@ import { PerformHistoryGoToOperation } from '../../operations/undo-operations/pe
 export class PerformHistoryGoToController {
   constructor(private readonly performHistoryGoTo: PerformHistoryGoToOperation) {}
 
-  async run(frameId: string): Promise<void> {
-    await this.performHistoryGoTo.execute(frameId);
+  run(frameId: string): void {
+    this.performHistoryGoTo.execute(frameId);
   }
 }

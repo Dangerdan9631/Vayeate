@@ -14,7 +14,7 @@ export class SetContrastVariableLightMinController {
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
-  async run(ref: ContrastVariableKey | undefined, value: string): Promise<void> {
+  run(ref: ContrastVariableKey | undefined, value: string): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme || ref == null) return;
     const num = value === '' || value == null ? null : parseContrastValue(value);

@@ -10,7 +10,7 @@ export class OpenEyedropperOverlayController {
   ) {}
 
   /** Set loading + context, then load snapshot (ready/error) via `LoadEyedropperSnapshotOperation`. */
-  async run(contextKey: string): Promise<void> {
+  run(contextKey: string): void {
     this.setEyedropperUiState.execute({
       phase: 'loading',
       contextKey,
@@ -19,6 +19,6 @@ export class OpenEyedropperOverlayController {
       result: null,
       pendingPostCommit: null,
     });
-    await this.loadEyedropperSnapshot.execute(contextKey);
+    this.loadEyedropperSnapshot.execute(contextKey);
   }
 }

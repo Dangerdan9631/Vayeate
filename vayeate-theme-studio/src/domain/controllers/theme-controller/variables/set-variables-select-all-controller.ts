@@ -9,7 +9,7 @@ export class SetVariablesSelectAllController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
-  async run(checked?: boolean): Promise<void> {
+  run(checked?: boolean): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const nextColor = checked === true ? theme.colorAssignments.map((a) => a.colorRef) : [];

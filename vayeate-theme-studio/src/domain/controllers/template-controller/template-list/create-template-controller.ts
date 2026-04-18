@@ -30,7 +30,7 @@ export class CreateTemplateController {
     this.setTemplateCreateDialogOpen.execute(false);
     try {
       const newTemplate = await this.createTemplate.execute({ name });
-      await this.refreshTemplateRefs.execute();
+      this.refreshTemplateRefs.execute();
       this.setTemplate.execute(newTemplate);
       this.setSelectedTemplateRef.execute({
         name: newTemplate.name,

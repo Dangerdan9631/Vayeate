@@ -5,7 +5,7 @@ import { SetTemplateMappingSearchTextOperation } from '../../../operations/templ
 export class SetMappingSearchTextController {
   constructor(private readonly setTemplateMappingSearchText: SetTemplateMappingSearchTextOperation) {}
 
-  async run(value: string): Promise<void> {
+  run(value: string): void {
     this.setTemplateMappingSearchText.execute(value);
   }
 }

@@ -6,7 +6,7 @@ import { SetWindowPositionOperation } from '../../operations/window-operations/s
 export class SyncWindowPositionController {
   constructor(private readonly setWindowPosition: SetWindowPositionOperation) {}
 
-  async run(position: Position): Promise<void> {
+  run(position: Position): void {
     this.setWindowPosition.execute(position);
   }
 }

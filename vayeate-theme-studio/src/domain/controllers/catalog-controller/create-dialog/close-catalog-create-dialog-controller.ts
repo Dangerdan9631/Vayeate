@@ -20,13 +20,13 @@ export class CloseCatalogCreateDialogController {
     private readonly setSelectedCatalog: SetSelectedCatalogOperation,
   ) {}
 
-  async run(outcome: CatalogCreateDialogOutcome): Promise<void> {
+  run(outcome: CatalogCreateDialogOutcome): void {
     if (outcome === 'OK') {
       const { createFormName, createFormType } = this.getCatalogCreateDialogData.execute();
       const params = { name: createFormName.trim(), type: createFormType };
       this.closeCatalogCreateDialog.execute();
       this.setCatalogCreateDialogData.execute({ name: '', type: 'manual' });
-      const ref = await this.createCatalog.execute(params);
+      const ref = this.createCatalog.execute(params);
       this.setSelectedCatalog.execute(ref);
       this.setCurrentUndoStackId.execute(catalogStackId(ref.name, ref.version));
       return;

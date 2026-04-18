@@ -18,8 +18,8 @@ import { SetThemeTemplateController } from '../../../domain/controllers/theme-co
 import { CloseThemeCreateDialogController } from '../../../domain/controllers/theme-controller/theme-list/close-theme-create-dialog-controller';
 import { CreateThemeController } from '../../../domain/controllers/theme-controller/theme-list/create-theme-controller';
 import { DeleteThemeVersionController } from '../../../domain/controllers/theme-controller/theme-list/delete-theme-version-controller';
-import { LoadThemePageController } from '../../../domain/controllers/theme-controller/theme-list/load-theme-page-controller';
-import { LoadThemePreviewsController } from '../../../domain/controllers/theme-controller/theme-list/load-theme-previews-controller';
+import { LoadThemePageController } from '../../../domain/controllers/lifecycle/load-theme-page-controller';
+import { LoadThemePreviewsController } from '../../../domain/controllers/lifecycle/load-theme-previews-controller';
 import { OpenThemeCreateDialogController } from '../../../domain/controllers/theme-controller/theme-list/open-theme-create-dialog-controller';
 import { SelectThemeAndLoadController } from '../../../domain/controllers/theme-controller/theme-list/select-theme-and-load-controller';
 import { SelectThemeByNameController } from '../../../domain/controllers/theme-controller/theme-list/select-theme-by-name-controller';

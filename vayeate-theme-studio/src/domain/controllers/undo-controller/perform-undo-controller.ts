@@ -5,7 +5,7 @@ import { PerformUndoOperation } from '../../operations/undo-operations/perform-u
 export class PerformUndoController {
   constructor(private readonly performUndo: PerformUndoOperation) {}
 
-  async run(): Promise<void> {
-    await this.performUndo.execute();
+  run(): void {
+    this.performUndo.execute();
   }
 }

@@ -15,13 +15,13 @@ export class AddGroupController {
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
-  async run(name: string): Promise<void> {
+  run(name: string): void {
     const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addGroupToTemplate.execute(base, name);
     if (!next) return;
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

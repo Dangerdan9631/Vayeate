@@ -10,7 +10,7 @@ export class SetCatalogNewSourceTokenTypeController {
     private readonly setCatalogNewSourceType: SetCatalogNewSourceTypeOperation,
   ) {}
 
-  async run(value: TokenType): Promise<void> {
+  run(value: TokenType): void {
     this.setCatalogNewSourceTokenType.execute(value);
     if (value === 'semantic token') {
       this.setCatalogNewSourceType.execute('semantic-token-registry');

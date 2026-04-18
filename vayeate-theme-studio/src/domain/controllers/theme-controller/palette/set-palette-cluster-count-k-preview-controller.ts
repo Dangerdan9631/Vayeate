@@ -11,7 +11,7 @@ export class SetPaletteClusterCountKPreviewController {
     private readonly setTheme: SetThemeOperation,
   ) {}
 
-  async run(value: number): Promise<void> {
+  run(value: number): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const k = Math.max(1, Math.min(12, value));

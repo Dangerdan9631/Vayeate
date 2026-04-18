@@ -27,18 +27,18 @@ export class RestoreTemplateStateController {
         version: template.version,
       });
       try {
-        await this.saveTemplate.execute(template);
+        this.saveTemplate.execute(template);
       } catch {
         // persist failed
       }
-      await this.refreshTemplateRefs.execute();
+      this.refreshTemplateRefs.execute();
     }
     if (deleteTemplateVersionOnRestore) {
-      await this.deleteTemplate.execute(
+      this.deleteTemplate.execute(
         deleteTemplateVersionOnRestore.name,
         deleteTemplateVersionOnRestore.version,
       );
-      await this.refreshTemplateRefs.execute();
+      this.refreshTemplateRefs.execute();
     }
   }
 }

@@ -9,12 +9,12 @@ export class SaveAppConfigOperation {
   constructor(
     private readonly appConfigStore: AppConfigStore,
     private readonly configGateway: ConfigGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(): void {
     const appConfigState = this.appConfigStore.getStore().config;
-    this.backgroundQueueGateway.execute(async () => {
+    this.enqueueBackgroundAction.execute(async () => {
         this.configGateway.save(
           appConfigSchema.parse(appConfigState),
         );

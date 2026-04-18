@@ -25,7 +25,7 @@ export class SetMappingContrastRefController {
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingContrastRefOp.execute(base, tokenKey, tokenType, contrastVariableRef);
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

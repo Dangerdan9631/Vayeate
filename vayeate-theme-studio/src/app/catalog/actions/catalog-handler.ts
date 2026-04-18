@@ -11,7 +11,7 @@ import { DeleteCurrentCatalogVersionController } from '../../../domain/controlle
 import { LockCatalogController } from '../../../domain/controllers/catalog-controller/catalog-details/lock-catalog-controller';
 import { RevertCatalogToVersionController } from '../../../domain/controllers/catalog-controller/catalog-details/revert-catalog-to-version-controller';
 import { SyncCatalogController } from '../../../domain/controllers/catalog-controller/catalog-details/sync-catalog-controller';
-import { LoadCatalogPageController } from '../../../domain/controllers/catalog-controller/page/load-catalog-page-controller';
+import { LoadCatalogPageController } from '../../../domain/controllers/lifecycle/load-catalog-page-controller';
 import { SetSelectedCatalogController } from '../../../domain/controllers/catalog-controller/page/set-selected-catalog-controller';
 import { AddNewSourceController } from '../../../domain/controllers/catalog-controller/sources/add-new-source-controller';
 import { RemoveSourceController } from '../../../domain/controllers/catalog-controller/sources/remove-source-controller';

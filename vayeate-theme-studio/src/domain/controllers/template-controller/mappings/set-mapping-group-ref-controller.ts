@@ -25,7 +25,7 @@ export class SetMappingGroupRefController {
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingGroupRefOp.execute(base, tokenKey, tokenType, groupRef);
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

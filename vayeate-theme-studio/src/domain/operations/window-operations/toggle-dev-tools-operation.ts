@@ -5,7 +5,7 @@ import { WindowService } from '../../../gateway/services/window-service';
 export class ToggleDevToolsOperation {
   constructor(private readonly windowService: WindowService) {}
 
-  async execute(): Promise<void> {
-    await this.windowService.toggleDevTools();
+  execute(): void {
+    void this.windowService.toggleDevTools();
   }
 }

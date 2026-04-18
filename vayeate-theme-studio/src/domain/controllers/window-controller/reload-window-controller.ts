@@ -5,7 +5,7 @@ import { ReloadWindowOperation } from '../../operations/window-operations/reload
 export class ReloadWindowController {
   constructor(private readonly reloadWindow: ReloadWindowOperation) {}
 
-  async run(): Promise<void> {
-    await this.reloadWindow.execute(false);
+  run(): void {
+    this.reloadWindow.execute(false);
   }
 }

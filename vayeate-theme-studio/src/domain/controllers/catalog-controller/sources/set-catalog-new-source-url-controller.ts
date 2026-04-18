@@ -5,7 +5,7 @@ import { SetCatalogNewSourceUrlOperation } from '../../../operations/catalog-ope
 export class SetCatalogNewSourceUrlController {
   constructor(private readonly setCatalogNewSourceUrl: SetCatalogNewSourceUrlOperation) {}
 
-  async run(value: string): Promise<void> {
+  run(value: string): void {
     this.setCatalogNewSourceUrl.execute(value);
   }
 }

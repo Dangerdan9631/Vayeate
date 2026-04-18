@@ -16,14 +16,14 @@ export class RemoveColorVariableController {
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
-  async run(key: string): Promise<void> {
+  run(key: string): void {
     const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const refs = referencedColorVarKeysFromTemplate(template);
     if (refs.has(key)) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeColorVariableFromTemplate.execute(base, key);
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

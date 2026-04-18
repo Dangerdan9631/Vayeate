@@ -26,13 +26,13 @@ export class DeleteCurrentTemplateVersionController {
     if (!selectedRef) return;
 
     const { name, version } = selectedRef;
-    await this.deleteTemplate.execute(name, version);
+    this.deleteTemplate.execute(name, version);
     const refs = await this.refreshTemplateRefs.execute();
     const nextT = findNearestVersionRef(refs, name, version);
 
     if (nextT) {
       this.setSelectedTemplateRef.execute(nextT);
-      await this.loadTemplate.execute(nextT.name, nextT.version);
+      this.loadTemplate.execute(nextT.name, nextT.version);
       this.setCurrentUndoStackId.execute(templateStackId(nextT.name, nextT.version));
     } else {
       this.setSelectedTemplateRef.execute(null);

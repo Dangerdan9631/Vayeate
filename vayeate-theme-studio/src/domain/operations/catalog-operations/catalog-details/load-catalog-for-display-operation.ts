@@ -8,11 +8,11 @@ export class LoadCatalogForDisplayOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogGateway: CatalogGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(name: string, version: string): void {
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
       const loaded = await this.catalogGateway.loadCatalog(name, version);
       this.catalogsStore.getStore().setLoadedForDisplay(name, version, loaded);
     }, `Loading catalog ${name} ${version}`);

@@ -19,7 +19,7 @@ export class SetThemePreviewTokenRefController {
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
   ) {}
 
-  async run(tokenRefField: ThemePreviewTokenRefField, value: string | null): Promise<void> {
+  run(tokenRefField: ThemePreviewTokenRefField, value: string | null): void {
     const theme = this.themesStateGetter.getStore().state.theme;
     if (!theme) return;
     const next: Theme = { ...theme, [tokenRefField]: value };

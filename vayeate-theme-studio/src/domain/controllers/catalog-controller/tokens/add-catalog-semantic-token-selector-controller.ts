@@ -17,7 +17,7 @@ export class AddCatalogSemanticTokenSelectorController {
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const state = this.catalogsStore.getStore().state;
     const catalog = state.catalog;
     const selector = state.newSemanticTokenSelectorText?.trim();
@@ -27,8 +27,8 @@ export class AddCatalogSemanticTokenSelectorController {
     const merged = this.mergeSemanticSelectorsIntoCatalog.execute(base, selector);
     if (!merged) return;
 
-    await this.saveCatalog.execute(merged);
-    await this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
+    this.saveCatalog.execute(merged);
+    this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
     this.setCatalogNewSemanticTokenSelectorText.execute('');
   }
 }

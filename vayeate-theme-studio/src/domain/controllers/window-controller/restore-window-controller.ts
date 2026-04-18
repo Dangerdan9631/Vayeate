@@ -15,11 +15,11 @@ export class RestoreWindowController {
     this.log = loggerFactory.create('WindowController');
   }
 
-  async run(): Promise<void> {
+  run(): void {
     if (!this.validateCanRestore.test()) {
       this.log.warn('restoreWindow skipped: validation failed (window not maximized or minimized)');
       return;
     }
-    await this.setWindowState.execute('restore');
+    this.setWindowState.execute('restore');
   }
 }

@@ -26,7 +26,7 @@ export class RestoreThemeStateController {
     private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
   ) {}
 
-  async run(params: RestoreThemeStateParams): Promise<void> {
+  run(params: RestoreThemeStateParams): void {
     if (params.theme !== undefined && params.theme !== null) {
       this.clearPendingThemeSave.execute();
     }
@@ -54,19 +54,19 @@ export class RestoreThemeStateController {
     if (params.theme !== undefined && params.theme !== null) {
       this.setThemeSaveError.execute(null);
       try {
-        await this.saveTheme.execute(params.theme);
+        this.saveTheme.execute(params.theme);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         this.setThemeSaveError.execute(message);
       }
-      await this.loadThemeRefs.execute();
+      this.loadThemeRefs.execute();
     }
     if (params.deleteThemeVersionOnRestore) {
-      await this.deleteTheme.execute(
+      this.deleteTheme.execute(
         params.deleteThemeVersionOnRestore.name,
         params.deleteThemeVersionOnRestore.version,
       );
-      await this.loadThemeRefs.execute();
+      this.loadThemeRefs.execute();
     }
   }
 }

@@ -5,7 +5,7 @@ import { SetThemeHueAdjustmentOperation } from '../../../operations/theme-operat
 export class SetThemeHueAdjustmentController {
   constructor(private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation) {}
 
-  async run(value: number): Promise<void> {
+  run(value: number): void {
     this.setThemeHueAdjustment.execute(value);
   }
 }

@@ -8,12 +8,12 @@ import { EnqueueBackgroundActionOperation } from '../app-operations/enqueue-back
 export class ClearPersistedUndoOperation {
   constructor(
     private readonly undoGateway: UndoGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) { }
 
   execute():void {
     undoManagerV2.configure({ persistence: this.undoGateway });
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
       await undoManagerV2.clearPersisted();
     }, 'Clearing persisted undo');
   }

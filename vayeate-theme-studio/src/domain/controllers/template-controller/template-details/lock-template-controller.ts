@@ -15,11 +15,11 @@ export class LockTemplateController {
     private readonly validateCanLockTemplate: ValidateCanLockTemplate,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const template = this.templatesStore.getStore().state.template;
     if (!template || !this.validateCanLockTemplate.test(template)) return;
     const updated = this.lockTemplateOperation.execute(template);
-    await this.saveTemplate.execute(updated);
-    await this.refreshTemplateRefsAndSelect.execute(template.name, template.version);
+    this.saveTemplate.execute(updated);
+    this.refreshTemplateRefsAndSelect.execute(template.name, template.version);
   }
 }

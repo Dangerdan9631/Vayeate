@@ -15,11 +15,11 @@ export class MinimizeWindowController {
     this.log = loggerFactory.create('WindowController');
   }
 
-  async run(): Promise<void> {
+  run(): void {
     if (!this.validateCanMinimize.test()) {
       this.log.warn('minimizeWindow skipped: validation failed (window already minimized)');
       return;
     }
-    await this.setWindowState.execute('minimize');
+    this.setWindowState.execute('minimize');
   }
 }

@@ -5,7 +5,7 @@ import { WindowService } from '../../../gateway/services/window-service';
 export class DragWindowOperation {
   constructor(private readonly windowService: WindowService) {}
 
-  async execute(): Promise<void> {
-    await this.windowService.drag();
+  execute(): void {
+    void this.windowService.drag();
   }
 }

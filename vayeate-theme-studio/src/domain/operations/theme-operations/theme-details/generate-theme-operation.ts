@@ -10,7 +10,7 @@ export class GenerateThemeOperation {
     private readonly themesStateGetter: ThemesStore,
     private readonly themesStateSetter: ThemesStore,
     private readonly themeGateway: ThemeGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(): void {
@@ -24,7 +24,7 @@ export class GenerateThemeOperation {
     const templateName = templateRef.name;  
     const templateVersion = templateRef.version;
     this.themesStateSetter.getStore().setGenerateResult(null);
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
       try {
         const { darkPath, lightPath } = await this.themeGateway.generateTheme(
           themeName,

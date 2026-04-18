@@ -9,11 +9,11 @@ export class LoadPreviewsOperation {
   constructor(
     private readonly ThemesStore: ThemesStore,
     private readonly previewGateway: PreviewGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(): void {
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
     try {
       const previews = await this.previewGateway.loadPreviews();
       this.ThemesStore.getStore().setEditorPreviews(previews);

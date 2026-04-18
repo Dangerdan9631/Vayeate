@@ -24,7 +24,7 @@ export class UpdateSemanticVariantKeyController {
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
-  async run(payload: UpdateSemanticVariantKeyPayload): Promise<void> {
+  run(payload: UpdateSemanticVariantKeyPayload): void {
     let parsed: ParsedSemanticSelector;
     try {
       parsed = parseSemanticSelector(payload.tokenKey);
@@ -32,18 +32,18 @@ export class UpdateSemanticVariantKeyController {
       return;
     }
     if (payload.variant === 'modifier') {
-      await this.runFromParsed(payload.tokenKey, parsed, payload.modifiers, parsed.language);
+      this.runFromParsed(payload.tokenKey, parsed, payload.modifiers, parsed.language);
     } else {
-      await this.runFromParsed(payload.tokenKey, parsed, parsed.modifiers, payload.language);
+      this.runFromParsed(payload.tokenKey, parsed, parsed.modifiers, payload.language);
     }
   }
 
-  private async runFromParsed(
+  private runFromParsed(
     oldKey: string,
     parsed: ParsedSemanticSelector,
     modifiers: string[],
     language: string | null,
-  ): Promise<void> {
+  ): void {
     const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const newKey = formatSemanticSelector(parsed.type, modifiers, language);
@@ -62,7 +62,7 @@ export class UpdateSemanticVariantKeyController {
       sets.semanticTokenModifiers,
       sets.semanticTokenLanguages,
     );
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

@@ -24,8 +24,8 @@ export class DeleteThemeVersionController {
   ) {}
 
   async run(name: string, version: string): Promise<void> {
-    await this.deleteTheme.execute(name, version);
-    await this.loadThemeRefs.execute();
+    this.deleteTheme.execute(name, version);
+    this.loadThemeRefs.execute();
     const refs = this.getThemeRefs.execute();
     const nextTh = findNearestVersionRef(refs, name, version);
 

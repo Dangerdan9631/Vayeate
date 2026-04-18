@@ -16,12 +16,12 @@ export class RemoveMappingController {
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
-  async run(tokenKey: string, tokenType: TokenType): Promise<void> {
+  run(tokenKey: string, tokenType: TokenType): void {
     const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

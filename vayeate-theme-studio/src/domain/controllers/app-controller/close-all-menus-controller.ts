@@ -5,7 +5,7 @@ import { CloseMenusOperation } from '../../operations/app-operations/close-menus
 export class CloseAllMenusController {
   constructor(private readonly closeAllMenus: CloseMenusOperation) {}
 
-  async run(): Promise<void> {
+  run(): void {
     this.closeAllMenus.execute();
   }
 }

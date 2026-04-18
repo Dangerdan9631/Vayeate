@@ -8,7 +8,6 @@ import { useStore } from 'zustand';
 import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
 import { WindowStore } from '../../../domain/state/window/window-store';
 import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
-import { MenuId } from '../../../domain/state/ui/ui-state';
 
 const uiStore = container.resolve(UiStore);
 const appConfigStore = container.resolve(AppConfigStore);

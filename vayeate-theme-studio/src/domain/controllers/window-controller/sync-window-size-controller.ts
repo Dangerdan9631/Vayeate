@@ -6,7 +6,7 @@ import { SetWindowSizeOperation } from '../../operations/window-operations/set-w
 export class SyncWindowSizeController {
   constructor(private readonly setWindowSize: SetWindowSizeOperation) {}
 
-  async run(size: Size): Promise<void> {
+  run(size: Size): void {
     this.setWindowSize.execute(size);
   }
 }

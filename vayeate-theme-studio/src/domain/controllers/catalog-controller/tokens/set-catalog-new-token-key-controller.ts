@@ -5,7 +5,7 @@ import { SetCatalogNewTokenKeyOperation } from '../../../operations/catalog-oper
 export class SetCatalogNewTokenKeyController {
   constructor(private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyOperation) {}
 
-  async run(value: string): Promise<void> {
+  run(value: string): void {
     this.setCatalogNewTokenKey.execute(value);
   }
 }

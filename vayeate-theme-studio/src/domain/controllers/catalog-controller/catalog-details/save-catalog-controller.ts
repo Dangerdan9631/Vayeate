@@ -10,8 +10,8 @@ export class SaveCatalogController {
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
-  async run(catalog: Catalog): Promise<void> {
-    await this.saveCatalog.execute(catalog);
-    await this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
+  run(catalog: Catalog): void {
+    this.saveCatalog.execute(catalog);
+    this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
   }
 }

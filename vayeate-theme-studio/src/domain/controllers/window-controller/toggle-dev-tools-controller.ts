@@ -5,7 +5,7 @@ import { ToggleDevToolsOperation } from '../../operations/window-operations/togg
 export class ToggleDevToolsController {
   constructor(private readonly toggleDevTools: ToggleDevToolsOperation) {}
 
-  async run(): Promise<void> {
-    await this.toggleDevTools.execute();
+  run(): void {
+    this.toggleDevTools.execute();
   }
 }

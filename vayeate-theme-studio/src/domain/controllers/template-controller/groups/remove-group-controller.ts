@@ -16,14 +16,14 @@ export class RemoveGroupController {
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
 
-  async run(groupId: string): Promise<void> {
+  run(groupId: string): void {
     const template = this.templatesStore.getStore().state.template;
     if (!template) return;
     const inUse = groupNamesInUseFromTemplate(template);
     if (inUse.has(groupId)) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeGroupFromTemplate.execute(base, groupId);
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

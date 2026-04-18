@@ -17,12 +17,12 @@ export class RemoveSourceController {
     private readonly validateCanUpdateCatalogSource: ValidateCanUpdateCatalogSource,
   ) {}
 
-  async run(sourceIndex: number): Promise<void> {
+  run(sourceIndex: number): void {
     const catalog = this.catalogsStore.getStore().state.catalog;
     if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.removeSourceAtIndex.execute(base, sourceIndex);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

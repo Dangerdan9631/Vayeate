@@ -5,7 +5,7 @@ import { SetTemplateCreateFormNameOperation } from '../../../operations/template
 export class SetCreateFormNameController {
   constructor(private readonly setTemplateCreateFormName: SetTemplateCreateFormNameOperation) {}
 
-  async run(value: string): Promise<void> {
+  run(value: string): void {
     this.setTemplateCreateFormName.execute(value);
   }
 }

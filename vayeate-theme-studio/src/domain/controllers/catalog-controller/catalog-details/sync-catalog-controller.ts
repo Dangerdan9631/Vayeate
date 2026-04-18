@@ -20,7 +20,7 @@ export class SyncCatalogController {
     if (!this.validateSyncCatalog.test(catalog)) return;
 
     const synced = await this.syncCatalog.execute(catalog);
-    await this.saveCatalog.execute(synced);
-    await this.refreshCatalogRefsAndSelect.execute(synced.name, synced.version);
+    this.saveCatalog.execute(synced);
+    this.refreshCatalogRefsAndSelect.execute(synced.name, synced.version);
   }
 }

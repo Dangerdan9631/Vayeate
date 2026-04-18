@@ -9,7 +9,7 @@ export class SetColorSchemeController {
     private readonly saveAppConfig: SaveAppConfigOperation,
   ) {}
 
-  async run(scheme: 'light' | 'dark'): Promise<void> {
+  run(scheme: 'light' | 'dark'): void {
     this.setColorScheme.execute(scheme);
     this.saveAppConfig.execute();
   }

@@ -9,7 +9,7 @@ export class OpenCatalogCreateDialogController {
     private readonly openCatalogCreateDialog: OpenCatalogCreateDialogOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     this.setCatalogCreateDialogData.execute({ name: '', type: 'manual' });
     this.openCatalogCreateDialog.execute();
   }

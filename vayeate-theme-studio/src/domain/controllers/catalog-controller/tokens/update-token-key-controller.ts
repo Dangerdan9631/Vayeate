@@ -16,12 +16,12 @@ export class UpdateTokenKeyController {
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
-  async run(oldKey: string, newKey: string, tokenType: TokenType): Promise<void> {
+  run(oldKey: string, newKey: string, tokenType: TokenType): void {
     const catalog = this.catalogsStore.getStore().state.catalog;
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateTokenKeyInCatalog.execute(base, oldKey, newKey, tokenType);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

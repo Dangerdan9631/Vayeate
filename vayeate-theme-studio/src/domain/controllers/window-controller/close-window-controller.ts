@@ -5,7 +5,7 @@ import { SetWindowStateOperation } from '../../operations/window-operations/set-
 export class CloseWindowController {
   constructor(private readonly setWindowState: SetWindowStateOperation) {}
 
-  async run(): Promise<void> {
-    await this.setWindowState.execute('close');
+  run(): void {
+    this.setWindowState.execute('close');
   }
 }

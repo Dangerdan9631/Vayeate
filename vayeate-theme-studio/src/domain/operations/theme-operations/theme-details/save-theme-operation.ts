@@ -8,11 +8,11 @@ import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-b
 export class SaveThemeOperation {
   constructor(
     private readonly themeGateway: ThemeGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) { }
 
   execute(theme: Theme): void {
-    this.backgroundQueueGateway.execute(async() => {
+    this.enqueueBackgroundAction.execute(async() => {
       await this.themeGateway.saveTheme(theme);
     }, `Saving theme ${theme.name} ${theme.version}`);
   }

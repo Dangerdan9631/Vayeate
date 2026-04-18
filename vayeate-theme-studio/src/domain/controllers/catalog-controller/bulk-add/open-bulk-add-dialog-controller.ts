@@ -9,7 +9,7 @@ export class OpenBulkAddDialogController {
     private readonly setCatalogBulkAddText: SetCatalogBulkAddTextOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     this.setCatalogBulkAddDialogOpen.execute(true);
     this.setCatalogBulkAddText.execute('');
   }

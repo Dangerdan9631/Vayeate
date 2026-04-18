@@ -13,7 +13,7 @@ export class LoadAppController {
     private readonly loadUndoHistory: LoadUndoHistoryOperation
   ) { }
   
-  async run(): Promise<void> {
+  run(): void {
     this.initializeWindowService.execute();
     this.clearPersistedUndo.execute();
     this.loadAppConfig.execute();

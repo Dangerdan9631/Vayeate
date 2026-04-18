@@ -9,7 +9,7 @@ export class OpenCreateDialogController {
     private readonly setTemplateCreateFormName: SetTemplateCreateFormNameOperation
   ) { }
 
-  async run(): Promise<void> {
+  run(): void {
     this.setTemplateCreateFormName.execute("");
     this.setTemplateCreateDialogOpen.execute(true);
   }

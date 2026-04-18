@@ -5,7 +5,7 @@ import { InitializeLogServiceOperation } from '../../operations/app-operations/i
 export class BootstrapAppController {
   constructor(private readonly initializeLogService: InitializeLogServiceOperation) {}
 
-  async run(): Promise<void> {
+  run(): void {
     this.initializeLogService.execute();
   }
 }

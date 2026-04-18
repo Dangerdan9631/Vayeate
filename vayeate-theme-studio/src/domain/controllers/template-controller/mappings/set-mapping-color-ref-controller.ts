@@ -39,12 +39,12 @@ export class SetMappingColorRefController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     if (colorRef === null && isOrphan) {
       const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
-      await this.saveTemplate.execute(next);
-      await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+      this.saveTemplate.execute(next);
+      this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
       return;
     }
     const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

@@ -30,7 +30,7 @@ export class CreateThemeController {
     this.setThemeCreateFormName.execute('');
     try {
       const newTheme = await this.createTheme.execute(params);
-      await this.loadThemeRefs.execute();
+      this.loadThemeRefs.execute();
       this.setTheme.execute(newTheme);
       this.setSelectedThemeRef.execute({ name: newTheme.name, version: newTheme.version });
       this.setThemePaneSelections.execute(

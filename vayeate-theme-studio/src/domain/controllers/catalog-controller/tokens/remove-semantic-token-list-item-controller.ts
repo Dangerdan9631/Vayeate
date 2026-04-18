@@ -16,12 +16,12 @@ export class RemoveSemanticTokenListItemController {
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
-  async run(kind: SemanticTokenRegistryListKind, index: number): Promise<void> {
+  run(kind: SemanticTokenRegistryListKind, index: number): void {
     const catalog = this.catalogsStore.getStore().state.catalog;
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.removeSemanticTokenListItem.execute(base, kind, index);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

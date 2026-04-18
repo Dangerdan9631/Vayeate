@@ -9,11 +9,11 @@ export class LoadThemeRefsOperation {
   constructor(
     private readonly themesStateSetter: ThemesStore,
     private readonly themeGateway: ThemeGateway,
-    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(): void {
-    this.backgroundQueueGateway.execute(async() => { 
+    this.enqueueBackgroundAction.execute(async() => { 
       const refs = await this.themeGateway.listThemes();
       this.themesStateSetter.getStore().setThemeMapEntries(
         refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, theme: undefined })),

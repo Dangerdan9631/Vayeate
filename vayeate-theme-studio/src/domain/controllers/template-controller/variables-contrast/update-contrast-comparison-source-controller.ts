@@ -28,7 +28,7 @@ export class UpdateContrastComparisonSourceController {
       contrastVariableKey,
       comparisonSourceRef,
     );
-    await this.saveTemplate.execute(next);
-    await this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
   }
 }

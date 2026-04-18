@@ -9,7 +9,7 @@ export class HandleKeyboardShortcutController {
     private readonly performRedo: PerformRedoOperation,
   ) {}
 
-  async run(e: KeyboardEvent): Promise<void> {
+  run(e: KeyboardEvent): void {
     if (!(e.ctrlKey || e.metaKey)) return;
 
     if (e.key === 'z') {

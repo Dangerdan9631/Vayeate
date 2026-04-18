@@ -18,12 +18,12 @@ export class UpdateSourceTypeController {
     private readonly validateCanUpdateCatalogSource: ValidateCanUpdateCatalogSource,
   ) {}
 
-  async run(sourceIndex: number, value: SourceType): Promise<void> {
+  run(sourceIndex: number, value: SourceType): void {
     const catalog = this.catalogsStore.getStore().state.catalog;
     if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceTypeInCatalog.execute(base, sourceIndex, value);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
   }
 }

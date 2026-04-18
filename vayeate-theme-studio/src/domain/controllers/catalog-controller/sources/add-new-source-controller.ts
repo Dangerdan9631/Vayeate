@@ -22,7 +22,7 @@ export class AddNewSourceController {
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const state = this.catalogsStore.getStore().state;
     const catalog = state.catalog;
     const url = state.newSourceUrl?.trim();
@@ -34,8 +34,8 @@ export class AddNewSourceController {
     };
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.addSourceToCatalog.execute(base, source);
-    await this.saveCatalog.execute(updated);
-    await this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     this.setCatalogNewSourceUrl.execute('');
     this.setCatalogNewSourceTokenType.execute('theme');
     this.setCatalogNewSourceType.execute('default');

@@ -24,7 +24,7 @@ export class DeleteCurrentCatalogVersionController {
     if (!ref) return;
 
     const { name, version } = ref;
-    await this.deleteCatalog.execute(name, version);
+    this.deleteCatalog.execute(name, version);
     const refs = await this.refreshCatalogRefs.execute();
     const next = findNearestVersionRef(refs, name, version);
 

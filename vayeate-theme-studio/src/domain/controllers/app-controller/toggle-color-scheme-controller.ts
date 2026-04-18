@@ -11,7 +11,7 @@ export class ToggleColorSchemeController {
     private readonly saveAppConfig: SaveAppConfigOperation,
   ) {}
 
-  async run(): Promise<void> {
+  run(): void {
     const current = this.appConfigStore.getStore().config.colorScheme;
     const next = current === 'light' ? 'dark' : 'light';
     this.setColorScheme.execute(next);
