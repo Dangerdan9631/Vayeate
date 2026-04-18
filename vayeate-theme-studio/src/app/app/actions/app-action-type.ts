@@ -2,7 +2,7 @@ import type { TabId } from '../../../model/tab-id';
 import type { HexColor } from "../../../model/schema/primitives";
 
 export enum AppActionType {
-  AppMenubarUndoMenuSync = 'APP_MENUBAR_UNDO_MENU_SYNC',
+  AppMenubarUndoMenuOnLoad = 'APP_MENUBAR_UNDO_MENU_SYNC',
   AppFileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',
   AppFileMenuExitButtonOnClick = 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK',
   AppEditMenuTriggerButtonOnClick = 'APP_EDIT_MENU_TRIGGER_BUTTON_ON_CLICK',
@@ -27,7 +27,7 @@ export enum AppActionType {
 }
 
 export type AppActions =
-  | { type: AppActionType.AppMenubarUndoMenuSync }
+  | { type: AppActionType.AppMenubarUndoMenuOnLoad }
   | { type: AppActionType.AppFileMenuTriggerButtonOnClick }
   | { type: AppActionType.AppFileMenuExitButtonOnClick }
   | { type: AppActionType.AppEditMenuTriggerButtonOnClick }

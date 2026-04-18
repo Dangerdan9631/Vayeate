@@ -5,7 +5,7 @@ import { emptyUndoMenuSnapshot } from '../../state/undo-stack/undo-stack-state';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 
 @singleton()
-export class SyncUndoMenuStateOperation {
+export class LoadUndoHistoryOperation {
   constructor(
     private readonly undoStackStore: UndoStackStore,
   ) {}

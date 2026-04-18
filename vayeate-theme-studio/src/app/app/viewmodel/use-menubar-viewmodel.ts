@@ -70,7 +70,7 @@ export function useMenuBarViewModel(): MenuBarViewModel {
   const { frames, currentId, canUndo, canRedo } = undoMenu;
 
   useEffect(() => {
-    void dispatch({ type: AppActionType.AppMenubarUndoMenuSync });
+    void dispatch({ type: AppActionType.AppMenubarUndoMenuOnLoad });
   }, [currentStackId, undoListVersion, dispatch]);
 
   const fileRef = useRef<HTMLDivElement>(null);

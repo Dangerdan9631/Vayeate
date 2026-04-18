@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { SyncUndoMenuStateOperation } from '../../operations/undo-operations/sync-undo-menu-state-operation';
+import { LoadUndoHistoryOperation } from '../../operations/undo-operations/sync-undo-menu-state-operation';
 
 @singleton()
-export class SyncUndoMenuStateController {
-  constructor(private readonly syncUndoMenuState: SyncUndoMenuStateOperation) {}
+export class LoadUndoHistoryController {
+  constructor(private readonly loadUndoHistory: LoadUndoHistoryOperation) {}
 
   async run(): Promise<void> {
-    await this.syncUndoMenuState.execute();
+    await this.loadUndoHistory.execute();
   }
 }
