@@ -8,12 +8,7 @@
   <body>
     <script>
       (function () {
-        var initialAppConfig =
-          window.electronAPI && typeof window.electronAPI.getInitialAppConfig === 'function'
-            ? window.electronAPI.getInitialAppConfig()
-            : undefined;
-        var scheme = initialAppConfig?.colorScheme ?? 'dark';
-        document.documentElement.setAttribute('data-theme', scheme);
+        document.documentElement.setAttribute('data-theme', 'dark');
       })();
     </script>
     <div id="app"></div>
