@@ -19,6 +19,7 @@ import { CloseThemeCreateDialogController } from '../../../domain/controllers/th
 import { CreateThemeController } from '../../../domain/controllers/theme-controller/theme-list/create-theme-controller';
 import { DeleteThemeVersionController } from '../../../domain/controllers/theme-controller/theme-list/delete-theme-version-controller';
 import { LoadThemePageController } from '../../../domain/controllers/theme-controller/theme-list/load-theme-page-controller';
+import { LoadThemePreviewsController } from '../../../domain/controllers/theme-controller/theme-list/load-theme-previews-controller';
 import { OpenThemeCreateDialogController } from '../../../domain/controllers/theme-controller/theme-list/open-theme-create-dialog-controller';
 import { SelectThemeAndLoadController } from '../../../domain/controllers/theme-controller/theme-list/select-theme-and-load-controller';
 import { SelectThemeByNameController } from '../../../domain/controllers/theme-controller/theme-list/select-theme-by-name-controller';
@@ -54,6 +55,7 @@ export class ThemeActionHandler {
     private readonly generateTheme: GenerateThemeController,
     private readonly incrementThemeVersion: IncrementThemeVersionController,
     private readonly loadThemePage: LoadThemePageController,
+    private readonly loadThemePreviews: LoadThemePreviewsController,
     private readonly openEyedropperOverlay: OpenEyedropperOverlayController,
     private readonly openThemeCreateDialog: OpenThemeCreateDialogController,
     private readonly persistCurrentTheme: PersistCurrentThemeController,
@@ -94,6 +96,9 @@ export class ThemeActionHandler {
     switch (action.type) {
       case ThemeActionType.ThemePageOnLoad:
         await this.loadThemePage.run();
+        break;
+      case ThemeActionType.ThemePagePreviewsOnLoad:
+        await this.loadThemePreviews.run();
         break;
       case ThemeActionType.ThemePageSaveErrorDismissButtonOnClick:
         await this.clearThemeSaveError.run();

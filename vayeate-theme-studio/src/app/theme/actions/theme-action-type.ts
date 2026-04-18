@@ -3,6 +3,7 @@ import { ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
 
 export enum ThemeActionType {
   ThemePageOnLoad = 'THEME_PAGE_ON_LOAD',
+  ThemePagePreviewsOnLoad = 'THEME_PAGE_PREVIEWS_ON_LOAD',
   ThemePageSaveErrorDismissButtonOnClick = 'THEME_PAGE_SAVE_ERROR_DISMISS_BUTTON_ON_CLICK',
   ThemeThemesNameListOnCommit = 'THEME_THEMES_NAME_LIST_ON_COMMIT',
   ThemeThemesVersionListOnCommit = 'THEME_THEMES_VERSION_LIST_ON_COMMIT',
@@ -52,6 +53,7 @@ export enum ThemeActionType {
 
 export type ThemeActions =
   | { type: ThemeActionType.ThemePageOnLoad }
+  | { type: ThemeActionType.ThemePagePreviewsOnLoad }
   | { type: ThemeActionType.ThemePageSaveErrorDismissButtonOnClick }
   | { type: ThemeActionType.ThemeThemesNameListOnCommit; name: ThemeName }
   | { type: ThemeActionType.ThemeThemesVersionListOnCommit; name: ThemeName; version: Version }

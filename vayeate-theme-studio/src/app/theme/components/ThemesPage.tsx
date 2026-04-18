@@ -1,7 +1,7 @@
 import { useThemeViewModel } from '../viewmodel/use-theme-viewmodel';
 import { useThemesPageChromeViewModel } from '../viewmodel/use-themes-page-chrome-viewmodel';
 import { CreateThemeDialog } from './CreateThemeDialog';
-import { EditorPreviewsCard } from './EditorPreviewsCard';
+import { LazyEditorPreviewsCard } from './LazyEditorPreviewsCard';
 import { ThemeDetailsCard } from './ThemeDetailsCard';
 import { ThemePaletteCard } from './ThemePaletteCard';
 import { ThemeVariablesCard } from './ThemeVariablesCard';
@@ -34,7 +34,7 @@ export function ThemesPage() {
           <ThemeVariablesCard />
         </div>
         <div className="themes-right-col">
-          <EditorPreviewsCard />
+          <LazyEditorPreviewsCard />
         </div>
       </div>
       {createDialogOpen && <CreateThemeDialog />}

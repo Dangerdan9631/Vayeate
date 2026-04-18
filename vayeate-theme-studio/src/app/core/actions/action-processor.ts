@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { delay, inject, singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import type { AppAction } from './app-action';
 import { AppActionHandler } from '../../app/actions/app-handler';
@@ -15,10 +15,10 @@ export class ActionProcessor {
   private readonly log: Logger;
 
   constructor(
-    private readonly appHandler: AppActionHandler,
-    private readonly catalogHandler: CatalogActionHandler,
-    private readonly templateHandler: TemplateActionHandler,
-    private readonly themeHandler: ThemeActionHandler,
+    @inject(delay(() => AppActionHandler)) private readonly appHandler: AppActionHandler,
+    @inject(delay(() => CatalogActionHandler)) private readonly catalogHandler: CatalogActionHandler,
+    @inject(delay(() => TemplateActionHandler)) private readonly templateHandler: TemplateActionHandler,
+    @inject(delay(() => ThemeActionHandler)) private readonly themeHandler: ThemeActionHandler,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('ActionProcessor');

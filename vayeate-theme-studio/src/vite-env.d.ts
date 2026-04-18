@@ -1,7 +1,5 @@
 /// <reference types="vite/client" />
 
-import type { AppConfig } from './model/schema/primitives';
-
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{
@@ -37,7 +35,6 @@ export interface ElectronAPI {
   fsDeleteFile: (relativePath: string) => Promise<void>;
   fsListFiles: (relativeDirPath: string) => Promise<string[]>;
   fsListDirEntries: (relativeDirPath: string) => Promise<Array<{ name: string; isDirectory: boolean }>>;
-  getInitialAppConfig: () => unknown;
 }
 
 declare global {

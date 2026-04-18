@@ -1,8 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-/** Raw JSON from main (or null); parsed in renderer via parseInitialAppConfig. */
-const initialAppConfigRaw: unknown = ipcRenderer.sendSync('config:loadSync');
-
 const electronAPI = {
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
   screenshotGetFullDisplaySnapshot: () =>
@@ -75,7 +72,6 @@ const electronAPI = {
     ipcRenderer.invoke('fs:listDirEntries', relativeDirPath) as Promise<
       Array<{ name: string; isDirectory: boolean }>
     >,
-  getInitialAppConfig: (): unknown => initialAppConfigRaw,
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

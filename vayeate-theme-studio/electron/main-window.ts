@@ -36,7 +36,7 @@ export function createMainWindow(): void {
     mainWindow.loadFile(indexPath);
   }
 
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

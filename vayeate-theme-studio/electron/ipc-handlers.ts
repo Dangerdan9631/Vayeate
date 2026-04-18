@@ -1,10 +1,8 @@
 import type { BrowserWindow } from 'electron';
 import { desktopCapturer, ipcMain, net, screen } from 'electron';
-import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readFile, readdir, stat, unlink, writeFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { dirname } from 'node:path';
 import {
-  DATA_DIR,
   resolveExthemesExportFile,
   resolveSafeProjectRelativePath,
 } from './paths';
@@ -12,8 +10,6 @@ import {
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): void {
-  const configPath = join(DATA_DIR, 'config.json');
-
   ipcMain.handle('fs:createFile', async (_event, rel: string) => {
     const abs = resolveSafeProjectRelativePath(rel, 'file');
     await mkdir(dirname(abs), { recursive: true });
@@ -146,16 +142,6 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
       fullBounds: { x: minX, y: minY, width: maxX - minX, height: maxY - minY },
       displays: displayRows,
     };
-  });
-
-  ipcMain.on('config:loadSync', (event) => {
-    try {
-      event.returnValue = existsSync(configPath)
-        ? JSON.parse(readFileSync(configPath, 'utf-8'))
-        : null;
-    } catch {
-      event.returnValue = null;
-    }
   });
 
   ipcMain.handle('net:fetch', async (_event, url: string) => {
