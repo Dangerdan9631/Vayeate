@@ -23,6 +23,7 @@ export class BackgroundQueue {
   }
 
   enqueue(work: () => void | Promise<void>, description: string): Promise<void> {
+    this.log.debug('background', description);
     return new Promise((resolve) => {
       this.queue.push({ description, run: work, resolve });
       this.emitStatus();

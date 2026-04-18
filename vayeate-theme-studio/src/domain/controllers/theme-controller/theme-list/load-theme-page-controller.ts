@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
+import { LoadThemeRefsOperation } from '../../../operations/theme-operations/theme-list/load-theme-refs-operation';
 
 @singleton()
 export class LoadThemePageController {
-  constructor(private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation) {}
+  constructor(private readonly loadThemeRefs: LoadThemeRefsOperation) {}
 
   async run(): Promise<void> {
-    this.setCurrentUndoStackId.execute(null);
+    await this.loadThemeRefs.execute();
   }
 }

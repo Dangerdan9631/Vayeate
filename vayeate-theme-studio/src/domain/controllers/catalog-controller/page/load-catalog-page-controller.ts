@@ -1,11 +1,13 @@
 import { singleton } from 'tsyringe';
-import { SetCurrentUndoStackIdOperation } from '../../../operations/undo-operations/set-current-undo-stack-id-operation';
+import { LoadCatalogRefsOperation } from '../../../operations/catalog-operations/catalog-list/load-catalog-refs-operation';
 
 @singleton()
 export class LoadCatalogPageController {
-  constructor(private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation) {}
+  constructor(
+    private readonly loadCatalogRefs: LoadCatalogRefsOperation,
+  ) { }
 
   async run(): Promise<void> {
-    this.setCurrentUndoStackId.execute(null);
+    await this.loadCatalogRefs.execute();
   }
 }
