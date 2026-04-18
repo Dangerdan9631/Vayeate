@@ -1,12 +1,15 @@
-import { singleton } from 'tsyringe';
-import { AppActionEnqueueGateway } from '../../../gateway/app-action-enqueue-gateway';
+import { delay, inject, singleton } from 'tsyringe';
+import type { IActionQueue } from '../../../app/core/actions/IActionQueue';
+import { AppAction } from '../../../app/core/actions/app-action';
 
-/** Routes follow-up UI actions through the gateway from domain code (controllers call this operation, not the gateway). */
 @singleton()
 export class EnqueueAppActionOperation {
-  constructor(private readonly appActionEnqueue: AppActionEnqueueGateway) {}
+  constructor(
+    @inject(delay(() => "IActionQueue"))
+    private readonly actionQueue: IActionQueue
+  ) { }
 
-  execute(action: unknown): Promise<void> {
-    return this.appActionEnqueue.enqueue(action);
+  execute(action: AppAction): Promise<void> {
+    return this.actionQueue.enqueue(action);
   }
 }

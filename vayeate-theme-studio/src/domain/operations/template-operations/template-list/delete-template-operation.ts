@@ -1,17 +1,17 @@
 import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
-import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
+import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
 /** Delete one template version from disk. Single responsibility: delete. */
 @singleton()
 export class DeleteTemplateOperation {
   constructor(
     private readonly templateGateway: TemplateGateway,
-    private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
   ) {}
 
     execute(name: string, version: string): void {
-    this.backgroundQueueGateway.enqueue(async() => {
+    this.backgroundQueueGateway.execute(async() => {
       await this.templateGateway.deleteTemplate(name, version);
     }, `Deleting template ${name} ${version}`);
   }

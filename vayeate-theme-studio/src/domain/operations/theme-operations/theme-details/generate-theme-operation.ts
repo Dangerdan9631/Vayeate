@@ -1,7 +1,7 @@
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { singleton } from 'tsyringe';
 import { ThemesStore } from '../../../state/theme/themes-store';
-import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
+import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
 /** Generate theme files via service and report result in state. */
 @singleton()
@@ -10,7 +10,7 @@ export class GenerateThemeOperation {
     private readonly themesStateGetter: ThemesStore,
     private readonly themesStateSetter: ThemesStore,
     private readonly themeGateway: ThemeGateway,
-    private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(): void {
@@ -24,7 +24,7 @@ export class GenerateThemeOperation {
     const templateName = templateRef.name;  
     const templateVersion = templateRef.version;
     this.themesStateSetter.getStore().setGenerateResult(null);
-    this.backgroundQueueGateway.enqueue(async() => {
+    this.backgroundQueueGateway.execute(async() => {
       try {
         const { darkPath, lightPath } = await this.themeGateway.generateTheme(
           themeName,

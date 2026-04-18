@@ -1,3 +1,4 @@
+import { AppAction } from '../../../app/core/actions/app-action';
 import type { HexColor } from '../../../model/schema/primitives';
 
 export type EyedropperPhase = 'closed' | 'loading' | 'ready' | 'error';
@@ -15,7 +16,7 @@ export interface EyedropperSnapshotPayload {
   displays: EyedropperDisplayEntryPayload[];
 }
 
-export type EyedropperPendingPostCommit = Record<string, unknown> & { type: string };
+export type EyedropperPendingPostCommit = AppAction | null;
 
 export interface EyedropperUiState {
   phase: EyedropperPhase;

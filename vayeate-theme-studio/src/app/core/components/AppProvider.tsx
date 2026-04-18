@@ -8,7 +8,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const queueRef = useRef<ActionQueue | null>(null);
   const dispatch = useCallback((action: AppAction): Promise<void> => {
     if (!queueRef.current) {
-      queueRef.current = container.resolve(ActionQueue);
+      queueRef.current = container.resolve("IActionQueue");
     }
     return queueRef.current!.enqueue(action);
   }, []);

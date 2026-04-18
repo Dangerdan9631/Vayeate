@@ -1,18 +1,18 @@
 import { singleton } from 'tsyringe';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
-import { BackgroundQueueGateway } from '../../../gateway/background-queue-gateway';
+import { EnqueueBackgroundActionOperation } from './enqueue-background-action-operation';
 import { AppConfigStore } from '../../state/app-config/app-config-store';
 
 @singleton()
 export class LoadAppConfigOperation {
   constructor(
     private readonly configGateway: ConfigGateway,
-    private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
     private readonly appConfigStore: AppConfigStore,
   ) {}
 
   execute(): void {
-    this.backgroundQueueGateway.enqueue(
+    this.backgroundQueueGateway.execute(
       async () => {
         const config = await this.configGateway.load();
       this.appConfigStore.getStore().setConfig(config);

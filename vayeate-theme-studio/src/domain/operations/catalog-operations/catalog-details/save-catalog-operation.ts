@@ -1,18 +1,18 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
+import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
 /** Persist catalog to disk only. Single responsibility: save. */
 @singleton()
 export class SaveCatalogOperation {
   constructor(
     private readonly catalogGateway: CatalogGateway,
-    private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
   ) { }
 
   execute(catalog: Catalog): void {
-    this.backgroundQueueGateway.enqueue(async() => {
+    this.backgroundQueueGateway.execute(async() => {
       await this.catalogGateway.saveCatalog(catalog);
     }, `Saving catalog ${catalog.name} ${catalog.version}`);
   }

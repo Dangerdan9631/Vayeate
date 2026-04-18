@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service-types';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
-import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
+import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
 
 function pngToUint8Array(png: unknown): Uint8Array {
@@ -37,11 +37,11 @@ export class LoadEyedropperSnapshotOperation {
   constructor(
     private readonly eyedropperUiStore: EyedropperUiStore,
     private readonly screenshotService: ScreenshotService,
-    private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
   ) {}
 
   execute(contextKey: string): void {
-    this.backgroundQueueGateway.enqueue(async() => {
+    this.backgroundQueueGateway.execute(async() => {
       try {
         const raw = await this.screenshotService.getFullDisplaySnapshot();
         const snapshot = mapToPayload(raw);

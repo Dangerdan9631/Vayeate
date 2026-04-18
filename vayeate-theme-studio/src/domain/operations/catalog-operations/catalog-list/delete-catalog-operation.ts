@@ -1,17 +1,17 @@
 import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { BackgroundQueueGateway } from '../../../../gateway/background-queue-gateway';
+import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
 /** Delete one catalog version from disk. Single responsibility: delete. */
 @singleton()
 export class DeleteCatalogOperation {
   constructor(
     private readonly catalogGateway: CatalogGateway,
-    private readonly backgroundQueueGateway: BackgroundQueueGateway,
+    private readonly backgroundQueueGateway: EnqueueBackgroundActionOperation,
   ) { }
 
   execute(name: string, version: string): void {
-    this.backgroundQueueGateway.enqueue(async() => {
+    this.backgroundQueueGateway.execute(async() => {
       await this.catalogGateway.deleteCatalog(name, version);
     }, `Deleting catalog ${name} ${version}`);
   }

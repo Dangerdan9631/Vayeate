@@ -1,9 +1,10 @@
-import { singleton } from 'tsyringe';
 import type { AppAction } from './app-action';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import { ActionProcessor } from './action-processor';
 import { ActionQueueUiStore } from '../../../domain/state/ui/action-queue-ui-store';
 import { ActionQueueUiState } from '../../../domain/state/ui/action-queue-ui-state';
+import { IActionQueue } from './IActionQueue';
+import { singleton } from 'tsyringe';
 
 interface QueuedAction {
   action: AppAction;
@@ -11,7 +12,7 @@ interface QueuedAction {
 }
 
 @singleton()
-export class ActionQueue {
+export class ActionQueue implements IActionQueue {
   private queue: QueuedAction[] = [];
   private processing = false;
   private readonly log: Logger;
