@@ -3,7 +3,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './app/app/components/App';
 import { container } from 'tsyringe';
-import { BootstrapAppController } from './domain/controllers/lifecycle/bootstrap-app-controller';
+import { BootstrapAppController } from './app/common/controllers/bootstrap-app-controller';
 import { ActionQueue } from './app/core/actions/action-queue';
 
 container.register("IActionQueue", { useClass: ActionQueue });

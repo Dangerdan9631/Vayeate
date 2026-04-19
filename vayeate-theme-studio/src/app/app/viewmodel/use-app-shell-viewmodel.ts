@@ -3,8 +3,8 @@ import { container } from 'tsyringe';
 import type { TabId } from '../../../domain/state/ui/ui-state';
 import { UiStore } from '../../../domain/state/ui/ui-store';
 import { useStore } from 'zustand';
-import { LoadAppController } from '../../../domain/controllers/lifecycle/load-app-controller';
-import { UnloadAppController } from '../../../domain/controllers/lifecycle/unload-app-controller';
+import { LoadAppController } from '../../common/controllers/load-app-controller';
+import { UnloadAppController } from '../../common/controllers/unload-app-controller';
 
 const uiStore = container.resolve(UiStore);
 

@@ -1,22 +1,22 @@
 import { singleton } from 'tsyringe';
-import { CloseEyedropperOverlayController } from '../../../domain/controllers/theme-controller/eyedropper/close-eyedropper-overlay-controller';
-import { CommitEyedropperOverlayPickController } from '../../../domain/controllers/theme-controller/eyedropper/commit-eyedropper-overlay-pick-controller';
+import { CloseEyedropperOverlayController } from '../../theme/controllers/close-eyedropper-overlay-controller';
+import { CommitEyedropperOverlayPickController } from '../../theme/controllers/commit-eyedropper-overlay-pick-controller';
 import { AppActions, AppActionType } from './app-action-type';
-import { CloseAllMenusController } from '../../../domain/controllers/app-controller/close-all-menus-controller';
-import { SetActiveTabController } from '../../../domain/controllers/app-controller/set-active-tab-controller';
-import { ToggleColorSchemeController } from '../../../domain/controllers/app-controller/toggle-color-scheme-controller';
-import { ToggleMenuOpenController } from '../../../domain/controllers/app-controller/toggle-menu-open-controller';
-import { PerformHistoryGoToController } from '../../../domain/controllers/undo-controller/perform-history-go-to-controller';
-import { PerformRedoController } from '../../../domain/controllers/undo-controller/perform-redo-controller';
-import { PerformUndoController } from '../../../domain/controllers/undo-controller/perform-undo-controller';
-import { CloseWindowController } from '../../../domain/controllers/window-controller/close-window-controller';
-import { DragWindowController } from '../../../domain/controllers/window-controller/drag-window-controller';
-import { ForceReloadWindowController } from '../../../domain/controllers/window-controller/force-reload-window-controller';
-import { MaximizeWindowController } from '../../../domain/controllers/window-controller/maximize-window-controller';
-import { MinimizeWindowController } from '../../../domain/controllers/window-controller/minimize-window-controller';
-import { ReloadWindowController } from '../../../domain/controllers/window-controller/reload-window-controller';
-import { RestoreWindowController } from '../../../domain/controllers/window-controller/restore-window-controller';
-import { ToggleDevToolsController } from '../../../domain/controllers/window-controller/toggle-dev-tools-controller';
+import { CloseAllMenusController } from '../controllers/close-all-menus-controller';
+import { SetActiveTabController } from '../controllers/set-active-tab-controller';
+import { ToggleColorSchemeController } from '../controllers/toggle-color-scheme-controller';
+import { ToggleMenuOpenController } from '../controllers/toggle-menu-open-controller';
+import { PerformHistoryGoToController } from '../../core/controllers/perform-history-go-to-controller';
+import { PerformRedoController } from '../../core/controllers/perform-redo-controller';
+import { PerformUndoController } from '../../core/controllers/perform-undo-controller';
+import { CloseWindowController } from '../../common/controllers/close-window-controller';
+import { DragWindowController } from '../../common/controllers/drag-window-controller';
+import { ForceReloadWindowController } from '../../common/controllers/force-reload-window-controller';
+import { MaximizeWindowController } from '../../common/controllers/maximize-window-controller';
+import { MinimizeWindowController } from '../../common/controllers/minimize-window-controller';
+import { ReloadWindowController } from '../../common/controllers/reload-window-controller';
+import { RestoreWindowController } from '../../common/controllers/restore-window-controller';
+import { ToggleDevToolsController } from '../../common/controllers/toggle-dev-tools-controller';
 
 @singleton()
 export class AppActionHandler {
