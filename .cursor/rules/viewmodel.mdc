@@ -1,5 +1,5 @@
 ---
-description: Rules for authoring and modifing react components ViewModels
+description: Use when authoring, modifing, or interacting with react components ViewModels
 alwaysApply: false
 ---
 

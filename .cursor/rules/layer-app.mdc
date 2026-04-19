@@ -1,5 +1,5 @@
 ---
-description: Rules for authoring and modifing Ui types: actions, handlers, components, viewmodels
+description: Use when authoring, modifing, or interacting with Ui types: actions, handlers, components, viewmodels
 alwaysApply: false
 ---
 
@@ -12,6 +12,7 @@ alwaysApply: false
   **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When handler module naming or export shape changes here, update `*-handler.ts: one exported class…` and vice versa.** Tests also forbid imports from `domain/operations`, `domain/validations`, and `domain/state` in `actions/*-handler.ts`; require **one exported function** in `actions/*-action-guard.ts`; and forbid `domain/state` imports in `actions/*-action-type.ts` (payload hygiene).
 
 - `components/` — React UI; **PascalCase** `*.tsx` filenames per [component.mdc](component.mdc); enqueue UI actions only
+- `controllers/` — app-facing orchestration entrypoints; run validations then operations only, and do not call other controllers
 - `viewmodel/` — exposes store state via `useStore(store.api, selector)`; uses validations for guards
 
   **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When viewmodel file/hook naming changes here or in [viewmodel.mdc](viewmodel.mdc), update that `describe` and vice versa.**

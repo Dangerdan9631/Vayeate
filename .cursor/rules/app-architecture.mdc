@@ -12,15 +12,15 @@ Scope: [`vayeate-theme-studio/`](vayeate-theme-studio/).
 | Layer | Role |
 |-------|------|
 | `electron/` | Main process, preload, IPC — no business logic |
-| `src/app/` | UI, actions, handlers, viewmodels |
-| `src/domain/` | Controllers, operations, validations, zustand stores, utils |
+| `src/app/` | UI, actions, handlers, controllers, viewmodels |
+| `src/domain/` | Operations, validations, zustand stores, utils |
 | `src/gateway/` | Services + gateway facades over external systems |
 | `src/model/` | Domain types; **zod** for validation |
 
 ## Feature and concept folders
 
-- Under `src/app/`, organize UI code by app-facing feature folders such as `app`, `catalog`, `common`, `core`, `template`, and `theme`.
-- Under `src/domain/`, organize by domain concepts such as `controllers`, `operations`, `validations`, `state`, `utils`, and `core`.
+- Under `src/app/`, organize UI-facing orchestration and presentation code by feature folders such as `app`, `catalog`, `common`, `core`, `template`, and `theme`; controllers live under these feature folders in `controllers/`.
+- Under `src/domain/`, organize by domain concepts such as `operations`, `validations`, `state`, `utils`, and `core`.
 
 ## Mutation flow
 
@@ -52,7 +52,7 @@ flowchart LR
 - **Exception — action queue status and App shell:**
   - Operations to update state that reflects the action queue’s own status (depth, processing flag, etc.) may be invoked from inside the `ActionQueue` implementation (`src/app/core/actions/`), not via handler → controller → operation. **Rationale:** routing that update through a normal app action would require enqueueing an action to mutate queue state, which **cycles** through the queue. This is an intentional exception.
   - App shell load and unload controllers should be invoked directly from `useEffect` calls in the **app shell viewmodel** hook used exclusively by that shell (e.g. `useAppShellViewModel` in `src/app/app/viewmodel/`). **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up; colocating lifecycle in the shell’s viewmodel keeps mount/unload next to shell-only selectors without spreading `useEffect` across arbitrary components.
-  - `InitializeWindowServiceOperation` may inject controller classes **only** to adapt renderer window/global-input callbacks into existing controller entry points when calling `WindowService.init(...)`. **Rationale:** these callbacks originate from Electron/window system events rather than from a React component interaction, and the operation acts as the one-time registration boundary for that system integration. This exception does **not** allow general controller-to-controller orchestration or arbitrary controller injection into other operations.
+  - `InitializeWindowCallbacksOperation` may inject controller classes **only** to adapt renderer window/global-input callbacks into existing controller entry points when calling `WindowService.init(...)`. **Rationale:** these callbacks originate from Electron/window system events rather than from a React component interaction, and the operation acts as the one-time registration boundary for that system integration. This exception does **not** allow general controller-to-controller orchestration or arbitrary controller injection into other operations.
 
 ## Store conventions
 

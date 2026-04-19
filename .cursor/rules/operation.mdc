@@ -1,5 +1,5 @@
 ---
-description: Rules for authoring and modifing Operations
+description: Use when authoring, modifing, or interacting with Operations
 alwaysApply: false
 ---
 
@@ -12,7 +12,7 @@ alwaysApply: false
 - Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
 - **tsyringe** **`@singleton()`**; inject gateways, services, and store classes as **concrete types** — no string or symbol tokens.
 - May call **gateways** and **services**; **must not** call another operation.
-- **Exception:** `InitializeWindowServiceOperation` may inject controller classes solely to register `WindowService.init(...)` callbacks for renderer window/global-input events. Keep this exception narrow: registration only, no additional orchestration logic, and no copying this pattern to other operations without updating the architecture rules.
+- **Exception:** `InitializeWindowCallbacksOperation` may inject controller classes solely to register `WindowService.init(...)` callbacks for renderer window/global-input events. Keep this exception narrow: registration only, no additional orchestration logic, and no copying this pattern to other operations without updating the architecture rules.
 - Prefer **inputs from controller** over reading store state inside `execute` when practical (keep reusable).
 
 ## Scope
@@ -22,7 +22,7 @@ alwaysApply: false
 ## Callers
 
 - **Controllers** only (not handlers, components, or other operations). Each controller **must not** call another controller — same “no chaining peers” idea as operations ([controller.mdc](controller.mdc)).
-- **Exception:** `InitializeWindowServiceOperation` is allowed to bridge system callbacks to controller entry points as described above.
+- **Exception:** `InitializeWindowCallbacksOperation` is allowed to bridge system callbacks to controller entry points as described above.
 
 ## Good / bad
 

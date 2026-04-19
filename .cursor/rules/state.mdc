@@ -1,5 +1,5 @@
 ---
-description: Rules for authoring and modifing domain zustand stores
+description: Use when authoring, modifing, or interacting with zustand stores
 alwaysApply: false
 ---
 

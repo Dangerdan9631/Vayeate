@@ -1,5 +1,5 @@
 ---
-description: Rules for authoring and modifing controllers
+description: Use when authoring, modifing, or interacting with controllers
 alwaysApply: false
 ---
 
@@ -7,9 +7,9 @@ alwaysApply: false
 
 ## Contract
 
-**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update `*-controller.ts: one exported class…` and vice versa.** AST checks also enforce **no `this.<OtherController>.run`** under `src/domain/**` (`describe('domain *-controller.ts: controllers do not call other controllers .run')`) and **`run` must be `async`** (`describe('*-controller.ts: run method is async')`).
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update `*-controller.ts: one exported class…` and vice versa.** AST checks also enforce **no `this.<OtherController>.run`** under `src/app/**` (`describe('app *-controller.ts: controllers do not call other controllers .run')`).
 
-- Suffix **`Controller`**; **one** public method **`async run`** returning **`Promise<…>`** (per action or use case).
+- Suffix **`Controller`**; **one** public method **`run`** returning **`void`** or **`Promise<…>`** as needed (per action or use case).
 - **Inject** concrete classes via **tsyringe** **`@singleton()`** — no string or symbol tokens.
 - **Read** state through injected store snapshots such as `this.catalogsStore.getStore().state`; **never** mutate state here.
 - Compose **validations** then **operations**; throw when validation fails if appropriate.
