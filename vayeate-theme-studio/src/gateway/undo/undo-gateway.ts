@@ -1,10 +1,8 @@
 import { singleton } from 'tsyringe';
 import { FileSystemService } from '../services/file-system-service';
 
-/** Persists UndoManagerV2 stacks under `data/.undo` (one JSON file per stack), same layout as the former main-process undo IPC. */
 const UNDO_RELATIVE_DIR = 'data/.undo';
 
-/** Match `sanitizeDocId` in `electron/main.ts` for stack id filenames. */
 function sanitizeStackId(stackId: string): string {
   return stackId.replace(/[\\/:*?"<>|+]/g, '_');
 }

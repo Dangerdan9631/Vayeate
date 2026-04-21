@@ -64,7 +64,3 @@ export function resolveExthemesExportFile(rel: string): string {
   return join(themesDir, ...segments);
 }
 
-/** Undo stacks persisted under data/.undo; cleared on every app start. */
-export function getUndoStacksDir(): string {
-  return join(DATA_DIR, '.undo');
-}
