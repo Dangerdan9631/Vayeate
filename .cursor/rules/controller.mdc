@@ -12,8 +12,8 @@ alwaysApply: false
 - Suffix **`Controller`**; **one** public method **`run`** returning **`void`** or **`Promise<…>`** as needed (per action or use case).
 - **Inject** concrete classes via **tsyringe** **`@singleton()`** — no string or symbol tokens.
 - **Read** state through injected store snapshots such as `this.catalogsStore.getStore().state`; **never** mutate state here.
-- Compose **validations** then **operations**; throw when validation fails if appropriate.
-- **Must not** call another controller’s `run` (or resolve another `*Controller`). Orchestration is **validations → operations** only; multi-step domain work belongs in operations (or separate UI actions), not controller chains.
+- Compose **validations** then **operations**. For command failures they may throw; for UI validation they may use `Validator<T>`/`ValidationResult` and call an operation that writes error-message state.
+- **Must not** call another controller’s `run` (or resolve another `*Controller`). A controller may sequence multiple operations for one UI use case after validation, provided it does not mutate state directly or embed business algorithms. Put reusable domain algorithms in operations; keep UI-outcome orchestration in controllers.
 
 ## Naming
 

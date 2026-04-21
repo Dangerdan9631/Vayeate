@@ -13,7 +13,7 @@ description: Adds or changes domain models and zod schemas in Vayeate Theme Stud
 
 1. Place in `vayeate-theme-studio/src/model/` (subfolders as existing project does).
 2. Define **zod** schema + `z.infer` type (or explicit type + schema pair).
-3. **One** top-level export focus per file; kebab-case filename.
+3. Keep one cohesive model family per file; schema modules may export all related zod schemas, inferred types, constants, and helpers for that family. Use kebab-case filenames.
 4. No DI decorators, no React, no electron imports.
 
 ## Skeleton

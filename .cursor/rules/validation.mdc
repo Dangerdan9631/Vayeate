@@ -11,9 +11,9 @@ alwaysApply: false
 
 - Name: **`Validate` + question** (e.g. `ValidateCanLockTemplate`).
 - Class-based: **tsyringe** **`@singleton()`**; inject concrete getters/state as needed — no string or symbol tokens.
-- **One** function **`test(...)`** → **`boolean`** (pass/fail).
+- **One** function **`test(...)`** returning either **`boolean`** for simple predicates or **`ValidationResult`** for UI-facing validation that needs an error message.
 - **Never throw.** Controllers decide whether to throw on failure.
-- **Do not** call other validations (compose at controller if needed — i.e. sequence multiple `Validate*` calls in one controller, not by calling another controller).
+- **Do not** call other validations. `Validator<T>` is the allowed composition helper for sequencing multiple validations and returning the first failure; individual `Validate*` classes should still stay focused and not call peers directly.
 
 ## Usage
 
@@ -28,4 +28,11 @@ test() { if (!x) throw new Error(); }
 
 // GOOD
 test(): boolean { return this.getter().foo != null; }
+
+// GOOD — message-bearing UI validation
+test(input: string): ValidationResult {
+  return input.trim() === ''
+    ? { isValid: false, errorMessage: 'Name is required.' }
+    : VALIDATION_RESULT_OK;
+}
 ```

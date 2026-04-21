@@ -19,14 +19,15 @@ Scope: [`vayeate-theme-studio/`](vayeate-theme-studio/).
 
 ## Feature and concept folders
 
-- Under `src/app/`, organize UI-facing orchestration and presentation code by feature folders such as `app`, `catalog`, `common`, `core`, `template`, and `theme`; controllers live under these feature folders in `controllers/`.
-- Under `src/domain/`, organize by domain concepts such as `operations`, `validations`, `state`, `utils`, and `core`.
+- Under `src/app/<ui-domain>/`, keep feature-level action unions, guards, and handlers for broad UI-domain actions. Complex components may own `components/<component>/actions/`, `components/<component>/controllers/`, and `components/<component>/use-*-viewmodel.ts`. Feature action unions include component action unions, feature guards delegate to component guards, and feature handlers may delegate to component-local handlers before routing their own switch cases to controllers.
+- Prefer domain-first organization under `src/domain/<business-domain>/` and `src/domain/ui/<ui-domain-or-flow>/`, with each domain owning its `operations/`, `validations/`, `state/`, and helpers. Legacy shared concept folders under `src/domain/operations`, `src/domain/validations`, and `src/domain/state` remain valid only for shared or not-yet-migrated concerns.
 
 ## Mutation flow
 
 ```mermaid
 flowchart LR
-  UI[Component] --> AQ[ActionQueue]
+  UI[Component] --> VMC[ViewModel action callbacks]
+  VMC --> AQ[ActionQueue]
   AQ --> H[Handler]
   H --> C[Controller]
   C --> BQ[Background Queue]
@@ -45,7 +46,7 @@ flowchart LR
   VM --> UI
 ```
 
-- Only **UI-originated signals** on the action queue - pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). Handlers only call controllers, one per action type.
+- Only **UI-originated signals** on the action queue - pointer/keyboard events, and React **lifecycle** moments where a screen or control **mounts or unmounts** (e.g. `*_ON_LOAD`, `*_ON_UNLOAD`, `*_ON_OPEN`). React components call named callbacks returned by their viewmodel; viewmodels own action construction and dispatch. Components may keep DOM/UI logic such as event extraction, propagation handling, and UI casting, but not business mutations. Feature handlers may delegate to component-local handlers after an action guard; leaf handlers call controllers, one per action type.
 - **State updates only in operations.** Controllers and validations may read store snapshots; never set state.
 - **Business logic only in operations.** Gateways/services: system + conversion, not business domain rules.
 - **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
@@ -56,7 +57,7 @@ flowchart LR
 
 ## Store conventions
 
-- Store classes live under `src/domain/state/<domain>/`.
+- Store classes live under `src/domain/**/state/`; use `src/domain/state/<domain>/` for shared legacy state, `src/domain/<business-domain>/state/` for business-domain state, and `src/domain/ui/<flow>/state/` for UI-domain state.
 - Name files in **kebab-case** with a `-store.ts` suffix and export one `@singleton()` class.
 - Build stores with `createStore(...)` from `zustand/vanilla` and `immer(...)` from `zustand/middleware/immer`.
 - Expose `api` for React subscriptions and `getStore()` for domain-layer reads and writes.
@@ -78,6 +79,8 @@ flowchart LR
 - **All other** source modules (controllers, operations, viewmodels, state, gateways, services, models, handlers, etc.): **kebab-case** filename matching export; exported **classes** **PascalCase** where applicable.
 
 **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change these bullets or exceptions, update the matching `describe` and vice versa.** The file should continue to encode mutation-flow checks (no operation-to-operation `execute`, no controller-to-controller `run`), handler import boundaries, action payload imports (no `domain/state`), and Electron versus renderer `src/` imports — see the table at the top of that test file.
+
+The operation-to-operation `execute` check should allow the narrow background-work bridge: operations may call `EnqueueBackgroundActionOperation.execute(...)` only to enqueue asynchronous background work, not to orchestrate peer domain operations. If that class is reclassified as a queue service/adapter, update this exception and the test language together.
 
 ## Good / bad
 
