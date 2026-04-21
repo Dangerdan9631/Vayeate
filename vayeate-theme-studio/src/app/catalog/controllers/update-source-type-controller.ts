@@ -1,11 +1,12 @@
 import type { SourceType } from '../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { SaveCatalogOperation } from '../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
 import { UpdateSourceTypeInCatalogOperation } from '../../../domain/operations/catalog-operations/sources/update-source-type-in-catalog-operation';
 import { ValidateCanUpdateCatalogSource } from '../../../domain/validations/catalog-validations/validate-can-update-catalog-source';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
+import { getCurrentCatalog } from '../../../domain/catalog/state/catalogs-store';
 
 @singleton()
 export class UpdateSourceTypeController {
@@ -19,7 +20,8 @@ export class UpdateSourceTypeController {
   ) {}
 
   run(sourceIndex: number, value: SourceType): void {
-    const catalog = this.catalogsStore.getStore().state.catalog;
+    const store = this.catalogsStore.getStore();
+    const catalog = getCurrentCatalog(store);
     if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceTypeInCatalog.execute(base, sourceIndex, value);

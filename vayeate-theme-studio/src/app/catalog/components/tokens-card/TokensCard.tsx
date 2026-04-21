@@ -1,10 +1,10 @@
 import { useCallback, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
-import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from '../viewmodel/use-tokens-card-viewmodel';
-import { mergeSemanticSelectorInto } from '../../../model/merge-semantic-selector-into';
-import { Catalog } from '../../../model/schema/catalog';
-import { TokenType } from '../../../model/schema/primitives';
-import { tokenKeySchema, SemanticTokenRegistryListKind } from '../../../model/schema/primitives';
-import { Token } from '../../../model/schema/catalog';
+import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from './use-tokens-card-viewmodel';
+import { mergeSemanticSelectorInto } from '../../../../model/merge-semantic-selector-into';
+import { Catalog } from '../../../../model/schema/catalog';
+import { TokenType } from '../../../../model/schema/primitives';
+import { tokenKeySchema, SemanticTokenRegistryListKind } from '../../../../model/schema/primitives';
+import { Token } from '../../../../model/schema/catalog';
 
 function isValidTokenKey(value: string): boolean {
   return tokenKeySchema.safeParse(value).success;
@@ -275,7 +275,7 @@ function SemanticTokenCatalogSection({
             </div>
             );
           })}
-          {modifiers.map((m, i) => {
+          {modifiers.map((m: string, i: number) => {
             function onModifierRowBlur(e: FocusEvent<HTMLInputElement>) {
               const v = e.target.value.trim();
               if (v !== m) onSemanticRegistryTextCommit?.('modifiers', i, v);
@@ -310,7 +310,7 @@ function SemanticTokenCatalogSection({
             </div>
             );
           })}
-          {languages.map((lang, i) => {
+          {languages.map((lang: string, i: number) => {
             function onLanguageRowBlur(e: FocusEvent<HTMLInputElement>) {
               const v = e.target.value.trim();
               if (v !== lang) onSemanticRegistryTextCommit?.('languages', i, v);

@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { CatalogBulkAddParseSnapshot } from '../../../state/catalog/catalogs-state';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../../catalog/state/catalogs-store';
 import { parseThemeJson } from '../../../utils/theme-parser';
 
 @singleton()
@@ -11,15 +10,22 @@ export class SetCatalogBulkAddTextOperation {
 
   execute(value: string): void {
     const preview = this.computePreview(value);
-    this.catalogsStore.getStore().setBulkAddText(value);
-    this.catalogsStore.getStore().setBulkAddParse(preview);
+    this.catalogsStore.getStore().setBulkAddDialogData(value);
+    if (preview) {
+      this.catalogsStore.getStore().setBulkAddDialogMetrics(
+        preview.errorMessage,
+        preview.counts,
+        preview.newCount,
+        preview.duplicateCount
+      );
+    }
   }
 
-  private computePreview(value: string): CatalogBulkAddParseSnapshot | null {
+  private computePreview(value: string) {
     const trimmed = value.trim();
     if (!trimmed) return null;
 
-    const catalog = this.catalogsStore.getStore().state.catalog;
+    const catalog = getCurrentCatalog(this.catalogsStore.getStore());
     const existingTokenKeys = new Set(
       catalog ? catalog.tokens.map((t) => `${t.type}::${t.key}`) : [],
     );

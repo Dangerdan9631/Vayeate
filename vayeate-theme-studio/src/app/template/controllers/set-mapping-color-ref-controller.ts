@@ -1,7 +1,7 @@
 import type { ColorVariableKey } from '../../../model/schema/primitives';
 import type { TokenType } from '../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getAllLoadedCatalogs } from '../../../domain/catalog/state/catalogs-store';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { isMappingOrphanForTemplate } from '../../../domain/utils/is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
@@ -27,14 +27,15 @@ export class SetMappingColorRefController {
     tokenType: TokenType,
     colorRef: ColorVariableKey | null,
   ): Promise<void> {
+    const store = this.catalogsStore.getStore();
     const template = this.templatesStore.getStore().state.template;
     if (!template) return;
-    const loadedForDisplay = this.catalogsStore.getStore().state.loadedForDisplay;
+    const catalogs = getAllLoadedCatalogs(store);
     const isOrphan = isMappingOrphanForTemplate(
       template,
       tokenKey,
       tokenType,
-      loadedForDisplay,
+      catalogs,
     );
     const base = this.bumpTemplateVersionForEdit.execute(template);
     if (colorRef === null && isOrphan) {

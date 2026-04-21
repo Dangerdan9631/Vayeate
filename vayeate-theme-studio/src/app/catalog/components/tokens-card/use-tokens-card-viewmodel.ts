@@ -1,12 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
-import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { Catalog, Token } from '../../../model/schema/catalog';
-import type { SemanticTokenRegistryListKind, TokenKey, TokenType } from '../../../model/schema/primitives';
-import { CatalogActionType } from '../actions/catalog-action-type';
+import { useAppDispatch } from '../../../common/context/use-app-dispatch';
+import { compareVersions } from '../../../../domain/utils/compare-versions';
+import type { Catalog, Token } from '../../../../model/schema/catalog';
+import type { SemanticTokenRegistryListKind, TokenKey, TokenType } from '../../../../model/schema/primitives';
+import { CatalogActionType } from '../../actions/catalog-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
@@ -20,12 +19,12 @@ function matchesSearch(key: string, searchQuery: string): boolean {
 
 export function useTokensCardViewModel() {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(catalogsStore.api, (state) => state.state.selectedRef);
-  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogMap);
-  const catalog: Catalog = useStore(catalogsStore.api, (state) => state.state.catalog);
-  const tokensSearchText = useStore(catalogsStore.api, (state) => state.state.tokensSearchText);
-  const newSemanticTokenSelectorText = useStore(catalogsStore.api, (state) => state.state.newSemanticTokenSelectorText);
-  const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
+  const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
+  const catalog: Catalog | null = useStore(catalogsStore.api, getCurrentCatalog);
+  const tokensSearchText = useStore(catalogsStore.api, (state) => state.stateV2.tokensSearchText);
+  const newSemanticTokenSelectorText = useStore(catalogsStore.api, (state) => state.stateV2.newSemanticTokenSelectorText);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
   const selectedName = selectedRef?.name ?? null;
 
   const isLatestVersion = useMemo(() => {

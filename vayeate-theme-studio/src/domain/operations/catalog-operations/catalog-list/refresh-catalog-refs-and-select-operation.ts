@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../catalog/state/catalogs-store';
 import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
 /** After catalog mutations, refresh refs from disk and optionally select a catalog by name/version. */
@@ -15,13 +15,15 @@ export class RefreshCatalogRefsAndSelectOperation {
   execute(selectName?: string, selectVersion?: string): void {
     this.enqueueBackgroundAction.execute(async () => {
       const refs = await this.catalogGateway.listCatalogs();
-      this.catalogsStore.getStore().setCatalogMapEntries(refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, catalog: undefined })));
+      this.catalogsStore.getStore().updateCatalogRefs(refs);
       if (selectName && selectVersion) {
         const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
         if (match) {
           const catalog = await this.catalogGateway.loadCatalog(match.name, match.version);
-          this.catalogsStore.getStore().setSelectedRef(match);
-          this.catalogsStore.getStore().setCatalog(catalog);
+          if (catalog) {
+            this.catalogsStore.getStore().selectCatalog(match);
+            this.catalogsStore.getStore().updateCatalog(catalog);
+          }
         }
       }
     }, `Refreshing catalog ${selectName} ${selectVersion}`);

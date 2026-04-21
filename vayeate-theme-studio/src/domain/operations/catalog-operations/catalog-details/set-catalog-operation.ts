@@ -1,13 +1,15 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schema/catalog';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../catalog/state/catalogs-store';
 
 @singleton()
 export class SetCatalogOperation {
   constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(catalog: Catalog | null): void {
-    this.catalogsStore.getStore().setCatalog(catalog);
+    if (catalog) {
+      this.catalogsStore.getStore().updateCatalog(catalog);
+    }
   }
 }
 

@@ -2,15 +2,12 @@ import { singleton } from 'tsyringe';
 import { LoadCatalogForDisplayOperation } from '../../../domain/operations/catalog-operations/catalog-details/load-catalog-for-display-operation';
 import { LoadTemplateOperation } from '../../../domain/operations/template-operations/template-details/load-template-operation';
 import { SetSelectedTemplateRefOperation } from '../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
-import { templateStackId } from '../../../domain/utils/template-stack-id';
 
 @singleton()
 export class SelectTemplateAndLoadController {
   constructor(
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
     private readonly loadTemplate: LoadTemplateOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly loadCatalogForDisplay: LoadCatalogForDisplayOperation,
   ) {}
 
@@ -23,6 +20,5 @@ export class SelectTemplateAndLoadController {
         this.loadCatalogForDisplay.execute(r.name, r.version);
       }
     }
-    this.setCurrentUndoStackId.execute(templateStackId(name, version));
   }
 }

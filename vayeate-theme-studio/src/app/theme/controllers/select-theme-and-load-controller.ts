@@ -5,8 +5,6 @@ import { SetSelectedThemeRefOperation } from '../../../domain/operations/theme-o
 import { SetThemeLoadedTemplateOperation } from '../../../domain/operations/theme-operations/theme-details/set-theme-loaded-template-operation';
 import { SetThemePaneSelectionsOperation } from '../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadTemplateSnapshotOperation } from '../../../domain/operations/template-operations/template-details/load-template-snapshot-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
-import { themeStackId } from '../../../domain/utils/theme-stack-id';
 
 @singleton()
 export class SelectThemeAndLoadController {
@@ -17,7 +15,6 @@ export class SelectThemeAndLoadController {
     private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
     private readonly setThemeLoadedTemplate: SetThemeLoadedTemplateOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(name: string, version: string): Promise<void> {
@@ -30,6 +27,5 @@ export class SelectThemeAndLoadController {
         : null;
     if (theme) this.applyThemeStateAndSchedulePersist.execute(theme);
     this.setThemeLoadedTemplate.execute(template);
-    this.setCurrentUndoStackId.execute(themeStackId(name, version));
   }
 }

@@ -1,9 +1,9 @@
-import { useCatalogViewModel } from '../viewmodel/use-catalog-viewmodel';
-import { BulkAddDialog } from './BulkAddDialog';
-import { CatalogDetailsCard } from './CatalogDetailsCard';
-import { CatalogsCard } from './CatalogsCard';
-import { CreateCatalogDialog } from './CreateCatalogDialog';
-import { TokensCard } from './TokensCard';
+import { useCatalogViewModel } from './use-catalog-viewmodel';
+import { BulkAddDialog } from '../bulk-add-dialog/BulkAddDialog';
+import { CatalogDetailsCard } from '../catalog-details-card/CatalogDetailsCard';
+import { CatalogsCard } from '../catalogs-card/CatalogsCard';
+import { CreateCatalogDialog } from '../create-dialog/CreateCatalogDialog';
+import { TokensCard } from '../tokens-card/TokensCard';
 
 export function CatalogsPage() {
   const { createDialogOpen, bulkAddDialogOpen } = useCatalogViewModel();

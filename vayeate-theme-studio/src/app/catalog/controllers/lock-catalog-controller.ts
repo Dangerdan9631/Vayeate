@@ -1,9 +1,10 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { LockCatalogOperation as LockCatalogTransform } from '../../../domain/operations/catalog-operations/catalog-details/lock-catalog-operation';
 import { SaveCatalogOperation } from '../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
 import { ValidateCanLockCatalog } from '../../../domain/validations/catalog-validations/validate-can-lock-catalog';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
+import { getCurrentCatalog } from '../../../domain/catalog/state/catalogs-store';
 
 @singleton()
 export class LockCatalogController {
@@ -16,7 +17,8 @@ export class LockCatalogController {
   ) {}
 
   run(): void {
-    const catalog = this.catalogsStore.getStore().state.catalog;
+    const store = this.catalogsStore.getStore();
+    const catalog = getCurrentCatalog(store);
     if (!catalog || !this.validateCanLockCatalog.test(catalog)) return;
     const updated = this.lockCatalogTransform.execute(catalog);
     this.saveCatalog.execute(updated);

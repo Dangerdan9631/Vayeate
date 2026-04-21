@@ -1,11 +1,12 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../catalog/state/catalogs-store';
+import { DialogResultOkCancel } from '../../../../model/dialog-result';
 
 @singleton()
 export class CloseCatalogCreateDialogOperation {
   constructor(private readonly catalogsStore: CatalogsStore) {}
 
-  execute(): void {
-    this.catalogsStore.getStore().setCreateDialogOpen(false);
+  execute(result: DialogResultOkCancel): void {
+    this.catalogsStore.getStore().closeCreateCatalogDialog(result);
   }
 }

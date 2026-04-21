@@ -1,12 +1,9 @@
-import { singleton } from 'tsyringe';
+import { delay, inject, singleton } from 'tsyringe';
 import { BulkAddTokensController } from '../controllers/bulk-add-tokens-controller';
 import { CloseBulkAddDialogController } from '../controllers/close-bulk-add-dialog-controller';
 import { OpenBulkAddDialogController } from '../controllers/open-bulk-add-dialog-controller';
 import { SetCatalogBulkAddTextController } from '../controllers/set-catalog-bulk-add-text-controller';
-import { CloseCatalogCreateDialogController } from '../controllers/close-catalog-create-dialog-controller';
-import { OpenCatalogCreateDialogController } from '../controllers/open-catalog-create-dialog-controller';
-import { SetCatalogCreateDialogNameController } from '../controllers/set-catalog-create-dialog-name-controller';
-import { SetCatalogCreateDialogTypeController } from '../controllers/set-catalog-create-dialog-type-controller';
+import { OpenCatalogCreateDialogController } from '../components/create-dialog/controllers/open-catalog-create-dialog-controller';
 import { DeleteCurrentCatalogVersionController } from '../controllers/delete-current-catalog-version-controller';
 import { LockCatalogController } from '../controllers/lock-catalog-controller';
 import { RevertCatalogToVersionController } from '../controllers/revert-catalog-to-version-controller';
@@ -31,16 +28,18 @@ import { SetCatalogTokensSearchTextController } from '../controllers/set-catalog
 import { UpdateSemanticTokenRegistryTextController } from '../controllers/update-semantic-token-registry-text-controller';
 import { UpdateTokenKeyController } from '../controllers/update-token-key-controller';
 import { CatalogActions, CatalogActionType } from './catalog-action-type';
+import { CatalogCreateDialogHandler } from '../components/create-dialog/actions/catalog-create-dialog-handler';
+import { isCatalogCreateDialogAction } from '../components/create-dialog/actions/catalog-create-dialog-action-guard';
+import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()
 export class CatalogActionHandler {
+  private readonly log: Logger;
+
   constructor(
     private readonly loadCatalogPage: LoadCatalogPageController,
     private readonly setSelectedCatalog: SetSelectedCatalogController,
     private readonly openCatalogCreateDialog: OpenCatalogCreateDialogController,
-    private readonly setCatalogCreateDialogName: SetCatalogCreateDialogNameController,
-    private readonly setCatalogCreateDialogType: SetCatalogCreateDialogTypeController,
-    private readonly closeCatalogCreateDialog: CloseCatalogCreateDialogController,
     private readonly updateSourceUrl: UpdateSourceUrlController,
     private readonly updateSourceTokenType: UpdateSourceTokenTypeController,
     private readonly updateSourceType: UpdateSourceTypeController,
@@ -66,110 +65,81 @@ export class CatalogActionHandler {
     private readonly addCatalogSemanticTokenSelector: AddCatalogSemanticTokenSelectorController,
     private readonly updateSemanticTokenRegistryText: UpdateSemanticTokenRegistryTextController,
     private readonly removeSemanticTokenListItem: RemoveSemanticTokenListItemController,
-  ) {}
+    loggerFactory: LoggerFactory,
+    @inject(delay(() => CatalogCreateDialogHandler)) private readonly catalogCreateDialogHandler: CatalogCreateDialogHandler,
+  ) {
+    this.log = loggerFactory.create('CatalogActionHandler');
+  }
 
   async handle(action: CatalogActions): Promise<void> {
+    if (isCatalogCreateDialogAction(action)) {
+      return this.catalogCreateDialogHandler.handle(action);
+    }
+
     switch (action.type) {
       case CatalogActionType.CatalogPageOnLoad:
-        await this.loadCatalogPage.run();
-        break;
+        return this.loadCatalogPage.run();
       case CatalogActionType.CatalogCatalogsListOnCommit:
-        await this.setSelectedCatalog.run(action.name, action.version);
-        break;
+        return await this.setSelectedCatalog.run(action.name, action.version);
       case CatalogActionType.CatalogCatalogsCreateButtonOnClick:
-        await this.openCatalogCreateDialog.run();
-        break;
-      case CatalogActionType.CatalogCreateDialogNameTextOnChange:
-        await this.setCatalogCreateDialogName.run(action.value);
-        break;
-      case CatalogActionType.CatalogCreateDialogTypeListOnCommit:
-        await this.setCatalogCreateDialogType.run(action.value);
-        break;
-      case CatalogActionType.CatalogCreateDialogCancelButtonOnClick:
-        await this.closeCatalogCreateDialog.run('Cancel');
-        break;
-      case CatalogActionType.CatalogCreateDialogOkButtonOnClick:
-        await this.closeCatalogCreateDialog.run('OK');
-        break;
+        return this.openCatalogCreateDialog.run();
       case CatalogActionType.CatalogDetailsSourceUrlTextOnCommit:
-        await this.updateSourceUrl.run(action.sourceIndex, action.value);
-        break;
+        return this.updateSourceUrl.run(action.sourceIndex, action.value);
       case CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit:
-        await this.updateSourceTokenType.run(action.sourceIndex, action.value);
-        break;
+        return this.updateSourceTokenType.run(action.sourceIndex, action.value);
       case CatalogActionType.CatalogDetailsSourceTypeListOnCommit:
-        await this.updateSourceType.run(action.sourceIndex, action.value);
-        break;
+        return this.updateSourceType.run(action.sourceIndex, action.value);
       case CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick:
-        await this.removeSource.run(action.sourceIndex);
-        break;
+        return this.removeSource.run(action.sourceIndex);
       case CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange:
-        await this.setCatalogNewSourceUrl.run(action.value);
-        break;
+        return this.setCatalogNewSourceUrl.run(action.value);
       case CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit:
-        await this.setCatalogNewSourceTokenType.run(action.value);
-        break;
+        return this.setCatalogNewSourceTokenType.run(action.value);
       case CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit:
-        await this.setCatalogNewSourceType.run(action.value);
-        break;
+        return this.setCatalogNewSourceType.run(action.value);
       case CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick:
-        await this.addNewSource.run();
-        break;
+        return this.addNewSource.run();
       case CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick:
-        await this.deleteCurrentCatalogVersion.run();
-        break;
+        return await this.deleteCurrentCatalogVersion.run();
       case CatalogActionType.CatalogDetailsSyncButtonOnClick:
-        await this.syncCatalog.run();
-        break;
+        return await this.syncCatalog.run();
       case CatalogActionType.CatalogDetailsLockButtonOnClick:
-        await this.lockCatalog.run();
-        break;
+        return this.lockCatalog.run();
       case CatalogActionType.CatalogDetailsRevertButtonOnClick:
-        await this.revertCatalogToVersion.run();
-        break;
+        return await this.revertCatalogToVersion.run();
       case CatalogActionType.CatalogTokensSearchTextOnChange:
-        await this.setCatalogTokensSearchText.run(action.value);
-        break;
+        return this.setCatalogTokensSearchText.run(action.value);
       case CatalogActionType.CatalogTokensBulkAddButtonOnClick:
-        await this.openBulkAddDialog.run();
-        break;
+        return this.openBulkAddDialog.run();
       case CatalogActionType.CatalogBulkAddTokensTextOnChange:
-        await this.setCatalogBulkAddText.run(action.value);
-        break;
+        return this.setCatalogBulkAddText.run(action.value);
       case CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick:
-        await this.closeBulkAddDialog.run();
-        break;
+        return this.closeBulkAddDialog.run();
       case CatalogActionType.CatalogBulkAddTokensOkButtonOnClick:
-        await this.bulkAddTokens.run();
-        break;
+        return this.bulkAddTokens.run();
       case CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit:
-        await this.updateTokenKey.run(action.key, action.value, action.tokenType);
-        break;
+        return this.updateTokenKey.run(action.key, action.value, action.tokenType);
       case CatalogActionType.CatalogTokensTokenRemoveButtonOnClick:
-        await this.removeToken.run(action.key, action.tokenType);
-        break;
+        return this.removeToken.run(action.key, action.tokenType);
       case CatalogActionType.CatalogTokensNewTokenKeyTextOnChange:
-        await this.setCatalogNewTokenKey.run(action.value);
-        break;
+        return this.setCatalogNewTokenKey.run(action.value);
       case CatalogActionType.CatalogTokensNewTokenAddButtonOnClick:
-        await this.addNewToken.run(action.tokenType, action.key);
-        break;
+        return this.addNewToken.run(action.tokenType, action.key);
       case CatalogActionType.CatalogTokensNewSemanticTokenSelectorTextOnChange:
-        await this.setCatalogNewSemanticTokenSelectorText.run(action.value);
-        break;
+        return this.setCatalogNewSemanticTokenSelectorText.run(action.value);
       case CatalogActionType.CatalogTokensNewSemanticTokenSelectorAddButtonOnClick:
-        await this.addCatalogSemanticTokenSelector.run();
-        break;
+        return this.addCatalogSemanticTokenSelector.run();
       case CatalogActionType.CatalogTokensExistingSemanticTokenTextOnCommit:
-        await this.updateSemanticTokenRegistryText.run(
+        return this.updateSemanticTokenRegistryText.run(
           action.registryList,
           action.index,
           action.value,
         );
-        break;
       case CatalogActionType.CatalogTokensExistingSemanticTokenRemoveButtonOnClick:
-        await this.removeSemanticTokenListItem.run(action.registryList, action.index);
-        break;
+        return this.removeSemanticTokenListItem.run(action.registryList, action.index);
     }
+
+    const _exhaustive: never = action;
+    this.log.error('Unhandled action (CatalogAction union not exhaustive)', { action: _exhaustive });
   }
 }

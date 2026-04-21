@@ -1,16 +1,13 @@
-import { CatalogName, CatalogType, SourceType, TokenType, Version } from "../../../model/schema/primitives";
+import { CatalogName, SourceType, TokenType, Version } from "../../../model/schema/primitives";
 import { SemanticTokenRegistryListKind } from "../../../model/schema/primitives";
 import { TokenKey } from "../../../model/schema/primitives";
-
+import { CatalogCreateDialogActions } from "../components/create-dialog/actions/catalog-create-dialog-action-type";
 
 export enum CatalogActionType {
   CatalogPageOnLoad = 'CATALOG_PAGE_ON_LOAD',
   CatalogCatalogsListOnCommit = 'CATALOG_CATALOGS_LIST_ON_COMMIT',
   CatalogCatalogsCreateButtonOnClick = 'CATALOG_CATALOGS_CREATE_BUTTON_ON_CLICK',
-  CatalogCreateDialogNameTextOnChange = 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE',
-  CatalogCreateDialogTypeListOnCommit = 'CATALOG_CREATE_DIALOG_TYPE_LIST_ON_COMMIT',
-  CatalogCreateDialogCancelButtonOnClick = 'CATALOG_CREATE_DIALOG_CANCEL_BUTTON_ON_CLICK',
-  CatalogCreateDialogOkButtonOnClick = 'CATALOG_CREATE_DIALOG_OK_BUTTON_ON_CLICK',
+  
   CatalogDetailsSourceUrlTextOnCommit = 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT',
   CatalogDetailsSourceTokenTypeListOnCommit = 'CATALOG_DETAILS_SOURCE_TOKEN_TYPE_LIST_ON_COMMIT',
   CatalogDetailsSourceTypeListOnCommit = 'CATALOG_DETAILS_SOURCE_TYPE_LIST_ON_COMMIT',
@@ -42,10 +39,6 @@ export type CatalogActions =
   | { type: CatalogActionType.CatalogPageOnLoad }
   | { type: CatalogActionType.CatalogCatalogsListOnCommit; name: CatalogName; version: Version }
   | { type: CatalogActionType.CatalogCatalogsCreateButtonOnClick }
-  | { type: CatalogActionType.CatalogCreateDialogNameTextOnChange; value: string }
-  | { type: CatalogActionType.CatalogCreateDialogTypeListOnCommit; value: CatalogType }
-  | { type: CatalogActionType.CatalogCreateDialogCancelButtonOnClick }
-  | { type: CatalogActionType.CatalogCreateDialogOkButtonOnClick }
   | { type: CatalogActionType.CatalogDetailsSourceUrlTextOnCommit; value: string; sourceIndex: number }
   | { type: CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit; value: TokenType; sourceIndex: number }
   | { type: CatalogActionType.CatalogDetailsSourceTypeListOnCommit; value: SourceType; sourceIndex: number }
@@ -79,4 +72,5 @@ export type CatalogActions =
       type: CatalogActionType.CatalogTokensExistingSemanticTokenRemoveButtonOnClick;
       registryList: SemanticTokenRegistryListKind;
       index: number;
-    };
+    }
+  | CatalogCreateDialogActions;

@@ -1,10 +1,11 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { MergeSemanticSelectorsIntoCatalogOperation } from '../../../domain/operations/catalog-operations/tokens/merge-semantic-selectors-into-catalog-operation';
 import { SaveCatalogOperation } from '../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
 import { SetCatalogNewSemanticTokenSelectorTextOperation } from '../../../domain/operations/catalog-operations/tokens/set-catalog-new-semantic-token-selector-text-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
+import { getCurrentCatalog } from '../../../domain/catalog/state/catalogs-store';
 
 @singleton()
 export class AddCatalogSemanticTokenSelectorController {
@@ -18,8 +19,9 @@ export class AddCatalogSemanticTokenSelectorController {
   ) {}
 
   run(): void {
-    const state = this.catalogsStore.getStore().state;
-    const catalog = state.catalog;
+    const store = this.catalogsStore.getStore();
+    const state = store.stateV2;
+    const catalog = getCurrentCatalog(store);
     const selector = state.newSemanticTokenSelectorText?.trim();
     if (!catalog || !selector) return;
 

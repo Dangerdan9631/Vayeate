@@ -1,14 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogName } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { TemplateActionType } from '../actions/template-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 
 const catalogsStore = container.resolve(CatalogsStore);
@@ -33,10 +32,20 @@ export function useTemplateCatalogsCardViewModel() {
     return best !== null && best.version === selectedRef.version;
   }, [templateRefs, selectedRef, selectedName]);
 
-  const catalogs = useStore(catalogsStore.api, (state) => state.state);
-  const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogs.catalogMap), [catalogs.catalogMap]);
+  const catalogs = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogRefs = useMemo(() => {
+    const refs: CatalogReference[] = [];
+    for (const name of Object.keys(catalogs).sort()) {
+      const versions = catalogs[name];
+      if (!versions) continue;
+      for (const version of Object.keys(versions).sort()) {
+        refs.push({ name, version });
+      }
+    }
+    return refs;
+  }, [catalogs]);
   const catalogNamesList = useMemo(() => {
-    const names = new Set(catalogRefs.map((r) => r.name));
+    const names = new Set(catalogRefs.map((r: CatalogReference) => r.name));
     return [...names].sort();
   }, [catalogRefs]);
 

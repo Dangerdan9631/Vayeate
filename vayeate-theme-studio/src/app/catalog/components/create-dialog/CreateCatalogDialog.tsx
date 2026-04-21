@@ -1,33 +1,36 @@
-import type { ChangeEvent } from 'react';
-import { useCreateCatalogDialogViewModel } from '../viewmodel/use-create-catalog-dialog-viewmodel';
-import { CatalogType } from '../../../model/schema/primitives';
+import type { ChangeEvent, MouseEvent } from 'react';
+import { useCreateCatalogDialogViewModel } from './use-create-catalog-dialog-viewmodel';
+import { CatalogType } from '../../../../model/schema/primitives';
 
 export function CreateCatalogDialog() {
   const {
     name,
     type,
-    nameValid,
+    hasError,
+    errorMessage,
     canSubmit,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
-    handleNameChange,
-    handleTypeChange,
+    onNameChange,
+    onTypeChange,
+    onOkClick,
+    onCancelClick,
   } = useCreateCatalogDialogViewModel();
 
-  const showNameError = name.length > 0 && !nameValid;
+  function onDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    // Prevent the click from propagating to the overlay.
+    e.stopPropagation();
+  }
 
   function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    handleNameChange(e.target.value);
+    onNameChange(e.target.value);
   }
 
   function onTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    handleTypeChange(e.target.value as CatalogType);
+    onTypeChange(e.target.value as CatalogType);
   }
 
   return (
-    <div className="dialog-overlay" onClick={handleCancel}>
-      <div className="dialog-content" onClick={handleDialogContentClick}>
+    <div className="dialog-overlay" onClick={onCancelClick}>
+      <div className="dialog-content" onClick={onDialogContentClick}>
         <h3>Create New Catalog</h3>
 
         <label className="field-row">
@@ -40,8 +43,8 @@ export function CreateCatalogDialog() {
             onChange={onNameInputChange}
           />
         </label>
-        {showNameError && (
-          <p className="field-error">Alphanumeric characters and hyphens only.</p>
+        {hasError && (
+          <p className="field-error">{errorMessage}</p>
         )}
 
         <label className="field-row">
@@ -57,10 +60,19 @@ export function CreateCatalogDialog() {
         </label>
 
         <div className="dialog-actions">
-          <button type="button" className="btn-secondary" onClick={handleCancel}>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={onCancelClick}
+          >
             Cancel
           </button>
-          <button type="button" className="btn-primary" disabled={!canSubmit} onClick={handleSubmit}>
+          <button
+            type="button"
+            className="btn-primary"
+            disabled={!canSubmit}
+            onClick={onOkClick}
+          >
             OK
           </button>
         </div>

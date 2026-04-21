@@ -4,10 +4,8 @@ import { CreateTemplateOperation } from '../../../domain/operations/template-ope
 import { RefreshTemplateRefsOperation } from '../../../domain/operations/template-operations/template-list/refresh-template-refs-operation';
 import { SetSelectedTemplateRefOperation } from '../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 import { SetTemplateOperation } from '../../../domain/operations/template-operations/template-details/set-template-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { SetTemplateCreateDialogOpenOperation } from '../../../domain/operations/template-operations/template-list/set-template-create-dialog-open-operation';
 import { SetTemplateIsCreatingOperation } from '../../../domain/operations/template-operations/template-list/set-template-is-creating-operation';
-import { templateStackId } from '../../../domain/utils/template-stack-id';
 
 @singleton()
 export class CreateTemplateController {
@@ -17,7 +15,6 @@ export class CreateTemplateController {
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setTemplate: SetTemplateOperation,
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly setTemplateCreateDialogOpen: SetTemplateCreateDialogOpenOperation,
     private readonly setTemplateIsCreating: SetTemplateIsCreatingOperation,
   ) {}
@@ -36,9 +33,6 @@ export class CreateTemplateController {
         name: newTemplate.name,
         version: newTemplate.version,
       });
-      this.setCurrentUndoStackId.execute(
-        templateStackId(newTemplate.name, newTemplate.version),
-      );
     } finally {
       this.setTemplateIsCreating.execute(false);
     }

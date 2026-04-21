@@ -10,13 +10,12 @@ export function isMappingOrphanForTemplate(
   template: Template,
   tokenKey: string,
   tokenType: TokenType,
-  loadedForDisplay: Record<string, Catalog>,
+  catalogs: Catalog[],
 ): boolean {
   if (template.catalogRefs.length === 0) return false;
 
   const loaded = template.catalogRefs.map((ref) => {
-    const key = `${ref.name}@${ref.version}`;
-    return loadedForDisplay[key] ?? null;
+    return catalogs.find((c) => c.name === ref.name && c.version === ref.version) ?? null;
   });
   if (!loaded.every((c): c is Catalog => c !== null)) return false;
 

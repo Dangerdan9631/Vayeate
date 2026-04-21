@@ -1,7 +1,6 @@
 import { singleton } from 'tsyringe';
-import { getCatalogRefsFromCatalogMap } from '../../../state/catalog/catalogs-state';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../catalog/state/catalogs-store';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 /** Read current catalog refs from state. Use in controllers instead of importing domain/state directly. */
 @singleton()
@@ -9,6 +8,6 @@ export class GetCatalogRefsOperation {
   constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(): CatalogReference[] {
-    return getCatalogRefsFromCatalogMap(this.catalogsStore.getStore().state.catalogMap);
+    return getCurrentCatalogRefs(this.catalogsStore.getStore().stateV2.catalogs);
   }
 }

@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
 import { findNearestVersionRef } from '../../../domain/utils/find-nearest-version-ref';
-import { themeStackId } from '../../../domain/utils/theme-stack-id';
 import { DeleteThemeOperation } from '../../../domain/operations/theme-operations/theme-list/delete-theme-operation';
 import { LoadThemeRefsOperation } from '../../../domain/operations/theme-operations/theme-list/load-theme-refs-operation';
 import { GetThemeRefsOperation } from '../../../domain/operations/theme-operations/theme-list/get-theme-refs-operation';
@@ -8,7 +7,6 @@ import { SetSelectedThemeRefOperation } from '../../../domain/operations/theme-o
 import { LoadThemeOperation } from '../../../domain/operations/theme-operations/theme-details/load-theme-operation';
 import { SetThemePaneSelectionsOperation } from '../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { SetThemeOperation } from '../../../domain/operations/theme-operations/theme-details/set-theme-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class DeleteThemeVersionController {
@@ -19,7 +17,6 @@ export class DeleteThemeVersionController {
     private readonly setSelectedThemeRef: SetSelectedThemeRefOperation,
     private readonly loadTheme: LoadThemeOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly setTheme: SetThemeOperation,
   ) {}
 
@@ -38,12 +35,10 @@ export class DeleteThemeVersionController {
           loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
         );
       }
-      this.setCurrentUndoStackId.execute(themeStackId(nextTh.name, nextTh.version));
     } else {
       this.setSelectedThemeRef.execute(null);
       this.setTheme.execute(null);
       this.setThemePaneSelections.execute([], []);
-      this.setCurrentUndoStackId.execute(null);
     }
   }
 }

@@ -1,26 +1,25 @@
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { getCatalogRefsFromCatalogMap } from '../../../domain/state/catalog/catalogs-state';
-import { compareVersions } from '../../../domain/utils/compare-versions';
-import type { Catalog } from '../../../model/schema/catalog';
-import type { SourceType, TokenType } from '../../../model/schema/primitives';
-import { CatalogActionType } from '../actions/catalog-action-type';
+import { useAppDispatch } from '../../../common/context/use-app-dispatch';
+import { compareVersions } from '../../../../domain/utils/compare-versions';
+import type { Catalog } from '../../../../model/schema/catalog';
+import type { SourceType, TokenType } from '../../../../model/schema/primitives';
+import { CatalogActionType } from '../../actions/catalog-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
 
 export function useCatalogDetailsCardViewModel() {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(catalogsStore.api, (state) => state.state.selectedRef);
-  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogMap);
-  const catalog: Catalog = useStore(catalogsStore.api, (state) => state.state.catalog);
-  const newSourceUrl = useStore(catalogsStore.api, (state) => state.state.newSourceUrl);
-  const newSourceTokenType = useStore(catalogsStore.api, (state) => state.state.newSourceTokenType);
-  const newSourceType = useStore(catalogsStore.api, (state) => state.state.newSourceType);
-  const catalogRefs = useMemo(() => getCatalogRefsFromCatalogMap(catalogMap), [catalogMap]);
+  const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
+  const catalog: Catalog | null = useStore(catalogsStore.api, getCurrentCatalog);
+  const newSourceUrl = useStore(catalogsStore.api, (state) => state.stateV2.newSource.url);
+  const newSourceTokenType = useStore(catalogsStore.api, (state) => state.stateV2.newSource.tokenType);
+  const newSourceType = useStore(catalogsStore.api, (state) => state.stateV2.newSource.type);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
 
   const selectedName = selectedRef?.name ?? null;
 

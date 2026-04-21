@@ -9,9 +9,7 @@ import { SetThemeSaveErrorOperation } from '../../../domain/operations/theme-ope
 import { LoadThemeRefsOperation } from '../../../domain/operations/theme-operations/theme-list/load-theme-refs-operation';
 import { SetThemePaneSelectionsOperation } from '../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadThemeOperation } from '../../../domain/operations/theme-operations/theme-details/load-theme-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
-import { themeStackId } from '../../../domain/utils/theme-stack-id';
 
 @singleton()
 export class IncrementThemeVersionController {
@@ -23,7 +21,6 @@ export class IncrementThemeVersionController {
     private readonly loadThemeRefs: LoadThemeRefsOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTheme: LoadThemeOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
     private readonly themesStateGetter: ThemesStore,
   ) {}
@@ -52,7 +49,6 @@ export class IncrementThemeVersionController {
         loaded.contrastAssignments.map((a) => a.contrastVariableRef),
       );
     }
-    this.setCurrentUndoStackId.execute(themeStackId(theme.name, newVersion));
   }
 }
 

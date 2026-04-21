@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useBulkAddDialogViewModel } from '../viewmodel/use-bulk-add-dialog-viewmodel';
+import { useBulkAddDialogViewModel } from './use-bulk-add-dialog-viewmodel';
 
 export function BulkAddDialog() {
   const {

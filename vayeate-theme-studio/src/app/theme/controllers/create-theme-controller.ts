@@ -5,10 +5,8 @@ import { SetThemeOperation } from '../../../domain/operations/theme-operations/t
 import { SetSelectedThemeRefOperation } from '../../../domain/operations/theme-operations/theme-list/set-selected-theme-ref-operation';
 import { SetThemePaneSelectionsOperation } from '../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { SetThemeCreateFormNameOperation } from '../../../domain/operations/theme-operations/theme-list/set-theme-create-form-name-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { SetThemeCreateDialogOpenOperation } from '../../../domain/operations/theme-operations/theme-list/set-theme-create-dialog-open-operation';
 import { SetThemeIsCreatingOperation } from '../../../domain/operations/theme-operations/theme-list/set-theme-is-creating-operation';
-import { themeStackId } from '../../../domain/utils/theme-stack-id';
 
 @singleton()
 export class CreateThemeController {
@@ -18,7 +16,6 @@ export class CreateThemeController {
     private readonly setTheme: SetThemeOperation,
     private readonly setSelectedThemeRef: SetSelectedThemeRefOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
     private readonly setThemeCreateFormName: SetThemeCreateFormNameOperation,
     private readonly setThemeCreateDialogOpen: SetThemeCreateDialogOpenOperation,
     private readonly setThemeIsCreating: SetThemeIsCreatingOperation,
@@ -37,7 +34,6 @@ export class CreateThemeController {
         newTheme.colorAssignments.map((a) => a.colorRef),
         newTheme.contrastAssignments.map((a) => a.contrastVariableRef),
       );
-      this.setCurrentUndoStackId.execute(themeStackId(newTheme.name, newTheme.version));
     } finally {
       this.setThemeIsCreating.execute(false);
     }

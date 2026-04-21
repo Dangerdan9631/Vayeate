@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
-import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import type { BulkParseResult } from '../../../domain/utils/theme-parser';
-import type { Catalog, Token } from '../../../model/schema/catalog';
-import { CatalogActionType } from '../actions/catalog-action-type';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { useAppDispatch } from '../../../common/context/use-app-dispatch';
+import type { BulkParseResult } from '../../../../domain/utils/theme-parser';
+import type { Catalog, Token } from '../../../../model/schema/catalog';
+import { CatalogActionType } from '../../actions/catalog-action-type';
+import { CatalogsStore, getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 
@@ -24,12 +24,12 @@ export interface BulkAddDialogViewModel {
 
 export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   const dispatch = useAppDispatch();
-  const catalog: Catalog = useStore(catalogsStore.api, (state) => state.state.catalog);
-  const text = useStore(catalogsStore.api, (state) => state.state.bulkAddText);
-  const bulkAddParse = useStore(catalogsStore.api, (state) => state.state.bulkAddParse);
+  const catalog: Catalog | null = useStore(catalogsStore.api, getCurrentCatalog);
+  const bulkAddDialog = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog);
+  const text = bulkAddDialog?.text ?? '';
 
   const catalogTokenSignature = useMemo(
-    () => (catalog ? catalog.tokens.map((t) => `${t.type}::${t.key}`).join('\0') : ''),
+    () => (catalog ? catalog.tokens.map((t: Token) => `${t.type}::${t.key}`).join('\0') : ''),
     [catalog],
   );
 
@@ -40,22 +40,22 @@ export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   }, [catalogTokenSignature, dispatch]);
 
   const errorMessage =
-    bulkAddParse !== null && bulkAddParse.errorMessage !== null ? bulkAddParse.errorMessage : null;
+    bulkAddDialog !== null && bulkAddDialog.errorMessage !== null ? bulkAddDialog.errorMessage : null;
   const isError = errorMessage !== null;
   const parsed =
-    bulkAddParse !== null &&
-    bulkAddParse.errorMessage === null &&
-    bulkAddParse.counts !== null
+    bulkAddDialog !== null &&
+    bulkAddDialog.errorMessage === null &&
+    bulkAddDialog.counts !== null
       ? {
           result: {
-            counts: bulkAddParse.counts,
+            counts: bulkAddDialog.counts,
             tokens: [] as Token[],
           },
-          newCount: bulkAddParse.newCount,
+          newCount: bulkAddDialog.newCount,
         }
       : null;
   const canSubmit = parsed !== null && parsed.newCount > 0;
-  const duplicateCount = bulkAddParse?.duplicateCount ?? 0;
+  const duplicateCount = bulkAddDialog?.duplicateCount ?? 0;
 
   const handleTextChange = useCallback(
     (value: string) => {

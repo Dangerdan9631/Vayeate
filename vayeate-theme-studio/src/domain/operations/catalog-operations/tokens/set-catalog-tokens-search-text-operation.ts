@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../catalog/state/catalogs-store';
 
 @singleton()
 export class SetCatalogTokensSearchTextOperation {

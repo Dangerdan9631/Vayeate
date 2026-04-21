@@ -1,13 +1,11 @@
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { findNearestVersionRef } from '../../../domain/utils/find-nearest-version-ref';
-import { templateStackId } from '../../../domain/utils/template-stack-id';
 import { DeleteTemplateOperation } from '../../../domain/operations/template-operations/template-list/delete-template-operation';
 import { LoadTemplateOperation } from '../../../domain/operations/template-operations/template-details/load-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../domain/operations/template-operations/template-list/refresh-template-refs-operation';
 import { SetSelectedTemplateRefOperation } from '../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 import { SetTemplateOperation } from '../../../domain/operations/template-operations/template-details/set-template-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 
 @singleton()
 export class DeleteCurrentTemplateVersionController {
@@ -18,7 +16,6 @@ export class DeleteCurrentTemplateVersionController {
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
     private readonly loadTemplate: LoadTemplateOperation,
     private readonly setTemplate: SetTemplateOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -33,11 +30,9 @@ export class DeleteCurrentTemplateVersionController {
     if (nextT) {
       this.setSelectedTemplateRef.execute(nextT);
       this.loadTemplate.execute(nextT.name, nextT.version);
-      this.setCurrentUndoStackId.execute(templateStackId(nextT.name, nextT.version));
     } else {
       this.setSelectedTemplateRef.execute(null);
       this.setTemplate.execute(null);
-      this.setCurrentUndoStackId.execute(null);
     }
   }
 }
