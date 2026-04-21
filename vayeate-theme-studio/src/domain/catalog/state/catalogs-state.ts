@@ -1,13 +1,6 @@
 import type { Catalog } from '../../../model/schema/catalog';
-import type { CatalogType, SourceType, TokenType } from '../../../model/schema/primitives';
+import type { SourceType, TokenType } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
-
-export interface CreateCatalogDialogState {
-  isOpen: boolean;
-  name: string;
-  type: CatalogType;
-  errorMessage: string | null;
-}
 
 export interface BulkAddDialogState {
   isOpen: boolean;
@@ -40,7 +33,6 @@ export interface CatalogMap {
 export interface CatalogsStateV2 {
   selectedRef: CatalogReference | null;
   selectedCatalog: Catalog | null;
-  createCatalogDialog: CreateCatalogDialogState | null;
   bulkAddDialog: BulkAddDialogState | null;
   tokensSearchText: string;
   newSource: NewSourceState;
@@ -49,12 +41,7 @@ export interface CatalogsStateV2 {
   catalogs: CatalogMap;
 }
 
-export const emptyCreateCatalogData: CreateCatalogDialogState = {
-  isOpen: false,
-  name: '',
-  type: 'manual',
-  errorMessage: null,
-};
+
 
 export const emptyBulkAddData: BulkAddDialogState = {
   isOpen: false,
@@ -74,7 +61,6 @@ export const emptyNewSource: NewSourceState = {
 export const initialCatalogsStateV2: CatalogsStateV2 = {
   selectedRef: null,
   selectedCatalog: null,
-  createCatalogDialog: null,
   bulkAddDialog: null,
   tokensSearchText: '',
   newSource: emptyNewSource,

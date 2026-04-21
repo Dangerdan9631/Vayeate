@@ -2,10 +2,10 @@ import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { castDraft } from "immer";
 import { singleton } from "tsyringe";
-import { CatalogMap, CatalogsStateV2, emptyBulkAddData, emptyCreateCatalogData, emptyNewSource, initialCatalogsStateV2 } from "./catalogs-state";
+import { CatalogMap, CatalogsStateV2, emptyBulkAddData, emptyNewSource, initialCatalogsStateV2 } from "./catalogs-state";
 import type { Catalog } from "../../../model/schema/catalog";
 import type { CatalogReference } from "../../../model/schema/template-schemas";
-import type { CatalogType, SourceType, TokenType } from "../../../model/schema/primitives";
+import type { SourceType, TokenType } from "../../../model/schema/primitives";
 import { DialogResultOkCancel } from "../../../model/dialog-result";
 
 interface CatalogsStoreState {
@@ -14,10 +14,6 @@ interface CatalogsStoreState {
     selectCatalog: (ref: CatalogReference | null) => void;
     updateCatalog: (catalog: Catalog) => void;
     updateCatalogs: (catalogs: Catalog[]) => void;
-    openCreateCatalogDialog: () => void;
-    setCreateCatalogDialogData: (name?: string, type?: CatalogType) => void;
-    setCreateCatalogDialogError: (errorMessage: string | null) => void;
-    closeCreateCatalogDialog: (result: 'OK' | 'CANCEL') => void;
     openBulkAddDialog: () => void;
     setBulkAddDialogData: (text?: string) => void;
     setBulkAddDialogMetrics: (
@@ -113,33 +109,6 @@ export class CatalogsStore {
                         catalog: castDraft(catalog),
                     };
                 });
-            }),
-            openCreateCatalogDialog: () => set((storeState) => {
-                storeState.stateV2.createCatalogDialog = {
-                    ... emptyCreateCatalogData,
-                    isOpen: true,
-                };
-            }),
-            setCreateCatalogDialogData: (name?: string, type?: CatalogType) => set((storeState) => {
-                const createCatalogDialog = storeState.stateV2.createCatalogDialog;
-                if (!createCatalogDialog) return;
-
-                if (name !== undefined) createCatalogDialog.name = name;
-                if (type !== undefined) createCatalogDialog.type = type;
-            }),
-            setCreateCatalogDialogError: (errorMessage: string | null) => set((storeState) => {
-                const createCatalogDialog = storeState.stateV2.createCatalogDialog;
-                if (!createCatalogDialog) return;
-                createCatalogDialog.errorMessage = errorMessage;
-            }),
-            closeCreateCatalogDialog: (result: DialogResultOkCancel) => set((storeState) => {
-                if (result === 'OK') {
-                    const createCatalogDialog = storeState.stateV2.createCatalogDialog;
-                    if (!createCatalogDialog) return;
-                    createCatalogDialog.isOpen = false;
-                } else {
-                    storeState.stateV2.createCatalogDialog = null;
-                }
             }),
             openBulkAddDialog: () => set((storeState) => {
                 storeState.stateV2.bulkAddDialog = {
