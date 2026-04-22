@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import type { BulkParseResult } from '../../../../domain/utils/theme-parser';
 import type { Catalog, Token } from '../../../../model/schema/catalog';
-import { CatalogActionType } from '../../actions/catalog-action-type';
+import { CatalogBulkAddDialogActionType } from './actions/catalog-bulk-add-dialog-action-type';
 import { CatalogsStore, getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
@@ -35,7 +35,7 @@ export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
 
   useEffect(() => {
     if (!text.trim()) return;
-    void dispatch({ type: CatalogActionType.CatalogBulkAddTokensTextOnChange, value: text });
+    void dispatch({ type: CatalogBulkAddDialogActionType.TextOnChange, value: text });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- omit `text`: keystrokes dispatch via handleTextChange; this re-syncs when catalog tokens change
   }, [catalogTokenSignature, dispatch]);
 
@@ -59,17 +59,17 @@ export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
 
   const handleTextChange = useCallback(
     (value: string) => {
-      void dispatch({ type: CatalogActionType.CatalogBulkAddTokensTextOnChange, value });
+      void dispatch({ type: CatalogBulkAddDialogActionType.TextOnChange, value });
     },
     [dispatch],
   );
 
   const handleSubmit = useCallback(() => {
-    void dispatch({ type: CatalogActionType.CatalogBulkAddTokensOkButtonOnClick });
+    void dispatch({ type: CatalogBulkAddDialogActionType.OkButtonOnClick });
   }, [dispatch]);
 
   const handleCancel = useCallback(() => {
-    void dispatch({ type: CatalogActionType.CatalogBulkAddTokensCancelButtonOnClick });
+    void dispatch({ type: CatalogBulkAddDialogActionType.CancelButtonOnClick });
   }, [dispatch]);
 
   const handleDialogContentClick = useCallback((e: MouseEvent<HTMLDivElement>) => {

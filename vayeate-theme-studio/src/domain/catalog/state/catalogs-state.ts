@@ -32,7 +32,6 @@ export interface CatalogMap {
 
 export interface CatalogsStateV2 {
   selectedRef: CatalogReference | null;
-  selectedCatalog: Catalog | null;
   bulkAddDialog: BulkAddDialogState | null;
   tokensSearchText: string;
   newSource: NewSourceState;
@@ -60,7 +59,6 @@ export const emptyNewSource: NewSourceState = {
 
 export const initialCatalogsStateV2: CatalogsStateV2 = {
   selectedRef: null,
-  selectedCatalog: null,
   bulkAddDialog: null,
   tokensSearchText: '',
   newSource: emptyNewSource,

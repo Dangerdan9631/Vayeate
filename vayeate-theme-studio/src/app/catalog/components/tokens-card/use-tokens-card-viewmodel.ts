@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import type { Catalog, Token } from '../../../../model/schema/catalog';
 import type { SemanticTokenRegistryListKind, TokenKey, TokenType } from '../../../../model/schema/primitives';
-import { CatalogActionType } from '../../actions/catalog-action-type';
+import { TokensCardActionType } from './actions/tokens-card-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
@@ -63,12 +63,12 @@ export function useTokensCardViewModel() {
   );
 
   const handleBulkAddClick = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogTokensBulkAddButtonOnClick });
+    dispatch({ type: TokensCardActionType.BulkAddButtonOnClick });
   }, [dispatch]);
 
   const handleSearchChange = useCallback(
     (value: string) => {
-      dispatch({ type: CatalogActionType.CatalogTokensSearchTextOnChange, value });
+      dispatch({ type: TokensCardActionType.SearchTextOnChange, value });
     },
     [dispatch],
   );
@@ -76,7 +76,7 @@ export function useTokensCardViewModel() {
   const handleAddToken = useCallback(
     (tokenType: TokenType, key: string) => {
       dispatch({
-        type: CatalogActionType.CatalogTokensNewTokenAddButtonOnClick,
+        type: TokensCardActionType.NewTokenAddButtonOnClick,
         tokenType,
         key,
       });
@@ -87,7 +87,7 @@ export function useTokensCardViewModel() {
   const handleRemoveToken = useCallback(
     (tokenType: TokenType, key: string) => {
       dispatch({
-        type: CatalogActionType.CatalogTokensTokenRemoveButtonOnClick,
+        type: TokensCardActionType.TokenRemoveButtonOnClick,
         key: key as TokenKey,
         tokenType,
       });
@@ -98,7 +98,7 @@ export function useTokensCardViewModel() {
   const handleUpdateTokenKey = useCallback(
     (tokenType: TokenType, oldKey: string, newKey: string) => {
       dispatch({
-        type: CatalogActionType.CatalogTokensExistingTokenKeyTextOnCommit,
+        type: TokensCardActionType.ExistingTokenKeyTextOnCommit,
         value: newKey,
         key: oldKey as TokenKey,
         tokenType,
@@ -109,26 +109,26 @@ export function useTokensCardViewModel() {
 
   const handleNewTokenKeyChange = useCallback(
     (value: string) => {
-      dispatch({ type: CatalogActionType.CatalogTokensNewTokenKeyTextOnChange, value });
+      dispatch({ type: TokensCardActionType.NewTokenKeyTextOnChange, value });
     },
     [dispatch],
   );
 
   const handleNewSemanticTokenSelectorTextChange = useCallback(
     (value: string) => {
-      dispatch({ type: CatalogActionType.CatalogTokensNewSemanticTokenSelectorTextOnChange, value });
+      dispatch({ type: TokensCardActionType.NewSemanticTokenSelectorTextOnChange, value });
     },
     [dispatch],
   );
 
   const handleNewSemanticTokenSelectorAdd = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogTokensNewSemanticTokenSelectorAddButtonOnClick });
+    dispatch({ type: TokensCardActionType.NewSemanticTokenSelectorAddButtonOnClick });
   }, [dispatch]);
 
   const handleSemanticRegistryTextCommit = useCallback(
     (registryList: SemanticTokenRegistryListKind, index: number, value: string) => {
       dispatch({
-        type: CatalogActionType.CatalogTokensExistingSemanticTokenTextOnCommit,
+        type: TokensCardActionType.ExistingSemanticTokenTextOnCommit,
         registryList,
         index,
         value,
@@ -140,7 +140,7 @@ export function useTokensCardViewModel() {
   const handleSemanticRegistryRemove = useCallback(
     (registryList: SemanticTokenRegistryListKind, index: number) => {
       dispatch({
-        type: CatalogActionType.CatalogTokensExistingSemanticTokenRemoveButtonOnClick,
+        type: TokensCardActionType.ExistingSemanticTokenRemoveButtonOnClick,
         registryList,
         index,
       });

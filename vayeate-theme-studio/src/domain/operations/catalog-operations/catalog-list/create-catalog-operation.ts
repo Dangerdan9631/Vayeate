@@ -3,6 +3,7 @@ import type { CatalogReference } from '../../../../model/schema/template-schemas
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../catalog/state/catalogs-store';
 import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
+import { CatalogType } from '../../../../model/schema/primitives';
 
 @singleton()
 export class CreateCatalogOperation {
@@ -12,7 +13,7 @@ export class CreateCatalogOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
   ) {}
 
-  execute(params: { name: string; type: 'manual' | 'remote' }): CatalogReference {
+  execute(params: { name: string; type: CatalogType }): CatalogReference {
     const catalog = {
       name: params.name,
       version: '1.0.0',

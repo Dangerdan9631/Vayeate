@@ -4,7 +4,7 @@ import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import type { Catalog } from '../../../../model/schema/catalog';
 import type { SourceType, TokenType } from '../../../../model/schema/primitives';
-import { CatalogActionType } from '../../actions/catalog-action-type';
+import { CatalogDetailsCardActionType } from './actions/catalog-details-card-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
@@ -47,26 +47,26 @@ export function useCatalogDetailsCardViewModel() {
   const [editingSourceUrl, setEditingSourceUrl] = useState('');
 
   const lockCatalog = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogDetailsLockButtonOnClick });
+    dispatch({ type: CatalogDetailsCardActionType.LockButtonOnClick });
   }, [dispatch]);
 
   const syncCatalog = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogDetailsSyncButtonOnClick });
+    dispatch({ type: CatalogDetailsCardActionType.SyncButtonOnClick });
   }, [dispatch]);
 
   const onDeleteVersion = useCallback(() => {
     if (!selectedRef) return;
-    dispatch({ type: CatalogActionType.CatalogDetailsDeleteVersionButtonOnClick });
+    dispatch({ type: CatalogDetailsCardActionType.DeleteVersionButtonOnClick });
   }, [dispatch, selectedRef]);
 
   const onRevert = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogDetailsRevertButtonOnClick });
+    dispatch({ type: CatalogDetailsCardActionType.RevertButtonOnClick });
   }, [dispatch]);
 
   const commitSourceUrl = useCallback(
     (value: string, sourceIndex: number) => {
       dispatch({
-        type: CatalogActionType.CatalogDetailsSourceUrlTextOnCommit,
+        type: CatalogDetailsCardActionType.SourceUrlTextOnCommit,
         value,
         sourceIndex,
       });
@@ -77,7 +77,7 @@ export function useCatalogDetailsCardViewModel() {
   const commitSourceTokenType = useCallback(
     (value: TokenType, sourceIndex: number) => {
       dispatch({
-        type: CatalogActionType.CatalogDetailsSourceTokenTypeListOnCommit,
+        type: CatalogDetailsCardActionType.SourceTokenTypeListOnCommit,
         value,
         sourceIndex,
       });
@@ -88,7 +88,7 @@ export function useCatalogDetailsCardViewModel() {
   const commitSourceType = useCallback(
     (value: SourceType, sourceIndex: number) => {
       dispatch({
-        type: CatalogActionType.CatalogDetailsSourceTypeListOnCommit,
+        type: CatalogDetailsCardActionType.SourceTypeListOnCommit,
         value,
         sourceIndex,
       });
@@ -98,34 +98,34 @@ export function useCatalogDetailsCardViewModel() {
 
   const removeSource = useCallback(
     (sourceIndex: number) => {
-      dispatch({ type: CatalogActionType.CatalogDetailsSourceRemoveButtonOnClick, sourceIndex });
+      dispatch({ type: CatalogDetailsCardActionType.SourceRemoveButtonOnClick, sourceIndex });
     },
     [dispatch],
   );
 
   const changeNewSourceUrl = useCallback(
     (value: string) => {
-      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceUrlTextOnChange, value });
+      dispatch({ type: CatalogDetailsCardActionType.NewSourceUrlTextOnChange, value });
     },
     [dispatch],
   );
 
   const commitNewSourceTokenType = useCallback(
     (value: TokenType) => {
-      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTokenTypeListOnCommit, value });
+      dispatch({ type: CatalogDetailsCardActionType.NewSourceTokenTypeListOnCommit, value });
     },
     [dispatch],
   );
 
   const commitNewSourceType = useCallback(
     (value: SourceType) => {
-      dispatch({ type: CatalogActionType.CatalogDetailsNewSourceTypeListOnCommit, value });
+      dispatch({ type: CatalogDetailsCardActionType.NewSourceTypeListOnCommit, value });
     },
     [dispatch],
   );
 
   const addNewSource = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogDetailsNewSourceAddButtonOnClick });
+    dispatch({ type: CatalogDetailsCardActionType.NewSourceAddButtonOnClick });
   }, [dispatch]);
 
   const onExistingSourceUrlFocus = useCallback(

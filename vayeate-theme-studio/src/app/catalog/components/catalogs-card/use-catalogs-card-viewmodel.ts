@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
-import { CatalogActionType } from '../../actions/catalog-action-type';
+import { CatalogsCardActionType } from './actions/catalogs-card-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
@@ -57,7 +57,7 @@ export function useCatalogsCardViewModel() {
     (name: string) => {
       const ref = catalogSelections[name];
       if (!ref) return;
-      dispatch({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: ref.name, version: ref.version });
+      dispatch({ type: CatalogsCardActionType.CatalogsListOnCommit, name: ref.name, version: ref.version });
     },
     [dispatch, catalogSelections],
   );
@@ -66,13 +66,13 @@ export function useCatalogsCardViewModel() {
     (version: string) => {
       const ref = catalogVersionSelections[version];
       if (!ref) return;
-      dispatch({ type: CatalogActionType.CatalogCatalogsListOnCommit, name: ref.name, version: ref.version });
+      dispatch({ type: CatalogsCardActionType.CatalogVersionsListOnCommit, name: ref.name, version: ref.version });
     },
     [dispatch, catalogVersionSelections],
   );
 
   const onCreateCatalogClick = useCallback(() => {
-    dispatch({ type: CatalogActionType.CatalogCatalogsCreateButtonOnClick });
+    dispatch({ type: CatalogsCardActionType.CatalogsCreateButtonOnClick });
   }, [dispatch]);
 
   return {

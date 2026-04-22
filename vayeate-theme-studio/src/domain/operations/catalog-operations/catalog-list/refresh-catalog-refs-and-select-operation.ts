@@ -3,7 +3,6 @@ import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../catalog/state/catalogs-store';
 import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
 
-/** After catalog mutations, refresh refs from disk and optionally select a catalog by name/version. */
 @singleton()
 export class RefreshCatalogRefsAndSelectOperation {
   constructor(
