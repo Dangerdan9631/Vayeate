@@ -1,7 +1,7 @@
 import { delay, inject, singleton } from 'tsyringe';
 import { AppActions } from './app-action-type';
-import { AppBarHandler } from '../components/app-bar/actions/app-bar-handler';
-import { isAppBarAction } from '../components/app-bar/actions/app-bar-action-guard';
+import { AppShellHandler } from '../components/app-shell/actions/app-shell-handler';
+import { isAppShellAction } from '../components/app-shell/actions/app-shell-action-guard';
 import { AppEyedropperOverlayHandler } from '../components/eyedropper-overlay/actions/app-eyedropper-overlay-handler';
 import { isAppEyedropperOverlayAction } from '../components/eyedropper-overlay/actions/app-eyedropper-overlay-action-guard';
 import { AppMenuHandler } from '../components/menu-bar/actions/app-menu-handler';
@@ -16,7 +16,7 @@ export class AppActionHandler {
 
   constructor(
     loggerFactory: LoggerFactory,
-    @inject(delay(() => AppBarHandler)) private readonly appBarHandler: AppBarHandler,
+    @inject(delay(() => AppShellHandler)) private readonly appShellHandler: AppShellHandler,
     @inject(delay(() => AppEyedropperOverlayHandler)) private readonly appEyedropperOverlayHandler: AppEyedropperOverlayHandler,
     @inject(delay(() => AppMenuHandler)) private readonly appMenuHandler: AppMenuHandler,
     @inject(delay(() => AppRibbonHandler)) private readonly appRibbonHandler: AppRibbonHandler,
@@ -25,8 +25,8 @@ export class AppActionHandler {
   }
 
   async handle(action: AppActions): Promise<void> {
-    if (isAppBarAction(action)) {
-      return this.appBarHandler.handle(action);
+    if (isAppShellAction(action)) {
+      return this.appShellHandler.handle(action);
     }
 
     if (isAppEyedropperOverlayAction(action)) {

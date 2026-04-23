@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetActiveTabController } from '../../../controllers/set-active-tab-controller';
+import { SetActiveTabController } from '../controllers/set-active-tab-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { AppRibbonActions, AppRibbonActionType } from './app-ribbon-action-type';
 

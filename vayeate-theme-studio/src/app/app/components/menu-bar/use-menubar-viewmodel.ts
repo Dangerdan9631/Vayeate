@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
 import type { UndoListEntry } from '../../../../domain/core/undo-stack-types';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
-import { AppBarActionType } from '../app-bar/actions/app-bar-action-type';
+import { AppShellActionType } from '../app-shell/actions/app-shell-action-type';
 import { AppMenuActionType } from './actions/app-menu-action-type';
 import { UiStore } from '../../../../domain/state/ui/ui-store';
 import { container } from 'tsyringe';
@@ -144,27 +144,27 @@ export function useMenuBarViewModel(): MenuBarViewModel {
   }, [dispatch]);
 
   const handleMinimize = useCallback(() => {
-    dispatch({ type: AppBarActionType.MinimizeButtonOnClick });
+    dispatch({ type: AppShellActionType.MinimizeButtonOnClick });
   }, [dispatch]);
 
   const handleMaximize = useCallback(() => {
-    dispatch({ type: AppBarActionType.MaximizeButtonOnClick });
+    dispatch({ type: AppShellActionType.MaximizeButtonOnClick });
   }, [dispatch]);
 
   const handleRestore = useCallback(() => {
-    dispatch({ type: AppBarActionType.RestoreButtonOnClick });
+    dispatch({ type: AppShellActionType.RestoreButtonOnClick });
   }, [dispatch]);
 
   const handleClose = useCallback(() => {
-    dispatch({ type: AppBarActionType.CloseButtonOnClick });
+    dispatch({ type: AppShellActionType.CloseButtonOnClick });
   }, [dispatch]);
 
   const handleThemeToggle = useCallback(() => {
-    dispatch({ type: AppBarActionType.ThemeCheckboxOnToggle });
+    dispatch({ type: AppShellActionType.ThemeCheckboxOnToggle });
   }, [dispatch]);
 
   const handleTitleBarDrag = useCallback(() => {
-    dispatch({ type: AppBarActionType.TitleBarOnDrag });
+    dispatch({ type: AppShellActionType.TitleBarOnDrag });
   }, [dispatch]);
 
   const { themeToggleAriaLabel, themeToggleIcon } = useMemo(() => {

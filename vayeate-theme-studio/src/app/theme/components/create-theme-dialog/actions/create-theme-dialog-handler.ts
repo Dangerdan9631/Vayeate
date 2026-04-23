@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import { CloseThemeCreateDialogController } from '../../../controllers/close-theme-create-dialog-controller';
-import { CreateThemeController } from '../../../controllers/create-theme-controller';
-import { SetThemeCreateFormNameController } from '../../../controllers/set-theme-create-form-name-controller';
+import { CloseThemeCreateDialogController } from '../controllers/close-theme-create-dialog-controller';
+import { CreateThemeController } from '../controllers/create-theme-controller';
+import { SetThemeCreateFormNameController } from '../controllers/set-theme-create-form-name-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { CreateThemeDialogActions, CreateThemeDialogActionType } from './create-theme-dialog-action-type';
 

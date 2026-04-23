@@ -6,8 +6,8 @@ import { PerformUndoController } from '../../../../core/controllers/perform-undo
 import { ForceReloadWindowController } from '../../../../common/controllers/force-reload-window-controller';
 import { ReloadWindowController } from '../../../../common/controllers/reload-window-controller';
 import { ToggleDevToolsController } from '../../../../common/controllers/toggle-dev-tools-controller';
-import { CloseAllMenusController } from '../../../controllers/close-all-menus-controller';
-import { ToggleMenuOpenController } from '../../../controllers/toggle-menu-open-controller';
+import { CloseAllMenusController } from '../controllers/close-all-menus-controller';
+import { ToggleMenuOpenController } from '../controllers/toggle-menu-open-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { AppMenuActions, AppMenuActionType } from './app-menu-action-type';
 

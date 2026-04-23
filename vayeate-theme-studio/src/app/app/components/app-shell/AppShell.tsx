@@ -1,5 +1,5 @@
 import { useAppShellViewModel } from './use-app-shell-viewmodel';
-import { ContentArea } from '../content-area/ContentArea';
+import { ContentArea } from './ContentArea';
 import { EyedropperOverlay } from '../eyedropper-overlay/EyedropperOverlay';
 import { MenuBar } from '../menu-bar/MenuBar';
 import { Ribbon } from '../ribbon/Ribbon';

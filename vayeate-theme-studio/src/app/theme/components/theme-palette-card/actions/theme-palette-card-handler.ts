@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
-import { OpenEyedropperOverlayController } from '../../../controllers/open-eyedropper-overlay-controller';
-import { AssignColorFromPickerController } from '../../../controllers/assign-color-from-picker-controller';
-import { SetAssignColorPreviewController } from '../../../controllers/set-assign-color-preview-controller';
-import { CommitHueReferenceColorController } from '../../../controllers/commit-hue-reference-color-controller';
-import { RecenterHueReferenceController } from '../../../controllers/recenter-hue-reference-controller';
-import { SetThemeHueAdjustmentController } from '../../../controllers/set-theme-hue-adjustment-controller';
-import { SetApplyPaletteToDarkController } from '../../../controllers/set-apply-palette-to-dark-controller';
-import { SetApplyPaletteToLightController } from '../../../controllers/set-apply-palette-to-light-controller';
-import { SetPaletteClusterCountKController } from '../../../controllers/set-palette-cluster-count-k-controller';
-import { SetPaletteClusterCountKPreviewController } from '../../../controllers/set-palette-cluster-count-k-preview-controller';
-import { PersistCurrentThemeController } from '../../../controllers/persist-current-theme-controller';
-import { SetColorRefsSelectionBatchController } from '../../../controllers/set-color-refs-selection-batch-controller';
+import { OpenEyedropperOverlayController } from '../../../../app/components/eyedropper-overlay/controllers/open-eyedropper-overlay-controller';
+import { AssignColorFromPickerController } from '../controllers/assign-color-from-picker-controller';
+import { SetAssignColorPreviewController } from '../controllers/set-assign-color-preview-controller';
+import { CommitHueReferenceColorController } from '../controllers/commit-hue-reference-color-controller';
+import { RecenterHueReferenceController } from '../controllers/recenter-hue-reference-controller';
+import { SetThemeHueAdjustmentController } from '../controllers/set-theme-hue-adjustment-controller';
+import { SetApplyPaletteToDarkController } from '../controllers/set-apply-palette-to-dark-controller';
+import { SetApplyPaletteToLightController } from '../controllers/set-apply-palette-to-light-controller';
+import { SetPaletteClusterCountKController } from '../controllers/set-palette-cluster-count-k-controller';
+import { SetPaletteClusterCountKPreviewController } from '../controllers/set-palette-cluster-count-k-preview-controller';
+import { PersistCurrentThemeController } from '../controllers/persist-current-theme-controller';
+import { SetColorRefsSelectionBatchController } from '../controllers/set-color-refs-selection-batch-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { ThemePaletteCardActions, ThemePaletteCardActionType } from './theme-palette-card-action-type';
 

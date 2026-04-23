@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { LoadThemePageController } from '../../../../common/controllers/load-theme-page-controller';
-import { ClearThemeSaveErrorController } from '../../../controllers/clear-theme-save-error-controller';
+import { ClearThemeSaveErrorController } from '../controllers/clear-theme-save-error-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { ThemePageActions, ThemePageActionType } from './theme-page-action-type';
 

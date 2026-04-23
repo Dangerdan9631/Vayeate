@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import { OpenThemeCreateDialogController } from '../../../controllers/open-theme-create-dialog-controller';
-import { SelectThemeAndLoadController } from '../../../controllers/select-theme-and-load-controller';
-import { SelectThemeByNameController } from '../../../controllers/select-theme-by-name-controller';
+import { OpenThemeCreateDialogController } from '../controllers/open-theme-create-dialog-controller';
+import { SelectThemeAndLoadController } from '../controllers/select-theme-and-load-controller';
+import { SelectThemeByNameController } from '../controllers/select-theme-by-name-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { ThemesCardActions, ThemesCardActionType } from './themes-card-action-type';
 

@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
-import { DeleteThemeVersionController } from '../../../controllers/delete-theme-version-controller';
-import { GenerateThemeController } from '../../../controllers/generate-theme-controller';
-import { IncrementThemeVersionController } from '../../../controllers/increment-theme-version-controller';
-import { SetThemePreviewTokenRefController } from '../../../controllers/set-theme-preview-token-ref-controller';
-import { SetThemeTemplateController } from '../../../controllers/set-theme-template-controller';
+import { DeleteThemeVersionController } from '../controllers/delete-theme-version-controller';
+import { GenerateThemeController } from '../controllers/generate-theme-controller';
+import { IncrementThemeVersionController } from '../controllers/increment-theme-version-controller';
+import { SetThemePreviewTokenRefController } from '../controllers/set-theme-preview-token-ref-controller';
+import { SetThemeTemplateController } from '../controllers/set-theme-template-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { ThemeDetailsCardActions, ThemeDetailsCardActionType } from './theme-details-card-action-type';
 

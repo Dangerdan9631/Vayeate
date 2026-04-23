@@ -4,7 +4,7 @@ import { SyncViewportSizeController } from '../../../app/common/controllers/sync
 import { SyncWindowDisplayStateController } from '../../../app/common/controllers/sync-window-display-state-controller';
 import { SyncWindowPositionController } from '../../../app/common/controllers/sync-window-position-controller';
 import { SyncWindowSizeController } from '../../../app/common/controllers/sync-window-size-controller';
-import { HandleKeyboardShortcutController } from '../../../app/app/controllers/handle-keyboard-shortcut-controller';
+import { HandleKeyboardShortcutController } from '../../../app/app/components/app-shell/controllers/handle-keyboard-shortcut-controller';
 
 @singleton()
 export class InitializeWindowCallbacksOperation {

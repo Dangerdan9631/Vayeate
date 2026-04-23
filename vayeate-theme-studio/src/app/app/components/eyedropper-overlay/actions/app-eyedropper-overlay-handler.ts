@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import { CloseEyedropperOverlayController } from '../../../../theme/controllers/close-eyedropper-overlay-controller';
-import { CommitEyedropperOverlayPickController } from '../../../../theme/controllers/commit-eyedropper-overlay-pick-controller';
+import { CloseEyedropperOverlayController } from '../controllers/close-eyedropper-overlay-controller';
+import { CommitEyedropperOverlayPickController } from '../controllers/commit-eyedropper-overlay-pick-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { AppEyedropperOverlayActions, AppEyedropperOverlayActionType } from './app-eyedropper-overlay-action-type';
 
