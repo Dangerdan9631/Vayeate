@@ -3,9 +3,9 @@ import { CloseWindowController } from '../../../../common/controllers/close-wind
 import { PerformHistoryGoToController } from '../../../../core/controllers/perform-history-go-to-controller';
 import { PerformRedoController } from '../../../../core/controllers/perform-redo-controller';
 import { PerformUndoController } from '../../../../core/controllers/perform-undo-controller';
-import { ForceReloadWindowController } from '../../../../common/controllers/force-reload-window-controller';
-import { ReloadWindowController } from '../../../../common/controllers/reload-window-controller';
-import { ToggleDevToolsController } from '../../../../common/controllers/toggle-dev-tools-controller';
+import { ForceReloadWindowController } from '../controllers/force-reload-window-controller';
+import { ReloadWindowController } from '../controllers/reload-window-controller';
+import { ToggleDevToolsController } from '../controllers/toggle-dev-tools-controller';
 import { CloseAllMenusController } from '../controllers/close-all-menus-controller';
 import { ToggleMenuOpenController } from '../controllers/toggle-menu-open-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';

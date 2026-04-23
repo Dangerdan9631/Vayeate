@@ -1,10 +1,10 @@
 import { singleton } from "tsyringe";
-import { AddVariableController } from "../../../controllers/add-variable-controller";
-import { RemoveVariableController } from "../../../controllers/remove-variable-controller";
-import { SetTemplateAddVariableNameController } from "../../../controllers/set-template-add-variable-name-controller";
-import { SetVariablesSearchTextController } from "../../../controllers/set-variables-search-text-controller";
-import { UpdateContrastComparisonSourceController } from "../../../controllers/update-contrast-comparison-source-controller";
-import { UpdateVariableGroupRefController } from "../../../controllers/update-variable-group-ref-controller";
+import { AddVariableController } from "../controllers/add-variable-controller";
+import { RemoveVariableController } from "../controllers/remove-variable-controller";
+import { SetTemplateAddVariableNameController } from "../controllers/set-template-add-variable-name-controller";
+import { SetVariablesSearchTextController } from "../controllers/set-variables-search-text-controller";
+import { UpdateContrastComparisonSourceController } from "../controllers/update-contrast-comparison-source-controller";
+import { UpdateVariableGroupRefController } from "../controllers/update-variable-group-ref-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { VariablesCardActions, VariablesCardActionType } from "./variables-card-action-type";
 

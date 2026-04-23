@@ -1,7 +1,7 @@
 import { singleton } from "tsyringe";
-import { ChangeCatalogVersionController } from "../../../controllers/change-catalog-version-controller";
-import { ToggleCatalogController } from "../../../controllers/toggle-catalog-controller";
-import { UpdateAllCatalogsController } from "../../../controllers/update-all-catalogs-controller";
+import { ChangeCatalogVersionController } from "../controllers/change-catalog-version-controller";
+import { ToggleCatalogController } from "../controllers/toggle-catalog-controller";
+import { UpdateAllCatalogsController } from "../controllers/update-all-catalogs-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { TemplateCatalogsCardActions, TemplateCatalogsCardActionType } from "./template-catalogs-card-action-type";
 

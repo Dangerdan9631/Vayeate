@@ -1,6 +1,6 @@
 import { singleton } from "tsyringe";
-import { OpenCreateDialogController } from "../../../controllers/open-create-dialog-controller";
-import { SelectTemplateAndLoadController } from "../../../controllers/select-template-and-load-controller";
+import { OpenCreateDialogController } from "../controllers/open-create-dialog-controller";
+import { SelectTemplateAndLoadController } from "../controllers/select-template-and-load-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { TemplatesCardActions, TemplatesCardActionType } from "./templates-card-action-type";
 

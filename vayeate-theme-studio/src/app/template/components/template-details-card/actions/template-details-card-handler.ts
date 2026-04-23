@@ -1,6 +1,6 @@
 import { singleton } from "tsyringe";
-import { DeleteCurrentTemplateVersionController } from "../../../controllers/delete-current-template-version-controller";
-import { LockTemplateController } from "../../../controllers/lock-template-controller";
+import { DeleteCurrentTemplateVersionController } from "../controllers/delete-current-template-version-controller";
+import { LockTemplateController } from "../controllers/lock-template-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { TemplateDetailsCardActions, TemplateDetailsCardActionType } from "./template-details-card-action-type";
 

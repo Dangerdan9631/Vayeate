@@ -1,7 +1,7 @@
 import { singleton } from "tsyringe";
-import { CloseCreateDialogController } from "../../../controllers/close-create-dialog-controller";
-import { CreateTemplateController } from "../../../controllers/create-template-controller";
-import { SetCreateFormNameController } from "../../../controllers/set-create-form-name-controller";
+import { CloseCreateDialogController } from "../controllers/close-create-dialog-controller";
+import { CreateTemplateController } from "../controllers/create-template-controller";
+import { SetCreateFormNameController } from "../controllers/set-create-form-name-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { TemplateCreateDialogActions, TemplateCreateDialogActionType } from "./template-create-dialog-action-type";
 

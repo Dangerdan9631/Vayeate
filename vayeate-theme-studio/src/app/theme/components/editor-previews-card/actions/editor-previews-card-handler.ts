@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { LoadThemePreviewsController } from '../../../../common/controllers/load-theme-previews-controller';
+import { LoadThemePreviewsController } from '../controllers/load-theme-previews-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { EditorPreviewsCardActions, EditorPreviewsCardActionType } from './editor-previews-card-action-type';
 

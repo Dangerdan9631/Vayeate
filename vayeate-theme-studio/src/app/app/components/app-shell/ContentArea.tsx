@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { TabId } from '../../../../domain/state/ui/ui-state';
 import { CatalogsPage } from '../../../catalog/components/catalog-page/CatalogsPage';
-import { TemplatesPage } from '../../../template/components/TemplatesPage';
+import { TemplatesPage } from '../../../template/components/template-page/TemplatesPage';
 import { ThemesPage } from '../../../theme/components/theme-page/ThemesPage';
 
 interface ContentAreaProps {

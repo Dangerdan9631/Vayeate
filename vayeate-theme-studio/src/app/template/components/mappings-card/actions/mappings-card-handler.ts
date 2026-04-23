@@ -1,13 +1,13 @@
 import { singleton } from "tsyringe";
-import { AddSemanticVariantController } from "../../../controllers/add-semantic-variant-controller";
-import { RemoveMappingController } from "../../../controllers/remove-mapping-controller";
-import { SetMappingColorRefController } from "../../../controllers/set-mapping-color-ref-controller";
-import { SetMappingColorVariableFilterController } from "../../../controllers/set-mapping-color-variable-filter-controller";
-import { SetMappingContrastRefController } from "../../../controllers/set-mapping-contrast-ref-controller";
-import { SetMappingContrastVariableFilterController } from "../../../controllers/set-mapping-contrast-variable-filter-controller";
-import { SetMappingGroupRefController } from "../../../controllers/set-mapping-group-ref-controller";
-import { SetMappingSearchTextController } from "../../../controllers/set-mapping-search-text-controller";
-import { UpdateSemanticVariantKeyController } from "../../../controllers/update-semantic-variant-key-controller";
+import { AddSemanticVariantController } from "../controllers/add-semantic-variant-controller";
+import { RemoveMappingController } from "../controllers/remove-mapping-controller";
+import { SetMappingColorRefController } from "../controllers/set-mapping-color-ref-controller";
+import { SetMappingColorVariableFilterController } from "../controllers/set-mapping-color-variable-filter-controller";
+import { SetMappingContrastRefController } from "../controllers/set-mapping-contrast-ref-controller";
+import { SetMappingContrastVariableFilterController } from "../controllers/set-mapping-contrast-variable-filter-controller";
+import { SetMappingGroupRefController } from "../controllers/set-mapping-group-ref-controller";
+import { SetMappingSearchTextController } from "../controllers/set-mapping-search-text-controller";
+import { UpdateSemanticVariantKeyController } from "../controllers/update-semantic-variant-key-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { MappingsCardActions, MappingsCardActionType } from "./mappings-card-action-type";
 

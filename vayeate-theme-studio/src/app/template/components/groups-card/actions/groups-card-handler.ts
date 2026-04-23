@@ -1,7 +1,7 @@
 import { singleton } from "tsyringe";
-import { AddGroupAndClearInputController } from "../../../controllers/add-group-and-clear-input-controller";
-import { RemoveGroupController } from "../../../controllers/remove-group-controller";
-import { SetTemplateAddGroupNameController } from "../../../controllers/set-template-add-group-name-controller";
+import { AddGroupAndClearInputController } from "../controllers/add-group-and-clear-input-controller";
+import { RemoveGroupController } from "../controllers/remove-group-controller";
+import { SetTemplateAddGroupNameController } from "../controllers/set-template-add-group-name-controller";
 import { Logger, LoggerFactory } from "../../../../../domain/utils/logger";
 import { GroupsCardActions, GroupsCardActionType } from "./groups-card-action-type";
 
