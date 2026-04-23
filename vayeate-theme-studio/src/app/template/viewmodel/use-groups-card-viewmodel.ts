@@ -3,7 +3,7 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import { TemplateActionType } from '../actions/template-action-type';
+import { GroupsCardActionType } from '../components/groups-card/actions/groups-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 
@@ -51,14 +51,14 @@ export function useGroupsCardViewModel() {
 
   const removeGroup = useCallback(
     (name: string) => {
-      dispatch({ type: TemplateActionType.TemplateGroupRemoveButtonOnClick, groupId: name });
+      dispatch({ type: GroupsCardActionType.GroupRemoveButtonOnClick, groupId: name });
     },
     [dispatch],
   );
 
   const handleAddGroupNameChange = useCallback(
     (value: string) => {
-      dispatch({ type: TemplateActionType.TemplateGroupAddTextOnChange, value });
+      dispatch({ type: GroupsCardActionType.GroupAddTextOnChange, value });
     },
     [dispatch],
   );
@@ -68,7 +68,7 @@ export function useGroupsCardViewModel() {
 
   const handleAddGroup = useCallback(() => {
     if (!canAdd) return;
-    dispatch({ type: TemplateActionType.TemplateGroupAddButtonOnClick });
+    dispatch({ type: GroupsCardActionType.GroupAddButtonOnClick });
   }, [canAdd, dispatch]);
 
   return {

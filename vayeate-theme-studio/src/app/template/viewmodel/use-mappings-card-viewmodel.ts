@@ -6,7 +6,7 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { Catalog, Token } from '../../../model/schema/catalog';
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
 import type { CatalogReference, Mapping, Template } from '../../../model/schema/template-schemas';
-import { TemplateActionType } from '../actions/template-action-type';
+import { MappingsCardActionType } from '../components/mappings-card/actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
@@ -99,7 +99,7 @@ export function useMappingsCardViewModel() {
   const updateMappingColorRef = useCallback(
     (tokenKey: string, tokenType: TokenType, colorRef: ColorVariableKey | null) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit,
+        type: MappingsCardActionType.MappingExistingTokenColorVariableListOnCommit,
         value: colorRef as ColorVariableKey,
         tokenKey,
         tokenType,
@@ -111,7 +111,7 @@ export function useMappingsCardViewModel() {
   const updateMappingContrastRef = useCallback(
     (tokenKey: string, tokenType: TokenType, contrastRef: ContrastVariableKey | null) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit,
+        type: MappingsCardActionType.MappingExistingTokenContrastVariableListOnCommit,
         value: contrastRef,
         tokenKey,
         tokenType,
@@ -123,7 +123,7 @@ export function useMappingsCardViewModel() {
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit,
+        type: MappingsCardActionType.MappingExistingTokenGroupListOnCommit,
         value: groupRef ?? '',
         tokenKey,
         tokenType,
@@ -135,7 +135,7 @@ export function useMappingsCardViewModel() {
   const addSemanticVariantMapping = useCallback(
     (semanticType: string, defaultGroupRef?: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick,
+        type: MappingsCardActionType.MappingSemanticTokenAddVariantButtonOnClick,
         semanticType,
         defaultGroupRef,
       });
@@ -146,7 +146,7 @@ export function useMappingsCardViewModel() {
   const commitSemanticTokenModifiers = useCallback(
     (oldKey: string, modifiers: string[]) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit,
+        type: MappingsCardActionType.MappingSemanticTokenModifierListOnCommit,
         tokenKey: oldKey,
         modifiers,
       });
@@ -157,7 +157,7 @@ export function useMappingsCardViewModel() {
   const commitSemanticTokenLanguage = useCallback(
     (oldKey: string, language: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit,
+        type: MappingsCardActionType.MappingSemanticTokenLanguageListOnCommit,
         tokenKey: oldKey,
         value: language,
       });
@@ -168,7 +168,7 @@ export function useMappingsCardViewModel() {
   const removeMapping = useCallback(
     (tokenKey: string, tokenType: TokenType) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick,
+        type: MappingsCardActionType.MappingSemanticTokenVariantRemoveButtonOnClick,
         tokenKey,
         tokenType,
       });
@@ -178,7 +178,7 @@ export function useMappingsCardViewModel() {
 
   const setMappingSearchText = useCallback(
     (value: string) => {
-      dispatch({ type: TemplateActionType.TemplateMappingSearchTextOnChange, value });
+      dispatch({ type: MappingsCardActionType.MappingSearchTextOnChange, value });
     },
     [dispatch],
   );
@@ -186,7 +186,7 @@ export function useMappingsCardViewModel() {
   const setMappingColorVariableFilter = useCallback(
     (values: ColorVariableKey[]) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingColorVariableFilterListOnSelect,
+        type: MappingsCardActionType.MappingColorVariableFilterListOnSelect,
         values,
       });
     },
@@ -196,7 +196,7 @@ export function useMappingsCardViewModel() {
   const setMappingContrastVariableFilter = useCallback(
     (values: ContrastVariableKey[]) => {
       dispatch({
-        type: TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect,
+        type: MappingsCardActionType.MappingContrastVariableFilterListOnSelect,
         values,
       });
     },

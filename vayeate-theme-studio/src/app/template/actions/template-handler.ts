@@ -1,169 +1,75 @@
-import { singleton } from 'tsyringe';
-import { AddGroupAndClearInputController } from '../controllers/add-group-and-clear-input-controller';
-import { RemoveGroupController } from '../controllers/remove-group-controller';
-import { SetTemplateAddGroupNameController } from '../controllers/set-template-add-group-name-controller';
-import { AddSemanticVariantController } from '../controllers/add-semantic-variant-controller';
-import { UpdateSemanticVariantKeyController } from '../controllers/update-semantic-variant-key-controller';
-import { RemoveMappingController } from '../controllers/remove-mapping-controller';
-import { SetMappingColorRefController } from '../controllers/set-mapping-color-ref-controller';
-import { SetMappingColorVariableFilterController } from '../controllers/set-mapping-color-variable-filter-controller';
-import { SetMappingContrastRefController } from '../controllers/set-mapping-contrast-ref-controller';
-import { SetMappingContrastVariableFilterController } from '../controllers/set-mapping-contrast-variable-filter-controller';
-import { SetMappingGroupRefController } from '../controllers/set-mapping-group-ref-controller';
-import { SetMappingSearchTextController } from '../controllers/set-mapping-search-text-controller';
-import { ChangeCatalogVersionController } from '../controllers/change-catalog-version-controller';
-import { LockTemplateController } from '../controllers/lock-template-controller';
-import { ToggleCatalogController } from '../controllers/toggle-catalog-controller';
-import { UpdateAllCatalogsController } from '../controllers/update-all-catalogs-controller';
-import { CloseCreateDialogController } from '../controllers/close-create-dialog-controller';
-import { CreateTemplateController } from '../controllers/create-template-controller';
-import { DeleteCurrentTemplateVersionController } from '../controllers/delete-current-template-version-controller';
-import { LoadTemplatePageController } from '../../common/controllers/load-template-page-controller';
-import { OpenCreateDialogController } from '../controllers/open-create-dialog-controller';
-import { SelectTemplateAndLoadController } from '../controllers/select-template-and-load-controller';
-import { SetCreateFormNameController } from '../controllers/set-create-form-name-controller';
-import { AddVariableController } from '../controllers/add-variable-controller';
-import { RemoveVariableController } from '../controllers/remove-variable-controller';
-import { SetTemplateAddVariableNameController } from '../controllers/set-template-add-variable-name-controller';
-import { SetVariablesSearchTextController } from '../controllers/set-variables-search-text-controller';
-import { UpdateVariableGroupRefController } from '../controllers/update-variable-group-ref-controller';
-import { UpdateContrastComparisonSourceController } from '../controllers/update-contrast-comparison-source-controller';
-import { TemplateActions, TemplateActionType } from './template-action-type';
+import { delay, inject, singleton } from 'tsyringe';
+import { TemplateActions } from './template-action-type';
+import { TemplatePageHandler } from '../components/template-page/actions/template-page-handler';
+import { isTemplatePageAction } from '../components/template-page/actions/template-page-action-guard';
+import { TemplatesCardHandler } from '../components/templates-card/actions/templates-card-handler';
+import { isTemplatesCardAction } from '../components/templates-card/actions/templates-card-action-guard';
+import { TemplateCreateDialogHandler } from '../components/create-template-dialog/actions/template-create-dialog-handler';
+import { isTemplateCreateDialogAction } from '../components/create-template-dialog/actions/template-create-dialog-action-guard';
+import { TemplateDetailsCardHandler } from '../components/template-details-card/actions/template-details-card-handler';
+import { isTemplateDetailsCardAction } from '../components/template-details-card/actions/template-details-card-action-guard';
+import { TemplateCatalogsCardHandler } from '../components/template-catalogs-card/actions/template-catalogs-card-handler';
+import { isTemplateCatalogsCardAction } from '../components/template-catalogs-card/actions/template-catalogs-card-action-guard';
+import { MappingsCardHandler } from '../components/mappings-card/actions/mappings-card-handler';
+import { isMappingsCardAction } from '../components/mappings-card/actions/mappings-card-action-guard';
+import { GroupsCardHandler } from '../components/groups-card/actions/groups-card-handler';
+import { isGroupsCardAction } from '../components/groups-card/actions/groups-card-action-guard';
+import { VariablesCardHandler } from '../components/variables-card/actions/variables-card-handler';
+import { isVariablesCardAction } from '../components/variables-card/actions/variables-card-action-guard';
+import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()
 export class TemplateActionHandler {
+  private readonly log: Logger;
+
   constructor(
-    private readonly addGroupAndClearInput: AddGroupAndClearInputController,
-    private readonly addSemanticVariant: AddSemanticVariantController,
-    private readonly addVariable: AddVariableController,
-    private readonly changeCatalogVersion: ChangeCatalogVersionController,
-    private readonly closeCreateDialog: CloseCreateDialogController,
-    private readonly createTemplate: CreateTemplateController,
-    private readonly deleteCurrentTemplateVersion: DeleteCurrentTemplateVersionController,
-    private readonly loadTemplatePage: LoadTemplatePageController,
-    private readonly lockTemplate: LockTemplateController,
-    private readonly openCreateDialog: OpenCreateDialogController,
-    private readonly removeGroup: RemoveGroupController,
-    private readonly removeMapping: RemoveMappingController,
-    private readonly removeVariable: RemoveVariableController,
-    private readonly selectTemplateAndLoad: SelectTemplateAndLoadController,
-    private readonly setCreateFormName: SetCreateFormNameController,
-    private readonly setMappingColorRef: SetMappingColorRefController,
-    private readonly setMappingColorVariableFilter: SetMappingColorVariableFilterController,
-    private readonly setMappingContrastRef: SetMappingContrastRefController,
-    private readonly setMappingContrastVariableFilter: SetMappingContrastVariableFilterController,
-    private readonly setMappingGroupRef: SetMappingGroupRefController,
-    private readonly setMappingSearchText: SetMappingSearchTextController,
-    private readonly setTemplateAddGroupName: SetTemplateAddGroupNameController,
-    private readonly setTemplateAddVariableName: SetTemplateAddVariableNameController,
-    private readonly setVariablesSearchText: SetVariablesSearchTextController,
-    private readonly toggleCatalog: ToggleCatalogController,
-    private readonly updateAllCatalogs: UpdateAllCatalogsController,
-    private readonly updateContrastComparisonSource: UpdateContrastComparisonSourceController,
-    private readonly updateSemanticVariantKey: UpdateSemanticVariantKeyController,
-    private readonly updateVariableGroupRef: UpdateVariableGroupRefController,
-  ) {}
+    loggerFactory: LoggerFactory,
+    @inject(delay(() => TemplatePageHandler)) private readonly templatePageHandler: TemplatePageHandler,
+    @inject(delay(() => TemplatesCardHandler)) private readonly templatesCardHandler: TemplatesCardHandler,
+    @inject(delay(() => TemplateCreateDialogHandler)) private readonly templateCreateDialogHandler: TemplateCreateDialogHandler,
+    @inject(delay(() => TemplateDetailsCardHandler)) private readonly templateDetailsCardHandler: TemplateDetailsCardHandler,
+    @inject(delay(() => TemplateCatalogsCardHandler)) private readonly templateCatalogsCardHandler: TemplateCatalogsCardHandler,
+    @inject(delay(() => MappingsCardHandler)) private readonly mappingsCardHandler: MappingsCardHandler,
+    @inject(delay(() => GroupsCardHandler)) private readonly groupsCardHandler: GroupsCardHandler,
+    @inject(delay(() => VariablesCardHandler)) private readonly variablesCardHandler: VariablesCardHandler,
+  ) {
+    this.log = loggerFactory.create('TemplateActionHandler');
+  }
 
   async handle(action: TemplateActions): Promise<void> {
-    switch (action.type) {
-      case TemplateActionType.TemplatePageOnLoad:
-        await this.loadTemplatePage.run();
-        break;
-      case TemplateActionType.TemplateTemplatesListOnCommit:
-        await this.selectTemplateAndLoad.run(action.name, action.version);
-        break;
-      case TemplateActionType.TemplateTemplatesCreateButtonOnClick:
-        await this.openCreateDialog.run();
-        break;
-      case TemplateActionType.TemplateCreateDialogNameTextOnChange:
-        await this.setCreateFormName.run(action.value);
-        break;
-      case TemplateActionType.TemplateCreateDialogCancelButtonOnClick:
-        await this.closeCreateDialog.run();
-        break;
-      case TemplateActionType.TemplateCreateDialogOkButtonOnClick:
-        await this.createTemplate.run();
-        break;
-      case TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick:
-        await this.deleteCurrentTemplateVersion.run();
-        break;
-      case TemplateActionType.TemplateDetailsLockButtonOnClick:
-        await this.lockTemplate.run();
-        break;
-      case TemplateActionType.TemplateDetailsUpdateAllButtonOnClick:
-        await this.updateAllCatalogs.run();
-        break;
-      case TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle:
-        await this.toggleCatalog.run(action.catalogName);
-        break;
-      case TemplateActionType.TemplateDetailsCatalogVersionListOnCommit:
-        await this.changeCatalogVersion.run(action.catalogName, action.value);
-        break;
-      case TemplateActionType.TemplateMappingSearchTextOnChange:
-        await this.setMappingSearchText.run(action.value);
-        break;
-      case TemplateActionType.TemplateMappingColorVariableFilterListOnSelect:
-        await this.setMappingColorVariableFilter.run(action.values);
-        break;
-      case TemplateActionType.TemplateMappingContrastVariableFilterListOnSelect:
-        await this.setMappingContrastVariableFilter.run(action.values);
-        break;
-      case TemplateActionType.TemplateMappingExistingTokenGroupListOnCommit:
-        await this.setMappingGroupRef.run(action.tokenKey, action.tokenType, action.value || null);
-        break;
-      case TemplateActionType.TemplateMappingExistingTokenColorVariableListOnCommit:
-        await this.setMappingColorRef.run(action.tokenKey, action.tokenType, action.value || null);
-        break;
-      case TemplateActionType.TemplateMappingExistingTokenContrastVariableListOnCommit:
-        await this.setMappingContrastRef.run(action.tokenKey, action.tokenType, action.value);
-        break;
-      case TemplateActionType.TemplateMappingSemanticTokenAddVariantButtonOnClick:
-        await this.addSemanticVariant.run(action.semanticType, action.defaultGroupRef);
-        break;
-      case TemplateActionType.TemplateMappingSemanticTokenModifierListOnCommit:
-        await this.updateSemanticVariantKey.run({
-          variant: 'modifier',
-          tokenKey: action.tokenKey,
-          modifiers: action.modifiers,
-        });
-        break;
-      case TemplateActionType.TemplateMappingSemanticTokenLanguageListOnCommit:
-        await this.updateSemanticVariantKey.run({
-          variant: 'language',
-          tokenKey: action.tokenKey,
-          language: action.value,
-        });
-        break;
-      case TemplateActionType.TemplateMappingSemanticTokenVariantRemoveButtonOnClick:
-        await this.removeMapping.run(action.tokenKey, action.tokenType);
-        break;
-      case TemplateActionType.TemplateGroupAddTextOnChange:
-        await this.setTemplateAddGroupName.run(action.value);
-        break;
-      case TemplateActionType.TemplateGroupAddButtonOnClick:
-        await this.addGroupAndClearInput.run();
-        break;
-      case TemplateActionType.TemplateGroupRemoveButtonOnClick:
-        await this.removeGroup.run(action.groupId);
-        break;
-      case TemplateActionType.TemplateVariablesSearchTextOnChange:
-        await this.setVariablesSearchText.run(action.value);
-        break;
-      case TemplateActionType.TemplateVariablesAddVariableNameTextOnChange:
-        await this.setTemplateAddVariableName.run(action.value);
-        break;
-      case TemplateActionType.TemplateVariablesAddVariableButtonOnClick:
-        await this.addVariable.run(action.groupRef, action.variableKind);
-        break;
-      case TemplateActionType.TemplateVariablesGroupListOnCommit:
-        await this.updateVariableGroupRef.run(action.variableKey, action.value || null);
-        break;
-      case TemplateActionType.TemplateVariablesRemoveButtonOnClick:
-        await this.removeVariable.run(action.key);
-        break;
-      case TemplateActionType.TemplateVariablesContrastSourceListOnCommit:
-        await this.updateContrastComparisonSource.run(action.contrastVariableKey, action.value);
-        break;
+    if (isTemplatePageAction(action)) {
+      return this.templatePageHandler.handle(action);
     }
+
+    if (isTemplatesCardAction(action)) {
+      return this.templatesCardHandler.handle(action);
+    }
+
+    if (isTemplateCreateDialogAction(action)) {
+      return this.templateCreateDialogHandler.handle(action);
+    }
+
+    if (isTemplateDetailsCardAction(action)) {
+      return this.templateDetailsCardHandler.handle(action);
+    }
+
+    if (isTemplateCatalogsCardAction(action)) {
+      return this.templateCatalogsCardHandler.handle(action);
+    }
+
+    if (isMappingsCardAction(action)) {
+      return this.mappingsCardHandler.handle(action);
+    }
+
+    if (isGroupsCardAction(action)) {
+      return this.groupsCardHandler.handle(action);
+    }
+
+    if (isVariablesCardAction(action)) {
+      return this.variablesCardHandler.handle(action);
+    }
+
+    const _exhaustive: never = action;
+    this.log.error('Unhandled action (TemplateAction union not exhaustive)', { action: _exhaustive });
   }
 }

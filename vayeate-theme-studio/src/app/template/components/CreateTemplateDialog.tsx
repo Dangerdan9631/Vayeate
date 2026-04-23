@@ -1,6 +1,6 @@
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useCreateTemplateDialogViewModel } from '../viewmodel/use-create-template-dialog-viewmodel';
-import { TemplateActionType } from '../actions/template-action-type';
+import { TemplateCreateDialogActionType } from './create-template-dialog/actions/template-create-dialog-action-type';
 
 export function CreateTemplateDialog() {
   const {
@@ -15,15 +15,15 @@ export function CreateTemplateDialog() {
   }
 
   function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogNameTextOnChange, value: e.target.value });
+    dispatch({ type: TemplateCreateDialogActionType.NameTextOnChange, value: e.target.value });
   }
 
   function onDialogCancel() {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogCancelButtonOnClick });
+    dispatch({ type: TemplateCreateDialogActionType.CancelButtonOnClick });
   }
 
   function onDialogSubmit() {
-    dispatch({ type: TemplateActionType.TemplateCreateDialogOkButtonOnClick });
+    dispatch({ type: TemplateCreateDialogActionType.OkButtonOnClick });
   }
 
   return (

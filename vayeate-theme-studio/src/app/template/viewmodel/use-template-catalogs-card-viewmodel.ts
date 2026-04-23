@@ -5,7 +5,7 @@ import { getTemplateRefs } from '../../../domain/state/template/templates-state'
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogName } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
-import { TemplateActionType } from '../actions/template-action-type';
+import { TemplateCatalogsCardActionType } from '../components/template-catalogs-card/actions/template-catalogs-card-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
@@ -84,14 +84,14 @@ export function useTemplateCatalogsCardViewModel() {
 
   const updateAllCatalogsToLatest = useCallback(() => {
     if (!template || !isLatestVersion) return;
-    dispatch({ type: TemplateActionType.TemplateDetailsUpdateAllButtonOnClick });
+    dispatch({ type: TemplateCatalogsCardActionType.UpdateAllButtonOnClick });
   }, [template, isLatestVersion, dispatch]);
 
   const toggleCatalog = useCallback(
     (catalogName: string) => {
       if (!template) return;
       dispatch({
-        type: TemplateActionType.TemplateDetailsCatalogCheckboxOnToggle,
+        type: TemplateCatalogsCardActionType.CatalogCheckboxOnToggle,
         catalogName: catalogName as CatalogName,
       });
     },
@@ -102,7 +102,7 @@ export function useTemplateCatalogsCardViewModel() {
     (catalogName: string, newVersion: string) => {
       if (!template) return;
       dispatch({
-        type: TemplateActionType.TemplateDetailsCatalogVersionListOnCommit,
+        type: TemplateCatalogsCardActionType.CatalogVersionListOnCommit,
         catalogName: catalogName as CatalogName,
         value: newVersion,
       });
