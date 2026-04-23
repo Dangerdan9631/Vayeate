@@ -1,110 +1,47 @@
-import { singleton } from 'tsyringe';
-import { CloseEyedropperOverlayController } from '../../theme/controllers/close-eyedropper-overlay-controller';
-import { CommitEyedropperOverlayPickController } from '../../theme/controllers/commit-eyedropper-overlay-pick-controller';
-import { AppActions, AppActionType } from './app-action-type';
-import { CloseAllMenusController } from '../controllers/close-all-menus-controller';
-import { SetActiveTabController } from '../controllers/set-active-tab-controller';
-import { ToggleColorSchemeController } from '../controllers/toggle-color-scheme-controller';
-import { ToggleMenuOpenController } from '../controllers/toggle-menu-open-controller';
-import { PerformHistoryGoToController } from '../../core/controllers/perform-history-go-to-controller';
-import { PerformRedoController } from '../../core/controllers/perform-redo-controller';
-import { PerformUndoController } from '../../core/controllers/perform-undo-controller';
-import { CloseWindowController } from '../../common/controllers/close-window-controller';
-import { DragWindowController } from '../../common/controllers/drag-window-controller';
-import { ForceReloadWindowController } from '../../common/controllers/force-reload-window-controller';
-import { MaximizeWindowController } from '../../common/controllers/maximize-window-controller';
-import { MinimizeWindowController } from '../../common/controllers/minimize-window-controller';
-import { ReloadWindowController } from '../../common/controllers/reload-window-controller';
-import { RestoreWindowController } from '../../common/controllers/restore-window-controller';
-import { ToggleDevToolsController } from '../../common/controllers/toggle-dev-tools-controller';
+import { delay, inject, singleton } from 'tsyringe';
+import { AppActions } from './app-action-type';
+import { AppBarHandler } from '../components/app-bar/actions/app-bar-handler';
+import { isAppBarAction } from '../components/app-bar/actions/app-bar-action-guard';
+import { AppEyedropperOverlayHandler } from '../components/eyedropper-overlay/actions/app-eyedropper-overlay-handler';
+import { isAppEyedropperOverlayAction } from '../components/eyedropper-overlay/actions/app-eyedropper-overlay-action-guard';
+import { AppMenuHandler } from '../components/menu-bar/actions/app-menu-handler';
+import { isAppMenuAction } from '../components/menu-bar/actions/app-menu-action-guard';
+import { AppRibbonHandler } from '../components/ribbon/actions/app-ribbon-handler';
+import { isAppRibbonAction } from '../components/ribbon/actions/app-ribbon-action-guard';
+import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()
 export class AppActionHandler {
+  private readonly log: Logger;
+
   constructor(
-    private readonly closeWindow: CloseWindowController,
-    private readonly closeAllMenus: CloseAllMenusController,
-    private readonly performUndo: PerformUndoController,
-    private readonly performRedo: PerformRedoController,
-    private readonly performHistoryGoTo: PerformHistoryGoToController,
-    private readonly reloadWindow: ReloadWindowController,
-    private readonly forceReloadWindow: ForceReloadWindowController,
-    private readonly toggleDevTools: ToggleDevToolsController,
-    private readonly setActiveTab: SetActiveTabController,
-    private readonly toggleMenuOpen: ToggleMenuOpenController,
-    private readonly toggleColorScheme: ToggleColorSchemeController,
-    private readonly minimizeWindow: MinimizeWindowController,
-    private readonly maximizeWindow: MaximizeWindowController,
-    private readonly dragWindow: DragWindowController,
-    private readonly restoreWindow: RestoreWindowController,
-    private readonly closeEyedropperOverlay: CloseEyedropperOverlayController,
-    private readonly commitEyedropperOverlayPick: CommitEyedropperOverlayPickController,
-  ) {}
+    loggerFactory: LoggerFactory,
+    @inject(delay(() => AppBarHandler)) private readonly appBarHandler: AppBarHandler,
+    @inject(delay(() => AppEyedropperOverlayHandler)) private readonly appEyedropperOverlayHandler: AppEyedropperOverlayHandler,
+    @inject(delay(() => AppMenuHandler)) private readonly appMenuHandler: AppMenuHandler,
+    @inject(delay(() => AppRibbonHandler)) private readonly appRibbonHandler: AppRibbonHandler,
+  ) {
+    this.log = loggerFactory.create(AppActionHandler.name);
+  }
 
   async handle(action: AppActions): Promise<void> {
-    switch (action.type) {
-      case AppActionType.AppFileMenuTriggerButtonOnClick:
-        await this.toggleMenuOpen.run('file');
-        break;
-      case AppActionType.AppFileMenuExitButtonOnClick:
-        await this.closeWindow.run();
-        break;
-      case AppActionType.AppEditMenuTriggerButtonOnClick:
-        await this.toggleMenuOpen.run('edit');
-        break;
-      case AppActionType.AppEditMenuUndoButtonOnClick:
-        await this.performUndo.run();
-        break;
-      case AppActionType.AppEditMenuRedoButtonOnClick:
-        await this.performRedo.run();
-        break;
-      case AppActionType.AppHistoryMenuTriggerButtonOnClick:
-        await this.toggleMenuOpen.run('history');
-        break;
-      case AppActionType.AppHistoryMenuGoToButtonOnClick:
-        await this.performHistoryGoTo.run(action.frameId);
-        break;
-      case AppActionType.AppViewMenuTriggerButtonOnClick:
-        await this.toggleMenuOpen.run('view');
-        break;
-      case AppActionType.AppViewMenuReloadButtonOnClick:
-        await this.reloadWindow.run();
-        break;
-      case AppActionType.AppViewMenuForceReloadButtonOnClick:
-        await this.forceReloadWindow.run();
-        break;
-      case AppActionType.AppViewMenuToggleDevToolsButtonOnClick:
-        await this.toggleDevTools.run();
-        break;
-      case AppActionType.AppMenuOnClose:
-        await this.closeAllMenus.run();
-        break;
-      case AppActionType.AppRibbonTabButtonOnClick:
-        await this.setActiveTab.run(action.tabId);
-        break;
-      case AppActionType.AppBarThemeCheckboxOnToggle:
-        await this.toggleColorScheme.run();
-        break;
-      case AppActionType.AppBarMinimizeButtonOnClick:
-        await this.minimizeWindow.run();
-        break;
-      case AppActionType.AppBarMaximizeButtonOnClick:
-        await this.maximizeWindow.run();
-        break;
-      case AppActionType.AppBarRestoreButtonOnClick:
-        await this.restoreWindow.run();
-        break;
-      case AppActionType.AppBarCloseButtonOnClick:
-        await this.closeWindow.run();
-        break;
-      case AppActionType.AppBarTitleBarOnDrag:
-        await this.dragWindow.run();
-        break;
-      case AppActionType.AppEyedropperOverlayCancelButtonOnClick:
-        await this.closeEyedropperOverlay.run();
-        break;
-      case AppActionType.AppEyedropperOverlayColorPickCommitButtonOnClick:
-        await this.commitEyedropperOverlayPick.run(action.hex);
-        break;
+    if (isAppBarAction(action)) {
+      return this.appBarHandler.handle(action);
     }
+
+    if (isAppEyedropperOverlayAction(action)) {
+      return this.appEyedropperOverlayHandler.handle(action);
+    }
+
+    if (isAppMenuAction(action)) {
+      return this.appMenuHandler.handle(action);
+    }
+
+    if (isAppRibbonAction(action)) {
+      return this.appRibbonHandler.handle(action);
+    }
+
+    const _exhaustive: never = action;
+    this.log.error('Unhandled action (AppAction union not exhaustive)', { action: _exhaustive });
   }
 }

@@ -7,7 +7,7 @@ import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { ColorAssignment, ContrastAssignment, TemplateReference } from '../../../model/schema/theme-schemas';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemeDetailsCardActionType } from '../components/theme-details-card/actions/theme-details-card-action-type';
 
 const templatesStore = container.resolve(TemplatesStore);
 const themesStore = container.resolve(ThemesStore);
@@ -55,16 +55,16 @@ export function useThemeDetailsCardViewModel() {
     if (!canGenerate || !theme?.templateRef) {
       return;
     }
-    dispatch({ type: ThemeActionType.ThemeDetailsGenerateButtonOnClick });
+    dispatch({ type: ThemeDetailsCardActionType.GenerateButtonOnClick });
   }, [canGenerate, dispatch, theme]);
 
   const bumpVersion = useCallback(() => {
-    dispatch({ type: ThemeActionType.ThemeDetailsIncrementVersionButtonOnClick });
+    dispatch({ type: ThemeDetailsCardActionType.IncrementVersionButtonOnClick });
   }, [dispatch]);
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: ThemeActionType.ThemeDetailsDeleteVersionButtonOnClick, name, version });
+      dispatch({ type: ThemeDetailsCardActionType.DeleteVersionButtonOnClick, name, version });
     },
     [dispatch],
   );
@@ -75,7 +75,7 @@ export function useThemeDetailsCardViewModel() {
       if (!versions || versions.length === 0) return;
       const selectedVersion = version ?? versions[0].version;
       dispatch({
-        type: ThemeActionType.ThemeDetailsTemplateListOnCommit,
+        type: ThemeDetailsCardActionType.TemplateListOnCommit,
         name: templateName,
         version: selectedVersion,
       });
@@ -87,7 +87,7 @@ export function useThemeDetailsCardViewModel() {
     (version: string) => {
       if (!theme?.templateRef) return;
       dispatch({
-        type: ThemeActionType.ThemeDetailsTemplateVersionListOnCommit,
+        type: ThemeDetailsCardActionType.TemplateVersionListOnCommit,
         name: theme.templateRef.name,
         version,
       });

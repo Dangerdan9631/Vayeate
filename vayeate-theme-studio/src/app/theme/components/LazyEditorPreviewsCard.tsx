@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { EditorPreviewsCardActionType } from './editor-previews-card/actions/editor-previews-card-action-type';
 
 const EditorPreviewsCard = lazy(async () => {
   const module = await import('./EditorPreviewsCard');
@@ -66,7 +66,7 @@ export function LazyEditorPreviewsCard() {
   useEffect(() => {
     if (!shouldRenderEditorPreviews || hasQueuedPreviewLoadRef.current) return;
     hasQueuedPreviewLoadRef.current = true;
-    void dispatch({ type: ThemeActionType.ThemePagePreviewsOnLoad });
+    void dispatch({ type: EditorPreviewsCardActionType.PagePreviewsOnLoad });
   }, [dispatch, shouldRenderEditorPreviews]);
 
   if (!shouldRenderEditorPreviews) {

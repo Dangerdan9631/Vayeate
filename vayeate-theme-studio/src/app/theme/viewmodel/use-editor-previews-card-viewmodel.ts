@@ -5,7 +5,7 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import type { TokenKey } from '../../../model/schema/primitives';
 import type { ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemeDetailsCardActionType } from '../components/theme-details-card/actions/theme-details-card-action-type';
 
 const themesStore = container.resolve(ThemesStore);
 
@@ -24,7 +24,7 @@ export function useEditorPreviewsCardViewModel() {
 
   const dispatchPreviewTokenRef = useCallback(
     (tokenRefField: ThemePreviewTokenRefField, value: TokenKey | null) => {
-      dispatch({ type: ThemeActionType.ThemeDetailsPreviewTokenRefListOnCommit, tokenRefField, value });
+      dispatch({ type: ThemeDetailsCardActionType.PreviewTokenRefListOnCommit, tokenRefField, value });
     },
     [dispatch],
   );

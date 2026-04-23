@@ -3,14 +3,14 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemePageActionType } from '../components/theme-page/actions/theme-page-action-type';
 
 const themesStore = container.resolve(ThemesStore);
 
 export function useThemesPageChromeViewModel() {
   const dispatch = useAppDispatch();
   const dismissSaveError = useCallback(() => {
-    void dispatch({ type: ThemeActionType.ThemePageSaveErrorDismissButtonOnClick });
+    void dispatch({ type: ThemePageActionType.PageSaveErrorDismissButtonOnClick });
   }, [dispatch]);
 
   const saveError = useStore(themesStore.api, (state) => state.state.saveError);
@@ -18,4 +18,3 @@ export function useThemesPageChromeViewModel() {
 
   return { saveError, createDialogOpen, dismissSaveError };
 }
-

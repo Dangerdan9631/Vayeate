@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemePageActionType } from '../components/theme-page/actions/theme-page-action-type';
 
 export function useThemeViewModel(): void {
   const dispatch = useAppDispatch();
@@ -8,6 +8,6 @@ export function useThemeViewModel(): void {
   useEffect(() => {
     if (pageLoadDispatchedRef.current) return;
     pageLoadDispatchedRef.current = true;
-    dispatch({ type: ThemeActionType.ThemePageOnLoad });
+    dispatch({ type: ThemePageActionType.PageOnLoad });
   }, [dispatch]);
 }

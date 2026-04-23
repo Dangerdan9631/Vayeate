@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { CreateThemeDialogActionType } from '../components/create-theme-dialog/actions/create-theme-dialog-action-type';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 const themesStore = container.resolve(ThemesStore);
@@ -16,11 +16,11 @@ export function useCreateThemeDialogViewModel() {
 
   function handleSubmit() {
     if (!canSubmit) return;
-    dispatch({ type: ThemeActionType.ThemeCreateDialogOkButtonOnClick, params: { name } });
+    dispatch({ type: CreateThemeDialogActionType.OkButtonOnClick, params: { name } });
   }
 
   function handleCancel() {
-    dispatch({ type: ThemeActionType.ThemeCreateDialogCancelButtonOnClick });
+    dispatch({ type: CreateThemeDialogActionType.CancelButtonOnClick });
   }
 
   function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
@@ -28,7 +28,7 @@ export function useCreateThemeDialogViewModel() {
   }
 
   function handleNameChange(value: string) {
-    dispatch({ type: ThemeActionType.ThemeCreateDialogNameTextOnChange, value });
+    dispatch({ type: CreateThemeDialogActionType.NameTextOnChange, value });
   }
 
   const showNameError = name.length > 0 && !nameValid;

@@ -6,7 +6,8 @@ import { buildThemePaneSnapshot } from '../../../domain/utils/theme-pane-utils';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemePaletteCardActionType } from '../components/theme-palette-card/actions/theme-palette-card-action-type';
+import { ThemeVariablesCardActionType } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
 import { normalizeThemeHex } from '../../../domain/utils/normalize-theme-hex';
 
 const themesStore = container.resolve(ThemesStore);
@@ -49,7 +50,7 @@ export function useThemePaletteCardViewModel() {
       '#1e1e1e',
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
-    dispatch({ type: ThemeActionType.ThemePaletteHueReferenceCommit, value: normalized });
+    dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
   }, [theme, loadedTemplate, selectedRef, dispatch]);
 
   const colorVariablesFromTemplate = useMemo(
@@ -65,35 +66,35 @@ export function useThemePaletteCardViewModel() {
 
   const setHueAdjustment = useCallback(
     (value: number) => {
-      dispatch({ type: ThemeActionType.ThemePaletteHueSliderOnDelta, value });
+      dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value });
     },
     [dispatch],
   );
 
   const setApplyHueToDark = useCallback(
     (checked: boolean) => {
-      dispatch({ type: ThemeActionType.ThemePaletteApplyToDarkCheckboxOnToggle, checked });
+      dispatch({ type: ThemePaletteCardActionType.ApplyToDarkCheckboxOnToggle, checked });
     },
     [dispatch],
   );
 
   const setApplyHueToLight = useCallback(
     (checked: boolean) => {
-      dispatch({ type: ThemeActionType.ThemePaletteApplyToLightCheckboxOnToggle, checked });
+      dispatch({ type: ThemePaletteCardActionType.ApplyToLightCheckboxOnToggle, checked });
     },
     [dispatch],
   );
 
   const onClusterCountDelta = useCallback(
     (value: number) => {
-      dispatch({ type: ThemeActionType.ThemePaletteClusterCountSliderOnDelta, value });
+      dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnDelta, value });
     },
     [dispatch],
   );
 
   const onClusterCountCommit = useCallback(
     (value: number) => {
-      dispatch({ type: ThemeActionType.ThemePaletteClusterCountSliderOnCommit, value });
+      dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnCommit, value });
     },
     [dispatch],
   );
@@ -101,7 +102,7 @@ export function useThemePaletteCardViewModel() {
   const setHueReferenceHex = useCallback(
     (hex: string) => {
       const normalized = normalizeThemeHex(hex) || '#FF0000';
-      dispatch({ type: ThemeActionType.ThemePaletteHueReferenceCommit, value: normalized });
+      dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
     },
     [dispatch],
   );
@@ -116,13 +117,13 @@ export function useThemePaletteCardViewModel() {
   }, []);
 
   const recenterHue = useCallback(() => {
-    dispatch({ type: ThemeActionType.ThemePaletteHueReferenceRecenterButtonOnClick });
+    dispatch({ type: ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick });
   }, [dispatch]);
 
   const setColorGroupChecked = useCallback(
     (groupKey: string, checked: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.SelectVariableGroupCheckboxOnToggle,
         groupId: groupKey,
         checked,
       });
@@ -134,7 +135,7 @@ export function useThemePaletteCardViewModel() {
     (refs: string[], checked: boolean) => {
       if (!theme || refs.length === 0) return;
       dispatch({
-        type: ThemeActionType.ThemePaletteColorRefsSelectionCommit,
+        type: ThemePaletteCardActionType.ColorRefsSelectionCommit,
         refs,
         checked,
       });
@@ -156,26 +157,26 @@ export function useThemePaletteCardViewModel() {
     (hex: string) => {
       const normalized = normalizeThemeHex(hex);
       if (!normalized) return;
-      dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnSelect, value: normalized });
+      dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnSelect, value: normalized });
     },
     [dispatch],
   );
 
   const closeColorPicker = useCallback(
     (_snapshot: ThemePaneState) => {
-      dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnClose });
+      dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnClose });
     },
     [dispatch],
   );
 
   const onHueReferenceEyedropperClick = useCallback(() => {
-    void dispatch({ type: ThemeActionType.ThemePaletteHueReferenceColorEyedropperButtonOnClick });
+    void dispatch({ type: ThemePaletteCardActionType.HueReferenceColorEyedropperButtonOnClick });
   }, [dispatch]);
 
   const onAssignEyedropperClick = useCallback(
     (colorRef: string) => {
       void dispatch({
-        type: ThemeActionType.ThemePaletteAssignColorEyedropperButtonOnClick,
+        type: ThemePaletteCardActionType.AssignColorEyedropperButtonOnClick,
         colorRef,
       });
     },
@@ -186,7 +187,7 @@ export function useThemePaletteCardViewModel() {
     (hex: string) => {
       const normalized = normalizeThemeHex(hex);
       if (!normalized) return;
-      dispatch({ type: ThemeActionType.ThemePaletteAssignColorPickerOnCommit, value: normalized });
+      dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnCommit, value: normalized });
     },
     [dispatch],
   );

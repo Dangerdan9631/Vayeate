@@ -5,7 +5,7 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getThemeRefs } from '../../../domain/state/theme/themes-state';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemesCardActionType } from '../components/themes-card/actions/themes-card-action-type';
 
 const themesStore = container.resolve(ThemesStore);
 
@@ -32,20 +32,20 @@ export function useThemesCardViewModel() {
 
   const selectTheme = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: ThemeActionType.ThemeThemesVersionListOnCommit, name, version });
+      dispatch({ type: ThemesCardActionType.VersionListOnCommit, name, version });
     },
     [dispatch],
   );
 
   const selectName = useCallback(
     (name: string) => {
-      dispatch({ type: ThemeActionType.ThemeThemesNameListOnCommit, name });
+      dispatch({ type: ThemesCardActionType.NameListOnCommit, name });
     },
     [dispatch],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: ThemeActionType.ThemeThemesCreateButtonOnClick });
+    dispatch({ type: ThemesCardActionType.CreateButtonOnClick });
   }, [dispatch]);
 
   const onSelectVersion = useCallback(
@@ -66,4 +66,3 @@ export function useThemesCardViewModel() {
     isCreating,
   };
 }
-

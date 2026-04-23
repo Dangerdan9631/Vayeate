@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
-import { ThemeActionType } from '../actions/theme-action-type';
+import { ThemeVariablesCardActionType } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
 import type { ContrastComparisonMethod, ContrastValue } from '../../../model/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
 
@@ -69,7 +69,7 @@ export function useThemeVariablesCardViewModel() {
   const updateColorAssignmentDark = useCallback(
     (colorRef: string, value: string | null) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesColorDarkTextOnCommit,
+        type: ThemeVariablesCardActionType.ColorDarkTextOnCommit,
         ref: colorRef,
         value: value ?? '',
       });
@@ -80,7 +80,7 @@ export function useThemeVariablesCardViewModel() {
   const updateColorAssignmentLight = useCallback(
     (colorRef: string, value: string | null) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesColorLightTextOnCommit,
+        type: ThemeVariablesCardActionType.ColorLightTextOnCommit,
         ref: colorRef,
         value: value ?? '',
       });
@@ -91,7 +91,7 @@ export function useThemeVariablesCardViewModel() {
   const updateColorAssignmentUseDarkForLight = useCallback(
     (colorRef: string, useDark: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesColorUseDarkForLightCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.ColorUseDarkForLightCheckboxOnToggle,
         ref: colorRef,
         checked: useDark,
       });
@@ -103,25 +103,25 @@ export function useThemeVariablesCardViewModel() {
     (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
       if (field === 'value') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastDarkValueTextOnCommit,
+          type: ThemeVariablesCardActionType.ContrastDarkValueTextOnCommit,
           ref: contrastRef,
           value: value as ContrastValue,
         });
       } else if (field === 'comparisonMethod') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastDarkMethodListOnCommit,
+          type: ThemeVariablesCardActionType.ContrastDarkMethodListOnCommit,
           ref: contrastRef,
           value: value as ContrastComparisonMethod,
         });
       } else if (field === 'min') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastDarkMinTextOnCommit,
+          type: ThemeVariablesCardActionType.ContrastDarkMinTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
       } else if (field === 'max') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastDarkMaxTextOnCommit,
+          type: ThemeVariablesCardActionType.ContrastDarkMaxTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
@@ -134,25 +134,25 @@ export function useThemeVariablesCardViewModel() {
     (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => {
       if (field === 'value') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastLightValueTextOnCommit,
+          type: ThemeVariablesCardActionType.ContrastLightValueTextOnCommit,
           ref: contrastRef,
           value: value as ContrastValue,
         });
       } else if (field === 'comparisonMethod') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastLightMethodListOnCommit,
+          type: ThemeVariablesCardActionType.ContrastLightMethodListOnCommit,
           ref: contrastRef,
           value: value as ContrastComparisonMethod,
         });
       } else if (field === 'min') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastLightMinTextOnCommit,
+          type: ThemeVariablesCardActionType.ContrastLightMinTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
       } else if (field === 'max') {
         dispatch({
-          type: ThemeActionType.ThemeVariablesContrastLightMaxTextOnCommit,
+          type: ThemeVariablesCardActionType.ContrastLightMaxTextOnCommit,
           ref: contrastRef,
           value: value != null ? String(value) : '',
         });
@@ -164,7 +164,7 @@ export function useThemeVariablesCardViewModel() {
   const updateContrastAssignmentUseDarkForLight = useCallback(
     (contrastRef: string, useDark: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesContrastUseDarkForLightCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.ContrastUseDarkForLightCheckboxOnToggle,
         ref: contrastRef,
         checked: useDark,
       });
@@ -175,7 +175,7 @@ export function useThemeVariablesCardViewModel() {
   const toggleColorChecked = useCallback(
     (ref: string) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.VariableSelectionCheckboxOnToggle,
         ref,
         checked: !checkedColorRefs.has(ref),
       });
@@ -186,7 +186,7 @@ export function useThemeVariablesCardViewModel() {
   const toggleContrastChecked = useCallback(
     (ref: string) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesVariableSelectionCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.VariableSelectionCheckboxOnToggle,
         ref,
         checked: !checkedContrastRefs.has(ref),
       });
@@ -197,7 +197,7 @@ export function useThemeVariablesCardViewModel() {
   const setAllColorChecked = useCallback(
     (checked: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesSelectVariableTypeCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.SelectVariableTypeCheckboxOnToggle,
         variableType: 'color',
         checked,
       });
@@ -208,7 +208,7 @@ export function useThemeVariablesCardViewModel() {
   const setAllContrastChecked = useCallback(
     (checked: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesSelectVariableTypeCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.SelectVariableTypeCheckboxOnToggle,
         variableType: 'contrast',
         checked,
       });
@@ -218,7 +218,7 @@ export function useThemeVariablesCardViewModel() {
 
   const setAllVariablesChecked = useCallback(
     (checked: boolean) => {
-      dispatch({ type: ThemeActionType.ThemeVariablesSelectAllCheckboxOnToggle, checked });
+      dispatch({ type: ThemeVariablesCardActionType.SelectAllCheckboxOnToggle, checked });
     },
     [dispatch],
   );
@@ -226,7 +226,7 @@ export function useThemeVariablesCardViewModel() {
   const setColorGroupChecked = useCallback(
     (groupKey: string, checked: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.SelectVariableGroupCheckboxOnToggle,
         groupId: groupKey,
         checked,
       });
@@ -237,7 +237,7 @@ export function useThemeVariablesCardViewModel() {
   const setContrastGroupChecked = useCallback(
     (groupKey: string, checked: boolean) => {
       dispatch({
-        type: ThemeActionType.ThemeVariablesSelectVariableGroupCheckboxOnToggle,
+        type: ThemeVariablesCardActionType.SelectVariableGroupCheckboxOnToggle,
         groupId: groupKey,
         checked,
       });
@@ -247,7 +247,7 @@ export function useThemeVariablesCardViewModel() {
 
   const setVariablesSearchText = useCallback(
     (value: string) => {
-      dispatch({ type: ThemeActionType.ThemeVariablesSearchTextOnChange, value });
+      dispatch({ type: ThemeVariablesCardActionType.SearchTextOnChange, value });
     },
     [dispatch],
   );
@@ -255,7 +255,7 @@ export function useThemeVariablesCardViewModel() {
   const onColorDarkEyedropperClick = useCallback(
     (colorRef: string) => {
       void dispatch({
-        type: ThemeActionType.ThemeVariablesColorDarkColorEyedropperButtonOnClick,
+        type: ThemeVariablesCardActionType.ColorDarkColorEyedropperButtonOnClick,
         ref: colorRef,
       });
     },
@@ -265,7 +265,7 @@ export function useThemeVariablesCardViewModel() {
   const onColorLightEyedropperClick = useCallback(
     (colorRef: string) => {
       void dispatch({
-        type: ThemeActionType.ThemeVariablesColorLightColorEyedropperButtonOnClick,
+        type: ThemeVariablesCardActionType.ColorLightColorEyedropperButtonOnClick,
         ref: colorRef,
       });
     },
