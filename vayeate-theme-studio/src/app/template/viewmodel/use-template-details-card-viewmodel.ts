@@ -3,7 +3,7 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
-import { TemplateActionType } from '../actions/template-action-type';
+import { TemplateDetailsCardActionType } from '../components/template-details-card/actions/template-details-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import type { Mapping } from '../../../model/schema/template-schemas';
@@ -36,12 +36,12 @@ export function useTemplateDetailsCardViewModel() {
 
   const lockTemplate = useCallback(() => {
     if (!template || !canLock) return;
-    dispatch({ type: TemplateActionType.TemplateDetailsLockButtonOnClick });
+    dispatch({ type: TemplateDetailsCardActionType.LockButtonOnClick });
   }, [template, canLock, dispatch]);
 
   const onDeleteVersion = useCallback(() => {
     if (!selectedRef) return;
-    dispatch({ type: TemplateActionType.TemplateDetailsDeleteVersionButtonOnClick });
+    dispatch({ type: TemplateDetailsCardActionType.DeleteVersionButtonOnClick });
   }, [dispatch, selectedRef]);
 
   return {

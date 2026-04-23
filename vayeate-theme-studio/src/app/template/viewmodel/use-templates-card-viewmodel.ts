@@ -4,7 +4,7 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
-import { TemplateActionType } from '../actions/template-action-type';
+import { TemplatesCardActionType } from '../components/templates-card/actions/templates-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 
@@ -42,7 +42,7 @@ export function useTemplatesCardViewModel() {
 
   const selectTemplate = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: TemplateActionType.TemplateTemplatesListOnCommit, name, version });
+      dispatch({ type: TemplatesCardActionType.TemplatesListOnCommit, name, version });
     },
     [dispatch],
   );
@@ -51,14 +51,14 @@ export function useTemplatesCardViewModel() {
     (name: string) => {
       const best = highestVersionForName(name);
       if (best) {
-        dispatch({ type: TemplateActionType.TemplateTemplatesListOnCommit, name: best.name, version: best.version });
+        dispatch({ type: TemplatesCardActionType.TemplatesListOnCommit, name: best.name, version: best.version });
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: TemplateActionType.TemplateTemplatesCreateButtonOnClick });
+    dispatch({ type: TemplatesCardActionType.TemplatesCreateButtonOnClick });
   }, [dispatch]);
 
   const onSelectVersion = useCallback(

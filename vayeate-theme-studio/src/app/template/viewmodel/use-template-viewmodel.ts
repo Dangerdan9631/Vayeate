@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../common/context/use-app-dispatch';
-import { TemplateActionType } from '../actions/template-action-type';
+import { TemplatePageActionType } from '../components/template-page/actions/template-page-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 
@@ -16,7 +16,7 @@ export function useTemplateViewModel(): { isCreateDialogOpen: boolean } {
   useEffect(() => {
     if (pageLoadDispatchedRef.current) return;
     pageLoadDispatchedRef.current = true;
-    dispatch({ type: TemplateActionType.TemplatePageOnLoad });
+    dispatch({ type: TemplatePageActionType.PageOnLoad });
   }, [dispatch]);
 
   return { isCreateDialogOpen: isCreateDialogOpen };

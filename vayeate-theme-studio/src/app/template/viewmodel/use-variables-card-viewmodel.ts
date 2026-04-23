@@ -4,7 +4,7 @@ import { useAppDispatch } from '../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
-import { TemplateActionType } from '../actions/template-action-type';
+import { VariablesCardActionType } from '../components/variables-card/actions/variables-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 
@@ -57,14 +57,14 @@ export function useVariablesCardViewModel() {
 
   const handleVariablesSearchChange = useCallback(
     (value: string) => {
-      dispatch({ type: TemplateActionType.TemplateVariablesSearchTextOnChange, value });
+      dispatch({ type: VariablesCardActionType.VariablesSearchTextOnChange, value });
     },
     [dispatch],
   );
 
   const handleAddVariableNameChange = useCallback(
     (value: string) => {
-      dispatch({ type: TemplateActionType.TemplateVariablesAddVariableNameTextOnChange, value });
+      dispatch({ type: VariablesCardActionType.VariablesAddVariableNameTextOnChange, value });
     },
     [dispatch],
   );
@@ -72,7 +72,7 @@ export function useVariablesCardViewModel() {
   const addColorVariable = useCallback(
     (groupRef?: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick,
+        type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
         groupRef: groupRef ?? null,
         variableKind: 'color',
       });
@@ -82,7 +82,7 @@ export function useVariablesCardViewModel() {
 
   const removeColorVariable = useCallback(
     (key: string) => {
-      dispatch({ type: TemplateActionType.TemplateVariablesRemoveButtonOnClick, key });
+      dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
     },
     [dispatch],
   );
@@ -90,7 +90,7 @@ export function useVariablesCardViewModel() {
   const addContrastVariable = useCallback(
     (groupRef?: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateVariablesAddVariableButtonOnClick,
+        type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
         groupRef: groupRef ?? null,
         variableKind: 'contrast',
       });
@@ -100,7 +100,7 @@ export function useVariablesCardViewModel() {
 
   const removeContrastVariable = useCallback(
     (key: string) => {
-      dispatch({ type: TemplateActionType.TemplateVariablesRemoveButtonOnClick, key });
+      dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
     },
     [dispatch],
   );
@@ -108,7 +108,7 @@ export function useVariablesCardViewModel() {
   const updateContrastComparisonSource = useCallback(
     (key: string, comparisonSourceRef: ColorVariableKey | null) => {
       dispatch({
-        type: TemplateActionType.TemplateVariablesContrastSourceListOnCommit,
+        type: VariablesCardActionType.VariablesContrastSourceListOnCommit,
         value: comparisonSourceRef,
         contrastVariableKey: key as ContrastVariableKey,
       });
@@ -119,7 +119,7 @@ export function useVariablesCardViewModel() {
   const updateColorVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateVariablesGroupListOnCommit,
+        type: VariablesCardActionType.VariablesGroupListOnCommit,
         value: groupRef ?? '',
         variableKey: key,
       });
@@ -130,7 +130,7 @@ export function useVariablesCardViewModel() {
   const updateContrastVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
       dispatch({
-        type: TemplateActionType.TemplateVariablesGroupListOnCommit,
+        type: VariablesCardActionType.VariablesGroupListOnCommit,
         value: groupRef ?? '',
         variableKey: key,
       });
