@@ -1,4 +1,5 @@
 import type { SemanticTokenRegistryListKind, TokenKey, TokenType } from "../../../../../model/schema/primitives";
+import type { AppAction } from "../../../../core/actions/app-action";
 
 export enum TokensCardActionType {
   SearchTextOnChange = 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE',
@@ -33,3 +34,10 @@ export type TokensCardActions =
       registryList: SemanticTokenRegistryListKind;
       index: number;
     };
+
+
+const tokensCardTypes = new Set<string>(Object.values(TokensCardActionType));
+
+export function isTokensCardAction(a: AppAction): a is TokensCardActions {
+  return tokensCardTypes.has(a.type);
+}

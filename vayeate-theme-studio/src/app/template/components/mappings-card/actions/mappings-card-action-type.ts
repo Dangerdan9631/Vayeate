@@ -1,4 +1,5 @@
 import { ColorVariableKey, ContrastVariableKey, TokenType } from "../../../../../model/schema/primitives";
+import { AppAction } from "../../../../core/actions/app-action";
 
 export enum MappingsCardActionType {
   MappingSearchTextOnChange = 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE',
@@ -24,3 +25,10 @@ export type MappingsCardActions =
   | { type: MappingsCardActionType.MappingSemanticTokenModifierListOnCommit; tokenKey: string; modifiers: string[] }
   | { type: MappingsCardActionType.MappingSemanticTokenLanguageListOnCommit; tokenKey: string; value: string | null }
   | { type: MappingsCardActionType.MappingSemanticTokenVariantRemoveButtonOnClick; tokenKey: string; tokenType: TokenType };
+
+
+const mappingsCardTypes = new Set<string>(Object.values(MappingsCardActionType));
+
+export function isMappingsCardAction(a: AppAction): a is MappingsCardActions {
+  return mappingsCardTypes.has(a.type);
+}

@@ -1,5 +1,6 @@
 import type { TemplateName, ThemeName, TokenKey, Version } from '../../../../../model/schema/primitives';
 import type { ThemePreviewTokenRefField } from '../../../../../model/schema/theme-schemas';
+import type { AppAction } from '../../../../core/actions/app-action';
 
 export enum ThemeDetailsCardActionType {
   TemplateListOnCommit = 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT',
@@ -21,3 +22,10 @@ export type ThemeDetailsCardActions =
       tokenRefField: ThemePreviewTokenRefField;
       value: TokenKey | null;
     };
+
+
+const themeDetailsCardTypes = new Set<string>(Object.values(ThemeDetailsCardActionType));
+
+export function isThemeDetailsCardAction(a: AppAction): a is ThemeDetailsCardActions {
+  return themeDetailsCardTypes.has(a.type);
+}

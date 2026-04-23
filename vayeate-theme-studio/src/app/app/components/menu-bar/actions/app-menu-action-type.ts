@@ -1,3 +1,5 @@
+import type { AppAction } from '../../../../core/actions/app-action';
+
 export enum AppMenuActionType {
   FileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',
   FileMenuExitButtonOnClick = 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK',
@@ -26,3 +28,10 @@ export type AppMenuActions =
   | { type: AppMenuActionType.ViewMenuForceReloadButtonOnClick }
   | { type: AppMenuActionType.ViewMenuToggleDevToolsButtonOnClick }
   | { type: AppMenuActionType.MenuOnClose };
+
+
+const appMenuTypes = new Set<string>(Object.values(AppMenuActionType));
+
+export function isAppMenuAction(a: AppAction): a is AppMenuActions {
+  return appMenuTypes.has(a.type);
+}

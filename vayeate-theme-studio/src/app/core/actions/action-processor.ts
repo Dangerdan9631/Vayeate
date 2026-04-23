@@ -2,13 +2,13 @@ import { delay, inject, singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import type { AppAction } from './app-action';
 import { AppActionHandler } from '../../app/actions/app-handler';
-import { isAppAction } from '../../app/actions/app-action-guard';
+import { isAppAction } from '../../app/actions/app-action-type';
 import { CatalogActionHandler } from '../../catalog/actions/catalog-handler';
-import { isCatalogAction } from '../../catalog/actions/catalog-action-guard';
+import { isCatalogAction } from '../../catalog/actions/catalog-action-type';
 import { TemplateActionHandler } from '../../template/actions/template-handler';
-import { isTemplateAction } from '../../template/actions/template-action-guard';
+import { isTemplateAction } from '../../template/actions/template-action-type';
 import { ThemeActionHandler } from '../../theme/actions/theme-handler';
-import { isThemeAction } from '../../theme/actions/theme-action-guard';
+import { isThemeAction } from '../../theme/actions/theme-action-type';
 
 @singleton()
 export class ActionProcessor {

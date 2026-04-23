@@ -1,4 +1,5 @@
 import { CatalogName, Version } from "../../../../../model/schema/primitives";
+import { AppAction } from "../../../../core/actions/app-action";
 
 export enum CatalogsCardActionType {
   CatalogsListOnCommit = 'CATALOG_CATALOGS_LIST_ON_COMMIT',
@@ -10,3 +11,10 @@ export type CatalogsCardActions =
   | { type: CatalogsCardActionType.CatalogsListOnCommit; name: CatalogName; version: Version }
   | { type: CatalogsCardActionType.CatalogVersionsListOnCommit; name: CatalogName; version: Version }
   | { type: CatalogsCardActionType.CatalogsCreateButtonOnClick };
+
+
+const catalogsCardTypes = new Set<string>(Object.values(CatalogsCardActionType));
+
+export function isCatalogsCardAction(a: AppAction): a is CatalogsCardActions {
+  return catalogsCardTypes.has(a.type);
+}

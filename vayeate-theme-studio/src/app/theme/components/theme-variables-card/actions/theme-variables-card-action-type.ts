@@ -1,4 +1,5 @@
 import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, ContrastVariableKey } from '../../../../../model/schema/primitives';
+import type { AppAction } from '../../../../core/actions/app-action';
 
 export enum ThemeVariablesCardActionType {
   SearchTextOnChange = 'THEME_VARIABLES_SEARCH_TEXT_ON_CHANGE',
@@ -54,3 +55,10 @@ export type ThemeVariablesCardActions =
   | { type: ThemeVariablesCardActionType.ContrastLightMinTextOnCommit; value: string; ref: ContrastVariableKey }
   | { type: ThemeVariablesCardActionType.ContrastLightMaxTextOnCommit; value: string; ref: ContrastVariableKey }
   | { type: ThemeVariablesCardActionType.ContrastUseDarkForLightCheckboxOnToggle; checked: boolean; ref: ContrastVariableKey };
+
+
+const themeVariablesCardTypes = new Set<string>(Object.values(ThemeVariablesCardActionType));
+
+export function isThemeVariablesCardAction(a: AppAction): a is ThemeVariablesCardActions {
+  return themeVariablesCardTypes.has(a.type);
+}

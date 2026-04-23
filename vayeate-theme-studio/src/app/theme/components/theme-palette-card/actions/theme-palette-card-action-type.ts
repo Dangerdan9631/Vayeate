@@ -1,4 +1,5 @@
 import type { HexColor } from '../../../../../model/schema/primitives';
+import type { AppAction } from '../../../../core/actions/app-action';
 
 export enum ThemePaletteCardActionType {
   ApplyToDarkCheckboxOnToggle = 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE',
@@ -30,3 +31,10 @@ export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnCommit; value: number }
   | { type: ThemePaletteCardActionType.ColorRefsSelectionCommit; refs: string[]; checked: boolean };
+
+
+const themePaletteCardTypes = new Set<string>(Object.values(ThemePaletteCardActionType));
+
+export function isThemePaletteCardAction(a: AppAction): a is ThemePaletteCardActions {
+  return themePaletteCardTypes.has(a.type);
+}

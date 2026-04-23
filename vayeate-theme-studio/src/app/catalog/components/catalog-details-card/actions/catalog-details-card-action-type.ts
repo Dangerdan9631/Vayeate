@@ -1,4 +1,5 @@
 import { SourceType, TokenType } from "../../../../../model/schema/primitives";
+import { AppAction } from "../../../../core/actions/app-action";
 
 export enum CatalogDetailsCardActionType {
   SourceUrlTextOnCommit = 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT',
@@ -28,3 +29,10 @@ export type CatalogDetailsCardActions =
   | { type: CatalogDetailsCardActionType.SyncButtonOnClick }
   | { type: CatalogDetailsCardActionType.LockButtonOnClick }
   | { type: CatalogDetailsCardActionType.RevertButtonOnClick };
+
+
+const catalogDetailsCardTypes = new Set<string>(Object.values(CatalogDetailsCardActionType));
+
+export function isCatalogDetailsCardAction(a: AppAction): a is CatalogDetailsCardActions {
+  return catalogDetailsCardTypes.has(a.type);
+}

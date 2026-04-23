@@ -1,19 +1,19 @@
 import { delay, inject, singleton } from 'tsyringe';
 import { ThemeActions } from './theme-action-type';
 import { CreateThemeDialogHandler } from '../components/create-theme-dialog/actions/create-theme-dialog-handler';
-import { isCreateThemeDialogAction } from '../components/create-theme-dialog/actions/create-theme-dialog-action-guard';
+import { isCreateThemeDialogAction } from '../components/create-theme-dialog/actions/create-theme-dialog-action-type';
 import { EditorPreviewsCardHandler } from '../components/editor-previews-card/actions/editor-previews-card-handler';
-import { isEditorPreviewsCardAction } from '../components/editor-previews-card/actions/editor-previews-card-action-guard';
+import { isEditorPreviewsCardAction } from '../components/editor-previews-card/actions/editor-previews-card-action-type';
 import { ThemeDetailsCardHandler } from '../components/theme-details-card/actions/theme-details-card-handler';
-import { isThemeDetailsCardAction } from '../components/theme-details-card/actions/theme-details-card-action-guard';
+import { isThemeDetailsCardAction } from '../components/theme-details-card/actions/theme-details-card-action-type';
 import { ThemePageHandler } from '../components/theme-page/actions/theme-page-handler';
-import { isThemePageAction } from '../components/theme-page/actions/theme-page-action-guard';
+import { isThemePageAction } from '../components/theme-page/actions/theme-page-action-type';
 import { ThemePaletteCardHandler } from '../components/theme-palette-card/actions/theme-palette-card-handler';
-import { isThemePaletteCardAction } from '../components/theme-palette-card/actions/theme-palette-card-action-guard';
+import { isThemePaletteCardAction } from '../components/theme-palette-card/actions/theme-palette-card-action-type';
 import { ThemesCardHandler } from '../components/themes-card/actions/themes-card-handler';
-import { isThemesCardAction } from '../components/themes-card/actions/themes-card-action-guard';
+import { isThemesCardAction } from '../components/themes-card/actions/themes-card-action-type';
 import { ThemeVariablesCardHandler } from '../components/theme-variables-card/actions/theme-variables-card-handler';
-import { isThemeVariablesCardAction } from '../components/theme-variables-card/actions/theme-variables-card-action-guard';
+import { isThemeVariablesCardAction } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()

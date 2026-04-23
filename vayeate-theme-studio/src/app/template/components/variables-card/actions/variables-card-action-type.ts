@@ -1,4 +1,5 @@
 import { ColorVariableKey, ContrastVariableKey } from "../../../../../model/schema/primitives";
+import { AppAction } from "../../../../core/actions/app-action";
 
 export enum VariablesCardActionType {
   VariablesSearchTextOnChange = 'TEMPLATE_VARIABLES_SEARCH_TEXT_ON_CHANGE',
@@ -16,3 +17,10 @@ export type VariablesCardActions =
   | { type: VariablesCardActionType.VariablesGroupListOnCommit; value: string; variableKey: string }
   | { type: VariablesCardActionType.VariablesRemoveButtonOnClick; key: ColorVariableKey | ContrastVariableKey }
   | { type: VariablesCardActionType.VariablesContrastSourceListOnCommit; value: ColorVariableKey | null; contrastVariableKey: ContrastVariableKey };
+
+
+const variablesCardTypes = new Set<string>(Object.values(VariablesCardActionType));
+
+export function isVariablesCardAction(a: AppAction): a is VariablesCardActions {
+  return variablesCardTypes.has(a.type);
+}

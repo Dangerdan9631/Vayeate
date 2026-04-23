@@ -1,4 +1,5 @@
 import { CatalogName, Version } from "../../../../../model/schema/primitives";
+import { AppAction } from "../../../../core/actions/app-action";
 
 export enum TemplateCatalogsCardActionType {
   UpdateAllButtonOnClick = 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK',
@@ -10,3 +11,10 @@ export type TemplateCatalogsCardActions =
   | { type: TemplateCatalogsCardActionType.UpdateAllButtonOnClick }
   | { type: TemplateCatalogsCardActionType.CatalogCheckboxOnToggle; catalogName: CatalogName }
   | { type: TemplateCatalogsCardActionType.CatalogVersionListOnCommit; value: Version; catalogName: CatalogName };
+
+
+const templateCatalogsCardTypes = new Set<string>(Object.values(TemplateCatalogsCardActionType));
+
+export function isTemplateCatalogsCardAction(a: AppAction): a is TemplateCatalogsCardActions {
+  return templateCatalogsCardTypes.has(a.type);
+}

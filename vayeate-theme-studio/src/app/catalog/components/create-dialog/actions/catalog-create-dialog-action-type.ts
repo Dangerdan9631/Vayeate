@@ -1,4 +1,5 @@
 import { CatalogType } from "../../../../../model/schema/primitives";
+import { AppAction } from "../../../../core/actions/app-action";
 
 export enum CatalogCreateDialogActionType {
     NameTextOnChange = 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE',
@@ -12,3 +13,10 @@ export type CatalogCreateDialogActions =
     | { type: CatalogCreateDialogActionType.TypeListOnCommit; value: CatalogType }
     | { type: CatalogCreateDialogActionType.CancelButtonOnClick }
     | { type: CatalogCreateDialogActionType.OkButtonOnClick };
+
+
+const catalogCreateDialogTypes = new Set<string>(Object.values(CatalogCreateDialogActionType));
+
+export function isCatalogCreateDialogAction(a: AppAction): a is CatalogCreateDialogActions {
+    return catalogCreateDialogTypes.has(a.type);
+}
