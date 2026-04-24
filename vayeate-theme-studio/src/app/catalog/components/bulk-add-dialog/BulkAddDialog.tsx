@@ -1,27 +1,30 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { useBulkAddDialogViewModel } from './use-bulk-add-dialog-viewmodel';
 
 export function BulkAddDialog() {
   const {
     text,
-    isError,
     errorMessage,
-    parsed,
-    canSubmit,
+    numNewTokens,
     duplicateCount,
-    handleTextChange,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
+    canSubmit,
+    onTextChange,
+    onOkClick,
+    onCancelClick,
   } = useBulkAddDialogViewModel();
 
-  function onTextareaChange(e: ChangeEvent<HTMLTextAreaElement>) {
-    handleTextChange(e.target.value);
+  function onDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    // Prevent the click from propagating to the overlay.
+    e.stopPropagation();
+  }
+
+  function onInputTextChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    onTextChange(e.target.value);
   }
 
   return (
-    <div className="dialog-overlay" onClick={handleCancel}>
-      <div className="dialog-content dialog-wide" onClick={handleDialogContentClick}>
+    <div className="dialog-overlay" onClick={onCancelClick}>
+      <div className="dialog-content dialog-wide" onClick={onDialogContentClick}>
         <h3>Bulk Add Tokens</h3>
         <p className="dialog-description">
           Paste a VS Code color theme JSON file. Tokens will be extracted from
@@ -33,18 +36,16 @@ export function BulkAddDialog() {
           rows={12}
           value={text}
           placeholder='{"colors": { ... }, "tokenColors": [ ... ], "semanticTokenColors": { ... }}'
-          onChange={onTextareaChange}
+          onChange={onInputTextChange}
         />
 
-        {isError && errorMessage && (
+        {errorMessage && (
           <p className="field-error">{errorMessage}</p>
         )}
 
-        {parsed && (
+        {numNewTokens > 0 && (
           <div className="bulk-add-summary">
-            <span>Parsed: {parsed.result.counts.theme} theme, {parsed.result.counts['textmate token']} textmate, {parsed.result.counts['semantic token']} semantic</span>
-            <span className="bulk-add-new">
-              {parsed.newCount} new token{parsed.newCount !== 1 ? 's' : ''} to add
+            <span>Parsed: {numNewTokens} new token{numNewTokens !== 1 ? 's' : ''} to add
               {duplicateCount > 0 && (
                 <> ({duplicateCount} already exist)</>
               )}
@@ -53,16 +54,16 @@ export function BulkAddDialog() {
         )}
 
         <div className="dialog-actions">
-          <button type="button" className="btn-secondary" onClick={handleCancel}>
+          <button type="button" className="btn-secondary" onClick={onCancelClick}>
             Cancel
           </button>
           <button
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={handleSubmit}
+            onClick={onOkClick}
           >
-            Add {parsed ? parsed.newCount : 0} token{parsed?.newCount !== 1 ? 's' : ''}
+            Add {numNewTokens} token{numNewTokens !== 1 ? 's' : ''}
           </button>
         </div>
       </div>

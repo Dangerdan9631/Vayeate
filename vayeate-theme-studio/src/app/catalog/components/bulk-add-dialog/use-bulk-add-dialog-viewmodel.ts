@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useMemo, type MouseEvent } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
-import type { BulkParseResult } from '../../../../domain/utils/theme-parser';
-import type { Catalog, Token } from '../../../../model/schema/catalog';
 import { CatalogBulkAddDialogActionType } from './actions/catalog-bulk-add-dialog-action-type';
-import { CatalogsStore, getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 
@@ -11,81 +9,43 @@ const catalogsStore = container.resolve(CatalogsStore);
 
 export interface BulkAddDialogViewModel {
   text: string;
-  isError: boolean;
   errorMessage: string | null;
-  parsed: { result: BulkParseResult; newCount: number } | null;
-  canSubmit: boolean;
+  numNewTokens: number;
   duplicateCount: number;
-  handleTextChange: (value: string) => void;
-  handleSubmit: () => void;
-  handleCancel: () => void;
-  handleDialogContentClick: (e: MouseEvent<HTMLDivElement>) => void;
+  canSubmit: boolean;
+  onTextChange: (value: string) => void;
+  onOkClick: () => void;
+  onCancelClick: () => void;
 }
 
 export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   const dispatch = useAppDispatch();
-  const catalog: Catalog | null = useStore(catalogsStore.api, getCurrentCatalog);
-  const bulkAddDialog = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog);
-  const text = bulkAddDialog?.text ?? '';
+  const text = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.text ?? '');
+  const errorMessage = useStore(catalogsStore.api,   (state) => state.stateV2.bulkAddDialog?.errorMessage ?? null);
+  const numNewTokens = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.newCount ?? 0);
+  const duplicateCount = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.duplicateCount ?? 0);
+  const canSubmit = useMemo(() => numNewTokens > 0, [numNewTokens]);
 
-  const catalogTokenSignature = useMemo(
-    () => (catalog ? catalog.tokens.map((t: Token) => `${t.type}::${t.key}`).join('\0') : ''),
-    [catalog],
-  );
+  const onTextChange = useCallback((value: string) => {
+    void dispatch({ type: CatalogBulkAddDialogActionType.TextOnChange, value });
+  }, [dispatch]);
 
-  useEffect(() => {
-    if (!text.trim()) return;
-    void dispatch({ type: CatalogBulkAddDialogActionType.TextOnChange, value: text });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- omit `text`: keystrokes dispatch via handleTextChange; this re-syncs when catalog tokens change
-  }, [catalogTokenSignature, dispatch]);
-
-  const errorMessage =
-    bulkAddDialog !== null && bulkAddDialog.errorMessage !== null ? bulkAddDialog.errorMessage : null;
-  const isError = errorMessage !== null;
-  const parsed =
-    bulkAddDialog !== null &&
-    bulkAddDialog.errorMessage === null &&
-    bulkAddDialog.counts !== null
-      ? {
-          result: {
-            counts: bulkAddDialog.counts,
-            tokens: [] as Token[],
-          },
-          newCount: bulkAddDialog.newCount,
-        }
-      : null;
-  const canSubmit = parsed !== null && parsed.newCount > 0;
-  const duplicateCount = bulkAddDialog?.duplicateCount ?? 0;
-
-  const handleTextChange = useCallback(
-    (value: string) => {
-      void dispatch({ type: CatalogBulkAddDialogActionType.TextOnChange, value });
-    },
-    [dispatch],
-  );
-
-  const handleSubmit = useCallback(() => {
+  const onOkClick = useCallback(() => {
     void dispatch({ type: CatalogBulkAddDialogActionType.OkButtonOnClick });
   }, [dispatch]);
 
-  const handleCancel = useCallback(() => {
+  const onCancelClick = useCallback(() => {
     void dispatch({ type: CatalogBulkAddDialogActionType.CancelButtonOnClick });
   }, [dispatch]);
 
-  const handleDialogContentClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-  }, []);
-
   return {
     text,
-    isError,
     errorMessage,
-    parsed,
-    canSubmit,
+    numNewTokens,
     duplicateCount,
-    handleTextChange,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
+    canSubmit,
+    onTextChange,
+    onOkClick,
+    onCancelClick,
   };
 }
