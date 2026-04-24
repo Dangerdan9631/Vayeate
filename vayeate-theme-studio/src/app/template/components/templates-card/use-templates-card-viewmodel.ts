@@ -10,7 +10,18 @@ import { TemplatesStore } from '../../../../domain/state/template/templates-stor
 
 const templatesStore = container.resolve(TemplatesStore);
 
-export function useTemplatesCardViewModel() {
+export interface TemplatesCardViewModel {
+  templateNames: string[];
+  selectedName: string | null;
+  versionsForSelectedName: TemplateReference[];
+  selectedRef: TemplateReference | null;
+  isCreating: boolean;
+  onSelectName: (name: string) => void;
+  onSelectVersion: (version: string) => void;
+  onCreateClick: () => void;
+}
+
+export function useTemplatesCardViewModel(): TemplatesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
   const isCreating = useStore(templatesStore.api, (state) => state.state.isCreating);
@@ -22,7 +33,7 @@ export function useTemplatesCardViewModel() {
     return [...names].sort();
   }, [templateRefs]);
 
-  const selectedName = selectedRef?.name ?? null;
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const versionsForSelectedName = useMemo(() => {
     if (!selectedName) return [];
@@ -42,23 +53,24 @@ export function useTemplatesCardViewModel() {
 
   const selectTemplate = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: TemplatesCardActionType.TemplatesListOnCommit, name, version });
+      void dispatch({ type: TemplatesCardActionType.TemplatesListOnCommit, name, version });
     },
     [dispatch],
   );
 
   const selectName = useCallback(
     (name: string) => {
+      if (!name) return;
       const best = highestVersionForName(name);
       if (best) {
-        dispatch({ type: TemplatesCardActionType.TemplatesListOnCommit, name: best.name, version: best.version });
+        void dispatch({ type: TemplatesCardActionType.TemplatesListOnCommit, name: best.name, version: best.version });
       }
     },
     [dispatch, highestVersionForName],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: TemplatesCardActionType.TemplatesCreateButtonOnClick });
+    void dispatch({ type: TemplatesCardActionType.TemplatesCreateButtonOnClick });
   }, [dispatch]);
 
   const onSelectVersion = useCallback(

@@ -3,14 +3,48 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import { getTemplateRefs } from '../../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
-import type { ColorVariableKey, ContrastVariableKey } from '../../../../model/schema/primitives';
+import {
+  colorVariableKeySchema,
+  contrastVariableKeySchema,
+  type ColorVariableKey,
+  type ContrastVariableKey,
+} from '../../../../model/schema/primitives';
 import { VariablesCardActionType } from './actions/variables-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import type { ColorVariable, ContrastVariable, Template } from '../../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
 
-export function useVariablesCardViewModel() {
+export interface VariablesCardViewModel {
+  template: Template | null;
+  colorVariables: readonly ColorVariable[];
+  contrastVariables: readonly ContrastVariable[];
+  groups: readonly string[];
+  variablesSearchText: string;
+  addVariableName: string;
+  canEdit: boolean;
+  canAddColorVariable: boolean;
+  canAddContrastVariable: boolean;
+  referencedColorVarKeys: Set<string>;
+  referencedContrastVarKeys: Set<string>;
+  onAddVariableNameChange: (value: string) => void;
+  onAddColorVariableClick: (groupRef: string | null) => void;
+  onRemoveColorVariableClick: (key: string) => void;
+  onAddContrastVariableClick: (groupRef: string | null) => void;
+  onRemoveContrastVariableClick: (key: string) => void;
+  onUpdateColorVariableGroupRef: (key: string, groupRef: string | null) => void;
+  onUpdateContrastVariableGroupRef: (key: string, groupRef: string | null) => void;
+  onUpdateContrastComparisonSource: (key: string, ref: ColorVariableKey | null) => void;
+  onVariablesSearchChange: (value: string) => void;
+}
+
+function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean {
+  const schema = type === 'color' ? colorVariableKeySchema : contrastVariableKeySchema;
+  return schema.safeParse(value).success;
+}
+
+export function useVariablesCardViewModel(): VariablesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
   const template = useStore(templatesStore.api, (state) => state.state.template);
@@ -19,7 +53,7 @@ export function useVariablesCardViewModel() {
   const addVariableName = useStore(templatesStore.api, (state) => state.state.addVariableName);
 
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
-  const selectedName = selectedRef?.name ?? null;
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {
     if (!selectedRef || !selectedName) return false;
@@ -32,7 +66,15 @@ export function useVariablesCardViewModel() {
     return best !== null && best.version === selectedRef.version;
   }, [templateRefs, selectedRef, selectedName]);
 
-  const canEdit = template !== null && isLatestVersion;
+  const canEdit = useMemo(() => template !== null && isLatestVersion, [template, isLatestVersion]);
+  const canAddColorVariable = useMemo(
+    () => canEdit && isValidVariableKey(addVariableName.trim(), 'color'),
+    [addVariableName, canEdit],
+  );
+  const canAddContrastVariable = useMemo(
+    () => canEdit && isValidVariableKey(addVariableName.trim(), 'contrast'),
+    [addVariableName, canEdit],
+  );
 
   const referencedColorVarKeys = useMemo(() => {
     if (!template) return new Set<string>();
@@ -55,59 +97,61 @@ export function useVariablesCardViewModel() {
     return s;
   }, [template]);
 
-  const handleVariablesSearchChange = useCallback(
+  const onVariablesSearchChange = useCallback(
     (value: string) => {
-      dispatch({ type: VariablesCardActionType.VariablesSearchTextOnChange, value });
+      void dispatch({ type: VariablesCardActionType.VariablesSearchTextOnChange, value });
     },
     [dispatch],
   );
 
-  const handleAddVariableNameChange = useCallback(
+  const onAddVariableNameChange = useCallback(
     (value: string) => {
-      dispatch({ type: VariablesCardActionType.VariablesAddVariableNameTextOnChange, value });
+      void dispatch({ type: VariablesCardActionType.VariablesAddVariableNameTextOnChange, value });
     },
     [dispatch],
   );
 
   const addColorVariable = useCallback(
     (groupRef?: string | null) => {
-      dispatch({
+      if (!canAddColorVariable) return;
+      void dispatch({
         type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
         groupRef: groupRef ?? null,
         variableKind: 'color',
       });
     },
-    [dispatch],
+    [canAddColorVariable, dispatch],
   );
 
   const removeColorVariable = useCallback(
     (key: string) => {
-      dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
+      void dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
     },
     [dispatch],
   );
 
   const addContrastVariable = useCallback(
     (groupRef?: string | null) => {
-      dispatch({
+      if (!canAddContrastVariable) return;
+      void dispatch({
         type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
         groupRef: groupRef ?? null,
         variableKind: 'contrast',
       });
     },
-    [dispatch],
+    [canAddContrastVariable, dispatch],
   );
 
   const removeContrastVariable = useCallback(
     (key: string) => {
-      dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
+      void dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
     },
     [dispatch],
   );
 
   const updateContrastComparisonSource = useCallback(
     (key: string, comparisonSourceRef: ColorVariableKey | null) => {
-      dispatch({
+      void dispatch({
         type: VariablesCardActionType.VariablesContrastSourceListOnCommit,
         value: comparisonSourceRef,
         contrastVariableKey: key as ContrastVariableKey,
@@ -118,7 +162,7 @@ export function useVariablesCardViewModel() {
 
   const updateColorVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
-      dispatch({
+      void dispatch({
         type: VariablesCardActionType.VariablesGroupListOnCommit,
         value: groupRef ?? '',
         variableKey: key,
@@ -129,7 +173,7 @@ export function useVariablesCardViewModel() {
 
   const updateContrastVariableGroupRef = useCallback(
     (key: string, groupRef: string | null) => {
-      dispatch({
+      void dispatch({
         type: VariablesCardActionType.VariablesGroupListOnCommit,
         value: groupRef ?? '',
         variableKey: key,
@@ -145,17 +189,19 @@ export function useVariablesCardViewModel() {
     groups: template?.groups ?? [],
     variablesSearchText,
     addVariableName,
-    handleAddVariableNameChange,
+    canAddColorVariable,
+    canAddContrastVariable,
+    onAddVariableNameChange,
     referencedColorVarKeys,
     referencedContrastVarKeys,
     canEdit,
-    onAddColorVariable: addColorVariable,
-    onRemoveColorVariable: removeColorVariable,
-    onAddContrastVariable: addContrastVariable,
-    onRemoveContrastVariable: removeContrastVariable,
+    onAddColorVariableClick: addColorVariable,
+    onRemoveColorVariableClick: removeColorVariable,
+    onAddContrastVariableClick: addContrastVariable,
+    onRemoveContrastVariableClick: removeContrastVariable,
     onUpdateColorVariableGroupRef: updateColorVariableGroupRef,
     onUpdateContrastVariableGroupRef: updateContrastVariableGroupRef,
     onUpdateContrastComparisonSource: updateContrastComparisonSource,
-    handleVariablesSearchChange,
+    onVariablesSearchChange,
   };
 }

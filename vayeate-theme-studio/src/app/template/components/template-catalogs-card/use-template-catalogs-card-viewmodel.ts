@@ -9,17 +9,35 @@ import { TemplateCatalogsCardActionType } from './actions/template-catalogs-card
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
 import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import type { Template } from '../../../../model/schema/template-schemas';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
 
-export function useTemplateCatalogsCardViewModel() {
+export interface TemplateCatalogRowViewModel {
+  name: string;
+  isIncluded: boolean;
+  selectedVersion: string;
+  versions: CatalogReference[];
+  hasUpdate: boolean;
+}
+
+export interface TemplateCatalogsCardViewModel {
+  template: Template | null;
+  catalogRows: TemplateCatalogRowViewModel[];
+  shouldShowUpdateAllCatalogsButton: boolean;
+  onUpdateAllCatalogsClick: () => void;
+  onToggleCatalogClick: (catalogName: string) => void;
+  onCatalogVersionChange: (catalogName: string, newVersion: string) => void;
+}
+
+export function useTemplateCatalogsCardViewModel(): TemplateCatalogsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
   const template = useStore(templatesStore.api, (state) => state.state.template);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
-  const selectedName = selectedRef?.name ?? null;
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {
     if (!selectedRef || !selectedName) return false;
@@ -81,16 +99,32 @@ export function useTemplateCatalogsCardViewModel() {
     }
     return names;
   }, [template, catalogVersionsByName]);
+  const shouldShowUpdateAllCatalogsButton = useMemo(
+    () => isLatestVersion && includedCatalogNamesWithUpdates.length > 0,
+    [includedCatalogNamesWithUpdates, isLatestVersion],
+  );
+  const catalogRows = useMemo(() => {
+    return catalogNamesList.map((name) => {
+      const isIncluded = includedCatalogMap.has(name);
+      return {
+        name,
+        isIncluded,
+        selectedVersion: includedCatalogMap.get(name) ?? '',
+        versions: catalogVersionsByName[name] ?? [],
+        hasUpdate: isIncluded && isLatestVersion && includedCatalogNamesWithUpdates.includes(name),
+      };
+    });
+  }, [catalogNamesList, catalogVersionsByName, includedCatalogMap, includedCatalogNamesWithUpdates, isLatestVersion]);
 
   const updateAllCatalogsToLatest = useCallback(() => {
     if (!template || !isLatestVersion) return;
-    dispatch({ type: TemplateCatalogsCardActionType.UpdateAllButtonOnClick });
+    void dispatch({ type: TemplateCatalogsCardActionType.UpdateAllButtonOnClick });
   }, [template, isLatestVersion, dispatch]);
 
   const toggleCatalog = useCallback(
     (catalogName: string) => {
       if (!template) return;
-      dispatch({
+      void dispatch({
         type: TemplateCatalogsCardActionType.CatalogCheckboxOnToggle,
         catalogName: catalogName as CatalogName,
       });
@@ -101,7 +135,7 @@ export function useTemplateCatalogsCardViewModel() {
   const changeCatalogVersion = useCallback(
     (catalogName: string, newVersion: string) => {
       if (!template) return;
-      dispatch({
+      void dispatch({
         type: TemplateCatalogsCardActionType.CatalogVersionListOnCommit,
         catalogName: catalogName as CatalogName,
         value: newVersion,
@@ -112,13 +146,10 @@ export function useTemplateCatalogsCardViewModel() {
 
   return {
     template,
-    catalogNamesList,
-    catalogVersionsByName,
-    includedCatalogMap,
-    includedCatalogNamesWithUpdates,
-    isLatestVersion,
-    updateAllCatalogsToLatest,
-    toggleCatalog,
-    changeCatalogVersion,
+    catalogRows,
+    shouldShowUpdateAllCatalogsButton,
+    onUpdateAllCatalogsClick: updateAllCatalogsToLatest,
+    onToggleCatalogClick: toggleCatalog,
+    onCatalogVersionChange: changeCatalogVersion,
   };
 }

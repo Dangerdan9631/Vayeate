@@ -6,17 +6,27 @@ import { compareVersions } from '../../../../domain/utils/compare-versions';
 import { TemplateDetailsCardActionType } from './actions/template-details-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../../domain/state/template/templates-store';
-import type { Mapping } from '../../../../model/schema/template-schemas';
+import type { Mapping, Template } from '../../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
 
-export function useTemplateDetailsCardViewModel() {
+export interface TemplateDetailsCardViewModel {
+  template: Template | null;
+  isLatestVersion: boolean;
+  canLock: boolean;
+  canShowLockButton: boolean;
+  lockButtonTitle: string;
+  onDeleteVersionClick: () => void;
+  onLockClick: () => void;
+}
+
+export function useTemplateDetailsCardViewModel(): TemplateDetailsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
   const template = useStore(templatesStore.api, (state) => state.state.template);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
-  const selectedName = selectedRef?.name ?? null;
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {
     if (!selectedRef || !selectedName) return false;
@@ -33,22 +43,29 @@ export function useTemplateDetailsCardViewModel() {
     if (!template || template.locked || !isLatestVersion) return false;
     return template.mappings.every((m: Mapping) => m.colorVariableRef !== null);
   }, [template, isLatestVersion]);
+  const canShowLockButton = useMemo(() => template !== null && !template.locked && isLatestVersion, [template, isLatestVersion]);
+  const lockButtonTitle = useMemo(
+    () => canLock ? 'Lock this version' : 'All mappings must have a color variable assigned',
+    [canLock],
+  );
 
   const lockTemplate = useCallback(() => {
     if (!template || !canLock) return;
-    dispatch({ type: TemplateDetailsCardActionType.LockButtonOnClick });
+    void dispatch({ type: TemplateDetailsCardActionType.LockButtonOnClick });
   }, [template, canLock, dispatch]);
 
   const onDeleteVersion = useCallback(() => {
     if (!selectedRef) return;
-    dispatch({ type: TemplateDetailsCardActionType.DeleteVersionButtonOnClick });
+    void dispatch({ type: TemplateDetailsCardActionType.DeleteVersionButtonOnClick });
   }, [dispatch, selectedRef]);
 
   return {
     template,
     isLatestVersion,
     canLock,
-    onDeleteVersion,
-    onLock: lockTemplate,
+    canShowLockButton,
+    lockButtonTitle,
+    onDeleteVersionClick: onDeleteVersion,
+    onLockClick: lockTemplate,
   };
 }

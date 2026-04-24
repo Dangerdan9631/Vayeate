@@ -1,7 +1,7 @@
 import { useTemplateDetailsCardViewModel } from './use-template-details-card-viewmodel';
 
 export function TemplateDetailsCard() {
-  const { template, isLatestVersion, canLock, onDeleteVersion, onLock } =
+  const { template, canLock, canShowLockButton, lockButtonTitle, onDeleteVersionClick, onLockClick } =
     useTemplateDetailsCardViewModel();
 
   if (!template) return null;
@@ -34,16 +34,16 @@ export function TemplateDetailsCard() {
       </div>
 
       <div className="details-actions">
-        <button type="button" className="btn-danger" onClick={onDeleteVersion}>
+        <button type="button" className="btn-danger" onClick={onDeleteVersionClick}>
           Delete version
         </button>
-        {!template.locked && isLatestVersion && (
+        {canShowLockButton && (
           <button
             type="button"
             className="btn-secondary"
             disabled={!canLock}
-            onClick={onLock}
-            title={canLock ? 'Lock this version' : 'All mappings must have a color variable assigned'}
+            onClick={onLockClick}
+            title={lockButtonTitle}
           >
             Lock
           </button>

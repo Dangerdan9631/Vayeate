@@ -25,15 +25,16 @@ export function useMappingsCardViewModel() {
   const mappingColorVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingColorVariableFilter);
   const mappingContrastVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingContrastVariableFilter);
 
-  const loadedForDisplay = useStore(catalogsStore.api, (state) => state.state.loadedForDisplay);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
 
   const loadedCatalogsForTemplateRefs = useMemo(() => {
     if (!template || template.catalogRefs.length === 0) return [];
     return template.catalogRefs.map((ref: CatalogReference) => {
-      const key = `${ref.name}@${ref.version}`;
-      return loadedForDisplay[key] ?? null;
+      const catalogEntry = catalogMap[ref.name]?.[ref.version];
+      if (!catalogEntry || !catalogEntry.isLoaded) return null;
+      return catalogEntry.catalog;
     });
-  }, [template, loadedForDisplay]);
+  }, [template, catalogMap]);
 
   const orphanKeys = useMemo(() => {
     if (!template || loadedCatalogsForTemplateRefs.length === 0) {
@@ -98,7 +99,7 @@ export function useMappingsCardViewModel() {
 
   const updateMappingColorRef = useCallback(
     (tokenKey: string, tokenType: TokenType, colorRef: ColorVariableKey | null) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingExistingTokenColorVariableListOnCommit,
         value: colorRef as ColorVariableKey,
         tokenKey,
@@ -110,7 +111,7 @@ export function useMappingsCardViewModel() {
 
   const updateMappingContrastRef = useCallback(
     (tokenKey: string, tokenType: TokenType, contrastRef: ContrastVariableKey | null) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingExistingTokenContrastVariableListOnCommit,
         value: contrastRef,
         tokenKey,
@@ -122,7 +123,7 @@ export function useMappingsCardViewModel() {
 
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingExistingTokenGroupListOnCommit,
         value: groupRef ?? '',
         tokenKey,
@@ -134,7 +135,7 @@ export function useMappingsCardViewModel() {
 
   const addSemanticVariantMapping = useCallback(
     (semanticType: string, defaultGroupRef?: string | null) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingSemanticTokenAddVariantButtonOnClick,
         semanticType,
         defaultGroupRef,
@@ -145,7 +146,7 @@ export function useMappingsCardViewModel() {
 
   const commitSemanticTokenModifiers = useCallback(
     (oldKey: string, modifiers: string[]) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingSemanticTokenModifierListOnCommit,
         tokenKey: oldKey,
         modifiers,
@@ -156,7 +157,7 @@ export function useMappingsCardViewModel() {
 
   const commitSemanticTokenLanguage = useCallback(
     (oldKey: string, language: string | null) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingSemanticTokenLanguageListOnCommit,
         tokenKey: oldKey,
         value: language,
@@ -167,7 +168,7 @@ export function useMappingsCardViewModel() {
 
   const removeMapping = useCallback(
     (tokenKey: string, tokenType: TokenType) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingSemanticTokenVariantRemoveButtonOnClick,
         tokenKey,
         tokenType,
@@ -178,14 +179,14 @@ export function useMappingsCardViewModel() {
 
   const setMappingSearchText = useCallback(
     (value: string) => {
-      dispatch({ type: MappingsCardActionType.MappingSearchTextOnChange, value });
+      void dispatch({ type: MappingsCardActionType.MappingSearchTextOnChange, value });
     },
     [dispatch],
   );
 
   const setMappingColorVariableFilter = useCallback(
     (values: ColorVariableKey[]) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingColorVariableFilterListOnSelect,
         values,
       });
@@ -195,7 +196,7 @@ export function useMappingsCardViewModel() {
 
   const setMappingContrastVariableFilter = useCallback(
     (values: ContrastVariableKey[]) => {
-      dispatch({
+      void dispatch({
         type: MappingsCardActionType.MappingContrastVariableFilterListOnSelect,
         values,
       });

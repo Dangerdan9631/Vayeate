@@ -7,7 +7,11 @@ import { TemplatesStore } from '../../../../domain/state/template/templates-stor
 
 const templatesStore = container.resolve(TemplatesStore);
 
-export function useTemplateViewModel(): { isCreateDialogOpen: boolean } {
+export interface TemplateViewModel {
+  isCreateDialogOpen: boolean;
+}
+
+export function useTemplateViewModel(): TemplateViewModel {
   const dispatch = useAppDispatch();
   const pageLoadDispatchedRef = useRef(false);
 
@@ -16,8 +20,8 @@ export function useTemplateViewModel(): { isCreateDialogOpen: boolean } {
   useEffect(() => {
     if (pageLoadDispatchedRef.current) return;
     pageLoadDispatchedRef.current = true;
-    dispatch({ type: TemplatePageActionType.PageOnLoad });
+    void dispatch({ type: TemplatePageActionType.PageOnLoad });
   }, [dispatch]);
 
-  return { isCreateDialogOpen: isCreateDialogOpen };
+  return { isCreateDialogOpen };
 }

@@ -4,25 +4,24 @@ import { useGroupsCardViewModel } from './use-groups-card-viewmodel';
 export function GroupsCard() {
   const {
     template,
-    groups,
-    groupNamesInUse,
+    groupRows,
     canEdit,
     addGroupName,
-    canAdd,
-    onRemoveGroup,
-    handleAddGroupNameChange,
-    handleAddGroup,
+    canAddGroup,
+    onRemoveGroupClick,
+    onAddGroupNameChange,
+    onAddGroupClick,
   } = useGroupsCardViewModel();
 
   if (!template) return null;
 
   function onAddGroupNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    handleAddGroupNameChange(e.target.value);
+    onAddGroupNameChange(e.target.value);
   }
 
   function onAddGroupNameKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
-      handleAddGroup();
+      onAddGroupClick();
     }
   }
 
@@ -43,31 +42,30 @@ export function GroupsCard() {
             type="button"
             className="btn-icon btn-add-icon"
             title="Add group"
-            disabled={!canAdd}
-            onClick={handleAddGroup}
+            disabled={!canAddGroup}
+            onClick={onAddGroupClick}
           >
             <span className="material-symbols-outlined">add</span>
           </button>
         </div>
       )}
       <div className="tree-children">
-        {groups.length === 0 && (
+        {groupRows.length === 0 && (
           <div className="empty-hint">No groups defined.</div>
         )}
-        {[...groups].sort((a, b) => a.localeCompare(b)).map((name) => {
-          const inUse = groupNamesInUse.has(name);
+        {groupRows.map((group) => {
           function onRemoveGroupButtonClick() {
-            onRemoveGroup(name);
+            onRemoveGroupClick(group.name);
           }
           return (
-            <div key={name} className="variable-row">
-              <span className="variable-name">{name}</span>
+            <div key={group.name} className="variable-row">
+              <span className="variable-name">{group.name}</span>
               {canEdit && (
                 <button
                   type="button"
                   className="btn-icon btn-danger-icon"
-                  title={inUse ? 'Cannot remove: group has mappings or variables' : 'Remove group'}
-                  disabled={inUse}
+                  title={group.removeButtonTitle}
+                  disabled={group.isInUse}
                   onClick={onRemoveGroupButtonClick}
                 >
                   <span className="material-symbols-outlined">close</span>

@@ -6,10 +6,28 @@ import { compareVersions } from '../../../../domain/utils/compare-versions';
 import { GroupsCardActionType } from './actions/groups-card-action-type';
 import { container } from 'tsyringe';
 import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import type { Template } from '../../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
 
-export function useGroupsCardViewModel() {
+export interface GroupRowViewModel {
+  name: string;
+  isInUse: boolean;
+  removeButtonTitle: string;
+}
+
+export interface GroupsCardViewModel {
+  template: Template | null;
+  groupRows: GroupRowViewModel[];
+  canEdit: boolean;
+  addGroupName: string;
+  canAddGroup: boolean;
+  onRemoveGroupClick: (name: string) => void;
+  onAddGroupNameChange: (value: string) => void;
+  onAddGroupClick: () => void;
+}
+
+export function useGroupsCardViewModel(): GroupsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
   const template = useStore(templatesStore.api, (state) => state.state.template);
@@ -17,7 +35,7 @@ export function useGroupsCardViewModel() {
   const addGroupName = useStore(templatesStore.api, (state) => state.state.addGroupName);
 
   const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
-  const selectedName = selectedRef?.name ?? null;
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {
     if (!selectedRef || !selectedName) return false;
@@ -30,9 +48,9 @@ export function useGroupsCardViewModel() {
     return best !== null && best.version === selectedRef.version;
   }, [templateRefs, selectedRef, selectedName]);
 
-  const canEdit = template !== null && isLatestVersion;
+  const canEdit = useMemo(() => template !== null && isLatestVersion, [template, isLatestVersion]);
 
-  const groups = template?.groups ?? [];
+  const groups = useMemo(() => template?.groups ?? [], [template]);
 
   const groupNamesInUse = useMemo(() => {
     if (!template) return new Set<string>();
@@ -49,37 +67,49 @@ export function useGroupsCardViewModel() {
     return s;
   }, [template]);
 
+  const groupRows = useMemo(() => {
+    return [...groups]
+      .sort((a, b) => a.localeCompare(b))
+      .map((name) => {
+        const isInUse = groupNamesInUse.has(name);
+        return {
+          name,
+          isInUse,
+          removeButtonTitle: isInUse ? 'Cannot remove: group has mappings or variables' : 'Remove group',
+        };
+      });
+  }, [groupNamesInUse, groups]);
+
   const removeGroup = useCallback(
     (name: string) => {
-      dispatch({ type: GroupsCardActionType.GroupRemoveButtonOnClick, groupId: name });
+      void dispatch({ type: GroupsCardActionType.GroupRemoveButtonOnClick, groupId: name });
     },
     [dispatch],
   );
 
-  const handleAddGroupNameChange = useCallback(
+  const onAddGroupNameChange = useCallback(
     (value: string) => {
-      dispatch({ type: GroupsCardActionType.GroupAddTextOnChange, value });
+      void dispatch({ type: GroupsCardActionType.GroupAddTextOnChange, value });
     },
     [dispatch],
   );
 
   const trimmed = addGroupName.trim();
-  const canAdd = trimmed.length > 0 && !groups.includes(trimmed);
+  const canAddGroup = useMemo(() => trimmed.length > 0 && !groups.includes(trimmed), [groups, trimmed]);
 
-  const handleAddGroup = useCallback(() => {
-    if (!canAdd) return;
-    dispatch({ type: GroupsCardActionType.GroupAddButtonOnClick });
-  }, [canAdd, dispatch]);
+  const onAddGroupClick = useCallback(() => {
+    if (!canAddGroup) return;
+    void dispatch({ type: GroupsCardActionType.GroupAddButtonOnClick });
+  }, [canAddGroup, dispatch]);
 
   return {
     template,
-    groups,
-    groupNamesInUse,
+    groupRows,
     canEdit,
     addGroupName,
-    canAdd,
-    onRemoveGroup: removeGroup,
-    handleAddGroupNameChange,
-    handleAddGroup,
+    canAddGroup,
+    onRemoveGroupClick: removeGroup,
+    onAddGroupNameChange,
+    onAddGroupClick,
   };
 }
