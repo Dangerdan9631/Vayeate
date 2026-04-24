@@ -1,27 +1,136 @@
-import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import type { Catalog } from '../../../../model/schema/catalog';
-import type { SourceType, TokenType } from '../../../../model/schema/primitives';
+import { sourceTypeSchema, tokenTypeSchema, type SourceType, type TokenType } from '../../../../model/schema/primitives';
 import { CatalogDetailsCardActionType } from './actions/catalog-details-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
+const TOKEN_TYPE_OPTIONS = tokenTypeSchema.options;
+const SOURCE_TYPE_OPTIONS = sourceTypeSchema.options;
 
-export function useCatalogDetailsCardViewModel() {
+export interface CatalogDetailsCardOption<TValue extends string> {
+  value: TValue;
+  label: string;
+}
+
+export interface CatalogDetailsCardSourceRowViewModel {
+  sourceIndex: number;
+  url: string;
+  tokenType: TokenType;
+  sourceType: SourceType;
+  isDisabled: boolean;
+  tokenTypeOptions: CatalogDetailsCardOption<TokenType>[];
+  sourceTypeOptions: CatalogDetailsCardOption<SourceType>[];
+}
+
+export interface CatalogDetailsCardViewModel {
+  catalog: Catalog | null;
+  themeTokenCount: number;
+  textmateTokenCount: number;
+  semanticTokenCount: number;
+  isLatestVersion: boolean;
+  canAddNewSource: boolean;
+  canSync: boolean;
+  canLock: boolean;
+  canRevert: boolean;
+  newSourceUrl: string;
+  newSourceTokenType: TokenType;
+  newSourceType: SourceType;
+  sourceRows: CatalogDetailsCardSourceRowViewModel[];
+  newSourceTokenTypeOptions: CatalogDetailsCardOption<TokenType>[];
+  newSourceTypeOptions: CatalogDetailsCardOption<SourceType>[];
+  onDeleteVersionClick: () => void;
+  onLockClick: () => void;
+  onSyncClick: () => void;
+  onRevertClick: () => void;
+  onEditingSourceUrlChange: (value: string) => void;
+  onSourceUrlFocus: (sourceIndex: string | undefined) => void;
+  onSourceUrlCommit: (value: string, sourceIndex: string | undefined) => void;
+  onSourceTokenTypeChange: (value: string, sourceIndex: string | undefined) => void;
+  onSourceTypeChange: (value: string, sourceIndex: string | undefined) => void;
+  onSourceRemoveClick: (sourceIndex: string | undefined) => void;
+  onNewSourceUrlChange: (value: string) => void;
+  onNewSourceTokenTypeChange: (value: string) => void;
+  onNewSourceTypeChange: (value: string) => void;
+  onNewSourceAddClick: () => void;
+}
+
+function getTokenTypeLabel(value: TokenType): string {
+  return value === 'theme' ? 'Theme Tokens' : value === 'textmate token' ? 'Textmate Tokens' : 'Semantic Tokens';
+}
+
+function getTokenTypeOption(value: TokenType): CatalogDetailsCardOption<TokenType> {
+  return {
+    value,
+    label: getTokenTypeLabel(value),
+  };
+}
+
+function getSourceTypeOption(value: SourceType): CatalogDetailsCardOption<SourceType> {
+  return {
+    value,
+    label: value,
+  };
+}
+
+function getSourceTypeOptions(tokenType: TokenType): CatalogDetailsCardOption<SourceType>[] {
+  return SOURCE_TYPE_OPTIONS
+    .filter((sourceType) => {
+      if (sourceType === 'default') return true;
+      if (sourceType === 'color-registry' || sourceType === 'color-registry-set') return tokenType === 'theme';
+      if (sourceType === 'semantic-token-registry') return tokenType === 'semantic token';
+      if (sourceType === 'textmate-xml' || sourceType === 'textmate-json') return tokenType === 'textmate token';
+      return false;
+    })
+    .map(getSourceTypeOption);
+}
+
+function getTokenTypeOptions(sourceType: SourceType): CatalogDetailsCardOption<TokenType>[] {
+  return TOKEN_TYPE_OPTIONS
+    .filter((tokenType) => {
+      if (sourceType === 'default') return true;
+      if (sourceType === 'color-registry' || sourceType === 'color-registry-set') return tokenType === 'theme';
+      if (sourceType === 'semantic-token-registry') return tokenType === 'semantic token';
+      if (sourceType === 'textmate-xml' || sourceType === 'textmate-json') return tokenType === 'textmate token';
+      return false;
+    })
+    .map(getTokenTypeOption);
+}
+
+function parseSourceIndex(value: string | undefined): number | null {
+  const sourceIndex = Number(value);
+  return Number.isNaN(sourceIndex) ? null : sourceIndex;
+}
+
+function parseTokenType(value: string): TokenType | null {
+  return TOKEN_TYPE_OPTIONS.includes(value as TokenType) ? value as TokenType : null;
+}
+
+function parseSourceType(value: string): SourceType | null {
+  return SOURCE_TYPE_OPTIONS.includes(value as SourceType) ? value as SourceType : null;
+}
+
+export function useCatalogDetailsCardViewModel(): CatalogDetailsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
-  const catalog: Catalog | null = useStore(catalogsStore.api, getCurrentCatalog);
   const newSourceUrl = useStore(catalogsStore.api, (state) => state.stateV2.newSource.url);
   const newSourceTokenType = useStore(catalogsStore.api, (state) => state.stateV2.newSource.tokenType);
   const newSourceType = useStore(catalogsStore.api, (state) => state.stateV2.newSource.type);
   const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
   const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
 
-  const selectedName = selectedRef?.name ?? null;
+  const catalog: Catalog | null = useMemo(() => {
+    if (!selectedRef) return null;
+    const catalogEntry = catalogMap[selectedRef.name]?.[selectedRef.version];
+    if (!catalogEntry || !catalogEntry.isLoaded) return null;
+    return catalogEntry.catalog;
+  }, [catalogMap, selectedRef]);
+
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {
     if (!selectedRef || !selectedName) return false;
@@ -34,179 +143,192 @@ export function useCatalogDetailsCardViewModel() {
     return best !== null && best.version === selectedRef.version;
   }, [catalogRefs, selectedRef, selectedName]);
 
-  const tokenCounts = useMemo(() => {
-    if (!catalog) return { theme: 0, 'textmate token': 0, 'semantic token': 0 };
-    const counts: Record<TokenType, number> = { theme: 0, 'textmate token': 0, 'semantic token': 0 };
-    for (const t of catalog.tokens) {
-      counts[t.type]++;
-    }
-    return counts;
+  const themeTokenCount = useMemo(() => {
+    return catalog?.tokens.filter((token) => token.type === 'theme').length ?? 0;
+  }, [catalog]);
+
+  const textmateTokenCount = useMemo(() => {
+    return catalog?.tokens.filter((token) => token.type === 'textmate token').length ?? 0;
+  }, [catalog]);
+
+  const semanticTokenCount = useMemo(() => {
+    return catalog?.tokens.filter((token) => token.type === 'semantic token').length ?? 0;
   }, [catalog]);
 
   const [editingSourceIndex, setEditingSourceIndex] = useState<number | null>(null);
   const [editingSourceUrl, setEditingSourceUrl] = useState('');
 
-  const lockCatalog = useCallback(() => {
-    dispatch({ type: CatalogDetailsCardActionType.LockButtonOnClick });
+  const shouldShowNewSourceRow = useMemo(() => isLatestVersion, [isLatestVersion]);
+  const canSync = useMemo(() => catalog?.type === 'remote' && isLatestVersion, [catalog, isLatestVersion]);
+  const canLock = useMemo(() => catalog?.type === 'manual' && !catalog.locked && isLatestVersion, [catalog, isLatestVersion]);
+  const canRevert = useMemo(() => !isLatestVersion, [isLatestVersion]);
+  const sourceRows = useMemo(() => {
+    return catalog?.sources.map((source, sourceIndex) => ({
+      sourceIndex,
+      url: editingSourceIndex === sourceIndex ? editingSourceUrl : source.url,
+      tokenType: source.tokenType,
+      sourceType: source.type,
+      isDisabled: !isLatestVersion,
+      tokenTypeOptions: getTokenTypeOptions(source.type),
+      sourceTypeOptions: getSourceTypeOptions(source.tokenType),
+    })) ?? [];
+  }, [catalog, editingSourceIndex, editingSourceUrl, isLatestVersion]);
+
+  const newSourceTokenTypeOptions = useMemo(() => {
+    return TOKEN_TYPE_OPTIONS.map(getTokenTypeOption);
+  }, []);
+
+  const newSourceTypeOptions = useMemo(() => {
+    return getSourceTypeOptions(newSourceTokenType);
+  }, [newSourceTokenType]);
+
+  const onLockClick = useCallback(() => {
+    void dispatch({ type: CatalogDetailsCardActionType.LockButtonOnClick });
   }, [dispatch]);
 
-  const syncCatalog = useCallback(() => {
-    dispatch({ type: CatalogDetailsCardActionType.SyncButtonOnClick });
+  const onSyncClick = useCallback(() => {
+    void dispatch({ type: CatalogDetailsCardActionType.SyncButtonOnClick });
   }, [dispatch]);
 
-  const onDeleteVersion = useCallback(() => {
+  const onDeleteVersionClick = useCallback(() => {
     if (!selectedRef) return;
-    dispatch({ type: CatalogDetailsCardActionType.DeleteVersionButtonOnClick });
+    void dispatch({ type: CatalogDetailsCardActionType.DeleteVersionButtonOnClick });
   }, [dispatch, selectedRef]);
 
-  const onRevert = useCallback(() => {
-    dispatch({ type: CatalogDetailsCardActionType.RevertButtonOnClick });
+  const onRevertClick = useCallback(() => {
+    void dispatch({ type: CatalogDetailsCardActionType.RevertButtonOnClick });
   }, [dispatch]);
 
-  const commitSourceUrl = useCallback(
-    (value: string, sourceIndex: number) => {
-      dispatch({
-        type: CatalogDetailsCardActionType.SourceUrlTextOnCommit,
-        value,
-        sourceIndex,
-      });
-    },
-    [dispatch],
-  );
+  const onEditingSourceUrlChange = useCallback((value: string) => {
+    setEditingSourceUrl(value);
+  }, []);
 
-  const commitSourceTokenType = useCallback(
-    (value: TokenType, sourceIndex: number) => {
-      dispatch({
-        type: CatalogDetailsCardActionType.SourceTokenTypeListOnCommit,
-        value,
-        sourceIndex,
-      });
-    },
-    [dispatch],
-  );
-
-  const commitSourceType = useCallback(
-    (value: SourceType, sourceIndex: number) => {
-      dispatch({
-        type: CatalogDetailsCardActionType.SourceTypeListOnCommit,
-        value,
-        sourceIndex,
-      });
-    },
-    [dispatch],
-  );
-
-  const removeSource = useCallback(
-    (sourceIndex: number) => {
-      dispatch({ type: CatalogDetailsCardActionType.SourceRemoveButtonOnClick, sourceIndex });
-    },
-    [dispatch],
-  );
-
-  const changeNewSourceUrl = useCallback(
-    (value: string) => {
-      dispatch({ type: CatalogDetailsCardActionType.NewSourceUrlTextOnChange, value });
-    },
-    [dispatch],
-  );
-
-  const commitNewSourceTokenType = useCallback(
-    (value: TokenType) => {
-      dispatch({ type: CatalogDetailsCardActionType.NewSourceTokenTypeListOnCommit, value });
-    },
-    [dispatch],
-  );
-
-  const commitNewSourceType = useCallback(
-    (value: SourceType) => {
-      dispatch({ type: CatalogDetailsCardActionType.NewSourceTypeListOnCommit, value });
-    },
-    [dispatch],
-  );
-
-  const addNewSource = useCallback(() => {
-    dispatch({ type: CatalogDetailsCardActionType.NewSourceAddButtonOnClick });
-  }, [dispatch]);
-
-  const onExistingSourceUrlFocus = useCallback(
-    (e: FocusEvent<HTMLInputElement>) => {
-      const i = Number(e.currentTarget.dataset.sourceIndex);
-      if (Number.isNaN(i) || !catalog) return;
-      const url = catalog.sources[i]?.url ?? '';
-      setEditingSourceIndex(i);
+  const onSourceUrlFocus = useCallback(
+    (sourceIndexInput: string | undefined) => {
+      const sourceIndex = parseSourceIndex(sourceIndexInput);
+      if (sourceIndex === null || !catalog) return;
+      const url = catalog.sources[sourceIndex]?.url ?? '';
+      setEditingSourceIndex(sourceIndex);
       setEditingSourceUrl(url);
     },
     [catalog],
   );
 
-  const onExistingSourceUrlBlur = useCallback(
-    (e: FocusEvent<HTMLInputElement>) => {
-      const i = Number(e.currentTarget.dataset.sourceIndex);
-      if (Number.isNaN(i) || !catalog) return;
-      const committedUrl = catalog.sources[i]?.url ?? '';
-      const v = e.target.value.trim();
-      if (v !== committedUrl) {
-        commitSourceUrl(v, i);
+  const onSourceUrlCommit = useCallback(
+    (value: string, sourceIndexInput: string | undefined) => {
+      const sourceIndex = parseSourceIndex(sourceIndexInput);
+      if (sourceIndex === null || !catalog) return;
+      const committedUrl = catalog.sources[sourceIndex]?.url ?? '';
+      const nextUrl = value.trim();
+      if (nextUrl === committedUrl) {
+        setEditingSourceIndex(null);
+        return;
       }
+      void dispatch({
+        type: CatalogDetailsCardActionType.SourceUrlTextOnCommit,
+        value: nextUrl,
+        sourceIndex,
+      });
       setEditingSourceIndex(null);
     },
-    [catalog, commitSourceUrl],
+    [catalog, dispatch],
   );
 
-  const onExistingSourceTokenTypeChange = useCallback(
-    (e: ChangeEvent<HTMLSelectElement>) => {
-      const i = Number(e.currentTarget.dataset.sourceIndex);
-      if (Number.isNaN(i)) return;
-      commitSourceTokenType(e.target.value as TokenType, i);
+  const onSourceTokenTypeChange = useCallback(
+    (value: string, sourceIndexInput: string | undefined) => {
+      const sourceIndex = parseSourceIndex(sourceIndexInput);
+      const tokenType = parseTokenType(value);
+      if (sourceIndex === null || tokenType === null) return;
+      void dispatch({
+        type: CatalogDetailsCardActionType.SourceTokenTypeListOnCommit,
+        value: tokenType,
+        sourceIndex,
+      });
     },
-    [commitSourceTokenType],
+    [dispatch],
   );
 
-  const onExistingSourceTypeChange = useCallback(
-    (e: ChangeEvent<HTMLSelectElement>) => {
-      const i = Number(e.currentTarget.dataset.sourceIndex);
-      if (Number.isNaN(i)) return;
-      commitSourceType(e.target.value as SourceType, i);
+  const onSourceTypeChange = useCallback(
+    (value: string, sourceIndexInput: string | undefined) => {
+      const sourceIndex = parseSourceIndex(sourceIndexInput);
+      const sourceType = parseSourceType(value);
+      if (sourceIndex === null || sourceType === null) return;
+      void dispatch({
+        type: CatalogDetailsCardActionType.SourceTypeListOnCommit,
+        value: sourceType,
+        sourceIndex,
+      });
     },
-    [commitSourceType],
+    [dispatch],
   );
 
-  const onRemoveExistingSourceClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) => {
-      const i = Number(e.currentTarget.dataset.sourceIndex);
-      if (Number.isNaN(i)) return;
-      removeSource(i);
+  const onSourceRemoveClick = useCallback(
+    (sourceIndexInput: string | undefined) => {
+      const sourceIndex = parseSourceIndex(sourceIndexInput);
+      if (sourceIndex === null) return;
+      void dispatch({ type: CatalogDetailsCardActionType.SourceRemoveButtonOnClick, sourceIndex });
     },
-    [removeSource],
+    [dispatch],
   );
+
+  const onNewSourceUrlChange = useCallback(
+    (value: string) => {
+      void dispatch({ type: CatalogDetailsCardActionType.NewSourceUrlTextOnChange, value });
+    },
+    [dispatch],
+  );
+
+  const onNewSourceTokenTypeChange = useCallback(
+    (value: string) => {
+      const tokenType = parseTokenType(value);
+      if (tokenType === null) return;
+      void dispatch({ type: CatalogDetailsCardActionType.NewSourceTokenTypeListOnCommit, value: tokenType });
+    },
+    [dispatch],
+  );
+
+  const onNewSourceTypeChange = useCallback(
+    (value: string) => {
+      const sourceType = parseSourceType(value);
+      if (sourceType === null) return;
+      void dispatch({ type: CatalogDetailsCardActionType.NewSourceTypeListOnCommit, value: sourceType });
+    },
+    [dispatch],
+  );
+
+  const onNewSourceAddClick = useCallback(() => {
+    void dispatch({ type: CatalogDetailsCardActionType.NewSourceAddButtonOnClick });
+  }, [dispatch]);
 
   return {
     catalog,
-    tokenCounts,
+    themeTokenCount,
+    textmateTokenCount,
+    semanticTokenCount,
     isLatestVersion,
-    onDeleteVersion,
-    onLock: lockCatalog,
-    onSync: syncCatalog,
-    onRevert,
+    canAddNewSource: shouldShowNewSourceRow,
+    canSync,
+    canLock,
+    canRevert,
     newSourceUrl,
     newSourceTokenType,
     newSourceType,
-    editingSourceIndex,
-    editingSourceUrl,
-    setEditingSourceIndex,
-    setEditingSourceUrl,
-    commitSourceUrl,
-    commitSourceTokenType,
-    commitSourceType,
-    removeSource,
-    changeNewSourceUrl,
-    commitNewSourceTokenType,
-    commitNewSourceType,
-    addNewSource,
-    onExistingSourceUrlFocus,
-    onExistingSourceUrlBlur,
-    onExistingSourceTokenTypeChange,
-    onExistingSourceTypeChange,
-    onRemoveExistingSourceClick,
+    sourceRows,
+    newSourceTokenTypeOptions,
+    newSourceTypeOptions,
+    onDeleteVersionClick,
+    onLockClick,
+    onSyncClick,
+    onRevertClick,
+    onEditingSourceUrlChange,
+    onSourceUrlFocus,
+    onSourceUrlCommit,
+    onSourceTokenTypeChange,
+    onSourceTypeChange,
+    onSourceRemoveClick,
+    onNewSourceUrlChange,
+    onNewSourceTokenTypeChange,
+    onNewSourceTypeChange,
+    onNewSourceAddClick,
   };
 }

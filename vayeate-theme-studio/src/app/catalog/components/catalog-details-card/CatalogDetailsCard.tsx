@@ -1,70 +1,74 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { useCatalogDetailsCardViewModel } from './use-catalog-details-card-viewmodel';
-import { TokenType, SourceType } from '../../../../model/schema/primitives';
-
-const TOKEN_TYPE_OPTIONS: TokenType[] = ['theme', 'textmate token', 'semantic token'];
-const SOURCE_TYPE_OPTIONS_FOR_THEME: SourceType[] = ['default', 'color-registry', 'color-registry-set'];
-const SOURCE_TYPE_OPTIONS_FOR_SEMANTIC: SourceType[] = ['default', 'semantic-token-registry'];
-const SOURCE_TYPE_OPTIONS_FOR_TEXTMATE: SourceType[] = ['default', 'textmate-xml', 'textmate-json'];
-
-function getTokenTypeLabel(t: TokenType): string {
-  return t === 'theme' ? 'Theme Tokens' : t === 'textmate token' ? 'Textmate Tokens' : 'Semantic Tokens';
-}
-
-function getSourceTypeOptions(tokenType: TokenType): SourceType[] {
-  if (tokenType === 'theme') return SOURCE_TYPE_OPTIONS_FOR_THEME;
-  if (tokenType === 'semantic token') return SOURCE_TYPE_OPTIONS_FOR_SEMANTIC;
-  if (tokenType === 'textmate token') return SOURCE_TYPE_OPTIONS_FOR_TEXTMATE;
-  return ['default'];
-}
-
-function getTokenTypeOptions(sourceType: SourceType): TokenType[] {
-  if (sourceType === 'color-registry' || sourceType === 'color-registry-set') return ['theme'];
-  if (sourceType === 'semantic-token-registry') return ['semantic token'];
-  if (sourceType === 'textmate-xml' || sourceType === 'textmate-json') return ['textmate token'];
-  return TOKEN_TYPE_OPTIONS;
-}
 
 export function CatalogDetailsCard() {
-  const vm = useCatalogDetailsCardViewModel();
-
   const {
     catalog,
-    tokenCounts,
-    isLatestVersion,
-    onDeleteVersion,
-    onLock,
-    onSync,
-    onRevert,
+    themeTokenCount,
+    textmateTokenCount,
+    semanticTokenCount,
+    canAddNewSource,
+    canSync,
+    canLock,
+    canRevert,
     newSourceUrl,
     newSourceTokenType,
     newSourceType,
-    editingSourceIndex,
-    editingSourceUrl,
-    setEditingSourceUrl,
-    changeNewSourceUrl,
-    commitNewSourceTokenType,
-    commitNewSourceType,
-    addNewSource,
-    onExistingSourceUrlFocus,
-    onExistingSourceUrlBlur,
-    onExistingSourceTokenTypeChange,
-    onExistingSourceTypeChange,
-    onRemoveExistingSourceClick,
-  } = vm;
+    sourceRows,
+    newSourceTokenTypeOptions,
+    newSourceTypeOptions,
+    onDeleteVersionClick,
+    onLockClick,
+    onSyncClick,
+    onRevertClick,
+    onEditingSourceUrlChange,
+    onSourceUrlFocus,
+    onSourceUrlCommit,
+    onSourceTokenTypeChange,
+    onSourceTypeChange,
+    onSourceRemoveClick,
+    onNewSourceUrlChange,
+    onNewSourceTokenTypeChange,
+    onNewSourceTypeChange,
+    onNewSourceAddClick,
+  } = useCatalogDetailsCardViewModel();
 
-  if (!catalog) return null;
+  if (catalog === null) return null;
 
   function onNewSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
-    changeNewSourceUrl(e.target.value);
+    onNewSourceUrlChange(e.target.value);
   }
 
   function onNewSourceTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    commitNewSourceType(e.target.value as SourceType);
+    onNewSourceTypeChange(e.target.value);
   }
 
-  function onNewSourceTokenTypeChange(e: ChangeEvent<HTMLSelectElement>) {
-    commitNewSourceTokenType(e.target.value as TokenType);
+  function onNewSourceTokenTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onNewSourceTokenTypeChange(e.target.value);
+  }
+
+  function onExistingSourceUrlInputFocus(e: FocusEvent<HTMLInputElement>) {
+    onSourceUrlFocus(e.currentTarget.dataset.sourceIndex);
+  }
+
+  function onExistingSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
+    onEditingSourceUrlChange(e.target.value);
+  }
+
+  function onExistingSourceUrlInputBlur(e: FocusEvent<HTMLInputElement>) {
+    onSourceUrlCommit(e.target.value, e.currentTarget.dataset.sourceIndex);
+  }
+
+  function onExistingSourceTokenTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onSourceTokenTypeChange(e.target.value, e.currentTarget.dataset.sourceIndex);
+  }
+
+  function onExistingSourceTypeSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onSourceTypeChange(e.target.value, e.currentTarget.dataset.sourceIndex);
+  }
+
+  function onExistingSourceRemoveButtonClick(e: MouseEvent<HTMLButtonElement>) {
+    onSourceRemoveClick(e.currentTarget.dataset.sourceIndex);
   }
 
   return (
@@ -85,73 +89,67 @@ export function CatalogDetailsCard() {
         <span className="detail-value">{catalog.locked ? 'Yes' : 'No'}</span>
 
         <span className="detail-label">Theme tokens</span>
-        <span className="detail-value">{tokenCounts.theme}</span>
+        <span className="detail-value">{themeTokenCount}</span>
 
         <span className="detail-label">Textmate tokens</span>
-        <span className="detail-value">{tokenCounts['textmate token']}</span>
+        <span className="detail-value">{textmateTokenCount}</span>
 
         <span className="detail-label">Semantic tokens</span>
-        <span className="detail-value">{tokenCounts['semantic token']}</span>
+        <span className="detail-value">{semanticTokenCount}</span>
       </div>
 
       {catalog.type === 'remote' && (
         <div className="sources-section">
           <span className="field-label">Sources</span>
           <div className="sources-table">
-            {catalog.sources.map((source, i) => {
-              function onEditSourceUrlInputChange(e: ChangeEvent<HTMLInputElement>) {
-                setEditingSourceUrl(e.target.value);
-              }
-
-              return (
-                <div className="source-row" key={i}>
-                  <input
-                    className="field-input source-url-input"
-                    type="text"
-                    data-source-index={i}
-                    value={editingSourceIndex === i ? editingSourceUrl : source.url}
-                    placeholder="https://..."
-                    disabled={!isLatestVersion}
-                    onFocus={onExistingSourceUrlFocus}
-                    onChange={onEditSourceUrlInputChange}
-                    onBlur={onExistingSourceUrlBlur}
-                  />
-                  <select
-                    className="field-select source-select"
-                    data-source-index={i}
-                    value={source.tokenType}
-                    disabled={!isLatestVersion}
-                    onChange={onExistingSourceTokenTypeChange}
-                  >
-                    {getTokenTypeOptions(source.type).map((t) => (
-                      <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
-                    ))}
-                  </select>
-                  <select
-                    className="field-select source-select"
-                    data-source-index={i}
-                    value={source.type}
-                    disabled={!isLatestVersion}
-                    onChange={onExistingSourceTypeChange}
-                  >
-                    {getSourceTypeOptions(source.tokenType).map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    className="btn-icon btn-danger-icon"
-                    data-source-index={i}
-                    disabled={!isLatestVersion}
-                    onClick={onRemoveExistingSourceClick}
-                    aria-label="Remove source"
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                  </button>
-                </div>
-              );
-            })}
-            {isLatestVersion && (
+            {sourceRows.map((source) => (
+              <div className="source-row" key={source.sourceIndex}>
+                <input
+                  className="field-input source-url-input"
+                  type="text"
+                  data-source-index={source.sourceIndex}
+                  value={source.url}
+                  placeholder="https://..."
+                  disabled={source.isDisabled}
+                  onFocus={onExistingSourceUrlInputFocus}
+                  onChange={onExistingSourceUrlInputChange}
+                  onBlur={onExistingSourceUrlInputBlur}
+                />
+                <select
+                  className="field-select source-select"
+                  data-source-index={source.sourceIndex}
+                  value={source.tokenType}
+                  disabled={source.isDisabled}
+                  onChange={onExistingSourceTokenTypeSelectChange}
+                >
+                  {source.tokenTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                <select
+                  className="field-select source-select"
+                  data-source-index={source.sourceIndex}
+                  value={source.sourceType}
+                  disabled={source.isDisabled}
+                  onChange={onExistingSourceTypeSelectChange}
+                >
+                  {source.sourceTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn-icon btn-danger-icon"
+                  data-source-index={source.sourceIndex}
+                  disabled={source.isDisabled}
+                  onClick={onExistingSourceRemoveButtonClick}
+                  aria-label="Remove source"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            ))}
+            {canAddNewSource && (
               <div className="source-row source-add-row">
                 <input
                   className="field-input source-url-input"
@@ -163,10 +161,10 @@ export function CatalogDetailsCard() {
                 <select
                   className="field-select source-select"
                   value={newSourceTokenType}
-                  onChange={onNewSourceTokenTypeChange}
+                  onChange={onNewSourceTokenTypeSelectChange}
                 >
-                  {TOKEN_TYPE_OPTIONS.map((t) => (
-                    <option key={t} value={t}>{getTokenTypeLabel(t)}</option>
+                  {newSourceTokenTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
                 <select
@@ -174,14 +172,14 @@ export function CatalogDetailsCard() {
                   value={newSourceType}
                   onChange={onNewSourceTypeSelectChange}
                 >
-                  {getSourceTypeOptions(newSourceTokenType).map((t) => (
-                    <option key={t} value={t}>{t}</option>
+                  {newSourceTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
                 <button
                   type="button"
                   className="btn-icon btn-add-icon"
-                  onClick={addNewSource}
+                  onClick={onNewSourceAddClick}
                   aria-label="Add source"
                 >
                   <span className="material-symbols-outlined">add</span>
@@ -193,25 +191,25 @@ export function CatalogDetailsCard() {
       )}
 
       <div className="details-actions">
-        <button type="button" className="btn-danger" onClick={onDeleteVersion}>
+        <button type="button" className="btn-danger" onClick={onDeleteVersionClick}>
           Delete version
         </button>
-        {catalog.type === 'remote' && isLatestVersion && (
-          <button type="button" className="btn-secondary" onClick={onSync}>
+        {canSync && (
+          <button type="button" className="btn-secondary" onClick={onSyncClick}>
             Sync
           </button>
         )}
-        {catalog.type === 'manual' && !catalog.locked && isLatestVersion && (
+        {canLock && (
           <button
             type="button"
             className="btn-secondary"
-            onClick={onLock}
+            onClick={onLockClick}
           >
             Lock
           </button>
         )}
-        {!isLatestVersion && (
-          <button type="button" className="btn-secondary" onClick={onRevert}>
+        {canRevert && (
+          <button type="button" className="btn-secondary" onClick={onRevertClick}>
             Revert
           </button>
         )}
