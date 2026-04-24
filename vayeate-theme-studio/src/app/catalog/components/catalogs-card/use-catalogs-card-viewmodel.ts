@@ -4,29 +4,29 @@ import { compareVersions } from '../../../../domain/utils/compare-versions';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { CatalogsCardActionType } from './actions/catalogs-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
 
-export function useCatalogsCardViewModel() {
+export interface CatalogsCardViewModel {
+  selectedName: string;
+  selectedVersion: string;
+  catalogNames: string[];
+  catalogVersionNames: string[];
+  onCatalogsListCommit: (name: string) => void;
+  onCatalogVersionsListCommit: (version: string) => void;
+  onCreateCatalogClick: () => void;
+}
+
+export function useCatalogsCardViewModel(): CatalogsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
   const selectedName = useMemo(() => selectedRef?.name ?? '', [selectedRef]);
   const selectedVersion = useMemo(() => selectedRef?.version ?? '', [selectedRef]);
 
   const catalogs = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
-  const catalogRefs = useMemo(() => {
-    const refs: CatalogReference[] = [];
-    for (const name of Object.keys(catalogs).sort()) {
-      const versions = catalogs[name];
-      if (!versions) continue;
-      for (const version of Object.keys(versions).sort()) {
-        refs.push({ name, version });
-      }
-    }
-    return refs;
-  }, [catalogs]);
+  const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogs), [catalogs]);
   const catalogSelections = useMemo(() => {
     const map: Record<string, CatalogReference> = {};
     for (const ref of catalogRefs) {
@@ -57,7 +57,7 @@ export function useCatalogsCardViewModel() {
     (name: string) => {
       const ref = catalogSelections[name];
       if (!ref) return;
-      dispatch({ type: CatalogsCardActionType.CatalogsListOnCommit, name: ref.name, version: ref.version });
+      void dispatch({ type: CatalogsCardActionType.CatalogsListOnCommit, name: ref.name, version: ref.version });
     },
     [dispatch, catalogSelections],
   );
@@ -66,13 +66,13 @@ export function useCatalogsCardViewModel() {
     (version: string) => {
       const ref = catalogVersionSelections[version];
       if (!ref) return;
-      dispatch({ type: CatalogsCardActionType.CatalogVersionsListOnCommit, name: ref.name, version: ref.version });
+      void dispatch({ type: CatalogsCardActionType.CatalogVersionsListOnCommit, name: ref.name, version: ref.version });
     },
     [dispatch, catalogVersionSelections],
   );
 
   const onCreateCatalogClick = useCallback(() => {
-    dispatch({ type: CatalogsCardActionType.CatalogsCreateButtonOnClick });
+    void dispatch({ type: CatalogsCardActionType.CatalogsCreateButtonOnClick });
   }, [dispatch]);
 
   return {

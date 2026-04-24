@@ -1,19 +1,14 @@
 import { useCallback, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from './use-tokens-card-viewmodel';
-import { mergeSemanticSelectorInto } from '../../../../model/merge-semantic-selector-into';
-import { Catalog } from '../../../../model/schema/catalog';
-import { TokenType } from '../../../../model/schema/primitives';
-import { tokenKeySchema, SemanticTokenRegistryListKind } from '../../../../model/schema/primitives';
-import { Token } from '../../../../model/schema/catalog';
-
-function isValidTokenKey(value: string): boolean {
-  return tokenKeySchema.safeParse(value).success;
-}
+import type { Catalog, Token } from '../../../../model/schema/catalog';
+import type { SemanticTokenRegistryListKind, TokenType } from '../../../../model/schema/primitives';
 
 function TokenTypeSection({
   tokenType,
   tokens,
   isManual,
+  newKey,
+  canAddNewTokenKey,
   onAdd,
   onRemove,
   onUpdateKey,
@@ -22,45 +17,39 @@ function TokenTypeSection({
   tokenType: TokenType;
   tokens: Token[];
   isManual: boolean;
-  onAdd: (tokenType: TokenType, key: string) => void;
-  onRemove: (tokenType: TokenType, key: string) => void;
-  onUpdateKey: (tokenType: TokenType, oldKey: string, newKey: string) => void;
+  newKey: string;
+  canAddNewTokenKey: boolean;
+  onAdd: (tokenType: TokenType) => void;
+  onRemove: (tokenType: TokenType, key: string | undefined) => void;
+  onUpdateKey: (tokenType: TokenType, oldKey: string | undefined, newKey: string) => void;
   onNewKeyChange?: (value: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [newKey, setNewKey] = useState('');
-  const toggleCollapsed = () => setCollapsed((v) => !v);
-  const handleNewKeyChange = (value: string) => {
-    setNewKey(value);
-    onNewKeyChange?.(value);
-  };
-  const handleAddClick = () => {
-    const key = newKey.trim();
-    if (isValidTokenKey(key)) {
-      onAdd(tokenType, key);
-      setNewKey('');
-    }
-  };
+
+  function onTreeHeaderClick() {
+    setCollapsed((value) => !value);
+  }
+
+  function onAddButtonClick() {
+    onAdd(tokenType);
+  }
 
   const onTokenRowBlur = useCallback(
     (e: FocusEvent<HTMLInputElement>) => {
-      const oldKey = e.currentTarget.dataset.tokenKey;
-      const v = e.target.value.trim();
-      if (oldKey && v && v !== oldKey && isValidTokenKey(v)) onUpdateKey(tokenType, oldKey, v);
+      onUpdateKey(tokenType, e.currentTarget.dataset.tokenKey, e.target.value);
     },
     [onUpdateKey, tokenType],
   );
 
   const onRemoveButtonClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
-      const key = e.currentTarget.dataset.tokenKey;
-      if (key) onRemove(tokenType, key);
+      onRemove(tokenType, e.currentTarget.dataset.tokenKey);
     },
     [onRemove, tokenType],
   );
 
   function onNewKeyInputChange(e: ChangeEvent<HTMLInputElement>) {
-    handleNewKeyChange(e.target.value);
+    onNewKeyChange?.(e.target.value);
   }
 
   const label =
@@ -73,7 +62,7 @@ function TokenTypeSection({
       <button
         type="button"
         className="tree-header"
-        onClick={toggleCollapsed}
+        onClick={onTreeHeaderClick}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
@@ -124,8 +113,8 @@ function TokenTypeSection({
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
-                disabled={!isValidTokenKey(newKey.trim())}
-                onClick={handleAddClick}
+                disabled={!canAddNewTokenKey}
+                onClick={onAddButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
               </button>
@@ -137,20 +126,12 @@ function TokenTypeSection({
   );
 }
 
-function canAddSemanticSelector(selector: string, catalog: Catalog): boolean {
-  const trimmed = selector.trim();
-  if (!trimmed) return false;
-  const current = {
-    types: catalog.semanticTokenTypes ?? [],
-    modifiers: catalog.semanticTokenModifiers ?? [],
-    languages: catalog.semanticTokenLanguages ?? [],
-  };
-  return mergeSemanticSelectorInto(trimmed, current) !== null;
-}
-
 function SemanticTokenCatalogSection({
   catalog,
   canEdit,
+  canAddSemanticTokenSelector,
+  shouldShowSemanticTokenSection,
+  itemCount,
   semanticSelectorText,
   onSemanticSelectorTextChange,
   onSemanticSelectorAdd,
@@ -159,6 +140,9 @@ function SemanticTokenCatalogSection({
 }: {
   catalog: Catalog;
   canEdit: boolean;
+  canAddSemanticTokenSelector: boolean;
+  shouldShowSemanticTokenSection: boolean;
+  itemCount: number;
   semanticSelectorText: string;
   onSemanticSelectorTextChange?: (value: string) => void;
   onSemanticSelectorAdd?: () => void;
@@ -170,50 +154,43 @@ function SemanticTokenCatalogSection({
   onSemanticRegistryRemove?: (registryList: SemanticTokenRegistryListKind, index: number) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const toggleCollapsed = () => setCollapsed((v) => !v);
   const types = catalog.semanticTokenTypes ?? [];
   const modifiers = catalog.semanticTokenModifiers ?? [];
   const languages = catalog.semanticTokenLanguages ?? [];
-  const hasAny = types.length > 0 || modifiers.length > 0 || languages.length > 0;
-  const showSection = canEdit || hasAny;
-  const addEnabled =
-    canEdit &&
-    onSemanticSelectorAdd &&
-    canAddSemanticSelector(semanticSelectorText, catalog);
-  const handleSelectorInputKeyDown = (key: string, preventDefault: () => void) => {
-    if (key === 'Enter') {
-      preventDefault();
-      if (addEnabled) onSemanticSelectorAdd?.();
-    }
-  };
+
+  function onTreeHeaderClick() {
+    setCollapsed((value) => !value);
+  }
 
   function onSemanticSelectorInputChange(e: ChangeEvent<HTMLInputElement>) {
     onSemanticSelectorTextChange?.(e.target.value);
   }
 
   function onSemanticSelectorInputKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    handleSelectorInputKeyDown(e.key, () => e.preventDefault());
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    onSemanticSelectorAdd?.();
   }
 
   function onSemanticSelectorAddButtonClick() {
     onSemanticSelectorAdd?.();
   }
 
-  if (!showSection) return null;
+  if (!shouldShowSemanticTokenSection) return null;
 
   return (
     <div className="tree-section">
       <button
         type="button"
         className="tree-header"
-        onClick={toggleCollapsed}
+        onClick={onTreeHeaderClick}
       >
         <span className="material-symbols-outlined tree-chevron">
           {collapsed ? 'chevron_right' : 'expand_more'}
         </span>
         <span className="tree-label">Semantic Tokens</span>
         <span className="tree-count">
-          ({types.length + modifiers.length + languages.length})
+          ({itemCount})
         </span>
       </button>
       {!collapsed && (
@@ -233,7 +210,7 @@ function SemanticTokenCatalogSection({
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
-                disabled={!addEnabled}
+                disabled={!canAddSemanticTokenSelector}
                 onClick={onSemanticSelectorAddButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
@@ -242,8 +219,7 @@ function SemanticTokenCatalogSection({
           )}
           {types.map((t, i) => {
             function onTypeRowBlur(e: FocusEvent<HTMLInputElement>) {
-              const v = e.target.value.trim();
-              if (v !== t) onSemanticRegistryTextCommit?.('types', i, v);
+              onSemanticRegistryTextCommit?.('types', i, e.target.value);
             }
             function onTypeRemoveClick() {
               onSemanticRegistryRemove?.('types', i);
@@ -277,8 +253,7 @@ function SemanticTokenCatalogSection({
           })}
           {modifiers.map((m: string, i: number) => {
             function onModifierRowBlur(e: FocusEvent<HTMLInputElement>) {
-              const v = e.target.value.trim();
-              if (v !== m) onSemanticRegistryTextCommit?.('modifiers', i, v);
+              onSemanticRegistryTextCommit?.('modifiers', i, e.target.value);
             }
             function onModifierRemoveClick() {
               onSemanticRegistryRemove?.('modifiers', i);
@@ -312,8 +287,7 @@ function SemanticTokenCatalogSection({
           })}
           {languages.map((lang: string, i: number) => {
             function onLanguageRowBlur(e: FocusEvent<HTMLInputElement>) {
-              const v = e.target.value.trim();
-              if (v !== lang) onSemanticRegistryTextCommit?.('languages', i, v);
+              onSemanticRegistryTextCommit?.('languages', i, e.target.value);
             }
             function onLanguageRemoveClick() {
               onSemanticRegistryRemove?.('languages', i);
@@ -355,23 +329,28 @@ export function TokensCard() {
   const {
     catalog,
     tokensSearchText,
+    newTokenKey,
     newSemanticTokenSelectorText,
     filteredTokensByType,
     canEdit,
-    handleBulkAddClick,
-    handleSearchChange,
-    handleAddToken,
-    handleRemoveToken,
-    handleUpdateTokenKey,
-    handleNewTokenKeyChange,
-    handleNewSemanticTokenSelectorTextChange,
-    handleNewSemanticTokenSelectorAdd,
-    handleSemanticRegistryTextCommit,
-    handleSemanticRegistryRemove,
+    canAddNewTokenKey,
+    canAddSemanticTokenSelector,
+    shouldShowSemanticTokenSection,
+    semanticRegistryItemCount,
+    onBulkAddClick,
+    onSearchChange,
+    onNewTokenAddClick,
+    onTokenRemoveClick,
+    onTokenKeyCommit,
+    onNewTokenKeyChange,
+    onNewSemanticTokenSelectorTextChange,
+    onNewSemanticTokenSelectorAddClick,
+    onSemanticRegistryTextCommit,
+    onSemanticRegistryRemoveClick,
   } = useTokensCardViewModel();
 
-  function onSearchChange(e: ChangeEvent<HTMLInputElement>) {
-    handleSearchChange(e.target.value);
+  function onSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
+    onSearchChange(e.target.value);
   }
 
   if (!catalog) return null;
@@ -384,7 +363,7 @@ export function TokensCard() {
           <button
             type="button"
             className="btn-secondary btn-sm"
-            onClick={handleBulkAddClick}
+            onClick={onBulkAddClick}
           >
             Bulk Add
           </button>
@@ -395,7 +374,7 @@ export function TokensCard() {
         className="card-search-input"
         placeholder="Search…"
         value={tokensSearchText}
-        onChange={onSearchChange}
+        onChange={onSearchInputChange}
         aria-label="Search tokens"
       />
       {CATALOG_TOKEN_LIST_SECTIONS.map((tt) => (
@@ -404,20 +383,25 @@ export function TokensCard() {
           tokenType={tt}
           tokens={filteredTokensByType[tt]}
           isManual={canEdit}
-          onAdd={handleAddToken}
-          onRemove={handleRemoveToken}
-          onUpdateKey={handleUpdateTokenKey}
-          onNewKeyChange={handleNewTokenKeyChange}
+          newKey={newTokenKey}
+          canAddNewTokenKey={canAddNewTokenKey}
+          onAdd={onNewTokenAddClick}
+          onRemove={onTokenRemoveClick}
+          onUpdateKey={onTokenKeyCommit}
+          onNewKeyChange={onNewTokenKeyChange}
         />
       ))}
       <SemanticTokenCatalogSection
         catalog={catalog}
         canEdit={canEdit}
+        canAddSemanticTokenSelector={canAddSemanticTokenSelector}
+        shouldShowSemanticTokenSection={shouldShowSemanticTokenSection}
+        itemCount={semanticRegistryItemCount}
         semanticSelectorText={newSemanticTokenSelectorText}
-        onSemanticSelectorTextChange={handleNewSemanticTokenSelectorTextChange}
-        onSemanticSelectorAdd={handleNewSemanticTokenSelectorAdd}
-        onSemanticRegistryTextCommit={handleSemanticRegistryTextCommit}
-        onSemanticRegistryRemove={handleSemanticRegistryRemove}
+        onSemanticSelectorTextChange={onNewSemanticTokenSelectorTextChange}
+        onSemanticSelectorAdd={onNewSemanticTokenSelectorAddClick}
+        onSemanticRegistryTextCommit={onSemanticRegistryTextCommit}
+        onSemanticRegistryRemove={onSemanticRegistryRemoveClick}
       />
     </div>
   );

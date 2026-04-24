@@ -7,7 +7,12 @@ import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
 
-export function useCatalogViewModel(): { createDialogOpen: boolean; bulkAddDialogOpen: boolean } {
+export interface CatalogViewModel {
+  createDialogOpen: boolean;
+  bulkAddDialogOpen: boolean;
+}
+
+export function useCatalogViewModel(): CatalogViewModel {
   const dispatch = useAppDispatch();
   const pageLoadDispatchedRef = useRef(false);
   const createDialogOpen = useStore(catalogsStore.api, (state) => !!state.stateV2.createCatalogDialog?.isOpen);
@@ -16,7 +21,7 @@ export function useCatalogViewModel(): { createDialogOpen: boolean; bulkAddDialo
   useEffect(() => {
     if (pageLoadDispatchedRef.current) return;
     pageLoadDispatchedRef.current = true;
-    dispatch({ type: CatalogPageActionType.PageOnLoad });
+    void dispatch({ type: CatalogPageActionType.PageOnLoad });
   }, [dispatch]);
 
   return { createDialogOpen, bulkAddDialogOpen };
