@@ -7,14 +7,20 @@ import { ThemePageActionType } from './actions/theme-page-action-type';
 
 const themesStore = container.resolve(ThemesStore);
 
-export function useThemesPageChromeViewModel() {
+export interface ThemesPageChromeViewModel {
+  saveError: string | null;
+  createDialogOpen: boolean;
+  onDismissSaveErrorClick: () => void;
+}
+
+export function useThemesPageChromeViewModel(): ThemesPageChromeViewModel {
   const dispatch = useAppDispatch();
-  const dismissSaveError = useCallback(() => {
+  const onDismissSaveErrorClick = useCallback(() => {
     void dispatch({ type: ThemePageActionType.PageSaveErrorDismissButtonOnClick });
   }, [dispatch]);
 
   const saveError = useStore(themesStore.api, (state) => state.state.saveError);
   const createDialogOpen = useStore(themesStore.api, (state) => state.state.createDialogOpen);
 
-  return { saveError, createDialogOpen, dismissSaveError };
+  return { saveError, createDialogOpen, onDismissSaveErrorClick };
 }

@@ -9,7 +9,7 @@ import { ThemesCard } from '../themes-card/ThemesCard';
 
 export function ThemesPage() {
   useThemeViewModel();
-  const { saveError, createDialogOpen, dismissSaveError } = useThemesPageChromeViewModel();
+  const { saveError, createDialogOpen, onDismissSaveErrorClick } = useThemesPageChromeViewModel();
 
   return (
     <>
@@ -19,7 +19,7 @@ export function ThemesPage() {
           <button
             type="button"
             className="theme-save-error-dismiss"
-            onClick={dismissSaveError}
+            onClick={onDismissSaveErrorClick}
             aria-label="Dismiss"
           >
             <span className="material-symbols-outlined" aria-hidden>close</span>

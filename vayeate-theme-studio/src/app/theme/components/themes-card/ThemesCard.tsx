@@ -13,22 +13,12 @@ export function ThemesCard() {
     isCreating,
   } = useThemesCardViewModel();
 
-  function handleNameChange(value: string) {
-    if (value) {
-      onSelectName(value);
-    }
-  }
-
-  function handleVersionChange(value: string) {
-    onSelectVersion(value);
-  }
-
   function onNameSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    handleNameChange(e.target.value);
+    onSelectName(e.target.value);
   }
 
   function onVersionSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    handleVersionChange(e.target.value);
+    onSelectVersion(e.target.value);
   }
 
   return (

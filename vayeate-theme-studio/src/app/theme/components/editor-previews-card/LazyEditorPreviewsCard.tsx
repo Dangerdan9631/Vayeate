@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { useAppDispatch } from '../../../common/context/use-app-dispatch';
-import { EditorPreviewsCardActionType } from './actions/editor-previews-card-action-type';
+import { useLazyEditorPreviewsCardViewModel } from './use-lazy-editor-previews-card-viewmodel';
 
 const EditorPreviewsCard = lazy(async () => {
   const module = await import('./EditorPreviewsCard');
@@ -38,7 +37,7 @@ function ThemePreviewsFallback() {
 }
 
 export function LazyEditorPreviewsCard() {
-  const dispatch = useAppDispatch();
+  const { onPagePreviewsLoad } = useLazyEditorPreviewsCardViewModel();
   const hasQueuedPreviewLoadRef = useRef(false);
   const [shouldRenderEditorPreviews, setShouldRenderEditorPreviews] = useState(false);
 
@@ -66,8 +65,8 @@ export function LazyEditorPreviewsCard() {
   useEffect(() => {
     if (!shouldRenderEditorPreviews || hasQueuedPreviewLoadRef.current) return;
     hasQueuedPreviewLoadRef.current = true;
-    void dispatch({ type: EditorPreviewsCardActionType.PagePreviewsOnLoad });
-  }, [dispatch, shouldRenderEditorPreviews]);
+    onPagePreviewsLoad();
+  }, [onPagePreviewsLoad, shouldRenderEditorPreviews]);
 
   if (!shouldRenderEditorPreviews) {
     return <ThemePreviewsFallback />;

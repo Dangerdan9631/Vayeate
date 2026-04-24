@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
@@ -8,39 +8,43 @@ import { CreateThemeDialogActionType } from './actions/create-theme-dialog-actio
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 const themesStore = container.resolve(ThemesStore);
 
-export function useCreateThemeDialogViewModel() {
+export interface CreateThemeDialogViewModel {
+  name: string;
+  canSubmit: boolean;
+  showNameError: boolean;
+  onOkClick: () => void;
+  onCancelClick: () => void;
+  onNameChange: (value: string) => void;
+}
+
+export function useCreateThemeDialogViewModel(): CreateThemeDialogViewModel {
   const dispatch = useAppDispatch();
   const name = useStore(themesStore.api, (state): string => state.state.createFormName);
-  const nameValid = name.length > 0 && NAME_REGEX.test(name);
-  const canSubmit = nameValid;
+  const nameValid = useMemo(() => name.length > 0 && NAME_REGEX.test(name), [name]);
+  const canSubmit = useMemo(() => nameValid, [nameValid]);
 
-  function handleSubmit() {
+  const onOkClick = useCallback(() => {
     if (!canSubmit) return;
-    dispatch({ type: CreateThemeDialogActionType.OkButtonOnClick, params: { name } });
-  }
+    void dispatch({ type: CreateThemeDialogActionType.OkButtonOnClick, params: { name } });
+  }, [canSubmit, dispatch, name]);
 
-  function handleCancel() {
-    dispatch({ type: CreateThemeDialogActionType.CancelButtonOnClick });
-  }
+  const onCancelClick = useCallback(() => {
+    void dispatch({ type: CreateThemeDialogActionType.CancelButtonOnClick });
+  }, [dispatch]);
 
-  function handleDialogContentClick(e: MouseEvent<HTMLDivElement>) {
-    e.stopPropagation();
-  }
+  const onNameChange = useCallback((value: string) => {
+    void dispatch({ type: CreateThemeDialogActionType.NameTextOnChange, value });
+  }, [dispatch]);
 
-  function handleNameChange(value: string) {
-    dispatch({ type: CreateThemeDialogActionType.NameTextOnChange, value });
-  }
-
-  const showNameError = name.length > 0 && !nameValid;
+  const showNameError = useMemo(() => name.length > 0 && !nameValid, [name, nameValid]);
 
   return {
     name,
     canSubmit,
     showNameError,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
-    handleNameChange,
+    onOkClick,
+    onCancelClick,
+    onNameChange,
   };
 }
 

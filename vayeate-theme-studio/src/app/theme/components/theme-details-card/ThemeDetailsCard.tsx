@@ -5,34 +5,27 @@ export function ThemeDetailsCard() {
   const {
     theme,
     templateNamesList,
-    templateVersionsByName,
+    versionsForSelectedTemplate,
     selectedTemplateName,
     selectedTemplateVersion,
     canGenerate,
+    generateButtonTitle,
     generateResult,
-    onDeleteVersion,
-    onGenerate,
-    onBumpVersion,
-    onChangeTemplate,
-    onChangeTemplateVersion,
+    onDeleteVersionClick,
+    onGenerateClick,
+    onBumpVersionClick,
+    onTemplateChange,
+    onTemplateVersionChange,
   } = useThemeDetailsCardViewModel();
 
   if (!theme) return null;
 
-  const versionsForTemplate = selectedTemplateName
-    ? templateVersionsByName[selectedTemplateName] ?? []
-    : [];
-
   function onTemplateSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    const name = e.target.value;
-    if (name) {
-      const version = templateVersionsByName[name]?.[0]?.version ?? '';
-      onChangeTemplate(name, version);
-    }
+    onTemplateChange(e.target.value);
   }
 
   function onTemplateVersionSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    onChangeTemplateVersion(e.target.value);
+    onTemplateVersionChange(e.target.value);
   }
 
   return (
@@ -72,7 +65,7 @@ export function ThemeDetailsCard() {
           </select>
         </label>
 
-        {selectedTemplateName && versionsForTemplate.length > 0 && (
+        {selectedTemplateName && versionsForSelectedTemplate.length > 0 && (
           <label className="field-row theme-template-version">
             <span className="field-label">Version</span>
             <select
@@ -80,7 +73,7 @@ export function ThemeDetailsCard() {
               value={selectedTemplateVersion ?? ''}
               onChange={onTemplateVersionSelectChange}
             >
-              {versionsForTemplate.map((ref) => (
+              {versionsForSelectedTemplate.map((ref) => (
                 <option key={ref.version} value={ref.version}>
                   {ref.version}
                 </option>
@@ -101,13 +94,13 @@ export function ThemeDetailsCard() {
       )}
 
       <div className="details-actions">
-        <button type="button" className="btn-danger" onClick={onDeleteVersion}>
+        <button type="button" className="btn-danger" onClick={onDeleteVersionClick}>
           Delete version
         </button>
         <button
           type="button"
           className="btn-secondary"
-          onClick={onBumpVersion}
+          onClick={onBumpVersionClick}
           title="Create a new version (e.g. 1.0.0 → 1.0.1)"
         >
           Increment Version
@@ -116,8 +109,8 @@ export function ThemeDetailsCard() {
           type="button"
           className="btn-primary"
           disabled={!canGenerate}
-          onClick={onGenerate}
-          title={canGenerate ? 'Generate theme' : 'All variables must have values assigned'}
+          onClick={onGenerateClick}
+          title={generateButtonTitle}
         >
           Generate
         </button>

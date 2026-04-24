@@ -50,7 +50,7 @@ export function useThemePaletteCardViewModel() {
       '#1e1e1e',
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
-    dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
+    void dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
   }, [theme, loadedTemplate, selectedRef, dispatch]);
 
   const colorVariablesFromTemplate = useMemo(
@@ -66,35 +66,35 @@ export function useThemePaletteCardViewModel() {
 
   const setHueAdjustment = useCallback(
     (value: number) => {
-      dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value });
+      void dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value });
     },
     [dispatch],
   );
 
   const setApplyHueToDark = useCallback(
     (checked: boolean) => {
-      dispatch({ type: ThemePaletteCardActionType.ApplyToDarkCheckboxOnToggle, checked });
+      void dispatch({ type: ThemePaletteCardActionType.ApplyToDarkCheckboxOnToggle, checked });
     },
     [dispatch],
   );
 
   const setApplyHueToLight = useCallback(
     (checked: boolean) => {
-      dispatch({ type: ThemePaletteCardActionType.ApplyToLightCheckboxOnToggle, checked });
+      void dispatch({ type: ThemePaletteCardActionType.ApplyToLightCheckboxOnToggle, checked });
     },
     [dispatch],
   );
 
   const onClusterCountDelta = useCallback(
     (value: number) => {
-      dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnDelta, value });
+      void dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnDelta, value });
     },
     [dispatch],
   );
 
   const onClusterCountCommit = useCallback(
     (value: number) => {
-      dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnCommit, value });
+      void dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnCommit, value });
     },
     [dispatch],
   );
@@ -102,7 +102,7 @@ export function useThemePaletteCardViewModel() {
   const setHueReferenceHex = useCallback(
     (hex: string) => {
       const normalized = normalizeThemeHex(hex) || '#FF0000';
-      dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
+      void dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
     },
     [dispatch],
   );
@@ -117,12 +117,12 @@ export function useThemePaletteCardViewModel() {
   }, []);
 
   const recenterHue = useCallback(() => {
-    dispatch({ type: ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick });
+    void dispatch({ type: ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick });
   }, [dispatch]);
 
   const setColorGroupChecked = useCallback(
     (groupKey: string, checked: boolean) => {
-      dispatch({
+      void dispatch({
         type: ThemeVariablesCardActionType.SelectVariableGroupCheckboxOnToggle,
         groupId: groupKey,
         checked,
@@ -134,7 +134,7 @@ export function useThemePaletteCardViewModel() {
   const setColorRefsChecked = useCallback(
     (refs: string[], checked: boolean) => {
       if (!theme || refs.length === 0) return;
-      dispatch({
+      void dispatch({
         type: ThemePaletteCardActionType.ColorRefsSelectionCommit,
         refs,
         checked,
@@ -157,14 +157,14 @@ export function useThemePaletteCardViewModel() {
     (hex: string) => {
       const normalized = normalizeThemeHex(hex);
       if (!normalized) return;
-      dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnSelect, value: normalized });
+      void dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnSelect, value: normalized });
     },
     [dispatch],
   );
 
   const closeColorPicker = useCallback(
     (_snapshot: ThemePaneState) => {
-      dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnClose });
+      void dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnClose });
     },
     [dispatch],
   );
@@ -187,7 +187,7 @@ export function useThemePaletteCardViewModel() {
     (hex: string) => {
       const normalized = normalizeThemeHex(hex);
       if (!normalized) return;
-      dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnCommit, value: normalized });
+      void dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnCommit, value: normalized });
     },
     [dispatch],
   );

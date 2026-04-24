@@ -3,13 +3,52 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../../common/context/use-app-dispatch';
 import type { TokenKey } from '../../../../model/schema/primitives';
-import type { ThemePreviewTokenRefField } from '../../../../model/schema/theme-schemas';
+import type { ColorAssignment, ContrastAssignment, Theme, ThemePreviewTokenRefField } from '../../../../model/schema/theme-schemas';
+import type { ContrastVariable, Mapping } from '../../../../model/schema/template-schemas';
+import type { TokenizedPreview } from '../../../../model/preview-types';
 import { ThemesStore } from '../../../../domain/state/theme/themes-store';
 import { ThemeDetailsCardActionType } from '../theme-details-card/actions/theme-details-card-action-type';
 
 const themesStore = container.resolve(ThemesStore);
 
-export function useEditorPreviewsCardViewModel() {
+export interface EditorPreviewsCardViewModel {
+  theme: Theme | null;
+  editorPreviews: TokenizedPreview[];
+  colorAssignments: readonly ColorAssignment[];
+  contrastAssignments: readonly ContrastAssignment[];
+  contrastVariables: readonly ContrastVariable[];
+  mappings: readonly Mapping[];
+  idePrimaryTokenRef: TokenKey | null;
+  onChangeIdePrimaryTokenRef: (tokenKey: TokenKey | null) => void;
+  ideForegroundTokenRef: TokenKey | null;
+  onChangeIdeForegroundTokenRef: (tokenKey: TokenKey | null) => void;
+  themeBackgroundTokenRef: TokenKey | null;
+  onChangeThemeBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+  themeForegroundTokenRef: TokenKey | null;
+  onChangeThemeForegroundTokenRef: (tokenKey: TokenKey | null) => void;
+  lineNumberBackgroundTokenRef: TokenKey | null;
+  onChangeLineNumberBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+  lineNumberForegroundTokenRef: TokenKey | null;
+  onChangeLineNumberForegroundTokenRef: (tokenKey: TokenKey | null) => void;
+  ideTabTokenRef: TokenKey | null;
+  onChangeIdeTabTokenRef: (tokenKey: TokenKey | null) => void;
+  ideTabBarBackgroundTokenRef: TokenKey | null;
+  onChangeIdeTabBarBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+  ideTabBarForegroundTokenRef: TokenKey | null;
+  onChangeIdeTabBarForegroundTokenRef: (tokenKey: TokenKey | null) => void;
+  editorPreviewScrollbarBackgroundTokenRef: TokenKey | null;
+  onChangeEditorPreviewScrollbarBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+  editorPreviewScrollbarForegroundTokenRef: TokenKey | null;
+  onChangeEditorPreviewScrollbarForegroundTokenRef: (tokenKey: TokenKey | null) => void;
+  editorPreviewSelectionBackgroundTokenRef: TokenKey | null;
+  onChangeEditorPreviewSelectionBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+  editorPreviewMenuForegroundTokenRef: TokenKey | null;
+  onChangeEditorPreviewMenuForegroundTokenRef: (tokenKey: TokenKey | null) => void;
+  editorPreviewMenuBackgroundTokenRef: TokenKey | null;
+  onChangeEditorPreviewMenuBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+}
+
+export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   const dispatch = useAppDispatch();
   const theme = useStore(themesStore.api, (state) => state.state.theme);
   const loadedTemplate = useStore(themesStore.api, (state) => state.state.loadedTemplateForTheme);
@@ -24,7 +63,7 @@ export function useEditorPreviewsCardViewModel() {
 
   const dispatchPreviewTokenRef = useCallback(
     (tokenRefField: ThemePreviewTokenRefField, value: TokenKey | null) => {
-      dispatch({ type: ThemeDetailsCardActionType.PreviewTokenRefListOnCommit, tokenRefField, value });
+      void dispatch({ type: ThemeDetailsCardActionType.PreviewTokenRefListOnCommit, tokenRefField, value });
     },
     [dispatch],
   );

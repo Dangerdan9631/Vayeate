@@ -6,10 +6,22 @@ import { getThemeRefs } from '../../../../domain/state/theme/themes-state';
 import { ThemesStore } from '../../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import { ThemesCardActionType } from './actions/themes-card-action-type';
+import type { ThemeReference } from '../../../../model/schema/theme-schemas';
 
 const themesStore = container.resolve(ThemesStore);
 
-export function useThemesCardViewModel() {
+export interface ThemesCardViewModel {
+  themeNames: string[];
+  selectedName: string | null;
+  versionsForSelectedName: ThemeReference[];
+  selectedRef: ThemeReference | null;
+  isCreating: boolean;
+  onSelectName: (name: string) => void;
+  onSelectVersion: (version: string) => void;
+  onCreateClick: () => void;
+}
+
+export function useThemesCardViewModel(): ThemesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
   const isCreating = useStore(themesStore.api, (state) => state.state.isCreating);
@@ -21,7 +33,7 @@ export function useThemesCardViewModel() {
     return [...names].sort();
   }, [themeRefs]);
 
-  const selectedName = selectedRef?.name ?? null;
+  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const versionsForSelectedName = useMemo(() => {
     if (!selectedName) return [];
@@ -32,20 +44,21 @@ export function useThemesCardViewModel() {
 
   const selectTheme = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: ThemesCardActionType.VersionListOnCommit, name, version });
+      void dispatch({ type: ThemesCardActionType.VersionListOnCommit, name, version });
     },
     [dispatch],
   );
 
   const selectName = useCallback(
     (name: string) => {
-      dispatch({ type: ThemesCardActionType.NameListOnCommit, name });
+      if (!name) return;
+      void dispatch({ type: ThemesCardActionType.NameListOnCommit, name });
     },
     [dispatch],
   );
 
   const openCreateDialog = useCallback(() => {
-    dispatch({ type: ThemesCardActionType.CreateButtonOnClick });
+    void dispatch({ type: ThemesCardActionType.CreateButtonOnClick });
   }, [dispatch]);
 
   const onSelectVersion = useCallback(

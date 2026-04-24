@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { useCreateThemeDialogViewModel } from './use-create-theme-dialog-viewmodel';
 
 export function CreateThemeDialog() {
@@ -6,19 +6,22 @@ export function CreateThemeDialog() {
     name,
     canSubmit,
     showNameError,
-    handleSubmit,
-    handleCancel,
-    handleDialogContentClick,
-    handleNameChange,
+    onOkClick,
+    onCancelClick,
+    onNameChange,
   } = useCreateThemeDialogViewModel();
 
+  function onDialogContentClick(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
   function onNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    handleNameChange(e.target.value);
+    onNameChange(e.target.value);
   }
 
   return (
-    <div className="dialog-overlay" onClick={handleCancel}>
-      <div className="dialog-content" onClick={handleDialogContentClick}>
+    <div className="dialog-overlay" onClick={onCancelClick}>
+      <div className="dialog-content" onClick={onDialogContentClick}>
         <h3>Create New Theme</h3>
 
         <label className="field-row">
@@ -39,7 +42,7 @@ export function CreateThemeDialog() {
           <button
             type="button"
             className="btn-secondary"
-            onClick={handleCancel}
+            onClick={onCancelClick}
           >
             Cancel
           </button>
@@ -47,7 +50,7 @@ export function CreateThemeDialog() {
             type="button"
             className="btn-primary"
             disabled={!canSubmit}
-            onClick={handleSubmit}
+            onClick={onOkClick}
           >
             OK
           </button>

@@ -6,13 +6,29 @@ import { getTemplateRefs } from '../../../../domain/state/template/templates-sta
 import { TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { ThemesStore } from '../../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
-import type { ColorAssignment, ContrastAssignment, TemplateReference } from '../../../../model/schema/theme-schemas';
+import type { ColorAssignment, ContrastAssignment, TemplateReference, Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeDetailsCardActionType } from './actions/theme-details-card-action-type';
 
 const templatesStore = container.resolve(TemplatesStore);
 const themesStore = container.resolve(ThemesStore);
 
-export function useThemeDetailsCardViewModel() {
+export interface ThemeDetailsCardViewModel {
+  theme: Theme | null;
+  templateNamesList: string[];
+  versionsForSelectedTemplate: TemplateReference[];
+  selectedTemplateName: string | null;
+  selectedTemplateVersion: string | null;
+  generateResult: { success: boolean; message: string } | null;
+  canGenerate: boolean;
+  generateButtonTitle: string;
+  onDeleteVersionClick: () => void;
+  onGenerateClick: () => void;
+  onBumpVersionClick: () => void;
+  onTemplateChange: (templateName: string) => void;
+  onTemplateVersionChange: (version: string) => void;
+}
+
+export function useThemeDetailsCardViewModel(): ThemeDetailsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
   const theme = useStore(themesStore.api, (state) => state.state.theme);
@@ -37,8 +53,12 @@ export function useThemeDetailsCardViewModel() {
     return map;
   }, [templateRefs]);
 
-  const selectedTemplateName = theme?.templateRef?.name ?? null;
-  const selectedTemplateVersion = theme?.templateRef?.version ?? null;
+  const selectedTemplateName = useMemo(() => theme?.templateRef?.name ?? null, [theme]);
+  const selectedTemplateVersion = useMemo(() => theme?.templateRef?.version ?? null, [theme]);
+  const versionsForSelectedTemplate = useMemo(
+    () => selectedTemplateName ? templateVersionsByName[selectedTemplateName] ?? [] : [],
+    [selectedTemplateName, templateVersionsByName],
+  );
 
   const canGenerate = useMemo(() => {
     if (!theme || !theme.templateRef) return false;
@@ -50,21 +70,25 @@ export function useThemeDetailsCardViewModel() {
     );
     return allColorAssigned && allContrastAssigned;
   }, [theme]);
+  const generateButtonTitle = useMemo(
+    () => canGenerate ? 'Generate theme' : 'All variables must have values assigned',
+    [canGenerate],
+  );
 
   const generateTheme = useCallback(() => {
     if (!canGenerate || !theme?.templateRef) {
       return;
     }
-    dispatch({ type: ThemeDetailsCardActionType.GenerateButtonOnClick });
+    void dispatch({ type: ThemeDetailsCardActionType.GenerateButtonOnClick });
   }, [canGenerate, dispatch, theme]);
 
   const bumpVersion = useCallback(() => {
-    dispatch({ type: ThemeDetailsCardActionType.IncrementVersionButtonOnClick });
+    void dispatch({ type: ThemeDetailsCardActionType.IncrementVersionButtonOnClick });
   }, [dispatch]);
 
   const deleteVersion = useCallback(
     (name: string, version: string) => {
-      dispatch({ type: ThemeDetailsCardActionType.DeleteVersionButtonOnClick, name, version });
+      void dispatch({ type: ThemeDetailsCardActionType.DeleteVersionButtonOnClick, name, version });
     },
     [dispatch],
   );
@@ -74,7 +98,7 @@ export function useThemeDetailsCardViewModel() {
       const versions = templateVersionsByName[templateName];
       if (!versions || versions.length === 0) return;
       const selectedVersion = version ?? versions[0].version;
-      dispatch({
+      void dispatch({
         type: ThemeDetailsCardActionType.TemplateListOnCommit,
         name: templateName,
         version: selectedVersion,
@@ -86,7 +110,7 @@ export function useThemeDetailsCardViewModel() {
   const changeTemplateVersion = useCallback(
     (version: string) => {
       if (!theme?.templateRef) return;
-      dispatch({
+      void dispatch({
         type: ThemeDetailsCardActionType.TemplateVersionListOnCommit,
         name: theme.templateRef.name,
         version,
@@ -102,16 +126,17 @@ export function useThemeDetailsCardViewModel() {
   return {
     theme,
     templateNamesList,
-    templateVersionsByName,
+    versionsForSelectedTemplate,
     selectedTemplateName,
     selectedTemplateVersion,
     generateResult,
     canGenerate,
-    onDeleteVersion,
-    onGenerate: generateTheme,
-    onBumpVersion: bumpVersion,
-    onChangeTemplate: changeTemplate,
-    onChangeTemplateVersion: changeTemplateVersion,
+    generateButtonTitle,
+    onDeleteVersionClick: onDeleteVersion,
+    onGenerateClick: generateTheme,
+    onBumpVersionClick: bumpVersion,
+    onTemplateChange: changeTemplate,
+    onTemplateVersionChange: changeTemplateVersion,
   };
 }
 
