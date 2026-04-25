@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
-import { CloseWindowController } from '../../../../common/controllers/close-window-controller';
-import { DragWindowController } from '../controllers/drag-window-controller';
-import { MaximizeWindowController } from '../controllers/maximize-window-controller';
-import { MinimizeWindowController } from '../controllers/minimize-window-controller';
-import { RestoreWindowController } from '../controllers/restore-window-controller';
+import { CloseWindowController } from '../../window/controllers/close-window-controller';
+import { DragWindowController } from '../../window/controllers/drag-window-controller';
+import { MaximizeWindowController } from '../../window/controllers/maximize-window-controller';
+import { MinimizeWindowController } from '../../window/controllers/minimize-window-controller';
+import { RestoreWindowController } from '../../window/controllers/restore-window-controller';
 import { ToggleColorSchemeController } from '../controllers/toggle-color-scheme-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';
 import { AppShellActions, AppShellActionType } from './app-shell-action-type';

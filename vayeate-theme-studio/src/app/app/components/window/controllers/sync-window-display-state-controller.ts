@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { WindowStateEvent } from '../../../gateway/services/window-service-types';
-import { SetWindowDisplayStateOperation } from '../../../domain/operations/window-operations/set-window-display-state-operation';
+import type { WindowStateEvent } from '../../../../../gateway/services/window-service-types';
+import { SetWindowDisplayStateOperation } from '../../../../../domain/operations/window-operations/set-window-display-state-operation';
 
 @singleton()
 export class SyncWindowDisplayStateController {

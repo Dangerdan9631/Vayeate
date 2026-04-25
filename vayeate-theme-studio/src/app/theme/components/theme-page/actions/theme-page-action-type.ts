@@ -1,4 +1,4 @@
-import type { AppAction } from '../../../../core/actions/app-action';
+import type { AppAction } from '../../../../core/action-queue/app-action';
 
 export enum ThemePageActionType {
   PageOnLoad = 'THEME_PAGE_ON_LOAD',

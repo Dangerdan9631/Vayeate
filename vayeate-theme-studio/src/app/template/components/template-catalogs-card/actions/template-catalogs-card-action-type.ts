@@ -1,5 +1,5 @@
 import { CatalogName, Version } from "../../../../../model/schema/primitives";
-import { AppAction } from "../../../../core/actions/app-action";
+import { AppAction } from "../../../../core/action-queue/app-action";
 
 export enum TemplateCatalogsCardActionType {
   UpdateAllButtonOnClick = 'TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK',

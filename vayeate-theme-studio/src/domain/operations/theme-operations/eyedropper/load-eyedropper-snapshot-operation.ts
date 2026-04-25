@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { ScreenshotFullDisplaySnapshot } from '../../../../gateway/services/screenshot-service-types';
 import { ScreenshotService } from '../../../../gateway/services/screenshot-service';
 import type { EyedropperSnapshotPayload } from '../../../state/ui/eyedropper-ui-state';
-import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { EyedropperUiStore } from '../../../state/ui/eyedropper-ui-store';
 
 function pngToUint8Array(png: unknown): Uint8Array {
@@ -37,35 +37,38 @@ export class LoadEyedropperSnapshotOperation {
   constructor(
     private readonly eyedropperUiStore: EyedropperUiStore,
     private readonly screenshotService: ScreenshotService,
-    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
   execute(contextKey: string): void {
-    this.enqueueBackgroundAction.execute(async() => {
-      try {
-        const raw = await this.screenshotService.getFullDisplaySnapshot();
-        const snapshot = mapToPayload(raw);
-        const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
-        this.eyedropperUiStore.getStore().setState({
+    this.enqueueBackgroundAction.execute(
+      'Loading eyedropper snapshot',
+      async () => {
+        try {
+          const raw = await this.screenshotService.getFullDisplaySnapshot();
+          const snapshot = mapToPayload(raw);
+          const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
+          this.eyedropperUiStore.getStore().setState({
             phase: 'ready',
             contextKey,
             snapshot,
             errorMessage: null,
             result: null,
             pendingPostCommit,
-        });
-      } catch (e) {
-        const message = e instanceof Error ? e.message : String(e);
-        const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
-        this.eyedropperUiStore.getStore().setState({
+          });
+        } catch (e) {
+          const message = e instanceof Error ? e.message : String(e);
+          const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
+          this.eyedropperUiStore.getStore().setState({
             phase: 'error',
             contextKey,
             snapshot: null,
             errorMessage: message,
             result: null,
             pendingPostCommit,
-        });
+          });
+        }
       }
-    }, 'Loading eyedropper snapshot');
+    );
   }
 }

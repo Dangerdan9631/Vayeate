@@ -1,5 +1,5 @@
 import type { HexColor } from '../../../../../model/schema/primitives';
-import type { AppAction } from '../../../../core/actions/app-action';
+import type { AppAction } from '../../../../core/action-queue/app-action';
 
 export enum ThemePaletteCardActionType {
   ApplyToDarkCheckboxOnToggle = 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE',

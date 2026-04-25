@@ -271,6 +271,14 @@ export function EyedropperOverlay() {
   const [scrollViewport, setScrollViewport] = useState({ w: 0, h: 0 });
 
   useEffect(() => {
+    if (!eyedropper.result) return
+
+    if (eyedropper.pendingPostCommit) {
+      dispatch(eyedropper.pendingPostCommit);
+    }
+  }, [eyedropper.result, eyedropper.pendingPostCommit, dispatch]);
+
+  useEffect(() => {
     zoomRef.current = zoom;
   }, [zoom]);
 

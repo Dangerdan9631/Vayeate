@@ -1,0 +1,509 @@
+## App Layer
+
+### [ ] Core
+- [x] ActionQueue
+    - [x] App Action aggregates <base>-action-types
+    - [x] ActionProcessor delegates to <base>-handler.ts
+    - [x] ActionProcessor logs action processing
+    - [x] ActionQueue provides status updates via operations
+- [x] Background Queue
+    - [x] Logs background processing
+    - [x] Every action has a status
+    - [x] Background Queue provides status updates via operations
+    - [x] Supports callbacks
+- [ ] Bootstrap
+
+### [ ] Common
+- [x] Components
+    - [x] TriStateCheckbox
+        - [x] Stateless component
+- [x] Context
+    - [x] useAppDispatch
+        - [x] Handles missing provider
+- [ ] Controllers
+    - [ ] precisely named
+    - [ ] Right granularity
+    - [ ] Only operations, validations, getState
+
+### [ ] App
+- [x] Action Types
+    - [x] Single <base>-action-type.ts with guard
+    - [x] aggregates <component>-action-type.ts
+- [x] Handler
+    - [x] Single <base>-handler.ts
+    - [x] delegates to <component>-handler.ts
+- [ ] Components
+    - [ ] precisely named
+    - [ ] Component UI state Store
+    - [ ] app-shell
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Component UI state Store
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] eyedropper-overlay
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Component UI state Store
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] menu-bar
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Component UI state Store
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] ribbon
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Component UI state Store
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] status-bar
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Component UI state Store
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] styled-tooltip
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+
+
+### [ ] Catalog
+- [x] Action Types
+    - [x] Single <base>-action-type.ts with guard
+    - [x] aggregates <component>-action-type.ts
+- [x] Handler
+    - [x] Single <base>-handler.ts
+    - [x] delegates to <component>-handler.ts
+- [ ] Components
+    - [ ] precisely named
+    - [ ] Component UI state Store
+    - [ ] bulk-add-dialog
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] catalog-details-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] catalog-page
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] catalogs-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] create-dialog
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] tokens-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+
+### [ ] Template
+- [x] Action Types
+    - [x] Single <base>-action-type.ts with guard
+    - [x] aggregates <component>-action-type.ts
+- [x] Handler
+    - [x] Single <base>-handler.ts
+    - [x] delegates to <component>-handler.ts
+- [ ] Components
+    - [ ] precisely named
+    - [ ] Component UI state Store
+    - [ ] create-template-dialog
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] groups-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] mappings-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] template-catalogs-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] template-details-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] template-page
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] templates-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] variables-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+
+### [ ] Theme
+- [x] Action Types
+    - [x] Single <base>-action-type.ts with guard
+    - [x] aggregates <component>-action-type.ts
+- [x] Handler
+    - [x] Single <base>-handler.ts
+    - [x] delegates to <component>-handler.ts
+- [ ] Components
+    - [ ] precisely named
+    - [ ] Component UI state Store
+    - [ ] create-theme-dialog
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] editor-previews-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] theme-details-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] theme-page
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] theme-palette-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] theme-variables-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+    - [ ] themes-card
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
+

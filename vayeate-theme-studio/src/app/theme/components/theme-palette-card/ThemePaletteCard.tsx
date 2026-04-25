@@ -6,8 +6,7 @@ import {
   useState,
   type ChangeEvent,
   type FocusEvent,
-  type KeyboardEvent,
-  type MouseEvent,
+  type KeyboardEvent
 } from 'react';
 import type { ColorVariable } from '../../../../model/schema/template-schemas';
 import type { ColorAssignment } from '../../../../model/schema/theme-schemas';
@@ -603,17 +602,12 @@ export function ThemePaletteCard() {
               onSetColorGroupChecked(groupKey, checked);
             }
 
-            function onGroupCheckboxClickCapture(e: MouseEvent) {
-              e.stopPropagation();
-            }
-
             return (
               <div key={groupKey} className="theme-palette-group-block">
                 <div className="theme-palette-group-header">
                   <TriStateCheckbox
                     state={groupState}
                     onChange={onGroupTriStateChange}
-                    onClickCapture={onGroupCheckboxClickCapture}
                     ariaLabel={`Select all in group: ${groupLabel}`}
                     className="theme-palette-group-checkbox"
                   />

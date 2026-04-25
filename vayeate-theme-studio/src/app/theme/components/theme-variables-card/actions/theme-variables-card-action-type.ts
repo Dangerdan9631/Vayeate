@@ -1,5 +1,5 @@
 import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, ContrastVariableKey } from '../../../../../model/schema/primitives';
-import type { AppAction } from '../../../../core/actions/app-action';
+import type { AppAction } from '../../../../core/action-queue/app-action';
 
 export enum ThemeVariablesCardActionType {
   SearchTextOnChange = 'THEME_VARIABLES_SEARCH_TEXT_ON_CHANGE',

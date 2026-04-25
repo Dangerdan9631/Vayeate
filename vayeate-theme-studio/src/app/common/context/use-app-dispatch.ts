@@ -1,8 +1,12 @@
 import { useContextSelector } from 'use-context-selector';
-import type { AppAction } from '../../core/actions/app-action';
-import { AppContext } from '../../core/app-context';
+import type { AppAction } from '../../core/action-queue/app-action';
+import { AppContext } from '../../app/components/app-context';
 
-export function useAppDispatch(): (action: AppAction) => Promise<void> {
+export function useAppDispatch(): (action: AppAction) => void {
   const dispatch = useContextSelector(AppContext, (c) => c?.dispatch);
-  return dispatch ?? (() => Promise.resolve());
+  if (!dispatch) {
+    throw new Error('useAppDispatch must be used within an AppProvider');
+  }
+  
+  return dispatch;
 }

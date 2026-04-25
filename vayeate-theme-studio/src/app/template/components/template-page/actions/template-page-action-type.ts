@@ -1,4 +1,4 @@
-import { AppAction } from "../../../../core/actions/app-action";
+import { AppAction } from "../../../../core/action-queue/app-action";
 
 export enum TemplatePageActionType {
   PageOnLoad = 'TEMPLATE_PAGE_ON_LOAD',

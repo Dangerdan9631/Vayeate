@@ -1,5 +1,5 @@
 import { SourceType, TokenType } from "../../../../../model/schema/primitives";
-import { AppAction } from "../../../../core/actions/app-action";
+import { AppAction } from "../../../../core/action-queue/app-action";
 
 export enum CatalogDetailsCardActionType {
   SourceUrlTextOnCommit = 'CATALOG_DETAILS_SOURCE_URL_TEXT_ON_COMMIT',

@@ -6,7 +6,7 @@ import { TemplateCatalogsCardActions } from "../components/template-catalogs-car
 import { MappingsCardActions } from "../components/mappings-card/actions/mappings-card-action-type";
 import { GroupsCardActions } from "../components/groups-card/actions/groups-card-action-type";
 import { VariablesCardActions } from "../components/variables-card/actions/variables-card-action-type";
-import type { AppAction } from '../../core/actions/app-action';
+import type { AppAction } from '../../core/action-queue/app-action';
 import { isTemplatePageAction } from '../components/template-page/actions/template-page-action-type';
 import { isTemplatesCardAction } from '../components/templates-card/actions/templates-card-action-type';
 import { isTemplateCreateDialogAction } from '../components/create-template-dialog/actions/template-create-dialog-action-type';

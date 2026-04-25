@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
-import { useColorSchemeViewModel } from '../viewmodel/use-color-scheme-viewmodel';
+import { useColorSchemeViewModel } from './use-color-scheme-viewmodel';
 
 export function ColorSchemeProvider({ children }: { children: ReactNode }) {
   const theme = useColorSchemeViewModel();

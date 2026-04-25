@@ -1,56 +1,51 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+
+
+const ICONS = {
+  'all': 'check_box',
+  'some': 'indeterminate_check_box',
+  'none': 'check_box_outline_blank',
+};
+
+const CHECKED: Record<TriState, boolean | 'mixed'> = {
+  'all': true,
+  'some': 'mixed',
+  'none': false,
+};
+
+function getNextState(current: TriState): boolean {
+  return current === 'some' ? true : current !== 'all';
+}
 
 export type TriState = 'all' | 'none' | 'some';
 
 interface TriStateCheckboxProps {
   state: TriState;
   onChange: (checked: boolean) => void;
-  onClickCapture?: (e: React.MouseEvent) => void;
   ariaLabel: string;
   className?: string;
 }
 
-const ICON_ALL = 'check_box';
-const ICON_SOME = 'indeterminate_check_box';
-const ICON_NONE = 'check_box_outline_blank';
-
 export function TriStateCheckbox({
   state,
-  onChange,
-  onClickCapture,
   ariaLabel,
   className,
+  onChange,
 }: TriStateCheckboxProps) {
-  const icon =
-    state === 'all' ? ICON_ALL : state === 'some' ? ICON_SOME : ICON_NONE;
-  const ariaChecked =
-    state === 'all' ? true : state === 'some' ? ('mixed' as const) : false;
+  const icon = useMemo(() => ICONS[state], [state]);
+  const ariaChecked = useMemo(() => CHECKED[state], [state]);
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      onClickCapture?.(e);
-      if (state === 'some') {
-        onChange(true);
-      } else {
-        onChange(state !== 'all');
-      }
-    },
-    [state, onChange, onClickCapture],
-  );
+  const onClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange(getNextState(state));
+  }, [state, onChange]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'Enter') {
-        e.preventDefault();
-        if (state === 'some') {
-          onChange(true);
-        } else {
-          onChange(state !== 'all');
-        }
-      }
-    },
-    [state, onChange],
-  );
+  const onKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      onChange(getNextState(state));
+    }
+  }, [state, onChange]);
 
   return (
     <button
@@ -59,8 +54,8 @@ export function TriStateCheckbox({
       aria-checked={ariaChecked}
       aria-label={ariaLabel}
       className={`checkbox-icon-btn ${className ?? ''}`.trim()}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
     >
       <span className="material-symbols-outlined" aria-hidden>
         {icon}

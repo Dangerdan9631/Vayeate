@@ -1,5 +1,5 @@
 import { CatalogName, Version } from "../../../../../model/schema/primitives";
-import { AppAction } from "../../../../core/actions/app-action";
+import { AppAction } from "../../../../core/action-queue/app-action";
 
 export enum CatalogsCardActionType {
   CatalogsListOnCommit = 'CATALOG_CATALOGS_LIST_ON_COMMIT',

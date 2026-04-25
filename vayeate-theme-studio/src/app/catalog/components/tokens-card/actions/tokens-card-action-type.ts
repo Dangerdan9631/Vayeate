@@ -1,5 +1,5 @@
 import type { SemanticTokenRegistryListKind, TokenKey, TokenType } from "../../../../../model/schema/primitives";
-import type { AppAction } from "../../../../core/actions/app-action";
+import type { AppAction } from "../../../../core/action-queue/app-action";
 
 export enum TokensCardActionType {
   SearchTextOnChange = 'CATALOG_TOKENS_SEARCH_TEXT_ON_CHANGE',

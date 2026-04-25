@@ -5,16 +5,22 @@ import { BackgroundQueueUiState, initialBackgroundQueueUiState } from "./backgro
 
 interface BackgroundQueueUiStoreState {
     state: BackgroundQueueUiState;
-    setState: (state: BackgroundQueueUiState) => void;
+    setQueueProcess: (description: string, queueLength: number) => void;
+    finishQueueProcessing: () => void;
 }
 
 @singleton()
-    export class BackgroundQueueUiStore {
+export class BackgroundQueueUiStore {
     private store = createStore<BackgroundQueueUiStoreState>()(
         immer((set): BackgroundQueueUiStoreState => ({
             state: initialBackgroundQueueUiState,
-            setState: (backgroundQueueState: BackgroundQueueUiState) => set((storeState: BackgroundQueueUiStoreState) => {
-                storeState.state = backgroundQueueState;
+            setQueueProcess: (description: string, queueLength: number) => set((storeState: BackgroundQueueUiStoreState) => {
+                storeState.state.description = description;
+                storeState.state.queueLength = queueLength;
+            }),
+            finishQueueProcessing: () => set((storeState: BackgroundQueueUiStoreState) => {
+                storeState.state.description = undefined;
+                storeState.state.queueLength = 0;
             }),
         }))
     );

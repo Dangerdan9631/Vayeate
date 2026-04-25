@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../catalog/state/catalogs-store';
-import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { CatalogType } from '../../../../model/schema/primitives';
 
 @singleton()
@@ -10,7 +10,7 @@ export class CreateCatalogOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogGateway: CatalogGateway,
-    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
   execute(params: { name: string; type: CatalogType }): CatalogReference {
@@ -27,9 +27,12 @@ export class CreateCatalogOperation {
     };
     const ref = { name: catalog.name, version: catalog.version };
     this.catalogsStore.getStore().updateCatalog(catalog);
-    this.enqueueBackgroundAction.execute(async() => {
-      await this.catalogGateway.saveCatalog(catalog);
-    }, `Saving catalog ${catalog.name} ${catalog.version}`);
+    this.enqueueBackgroundAction.execute(
+      `Saving catalog ${catalog.name} ${catalog.version}`,
+      async () => {
+        await this.catalogGateway.saveCatalog(catalog);
+      }
+    );
     return ref;
   }
 }

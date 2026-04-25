@@ -1,6 +1,6 @@
+import { Size } from 'electron';
 import { singleton } from 'tsyringe';
-import type { Size } from '../../../domain/state/window/window-state';
-import { SetViewportSizeOperation } from '../../../domain/operations/window-operations/set-viewport-size-operation';
+import { SetViewportSizeOperation } from '../../../../../domain/operations/window-operations/set-viewport-size-operation';
 
 @singleton()
 export class SyncViewportSizeController {

@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { Position } from '../../../domain/state/window/window-state';
-import { SetWindowPositionOperation } from '../../../domain/operations/window-operations/set-window-position-operation';
+import { SetWindowPositionOperation } from '../../../../../domain/operations/window-operations/set-window-position-operation';
+import { Position } from '../../../../../domain/state/window/window-state';
 
 @singleton()
 export class SyncWindowPositionController {

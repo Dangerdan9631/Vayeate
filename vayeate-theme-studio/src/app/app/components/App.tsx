@@ -1,6 +1,6 @@
-import '../../core/components/styles.css';
-import { AppProvider } from '../../core/components/AppProvider';
-import { ColorSchemeProvider } from '../../core/components/ColorSchemeProvider';
+import '../../../styles.css';
+import { AppProvider } from '../../app/components/AppProvider';
+import { ColorSchemeProvider } from '../../app/components/ColorSchemeProvider';
 import { AppShell } from './app-shell/AppShell';
 
 export function App() {

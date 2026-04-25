@@ -1,4 +1,4 @@
-import { AppAction } from '../../../app/core/actions/app-action';
+import { AppAction } from '../../../app/core/action-queue/app-action';
 import type { HexColor } from '../../../model/schema/primitives';
 
 export type EyedropperPhase = 'closed' | 'loading' | 'ready' | 'error';

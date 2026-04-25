@@ -19,11 +19,9 @@ function statusBarShowProgressArea(isProcessing: boolean, queueLength: number): 
   return isProcessing || queueLength > 0;
 }
 
-function statusBarActionQueueStatusText(queueLength: number, description: string | undefined): string {
+function statusBarActionQueueStatusText(queueLength: number): string {
   const total = queueLength;
-  return (description)
-    ? `${description} (${total} action${queueLength !== 0 ? 's' : ''} in queue)`
-    : `${total + 1} action${queueLength !== 0 ? 's' : ''} in queue`;
+  return `${total} action${queueLength !== 1 ? 's' : ''} in queue`;
 }
 
 function statusBarBackgroundQueueStatusText(queueLength: number, description: string | undefined): string {
@@ -36,17 +34,16 @@ function statusBarBackgroundQueueStatusText(queueLength: number, description: st
 export function useStatusBarViewModel(): StatusBarViewModel {
   const actionQueueStatus = useStore(actionQueueStore.api, (state) => state.state);
   const {
-    isProcessing: actionProcessing,
     queueLength: actionQueueLength,
-    description: actionQueueDescription,
   } = actionQueueStatus;
+  const actionProcessing = actionQueueLength > 0;
   
   const backgroundQueueStatus = useStore(backgroundQueueStore.api, (state) => state.state);
   const {
-    isProcessing: backgroundProcessing,
     queueLength: backgroundQueueLength,
     description: backgroundQueueDescription,
   } = backgroundQueueStatus;
+  const backgroundProcessing = backgroundQueueDescription !== undefined;
 
   const showBackgroundProgressArea = statusBarShowProgressArea(backgroundProcessing, backgroundQueueLength);
   const showActionQueueProgressArea = statusBarShowProgressArea(actionProcessing, actionQueueLength);
@@ -57,7 +54,7 @@ export function useStatusBarViewModel(): StatusBarViewModel {
       showBackgroundProgressArea,
       backgroundQueueStatusText: statusBarBackgroundQueueStatusText(backgroundQueueLength, backgroundQueueDescription),
       showActionQueueProgressArea,
-      actionQueueStatusText: statusBarActionQueueStatusText(actionQueueLength, actionQueueDescription),
+      actionQueueStatusText: statusBarActionQueueStatusText(actionQueueLength),
     }),
     [
       showBackgroundProgressArea,

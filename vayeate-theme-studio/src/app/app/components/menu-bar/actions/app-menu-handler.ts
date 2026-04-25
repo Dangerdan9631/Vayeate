@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { CloseWindowController } from '../../../../common/controllers/close-window-controller';
+import { CloseWindowController } from '../../window/controllers/close-window-controller';
 import { PerformHistoryGoToController } from '../../../../core/controllers/perform-history-go-to-controller';
 import { PerformRedoController } from '../../../../core/controllers/perform-redo-controller';
 import { PerformUndoController } from '../../../../core/controllers/perform-undo-controller';
-import { ForceReloadWindowController } from '../controllers/force-reload-window-controller';
-import { ReloadWindowController } from '../controllers/reload-window-controller';
-import { ToggleDevToolsController } from '../controllers/toggle-dev-tools-controller';
+import { ForceReloadWindowController } from '../../app-shell/controllers/force-reload-window-controller';
+import { ReloadWindowController } from '../../app-shell/controllers/reload-window-controller';
+import { ToggleDevToolsController } from '../../app-shell/controllers/toggle-dev-tools-controller';
 import { CloseAllMenusController } from '../controllers/close-all-menus-controller';
 import { ToggleMenuOpenController } from '../controllers/toggle-menu-open-controller';
 import { Logger, LoggerFactory } from '../../../../../domain/utils/logger';

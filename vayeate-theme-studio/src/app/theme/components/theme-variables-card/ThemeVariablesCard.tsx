@@ -1,4 +1,4 @@
-import { useMemo, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
+import { useMemo, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent } from 'react';
 import type { ContrastComparisonMethod } from '../../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable } from '../../../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../../model/schema/theme-schemas';
@@ -93,10 +93,6 @@ function ColorAssignmentsSection({
   );
   const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
 
-  function onColorSectionTriStateClickCapture(e: MouseEvent) {
-    e.stopPropagation();
-  }
-
   function onColorAssignmentsSectionHeaderToggleClick() {
     setCollapsed((c) => !c);
   }
@@ -107,7 +103,6 @@ function ColorAssignmentsSection({
         <TriStateCheckbox
           state={sectionState}
           onChange={onSetAllColorChecked}
-          onClickCapture={onColorSectionTriStateClickCapture}
           ariaLabel="Select all color variables"
           className="tree-section-checkbox"
         />
@@ -199,10 +194,6 @@ function ColorAssignmentsGroupSubsection({
     onSetColorGroupChecked(groupKey, checked);
   }
 
-  function onColorGroupTriStateClickCapture(e: MouseEvent) {
-    e.stopPropagation();
-  }
-
   function onColorGroupHeaderToggleClick() {
     setCollapsed((c) => !c);
   }
@@ -213,7 +204,6 @@ function ColorAssignmentsGroupSubsection({
         <TriStateCheckbox
           state={groupState}
           onChange={onColorGroupTriStateChange}
-          onClickCapture={onColorGroupTriStateClickCapture}
           ariaLabel={`Select all in group: ${groupLabel}`}
           className="tree-section-checkbox"
         />
@@ -498,10 +488,6 @@ function ContrastAssignmentsSection({
   );
   const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
 
-  function onContrastSectionTriStateClickCapture(e: MouseEvent) {
-    e.stopPropagation();
-  }
-
   function onContrastAssignmentsSectionHeaderToggleClick() {
     setCollapsed((c) => !c);
   }
@@ -512,7 +498,6 @@ function ContrastAssignmentsSection({
         <TriStateCheckbox
           state={sectionState}
           onChange={onSetAllContrastChecked}
-          onClickCapture={onContrastSectionTriStateClickCapture}
           ariaLabel="Select all contrast variables"
           className="tree-section-checkbox"
         />
@@ -601,10 +586,6 @@ function ContrastAssignmentsGroupSubsection({
     onSetContrastGroupChecked(groupKey, checked);
   }
 
-  function onContrastGroupTriStateClickCapture(e: MouseEvent) {
-    e.stopPropagation();
-  }
-
   function onContrastGroupHeaderToggleClick() {
     setCollapsed((c) => !c);
   }
@@ -615,7 +596,6 @@ function ContrastAssignmentsGroupSubsection({
         <TriStateCheckbox
           state={groupState}
           onChange={onContrastGroupTriStateChange}
-          onClickCapture={onContrastGroupTriStateClickCapture}
           ariaLabel={`Select all in group: ${groupLabel}`}
           className="tree-section-checkbox"
         />

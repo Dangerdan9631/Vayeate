@@ -1,20 +1,23 @@
 import { singleton } from 'tsyringe';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { UndoGateway } from '../../../gateway/undo/undo-gateway';
-import { EnqueueBackgroundActionOperation } from '../app-operations/enqueue-background-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 
 /** Clear in-memory undo stacks and delete persisted undo files (V2). Single responsibility; invoked by app controller on load/unload. */
 @singleton()
 export class ClearPersistedUndoOperation {
   constructor(
     private readonly undoGateway: UndoGateway,
-    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) { }
 
-  execute():void {
+  execute(): void {
     undoManagerV2.configure({ persistence: this.undoGateway });
-    this.enqueueBackgroundAction.execute(async() => {
-      await undoManagerV2.clearPersisted();
-    }, 'Clearing persisted undo');
+    this.enqueueBackgroundAction.execute(
+      'Clearing persisted undo',
+      async () => {
+        await undoManagerV2.clearPersisted();
+      },
+      () => { });
   }
 }

@@ -5,7 +5,8 @@ import { singleton } from "tsyringe";
 
 interface ActionQueueUiStoreState {
     state: ActionQueueUiState;
-    setState: (state: ActionQueueUiState) => void;
+    setQueueProcess: (queueLength: number) => void;
+    finishQueueProcessing: () => void;
 }
 
 @singleton()
@@ -13,8 +14,11 @@ export class ActionQueueUiStore {
     private store = createStore<ActionQueueUiStoreState>()(
         immer((set): ActionQueueUiStoreState => ({
             state: initialActionQueueUiState,
-            setState: (actionQueueUiState: ActionQueueUiState) => set((storeState: ActionQueueUiStoreState) => {
-                storeState.state = actionQueueUiState;
+            setQueueProcess: (queueLength: number) => set((storeState: ActionQueueUiStoreState) => {
+                storeState.state.queueLength = queueLength;
+            }),
+            finishQueueProcessing: () => set((storeState: ActionQueueUiStoreState) => {
+                storeState.state.queueLength = 0;
             }),
         }))
     );

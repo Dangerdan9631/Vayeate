@@ -1,20 +1,23 @@
 import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schema/template-schemas';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
-import { EnqueueBackgroundActionOperation } from '../../app-operations/enqueue-background-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
 @singleton()
 export class SaveTemplateOperation {
   constructor(
     private readonly templateGateway: TemplateGateway,
-    private readonly enqueueBackgroundAction: EnqueueBackgroundActionOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
   /** Persist template to disk only. Single responsibility: save. */
   execute(template: Template): void {
-    this.enqueueBackgroundAction.execute(async() => {
-      await this.templateGateway.saveTemplate(template);
-    }, `Saving template ${template.name} ${template.version}`);
+    this.enqueueBackgroundAction.execute(
+      `Saving template ${template.name} ${template.version}`,
+      async () => {
+        await this.templateGateway.saveTemplate(template);
+      }
+    );
   }
 }
 
