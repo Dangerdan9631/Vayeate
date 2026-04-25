@@ -1,17 +1,17 @@
 import { delay, inject, singleton } from 'tsyringe';
 import { CatalogActions } from './catalog-action-type';
-import { CatalogCreateDialogHandler } from '../components/create-dialog/actions/catalog-create-dialog-handler';
-import { isCatalogCreateDialogAction } from '../components/create-dialog/actions/catalog-create-dialog-action-type';
-import { CatalogsCardHandler } from '../components/catalogs-card/actions/catalogs-card-handler';
-import { isCatalogsCardAction } from '../components/catalogs-card/actions/catalogs-card-action-type';
-import { CatalogBulkAddDialogHandler } from '../components/bulk-add-dialog/actions/catalog-bulk-add-dialog-handler';
-import { isCatalogBulkAddDialogAction } from '../components/bulk-add-dialog/actions/catalog-bulk-add-dialog-action-type';
-import { CatalogDetailsCardHandler } from '../components/catalog-details-card/actions/catalog-details-card-handler';
-import { isCatalogDetailsCardAction } from '../components/catalog-details-card/actions/catalog-details-card-action-type';
-import { TokensCardHandler } from '../components/tokens-card/actions/tokens-card-handler';
-import { isTokensCardAction } from '../components/tokens-card/actions/tokens-card-action-type';
-import { CatalogPageHandler } from '../components/catalog-page/actions/catalog-page-handler';
-import { isCatalogPageAction } from '../components/catalog-page/actions/catalog-page-action-type';
+import { CatalogCreateDialogHandler } from '../create-dialog/actions/catalog-create-dialog-handler';
+import { isCatalogCreateDialogAction } from '../create-dialog/actions/catalog-create-dialog-action-type';
+import { CatalogsCardHandler } from '../catalogs-card/actions/catalogs-card-handler';
+import { isCatalogsCardAction } from '../catalogs-card/actions/catalogs-card-action-type';
+import { CatalogBulkAddDialogHandler } from '../bulk-add-dialog/actions/catalog-bulk-add-dialog-handler';
+import { isCatalogBulkAddDialogAction } from '../bulk-add-dialog/actions/catalog-bulk-add-dialog-action-type';
+import { CatalogDetailsCardHandler } from '../catalog-details-card/actions/catalog-details-card-handler';
+import { isCatalogDetailsCardAction } from '../catalog-details-card/actions/catalog-details-card-action-type';
+import { TokensCardHandler } from '../tokens-card/actions/tokens-card-handler';
+import { isTokensCardAction } from '../tokens-card/actions/tokens-card-action-type';
+import { CatalogPageHandler } from '../catalog-page/actions/catalog-page-handler';
+import { isCatalogPageAction } from '../catalog-page/actions/catalog-page-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()

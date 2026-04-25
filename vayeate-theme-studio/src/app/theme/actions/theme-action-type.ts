@@ -1,18 +1,18 @@
-import type { CreateThemeDialogActions } from '../components/create-theme-dialog/actions/create-theme-dialog-action-type';
-import type { EditorPreviewsCardActions } from '../components/editor-previews-card/actions/editor-previews-card-action-type';
-import type { ThemeDetailsCardActions } from '../components/theme-details-card/actions/theme-details-card-action-type';
-import type { ThemePageActions } from '../components/theme-page/actions/theme-page-action-type';
-import type { ThemePaletteCardActions } from '../components/theme-palette-card/actions/theme-palette-card-action-type';
-import type { ThemesCardActions } from '../components/themes-card/actions/themes-card-action-type';
-import type { ThemeVariablesCardActions } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
-import type { AppAction } from '../../core/components/action-queue/app-action';
-import { isCreateThemeDialogAction } from '../components/create-theme-dialog/actions/create-theme-dialog-action-type';
-import { isEditorPreviewsCardAction } from '../components/editor-previews-card/actions/editor-previews-card-action-type';
-import { isThemeDetailsCardAction } from '../components/theme-details-card/actions/theme-details-card-action-type';
-import { isThemePageAction } from '../components/theme-page/actions/theme-page-action-type';
-import { isThemePaletteCardAction } from '../components/theme-palette-card/actions/theme-palette-card-action-type';
-import { isThemesCardAction } from '../components/themes-card/actions/themes-card-action-type';
-import { isThemeVariablesCardAction } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
+import type { CreateThemeDialogActions } from '../create-theme-dialog/actions/create-theme-dialog-action-type';
+import type { EditorPreviewsCardActions } from '../editor-previews-card/actions/editor-previews-card-action-type';
+import type { ThemeDetailsCardActions } from '../theme-details-card/actions/theme-details-card-action-type';
+import type { ThemePageActions } from '../theme-page/actions/theme-page-action-type';
+import type { ThemePaletteCardActions } from '../theme-palette-card/actions/theme-palette-card-action-type';
+import type { ThemesCardActions } from '../themes-card/actions/themes-card-action-type';
+import type { ThemeVariablesCardActions } from '../theme-variables-card/actions/theme-variables-card-action-type';
+import type { AppAction } from '../../core/action-queue/app-action';
+import { isCreateThemeDialogAction } from '../create-theme-dialog/actions/create-theme-dialog-action-type';
+import { isEditorPreviewsCardAction } from '../editor-previews-card/actions/editor-previews-card-action-type';
+import { isThemeDetailsCardAction } from '../theme-details-card/actions/theme-details-card-action-type';
+import { isThemePageAction } from '../theme-page/actions/theme-page-action-type';
+import { isThemePaletteCardAction } from '../theme-palette-card/actions/theme-palette-card-action-type';
+import { isThemesCardAction } from '../themes-card/actions/themes-card-action-type';
+import { isThemeVariablesCardAction } from '../theme-variables-card/actions/theme-variables-card-action-type';
 
 export type ThemeActions =
   | CreateThemeDialogActions

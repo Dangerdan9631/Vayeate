@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { BackgroundQueue } from '../../../app/core/components/background-queue/background-queue';
+import { BackgroundQueue } from '../../../app/core/background-queue/background-queue';
 
 const noop = () => { };
 

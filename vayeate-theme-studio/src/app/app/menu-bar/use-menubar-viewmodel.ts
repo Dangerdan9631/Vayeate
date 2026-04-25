@@ -1,0 +1,211 @@
+import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
+import type { UndoListEntry } from '../../../domain/core/undo-stack-types';
+import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { AppShellActionType } from '../app-shell/actions/app-shell-action-type';
+import { AppMenuActionType } from './actions/app-menu-action-type';
+import { UiStore } from '../../../domain/state/ui/ui-store';
+import { container } from 'tsyringe';
+import { useStore } from 'zustand';
+import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
+import { WindowStore } from '../../../domain/state/window/window-store';
+import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
+
+const uiStore = container.resolve(UiStore);
+const appConfigStore = container.resolve(AppConfigStore);
+const undoStackStore = container.resolve(UndoStackStore);
+const windowStore = container.resolve(WindowStore); 
+
+export interface MenuBarViewModel {
+  fileOpen: boolean;
+  editOpen: boolean;
+  historyOpen: boolean;
+  viewOpen: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+  frames: UndoListEntry[];
+  currentId: string | null;
+  isMaximized: boolean;
+  fileRef: RefObject<HTMLDivElement>;
+  editRef: RefObject<HTMLDivElement>;
+  historyRef: RefObject<HTMLDivElement>;
+  viewRef: RefObject<HTMLDivElement>;
+  themeToggleAriaLabel: string;
+  themeToggleIcon: string;
+  handleTitleBarDrag: () => void;
+  handleThemeToggle: () => void;
+  handleMinimize: () => void;
+  handleMaximize: () => void;
+  handleRestore: () => void;
+  handleClose: () => void;
+  handleFileMenuTrigger: () => void;
+  handleEditMenuTrigger: () => void;
+  handleHistoryMenuTrigger: () => void;
+  handleViewMenuTrigger: () => void;
+  handleExit: () => void;
+  handleUndo: () => void;
+  handleRedo: () => void;
+  handleHistoryItemClick: (frameId: string) => () => void;
+  handleReload: () => void;
+  handleForceReload: () => void;
+  handleToggleDevTools: () => void;
+}
+
+export function useMenuBarViewModel(): MenuBarViewModel {
+  const dispatch = useAppDispatch();
+  const isMaximized = useStore(windowStore.api, (state) => state.state.isMaximized);
+  const undoMenu = useStore(undoStackStore.api, (state) => state.state.undoMenu);
+  const theme = useStore(appConfigStore.api, (state) => state.config.colorScheme);
+  const openMenu = useStore(uiStore.api, (state) => state.state.openMenu);
+  const { frames, currentId, canUndo, canRedo } = undoMenu;
+
+  const fileRef = useRef<HTMLDivElement>(null);
+  const editRef = useRef<HTMLDivElement>(null);
+  const historyRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const isAnyMenuOpen = openMenu !== null;
+  const fileOpen = openMenu === 'file';
+  const editOpen = openMenu === 'edit';
+  const historyOpen = openMenu === 'history';
+  const viewOpen = openMenu === 'view';
+
+  useEffect(() => {
+    if (!isAnyMenuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      const targetNode = e.target as Node;
+      const refs = [fileRef, editRef, historyRef, viewRef];
+      const clickedInsideAnyMenu = refs.some((menuRef) => menuRef.current?.contains(targetNode));
+      if (!clickedInsideAnyMenu) {
+        void dispatch({ type: AppMenuActionType.MenuOnClose });
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dispatch, isAnyMenuOpen]);
+
+  const handleUndo = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.EditMenuUndoButtonOnClick });
+    void dispatch({ type: AppMenuActionType.MenuOnClose });
+  }, [dispatch]);
+
+  const handleRedo = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.EditMenuRedoButtonOnClick });
+    void dispatch({ type: AppMenuActionType.MenuOnClose });
+  }, [dispatch]);
+
+  const handleHistoryClick = useCallback(
+    (frameId: string) => {
+      void dispatch({ type: AppMenuActionType.HistoryMenuGoToButtonOnClick, frameId });
+      void dispatch({ type: AppMenuActionType.MenuOnClose });
+    },
+    [dispatch],
+  );
+
+  const handleHistoryItemClick = useCallback(
+    (frameId: string) => () => {
+      handleHistoryClick(frameId);
+    },
+    [handleHistoryClick],
+  );
+
+  const handleExit = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.FileMenuExitButtonOnClick });
+    void dispatch({ type: AppMenuActionType.MenuOnClose });
+  }, [dispatch]);
+
+  const handleFileMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.FileMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleEditMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.EditMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleHistoryMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.HistoryMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleViewMenuTrigger = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.ViewMenuTriggerButtonOnClick });
+  }, [dispatch]);
+
+  const handleReload = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.ViewMenuReloadButtonOnClick });
+    void dispatch({ type: AppMenuActionType.MenuOnClose });
+  }, [dispatch]);
+
+  const handleForceReload = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.ViewMenuForceReloadButtonOnClick });
+    void dispatch({ type: AppMenuActionType.MenuOnClose });
+  }, [dispatch]);
+
+  const handleToggleDevTools = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.ViewMenuToggleDevToolsButtonOnClick });
+    void dispatch({ type: AppMenuActionType.MenuOnClose });
+  }, [dispatch]);
+
+  const handleMinimize = useCallback(() => {
+    dispatch({ type: AppShellActionType.MinimizeButtonOnClick });
+  }, [dispatch]);
+
+  const handleMaximize = useCallback(() => {
+    dispatch({ type: AppShellActionType.MaximizeButtonOnClick });
+  }, [dispatch]);
+
+  const handleRestore = useCallback(() => {
+    dispatch({ type: AppShellActionType.RestoreButtonOnClick });
+  }, [dispatch]);
+
+  const handleClose = useCallback(() => {
+    dispatch({ type: AppShellActionType.CloseButtonOnClick });
+  }, [dispatch]);
+
+  const handleThemeToggle = useCallback(() => {
+    dispatch({ type: AppShellActionType.ThemeCheckboxOnToggle });
+  }, [dispatch]);
+
+  const handleTitleBarDrag = useCallback(() => {
+    dispatch({ type: AppShellActionType.TitleBarOnDrag });
+  }, [dispatch]);
+
+  const { themeToggleAriaLabel, themeToggleIcon } = useMemo(() => {
+    return {
+      themeToggleAriaLabel: theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
+      themeToggleIcon: theme === 'light' ? 'light_mode' : 'dark_mode',
+    };
+  }, [theme]);
+
+  return {
+    fileOpen,
+    editOpen,
+    historyOpen,
+    viewOpen,
+    canUndo,
+    canRedo,
+    frames,
+    currentId,
+    isMaximized,
+    fileRef,
+    editRef,
+    historyRef,
+    viewRef,
+    themeToggleAriaLabel,
+    themeToggleIcon,
+    handleTitleBarDrag,
+    handleThemeToggle,
+    handleMinimize,
+    handleMaximize,
+    handleRestore,
+    handleClose,
+    handleFileMenuTrigger,
+    handleEditMenuTrigger,
+    handleHistoryMenuTrigger,
+    handleViewMenuTrigger,
+    handleExit,
+    handleUndo,
+    handleRedo,
+    handleHistoryItemClick,
+    handleReload,
+    handleForceReload,
+    handleToggleDevTools,
+  };
+}

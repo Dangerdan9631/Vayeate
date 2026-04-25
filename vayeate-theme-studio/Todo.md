@@ -1,6 +1,6 @@
 ## App Layer
 
-### [ ] Core
+### [x] Core
 - [x] ActionQueue
     - [x] App Action aggregates <base>-action-types
     - [x] ActionProcessor delegates to <base>-handler.ts
@@ -11,7 +11,7 @@
     - [x] Every action has a status
     - [x] Background Queue provides status updates via operations
     - [x] Supports callbacks
-- [ ] Bootstrap
+- [x] Bootstrap
 
 ### [ ] Common
 - [x] Components

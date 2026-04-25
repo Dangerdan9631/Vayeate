@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import { WindowService } from '../../../gateway/services/window-service';
-import { SyncViewportSizeController } from '../../../app/app/components/window/controllers/sync-viewport-size-controller';
-import { SyncWindowDisplayStateController } from '../../../app/app/components/window/controllers/sync-window-display-state-controller';
-import { SyncWindowPositionController } from '../../../app/app/components/window/controllers/sync-window-position-controller';
-import { SyncWindowSizeController } from '../../../app/app/components/window/controllers/sync-window-size-controller';
-import { HandleKeyboardShortcutController } from '../../../app/app/components/app-shell/controllers/handle-keyboard-shortcut-controller';
+import { SyncViewportSizeController } from '../../../app/app/window/controllers/sync-viewport-size-controller';
+import { SyncWindowDisplayStateController } from '../../../app/app/window/controllers/sync-window-display-state-controller';
+import { SyncWindowPositionController } from '../../../app/app/window/controllers/sync-window-position-controller';
+import { SyncWindowSizeController } from '../../../app/app/window/controllers/sync-window-size-controller';
+import { HandleKeyboardShortcutController } from '../../../app/app/app-shell/controllers/handle-keyboard-shortcut-controller';
 
 @singleton()
 export class InitializeWindowCallbacksOperation {

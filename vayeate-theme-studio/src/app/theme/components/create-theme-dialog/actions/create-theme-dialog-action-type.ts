@@ -1,5 +1,5 @@
 import type { ThemeName } from '../../../../../model/schema/primitives';
-import type { AppAction } from '../../../../core/components/action-queue/app-action';
+import type { AppAction } from '../../../../core/action-queue/app-action';
 
 export enum CreateThemeDialogActionType {
   NameTextOnChange = 'THEME_CREATE_DIALOG_NAME_TEXT_ON_CHANGE',

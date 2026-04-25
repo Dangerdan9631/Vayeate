@@ -1,0 +1,67 @@
+import { singleton } from 'tsyringe';
+import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { LoadCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/load-catalog-operation';
+import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
+import {
+  mergeMappingsFromCatalogData,
+  type CatalogDataItem,
+} from '../../../../domain/utils/template-catalog-merge';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
+
+async function loadCatalogData(
+  loadCatalog: LoadCatalogOperation,
+  refs: readonly { name: string; version: string }[],
+): Promise<CatalogDataItem[]> {
+  const catalogData: CatalogDataItem[] = [];
+  for (const ref of refs) {
+    const catalog = await loadCatalog.execute(ref.name, ref.version);
+    if (catalog) {
+      catalogData.push({
+        ref,
+        tokens: catalog.tokens,
+        semanticTokenTypes: catalog.semanticTokenTypes,
+        semanticTokenModifiers: catalog.semanticTokenModifiers,
+        semanticTokenLanguages: catalog.semanticTokenLanguages,
+      });
+    }
+  }
+  return catalogData;
+}
+
+@singleton()
+export class ChangeCatalogVersionController {
+  constructor(
+    private readonly templatesStore: TemplatesStore,
+    private readonly loadCatalog: LoadCatalogOperation,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
+    private readonly saveTemplate: SaveTemplateOperation,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+  ) {}
+
+  async run(catalogName: string, newVersion: string): Promise<void> {
+    const template = this.templatesStore.getStore().state.template;
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const newCatalogRefs = base.catalogRefs.map((r) =>
+      r.name === catalogName ? { ...r, version: newVersion } : r,
+    );
+    const catalogData = await loadCatalogData(this.loadCatalog, newCatalogRefs);
+    const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
+      mergeMappingsFromCatalogData(catalogData, base.mappings);
+    const newGroups = [...(base.groups ?? [])];
+    for (const g of groupsToEnsure) {
+      if (!newGroups.includes(g)) newGroups.push(g);
+    }
+    const updated = {
+      ...base,
+      catalogRefs: newCatalogRefs,
+      mappings: newMappings,
+      groups: newGroups,
+      semanticTokenModifiers,
+      semanticTokenLanguages,
+    };
+    this.saveTemplate.execute(updated);
+    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version);
+  }
+}

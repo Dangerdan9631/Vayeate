@@ -1,19 +1,19 @@
 import { delay, inject, singleton } from 'tsyringe';
 import { ThemeActions } from './theme-action-type';
-import { CreateThemeDialogHandler } from '../components/create-theme-dialog/actions/create-theme-dialog-handler';
-import { isCreateThemeDialogAction } from '../components/create-theme-dialog/actions/create-theme-dialog-action-type';
-import { EditorPreviewsCardHandler } from '../components/editor-previews-card/actions/editor-previews-card-handler';
-import { isEditorPreviewsCardAction } from '../components/editor-previews-card/actions/editor-previews-card-action-type';
-import { ThemeDetailsCardHandler } from '../components/theme-details-card/actions/theme-details-card-handler';
-import { isThemeDetailsCardAction } from '../components/theme-details-card/actions/theme-details-card-action-type';
-import { ThemePageHandler } from '../components/theme-page/actions/theme-page-handler';
-import { isThemePageAction } from '../components/theme-page/actions/theme-page-action-type';
-import { ThemePaletteCardHandler } from '../components/theme-palette-card/actions/theme-palette-card-handler';
-import { isThemePaletteCardAction } from '../components/theme-palette-card/actions/theme-palette-card-action-type';
-import { ThemesCardHandler } from '../components/themes-card/actions/themes-card-handler';
-import { isThemesCardAction } from '../components/themes-card/actions/themes-card-action-type';
-import { ThemeVariablesCardHandler } from '../components/theme-variables-card/actions/theme-variables-card-handler';
-import { isThemeVariablesCardAction } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
+import { CreateThemeDialogHandler } from '../create-theme-dialog/actions/create-theme-dialog-handler';
+import { isCreateThemeDialogAction } from '../create-theme-dialog/actions/create-theme-dialog-action-type';
+import { EditorPreviewsCardHandler } from '../editor-previews-card/actions/editor-previews-card-handler';
+import { isEditorPreviewsCardAction } from '../editor-previews-card/actions/editor-previews-card-action-type';
+import { ThemeDetailsCardHandler } from '../theme-details-card/actions/theme-details-card-handler';
+import { isThemeDetailsCardAction } from '../theme-details-card/actions/theme-details-card-action-type';
+import { ThemePageHandler } from '../theme-page/actions/theme-page-handler';
+import { isThemePageAction } from '../theme-page/actions/theme-page-action-type';
+import { ThemePaletteCardHandler } from '../theme-palette-card/actions/theme-palette-card-handler';
+import { isThemePaletteCardAction } from '../theme-palette-card/actions/theme-palette-card-action-type';
+import { ThemesCardHandler } from '../themes-card/actions/themes-card-handler';
+import { isThemesCardAction } from '../themes-card/actions/themes-card-action-type';
+import { ThemeVariablesCardHandler } from '../theme-variables-card/actions/theme-variables-card-handler';
+import { isThemeVariablesCardAction } from '../theme-variables-card/actions/theme-variables-card-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()

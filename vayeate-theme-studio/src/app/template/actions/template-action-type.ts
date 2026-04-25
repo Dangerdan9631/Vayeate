@@ -1,20 +1,20 @@
-import { TemplatePageActions } from "../components/template-page/actions/template-page-action-type";
-import { TemplatesCardActions } from "../components/templates-card/actions/templates-card-action-type";
-import { TemplateCreateDialogActions } from "../components/create-template-dialog/actions/template-create-dialog-action-type";
-import { TemplateDetailsCardActions } from "../components/template-details-card/actions/template-details-card-action-type";
-import { TemplateCatalogsCardActions } from "../components/template-catalogs-card/actions/template-catalogs-card-action-type";
-import { MappingsCardActions } from "../components/mappings-card/actions/mappings-card-action-type";
-import { GroupsCardActions } from "../components/groups-card/actions/groups-card-action-type";
-import { VariablesCardActions } from "../components/variables-card/actions/variables-card-action-type";
-import type { AppAction } from '../../core/components/action-queue/app-action';
-import { isTemplatePageAction } from '../components/template-page/actions/template-page-action-type';
-import { isTemplatesCardAction } from '../components/templates-card/actions/templates-card-action-type';
-import { isTemplateCreateDialogAction } from '../components/create-template-dialog/actions/template-create-dialog-action-type';
-import { isTemplateDetailsCardAction } from '../components/template-details-card/actions/template-details-card-action-type';
-import { isTemplateCatalogsCardAction } from '../components/template-catalogs-card/actions/template-catalogs-card-action-type';
-import { isMappingsCardAction } from '../components/mappings-card/actions/mappings-card-action-type';
-import { isGroupsCardAction } from '../components/groups-card/actions/groups-card-action-type';
-import { isVariablesCardAction } from '../components/variables-card/actions/variables-card-action-type';
+import { TemplatePageActions } from "../template-page/actions/template-page-action-type";
+import { TemplatesCardActions } from "../templates-card/actions/templates-card-action-type";
+import { TemplateCreateDialogActions } from "../create-template-dialog/actions/template-create-dialog-action-type";
+import { TemplateDetailsCardActions } from "../template-details-card/actions/template-details-card-action-type";
+import { TemplateCatalogsCardActions } from "../template-catalogs-card/actions/template-catalogs-card-action-type";
+import { MappingsCardActions } from "../mappings-card/actions/mappings-card-action-type";
+import { GroupsCardActions } from "../groups-card/actions/groups-card-action-type";
+import { VariablesCardActions } from "../variables-card/actions/variables-card-action-type";
+import type { AppAction } from '../../core/action-queue/app-action';
+import { isTemplatePageAction } from '../template-page/actions/template-page-action-type';
+import { isTemplatesCardAction } from '../templates-card/actions/templates-card-action-type';
+import { isTemplateCreateDialogAction } from '../create-template-dialog/actions/template-create-dialog-action-type';
+import { isTemplateDetailsCardAction } from '../template-details-card/actions/template-details-card-action-type';
+import { isTemplateCatalogsCardAction } from '../template-catalogs-card/actions/template-catalogs-card-action-type';
+import { isMappingsCardAction } from '../mappings-card/actions/mappings-card-action-type';
+import { isGroupsCardAction } from '../groups-card/actions/groups-card-action-type';
+import { isVariablesCardAction } from '../variables-card/actions/variables-card-action-type';
 
 export type TemplateActions =
   | TemplatePageActions

@@ -1,0 +1,11 @@
+import { singleton } from 'tsyringe';
+import { SetTemplateCreateFormNameOperation } from '../../../../domain/operations/template-operations/template-list/set-template-create-form-name-operation';
+
+@singleton()
+export class SetCreateFormNameController {
+  constructor(private readonly setTemplateCreateFormName: SetTemplateCreateFormNameOperation) {}
+
+  run(value: string): void {
+    this.setTemplateCreateFormName.execute(value);
+  }
+}

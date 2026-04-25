@@ -1,13 +1,13 @@
 import { delay, inject, singleton } from 'tsyringe';
 import { AppActions } from './app-action-type';
-import { AppShellHandler } from '../components/app-shell/actions/app-shell-handler';
-import { isAppShellAction } from '../components/app-shell/actions/app-shell-action-type';
-import { AppEyedropperOverlayHandler } from '../components/eyedropper-overlay/actions/app-eyedropper-overlay-handler';
-import { isAppEyedropperOverlayAction } from '../components/eyedropper-overlay/actions/app-eyedropper-overlay-action-type';
-import { AppMenuHandler } from '../components/menu-bar/actions/app-menu-handler';
-import { isAppMenuAction } from '../components/menu-bar/actions/app-menu-action-type';
-import { AppRibbonHandler } from '../components/ribbon/actions/app-ribbon-handler';
-import { isAppRibbonAction } from '../components/ribbon/actions/app-ribbon-action-type';
+import { AppShellHandler } from '../app-shell/actions/app-shell-handler';
+import { isAppShellAction } from '../app-shell/actions/app-shell-action-type';
+import { AppEyedropperOverlayHandler } from '../eyedropper-overlay/actions/app-eyedropper-overlay-handler';
+import { isAppEyedropperOverlayAction } from '../eyedropper-overlay/actions/app-eyedropper-overlay-action-type';
+import { AppMenuHandler } from '../menu-bar/actions/app-menu-handler';
+import { isAppMenuAction } from '../menu-bar/actions/app-menu-action-type';
+import { AppRibbonHandler } from '../ribbon/actions/app-ribbon-handler';
+import { isAppRibbonAction } from '../ribbon/actions/app-ribbon-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 @singleton()
