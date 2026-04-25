@@ -1,4 +1,4 @@
-import { AppAction } from "../../../../core/action-queue/app-action";
+import { AppAction } from "../../../../core/components/action-queue/app-action";
 
 export enum TemplateDetailsCardActionType {
   DeleteVersionButtonOnClick = 'TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK',

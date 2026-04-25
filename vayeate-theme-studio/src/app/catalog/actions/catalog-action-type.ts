@@ -4,7 +4,7 @@ import { CatalogBulkAddDialogActions } from "../components/bulk-add-dialog/actio
 import { CatalogDetailsCardActions } from "../components/catalog-details-card/actions/catalog-details-card-action-type";
 import { TokensCardActions } from "../components/tokens-card/actions/tokens-card-action-type";
 import { CatalogPageActions } from "../components/catalog-page/actions/catalog-page-action-type";
-import type { AppAction } from '../../core/action-queue/app-action';
+import type { AppAction } from '../../core/components/action-queue/app-action';
 import { isCatalogBulkAddDialogAction } from '../components/bulk-add-dialog/actions/catalog-bulk-add-dialog-action-type';
 import { isCatalogCreateDialogAction } from '../components/create-dialog/actions/catalog-create-dialog-action-type';
 import { isCatalogDetailsCardAction } from '../components/catalog-details-card/actions/catalog-details-card-action-type';

@@ -1,4 +1,4 @@
-import type { AppAction } from '../../../../core/action-queue/app-action';
+import type { AppAction } from '../../../../core/components/action-queue/app-action';
 
 export enum AppMenuActionType {
   FileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',

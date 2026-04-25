@@ -1,4 +1,4 @@
-import type { AppAction } from '../../../../core/action-queue/app-action';
+import type { AppAction } from '../../../../core/components/action-queue/app-action';
 
 export enum AppShellActionType {
   ThemeCheckboxOnToggle = 'APP_SHELL_THEME_CHECKBOX_ON_TOGGLE',

@@ -1,4 +1,4 @@
-import { AppAction } from "../../../../core/action-queue/app-action";
+import { AppAction } from "../../../../core/components/action-queue/app-action";
 
 export enum GroupsCardActionType {
   GroupAddTextOnChange = 'TEMPLATE_GROUP_ADD_TEXT_ON_CHANGE',

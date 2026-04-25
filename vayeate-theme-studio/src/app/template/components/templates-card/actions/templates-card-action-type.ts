@@ -1,5 +1,5 @@
 import { TemplateName, Version } from "../../../../../model/schema/primitives";
-import { AppAction } from "../../../../core/action-queue/app-action";
+import { AppAction } from "../../../../core/components/action-queue/app-action";
 
 export enum TemplatesCardActionType {
   TemplatesListOnCommit = 'TEMPLATE_TEMPLATES_LIST_ON_COMMIT',

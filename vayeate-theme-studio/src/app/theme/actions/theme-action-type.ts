@@ -5,7 +5,7 @@ import type { ThemePageActions } from '../components/theme-page/actions/theme-pa
 import type { ThemePaletteCardActions } from '../components/theme-palette-card/actions/theme-palette-card-action-type';
 import type { ThemesCardActions } from '../components/themes-card/actions/themes-card-action-type';
 import type { ThemeVariablesCardActions } from '../components/theme-variables-card/actions/theme-variables-card-action-type';
-import type { AppAction } from '../../core/action-queue/app-action';
+import type { AppAction } from '../../core/components/action-queue/app-action';
 import { isCreateThemeDialogAction } from '../components/create-theme-dialog/actions/create-theme-dialog-action-type';
 import { isEditorPreviewsCardAction } from '../components/editor-previews-card/actions/editor-previews-card-action-type';
 import { isThemeDetailsCardAction } from '../components/theme-details-card/actions/theme-details-card-action-type';

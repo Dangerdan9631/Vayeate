@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import { AppAction } from '../../../app/core/action-queue/app-action';
-import { ActionQueue } from '../../../app/core/action-queue/action-queue';
+import { AppAction } from '../../../app/core/components/action-queue/app-action';
+import { ActionQueue } from '../../../app/core/components/action-queue/action-queue';
 
 @singleton()
 export class EnqueueActionQueueOperation {

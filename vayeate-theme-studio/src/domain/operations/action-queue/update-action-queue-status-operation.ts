@@ -2,12 +2,12 @@ import { singleton } from 'tsyringe';
 import { ActionQueueUiStore } from '../../state/ui/action-queue-ui-store';
 
 @singleton()
-export class FinishActionQueueProcessingOperation {
+export class UpdateActionQueueStatusOperation {
   constructor(
     private readonly actionQueueStore: ActionQueueUiStore
   ) { }
 
-  execute(): void {
-    this.actionQueueStore.getStore().finishQueueProcessing();
+  execute(queueLength: number): void {
+    this.actionQueueStore.getStore().setQueueStatus(queueLength);
   }
 }

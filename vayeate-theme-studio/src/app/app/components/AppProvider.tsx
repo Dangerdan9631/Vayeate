@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, type ReactNode } from 'react';
 import { container } from 'tsyringe';
-import { ActionQueue } from '../../core/action-queue/action-queue';
-import { AppAction } from '../../core/action-queue/app-action';
+import { ActionQueue } from '../../core/components/action-queue/action-queue';
+import { AppAction } from '../../core/components/action-queue/app-action';
 import { AppContextValue, AppContext } from './app-context';
 
 export function AppProvider({ children }: { children: ReactNode }) {

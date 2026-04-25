@@ -1,4 +1,4 @@
-import { AppAction } from "../../../../core/action-queue/app-action";
+import { AppAction } from "../../../../core/components/action-queue/app-action";
 
 export enum TemplateCreateDialogActionType {
   NameTextOnChange = 'TEMPLATE_CREATE_DIALOG_NAME_TEXT_ON_CHANGE',

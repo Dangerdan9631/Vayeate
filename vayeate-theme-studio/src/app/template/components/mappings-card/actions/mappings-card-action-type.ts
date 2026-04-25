@@ -1,5 +1,5 @@
 import { ColorVariableKey, ContrastVariableKey, TokenType } from "../../../../../model/schema/primitives";
-import { AppAction } from "../../../../core/action-queue/app-action";
+import { AppAction } from "../../../../core/components/action-queue/app-action";
 
 export enum MappingsCardActionType {
   MappingSearchTextOnChange = 'TEMPLATE_MAPPING_SEARCH_TEXT_ON_CHANGE',

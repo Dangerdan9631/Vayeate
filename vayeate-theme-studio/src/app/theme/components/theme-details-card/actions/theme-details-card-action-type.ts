@@ -1,6 +1,6 @@
 import type { TemplateName, ThemeName, TokenKey, Version } from '../../../../../model/schema/primitives';
 import type { ThemePreviewTokenRefField } from '../../../../../model/schema/theme-schemas';
-import type { AppAction } from '../../../../core/action-queue/app-action';
+import type { AppAction } from '../../../../core/components/action-queue/app-action';
 
 export enum ThemeDetailsCardActionType {
   TemplateListOnCommit = 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT',

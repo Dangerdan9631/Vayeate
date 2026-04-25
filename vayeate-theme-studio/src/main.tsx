@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './app/app/components/App';
 import { container } from 'tsyringe';
 import { BootstrapAppController } from './app/core/controllers/bootstrap-app-controller';
-import { ActionQueue } from './app/core/action-queue/action-queue';
+import { ActionQueue } from './app/core/components/action-queue/action-queue';
 
 container.register("IActionQueue", { useClass: ActionQueue });
 void container.resolve(BootstrapAppController).run();

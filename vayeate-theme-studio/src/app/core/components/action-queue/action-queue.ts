@@ -1,9 +1,9 @@
 import type { AppAction } from './app-action';
-import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
+import { LoggerFactory, type Logger } from '../../../../domain/utils/logger';
 import { ActionProcessor } from './action-processor';
 import { singleton } from 'tsyringe';
-import { FinishActionQueueProcessingOperation } from '../../../domain/operations/action-queue/finish-action-queue-processing-operation';
-import { SetActionQueueProcessOperation } from '../../../domain/operations/action-queue/set-action-queue-process-operation';
+import { UpdateActionQueueStatusController } from './controllers/update-action-queue-status-controller';
+import { CompleteActionQueueProcessingController } from './controllers/complete-action-queue-processing-controller';
 
 @singleton()
 export class ActionQueue {
@@ -13,8 +13,8 @@ export class ActionQueue {
 
   constructor(
     private readonly actionProcessor: ActionProcessor,
-    private readonly setActionQueueProcess: SetActionQueueProcessOperation,
-    private readonly finishActionQueueProcessing: FinishActionQueueProcessingOperation,
+    private readonly updateActionQueueStatus: UpdateActionQueueStatusController,
+    private readonly completeActionQueueProcessing: CompleteActionQueueProcessingController,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('ActionQueue');
@@ -31,7 +31,7 @@ export class ActionQueue {
     this.isProcessing = true;
     while (this.queue.length > 0) {
       const action = this.queue.shift()!;
-      this.setActionQueueProcess.execute(this.queue.length + 1);
+      this.updateActionQueueStatus.run(this.queue.length + 1);
       try {
         await this.actionProcessor.process(action);
       } catch (err) {
@@ -39,7 +39,7 @@ export class ActionQueue {
       }
     }
 
-    this.finishActionQueueProcessing.execute();
+    this.completeActionQueueProcessing.run();
     this.isProcessing = false;
   }
 }

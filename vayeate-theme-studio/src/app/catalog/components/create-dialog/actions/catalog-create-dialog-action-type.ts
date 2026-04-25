@@ -1,5 +1,5 @@
 import { CatalogType } from "../../../../../model/schema/primitives";
-import { AppAction } from "../../../../core/action-queue/app-action";
+import { AppAction } from "../../../../core/components/action-queue/app-action";
 
 export enum CatalogCreateDialogActionType {
     NameTextOnChange = 'CATALOG_CREATE_DIALOG_NAME_TEXT_ON_CHANGE',

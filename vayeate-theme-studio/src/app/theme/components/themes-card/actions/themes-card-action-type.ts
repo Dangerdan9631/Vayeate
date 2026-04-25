@@ -1,5 +1,5 @@
 import type { ThemeName, Version } from '../../../../../model/schema/primitives';
-import type { AppAction } from '../../../../core/action-queue/app-action';
+import type { AppAction } from '../../../../core/components/action-queue/app-action';
 
 export enum ThemesCardActionType {
   NameListOnCommit = 'THEME_THEMES_NAME_LIST_ON_COMMIT',

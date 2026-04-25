@@ -1,5 +1,5 @@
 import type { TabId } from '../../../../../domain/state/ui/ui-state';
-import type { AppAction } from '../../../../core/action-queue/app-action';
+import type { AppAction } from '../../../../core/components/action-queue/app-action';
 
 export enum AppRibbonActionType {
   TabButtonOnClick = 'APP_RIBBON_TAB_BUTTON_ON_CLICK',
