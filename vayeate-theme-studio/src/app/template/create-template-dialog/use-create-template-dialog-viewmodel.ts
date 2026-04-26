@@ -1,6 +1,6 @@
 import { useStore } from 'zustand';
 import { useCallback, useMemo } from 'react';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { ValidateIsTemplateNameValid } from '../../../domain/validations/template-validations/validate-is-template-name-valid';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { container } from 'tsyringe';

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import { TemplateDetailsCardActionType } from './actions/template-details-card-action-type';

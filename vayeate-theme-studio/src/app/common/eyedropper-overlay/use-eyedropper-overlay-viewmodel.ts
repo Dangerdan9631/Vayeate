@@ -1,5 +1,5 @@
 import type { EyedropperUiState } from '../../../domain/state/ui/eyedropper-ui-state';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';

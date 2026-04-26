@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { OpenEyedropperOverlayController } from '../../../app/eyedropper-overlay/controllers/open-eyedropper-overlay-controller';
+import { OpenEyedropperOverlayController } from '../../../common/eyedropper-overlay/controllers/open-eyedropper-overlay-controller';
 import { SetThemeVariablesSearchTextController } from '../controllers/set-theme-variables-search-text-controller';
 import { SetVariablesSelectAllController } from '../controllers/set-variables-select-all-controller';
 import { SetVariablesSelectByGroupController } from '../controllers/set-variables-select-by-group-controller';

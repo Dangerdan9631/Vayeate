@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { CatalogPageActionType } from './actions/catalog-page-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';

@@ -4,7 +4,7 @@ import { useStore } from 'zustand';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { buildThemePaneSnapshot } from '../../../domain/utils/theme-pane-utils';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
 import { ThemePaletteCardActionType } from './actions/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../theme-variables-card/actions/theme-variables-card-action-type';

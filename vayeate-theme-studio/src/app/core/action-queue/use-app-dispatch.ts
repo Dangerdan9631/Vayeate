@@ -1,5 +1,5 @@
 import { useContextSelector } from 'use-context-selector';
-import type { AppAction } from '../../core/action-queue/app-action';
+import type { AppAction } from './app-action';
 import { AppContext } from '../../app/app-shell/app-context';
 
 export function useAppDispatch(): (action: AppAction) => void {

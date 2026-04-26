@@ -14,16 +14,52 @@
 - [x] Bootstrap
 
 ### [ ] Common
-- [x] Components
+- [ ] Components
+    - [ ] precisely named
+    - [ ] Component UI state Store
     - [x] TriStateCheckbox
         - [x] Stateless component
+    - [ ] eyedropper-overlay
+            - [ ] <component>-action-type.ts with guard
+            - [ ] <component>-handler.ts
+            - [ ] Switch with one controller call per case
+            - [ ] use-<component>-viewmodel.ts
+            - [ ] <component>.tsx
+            - [ ] All logic in viewmodel
+            - [ ] No complex conditions
+            - [ ] No unnecessary nested objects
+            - [ ] Events call single function
+            - [ ] Callbacks that translate to viewmodel inputs
+            - [ ] Only state/effect for local UI state
+            - [ ] Component UI state Store
+            - [ ] Controllers
+                - [ ] precisely named
+                - [ ] Right granularity
+                - [ ] Only operations, validations, getState
+    - [ ] styled-tooltip
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
 - [x] Context
     - [x] useAppDispatch
         - [x] Handles missing provider
-- [ ] Controllers
-    - [ ] precisely named
-    - [ ] Right granularity
-    - [ ] Only operations, validations, getState
+- [x] Controllers
+    - [x] precisely named
+    - [x] Right granularity
+    - [x] Only operations, validations, getState
+    
 
 ### [ ] App
 - [x] Action Types
@@ -36,23 +72,6 @@
     - [ ] precisely named
     - [ ] Component UI state Store
     - [ ] app-shell
-        - [ ] <component>-action-type.ts with guard
-        - [ ] <component>-handler.ts
-        - [ ] Switch with one controller call per case
-        - [ ] use-<component>-viewmodel.ts
-        - [ ] <component>.tsx
-        - [ ] All logic in viewmodel
-        - [ ] No complex conditions
-        - [ ] No unnecessary nested objects
-        - [ ] Events call single function
-        - [ ] Callbacks that translate to viewmodel inputs
-        - [ ] Only state/effect for local UI state
-        - [ ] Component UI state Store
-        - [ ] Controllers
-            - [ ] precisely named
-            - [ ] Right granularity
-            - [ ] Only operations, validations, getState
-    - [ ] eyedropper-overlay
         - [ ] <component>-action-type.ts with guard
         - [ ] <component>-handler.ts
         - [ ] Switch with one controller call per case
@@ -116,22 +135,6 @@
         - [ ] Callbacks that translate to viewmodel inputs
         - [ ] Only state/effect for local UI state
         - [ ] Component UI state Store
-        - [ ] Controllers
-            - [ ] precisely named
-            - [ ] Right granularity
-            - [ ] Only operations, validations, getState
-    - [ ] styled-tooltip
-        - [ ] <component>-action-type.ts with guard
-        - [ ] <component>-handler.ts
-        - [ ] Switch with one controller call per case
-        - [ ] use-<component>-viewmodel.ts
-        - [ ] <component>.tsx
-        - [ ] All logic in viewmodel
-        - [ ] No complex conditions
-        - [ ] No unnecessary nested objects
-        - [ ] Events call single function
-        - [ ] Callbacks that translate to viewmodel inputs
-        - [ ] Only state/effect for local UI state
         - [ ] Controllers
             - [ ] precisely named
             - [ ] Right granularity

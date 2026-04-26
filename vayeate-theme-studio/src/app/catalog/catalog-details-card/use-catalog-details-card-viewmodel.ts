@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { Catalog } from '../../../model/schema/catalog';
 import { sourceTypeSchema, tokenTypeSchema, type SourceType, type TokenType } from '../../../model/schema/primitives';

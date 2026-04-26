@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { ThemePageActionType } from './actions/theme-page-action-type';
 

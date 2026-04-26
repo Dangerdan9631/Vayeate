@@ -1,10 +1,10 @@
 import { useAppShellViewModel } from './use-app-shell-viewmodel';
 import { ContentArea } from './ContentArea';
-import { EyedropperOverlay } from '../eyedropper-overlay/EyedropperOverlay';
+import { EyedropperOverlay } from '../../common/eyedropper-overlay/EyedropperOverlay';
 import { MenuBar } from '../menu-bar/MenuBar';
 import { Ribbon } from '../ribbon/Ribbon';
 import { StatusBar } from '../status-bar/StatusBar';
-import { StyledTooltip } from '../styled-tooltip/StyledTooltip';
+import { StyledTooltip } from '../../common/styled-tooltip/StyledTooltip';
 
 export function AppShell() {
   const { activeTab } = useAppShellViewModel();

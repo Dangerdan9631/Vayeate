@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import type { TabId } from '../../../domain/state/ui/ui-state';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { AppRibbonActionType } from './actions/app-ribbon-action-type';
 
 type TabDefinition = {

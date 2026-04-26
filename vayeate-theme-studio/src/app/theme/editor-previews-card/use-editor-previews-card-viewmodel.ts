@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import type { TokenKey } from '../../../model/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, Theme, ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
 import type { ContrastVariable, Mapping } from '../../../model/schema/template-schemas';

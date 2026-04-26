@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
 import type { UndoListEntry } from '../../../domain/core/undo-stack-types';
-import { useAppDispatch } from '../../common/dispatch/use-app-dispatch';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { AppShellActionType } from '../app-shell/actions/app-shell-action-type';
 import { AppMenuActionType } from './actions/app-menu-action-type';
 import { UiStore } from '../../../domain/state/ui/ui-store';

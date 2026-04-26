@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { OpenEyedropperOverlayController } from '../../../app/eyedropper-overlay/controllers/open-eyedropper-overlay-controller';
+import { OpenEyedropperOverlayController } from '../../../common/eyedropper-overlay/controllers/open-eyedropper-overlay-controller';
 import { AssignColorFromPickerController } from '../controllers/assign-color-from-picker-controller';
 import { SetAssignColorPreviewController } from '../controllers/set-assign-color-preview-controller';
 import { CommitHueReferenceColorController } from '../controllers/commit-hue-reference-color-controller';

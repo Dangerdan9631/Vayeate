@@ -1,6 +1,6 @@
 import { AppAction } from '../../core/action-queue/app-action';
 import { isAppShellAction, type AppShellActions } from '../app-shell/actions/app-shell-action-type';
-import { isAppEyedropperOverlayAction, type AppEyedropperOverlayActions } from '../eyedropper-overlay/actions/app-eyedropper-overlay-action-type';
+import { isAppEyedropperOverlayAction, type AppEyedropperOverlayActions } from '../../common/eyedropper-overlay/actions/app-eyedropper-overlay-action-type';
 import { isAppMenuAction, type AppMenuActions } from '../menu-bar/actions/app-menu-action-type';
 import { isAppRibbonAction, type AppRibbonActions } from '../ribbon/actions/app-ribbon-action-type';
 
