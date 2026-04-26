@@ -9,8 +9,10 @@ export enum ThemeVariablesCardActionType {
   VariableSelectionCheckboxOnToggle = 'THEME_VARIABLES_VARIABLE_SELECTION_CHECKBOX_ON_TOGGLE',
   ColorDarkTextOnCommit = 'THEME_VARIABLES_COLOR_DARK_TEXT_ON_COMMIT',
   ColorDarkColorEyedropperButtonOnClick = 'THEME_VARIABLES_COLOR_DARK_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
+  ColorDarkColorEyedropperOnCommit = 'THEME_VARIABLES_COLOR_DARK_COLOR_EYEDROPPER_ON_COMMIT',
   ColorLightTextOnCommit = 'THEME_VARIABLES_COLOR_LIGHT_TEXT_ON_COMMIT',
   ColorLightColorEyedropperButtonOnClick = 'THEME_VARIABLES_COLOR_LIGHT_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
+  ColorLightColorEyedropperOnCommit = 'THEME_VARIABLES_COLOR_LIGHT_COLOR_EYEDROPPER_ON_COMMIT',
   ColorUseDarkForLightCheckboxOnToggle = 'THEME_VARIABLES_COLOR_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE',
   ContrastDarkValueTextOnCommit = 'THEME_VARIABLES_CONTRAST_DARK_VALUE_TEXT_ON_COMMIT',
   ContrastDarkMethodListOnCommit = 'THEME_VARIABLES_CONTRAST_DARK_METHOD_LIST_ON_COMMIT',
@@ -35,8 +37,10 @@ export type ThemeVariablesCardActions =
     }
   | { type: ThemeVariablesCardActionType.ColorDarkTextOnCommit; value: string; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ColorDarkColorEyedropperButtonOnClick; ref: ColorVariableKey }
+  | { type: ThemeVariablesCardActionType.ColorDarkColorEyedropperOnCommit; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ColorLightTextOnCommit; value: string; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ColorLightColorEyedropperButtonOnClick; ref: ColorVariableKey }
+  | { type: ThemeVariablesCardActionType.ColorLightColorEyedropperOnCommit; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ColorUseDarkForLightCheckboxOnToggle; checked: boolean; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ContrastDarkValueTextOnCommit; value: ContrastValue; ref: ContrastVariableKey }
   | {

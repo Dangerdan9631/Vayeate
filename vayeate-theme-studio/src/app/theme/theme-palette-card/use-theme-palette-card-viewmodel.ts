@@ -174,10 +174,9 @@ export function useThemePaletteCardViewModel() {
   }, [dispatch]);
 
   const onAssignEyedropperClick = useCallback(
-    (colorRef: string) => {
+    () => {
       void dispatch({
-        type: ThemePaletteCardActionType.AssignColorEyedropperButtonOnClick,
-        colorRef,
+        type: ThemePaletteCardActionType.AssignColorEyedropperButtonOnClick
       });
     },
     [dispatch],

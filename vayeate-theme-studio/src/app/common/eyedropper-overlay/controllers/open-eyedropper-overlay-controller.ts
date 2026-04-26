@@ -1,24 +1,17 @@
 import { singleton } from 'tsyringe';
 import { LoadEyedropperSnapshotOperation } from '../../../../domain/operations/theme-operations/eyedropper/load-eyedropper-snapshot-operation';
-import { SetEyedropperUiStateOperation } from '../../../../domain/operations/theme-operations/eyedropper/set-eyedropper-ui-state-operation';
+import { AppAction } from '../../../core/action-queue/app-action';
+import { OpenEyedropperOperation } from '../../../../domain/operations/theme-operations/eyedropper/open-eyedropper-operation';
 
 @singleton()
 export class OpenEyedropperOverlayController {
   constructor(
-    private readonly setEyedropperUiState: SetEyedropperUiStateOperation,
+    private readonly openEyedropperOverlay: OpenEyedropperOperation,
     private readonly loadEyedropperSnapshot: LoadEyedropperSnapshotOperation,
   ) {}
 
-  /** Set loading + context, then load snapshot (ready/error) via `LoadEyedropperSnapshotOperation`. */
-  run(contextKey: string): void {
-    this.setEyedropperUiState.execute({
-      phase: 'loading',
-      contextKey,
-      snapshot: null,
-      errorMessage: null,
-      result: null,
-      pendingPostCommit: null,
-    });
-    this.loadEyedropperSnapshot.execute(contextKey);
+  run(callbackAction: AppAction): void {
+    this.openEyedropperOverlay.execute(callbackAction);
+    this.loadEyedropperSnapshot.execute();
   }
 }

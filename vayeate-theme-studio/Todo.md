@@ -1,3 +1,7 @@
+- [ ] Add Linting
+- [ ] Parallelize background actions
+- [ ] Undo stack
+
 ## App Layer
 
 ### [x] Core

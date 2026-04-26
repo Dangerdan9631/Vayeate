@@ -11,6 +11,6 @@ export class SetEyedropperPickResultOperation {
 
   execute(hex: HexColor): void {
     const ed = this.eyedropperUiStore.getStore().state;
-    this.eyedropperUiStore.getStore().setState({ ...ed, result: hex, pendingPostCommit: null });
+    this.eyedropperUiStore.getStore().setState({ ...ed, result: hex });
   }
 }

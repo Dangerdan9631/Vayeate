@@ -2,8 +2,8 @@ import { delay, inject, singleton } from 'tsyringe';
 import { AppActions } from './app-action-type';
 import { AppShellHandler } from '../app-shell/actions/app-shell-handler';
 import { isAppShellAction } from '../app-shell/actions/app-shell-action-type';
-import { AppEyedropperOverlayHandler } from '../../common/eyedropper-overlay/actions/app-eyedropper-overlay-handler';
-import { isAppEyedropperOverlayAction } from '../../common/eyedropper-overlay/actions/app-eyedropper-overlay-action-type';
+import { EyedropperOverlayHandler } from '../../common/eyedropper-overlay/actions/eyedropper-overlay-handler';
+import { isAppEyedropperOverlayAction } from '../../common/eyedropper-overlay/actions/eyedropper-overlay-action-type';
 import { AppMenuHandler } from '../menu-bar/actions/app-menu-handler';
 import { isAppMenuAction } from '../menu-bar/actions/app-menu-action-type';
 import { AppRibbonHandler } from '../ribbon/actions/app-ribbon-handler';
@@ -17,7 +17,7 @@ export class AppActionHandler {
   constructor(
     loggerFactory: LoggerFactory,
     @inject(delay(() => AppShellHandler)) private readonly appShellHandler: AppShellHandler,
-    @inject(delay(() => AppEyedropperOverlayHandler)) private readonly appEyedropperOverlayHandler: AppEyedropperOverlayHandler,
+    @inject(delay(() => EyedropperOverlayHandler)) private readonly appEyedropperOverlayHandler: EyedropperOverlayHandler,
     @inject(delay(() => AppMenuHandler)) private readonly appMenuHandler: AppMenuHandler,
     @inject(delay(() => AppRibbonHandler)) private readonly appRibbonHandler: AppRibbonHandler,
   ) {

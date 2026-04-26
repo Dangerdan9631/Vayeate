@@ -40,33 +40,17 @@ export class LoadEyedropperSnapshotOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(contextKey: string): void {
+  execute(): void {
     this.enqueueBackgroundAction.execute(
       'Loading eyedropper snapshot',
       async () => {
         try {
           const raw = await this.screenshotService.getFullDisplaySnapshot();
           const snapshot = mapToPayload(raw);
-          const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
-          this.eyedropperUiStore.getStore().setState({
-            phase: 'ready',
-            contextKey,
-            snapshot,
-            errorMessage: null,
-            result: null,
-            pendingPostCommit,
-          });
+          this.eyedropperUiStore.getStore().updateEyedropperSnapshot(snapshot);
         } catch (e) {
           const message = e instanceof Error ? e.message : String(e);
-          const pendingPostCommit = this.eyedropperUiStore.getStore().state.pendingPostCommit;
-          this.eyedropperUiStore.getStore().setState({
-            phase: 'error',
-            contextKey,
-            snapshot: null,
-            errorMessage: message,
-            result: null,
-            pendingPostCommit,
-          });
+          this.eyedropperUiStore.getStore().setEyedropperErrorMessage(message);
         }
       }
     );

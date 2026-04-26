@@ -1,7 +1,6 @@
 import { AppAction } from '../../../app/core/action-queue/app-action';
 import type { HexColor } from '../../../model/schema/primitives';
 
-export type EyedropperPhase = 'closed' | 'loading' | 'ready' | 'error';
 export interface EyedropperDisplayEntryPayload {
   sourceId: string;
   x: number;
@@ -16,22 +15,18 @@ export interface EyedropperSnapshotPayload {
   displays: EyedropperDisplayEntryPayload[];
 }
 
-export type EyedropperPendingPostCommit = AppAction | null;
-
 export interface EyedropperUiState {
-  phase: EyedropperPhase;
-  contextKey: string | null;
-  snapshot: EyedropperSnapshotPayload | null;
+  isOpen: boolean;
   errorMessage: string | null;
   result: HexColor | null;
-  pendingPostCommit: EyedropperPendingPostCommit | null;
+  callbackAction: AppAction | null;
+  snapshot: EyedropperSnapshotPayload | null;
 }
 
 export const initialEyedropperUiState: EyedropperUiState = {
-  phase: 'closed',
-  contextKey: null,
-  snapshot: null,
+  isOpen: false,
   errorMessage: null,
   result: null,
-  pendingPostCommit: null,
+  callbackAction: null,
+  snapshot: null,
 };

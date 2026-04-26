@@ -2,10 +2,10 @@ import { singleton } from 'tsyringe';
 import { CloseEyedropperOverlayController } from '../controllers/close-eyedropper-overlay-controller';
 import { CommitEyedropperOverlayPickController } from '../controllers/commit-eyedropper-overlay-pick-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
-import { AppEyedropperOverlayActions, AppEyedropperOverlayActionType } from './app-eyedropper-overlay-action-type';
+import { AppEyedropperOverlayActions, EyedropperOverlayActionType } from './eyedropper-overlay-action-type';
 
 @singleton()
-export class AppEyedropperOverlayHandler {
+export class EyedropperOverlayHandler {
   private readonly log: Logger;
 
   constructor(
@@ -13,14 +13,14 @@ export class AppEyedropperOverlayHandler {
     private readonly commitEyedropperOverlayPick: CommitEyedropperOverlayPickController,
     loggerFactory: LoggerFactory,
   ) {
-    this.log = loggerFactory.create(AppEyedropperOverlayHandler.name);
+    this.log = loggerFactory.create(EyedropperOverlayHandler.name);
   }
 
   async handle(action: AppEyedropperOverlayActions): Promise<void> {
     switch (action.type) {
-      case AppEyedropperOverlayActionType.CancelButtonOnClick:
+      case EyedropperOverlayActionType.CancelButtonOnClick:
         return this.closeEyedropperOverlay.run();
-      case AppEyedropperOverlayActionType.ColorPickCommitButtonOnClick:
+      case EyedropperOverlayActionType.ColorPickCommitButtonOnClick:
         return this.commitEyedropperOverlayPick.run(action.hex);
     }
 

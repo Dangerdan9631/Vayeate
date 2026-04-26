@@ -353,7 +353,7 @@ export function ThemePaletteCard() {
     if (selectedColorsDisplay.kind === 'none') return;
     const firstRef = [...checkedColorRefs][0];
     if (!firstRef) return;
-    onAssignEyedropperClick(firstRef);
+    onAssignEyedropperClick();
   }
 
   function onHueRefInputChange(e: ChangeEvent<HTMLInputElement>) {
