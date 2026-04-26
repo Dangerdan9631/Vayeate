@@ -4,11 +4,6 @@ import { useStyledTooltipViewModel } from './use-styled-tooltip-viewmodel';
 const OFFSET = 8;
 const PADDING = 8;
 
-/**
- * Renders a single global tooltip element and listens for mouseover on elements
- * with a title. Shows a styled tooltip (using --tooltip-* CSS vars) and
- * temporarily removes the native title so only our tooltip is visible.
- */
 export function StyledTooltip() {
   const { viewport } = useStyledTooltipViewModel();
   const [state, setState] = useState<{

@@ -30,26 +30,20 @@ const windowStore = container.resolve(WindowStore);
 export interface EyedropperOverlayViewModel {
   isOpen: boolean;
   errorMessage: string | null;
-
-  eyedropperSnapshot: EyedropperSnapshotPayload | null;
-  
+  snapshot: EyedropperSnapshotPayload | null;
   snapshotBitmapError: string | null;
   previewHex: string | null;
-  
   canvasW: number;
   canvasH: number;
   innerMinW: number;
   innerMinH: number;
   zoomVsFitLabel: string;
   loupePos: { left: number; top: number } | null;
-  
   EYEDROPPER_ZOOM_MAX: number;
-  
   overlayRootRef: React.RefObject<HTMLDivElement>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   scrollRef: React.RefObject<HTMLDivElement>;
   loupeCanvasRef: React.RefObject<HTMLCanvasElement>;
-  
   onCancel: () => void;
   onBackdropClick: (e: MouseEvent<HTMLDivElement>) => void;
   onCanvasMouseMove: (e: MouseEvent<HTMLCanvasElement>) => void;
@@ -61,8 +55,8 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
   const dispatch = useAppDispatch();
   const appViewport = useStore(windowStore.api, (state) => state.state.viewport);
   const eyedropper = useStore(eyedropperUiStore.api, (state) => state.state);
-  const { snapshot, callbackAction, isOpen, errorMessage } = eyedropper;
-  
+  const { snapshot, callbackAction, isOpen, errorMessage, result } = eyedropper;
+
   const overlayRootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -76,24 +70,24 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     fx: number;
     fy: number;
   } | null>(null);
-  
+
   const [snapshotBitmapError, setSnapshotBitmapError] = useState<string | null>(null);
   const [zoom, setZoom] = useState(1);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [previewHex, setPreviewHex] = useState<string | null>(null);
   const [scrollViewport, setScrollViewport] = useState({ w: 0, h: 0 });
-  
+
   useEffect(() => {
-    if (!eyedropper.result || !callbackAction) return;
+    if (!result || !callbackAction) return;
     dispatch(callbackAction);
     // Close overlay after dispatching callback
     void dispatch({ type: EyedropperOverlayActionType.CancelButtonOnClick });
-  }, [eyedropper.result, callbackAction, dispatch]);
-  
+  }, [result, callbackAction, dispatch]);
+
   useEffect(() => {
     zoomRef.current = zoom;
   }, [zoom]);
-  
+
   useEffect(() => {
     setSnapshotBitmapError(null);
     wheelCorrectionRef.current = null;
@@ -101,7 +95,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     setPointer(null);
     setPreviewHex(null);
   }, [isOpen, snapshot]);
-  
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el || !isOpen || errorMessage !== null || !snapshot) return;
@@ -114,7 +108,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     sync();
     return () => ro.disconnect();
   }, [isOpen, snapshot]);
-  
+
   useLayoutEffect(() => {
     const scroll = scrollRef.current;
     const canvas = canvasRef.current;
@@ -123,7 +117,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     const th = snapshot.fullBounds.height;
     clampEyedropperCanvasInAspectBounds(scroll, canvas, tw, th);
   }, [scrollViewport.w, scrollViewport.h, zoom, isOpen, snapshot]);
-  
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el || !isOpen || errorMessage !== null || !snapshot) return;
@@ -140,7 +134,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => el.removeEventListener('scroll', onScroll);
   }, [isOpen, snapshot]);
-  
+
   useEffect(() => {
     const { w: vw, h: vh } = scrollViewport;
     if (!isOpen || errorMessage !== null || !snapshot || vw <= 0 || vh <= 0) return;
@@ -163,7 +157,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
       });
     }
   }, [isOpen, snapshot, callbackAction, scrollViewport]);
-  
+
   useEffect(() => {
     if (!isOpen || errorMessage !== null || !snapshot) return;
     let cancelled = false;
@@ -210,7 +204,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
       cancelled = true;
     };
   }, [isOpen, snapshot]);
-  
+
   useLayoutEffect(() => {
     const corr = wheelCorrectionRef.current;
     if (!corr || !isOpen || errorMessage !== null || !snapshot) return;
@@ -228,7 +222,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     clampEyedropperCanvasInAspectBounds(scroll, canvas, tw, th);
     wheelCorrectionRef.current = null;
   }, [zoom, isOpen, snapshot]);
-  
+
   useEffect(() => {
     const el = overlayRootRef.current;
     if (!el || !isOpen || errorMessage !== null || snapshotBitmapError || !snapshot) return;
@@ -260,7 +254,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
   }, [isOpen, snapshotBitmapError, snapshot]);
-  
+
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -271,7 +265,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [isOpen, dispatch]);
-  
+
   useEffect(() => {
     if (!pointer || !isOpen || errorMessage !== null || snapshotBitmapError || !snapshot) {
       const loupe = loupeCanvasRef.current;
@@ -288,10 +282,10 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
       const pt = clientToCanvasPixel(pointer.x, pointer.y, canvas, canvas.width, canvas.height);
       const lctx = loupe.getContext('2d');
       if (!pt || !lctx) return;
-      
+
       loupe.width = EYEDROPPER_LOUPE_SIZE;
       loupe.height = EYEDROPPER_LOUPE_SIZE;
-      
+
       const { sx, sy, sw, sh } = loupeSourceRect(
         pt.px,
         pt.py,
@@ -301,7 +295,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
       );
       lctx.imageSmoothingEnabled = false;
       lctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, EYEDROPPER_LOUPE_SIZE, EYEDROPPER_LOUPE_SIZE);
-      
+
       const { cx, cy } = loupeCrosshairCenter(pt.px, pt.py, sx, sy, sw, sh, EYEDROPPER_LOUPE_SIZE);
       lctx.strokeStyle = 'rgba(0,0,0,0.75)';
       lctx.lineWidth = 2;
@@ -322,11 +316,11 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     });
     return () => cancelAnimationFrame(id);
   }, [pointer, isOpen, snapshot, snapshotBitmapError]);
-  
+
   const onCancel = useCallback(() => {
     void dispatch({ type: EyedropperOverlayActionType.CancelButtonOnClick });
   }, [dispatch]);
-  
+
   const onBackdropClick = useCallback(
     (e: MouseEvent<HTMLDivElement>) => {
       if (e.target === e.currentTarget) {
@@ -335,7 +329,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     },
     [onCancel],
   );
-  
+
   const onCanvasMouseMove = useCallback(
     (e: MouseEvent<HTMLCanvasElement>) => {
       setPointer({ x: e.clientX, y: e.clientY });
@@ -353,12 +347,12 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     },
     [snapshot],
   );
-  
+
   const onCanvasMouseLeave = useCallback(() => {
     setPointer(null);
     setPreviewHex(null);
   }, []);
-  
+
   const onCanvasClick = useCallback(
     (e: MouseEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
@@ -375,7 +369,7 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     },
     [dispatch, snapshot],
   );
-  
+
   const tw = snapshot?.fullBounds.width ?? 0;
   const th = snapshot?.fullBounds.height ?? 0;
   const canvasW = tw * zoom;
@@ -386,19 +380,18 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
   const innerMinW = tw * layoutScale;
   const innerMinH = th * layoutScale;
   const zoomVsFitLabel = zFit > 0 ? `${(zoom / zFit).toFixed(2)}× fit` : `${zoom.toFixed(2)}×`;
-  
+
   const loupeVw = appViewport.width > 0 ? appViewport.width : 1;
   const loupeVh = appViewport.height > 0 ? appViewport.height : 1;
   const loupePos =
     pointer && isOpen && errorMessage === null && !snapshotBitmapError
       ? loupeFixedPosition(pointer.x, pointer.y, EYEDROPPER_LOUPE_SIZE, loupeVw, loupeVh)
       : null;
-  
+
   return {
     isOpen,
     errorMessage,
-
-    eyedropperSnapshot: snapshot,
+    snapshot,
     snapshotBitmapError,
     previewHex,
     canvasW,

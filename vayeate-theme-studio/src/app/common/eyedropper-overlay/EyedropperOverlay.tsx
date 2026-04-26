@@ -7,8 +7,7 @@ export function EyedropperOverlay() {
   const {
     isOpen,
     errorMessage,
-    
-    eyedropperSnapshot,
+    snapshot: eyedropperSnapshot,
     snapshotBitmapError,
     previewHex,
     canvasW,
