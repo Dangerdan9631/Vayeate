@@ -7,7 +7,7 @@ export interface EyedropperDisplayEntryPayload {
   y: number;
   width: number;
   height: number;
-  png: Uint8Array;
+  bmp: ImageBitmap;
 }
 
 export interface EyedropperSnapshotPayload {
@@ -18,15 +18,23 @@ export interface EyedropperSnapshotPayload {
 export interface EyedropperUiState {
   isOpen: boolean;
   errorMessage: string | null;
+  snapshot: EyedropperSnapshotPayload | null;
+  zoom: number;
+  previewHex: string | null;
   result: HexColor | null;
   callbackAction: AppAction | null;
-  snapshot: EyedropperSnapshotPayload | null;
+  mouseX: number;
+  mouseY: number;
 }
 
 export const initialEyedropperUiState: EyedropperUiState = {
   isOpen: false,
   errorMessage: null,
+  snapshot: null,
+  zoom: 1,
+  previewHex: null,
   result: null,
   callbackAction: null,
-  snapshot: null,
+  mouseX: 0,
+  mouseY: 0,
 };

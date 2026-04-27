@@ -1,3 +1,5 @@
+import { HexColor } from "../../../model/schema/primitives";
+
 /** Loupe canvas size (CSS pixels). */
 export const EYEDROPPER_LOUPE_SIZE = 120;
 /** Source pixels on each side of center (side length = 2 * radius + 1). */
@@ -6,7 +8,7 @@ export const EYEDROPPER_LOUPE_PIXEL_RADIUS = 10;
 export const EYEDROPPER_ZOOM_MAX = 8;
 export const EYEDROPPER_ZOOM_STEP = 1.1;
 
-export function rgbToHex(r: number, g: number, b: number): string {
+export function rgbToHex(r: number, g: number, b: number): HexColor {
   const pad = (n: number) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
   return `#${pad(r)}${pad(g)}${pad(b)}`;
 }

@@ -5,13 +5,22 @@ import { EyedropperSnapshotPayload, EyedropperUiState, initialEyedropperUiState 
 import { AppAction } from "../../../app/core/action-queue/app-action";
 import { HexColor } from "../../../model/schema/primitives";
 
+function closeSnapshotBitmaps(snapshot: EyedropperSnapshotPayload | null): void {
+    if (!snapshot) return;
+    for (const d of snapshot.displays) {
+        d.bmp.close();
+    }
+}
+
 interface EyedropperUiStoreState {
     state: EyedropperUiState;
     openEyedropper: (callback: AppAction) => void;
     closeEyedropper: (result: HexColor | null) => void;
     updateEyedropperSnapshot: (snapshot: EyedropperSnapshotPayload) => void;
     setEyedropperErrorMessage: (message: string | null) => void;
-    setState: (state: EyedropperUiState) => void;
+    setEyedropperZoom: (zoom: number) => void;
+    setEyedropperPreviewHex: (hex: string | null) => void;
+    setEyedropperMousePosition: (x: number, y: number) => void;
 }
 
 @singleton()
@@ -20,10 +29,11 @@ export class EyedropperUiStore {
         immer((set): EyedropperUiStoreState => ({
             state: initialEyedropperUiState,
             openEyedropper: (callbackAction: AppAction) => set((storeState: EyedropperUiStoreState) => {
+                closeSnapshotBitmaps(storeState.state.snapshot);
                 storeState.state = {
                     ...initialEyedropperUiState,
                     isOpen: true,
-                    callbackAction: callbackAction
+                    callbackAction: callbackAction,
                 };
             }),
             closeEyedropper: (result: HexColor | null) => set((storeState: EyedropperUiStoreState) => {
@@ -31,13 +41,21 @@ export class EyedropperUiStore {
                 storeState.state.result = result;
             }),
             updateEyedropperSnapshot: (snapshot: EyedropperSnapshotPayload) => set((storeState: EyedropperUiStoreState) => {
+                closeSnapshotBitmaps(storeState.state.snapshot);
                 storeState.state.snapshot = snapshot;
             }),
             setEyedropperErrorMessage: (message: string | null) => set((storeState: EyedropperUiStoreState) => {
                 storeState.state.errorMessage = message;
             }),
-            setState: (eyedropperUiState: EyedropperUiState) => set((storeState: EyedropperUiStoreState) => {
-                storeState.state = eyedropperUiState;
+            setEyedropperZoom: (zoom: number) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state.zoom = zoom;
+            }),
+            setEyedropperPreviewHex: (hex: string | null) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state.previewHex = hex;
+            }),
+            setEyedropperMousePosition: (x: number, y: number) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state.mouseX = x;
+                storeState.state.mouseY = y;
             }),
         }))
     );

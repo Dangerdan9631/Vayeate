@@ -1,12 +1,11 @@
 import { singleton } from 'tsyringe';
-import { initialEyedropperUiState } from '../../../../domain/state/ui/eyedropper-ui-state';
-import { SetEyedropperUiStateOperation } from '../../../../domain/operations/theme-operations/eyedropper/set-eyedropper-ui-state-operation';
+import { CloseEyedropperOperation } from '../../../../domain/operations/eyedropper-operations/close-eyedropper-operation';
 
 @singleton()
 export class CloseEyedropperOverlayController {
-  constructor(private readonly setEyedropperUiState: SetEyedropperUiStateOperation) {}
+  constructor(private readonly closeEyedropper: CloseEyedropperOperation) {}
 
   run(): void {
-    this.setEyedropperUiState.execute(initialEyedropperUiState);
+    this.closeEyedropper.execute(null);
   }
 }
