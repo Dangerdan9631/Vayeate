@@ -1,0 +1,30 @@
+> **Apply only when:** Use when authoring, modifing, or interacting with Operations
+
+# Operation
+
+## Contract
+
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update `*-operation.ts: one exported class…` and vice versa.** AST checks also enforce **no `this.<OtherOperation>.execute`** under `src/domain/**` (`describe('domain *-operation.ts: operations do not call other operations .execute')`).
+
+- Suffix **`Operation`**; **one** method **`execute(...)`** with explicit inputs.
+- **tsyringe** **`@singleton()`**; inject gateways, services, and store classes as **concrete types** — no string or symbol tokens.
+- May call **gateways** and **services**; **must not** call another operation.
+- **Exception:** `InitializeWindowCallbacksOperation` may inject controller classes solely to register `WindowService.init(...)` callbacks for renderer window/global-input events. Keep this exception narrow: registration only, no additional orchestration logic, and no copying this pattern to other operations without updating the architecture rules.
+- **Exception:** operations may inject and call `EnqueueBackgroundActionOperation` only to enqueue asynchronous background work; it must not be used for domain-operation orchestration.
+- Prefer **inputs from controller** over reading store state inside `execute` when practical (keep reusable).
+
+## Scope
+
+- **One** logical atomic change; one primary entity (batch OK when inherently single action, e.g. token set).
+
+## Callers
+
+- **Controllers** only (not handlers, components, or other operations). Each controller **must not** call another controller — same “no chaining peers” idea as operations ([controller.mdc](controller.mdc)).
+- **Exceptions:** `InitializeWindowCallbacksOperation` is allowed to bridge system callbacks to controller entry points as described above. `EnqueueBackgroundActionOperation` is allowed as the narrow background queue bridge described above.
+
+## Good / bad
+
+| Good | Bad |
+|------|-----|
+| `DeleteCatalogOperation.execute({ catalogId })` | Operation calls `otherOp.execute` |
+| Operation uses store method after gateway load | Controller writes store state |

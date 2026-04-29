@@ -1,5 +1,5 @@
 ---
-description: Use when authoring, modifing, or interacting with Domain types: operations, validations, state, utils
+description: Use when authoring, modifing, or interacting with Domain types - operations, validations, state, utils
 alwaysApply: false
 ---
 
