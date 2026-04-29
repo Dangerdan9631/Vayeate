@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { WindowStore } from '../../state/window/window-store';
-import type { Size } from '../../state/window/window-state';
+import { Size } from '../../../model/point';
 
 @singleton()
 export class SetViewportSizeOperation {

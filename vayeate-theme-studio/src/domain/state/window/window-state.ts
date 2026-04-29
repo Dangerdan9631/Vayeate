@@ -1,12 +1,5 @@
-export interface Size {
-  width: number;
-  height: number;
-}
-
-export interface Position {
-  x: number;
-  y: number;
-}
+import { Size, ZERO_SIZE } from "../../../model/point";
+import { Rect, ZERO_RECT } from "../../../model/rect";
 
 export type WindowLoadState = 'loading' | 'loaded' | 'unloading';
 
@@ -14,8 +7,7 @@ export interface WindowState {
   loadState: WindowLoadState;
   isMinimized: boolean;
   isMaximized: boolean;
-  size: Size;
-  position: Position;
+  bounds: Rect;
   viewport: Size;
 }
 
@@ -23,7 +15,6 @@ export const initialWindowState: WindowState = {
   loadState: 'loading',
   isMinimized: false,
   isMaximized: false,
-  size: { width: 0, height: 0 },
-  position: { x: 0, y: 0 },
-  viewport: { width: 0, height: 0 },
+  bounds: ZERO_RECT,
+  viewport: ZERO_SIZE,
 };

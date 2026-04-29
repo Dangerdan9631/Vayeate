@@ -2,6 +2,8 @@
 - [ ] Parallelize background actions
 - [ ] Undo stack
 
+Unable to preventDefault inside passive event listener invocation.
+
 ## App Layer
 
 ### [x] Core

@@ -66,10 +66,7 @@ export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => 
       role="img"
       aria-label="Screen snapshot — move to preview, click to pick a color"
       className="eyedropper-canvas"
-      style={{
-        width: canvasSize.x,
-        height: canvasSize.y,
-      }}
+      style={canvasSize}
       onMouseMove={onMouseMove}
       onClick={onMouseClick}
     />

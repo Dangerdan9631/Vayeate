@@ -1,7 +1,7 @@
 import { AppAction } from '../../../app/core/action-queue/app-action';
 import { Rect } from '../../../model/rect';
 import type { HexColor } from '../../../model/schema/primitives';
-import { Point } from '../../../model/point';
+import { Point, Size, ZERO_POINT, ZERO_SIZE } from '../../../model/point';
 
 export interface EyedropperDisplayEntryPayload {
   sourceId: string;
@@ -23,6 +23,7 @@ export interface EyedropperUiState {
   result: HexColor | null;
   callbackAction: AppAction | null;
   mousePosition: Point;
+  overlayViewportSize: Size; 
 }
 
 export const initialEyedropperUiState: EyedropperUiState = {
@@ -33,5 +34,6 @@ export const initialEyedropperUiState: EyedropperUiState = {
   previewHex: null,
   result: null,
   callbackAction: null,
-  mousePosition: { x: 0, y: 0 },
+  mousePosition: ZERO_POINT,
+  overlayViewportSize: ZERO_SIZE,
 };

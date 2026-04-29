@@ -1,5 +1,5 @@
 import { EyedropperDisplayEntryPayload } from "../../../domain/state/ui/eyedropper-ui-state";
-import { Point } from "../../../model/point";
+import { Point, Size, ZERO_POINT } from "../../../model/point";
 import { Rect } from "../../../model/rect";
 import { HexColor } from "../../../model/schema/primitives";
 
@@ -17,7 +17,7 @@ export function rgbToHex(r: number, g: number, b: number): HexColor {
 }
 
 export function getCanvasColor(canvas: HTMLCanvasElement, position: Point): HexColor | null {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) return null;
   const [r, g, b] = ctx.getImageData(position.x, position.y, 1, 1).data;
   return rgbToHex(r, g, b);
@@ -28,7 +28,7 @@ export async function loadSnapshotToCanvas(
   snapshotBounds: Rect,
   snapshot: EyedropperDisplayEntryPayload[],
 ): Promise<void> {
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) return;
   ctx.clearRect(0, 0, snapshotBounds.width, snapshotBounds.height);
   for (const d of snapshot) {
@@ -95,15 +95,15 @@ export function clampElementScroll(el: HTMLElement): void {
 }
 
 /** Content-box width/height inside padding (for contain + aspect bounds). */
-export function scrollContainerContentSize(el: HTMLElement): Point {
+export function scrollContainerContentSize(el: HTMLElement): Size {
   const cs = getComputedStyle(el);
   const pl = parseFloat(cs.paddingLeft) || 0;
   const pr = parseFloat(cs.paddingRight) || 0;
   const pt = parseFloat(cs.paddingTop) || 0;
   const pb = parseFloat(cs.paddingBottom) || 0;
   return {
-    x: Math.max(0, el.clientWidth - pl - pr),
-    y: Math.max(0, el.clientHeight - pt - pb),
+    width: Math.max(0, el.clientWidth - pl - pr),
+    height: Math.max(0, el.clientHeight - pt - pb),
   };
 }
 
@@ -118,7 +118,7 @@ export function eyedropperAspectContainRect(
   bitmapH: number,
 ): Point {
   if (innerW <= 0 || innerH <= 0 || bitmapW <= 0 || bitmapH <= 0) {
-    return { x: 0, y: 0 };
+    return ZERO_POINT;
   }
   const Rw = Math.min(innerW, (innerH * bitmapW) / bitmapH);
   const Rh = Math.min(innerH, (innerW * bitmapH) / bitmapW);
@@ -137,7 +137,7 @@ export function clampEyedropperCanvasInAspectBounds(
   bitmapH: number,
 ): void {
   if (bitmapW <= 0 || bitmapH <= 0) return;
-  const { x: innerW, y: innerH } = scrollContainerContentSize(scrollEl);
+  const { width: innerW, height: innerH } = scrollContainerContentSize(scrollEl);
   if (innerW <= 0 || innerH <= 0) return;
 
   const { x: Rw, y: Rh } = eyedropperAspectContainRect(innerW, innerH, bitmapW, bitmapH);

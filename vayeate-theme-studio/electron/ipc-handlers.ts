@@ -6,6 +6,7 @@ import {
   resolveExthemesExportFile,
   resolveSafeProjectRelativePath,
 } from './paths';
+import { Rect } from '../src/model/rect';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -85,15 +86,12 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
 
     const displayRows: Array<{
       sourceId: string;
-      x: number;
-      y: number;
-      width: number;
-      height: number;
+      bounds: Rect;
       png: Buffer;
     }> = [];
 
     for (const src of capSources) {
-      let bounds: { x: number; y: number; width: number; height: number } | undefined;
+      let bounds: Rect | undefined;
       if (src.display_id != null) {
         const display = byDisplayId.get(String(src.display_id));
         if (display?.bounds) bounds = display.bounds;
@@ -118,10 +116,7 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
 
       displayRows.push({
         sourceId: src.id,
-        x: bounds.x,
-        y: bounds.y,
-        width: bounds.width,
-        height: bounds.height,
+        bounds,
         png,
       });
     }
@@ -133,10 +128,10 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
       };
     }
 
-    const minX = Math.min(...displayRows.map((r) => r.x));
-    const minY = Math.min(...displayRows.map((r) => r.y));
-    const maxX = Math.max(...displayRows.map((r) => r.x + r.width));
-    const maxY = Math.max(...displayRows.map((r) => r.y + r.height));
+    const minX = Math.min(...displayRows.map((r) => r.bounds.x));
+    const minY = Math.min(...displayRows.map((r) => r.bounds.y));
+    const maxX = Math.max(...displayRows.map((r) => r.bounds.x + r.bounds.width));
+    const maxY = Math.max(...displayRows.map((r) => r.bounds.y + r.bounds.height));
 
     return {
       fullBounds: { x: minX, y: minY, width: maxX - minX, height: maxY - minY },

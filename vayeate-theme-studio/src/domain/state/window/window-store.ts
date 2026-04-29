@@ -1,14 +1,15 @@
 import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
-import { initialWindowState, Position, Size, type WindowState } from "./window-state";
+import { initialWindowState, type WindowState } from "./window-state";
+import { Point, Size } from "../../../model/point";
 
 interface WindowStoreState {
     state: WindowState;
     setWindowMinimized: (isMinimized: boolean) => void;
     setWindowMaximized: (isMaximized: boolean) => void;
     setWindowSize: (size: Size) => void;
-    setWindowPosition: (position: Position) => void;
+    setWindowPosition: (position: Point) => void;
     setViewportSize: (size: Size) => void;
 }
 
@@ -24,10 +25,12 @@ export class WindowStore {
                 storeState.state.isMaximized = isMaximized;
             }),
             setWindowSize: (size: Size) => set((storeState: WindowStoreState) => {
-                storeState.state.size = size;
+                storeState.state.bounds.width = size.width;
+                storeState.state.bounds.height = size.height;
             }),
-            setWindowPosition: (position: Position) => set((storeState: WindowStoreState) => {
-                storeState.state.position = position;
+            setWindowPosition: (position: Point) => set((storeState: WindowStoreState) => {
+                storeState.state.bounds.x = position.x;
+                storeState.state.bounds.y = position.y;
             }),
             setViewportSize: (size: Size) => set((storeState: WindowStoreState) => {
                 storeState.state.viewport = size;

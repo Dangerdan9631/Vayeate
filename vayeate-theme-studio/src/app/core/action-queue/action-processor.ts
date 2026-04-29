@@ -9,6 +9,12 @@ import { TemplateActionHandler } from '../../template/actions/template-handler';
 import { isTemplateAction } from '../../template/actions/template-action-type';
 import { ThemeActionHandler } from '../../theme/actions/theme-handler';
 import { isThemeAction } from '../../theme/actions/theme-action-type';
+import { EyedropperOverlayActionType } from '../../common/eyedropper-overlay/actions/eyedropper-overlay-action-type';
+
+const SILENCED_ACTION_TYPES = new Set<string>([
+  EyedropperOverlayActionType.OverlayViewportSizeChange,
+  EyedropperOverlayActionType.OverlayMouseMove,
+]);
 
 @singleton()
 export class ActionProcessor {
@@ -25,7 +31,10 @@ export class ActionProcessor {
   }
 
   async process(action: AppAction): Promise<void> {
-    this.log.debug('action', action);
+    if (!SILENCED_ACTION_TYPES.has(action.type)) {
+      this.log.debug('action', action);
+    }
+
     if (isAppAction(action)) {
       await this.appHandler.handle(action);
       return;

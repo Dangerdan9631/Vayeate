@@ -8,11 +8,12 @@ import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action
 import { HexColor } from '../../../model/schema/primitives';
 import { Rect } from '../../../model/rect';
 import { Point } from '../../../model/point';
+import { Size } from '../../../model/point';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 export interface EyedropperCanvasViewModel {
-  canvasSize: Point;
+  canvasSize: Size;
   snapshotBounds: Rect;
   snapshotDisplays: EyedropperDisplayEntryPayload[];
   onCanvasMouseMove: (canvasPosition: Point, hex: HexColor) => void;
@@ -27,7 +28,7 @@ export function useEyedropperCanvasViewModel(): EyedropperCanvasViewModel {
   const snapshotDisplays = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.displays ?? []);
 
   const canvasSize = useMemo(
-    () => ({ x: snapshotBounds.width * zoom, y: snapshotBounds.height * zoom }),
+    () => ({ width: snapshotBounds.width * zoom, height: snapshotBounds.height * zoom }),
     [snapshotBounds, zoom],
   );
 

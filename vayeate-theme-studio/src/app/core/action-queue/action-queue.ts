@@ -5,8 +5,12 @@ import { singleton } from 'tsyringe';
 import { UpdateActionQueueStatusController } from './controllers/update-action-queue-status-controller';
 import { CompleteActionQueueProcessingController } from './controllers/complete-action-queue-processing-controller';
 
+export interface IActionQueue {
+  enqueue(action: AppAction): void;
+}
+
 @singleton()
-export class ActionQueue {
+export class ActionQueue implements IActionQueue {
   private queue: AppAction[] = [];
   private isProcessing = false;
   private readonly log: Logger;

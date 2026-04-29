@@ -2,48 +2,47 @@ import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store'
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import { Rect, ZERO_RECT } from '../../../model/rect';
+import { Size } from '../../../model/point';
 import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
-import { HexColor } from '../../../model/schema/primitives';
-import { Point } from '../../../model/point';
-import { Rect } from '../../../model/rect';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 export interface EyedropperOverlayViewModel {
+  isOpen: boolean;
+  isLoaded: boolean;
+  errorMessage: string | null;
+  previewHex: string | null;
+
   snapshotBounds: Rect;
-  onCancelClick: () => void;
-  onColorPickClick: (hex: HexColor) => void;
-  onOverlayWheelScroll: (delta: number) => void;
-  onOverlayMouseMove: (position: Point, hex: HexColor) => void;
+  overlayViewportSize: Size;
+
+  onOverlayViewportSizeChange: (size: Size) => void;
 }
 
 export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
   const dispatch = useAppDispatch();
-  const snapshotBounds = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds ?? { x: 0, y: 0, width: 0, height: 0 });
+  const isOpen = useStore(eyedropperUiStore.api, (state) => state.state.isOpen);
+  const snapshot = useStore(eyedropperUiStore.api, (state) => state.state.snapshot);
+  const snapshotBounds = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds ?? ZERO_RECT);
+  const previewHex = useStore(eyedropperUiStore.api, (state) => state.state.previewHex);
+  const errorMessage = useStore(eyedropperUiStore.api, (state) => state.state.errorMessage);
+  const isLoaded = useMemo(() => isOpen && !errorMessage && snapshot !== null, [isOpen, errorMessage, snapshot]);
 
-  const onCancelClick = useCallback(() => {
-    void dispatch({ type: EyedropperOverlayActionType.CancelButtonOnClick });
+  const overlayViewportSize = useStore(eyedropperUiStore.api, (state) => state.state.overlayViewportSize);
+
+  const onOverlayViewportSizeChange = useCallback((size: Size) => {
+    void dispatch({ type: EyedropperOverlayActionType.OverlayViewportSizeChange, size });
   }, [dispatch]);
 
-  const onColorPickClick = useCallback((hex: HexColor) => {
-    void dispatch({ type: EyedropperOverlayActionType.ColorPickCommitButtonOnClick, hex: hex });
-  }, [dispatch]);
-
-  const onOverlayWheelScroll = useCallback((delta: number) => {
-    void dispatch({ type: EyedropperOverlayActionType.OverlayWheelOnScroll, delta: delta });
-  }, [dispatch]);
-
-  const onOverlayMouseMove = useCallback((position: Point, hex: HexColor) => {
-    eyedropperUiStore.setEyedropperPreviewHex(hex);
-    void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, position, hex });
-  }, [dispatch]);
-
-  return {
+  return {  
+    isOpen,
+    isLoaded,
+    errorMessage,
+    previewHex,
     snapshotBounds,
-    onCancelClick,
-    onColorPickClick,
-    onOverlayWheelScroll,
-    onOverlayMouseMove,
+    overlayViewportSize,
+    onOverlayViewportSizeChange,
   };
 }

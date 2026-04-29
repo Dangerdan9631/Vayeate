@@ -1,11 +1,12 @@
-import { singleton } from 'tsyringe';
+import { inject, singleton } from 'tsyringe';
 import { AppAction } from '../../../app/core/action-queue/app-action';
-import { ActionQueue } from '../../../app/core/action-queue/action-queue';
+import { type IActionQueue } from '../../../app/core/action-queue/action-queue';
 
 @singleton()
 export class EnqueueActionQueueOperation {
   constructor(
-    private readonly actionQueue: ActionQueue
+    @inject("IActionQueue")
+    private readonly actionQueue: IActionQueue
   ) { }
 
   execute(action: AppAction): void {

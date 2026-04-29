@@ -4,7 +4,7 @@ import { singleton } from "tsyringe";
 import { EyedropperSnapshotPayload, EyedropperUiState, initialEyedropperUiState } from "./eyedropper-ui-state";
 import { AppAction } from "../../../app/core/action-queue/app-action";
 import { HexColor } from "../../../model/schema/primitives";
-import { Point } from "../../../model/point";
+import { Point, Size } from "../../../model/point";
 
 function closeSnapshotBitmaps(snapshot: EyedropperSnapshotPayload | null): void {
     if (!snapshot) return;
@@ -16,12 +16,14 @@ function closeSnapshotBitmaps(snapshot: EyedropperSnapshotPayload | null): void 
 interface EyedropperUiStoreState {
     state: EyedropperUiState;
     openEyedropper: (callback: AppAction) => void;
-    closeEyedropper: (result: HexColor | null) => void;
+    closeEyedropper: () => void;
     updateEyedropperSnapshot: (snapshot: EyedropperSnapshotPayload) => void;
     setEyedropperErrorMessage: (message: string | null) => void;
     setEyedropperZoom: (zoom: number) => void;
     setEyedropperPreviewHex: (hex: string | null) => void;
     setEyedropperMousePosition: (position: Point) => void;
+    setEyedropperResult: (result: HexColor | null) => void;
+    setEyedropperOverlayViewportSize: (size: Size) => void;
 }
 
 @singleton()
@@ -37,9 +39,8 @@ export class EyedropperUiStore {
                     callbackAction: callbackAction,
                 };
             }),
-            closeEyedropper: (result: HexColor | null) => set((storeState: EyedropperUiStoreState) => {
+            closeEyedropper: () => set((storeState: EyedropperUiStoreState) => {
                 storeState.state.isOpen = false;
-                storeState.state.result = result;
             }),
             updateEyedropperSnapshot: (snapshot: EyedropperSnapshotPayload) => set((storeState: EyedropperUiStoreState) => {
                 closeSnapshotBitmaps(storeState.state.snapshot);
@@ -56,6 +57,12 @@ export class EyedropperUiStore {
             }),
             setEyedropperMousePosition: (position: Point) => set((storeState: EyedropperUiStoreState) => {
                 storeState.state.mousePosition = position;
+            }),
+            setEyedropperResult: (result: HexColor | null) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state.result = result;
+            }), 
+            setEyedropperOverlayViewportSize: (size: Size) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state.overlayViewportSize = size;
             }),
         }))
     );

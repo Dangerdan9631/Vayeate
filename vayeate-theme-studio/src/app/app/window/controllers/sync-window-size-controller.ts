@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { Size } from '../../../../domain/state/window/window-state';
+import { Size } from '../../../../model/point';
 import { SetWindowSizeOperation } from '../../../../domain/operations/window-operations/set-window-size-operation';
 
 @singleton()
