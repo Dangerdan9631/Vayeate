@@ -28,10 +28,7 @@ export class LoadEyedropperSnapshotOperation {
             const bmp = await createImageBitmap(blob);
             displays.push({
               sourceId: d.sourceId,
-              x: d.x,
-              y: d.y,
-              width: d.width,
-              height: d.height,
+              bounds: d.bounds,
               bmp,
             });
           }

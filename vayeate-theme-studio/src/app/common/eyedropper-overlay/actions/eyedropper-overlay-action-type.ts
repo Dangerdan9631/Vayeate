@@ -1,3 +1,4 @@
+import { Point } from '../../../../model/point';
 import type { HexColor } from '../../../../model/schema/primitives';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
@@ -12,7 +13,7 @@ export type AppEyedropperOverlayActions =
   | { type: EyedropperOverlayActionType.CancelButtonOnClick }
   | { type: EyedropperOverlayActionType.ColorPickCommitButtonOnClick; hex: HexColor }
   | { type: EyedropperOverlayActionType.OverlayWheelOnScroll; delta: number }
-  | { type: EyedropperOverlayActionType.OverlayMouseMove; x: number; y: number; hex: HexColor };
+  | { type: EyedropperOverlayActionType.OverlayMouseMove; position: Point; hex: HexColor };
 
 
 const appEyedropperOverlayTypes = new Set<string>(Object.values(EyedropperOverlayActionType));

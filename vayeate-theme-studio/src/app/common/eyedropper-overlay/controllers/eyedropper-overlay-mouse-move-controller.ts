@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { UpdateEyedropperMousePositionOperation } from '../../../../domain/operations/eyedropper-operations/update-eyedropper-mouse-position-operation';
+import { Point } from '../../../../model/point';
 
 @singleton()
 export class EyedropperOverlayMouseMoveController {
@@ -7,7 +8,7 @@ export class EyedropperOverlayMouseMoveController {
     private readonly updateEyedropperMousePositionOperation: UpdateEyedropperMousePositionOperation,
   ) {}
 
-  run(canvasX: number, canvasY: number): void {
-    this.updateEyedropperMousePositionOperation.execute(canvasX, canvasY);
+  run(canvasPosition: Point): void {
+    this.updateEyedropperMousePositionOperation.execute(canvasPosition);
   }
 }

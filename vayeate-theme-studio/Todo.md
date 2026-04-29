@@ -24,22 +24,22 @@
     - [x] TriStateCheckbox
         - [x] Stateless component
     - [ ] eyedropper-overlay
-            - [ ] <component>-action-type.ts with guard
-            - [ ] <component>-handler.ts
-            - [ ] Switch with one controller call per case
-            - [ ] use-<component>-viewmodel.ts
-            - [ ] <component>.tsx
-            - [ ] All logic in viewmodel
-            - [ ] No complex conditions
-            - [ ] No unnecessary nested objects
-            - [ ] Events call single function
-            - [ ] Callbacks that translate to viewmodel inputs
-            - [ ] Only state/effect for local UI state
-            - [ ] Component UI state Store
-            - [ ] Controllers
-                - [ ] precisely named
-                - [ ] Right granularity
-                - [ ] Only operations, validations, getState
+        - [ ] <component>-action-type.ts with guard
+        - [ ] <component>-handler.ts
+        - [ ] Switch with one controller call per case
+        - [ ] use-<component>-viewmodel.ts
+        - [ ] <component>.tsx
+        - [ ] All logic in viewmodel
+        - [ ] No complex conditions
+        - [ ] No unnecessary nested objects
+        - [ ] Events call single function
+        - [ ] Callbacks that translate to viewmodel inputs
+        - [ ] Only state/effect for local UI state
+        - [ ] Component UI state Store
+        - [ ] Controllers
+            - [ ] precisely named
+            - [ ] Right granularity
+            - [ ] Only operations, validations, getState
     - [ ] styled-tooltip
         - [ ] <component>-action-type.ts with guard
         - [ ] <component>-handler.ts

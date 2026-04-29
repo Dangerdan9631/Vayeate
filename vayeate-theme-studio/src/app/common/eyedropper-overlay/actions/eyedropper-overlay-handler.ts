@@ -29,7 +29,7 @@ export class EyedropperOverlayHandler {
       case EyedropperOverlayActionType.OverlayWheelOnScroll:
         return this.eyedropperOverlayWheelScroll.run(action.delta);
       case EyedropperOverlayActionType.OverlayMouseMove:
-        return this.eyedropperOverlayMouseMove.run(action.x, action.y);
+        return this.eyedropperOverlayMouseMove.run(action.position);
     }
 
     const _exhaustive: never = action;

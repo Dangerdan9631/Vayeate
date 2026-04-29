@@ -3,13 +3,10 @@
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{
-    fullBounds: { x: number; y: number; width: number; height: number };
+    fullBounds: Rect; 
     displays: Array<{
       sourceId: string;
-      x: number;
-      y: number;
-      width: number;
-      height: number;
+      bounds: Rect;
       png: Uint8Array;
     }>;
   }>;

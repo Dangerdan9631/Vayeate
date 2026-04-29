@@ -4,6 +4,7 @@ import { singleton } from "tsyringe";
 import { EyedropperSnapshotPayload, EyedropperUiState, initialEyedropperUiState } from "./eyedropper-ui-state";
 import { AppAction } from "../../../app/core/action-queue/app-action";
 import { HexColor } from "../../../model/schema/primitives";
+import { Point } from "../../../model/point";
 
 function closeSnapshotBitmaps(snapshot: EyedropperSnapshotPayload | null): void {
     if (!snapshot) return;
@@ -20,7 +21,7 @@ interface EyedropperUiStoreState {
     setEyedropperErrorMessage: (message: string | null) => void;
     setEyedropperZoom: (zoom: number) => void;
     setEyedropperPreviewHex: (hex: string | null) => void;
-    setEyedropperMousePosition: (x: number, y: number) => void;
+    setEyedropperMousePosition: (position: Point) => void;
 }
 
 @singleton()
@@ -53,9 +54,8 @@ export class EyedropperUiStore {
             setEyedropperPreviewHex: (hex: string | null) => set((storeState: EyedropperUiStoreState) => {
                 storeState.state.previewHex = hex;
             }),
-            setEyedropperMousePosition: (x: number, y: number) => set((storeState: EyedropperUiStoreState) => {
-                storeState.state.mouseX = x;
-                storeState.state.mouseY = y;
+            setEyedropperMousePosition: (position: Point) => set((storeState: EyedropperUiStoreState) => {
+                storeState.state.mousePosition = position;
             }),
         }))
     );

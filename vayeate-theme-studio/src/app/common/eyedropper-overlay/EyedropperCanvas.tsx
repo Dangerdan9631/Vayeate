@@ -1,56 +1,41 @@
 import { forwardRef, MouseEvent, useEffect, useRef } from 'react';
 import { useEyedropperCanvasViewModel } from './use-eyedropper-canvas-viewmodel';
-import { clientToCanvasPixel, rgbToHex } from './eyedropper-utils';
+import { clientToCanvasPixel, getCanvasColor, loadSnapshotToCanvas } from './eyedropper-utils';
 import { HexColor } from '../../../model/schema/primitives';
+import { Point } from '../../../model/point';
 
 export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => {
   
   const internalCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const {
-    canvasWidth,
-    canvasHeight,
-    snapshotX,
-    snapshotY,
-    snapshotWidth,
-    snapshotHeight,
+    canvasSize,
+    snapshotBounds,
     snapshotDisplays,
     onCanvasMouseMove,
     onCanvasClick,
   } = useEyedropperCanvasViewModel();
 
-  function getCanvasPositionAndColor(clientX: number, clientY: number): { canvasX: number; canvasY: number; hex: HexColor } | null {
+  function getCanvasPositionAndColor(clientPosition: Point): { canvasPosition: Point; hex: HexColor } | null {
     const canvas = internalCanvasRef.current;
     if (!canvas) return null;
-    const pt = clientToCanvasPixel(clientX, clientY, canvas, canvas.width, canvas.height);
-    if (!pt) return null;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    const [r, g, b] = ctx.getImageData(pt.px, pt.py, 1, 1).data;
-    return { canvasX: pt.px, canvasY: pt.py, hex: rgbToHex(r, g, b) };
-  }
-
-  function loadSnapshotToCanvas(ctx: CanvasRenderingContext2D): void {
-    void (async () => {
-      ctx.clearRect(0, 0, snapshotWidth, snapshotHeight);
-      for (const d of snapshotDisplays) {
-        ctx.drawImage(d.bmp, d.x - snapshotX, d.y - snapshotY, d.width, d.height);
-      }
-    })();
+    const canvasPosition = clientToCanvasPixel(clientPosition, canvas);
+    if (!canvasPosition) return null;
+    const hex = getCanvasColor(canvas, canvasPosition);
+    return (hex)
+      ? { canvasPosition, hex }
+      : null;
   }
 
   useEffect(() => {
     const canvas = internalCanvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    loadSnapshotToCanvas(ctx);
-  }, [snapshotWidth, snapshotHeight, snapshotDisplays, internalCanvasRef.current]);
+    void loadSnapshotToCanvas(canvas, snapshotBounds, snapshotDisplays);
+  }, [snapshotBounds, snapshotDisplays, internalCanvasRef.current]);
   
   const onMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();
-    const positionAndColor = getCanvasPositionAndColor(e.clientX, e.clientY);
+    const positionAndColor = getCanvasPositionAndColor({ x: e.clientX, y: e.clientY });
     if (!positionAndColor) return;
 
     const { hex } = positionAndColor;
@@ -58,15 +43,14 @@ export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => 
   };
 
   const onMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
-    const positionAndColor = getCanvasPositionAndColor(e.clientX, e.clientY);
+    const positionAndColor = getCanvasPositionAndColor({ x: e.clientX, y: e.clientY });
     if (!positionAndColor) return;
 
     const {
-      canvasX,
-      canvasY,
+      canvasPosition,
       hex
     } = positionAndColor;
-    onCanvasMouseMove(canvasX, canvasY, hex);
+    onCanvasMouseMove(canvasPosition, hex);
   };
 
   return (
@@ -83,8 +67,8 @@ export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => 
       aria-label="Screen snapshot — move to preview, click to pick a color"
       className="eyedropper-canvas"
       style={{
-        width: canvasWidth,
-        height: canvasHeight,
+        width: canvasSize.x,
+        height: canvasSize.y,
       }}
       onMouseMove={onMouseMove}
       onClick={onMouseClick}

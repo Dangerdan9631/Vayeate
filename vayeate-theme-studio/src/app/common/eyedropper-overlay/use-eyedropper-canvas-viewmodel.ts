@@ -6,18 +6,16 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
 import { HexColor } from '../../../model/schema/primitives';
+import { Rect } from '../../../model/rect';
+import { Point } from '../../../model/point';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 export interface EyedropperCanvasViewModel {
-  canvasWidth: number;
-  canvasHeight: number;
-  snapshotWidth: number;
-  snapshotX: number;
-  snapshotY: number;
-  snapshotHeight: number;
+  canvasSize: Point;
+  snapshotBounds: Rect;
   snapshotDisplays: EyedropperDisplayEntryPayload[];
-  onCanvasMouseMove: (canvasX: number, canvasY: number, hex: HexColor) => void;
+  onCanvasMouseMove: (canvasPosition: Point, hex: HexColor) => void;
   onCanvasClick: (hex: HexColor) => void;
 }
 
@@ -25,24 +23,17 @@ export function useEyedropperCanvasViewModel(): EyedropperCanvasViewModel {
   const dispatch = useAppDispatch();
 
   const zoom = useStore(eyedropperUiStore.api, (state) => state.state.zoom);
-  const snapshotX = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds?.x ?? 0);
-  const snapshotY = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds?.y ?? 0);
-  const snapshotWidth = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds?.width ?? 0);
-  const snapshotHeight = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds?.height ?? 0);
+  const snapshotBounds = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds ?? { x: 0, y: 0, width: 0, height: 0 });
   const snapshotDisplays = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.displays ?? []);
 
-  const canvasWidth = useMemo(
-    () => snapshotWidth * zoom,
-    [snapshotWidth, zoom],
-  );
-  const canvasHeight = useMemo(
-    () => snapshotHeight * zoom,
-    [snapshotHeight, zoom],
+  const canvasSize = useMemo(
+    () => ({ x: snapshotBounds.width * zoom, y: snapshotBounds.height * zoom }),
+    [snapshotBounds, zoom],
   );
 
   const onCanvasMouseMove = useCallback(
-    (canvasX: number, canvasY: number, hex: HexColor) => {
-      void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, x: canvasX, y: canvasY, hex });
+    (canvasPosition: Point, hex: HexColor) => {
+      void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, position: canvasPosition, hex });
     },
     [dispatch],
   );
@@ -55,12 +46,8 @@ export function useEyedropperCanvasViewModel(): EyedropperCanvasViewModel {
   );
 
   return {
-    canvasWidth,
-    canvasHeight,
-    snapshotX,
-    snapshotY,
-    snapshotWidth,
-    snapshotHeight,
+    canvasSize,
+    snapshotBounds,
     snapshotDisplays,
     onCanvasMouseMove,
     onCanvasClick,

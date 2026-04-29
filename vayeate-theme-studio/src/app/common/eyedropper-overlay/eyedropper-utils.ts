@@ -1,3 +1,6 @@
+import { EyedropperDisplayEntryPayload } from "../../../domain/state/ui/eyedropper-ui-state";
+import { Point } from "../../../model/point";
+import { Rect } from "../../../model/rect";
 import { HexColor } from "../../../model/schema/primitives";
 
 /** Loupe canvas size (CSS pixels). */
@@ -13,23 +16,39 @@ export function rgbToHex(r: number, g: number, b: number): HexColor {
   return `#${pad(r)}${pad(g)}${pad(b)}`;
 }
 
-/** Map (clientX, clientY) to canvas pixel (px, py) using wrapper rect; returns null if out of bounds. */
+export function getCanvasColor(canvas: HTMLCanvasElement, position: Point): HexColor | null {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  const [r, g, b] = ctx.getImageData(position.x, position.y, 1, 1).data;
+  return rgbToHex(r, g, b);
+}
+
+export async function loadSnapshotToCanvas(
+  canvas: HTMLCanvasElement,
+  snapshotBounds: Rect,
+  snapshot: EyedropperDisplayEntryPayload[],
+): Promise<void> {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.clearRect(0, 0, snapshotBounds.width, snapshotBounds.height);
+  for (const d of snapshot) {
+    ctx.drawImage(d.bmp, d.bounds.x - snapshotBounds.x, d.bounds.y - snapshotBounds.y, d.bounds.width, d.bounds.height);
+  }
+}
+
 export function clientToCanvasPixel(
-  clientX: number,
-  clientY: number,
-  wrapper: HTMLElement,
-  canvasWidth: number,
-  canvasHeight: number,
-): { px: number; py: number } | null {
-  const rect = wrapper.getBoundingClientRect();
-  const nx = (clientX - rect.left) / rect.width;
-  const ny = (clientY - rect.top) / rect.height;
+  clientPosition: Point,
+  canvas: HTMLCanvasElement
+): Point | null {
+  const rect = canvas.getBoundingClientRect();
+  const nx = (clientPosition.x - rect.left) / rect.width;
+  const ny = (clientPosition.y - rect.top) / rect.height;
   if (nx < 0 || nx >= 1 || ny < 0 || ny >= 1) return null;
-  const px = Math.floor(nx * canvasWidth);
-  const py = Math.floor(ny * canvasHeight);
-  const clampedX = Math.max(0, Math.min(canvasWidth - 1, px));
-  const clampedY = Math.max(0, Math.min(canvasHeight - 1, py));
-  return { px: clampedX, py: clampedY };
+  const px = Math.floor(nx * canvas.width);
+  const py = Math.floor(ny * canvas.height);
+  const clampedX = Math.max(0, Math.min(canvas.width - 1, px));
+  const clampedY = Math.max(0, Math.min(canvas.height - 1, py));
+  return { x: clampedX, y: clampedY };
 }
 
 /** Continuous bitmap coordinates (for zoom anchoring). Returns null if outside the canvas element. */
@@ -39,13 +58,13 @@ export function clientToCanvasFloat(
   canvas: HTMLElement,
   canvasWidth: number,
   canvasHeight: number,
-): { fx: number; fy: number } | null {
+): Point | null {
   const rect = canvas.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) return null;
   const nx = (clientX - rect.left) / rect.width;
   const ny = (clientY - rect.top) / rect.height;
   if (nx < 0 || nx > 1 || ny < 0 || ny > 1) return null;
-  return { fx: nx * canvasWidth, fy: ny * canvasHeight };
+  return { x: nx * canvasWidth, y: ny * canvasHeight };
 }
 
 /**
@@ -59,7 +78,7 @@ export function clientToCanvasFloatClamped(
   canvas: HTMLElement,
   canvasWidth: number,
   canvasHeight: number,
-): { fx: number; fy: number } | null {
+): Point | null {
   const rect = canvas.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) return null;
   const cx = Math.min(Math.max(clientX, rect.left), rect.right);
@@ -76,15 +95,15 @@ export function clampElementScroll(el: HTMLElement): void {
 }
 
 /** Content-box width/height inside padding (for contain + aspect bounds). */
-export function scrollContainerContentSize(el: HTMLElement): { w: number; h: number } {
+export function scrollContainerContentSize(el: HTMLElement): Point {
   const cs = getComputedStyle(el);
   const pl = parseFloat(cs.paddingLeft) || 0;
   const pr = parseFloat(cs.paddingRight) || 0;
   const pt = parseFloat(cs.paddingTop) || 0;
   const pb = parseFloat(cs.paddingBottom) || 0;
   return {
-    w: Math.max(0, el.clientWidth - pl - pr),
-    h: Math.max(0, el.clientHeight - pt - pb),
+    x: Math.max(0, el.clientWidth - pl - pr),
+    y: Math.max(0, el.clientHeight - pt - pb),
   };
 }
 
@@ -97,13 +116,13 @@ export function eyedropperAspectContainRect(
   innerH: number,
   bitmapW: number,
   bitmapH: number,
-): { Rw: number; Rh: number } {
+): Point {
   if (innerW <= 0 || innerH <= 0 || bitmapW <= 0 || bitmapH <= 0) {
-    return { Rw: 0, Rh: 0 };
+    return { x: 0, y: 0 };
   }
   const Rw = Math.min(innerW, (innerH * bitmapW) / bitmapH);
   const Rh = Math.min(innerH, (innerW * bitmapH) / bitmapW);
-  return { Rw, Rh };
+  return { x: Rw, y: Rh };
 }
 
 /**
@@ -118,10 +137,10 @@ export function clampEyedropperCanvasInAspectBounds(
   bitmapH: number,
 ): void {
   if (bitmapW <= 0 || bitmapH <= 0) return;
-  const { w: innerW, h: innerH } = scrollContainerContentSize(scrollEl);
+  const { x: innerW, y: innerH } = scrollContainerContentSize(scrollEl);
   if (innerW <= 0 || innerH <= 0) return;
 
-  const { Rw, Rh } = eyedropperAspectContainRect(innerW, innerH, bitmapW, bitmapH);
+  const { x: Rw, y: Rh } = eyedropperAspectContainRect(innerW, innerH, bitmapW, bitmapH);
   if (Rw <= 0 || Rh <= 0) return;
   const cs = getComputedStyle(scrollEl);
   const pl = parseFloat(cs.paddingLeft) || 0;

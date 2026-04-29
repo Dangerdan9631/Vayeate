@@ -17,6 +17,7 @@ import {
   eyedropperZoomFitContain,
   scrollContainerContentSize,
 } from './eyedropper-utils';
+import { Point } from '../../../model/point';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
@@ -26,18 +27,16 @@ export function EyedropperOverlay() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [scrollViewport, setScrollViewport] = useState({ w: 0, h: 0 });
+  const [scrollViewport, setScrollViewport] = useState({ x: 0, y: 0 });
   const wheelCorrectionRef = useRef<{
-    clientX: number;
-    clientY: number;
-    fx: number;
-    fy: number;
+    clientPosition: Point;
+    canvasPosition: Point;
   } | null>(null);
   const eyedropper = useStore(eyedropperUiStore.api, (state) => state.state);
   const { snapshot, callbackAction, isOpen, errorMessage, result, zoom, previewHex } = eyedropper;
   const isLoaded = snapshot !== null && snapshot.fullBounds.width > 0 && snapshot.fullBounds.height > 0;
 
-  const { snapshotWidth, snapshotHeight } = useEyedropperOverlayViewModel();
+  const { snapshotBounds } = useEyedropperOverlayViewModel();
 
   // Result callback dispatch
   useEffect(() => {
@@ -65,8 +64,8 @@ export function EyedropperOverlay() {
     if (!el || !isOpen || errorMessage !== null || !isLoaded) return;
 
     const sync = () => {
-      const { w, h } = scrollContainerContentSize(el);
-      setScrollViewport({ w, h });
+      const size = scrollContainerContentSize(el);
+      setScrollViewport(size);
     };
     const ro = new ResizeObserver(sync);
     ro.observe(el);
@@ -77,7 +76,7 @@ export function EyedropperOverlay() {
   // Resize canvas to fit in the scroll container
   useLayoutEffect(() => {
     onOverlayScroll();
-  }, [scrollViewport.w, scrollViewport.h, isOpen, snapshotWidth, snapshotHeight]);
+  }, [scrollViewport, isOpen, snapshotBounds]);
   
 
   function onOverlayScroll() {
@@ -87,8 +86,8 @@ export function EyedropperOverlay() {
     clampEyedropperCanvasInAspectBounds(
       scroll,
       canvas,
-      snapshotWidth,
-      snapshotHeight,
+      snapshotBounds.width,
+      snapshotBounds.height,
     );
   };
   
@@ -105,36 +104,36 @@ export function EyedropperOverlay() {
     const canvas = canvasRef.current;
     const scroll = scrollRef.current;
     if (!canvas || !scroll) return;
-    const tw = snapshotWidth;
-    const th = snapshotHeight;
+    const tw = snapshotBounds.width;
+    const th = snapshotBounds.height;
     const cr = canvas.getBoundingClientRect();
-    const px = cr.left + (corr.fx / tw) * cr.width;
-    const py = cr.top + (corr.fy / th) * cr.height;
-    scroll.scrollLeft -= corr.clientX - px;
-    scroll.scrollTop -= corr.clientY - py;
+    const px = cr.left + (corr.canvasPosition.x / tw) * cr.width;
+    const py = cr.top + (corr.canvasPosition.y / th) * cr.height;
+    scroll.scrollLeft -= corr.clientPosition.x - px;
+    scroll.scrollTop -= corr.clientPosition.y - py;
     clampElementScroll(scroll);
     clampEyedropperCanvasInAspectBounds(scroll, canvas, tw, th);
     wheelCorrectionRef.current = null;
-  }, [zoom, isOpen, isLoaded, errorMessage, snapshotWidth, snapshotHeight, eyedropperUiStore]);
+  }, [zoom, isOpen, isLoaded, errorMessage, snapshotBounds, eyedropperUiStore]);
 
   useEffect(() => {
-    const { w: vw, h: vh } = scrollViewport;
+    const { x: vw, y: vh } = scrollViewport;
     if (!isOpen || errorMessage !== null || !isLoaded || vw <= 0 || vh <= 0) return;
-    if (snapshotWidth <= 0 || snapshotHeight <= 0) return;
-    const zFit = eyedropperZoomFitContain(vw, vh, snapshotWidth, snapshotHeight);
+    if (snapshotBounds.width <= 0 || snapshotBounds.height <= 0) return;
+    const zFit = eyedropperZoomFitContain(vw, vh, snapshotBounds.width, snapshotBounds.height);
     zoomFitRef.current = zFit;
     const z1 = clampEyedropperZoomToFitRange(zoom, zFit);
     if (z1 !== zoom) {
       eyedropperUiStore.setEyedropperZoom(z1);
     }
-  }, [isOpen, scrollViewport, zoom, snapshotWidth, snapshotHeight, eyedropperUiStore]);
+  }, [isOpen, scrollViewport, zoom, snapshotBounds, eyedropperUiStore]);
 
   // Calculate canvas and layout dimensions based on zoom
-  const { w: vw, h: vh } = scrollViewport;
-  const zFit = vw > 0 && vh > 0 && snapshotWidth > 0 && snapshotHeight > 0 ? eyedropperZoomFitContain(vw, vh, snapshotWidth, snapshotHeight) : 0;
+  const { x: vw, y: vh } = scrollViewport;
+  const zFit = vw > 0 && vh > 0 && snapshotBounds.width > 0 && snapshotBounds.height > 0 ? eyedropperZoomFitContain(vw, vh, snapshotBounds.width, snapshotBounds.height) : 0;
   const layoutScale = zFit > 0 ? Math.max(zoom, zFit) : zoom;
-  const innerMinW = snapshotWidth * layoutScale;
-  const innerMinH = snapshotHeight * layoutScale;
+  const innerMinW = snapshotBounds.width * layoutScale;
+  const innerMinH = snapshotBounds.height * layoutScale;
   const zoomVsFitLabel = zFit > 0 ? `${(zoom / zFit).toFixed(2)}× fit` : `${zoom.toFixed(2)}×`;
 
 
@@ -150,8 +149,8 @@ export function EyedropperOverlay() {
     if (!isOpen || errorMessage !== null || !isLoaded) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const tw = snapshotWidth;
-    const th = snapshotHeight;
+    const tw = snapshotBounds.width;
+    const th = snapshotBounds.height;
     const anchor = clientToCanvasFloatClamped(e.clientX, e.clientY, canvas, tw, th);
     if (!anchor) return;
     e.preventDefault();
@@ -164,10 +163,8 @@ export function EyedropperOverlay() {
     );
     if (Math.abs(z1 - z0) < 1e-9) return;
     wheelCorrectionRef.current = {
-      clientX: e.clientX,
-      clientY: e.clientY,
-      fx: anchor.fx,
-      fy: anchor.fy,
+      clientPosition: { x: e.clientX, y: e.clientY },
+      canvasPosition: anchor,
     };
     eyedropperUiStore.setEyedropperZoom(z1);
   }

@@ -5,28 +5,22 @@ import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { useCallback } from 'react';
 import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
 import { HexColor } from '../../../model/schema/primitives';
+import { Point } from '../../../model/point';
+import { Rect } from '../../../model/rect';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 export interface EyedropperOverlayViewModel {
-  snapshot: ImageBitmap | null,
-  snapshotX: number;
-  snapshotY: number;
-  snapshotWidth: number;
-  snapshotHeight: number;
+  snapshotBounds: Rect;
   onCancelClick: () => void;
   onColorPickClick: (hex: HexColor) => void;
   onOverlayWheelScroll: (delta: number) => void;
-  onOverlayMouseMove: (x: number, y: number, hex: HexColor) => void;
+  onOverlayMouseMove: (position: Point, hex: HexColor) => void;
 }
 
 export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
   const dispatch = useAppDispatch();
-  const snapshot = null;
-  const snapshotX = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds.x ?? 0);
-  const snapshotY = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds.y ?? 0);
-  const snapshotWidth = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds.width ?? 0);
-  const snapshotHeight = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds.height ?? 0);
+  const snapshotBounds = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds ?? { x: 0, y: 0, width: 0, height: 0 });
 
   const onCancelClick = useCallback(() => {
     void dispatch({ type: EyedropperOverlayActionType.CancelButtonOnClick });
@@ -40,17 +34,13 @@ export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
     void dispatch({ type: EyedropperOverlayActionType.OverlayWheelOnScroll, delta: delta });
   }, [dispatch]);
 
-  const onOverlayMouseMove = useCallback((x: number, y: number, hex: HexColor) => {
+  const onOverlayMouseMove = useCallback((position: Point, hex: HexColor) => {
     eyedropperUiStore.setEyedropperPreviewHex(hex);
-    void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, x: x, y: y, hex });
+    void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, position, hex });
   }, [dispatch]);
 
   return {
-    snapshot,
-    snapshotX,
-    snapshotY,
-    snapshotWidth,
-    snapshotHeight,
+    snapshotBounds,
     onCancelClick,
     onColorPickClick,
     onOverlayWheelScroll,
