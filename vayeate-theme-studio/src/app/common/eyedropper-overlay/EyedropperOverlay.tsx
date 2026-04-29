@@ -1,10 +1,5 @@
 import { MouseEvent, useEffect, useLayoutEffect, useRef, WheelEvent } from 'react';
 import { useEyedropperOverlayViewModel } from './use-eyedropper-overlay-viewmodel';
-import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store';
-import { container } from 'tsyringe';
-import { useStore } from 'zustand';
-import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
 import { EyedropperCanvas } from './EyedropperCanvas';
 import { EyedropperLoupe } from './EyedropperLoupe';
 import {
@@ -14,16 +9,11 @@ import {
   clientToCanvasFloatClamped,
   EYEDROPPER_ZOOM_MAX,
   EYEDROPPER_ZOOM_STEP,
-  eyedropperZoomFitContain,
   scrollContainerContentSize,
 } from './eyedropper-utils';
-import { Point } from '../../../model/point';
-
-const eyedropperUiStore = container.resolve(EyedropperUiStore);
+import type { Point } from '../../../model/point';
 
 export function EyedropperOverlay() {
-
-  const dispatch = useAppDispatch();
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const loupeCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -31,32 +21,34 @@ export function EyedropperOverlay() {
     clientPosition: Point;
     canvasPosition: Point;
   } | null>(null);
-  const eyedropper = useStore(eyedropperUiStore.api, (state) => state.state);
-  const { zoom } = eyedropper;
 
   const {
     isOpen,
     isLoaded,
     errorMessage,
     previewHex,
+    zoom,
+    zoomFit,
+    zoomVsFitLabel,
+    innerSize,
     snapshotBounds,
     overlayViewportSize,
+    onCancel,
+    onOverlayWheelScroll: dispatchOverlayWheelScroll,
     onOverlayViewportSizeChange,
   } = useEyedropperOverlayViewModel();
 
-  // Keyboard (Escape) handler
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        void dispatch({ type: EyedropperOverlayActionType.CancelButtonOnClick });
+        onCancel();
       }
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, dispatch]);
+  }, [isOpen, onCancel]);
 
-  // Track scroll container size
   useEffect(() => {
     const el = scrollRef.current;
     if (!el || !isLoaded) return;
@@ -70,11 +62,9 @@ export function EyedropperOverlay() {
     return () => ro.disconnect();
   }, [scrollRef, isLoaded, onOverlayViewportSizeChange]);
 
-  // Resize canvas to fit in the scroll container
   useLayoutEffect(() => {
     onOverlayScroll();
   }, [overlayViewportSize, isOpen, snapshotBounds]);
-  
 
   function onOverlayScroll() {
     const scroll = scrollRef.current;
@@ -86,14 +76,15 @@ export function EyedropperOverlay() {
       snapshotBounds.width,
       snapshotBounds.height,
     );
-  };
-  
+  }
+
   const zoomRef = useRef(zoom);
-  const zoomFitRef = useRef(0);
-  
+  const zoomFitRef = useRef(zoomFit);
+
   useEffect(() => {
     zoomRef.current = zoom;
-  }, [zoom]);
+    zoomFitRef.current = zoomFit;
+  }, [zoom, zoomFit]);
 
   useLayoutEffect(() => {
     const corr = wheelCorrectionRef.current;
@@ -111,32 +102,7 @@ export function EyedropperOverlay() {
     clampElementScroll(scroll);
     clampEyedropperCanvasInAspectBounds(scroll, canvas, tw, th);
     wheelCorrectionRef.current = null;
-  }, [zoom, isOpen, isLoaded, errorMessage, snapshotBounds, eyedropperUiStore]);
-
-  useEffect(() => {
-    const { width: vw, height: vh } = overlayViewportSize;
-    if (!isOpen || errorMessage !== null || !isLoaded || vw <= 0 || vh <= 0) return;
-    if (snapshotBounds.width <= 0 || snapshotBounds.height <= 0) return;
-    const zFit = eyedropperZoomFitContain(vw, vh, snapshotBounds.width, snapshotBounds.height);
-    zoomFitRef.current = zFit;
-    const z1 = clampEyedropperZoomToFitRange(zoom, zFit);
-    if (z1 !== zoom) {
-      // eyedropperUiStore.setEyedropperZoom(z1);
-    }
-  }, [isOpen, overlayViewportSize, zoom, snapshotBounds, eyedropperUiStore]);
-
-  // Calculate canvas and layout dimensions based on zoom
-  const { width: vw, height: vh } = overlayViewportSize;
-  const zFit = vw > 0 && vh > 0 && snapshotBounds.width > 0 && snapshotBounds.height > 0 ? eyedropperZoomFitContain(vw, vh, snapshotBounds.width, snapshotBounds.height) : 0;
-  const layoutScale = zFit > 0 ? Math.max(zoom, zFit) : zoom;
-  const innerMinW = snapshotBounds.width * layoutScale;
-  const innerMinH = snapshotBounds.height * layoutScale;
-  const zoomVsFitLabel = zFit > 0 ? `${(zoom / zFit).toFixed(2)}× fit` : `${zoom.toFixed(2)}×`;
-
-
-  function onCancel() {
-    void dispatch({ type: EyedropperOverlayActionType.CancelButtonOnClick });
-  }
+  }, [zoom, isOpen, isLoaded, errorMessage, snapshotBounds]);
 
   function onBackdropClick(_: MouseEvent<HTMLDivElement>) {
     onCancel();
@@ -150,7 +116,7 @@ export function EyedropperOverlay() {
     const th = snapshotBounds.height;
     const anchor = clientToCanvasFloatClamped(e.clientX, e.clientY, canvas, tw, th);
     if (!anchor) return;
-    // e.preventDefault();
+    e.preventDefault();
     const zf = zoomFitRef.current;
     if (zf <= 0) return;
     const z0 = zoomRef.current;
@@ -163,7 +129,7 @@ export function EyedropperOverlay() {
       clientPosition: { x: e.clientX, y: e.clientY },
       canvasPosition: anchor,
     };
-    // eyedropperUiStore.setEyedropperZoom(z1);
+    dispatchOverlayWheelScroll(e.deltaY);
   }
 
   function onErrorCancelButtonClick(_: MouseEvent<HTMLButtonElement>) {
@@ -208,8 +174,8 @@ export function EyedropperOverlay() {
           <div
             className="eyedropper-inner"
             style={{
-              minWidth: innerMinW,
-              minHeight: innerMinH,
+              minWidth: innerSize.width,
+              minHeight: innerSize.height,
             }}
           >
             <EyedropperCanvas ref={canvasRef} />

@@ -1,29 +1,19 @@
-import { AppAction } from '../../../app/core/action-queue/app-action';
-import { Rect } from '../../../model/rect';
-import type { HexColor } from '../../../model/schema/primitives';
-import { Point, Size, ZERO_POINT, ZERO_SIZE } from '../../../model/point';
-
-export interface EyedropperDisplayEntryPayload {
-  sourceId: string;
-  bounds: Rect;
-  bmp: ImageBitmap;
-}
-
-export interface EyedropperSnapshotPayload {
-  fullBounds: Rect;
-  displays: EyedropperDisplayEntryPayload[];
-}
+import type {
+  EyedropperCommitTarget,
+  EyedropperDisplaySnapshot,
+  EyedropperPointerSample,
+} from '../../../model/eyedropper';
+import type { Size } from '../../../model/point';
+import { ZERO_SIZE } from '../../../model/point';
 
 export interface EyedropperUiState {
   isOpen: boolean;
   errorMessage: string | null;
-  snapshot: EyedropperSnapshotPayload | null;
+  snapshot: EyedropperDisplaySnapshot | null;
   zoom: number;
-  previewHex: string | null;
-  result: HexColor | null;
-  callbackAction: AppAction | null;
-  mousePosition: Point;
-  overlayViewportSize: Size; 
+  pointer: EyedropperPointerSample | null;
+  commitTarget: EyedropperCommitTarget | null;
+  overlayViewportSize: Size;
 }
 
 export const initialEyedropperUiState: EyedropperUiState = {
@@ -31,9 +21,7 @@ export const initialEyedropperUiState: EyedropperUiState = {
   errorMessage: null,
   snapshot: null,
   zoom: 1,
-  previewHex: null,
-  result: null,
-  callbackAction: null,
-  mousePosition: ZERO_POINT,
+  pointer: null,
+  commitTarget: null,
   overlayViewportSize: ZERO_SIZE,
 };

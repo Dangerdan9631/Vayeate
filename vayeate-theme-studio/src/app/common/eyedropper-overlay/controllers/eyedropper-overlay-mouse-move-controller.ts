@@ -1,14 +1,14 @@
 import { singleton } from 'tsyringe';
-import { UpdateEyedropperMousePositionOperation } from '../../../../domain/operations/eyedropper-operations/update-eyedropper-mouse-position-operation';
-import { Point } from '../../../../model/point';
+import { UpdateEyedropperPointerOperation } from '../../../../domain/operations/eyedropper-operations/update-eyedropper-pointer-operation';
+import type { EyedropperPointerSample } from '../../../../model/eyedropper';
 
 @singleton()
 export class EyedropperOverlayMouseMoveController {
   constructor(
-    private readonly updateEyedropperMousePositionOperation: UpdateEyedropperMousePositionOperation,
+    private readonly updateEyedropperPointer: UpdateEyedropperPointerOperation,
   ) {}
 
-  run(canvasPosition: Point): void {
-    this.updateEyedropperMousePositionOperation.execute(canvasPosition);
+  async run(pointer: EyedropperPointerSample): Promise<void> {
+    this.updateEyedropperPointer.execute(pointer);
   }
 }

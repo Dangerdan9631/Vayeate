@@ -1,4 +1,4 @@
-import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, ContrastVariableKey } from '../../../../model/schema/primitives';
+import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, ContrastVariableKey, HexColor } from '../../../../model/schema/primitives';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum ThemeVariablesCardActionType {
@@ -37,10 +37,10 @@ export type ThemeVariablesCardActions =
     }
   | { type: ThemeVariablesCardActionType.ColorDarkTextOnCommit; value: string; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ColorDarkColorEyedropperButtonOnClick; ref: ColorVariableKey }
-  | { type: ThemeVariablesCardActionType.ColorDarkColorEyedropperOnCommit; ref: ColorVariableKey }
+  | { type: ThemeVariablesCardActionType.ColorDarkColorEyedropperOnCommit; ref: ColorVariableKey; value: HexColor }
   | { type: ThemeVariablesCardActionType.ColorLightTextOnCommit; value: string; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ColorLightColorEyedropperButtonOnClick; ref: ColorVariableKey }
-  | { type: ThemeVariablesCardActionType.ColorLightColorEyedropperOnCommit; ref: ColorVariableKey }
+  | { type: ThemeVariablesCardActionType.ColorLightColorEyedropperOnCommit; ref: ColorVariableKey; value: HexColor }
   | { type: ThemeVariablesCardActionType.ColorUseDarkForLightCheckboxOnToggle; checked: boolean; ref: ColorVariableKey }
   | { type: ThemeVariablesCardActionType.ContrastDarkValueTextOnCommit; value: ContrastValue; ref: ContrastVariableKey }
   | {

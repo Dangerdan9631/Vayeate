@@ -23,14 +23,14 @@ export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.ApplyToDarkCheckboxOnToggle; checked: boolean }
   | { type: ThemePaletteCardActionType.ApplyToLightCheckboxOnToggle; checked: boolean }
   | { type: ThemePaletteCardActionType.AssignColorEyedropperButtonOnClick }
-  | { type: ThemePaletteCardActionType.AssignColorEyeDropperOnCommit}
+  | { type: ThemePaletteCardActionType.AssignColorEyeDropperOnCommit; value: HexColor }
   | { type: ThemePaletteCardActionType.AssignColorPickerOnSelect; value: HexColor }
   | { type: ThemePaletteCardActionType.AssignColorPickerOnCommit; value: HexColor }
   | { type: ThemePaletteCardActionType.AssignColorPickerOnClose }
   | { type: ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick }
   | { type: ThemePaletteCardActionType.HueReferenceCommit; value: string }
   | { type: ThemePaletteCardActionType.HueReferenceColorEyedropperButtonOnClick }
-  | { type: ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit }
+  | { type: ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit; value: HexColor }
   | { type: ThemePaletteCardActionType.HueSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnCommit; value: number }

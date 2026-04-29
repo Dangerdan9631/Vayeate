@@ -8,8 +8,6 @@ import { ToggleVariableSelectionController } from '../controllers/toggle-variabl
 import { SetColorUseDarkForLightController } from '../controllers/set-color-use-dark-for-light-controller';
 import { SetColorVariableDarkController } from '../controllers/set-color-variable-dark-controller';
 import { SetColorVariableLightController } from '../controllers/set-color-variable-light-controller';
-import { CommitColorDarkEyedropperController } from '../controllers/commit-color-dark-eyedropper-controller';
-import { CommitColorLightEyedropperController } from '../controllers/commit-color-light-eyedropper-controller';
 import { SetContrastUseDarkForLightController } from '../controllers/set-contrast-use-dark-for-light-controller';
 import { SetContrastVariableDarkMaxController } from '../controllers/set-contrast-variable-dark-max-controller';
 import { SetContrastVariableDarkMethodController } from '../controllers/set-contrast-variable-dark-method-controller';
@@ -21,6 +19,7 @@ import { SetContrastVariableLightMinController } from '../controllers/set-contra
 import { SetContrastVariableLightValueController } from '../controllers/set-contrast-variable-light-value-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemeVariablesCardActions, ThemeVariablesCardActionType } from './theme-variables-card-action-type';
+import { EyedropperCommitTargetType } from '../../../../model/eyedropper';
 
 @singleton()
 export class ThemeVariablesCardHandler {
@@ -31,8 +30,6 @@ export class ThemeVariablesCardHandler {
     private readonly setColorUseDarkForLight: SetColorUseDarkForLightController,
     private readonly setColorVariableDark: SetColorVariableDarkController,
     private readonly setColorVariableLight: SetColorVariableLightController,
-    private readonly commitColorDarkEyedropper: CommitColorDarkEyedropperController,
-    private readonly commitColorLightEyedropper: CommitColorLightEyedropperController,
     private readonly setContrastUseDarkForLight: SetContrastUseDarkForLightController,
     private readonly setContrastVariableDarkMax: SetContrastVariableDarkMaxController,
     private readonly setContrastVariableDarkMethod: SetContrastVariableDarkMethodController,
@@ -67,15 +64,15 @@ export class ThemeVariablesCardHandler {
       case ThemeVariablesCardActionType.ColorDarkTextOnCommit:
         return this.setColorVariableDark.run(action.ref, action.value);
       case ThemeVariablesCardActionType.ColorDarkColorEyedropperButtonOnClick:
-        return this.openEyedropperOverlay.run({ type: ThemeVariablesCardActionType.ColorDarkColorEyedropperOnCommit, ref: action.ref });
+        return this.openEyedropperOverlay.run({ type: EyedropperCommitTargetType.ThemeVariableDarkColor, ref: action.ref });
       case ThemeVariablesCardActionType.ColorLightTextOnCommit:
         return this.setColorVariableLight.run(action.ref, action.value);
       case ThemeVariablesCardActionType.ColorLightColorEyedropperButtonOnClick:
-        return this.openEyedropperOverlay.run({ type: ThemeVariablesCardActionType.ColorLightColorEyedropperOnCommit, ref: action.ref });
+        return this.openEyedropperOverlay.run({ type: EyedropperCommitTargetType.ThemeVariableLightColor, ref: action.ref });
       case ThemeVariablesCardActionType.ColorDarkColorEyedropperOnCommit:
-        return this.commitColorDarkEyedropper.run(action.ref);
+        return this.setColorVariableDark.run(action.ref, action.value);
       case ThemeVariablesCardActionType.ColorLightColorEyedropperOnCommit:
-        return this.commitColorLightEyedropper.run(action.ref);
+        return this.setColorVariableLight.run(action.ref, action.value);
       case ThemeVariablesCardActionType.ColorUseDarkForLightCheckboxOnToggle:
         return this.setColorUseDarkForLight.run(action.ref, action.checked);
       case ThemeVariablesCardActionType.ContrastDarkValueTextOnCommit:

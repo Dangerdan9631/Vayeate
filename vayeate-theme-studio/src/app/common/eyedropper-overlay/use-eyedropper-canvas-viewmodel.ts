@@ -1,13 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import type { EyedropperDisplayEntryPayload } from '../../../domain/state/ui/eyedropper-ui-state';
+import type { EyedropperDisplaySnapshotEntry, EyedropperPointerSample } from '../../../model/eyedropper';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
 import { HexColor } from '../../../model/schema/primitives';
-import { Rect } from '../../../model/rect';
-import { Point } from '../../../model/point';
+import { Rect, ZERO_RECT } from '../../../model/rect';
 import { Size } from '../../../model/point';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
@@ -15,8 +14,8 @@ const eyedropperUiStore = container.resolve(EyedropperUiStore);
 export interface EyedropperCanvasViewModel {
   canvasSize: Size;
   snapshotBounds: Rect;
-  snapshotDisplays: EyedropperDisplayEntryPayload[];
-  onCanvasMouseMove: (canvasPosition: Point, hex: HexColor) => void;
+  snapshotDisplays: EyedropperDisplaySnapshotEntry[];
+  onCanvasMouseMove: (pointer: EyedropperPointerSample) => void;
   onCanvasClick: (hex: HexColor) => void;
 }
 
@@ -24,7 +23,7 @@ export function useEyedropperCanvasViewModel(): EyedropperCanvasViewModel {
   const dispatch = useAppDispatch();
 
   const zoom = useStore(eyedropperUiStore.api, (state) => state.state.zoom);
-  const snapshotBounds = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds ?? { x: 0, y: 0, width: 0, height: 0 });
+  const snapshotBounds = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.fullBounds ?? ZERO_RECT);
   const snapshotDisplays = useStore(eyedropperUiStore.api, (state) => state.state.snapshot?.displays ?? []);
 
   const canvasSize = useMemo(
@@ -33,8 +32,8 @@ export function useEyedropperCanvasViewModel(): EyedropperCanvasViewModel {
   );
 
   const onCanvasMouseMove = useCallback(
-    (canvasPosition: Point, hex: HexColor) => {
-      void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, position: canvasPosition, hex });
+    (pointer: EyedropperPointerSample) => {
+      void dispatch({ type: EyedropperOverlayActionType.OverlayMouseMove, pointer });
     },
     [dispatch],
   );

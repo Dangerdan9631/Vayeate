@@ -1,4 +1,5 @@
-import { Size, Point } from '../../../../model/point';
+import type { EyedropperPointerSample } from '../../../../model/eyedropper';
+import type { Size } from '../../../../model/point';
 import type { HexColor } from '../../../../model/schema/primitives';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
@@ -13,8 +14,8 @@ export enum EyedropperOverlayActionType {
 export type AppEyedropperOverlayActions =
   | { type: EyedropperOverlayActionType.CancelButtonOnClick }
   | { type: EyedropperOverlayActionType.ColorPickCommitButtonOnClick; hex: HexColor }
-  | { type: EyedropperOverlayActionType.OverlayWheelOnScroll; delta: number }
-  | { type: EyedropperOverlayActionType.OverlayMouseMove; position: Point; hex: HexColor }
+  | { type: EyedropperOverlayActionType.OverlayWheelOnScroll; deltaY: number }
+  | { type: EyedropperOverlayActionType.OverlayMouseMove; pointer: EyedropperPointerSample }
   | { type: EyedropperOverlayActionType.OverlayViewportSizeChange; size: Size };
 
 const appEyedropperOverlayTypes = new Set<string>(Object.values(EyedropperOverlayActionType));

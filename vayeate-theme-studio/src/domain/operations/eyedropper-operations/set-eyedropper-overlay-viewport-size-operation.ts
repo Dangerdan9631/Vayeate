@@ -1,6 +1,6 @@
-import { singleton } from "tsyringe";
-import { EyedropperUiStore } from "../../state/ui/eyedropper-ui-store";
-import { Size } from "../../../model/point";
+import { singleton } from 'tsyringe';
+import type { Size } from '../../../model/point';
+import { EyedropperUiStore } from '../../state/ui/eyedropper-ui-store';
 
 @singleton()
 export class SetEyedropperOverlayViewportSizeOperation {

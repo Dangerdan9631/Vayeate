@@ -1,7 +1,8 @@
-import { EyedropperDisplayEntryPayload } from "../../../domain/state/ui/eyedropper-ui-state";
-import { Point, Size, ZERO_POINT } from "../../../model/point";
-import { Rect } from "../../../model/rect";
-import { HexColor } from "../../../model/schema/primitives";
+import type { EyedropperDisplaySnapshotEntry } from '../../../model/eyedropper';
+import type { Point, Size } from '../../../model/point';
+import { ZERO_POINT } from '../../../model/point';
+import type { Rect } from '../../../model/rect';
+import type { HexColor } from '../../../model/schema/primitives';
 
 /** Loupe canvas size (CSS pixels). */
 export const EYEDROPPER_LOUPE_SIZE = 120;
@@ -26,13 +27,19 @@ export function getCanvasColor(canvas: HTMLCanvasElement, position: Point): HexC
 export async function loadSnapshotToCanvas(
   canvas: HTMLCanvasElement,
   snapshotBounds: Rect,
-  snapshot: EyedropperDisplayEntryPayload[],
+  snapshot: EyedropperDisplaySnapshotEntry[],
 ): Promise<void> {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) return;
   ctx.clearRect(0, 0, snapshotBounds.width, snapshotBounds.height);
   for (const d of snapshot) {
-    ctx.drawImage(d.bmp, d.bounds.x - snapshotBounds.x, d.bounds.y - snapshotBounds.y, d.bounds.width, d.bounds.height);
+    ctx.drawImage(
+      d.bitmap,
+      d.bounds.x - snapshotBounds.x,
+      d.bounds.y - snapshotBounds.y,
+      d.bounds.width,
+      d.bounds.height,
+    );
   }
 }
 

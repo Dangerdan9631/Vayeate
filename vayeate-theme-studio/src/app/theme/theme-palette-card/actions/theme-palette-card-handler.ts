@@ -15,6 +15,7 @@ import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemePaletteCardActions, ThemePaletteCardActionType } from './theme-palette-card-action-type';
 import { CommitHueReferenceEyeDropperColorController } from '../controllers/commit-hue-reference-eye-dropper-color-controller';
 import { CommitAssignColorEyeDropperController } from '../controllers/commit-assign-color-eye-dropper-controller';
+import { EyedropperCommitTargetType } from '../../../../model/eyedropper';
 
 @singleton()
 export class ThemePaletteCardHandler {
@@ -47,9 +48,9 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.ApplyToLightCheckboxOnToggle:
         return this.setApplyPaletteToLight.run(action.checked);
       case ThemePaletteCardActionType.AssignColorEyedropperButtonOnClick:
-        return this.openEyedropperOverlay.run({ type: ThemePaletteCardActionType.AssignColorEyeDropperOnCommit });
+        return this.openEyedropperOverlay.run({ type: EyedropperCommitTargetType.ThemePaletteAssignColor });
       case ThemePaletteCardActionType.AssignColorEyeDropperOnCommit:
-        return this.commitAssignColorEyeDropper.run();
+        return this.commitAssignColorEyeDropper.run(action.value);
       case ThemePaletteCardActionType.AssignColorPickerOnSelect:
         return this.setAssignColorPreview.run(action.value);
       case ThemePaletteCardActionType.AssignColorPickerOnCommit:
@@ -61,9 +62,9 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.HueReferenceCommit:
         return this.commitHueReferenceColor.run(action.value);
       case ThemePaletteCardActionType.HueReferenceColorEyedropperButtonOnClick:
-        return this.openEyedropperOverlay.run({ type: ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit });
+        return this.openEyedropperOverlay.run({ type: EyedropperCommitTargetType.ThemePaletteHueReference });
       case ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit:
-        return this.commitHueReferenceEyeDropperColor.run();
+        return this.commitHueReferenceEyeDropperColor.run(action.value);
       case ThemePaletteCardActionType.HueSliderOnDelta:
         return this.setThemeHueAdjustment.run(action.value);
       case ThemePaletteCardActionType.ClusterCountSliderOnDelta:

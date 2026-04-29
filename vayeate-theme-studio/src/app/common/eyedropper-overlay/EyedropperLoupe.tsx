@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from 'react';
+import { RefObject, useEffect } from 'react';
 import { useEyedropperLoupeViewModel } from './use-eyedropper-loupe-viewmodel';
 import {
   EYEDROPPER_LOUPE_SIZE,
@@ -6,11 +6,6 @@ import {
   loupeSourceRect,
   loupeCrosshairCenter,
 } from './eyedropper-utils';
-import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store';
-import { container } from 'tsyringe';
-import { useStore } from 'zustand';
-
-const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 interface EyedropperLoupeProps {
   loupeCanvasRef: RefObject<HTMLCanvasElement>;
@@ -25,12 +20,8 @@ export function EyedropperLoupe({
   errorMessage,
   canvasRef,
 }: EyedropperLoupeProps) {
-  const mouseX = useStore(eyedropperUiStore.api, (state) => state.state.mouseX);
-  const mouseY = useStore(eyedropperUiStore.api, (state) => state.state.mouseY);
-  const pointer = mouseX > 0 || mouseY > 0 ? { x: mouseX, y: mouseY } : null;
-  const { loupePos } = useEyedropperLoupeViewModel(pointer, isOpen, errorMessage);
+  const { pointer, loupePosition } = useEyedropperLoupeViewModel(isOpen, errorMessage);
 
-  // Loupe rendering
   useEffect(() => {
     if (!pointer || !isOpen || errorMessage !== null) {
       const loupe = loupeCanvasRef.current;
@@ -50,9 +41,10 @@ export function EyedropperLoupe({
       loupe.width = EYEDROPPER_LOUPE_SIZE;
       loupe.height = EYEDROPPER_LOUPE_SIZE;
 
+      const { x, y } = pointer.canvasPosition;
       const { sx, sy, sw, sh } = loupeSourceRect(
-        pointer.x,
-        pointer.y,
+        x,
+        y,
         EYEDROPPER_LOUPE_PIXEL_RADIUS,
         canvas.width,
         canvas.height,
@@ -60,7 +52,7 @@ export function EyedropperLoupe({
       lctx.imageSmoothingEnabled = false;
       lctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, EYEDROPPER_LOUPE_SIZE, EYEDROPPER_LOUPE_SIZE);
 
-      const { cx, cy } = loupeCrosshairCenter(pointer.x, pointer.y, sx, sy, sw, sh, EYEDROPPER_LOUPE_SIZE);
+      const { cx, cy } = loupeCrosshairCenter(x, y, sx, sy, sw, sh, EYEDROPPER_LOUPE_SIZE);
       lctx.strokeStyle = 'rgba(0,0,0,0.75)';
       lctx.lineWidth = 2;
       lctx.beginPath();
@@ -81,7 +73,7 @@ export function EyedropperLoupe({
     return () => cancelAnimationFrame(id);
   }, [pointer, isOpen, errorMessage, canvasRef, loupeCanvasRef]);
 
-  if (!loupePos) return null;
+  if (!loupePosition) return null;
 
   return (
     <canvas
@@ -90,8 +82,8 @@ export function EyedropperLoupe({
       height={EYEDROPPER_LOUPE_SIZE}
       className="eyedropper-loupe"
       style={{
-        left: loupePos.left,
-        top: loupePos.top,
+        left: loupePosition.left,
+        top: loupePosition.top,
         width: EYEDROPPER_LOUPE_SIZE,
         height: EYEDROPPER_LOUPE_SIZE,
       }}

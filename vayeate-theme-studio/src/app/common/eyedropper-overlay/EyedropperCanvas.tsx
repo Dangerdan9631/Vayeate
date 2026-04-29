@@ -1,12 +1,13 @@
 import { forwardRef, MouseEvent, useEffect, useRef } from 'react';
 import { useEyedropperCanvasViewModel } from './use-eyedropper-canvas-viewmodel';
 import { clientToCanvasPixel, getCanvasColor, loadSnapshotToCanvas } from './eyedropper-utils';
-import { HexColor } from '../../../model/schema/primitives';
-import { Point } from '../../../model/point';
+import type { EyedropperPointerSample } from '../../../model/eyedropper';
+import type { Point } from '../../../model/point';
 
 export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => {
-  
   const internalCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pendingPointerRef = useRef<EyedropperPointerSample | null>(null);
+  const pointerFrameRef = useRef<number | null>(null);
 
   const {
     canvasSize,
@@ -16,42 +17,55 @@ export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => 
     onCanvasClick,
   } = useEyedropperCanvasViewModel();
 
-  function getCanvasPositionAndColor(clientPosition: Point): { canvasPosition: Point; hex: HexColor } | null {
+  function getCanvasPointerSample(clientPosition: Point): EyedropperPointerSample | null {
     const canvas = internalCanvasRef.current;
     if (!canvas) return null;
     const canvasPosition = clientToCanvasPixel(clientPosition, canvas);
     if (!canvasPosition) return null;
-    const hex = getCanvasColor(canvas, canvasPosition);
-    return (hex)
-      ? { canvasPosition, hex }
-      : null;
+    const previewHex = getCanvasColor(canvas, canvasPosition);
+    return previewHex ? { clientPosition, canvasPosition, previewHex } : null;
   }
 
   useEffect(() => {
     const canvas = internalCanvasRef.current;
     if (!canvas) return;
     void loadSnapshotToCanvas(canvas, snapshotBounds, snapshotDisplays);
-  }, [snapshotBounds, snapshotDisplays, internalCanvasRef.current]);
-  
-  const onMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
+  }, [snapshotBounds, snapshotDisplays]);
+
+  useEffect(() => () => {
+    if (pointerFrameRef.current !== null) {
+      cancelAnimationFrame(pointerFrameRef.current);
+    }
+  }, []);
+
+  function scheduleCanvasMouseMove(pointerSample: EyedropperPointerSample) {
+    pendingPointerRef.current = pointerSample;
+    if (pointerFrameRef.current !== null) return;
+
+    pointerFrameRef.current = requestAnimationFrame(() => {
+      pointerFrameRef.current = null;
+      const nextPointer = pendingPointerRef.current;
+      pendingPointerRef.current = null;
+      if (nextPointer) {
+        onCanvasMouseMove(nextPointer);
+      }
+    });
+  }
+
+  function onMouseClick(e: MouseEvent<HTMLCanvasElement>) {
     e.stopPropagation();
-    const positionAndColor = getCanvasPositionAndColor({ x: e.clientX, y: e.clientY });
-    if (!positionAndColor) return;
+    const pointerSample = getCanvasPointerSample({ x: e.clientX, y: e.clientY });
+    if (!pointerSample) return;
 
-    const { hex } = positionAndColor;
-    onCanvasClick(hex);
-  };
+    onCanvasClick(pointerSample.previewHex);
+  }
 
-  const onMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
-    const positionAndColor = getCanvasPositionAndColor({ x: e.clientX, y: e.clientY });
-    if (!positionAndColor) return;
+  function onMouseMove(e: MouseEvent<HTMLCanvasElement>) {
+    const pointerSample = getCanvasPointerSample({ x: e.clientX, y: e.clientY });
+    if (!pointerSample) return;
 
-    const {
-      canvasPosition,
-      hex
-    } = positionAndColor;
-    onCanvasMouseMove(canvasPosition, hex);
-  };
+    scheduleCanvasMouseMove(pointerSample);
+  }
 
   return (
     <canvas
@@ -66,6 +80,8 @@ export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => 
       role="img"
       aria-label="Screen snapshot — move to preview, click to pick a color"
       className="eyedropper-canvas"
+      width={snapshotBounds.width}
+      height={snapshotBounds.height}
       style={canvasSize}
       onMouseMove={onMouseMove}
       onClick={onMouseClick}

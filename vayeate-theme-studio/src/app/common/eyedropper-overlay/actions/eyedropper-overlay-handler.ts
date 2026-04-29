@@ -27,9 +27,9 @@ export class EyedropperOverlayHandler {
       case EyedropperOverlayActionType.ColorPickCommitButtonOnClick:
         return this.closeEyedropperOverlay.run(action.hex);
       case EyedropperOverlayActionType.OverlayWheelOnScroll:
-        return this.eyedropperOverlayWheelScroll.run(action.delta);
+        return this.eyedropperOverlayWheelScroll.run(action.deltaY);
       case EyedropperOverlayActionType.OverlayMouseMove:
-        return this.eyedropperOverlayMouseMove.run(action.position);
+        return this.eyedropperOverlayMouseMove.run(action.pointer);
       case EyedropperOverlayActionType.OverlayViewportSizeChange:
         return this.eyedropperOverlayViewportSizeChange.run(action.size);
     }
