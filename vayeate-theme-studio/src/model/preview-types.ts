@@ -1,24 +1,22 @@
+/** Single token in a tokenized line (text + scope stack). */
+export interface TokenizedPreviewToken {
+  text: string;
+  scopes: string[];
+}
+
+/** A line of tokenized tokens. */
+export interface TokenizedPreviewLine {
+  tokens: TokenizedPreviewToken[];
+}
+
 /** Document-style preview: language, file name, and tokenized lines. */
 export interface TokenizedPreview {
   language: string;
   fileName: string;
-  lines: TokenizedPreview.Line[];
+  lines: TokenizedPreviewLine[];
 }
 
-export namespace TokenizedPreview {
-  /** Single token in a tokenized line (text + scope stack). */
-  export interface Token {
-    text: string;
-    scopes: string[];
-  }
-
-  /** A line of tokenized tokens. */
-  export interface Line {
-    tokens: Token[];
-  }
-}
-
-/** @deprecated Use TokenizedPreview.Token */
-export type TokenizedToken = TokenizedPreview.Token;
-/** @deprecated Use TokenizedPreview.Line */
-export type TokenizedLine = TokenizedPreview.Line;
+/** @deprecated Use TokenizedPreviewToken */
+export type TokenizedToken = TokenizedPreviewToken;
+/** @deprecated Use TokenizedPreviewLine */
+export type TokenizedLine = TokenizedPreviewLine;

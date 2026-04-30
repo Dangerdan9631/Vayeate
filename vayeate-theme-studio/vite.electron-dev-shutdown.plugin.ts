@@ -17,8 +17,6 @@ export function viteElectronDevShutdown(): Plugin {
     name: 'vite-electron-dev-shutdown',
     apply: 'serve',
     configureServer(server) {
-      let watchId: ReturnType<typeof setInterval>;
-
       const shutdown = (code: number | null, signal: NodeJS.Signals | null) => {
         if (shuttingDown) return;
         shuttingDown = true;
@@ -30,7 +28,7 @@ export function viteElectronDevShutdown(): Plugin {
           .finally(() => process.exit(exitCode));
       };
 
-      watchId = setInterval(() => {
+      const watchId = setInterval(() => {
         const proc = (process as ProcessWithElectronApp).electronApp;
         if (proc == null || proc.pid === hookedPid) return;
 

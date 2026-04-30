@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useLayoutEffect, useRef, WheelEvent } from 'react';
+import { MouseEvent, useCallback, useEffect, useLayoutEffect, useRef, WheelEvent } from 'react';
 import { useEyedropperOverlayViewModel } from './use-eyedropper-overlay-viewmodel';
 import { EyedropperCanvas } from './EyedropperCanvas';
 import { EyedropperLoupe } from './EyedropperLoupe';
@@ -62,11 +62,7 @@ export function EyedropperOverlay() {
     return () => ro.disconnect();
   }, [scrollRef, isLoaded, onOverlayViewportSizeChange]);
 
-  useLayoutEffect(() => {
-    onOverlayScroll();
-  }, [overlayViewportSize, isOpen, snapshotBounds]);
-
-  function onOverlayScroll() {
+  const onOverlayScroll = useCallback(() => {
     const scroll = scrollRef.current;
     const canvas = canvasRef.current;
     if (!scroll || !canvas || !isOpen || errorMessage !== null || !isLoaded) return;
@@ -76,7 +72,11 @@ export function EyedropperOverlay() {
       snapshotBounds.width,
       snapshotBounds.height,
     );
-  }
+  }, [errorMessage, isLoaded, isOpen, snapshotBounds.height, snapshotBounds.width]);
+
+  useLayoutEffect(() => {
+    onOverlayScroll();
+  }, [overlayViewportSize, onOverlayScroll]);
 
   const zoomRef = useRef(zoom);
   const zoomFitRef = useRef(zoomFit);

@@ -12,7 +12,7 @@ export class LoadAppController {
     private readonly clearPersistedUndo: ClearPersistedUndoOperation,
     private readonly loadUndoHistory: LoadUndoHistoryOperation
   ) { }
-  
+
   run(): void {
     this.initializeWindowService.execute();
     this.clearPersistedUndo.execute();

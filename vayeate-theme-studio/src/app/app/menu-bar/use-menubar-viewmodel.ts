@@ -13,7 +13,7 @@ import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-stor
 const uiStore = container.resolve(UiStore);
 const appConfigStore = container.resolve(AppConfigStore);
 const undoStackStore = container.resolve(UndoStackStore);
-const windowStore = container.resolve(WindowStore); 
+const windowStore = container.resolve(WindowStore);
 
 export interface MenuBarViewModel {
   fileOpen: boolean;

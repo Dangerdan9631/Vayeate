@@ -3,5 +3,5 @@ declare module 'tsyringe-react' {
 }
 
 declare module 'tsarch' {
-  export function filesOfProject(tsConfigFilePath?: string): any;
+  export function filesOfProject(tsConfigFilePath?: string): unknown;
 }

@@ -32,7 +32,7 @@ export function StyledTooltip() {
     if (x !== state.x || y !== state.y) {
       setState((prev) => (prev ? { ...prev, x, y } : null));
     }
-  }, [state?.text, viewport.width, viewport.height]);
+  }, [state, viewport.width, viewport.height]);
 
   useEffect(() => {
     function show(el: HTMLElement, text: string, hasTitle: boolean) {

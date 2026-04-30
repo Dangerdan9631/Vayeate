@@ -23,7 +23,7 @@ export class AppConfigStore {
             })
         }))
     );
-    
+
     get api() {
         return this.store;
     }

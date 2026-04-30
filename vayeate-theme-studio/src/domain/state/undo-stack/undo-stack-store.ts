@@ -25,7 +25,7 @@ export class UndoStackStore {
                 state.state.undoMenu = undoMenuSnapshot;
             }),
         }))
-    ); 
+    );
 
     get api() {
         return this.store;

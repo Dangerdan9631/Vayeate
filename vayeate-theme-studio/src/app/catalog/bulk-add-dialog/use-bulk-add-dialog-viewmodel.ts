@@ -21,7 +21,7 @@ export interface BulkAddDialogViewModel {
 export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   const dispatch = useAppDispatch();
   const text = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.text ?? '');
-  const errorMessage = useStore(catalogsStore.api,   (state) => state.stateV2.bulkAddDialog?.errorMessage ?? null);
+  const errorMessage = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.errorMessage ?? null);
   const numNewTokens = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.newCount ?? 0);
   const duplicateCount = useStore(catalogsStore.api, (state) => state.stateV2.bulkAddDialog?.duplicateCount ?? 0);
   const canSubmit = useMemo(() => numNewTokens > 0, [numNewTokens]);

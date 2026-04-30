@@ -158,7 +158,7 @@ export function createStack(options: UndoStackOptions): UndoStack {
     },
 
     goto(id: string): boolean {
-      let target = findNodeById(id);
+      const target = findNodeById(id);
       if (!target && trimmedFrames.length > 0) {
         const idx = trimmedFrames.findIndex((f) => f.id === id);
         if (idx >= 0) {

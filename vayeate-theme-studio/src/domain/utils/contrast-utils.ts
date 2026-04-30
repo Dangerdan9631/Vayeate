@@ -22,6 +22,7 @@ export function updateContrastAssignment(
       max: null,
     };
     const merged = { ...base, ...update };
-    return { ...a, [mode]: merged } as ContrastAssignment;
+    const next: ContrastAssignment = { ...a, [mode]: merged };
+    return next;
   });
 }

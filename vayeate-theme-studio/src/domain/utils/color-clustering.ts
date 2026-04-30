@@ -100,7 +100,7 @@ export function clusterColors(
     }
   }
 
-  let assignment = new Uint32Array(n);
+  const assignment = new Uint32Array(n);
 
   for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
     for (let i = 0; i < n; i++) {

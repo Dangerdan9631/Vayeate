@@ -7,6 +7,6 @@ export function useAppDispatch(): (action: AppAction) => void {
   if (!dispatch) {
     throw new Error('useAppDispatch must be used within an AppProvider');
   }
-  
+
   return dispatch;
 }

@@ -14,7 +14,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operat
 async function loadCatalogData(
   loadCatalog: LoadCatalogOperation,
   refs: readonly { name: string; version: string }[],
-): Promise<CatalogDataItem[]>  {
+): Promise<CatalogDataItem[]> {
   const catalogData: CatalogDataItem[] = [];
   for (const ref of refs) {
     const catalog = await loadCatalog.execute(ref.name, ref.version);

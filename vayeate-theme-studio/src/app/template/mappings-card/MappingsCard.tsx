@@ -915,7 +915,7 @@ function buildByGroup(
   function ensureGroup(key: string): Record<TokenType, Mapping[]> {
     let rec = byGroup.get(key);
     if (!rec) {
-      rec = { theme: [], 'textmate token': [], 'semantic token': [] } as Record<TokenType, Mapping[]>;
+      rec = { theme: [], 'textmate token': [], 'semantic token': [] };
       byGroup.set(key, rec);
     }
     return rec;

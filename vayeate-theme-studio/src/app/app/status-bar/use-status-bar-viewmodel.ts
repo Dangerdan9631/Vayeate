@@ -37,7 +37,7 @@ export function useStatusBarViewModel(): StatusBarViewModel {
     queueLength: actionQueueLength,
   } = actionQueueStatus;
   const actionProcessing = actionQueueLength > 0;
-  
+
   const backgroundQueueStatus = useStore(backgroundQueueStore.api, (state) => state.state);
   const {
     queueLength: backgroundQueueLength,
@@ -60,6 +60,7 @@ export function useStatusBarViewModel(): StatusBarViewModel {
       showBackgroundProgressArea,
       showActionQueueProgressArea,
       backgroundQueueLength,
+      backgroundQueueDescription,
       actionQueueLength,
     ],
   );

@@ -60,10 +60,6 @@ export function useThemePaletteCardViewModel() {
 
   const groupsFromTemplate = useMemo(() => loadedTemplate?.groups ?? [], [loadedTemplate]);
 
-  function getBaseInPlace(t: NonNullable<typeof theme>) {
-    return { ...t };
-  }
-
   const setHueAdjustment = useCallback(
     (value: number) => {
       void dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value });
@@ -109,7 +105,7 @@ export function useThemePaletteCardViewModel() {
 
   const startHueDrag = useCallback(() => {
     if (!theme) return;
-    hueDragStartRef.current = { theme: getBaseInPlace(theme), hueAdjustment };
+    hueDragStartRef.current = { theme: { ...theme }, hueAdjustment };
   }, [theme, hueAdjustment]);
 
   const endHueDrag = useCallback(() => {

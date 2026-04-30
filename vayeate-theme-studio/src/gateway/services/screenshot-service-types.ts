@@ -2,7 +2,7 @@ import { Rect } from "../../model/rect";
 
 export type ScreenshotDisplayEntry = {
   sourceId: string;
-  bounds: Rect;  
+  bounds: Rect;
   png: Uint8Array;
 };
 

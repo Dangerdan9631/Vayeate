@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useMemo,
   type KeyboardEvent,
   type MouseEvent,
   type MutableRefObject,
@@ -54,15 +55,19 @@ export function ThemePaletteClusterColumn({
   copyHexToClipboard,
   primaryClickPendingRef,
 }: ThemePaletteClusterColumnProps) {
-  const primaryRefsAll = hexToRefs.get(normalizeHexLocal(cluster.representative)) ?? [];
-  const primaryRefs = primaryRefsAll.filter((r) => refsInGroupSet.has(r));
+  const primaryRefs = useMemo(() => {
+    const primaryRefsAll = hexToRefs.get(normalizeHexLocal(cluster.representative)) ?? [];
+    return primaryRefsAll.filter((r) => refsInGroupSet.has(r));
+  }, [cluster.representative, hexToRefs, refsInGroupSet]);
   const primaryState = swatchState(primaryRefs, checkedColorRefs);
-  const allRefsInClusterSet = new Set(primaryRefs);
-  for (const hex of cluster.members) {
-    const refs = hexToRefs.get(normalizeHexLocal(hex)) ?? [];
-    for (const r of refs) if (refsInGroupSet.has(r)) allRefsInClusterSet.add(r);
-  }
-  const allRefsInCluster = [...allRefsInClusterSet];
+  const allRefsInCluster = useMemo(() => {
+    const allRefsInClusterSet = new Set(primaryRefs);
+    for (const hex of cluster.members) {
+      const refs = hexToRefs.get(normalizeHexLocal(hex)) ?? [];
+      for (const r of refs) if (refsInGroupSet.has(r)) allRefsInClusterSet.add(r);
+    }
+    return [...allRefsInClusterSet];
+  }, [cluster.members, hexToRefs, primaryRefs, refsInGroupSet]);
   const clusterKey = `${groupKey}|${normalizeThemeHex(cluster.representative)}`;
   const primaryBorderClass =
     primaryState === 'all'

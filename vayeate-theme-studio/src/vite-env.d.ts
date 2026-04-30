@@ -3,7 +3,7 @@
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{
-    fullBounds: Rect; 
+    fullBounds: Rect;
     displays: Array<{
       sourceId: string;
       bounds: Rect;

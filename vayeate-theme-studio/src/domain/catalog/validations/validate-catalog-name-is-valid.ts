@@ -4,7 +4,7 @@ import { VALIDATION_RESULT_OK, type ValidationResult } from '../../../model/vali
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 
 @singleton()
-export class ValidateCatalogNameIsValid {  
+export class ValidateCatalogNameIsValid {
   test(name: string): ValidationResult {
     if (name.length > 0 && !NAME_REGEX.test(name)) {
       return {
@@ -12,7 +12,7 @@ export class ValidateCatalogNameIsValid {
         errorMessage: 'Catalog name must use alphanumeric characters and hyphens only.',
       };
     }
-    
+
     return VALIDATION_RESULT_OK;
   }
 }
