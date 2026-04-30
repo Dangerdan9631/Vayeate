@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { WindowService } from '../../../gateway/services/window-service';
+import type { WindowStateEvent } from '../../../model/window-state-event';
 import { SyncViewportSizeController } from '../../../app/app/window/controllers/sync-viewport-size-controller';
 import { SyncWindowDisplayStateController } from '../../../app/app/window/controllers/sync-window-display-state-controller';
 import { SyncWindowPositionController } from '../../../app/app/window/controllers/sync-window-position-controller';
@@ -19,8 +20,8 @@ export class InitializeWindowCallbacksOperation {
 
   execute(): void {
     this.windowService.init({
-      onStateEvent: (e) => {
-        void this.syncWindowDisplayState.run(e);
+      onStateEvent: (event: WindowStateEvent) => {
+        void this.syncWindowDisplayState.run(event);
       },
       onResize: (s) => {
         void this.syncWindowSize.run(s);

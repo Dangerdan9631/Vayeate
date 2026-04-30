@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { WindowStateEvent } from '../../../gateway/services/window-service-types';
+import type { WindowStateEvent } from '../../../model/window-state-event';
 import { WindowStore } from '../../state/window/window-store';
 
 @singleton()

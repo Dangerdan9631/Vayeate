@@ -1,4 +1,4 @@
-export type WindowStateEvent = 'minimized' | 'maximized' | 'unmaximized' | 'restored';
+import type { WindowStateEvent } from '../../model/window-state-event';
 
 export interface WindowInitCallbacks {
   onStateEvent: (event: WindowStateEvent) => void;
