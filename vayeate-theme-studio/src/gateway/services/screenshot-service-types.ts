@@ -1,4 +1,4 @@
-import { Rect } from "../../model/rect";
+import type { Rect } from '../../model/rect';
 
 export type ScreenshotDisplayEntry = {
   sourceId: string;

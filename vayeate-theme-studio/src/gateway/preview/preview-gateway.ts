@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import type { IRawGrammar } from 'vscode-textmate';
 import onigWasmUrl from 'vscode-oniguruma/release/onig.wasm?url';
-import { initOniguruma, tokenizeFile } from '../../domain/utils/tokenizer';
 import type { TokenizedPreview } from '../../model/preview-types';
 import { FileSystemService } from '../services/file-system-service';
+import { TextmateTokenizerService } from '../services/textmate-tokenizer-service';
 
 /** WASM loader for {@link initOniguruma} in the Electron renderer (bundled by Vite). */
 function createPreviewOnigWasmLoader(): () => Promise<ArrayBuffer> {
@@ -16,14 +16,17 @@ const GRAMMAR_GLOB = /.+\.tmLanguage\.json$/i;
 
 @singleton()
 export class PreviewGateway {
-  constructor(private readonly fileSystemService: FileSystemService) {}
+  constructor(
+    private readonly fileSystemService: FileSystemService,
+    private readonly textmateTokenizerService: TextmateTokenizerService,
+  ) {}
 
   /**
    * Scan `previews/<language>/`, load each `*.tmLanguage.json` grammar and sample files,
    * tokenize with TextMate, and return structured previews for the theme editor.
    */
   async loadPreviews(): Promise<TokenizedPreview[]> {
-    await initOniguruma({ loadWasm: createPreviewOnigWasmLoader() });
+    await this.textmateTokenizerService.init({ loadWasm: createPreviewOnigWasmLoader() });
 
     const results: TokenizedPreview[] = [];
 
@@ -67,7 +70,7 @@ export class PreviewGateway {
         try {
           const sourceCode = await this.fileSystemService.loadFile(fileRel);
           if (sourceCode === null) continue;
-          const lines = await tokenizeFile(rawGrammar, sourceCode);
+          const lines = await this.textmateTokenizerService.tokenizeFile(rawGrammar, sourceCode);
           results.push({ language: lang, fileName, lines });
         } catch {
           // skip files that fail to tokenize

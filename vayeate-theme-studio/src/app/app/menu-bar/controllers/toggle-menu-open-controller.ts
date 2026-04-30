@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { MenuId } from '../../../../domain/state/ui/ui-state';
+import type { MenuId } from '../../../../model/app-ui';
 import { OpenMenuOperation } from '../../../../domain/operations/app-operations/open-menu-operation';
 import { UiStore } from '../../../../domain/state/ui/ui-store';
 import { CloseMenusOperation } from '../../../../domain/operations/app-operations/close-menus-operation';

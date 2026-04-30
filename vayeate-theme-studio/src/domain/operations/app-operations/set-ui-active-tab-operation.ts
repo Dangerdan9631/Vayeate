@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { TabId } from '../../state/ui/ui-state';
+import type { TabId } from '../../../model/app-ui';
 import { UiStore } from '../../state/ui/ui-store';
 
 @singleton()

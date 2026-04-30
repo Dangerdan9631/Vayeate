@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStore, getCurrentCatalog } from '../../../catalog/state/catalogs-store';
-import { parseThemeJson } from '../../../utils/theme-parser';
+import { parseThemeJson } from '../../../../model/theme-import';
 
 @singleton()
 export class SetCatalogBulkAddTextOperation {

@@ -1,4 +1,4 @@
-import type { TabId } from '../../../../domain/state/ui/ui-state';
+import type { TabId } from '../../../../model/app-ui';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum AppRibbonActionType {

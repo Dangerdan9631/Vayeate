@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import type { Rect } from './model/rect';
+
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{

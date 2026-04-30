@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { useMenuBarViewModel } from './use-menubar-viewmodel';
 
 export function MenuBar() {
@@ -35,6 +36,14 @@ export function MenuBar() {
     handleForceReload,
     handleToggleDevTools,
   } = useMenuBarViewModel();
+
+  function onHistoryItemClick(event: MouseEvent<HTMLButtonElement>) {
+    const frameId = event.currentTarget.dataset.frameId;
+    if (!frameId) {
+      return;
+    }
+    handleHistoryItemClick(frameId);
+  }
 
   return (
     <header className="menu-bar">
@@ -177,9 +186,10 @@ export function MenuBar() {
                     <button
                       key={frame.id}
                       type="button"
+                      data-frame-id={frame.id}
                       role="menuitem"
                       className={`menu-edit-history-item ${frame.id === currentId ? 'menu-edit-history-current' : ''}`}
-                      onClick={handleHistoryItemClick(frame.id)}
+                      onClick={onHistoryItemClick}
                     >
                       {frame.id === currentId && (
                         <span className="material-symbols-outlined menu-edit-history-check" aria-hidden>check</span>

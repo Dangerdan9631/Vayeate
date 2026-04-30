@@ -1,5 +1,4 @@
-export type TabId = 'catalogs' | 'templates' | 'themes';
-export type MenuId = 'file' | 'edit' | 'history' | 'view';
+import type { MenuId, TabId } from '../../../model/app-ui';
 
 export interface UiState {
   activeTabId: TabId;

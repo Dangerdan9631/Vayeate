@@ -6,9 +6,9 @@ import {
   resolveExthemesExportFile,
   resolveSafeProjectRelativePath,
 } from './paths';
-import { Rect } from '../src/model/rect';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+type BoundsDto = { x: number; y: number; width: number; height: number };
 
 export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): void {
   ipcMain.handle('fs:createFile', async (_event, rel: string) => {
@@ -86,12 +86,12 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
 
     const displayRows: Array<{
       sourceId: string;
-      bounds: Rect;
+      bounds: BoundsDto;
       png: Buffer;
     }> = [];
 
     for (const src of capSources) {
-      let bounds: Rect | undefined;
+      let bounds: BoundsDto | undefined;
       if (src.display_id != null) {
         const display = byDisplayId.get(String(src.display_id));
         if (display?.bounds) bounds = display.bounds;

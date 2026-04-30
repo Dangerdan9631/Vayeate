@@ -44,7 +44,7 @@ export interface MenuBarViewModel {
   handleExit: () => void;
   handleUndo: () => void;
   handleRedo: () => void;
-  handleHistoryItemClick: (frameId: string) => () => void;
+  handleHistoryItemClick: (frameId: string) => void;
   handleReload: () => void;
   handleForceReload: () => void;
   handleToggleDevTools: () => void;
@@ -84,32 +84,21 @@ export function useMenuBarViewModel(): MenuBarViewModel {
 
   const handleUndo = useCallback(() => {
     void dispatch({ type: AppMenuActionType.EditMenuUndoButtonOnClick });
-    void dispatch({ type: AppMenuActionType.MenuOnClose });
   }, [dispatch]);
 
   const handleRedo = useCallback(() => {
     void dispatch({ type: AppMenuActionType.EditMenuRedoButtonOnClick });
-    void dispatch({ type: AppMenuActionType.MenuOnClose });
   }, [dispatch]);
 
-  const handleHistoryClick = useCallback(
+  const handleHistoryItemClick = useCallback(
     (frameId: string) => {
       void dispatch({ type: AppMenuActionType.HistoryMenuGoToButtonOnClick, frameId });
-      void dispatch({ type: AppMenuActionType.MenuOnClose });
     },
     [dispatch],
   );
 
-  const handleHistoryItemClick = useCallback(
-    (frameId: string) => () => {
-      handleHistoryClick(frameId);
-    },
-    [handleHistoryClick],
-  );
-
   const handleExit = useCallback(() => {
     void dispatch({ type: AppMenuActionType.FileMenuExitButtonOnClick });
-    void dispatch({ type: AppMenuActionType.MenuOnClose });
   }, [dispatch]);
 
   const handleFileMenuTrigger = useCallback(() => {
@@ -130,17 +119,14 @@ export function useMenuBarViewModel(): MenuBarViewModel {
 
   const handleReload = useCallback(() => {
     void dispatch({ type: AppMenuActionType.ViewMenuReloadButtonOnClick });
-    void dispatch({ type: AppMenuActionType.MenuOnClose });
   }, [dispatch]);
 
   const handleForceReload = useCallback(() => {
     void dispatch({ type: AppMenuActionType.ViewMenuForceReloadButtonOnClick });
-    void dispatch({ type: AppMenuActionType.MenuOnClose });
   }, [dispatch]);
 
   const handleToggleDevTools = useCallback(() => {
     void dispatch({ type: AppMenuActionType.ViewMenuToggleDevToolsButtonOnClick });
-    void dispatch({ type: AppMenuActionType.MenuOnClose });
   }, [dispatch]);
 
   const handleMinimize = useCallback(() => {

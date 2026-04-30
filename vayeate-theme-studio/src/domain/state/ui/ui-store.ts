@@ -1,7 +1,8 @@
 import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
-import { MenuId, TabId, UiState, initialUiState } from "./ui-state";
+import type { MenuId, TabId } from '../../../model/app-ui';
+import { UiState, initialUiState } from "./ui-state";
 
 interface UiStoreState {
     state: UiState;

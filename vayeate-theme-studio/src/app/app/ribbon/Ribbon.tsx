@@ -1,7 +1,6 @@
 import type { MouseEvent } from 'react';
-import type { TabId } from '../../../domain/state/ui/ui-state';
-import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { AppRibbonActionType } from './actions/app-ribbon-action-type';
+import type { TabId } from '../../../model/app-ui';
+import { useRibbonViewModel } from './use-ribbon-viewmodel';
 
 type TabDefinition = {
   id: TabId;
@@ -20,11 +19,11 @@ interface RibbonProps {
 }
 
 export function Ribbon({ activeTab }: RibbonProps) {
-  const dispatch = useAppDispatch();
+  const viewModel = useRibbonViewModel();
 
   function handleTabClick(e: MouseEvent<HTMLButtonElement>) {
     const tabId = e.currentTarget.dataset.tabId as TabId;
-    dispatch({ type: AppRibbonActionType.TabButtonOnClick, tabId });
+    viewModel.onRibbonTabButtonClick(tabId);
   }
 
   return (

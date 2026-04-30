@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { AppConfig } from '../../model/schema/primitives';
+import { appConfigSchema, type AppConfig } from '../../model/schema/primitives';
 import { FileSystemService } from '../services/file-system-service';
 
 /** Package-relative path: Theme Studio root `data/config.json`. */
@@ -11,13 +11,12 @@ function parseAppConfig(raw: string | null): AppConfig {
   if (raw === null || raw.trim() === '') {
     return DEFAULT_CONFIG;
   }
+
   try {
     const parsed = JSON.parse(raw) as unknown;
-    if (parsed && typeof parsed === 'object' && parsed !== null && 'colorScheme' in parsed) {
-      const cs = (parsed as { colorScheme?: unknown }).colorScheme;
-      if (cs === 'light') {
-        return { colorScheme: 'light' };
-      }
+    const result = appConfigSchema.safeParse(parsed);
+    if (result.success) {
+      return result.data;
     }
   } catch {
     // malformed file — same fallback as preload (`electron/preload.ts`)

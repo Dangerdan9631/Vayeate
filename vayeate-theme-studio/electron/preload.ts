@@ -1,16 +1,15 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+type BoundsDto = { x: number; y: number; width: number; height: number };
+
 const electronAPI = {
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
   screenshotGetFullDisplaySnapshot: () =>
     ipcRenderer.invoke('screenshot:getFullDisplaySnapshot') as Promise<{
-      fullBounds: { x: number; y: number; width: number; height: number };
+      fullBounds: BoundsDto;
       displays: Array<{
         sourceId: string;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
+        bounds: BoundsDto;
         png: Uint8Array;
       }>;
     }>,

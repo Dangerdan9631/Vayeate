@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { UiStore } from '../../state/ui/ui-store';
-import { MenuId } from '../../state/ui/ui-state';
+import type { MenuId } from '../../../model/app-ui';
 
 
 @singleton()

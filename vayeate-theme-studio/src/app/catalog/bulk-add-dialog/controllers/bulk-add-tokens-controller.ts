@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
-import { parseThemeJson } from '../../../../domain/utils/theme-parser';
+import { parseThemeJson } from '../../../../model/theme-import';
 import { AppendTokensToCatalogOperation } from '../../../../domain/operations/catalog-operations/tokens/append-tokens-to-catalog-operation';
 import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { DeduplicateBulkTokensOperation } from '../../../../domain/operations/catalog-operations/tokens/deduplicate-bulk-tokens-operation';

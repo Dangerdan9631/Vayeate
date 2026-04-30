@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { TabId } from '../../../domain/state/ui/ui-state';
+import type { TabId } from '../../../model/app-ui';
 import { CatalogsPage } from '../../catalog/catalog-page/CatalogsPage';
 import { TemplatesPage } from '../../template/template-page/TemplatesPage';
 import { ThemesPage } from '../../theme/theme-page/ThemesPage';
