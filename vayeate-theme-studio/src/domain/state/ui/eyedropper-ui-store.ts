@@ -1,12 +1,13 @@
 import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
-import { EyedropperSnapshotPayload, EyedropperUiState, initialEyedropperUiState } from "./eyedropper-ui-state";
+import { EyedropperUiState, initialEyedropperUiState } from "./eyedropper-ui-state";
+import type { EyedropperSnapshot } from "../../../model/eyedropper";
 import { AppAction } from "../../../app/core/action-queue/app-action";
 import { HexColor } from "../../../model/schema/primitives";
-import { Point, Size } from "../../../model/point";
+import { Point, Size } from "../../../model/geometry";
 
-function closeSnapshotBitmaps(snapshot: EyedropperSnapshotPayload | null): void {
+function closeSnapshotBitmaps(snapshot: EyedropperSnapshot | null): void {
     if (!snapshot) return;
     for (const d of snapshot.displays) {
         d.bmp.close();
@@ -17,7 +18,7 @@ interface EyedropperUiStoreState {
     state: EyedropperUiState;
     openEyedropper: (callback: AppAction) => void;
     closeEyedropper: () => void;
-    updateEyedropperSnapshot: (snapshot: EyedropperSnapshotPayload) => void;
+    updateEyedropperSnapshot: (snapshot: EyedropperSnapshot) => void;
     setEyedropperErrorMessage: (message: string | null) => void;
     setEyedropperZoom: (zoom: number) => void;
     setEyedropperPreviewHex: (hex: string | null) => void;
@@ -42,7 +43,7 @@ export class EyedropperUiStore {
             closeEyedropper: () => set((storeState: EyedropperUiStoreState) => {
                 storeState.state.isOpen = false;
             }),
-            updateEyedropperSnapshot: (snapshot: EyedropperSnapshotPayload) => set((storeState: EyedropperUiStoreState) => {
+            updateEyedropperSnapshot: (snapshot: EyedropperSnapshot) => set((storeState: EyedropperUiStoreState) => {
                 closeSnapshotBitmaps(storeState.state.snapshot);
                 storeState.state.snapshot = snapshot;
             }),

@@ -1,4 +1,4 @@
-import { Size, Point } from '../../../../model/point';
+import { Size, Point } from '../../../../model/geometry';
 import type { HexColor } from '../../../../model/schema/primitives';
 import type { AppAction } from '../../../core/action-queue/app-action';
 

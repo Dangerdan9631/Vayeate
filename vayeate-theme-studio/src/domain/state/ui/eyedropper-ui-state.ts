@@ -1,23 +1,12 @@
 import { AppAction } from '../../../app/core/action-queue/app-action';
-import { Rect } from '../../../model/rect';
+import type { EyedropperSnapshot } from '../../../model/eyedropper';
+import { Point, Size, ZERO_POINT, ZERO_SIZE } from '../../../model/geometry';
 import type { HexColor } from '../../../model/schema/primitives';
-import { Point, Size, ZERO_POINT, ZERO_SIZE } from '../../../model/point';
-
-export interface EyedropperDisplayEntryPayload {
-  sourceId: string;
-  bounds: Rect;
-  bmp: ImageBitmap;
-}
-
-export interface EyedropperSnapshotPayload {
-  fullBounds: Rect;
-  displays: EyedropperDisplayEntryPayload[];
-}
 
 export interface EyedropperUiState {
   isOpen: boolean;
   errorMessage: string | null;
-  snapshot: EyedropperSnapshotPayload | null;
+  snapshot: EyedropperSnapshot | null;
   zoom: number;
   previewHex: string | null;
   result: HexColor | null;

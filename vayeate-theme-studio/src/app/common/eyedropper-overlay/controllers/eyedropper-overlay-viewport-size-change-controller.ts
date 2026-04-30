@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { Size } from '../../../../model/point';
+import { Size } from '../../../../model/geometry';
 import { SetEyedropperOverlayViewportSizeOperation } from '../../../../domain/operations/eyedropper-operations/set-eyedropper-overlay-viewport-size-operation';
 
 @singleton()

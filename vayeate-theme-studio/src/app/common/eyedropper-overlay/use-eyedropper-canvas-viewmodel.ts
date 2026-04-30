@@ -1,21 +1,19 @@
 import { useCallback, useMemo } from 'react';
-import type { EyedropperDisplayEntryPayload } from '../../../domain/state/ui/eyedropper-ui-state';
+import type { EyedropperDisplayEntry } from '../../../model/eyedropper';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
 import { HexColor } from '../../../model/schema/primitives';
-import { Rect } from '../../../model/rect';
-import { Point } from '../../../model/point';
-import { Size } from '../../../model/point';
+import { Rect, Point, Size } from '../../../model/geometry';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 export interface EyedropperCanvasViewModel {
   canvasSize: Size;
   snapshotBounds: Rect;
-  snapshotDisplays: EyedropperDisplayEntryPayload[];
+  snapshotDisplays: EyedropperDisplayEntry[];
   onCanvasMouseMove: (canvasPosition: Point, hex: HexColor) => void;
   onCanvasClick: (hex: HexColor) => void;
 }

@@ -3,8 +3,7 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { useCallback, useMemo } from 'react';
-import { Rect, ZERO_RECT } from '../../../model/rect';
-import { Size } from '../../../model/point';
+import { Rect, ZERO_RECT, Size } from '../../../model/geometry';
 import { EyedropperOverlayActionType } from './actions/eyedropper-overlay-action-type';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);

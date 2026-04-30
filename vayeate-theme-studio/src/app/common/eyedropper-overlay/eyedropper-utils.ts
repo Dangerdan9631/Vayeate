@@ -1,6 +1,5 @@
-import { EyedropperDisplayEntryPayload } from "../../../domain/state/ui/eyedropper-ui-state";
-import { Point, Size, ZERO_POINT } from "../../../model/point";
-import { Rect } from "../../../model/rect";
+import type { EyedropperDisplayEntry } from "../../../model/eyedropper";
+import { Point, Size, ZERO_POINT, Rect } from "../../../model/geometry";
 import { HexColor } from "../../../model/schema/primitives";
 
 /** Loupe canvas size (CSS pixels). */
@@ -26,7 +25,7 @@ export function getCanvasColor(canvas: HTMLCanvasElement, position: Point): HexC
 export async function loadSnapshotToCanvas(
   canvas: HTMLCanvasElement,
   snapshotBounds: Rect,
-  snapshot: EyedropperDisplayEntryPayload[],
+  snapshot: EyedropperDisplayEntry[],
 ): Promise<void> {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) return;

@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { UpdateEyedropperMousePositionOperation } from '../../../../domain/operations/eyedropper-operations/update-eyedropper-mouse-position-operation';
-import { Point } from '../../../../model/point';
+import { Point } from '../../../../model/geometry';
 
 @singleton()
 export class EyedropperOverlayMouseMoveController {

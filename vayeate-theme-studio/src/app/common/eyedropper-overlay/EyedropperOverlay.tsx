@@ -17,7 +17,7 @@ import {
   eyedropperZoomFitContain,
   scrollContainerContentSize,
 } from './eyedropper-utils';
-import { Point } from '../../../model/point';
+import { Point } from '../../../model/geometry';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 

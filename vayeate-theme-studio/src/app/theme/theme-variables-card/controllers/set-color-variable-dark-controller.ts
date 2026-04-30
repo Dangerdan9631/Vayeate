@@ -1,29 +1,15 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
-import type { Theme } from '../../../../model/schema/theme-schemas';
-import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
-import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
-import { ThemesStore } from '../../../../domain/state/theme/themes-store';
-import { normalizeHexSafe } from '../../../../domain/utils/color-hex';
+import { SetColorVariableDarkOperation } from '../../../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
 
 @singleton()
 export class SetColorVariableDarkController {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
-    private readonly setTheme: SetThemeOperation,
-    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
+    private readonly setColorVariableDark: SetColorVariableDarkOperation,
   ) {}
 
   run(ref: ColorVariableKey | undefined, value: string): void {
-    const theme = this.themesStateGetter.getStore().state.theme;
-    if (!theme || !ref) return;
-    const normalized = normalizeHexSafe(value);
-    const newAssignments = theme.colorAssignments.map((a) =>
-      a.colorRef === ref ? { ...a, dark: normalized !== null ? { value: normalized } : null } : a,
-    );
-    const next: Theme = { ...theme, colorAssignments: newAssignments };
-    this.setTheme.execute(next);
-    this.applyThemeStateAndSchedulePersist.execute(next);
+    this.setColorVariableDark.execute(ref, value);
   }
 }
 

@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { WindowStore } from '../../../domain/state/window/window-store';
 import { EYEDROPPER_LOUPE_SIZE, loupeFixedPosition } from './eyedropper-utils';
+import { Point } from '../../../model/geometry';
 
 const windowStore = container.resolve(WindowStore);
 

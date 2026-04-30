@@ -2,6 +2,8 @@ import { singleton } from 'tsyringe';
 import { ScreenshotService } from '../../../gateway/services/screenshot-service';
 import { EyedropperUiStore } from '../../state/ui/eyedropper-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
+import type { EyedropperDisplayEntry, EyedropperSnapshot } from '../../../model/eyedropper';
+import type { Rect } from '../../../model/geometry';
 
 @singleton()
 export class LoadEyedropperSnapshotOperation {

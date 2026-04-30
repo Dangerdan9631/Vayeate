@@ -2,7 +2,7 @@ import { forwardRef, MouseEvent, useEffect, useRef } from 'react';
 import { useEyedropperCanvasViewModel } from './use-eyedropper-canvas-viewmodel';
 import { clientToCanvasPixel, getCanvasColor, loadSnapshotToCanvas } from './eyedropper-utils';
 import { HexColor } from '../../../model/schema/primitives';
-import { Point } from '../../../model/point';
+import { Point } from '../../../model/geometry';
 
 export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => {
   
@@ -31,7 +31,7 @@ export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => 
     const canvas = internalCanvasRef.current;
     if (!canvas) return;
     void loadSnapshotToCanvas(canvas, snapshotBounds, snapshotDisplays);
-  }, [snapshotBounds, snapshotDisplays, internalCanvasRef.current]);
+  }, [snapshotBounds, snapshotDisplays]);
   
   const onMouseClick = (e: MouseEvent<HTMLCanvasElement>) => {
     e.stopPropagation();

@@ -25,9 +25,8 @@ export function EyedropperLoupe({
   errorMessage,
   canvasRef,
 }: EyedropperLoupeProps) {
-  const mouseX = useStore(eyedropperUiStore.api, (state) => state.state.mouseX);
-  const mouseY = useStore(eyedropperUiStore.api, (state) => state.state.mouseY);
-  const pointer = mouseX > 0 || mouseY > 0 ? { x: mouseX, y: mouseY } : null;
+  const mousePosition = useStore(eyedropperUiStore.api, (state) => state.state.mousePosition);
+  const pointer = mousePosition.x > 0 || mousePosition.y > 0 ? mousePosition : null;
   const { loupePos } = useEyedropperLoupeViewModel(pointer, isOpen, errorMessage);
 
   // Loupe rendering

@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { EyedropperUiStore } from '../../state/ui/eyedropper-ui-store';
-import { Point } from '../../../model/point';
+import { Point } from '../../../model/geometry';
 
 @singleton()
 export class UpdateEyedropperMousePositionOperation {

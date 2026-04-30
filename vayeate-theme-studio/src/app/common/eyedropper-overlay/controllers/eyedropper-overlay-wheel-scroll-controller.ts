@@ -31,17 +31,10 @@ export class EyedropperOverlayWheelScrollController {
   }
 
   private calculateZoomFit(bitmapWidth: number, bitmapHeight: number): number {
-    const viewport = this.getViewportSize();
+    const viewport = this.eyedropperUiStore.getStore().state.overlayViewportSize;
     if (viewport.width <= 0 || viewport.height <= 0 || bitmapWidth <= 0 || bitmapHeight <= 0) {
       return 0;
     }
     return Math.min(viewport.width / bitmapWidth, viewport.height / bitmapHeight);
-  }
-
-  private getViewportSize(): { width: number; height: number } {
-    // This is a simplified version - in a real implementation, you might need to
-    // track viewport size in the store or pass it as a parameter
-    // For now, return a default that allows the operation to work
-    return { width: window.innerWidth, height: window.innerHeight };
   }
 }
