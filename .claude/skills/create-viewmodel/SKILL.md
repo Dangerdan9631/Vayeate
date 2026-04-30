@@ -11,7 +11,7 @@ description: Adds or changes an app ViewModel hook in Vayeate Theme Studio. Use 
 
 ## Workflow
 
-1. Place under `vayeate-theme-studio/src/app/<domain>/viewmodel/` (or `common` / `core` as appropriate).
+1. Place under `vayeate-theme-studio/src/app/**/viewmodel/` when that pattern exists, or colocate feature-owned hooks as `vayeate-theme-studio/src/app/<domain>/<feature-or-component>/use-*-viewmodel.ts`; component-owned hooks may live under `components/<component>/use-*-viewmodel.ts`.
 2. Export hooks that wrap **`useStore(store.api, selector)`** for needed slices only.
 3. Import **validations** for disabled/visible logic; ordinary viewmodels should dispatch actions rather than call operations/controllers from hooks. Keep the documented app-shell lifecycle exception: the shell viewmodel may directly invoke load and unload controllers during mount and cleanup.
 4. Keep one primary hook module per concern; kebab-case file name.

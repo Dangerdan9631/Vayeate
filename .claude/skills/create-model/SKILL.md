@@ -13,7 +13,7 @@ description: Adds or changes domain models and zod schemas in Vayeate Theme Stud
 
 1. Place in `vayeate-theme-studio/src/model/` (subfolders as existing project does).
 2. Use **zod** for model families that cross persisted, external, or runtime-parsed boundaries. Simple internal-only value objects, constants, and helper types may remain plain TypeScript when no runtime parsing is needed.
-3. **One** top-level export focus per file; kebab-case filename.
+3. Keep one cohesive model family per file; schema modules may export related zod schemas, inferred types, constants, and helpers for that family. Use kebab-case filenames.
 4. No DI decorators, no React, no electron imports.
 
 ## Skeleton
