@@ -1,22 +1,11 @@
 import { singleton } from 'tsyringe';
-import { generateThemePair } from '../../domain/utils/theme-generator';
-import { assertValidThemeFileName } from '../../domain/utils/assert-valid-theme-file-name';
-import { stringifyTheme } from '../../domain/utils/stringify-theme';
-import { toSafeFileName } from '../../domain/utils/to-safe-theme-file-name';
 import { createThemeWithParams } from '../../model/factories/theme-factory';
 import { themeReferenceSchema, themeSchema } from '../../model/schema/theme-schemas';
 import type { ThemeName, Version } from '../../model/schema/primitives';
 import type { Theme, ThemeReference } from '../../model/schema/theme-schemas';
 import { FileSystemService } from '../services/file-system-service';
-import { TemplateGateway } from '../template/template-gateway';
 
 const THEMES_RELATIVE_DIR = 'data/themes';
-
-/**
- * Renderer-relative prefix resolved in main to repo-root `themes/` (sibling of Theme Studio package).
- * See `electron/main.ts` fs:saveFile handling for `exthemes/`.
- */
-const EXTENSION_THEMES_EXPORT_PREFIX = 'exthemes';
 
 /** Semver at end of filename: optional prerelease and build. */
 const FILENAME_VERSION_REGEX = /^(.+)-(\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?)$/;
@@ -41,40 +30,7 @@ function parseFileName(baseName: string): { name: ThemeName; version: Version } 
 
 @singleton()
 export class ThemeGateway {
-  constructor(
-    private readonly fileSystemService: FileSystemService,
-    private readonly templateGateway: TemplateGateway,
-  ) {}
-
-  /**
-   * Generate VS Code dark/light theme JSON from a theme + template in `data/`, then write to repo-root `themes/`
-   * via {@link FileSystemService} (main process maps `exthemes/...` to `../themes/...`).
-   */
-  async generateTheme(
-    themeName: string,
-    themeVersion: string,
-    templateName: string,
-    templateVersion: string,
-  ): Promise<{ darkPath: string; lightPath: string }> {
-    const theme = await this.loadTheme(themeName, themeVersion);
-    if (!theme) {
-      throw new Error(`Theme not found: ${themeName} v${themeVersion}`);
-    }
-    const template = await this.templateGateway.loadTemplate(templateName, templateVersion);
-    if (!template) {
-      throw new Error(`Template not found: ${templateName} v${templateVersion}`);
-    }
-    const { dark, light } = generateThemePair(theme, template);
-    const darkFileName = toSafeFileName(theme.name, false);
-    const lightFileName = toSafeFileName(theme.name, true);
-    assertValidThemeFileName(darkFileName);
-    assertValidThemeFileName(lightFileName);
-    const darkRel = `${EXTENSION_THEMES_EXPORT_PREFIX}/${darkFileName}`;
-    const lightRel = `${EXTENSION_THEMES_EXPORT_PREFIX}/${lightFileName}`;
-    await this.fileSystemService.saveFile(darkRel, stringifyTheme(dark));
-    await this.fileSystemService.saveFile(lightRel, stringifyTheme(light));
-    return { darkPath: darkRel, lightPath: lightRel };
-  }
+  constructor(private readonly fileSystemService: FileSystemService) {}
 
   async createTheme(params: { name: string }): Promise<Theme> {
     const theme = createThemeWithParams(params);

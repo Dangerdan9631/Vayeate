@@ -49,7 +49,7 @@ export class CreateCatalogDialogStore {
     );
 
     get api() {
-        return this.store.getState();
+        return this.store;
     }
 
     getStore(): CreateCatalogDialogStoreState {

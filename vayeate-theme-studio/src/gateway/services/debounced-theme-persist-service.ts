@@ -1,11 +1,9 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../model/schema/theme-schemas';
-import { ThemeGateway } from '../theme/theme-gateway';
 
 const SAVE_THEME_DEBOUNCE_MS = 400;
 
 interface PendingThemePersist {
-  theme: Theme;
+  persist: () => Promise<void>;
   onError?: (message: string) => void;
 }
 
@@ -18,8 +16,6 @@ export class DebouncedThemePersistService {
 
   private pendingPersist: PendingThemePersist | null = null;
 
-  constructor(private readonly themeGateway: ThemeGateway) {}
-
   cancel(): void {
     if (this.timeoutId !== null) {
       clearTimeout(this.timeoutId);
@@ -28,15 +24,15 @@ export class DebouncedThemePersistService {
     this.pendingPersist = null;
   }
 
-  schedule(theme: Theme, onError?: (message: string) => void): void {
-    this.pendingPersist = { theme, onError };
+  schedule(persist: () => Promise<void>, onError?: (message: string) => void): void {
+    this.pendingPersist = { persist, onError };
     if (this.timeoutId !== null) clearTimeout(this.timeoutId);
     this.timeoutId = setTimeout(() => {
       this.timeoutId = null;
       const pendingPersist = this.pendingPersist;
       this.pendingPersist = null;
       if (pendingPersist) {
-        this.themeGateway.saveTheme(pendingPersist.theme).catch((err) => {
+        pendingPersist.persist().catch((err) => {
           const message = err instanceof Error ? err.message : String(err);
           pendingPersist.onError?.(message);
         });

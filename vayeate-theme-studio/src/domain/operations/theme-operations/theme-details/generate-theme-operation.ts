@@ -1,7 +1,15 @@
-import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { singleton } from 'tsyringe';
+import { FileSystemService } from '../../../../gateway/services/file-system-service';
+import { TemplateGateway } from '../../../../gateway/template/template-gateway';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../../state/theme/themes-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { assertValidThemeFileName } from '../../../utils/assert-valid-theme-file-name';
+import { stringifyTheme } from '../../../utils/stringify-theme';
+import { generateThemePair } from '../../../utils/theme-generator';
+import { toSafeFileName } from '../../../utils/to-safe-theme-file-name';
+
+const EXTENSION_THEMES_EXPORT_PREFIX = 'exthemes';
 
 /** Generate theme files via service and report result in state. */
 @singleton()
@@ -10,6 +18,8 @@ export class GenerateThemeOperation {
     private readonly themesStateGetter: ThemesStore,
     private readonly themesStateSetter: ThemesStore,
     private readonly themeGateway: ThemeGateway,
+    private readonly templateGateway: TemplateGateway,
+    private readonly fileSystemService: FileSystemService,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) { }
 
@@ -28,12 +38,23 @@ export class GenerateThemeOperation {
       `Generating theme ${themeName} ${themeVersion}`,
       async () => {
         try {
-          const { darkPath, lightPath } = await this.themeGateway.generateTheme(
-            themeName,
-            themeVersion,
-            templateName,
-            templateVersion,
-          );
+          const persistedTheme = await this.themeGateway.loadTheme(themeName, themeVersion);
+          if (!persistedTheme) {
+            throw new Error(`Theme not found: ${themeName} v${themeVersion}`);
+          }
+          const template = await this.templateGateway.loadTemplate(templateName, templateVersion);
+          if (!template) {
+            throw new Error(`Template not found: ${templateName} v${templateVersion}`);
+          }
+          const { dark, light } = generateThemePair(persistedTheme, template);
+          const darkFileName = toSafeFileName(persistedTheme.name, false);
+          const lightFileName = toSafeFileName(persistedTheme.name, true);
+          assertValidThemeFileName(darkFileName);
+          assertValidThemeFileName(lightFileName);
+          const darkPath = `${EXTENSION_THEMES_EXPORT_PREFIX}/${darkFileName}`;
+          const lightPath = `${EXTENSION_THEMES_EXPORT_PREFIX}/${lightFileName}`;
+          await this.fileSystemService.saveFile(darkPath, stringifyTheme(dark));
+          await this.fileSystemService.saveFile(lightPath, stringifyTheme(light));
           this.themesStateSetter.getStore().setGenerateResult({
             success: true,
             message: `Generated ${darkPath} and ${lightPath}`,

@@ -44,6 +44,8 @@ function tokenTypeLabel(tokenType: TokenType): string {
       : 'Semantic Tokens';
 }
 
+function noopRemoveMapping(): void {}
+
 export interface SemanticBlock {
   base: Mapping;
   variants: Mapping[];
@@ -246,7 +248,7 @@ function MappingTypeSection({
                 onUpdateGroupRef={onUpdateGroupRef}
                 onUpdateColorRef={onUpdateColorRef}
                 onUpdateContrastRef={onUpdateContrastRef}
-                onRemoveMapping={onRemoveMapping ?? (() => {})}
+                onRemoveMapping={onRemoveMapping ?? noopRemoveMapping}
               />
             ))
           ) : (

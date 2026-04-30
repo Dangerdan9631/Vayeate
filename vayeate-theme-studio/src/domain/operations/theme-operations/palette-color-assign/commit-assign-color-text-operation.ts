@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
+import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../../state/theme/themes-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
@@ -12,6 +13,7 @@ export class CommitAssignColorTextOperation {
     private readonly themesStateGetter: ThemesStore,
     private readonly themesStateSetter: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistService,
+    private readonly themeGateway: ThemeGateway,
   ) {}
 
   execute(value: string): void {
@@ -45,7 +47,7 @@ export class CommitAssignColorTextOperation {
     this.themesStateSetter.getStore().setHueAdjustment(0);
     this.themesStateSetter.getStore().setTheme(nextTheme, true);
     this.themesStateSetter.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(nextTheme, (message) => {
+    this.debouncedThemePersist.schedule(() => this.themeGateway.saveTheme(nextTheme), (message) => {
       this.themesStateSetter.getStore().setSaveError(message);
     });
   }
