@@ -8,7 +8,7 @@ description: Audits Vayeate Theme Studio directives against the actual codebase 
 
 ## Scope
 
-Compare directives under [`.cursor/rules/`](../rules/), [`.agents/skills/*/SKILL.md`](../skills/), and `.cursor/agents/*.md` to the implementation under **`vayeate-theme-studio/`**.
+Compare directives under [`.cursor/rules/`](../rules/), [`.agents/skills/*/SKILL.md`](../skills/), `.claude/skills/*/SKILL.md`, and `.cursor/agents/*.md` to the implementation under **`vayeate-theme-studio/`**.
 
 Code under **`vayeate-theme-studio/`** is the authority for conventions, architecture, naming, and flow.
 
@@ -56,17 +56,19 @@ Group by **directive file**. Per issue:
 
 ## Review Process
 
-1. Identify all directive files in scope for review. Unless the user specifies a narrower scope, review all files in `.cursor/rules/`, `.agents/skills/*/SKILL.md`, and `.cursor/agents/*.md`.
-2. Before performing any audit, generate `vayeate-theme-studio/directive-review/checklist.md` with one unchecked item per in-scope directive file. Do not skip the checklist.
-3. Review the codebase sections needed to validate each directive. Unless the user specifies a narrower scope, inspect the Vayeate Theme Studio application under `vayeate-theme-studio/src` and `vayeate-theme-studio/electron`. Do not review test files except when they encode architecture conventions referenced by directives.
-4. Partition the checklist into smaller chunks that can be reviewed by multiple subagents in parallel.
-5. As each directive file is reviewed, add the findings to `/vayeate-theme-studio/directive-review/report.md` and check it off the checklist. Each finding should stand alone. Do not reference other findings with phrases like "Same as above".
-6. Ensure that each directive file is reviewed by verifying that it is checked off the checklist.
+1. Identify all directive files in scope for review. Unless the user specifies a narrower scope, review all files in `.cursor/rules/`, `.agents/skills/*/SKILL.md`, `.claude/skills/*/SKILL.md`, and `.cursor/agents/*.md`.
+2. Before performing any audit, generate the checklist by running **`node .cursor/agents/scripts/generate-directive-review-checklist.mjs`**. This writes `vayeate-theme-studio/directive-review/checklist.md` with one unchecked parent item per in-scope directive file and unchecked child items for the implementation files relevant to that directive. It also writes an `Unreferenced implementation files` section for files not listed under any directive. Do not hand-author the checklist.
+3. Review every implementation file listed under a directive before marking that directive complete. The checklist intentionally repeats code files under multiple directives when those files are relevant to more than one rule or skill; validate the directive independently against each listed file.
+4. Audit each file in `Unreferenced implementation files` against all directive files for violations. Use this catch-all section to find files that escaped the targeted directive mapping.
+5. Do not review test files except when the checklist includes architecture tests because they encode conventions referenced by directives.
+6. Partition the checklist into smaller directive sections that can be reviewed by multiple subagents in parallel.
+7. As each listed implementation file is reviewed for a directive, check off that child item. When all child items under a directive have been reviewed, add any findings to `/vayeate-theme-studio/directive-review/report.md` and check off the directive parent item. Each finding should stand alone. Do not reference other findings with phrases like "Same as above".
+8. Ensure that every directive section and the unreferenced-files section are complete by verifying that every parent and child checklist item is checked off.
 
 **Do not make any changes to rules, skills, agents, or application code.** Only generate the checklist and report review artifacts.
-**Every directive file** in scope must be reviewed and checked off the checklist before completing the audit.
+**Every directive file** in scope, every relevant implementation file listed beneath it, and every file in `Unreferenced implementation files` must be reviewed and checked off the checklist before completing the audit.
 Include report entries **only** for directive files with real drift, gaps, conflicts, overreach, or stale flow.
-**Always** perform a full audit of all files in scope against the codebase. Do not skip any directive files.
+**Always** perform a full audit of all directive sections and all listed implementation files, and audit unreferenced files against all directive files. Do not skip any directive files, skills, agents, rules, or relevant code files.
 **Never** perform a selective audit, sample files, or only target obvious conflicts.
 
 ## Example Report
@@ -74,7 +76,7 @@ Include report entries **only** for directive files with real drift, gaps, confl
 ```markdown
 # Vayeate Theme Studio — directive maintainer audit
 
-Scope: `.cursor/rules/**`, `.cursor/agents/*.md`, and `.agents/skills/*/SKILL.md`. Compared against `vayeate-theme-studio/src/**` and `vayeate-theme-studio/electron/**`.
+Scope: `.cursor/rules/**`, `.cursor/agents/*.md`, `.agents/skills/*/SKILL.md`, and `.claude/skills/*/SKILL.md`. Compared against each implementation file listed by `vayeate-theme-studio/directive-review/checklist.md`.
 
 ## .cursor/rules/operation.mdc
 

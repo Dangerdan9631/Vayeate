@@ -1,17 +1,17 @@
 ---
 name: create-controller
-description: Adds or changes a domain Controller in Vayeate Theme Studio. Use when the user creates or edits a controller, wires an action to app logic, or asks for controller patterns under src/domain.
+description: Adds or changes an app Controller in Vayeate Theme Studio. Use when the user creates or edits a controller, wires an action to app logic, or asks for controller patterns under src/app.
 ---
 
 # Create / modify Controller
 
 ## Authority
 
-Follow conventions in [`.cursor/rules/controller.mdc`](../../rules/controller.mdc) and layer rules in [`.cursor/rules/layer-domain.mdc`](../../rules/layer-domain.mdc) / [`.cursor/rules/app-architecture.mdc`](../../rules/app-architecture.mdc).
+Follow conventions in [`.cursor/rules/controller.mdc`](../../rules/controller.mdc) and layer rules in [`.cursor/rules/layer-app.mdc`](../../rules/layer-app.mdc) / [`.cursor/rules/app-architecture.mdc`](../../rules/app-architecture.mdc).
 
 ## Workflow
 
-1. Pick domain folder: `vayeate-theme-studio/src/domain/<domain>/controllers/`.
+1. Place in an app-layer controller folder under `vayeate-theme-studio/src/app/**/controllers/`. Follow the existing feature structure, including feature-root folders, colocated component folders, and shared `common` or `core` controller folders where appropriate.
 2. Name file **kebab-case** matching class (e.g. `delete-current-catalog-controller.ts` → `DeleteCurrentCatalogController`).
 3. Add **`@singleton()`** class with **`run(...): …`** only; inject concrete operation, validation, and store classes as needed — no string or symbol tokens — **do not** inject or call other controllers.
 4. Wire **handler** to `await container.resolve(...).run(action)` — no logic in handler.

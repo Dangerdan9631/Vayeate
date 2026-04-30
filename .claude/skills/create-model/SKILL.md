@@ -12,7 +12,7 @@ description: Adds or changes domain models and zod schemas in Vayeate Theme Stud
 ## Workflow
 
 1. Place in `vayeate-theme-studio/src/model/` (subfolders as existing project does).
-2. Define **zod** schema + `z.infer` type (or explicit type + schema pair).
+2. Use **zod** for model families that cross persisted, external, or runtime-parsed boundaries. Simple internal-only value objects, constants, and helper types may remain plain TypeScript when no runtime parsing is needed.
 3. **One** top-level export focus per file; kebab-case filename.
 4. No DI decorators, no React, no electron imports.
 
@@ -27,4 +27,4 @@ export type Example = z.infer<typeof ExampleSchema>;
 
 ## Checklist
 
-- [ ] Parsing/validation at boundaries uses these schemas (gateways/operations), not ad-hoc `as` casts
+- [ ] Parsing/validation at boundaries uses zod schemas where runtime parsing is required, not ad-hoc `as` casts

@@ -36,16 +36,19 @@ Group by **rule** (or concept). Per issue:
 
 ## Review Process
 
-1. Identify all files in scope for review. Unless the user specifies a specific scope, review all code files in the Vayeate Theme Studio application (`vayeate-theme-studio/src`, and `vayeate-theme-studio/electron`). Do not review test files.
-2. Before performing any audit, generate the checklist by running **`node .cursor/agents/scripts/generate-code-review-checklist.mjs`**. This writes `vayeate-theme-studio/code-review/checklist.md` with one unchecked item per in-scope file. Do not hand-author the checklist.
-3. Partition the checklist into smaller chunks that can be reviewed by multiple subagents in parallel.
-4. As each file is reviewed, add the findings to the report (`/vayeate-theme-studio/code-review/report.md`) and check it off the checklist. Each finding should stand alone. Do not reference other findings with phrases like "Same as above".
-5. Ensure that each file is reviewed by verifying that it is checked off the checklist.
+1. Identify all rule files in scope for review. Unless the user specifies a narrower scope, review every rule in `.cursor/rules/` against the implementation files relevant to that rule.
+2. Before performing any audit, generate the checklist by running **`node .cursor/agents/scripts/generate-code-review-checklist.mjs`**. This writes `vayeate-theme-studio/code-review/checklist.md` with one unchecked parent item per rule and unchecked child items for the implementation files relevant to that rule. It also writes an `Unreferenced implementation files` section for files not listed under any rule. Do not hand-author the checklist.
+3. Audit each listed child file against the corresponding parent rule only. The checklist intentionally repeats implementation files under multiple rules when those files are relevant to more than one rule; validate each rule-file pair independently.
+4. Audit each file in `Unreferenced implementation files` against all directive files for violations. Use this catch-all section to find files that escaped the targeted rule mapping.
+5. Do not review test files unless the checklist explicitly includes them.
+6. Partition the checklist into smaller rule sections that can be reviewed by multiple subagents in parallel.
+7. As each listed implementation file is reviewed for a rule, add any findings to the report (`/vayeate-theme-studio/code-review/report.md`) and check off that child item. When all child items under a rule are reviewed, check off the rule parent item. Each finding should stand alone. Do not reference other findings with phrases like "Same as above".
+8. Ensure that every rule section and the unreferenced-files section are complete by verifying that every parent and child checklist item is checked off.
 
 **Do not make any changes to the codebase.** Only generate the checklist and report review artifacts.
-**Every file** in scope must be reviewed and checked off the checklist before completing the audit.
+**Every rule file** in scope, every relevant implementation file listed beneath it, and every file in `Unreferenced implementation files` must be reviewed and checked off the checklist before completing the audit.
 Include report entries **only** for files with actual rule violations or gaps worth fixing.
-**Always** perform a full audit of all files in scope and all rules. Do not skip any files or rules. 
+**Always** perform a targeted audit of each listed file against its corresponding parent rule, and audit unreferenced files against all directive files. Do not skip any rule sections or listed implementation files.
 **Never** perform a prioritized audit, a selective audit, sample files, or only target high risk rules.
 
 ## Example Report
@@ -53,7 +56,7 @@ Include report entries **only** for files with actual rule violations or gaps wo
 ```markdown
 # Vayeate Theme Studio — code maintainer audit
 
-Scope: `vayeate-theme-studio/src/**` and `vayeate-theme-studio/electron/**` (487 TypeScript modules). Compared to `.cursor/rules/` (app-architecture, layer-*, controller, operation, validation, viewmodel, component, state, gateway, service, model).
+Scope: `.cursor/rules/**`. Each rule was compared against the implementation files listed beneath it in `vayeate-theme-studio/code-review/checklist.md`.
 
 ## operation.mdc
 
