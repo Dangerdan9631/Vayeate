@@ -18,7 +18,7 @@ Compare code under **`vayeate-theme-studio/`** to every rule in [`.cursor/rules/
 
 ## Constraint
 
-Do **not** create, edit, or delete code files. **Generate a Report file only.**
+Do **not** create, edit, or delete code files. **Generate review artifacts only** (`code-review/checklist.md` and `code-review/report.md`); do not edit application code.
 
 ## Report format
 
@@ -42,7 +42,7 @@ Group by **rule** (or concept). Per issue:
 4. As each file is reviewed, add the findings to the report (`/vayeate-theme-studio/code-review/report.md`) and check it off the checklist. Each finding should stand alone. Do not reference other findings with phrases like "Same as above".
 5. Ensure that each file is reviewed by verifying that it is checked off the checklist.
 
-**Do not make any changes to the codebase.** Only generate a report of the findings.
+**Do not make any changes to the codebase.** Only generate the checklist and report review artifacts.
 **Every file** in scope must be reviewed and checked off the checklist before completing the audit.
 Include report entries **only** for files with actual rule violations or gaps worth fixing.
 **Always** perform a full audit of all files in scope and all rules. Do not skip any files or rules. 
@@ -57,14 +57,10 @@ Scope: `vayeate-theme-studio/src/**` and `vayeate-theme-studio/electron/**` (487
 
 ## operation.mdc
 
-### Operation calls other Operation.execute [operation.mdc, lines 14–15, 29]
-- **File:** `vayeate-theme-studio/src/domain/operations/theme-operations/theme-list/select-theme-and-load-operation.ts`
-- **Violation:** Constructor injects `SetSelectedThemeRefOperation`, `LoadThemeOperation`, `SetThemePaneSelectionsOperation`, etc.; `execute` chains `this.setSelectedThemeRef.execute`, `this.loadTheme.execute`, `this.loadTemplateSnapshot.execute`, `this.applyThemeStateAndSchedulePersist.execute`, etc.
-- **Suggested fix:** Move the orchestration into a **controller** (validations → sequence of operations) or split into **separate UI actions** so each handler runs one operation; alternatively collapse into a **single operation** that inlines gateway/state work without delegating to other `Operation` classes.
-
-- **File:** `vayeate-theme-studio/src/domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation.ts`
-- **Violation:** Operation composes `this.refreshCatalogRefs.execute()`, `this.loadCatalog.execute(...)`, `this.setSelectedCatalog.execute(...)` via `.execute`. 
-- **Suggested fix:** Move the orchestration into a **controller** (validations → sequence of operations) or split into **separate UI actions** so each handler runs one operation; alternatively collapse into a **single operation** that inlines gateway/state work without delegating to other `Operation` classes.
+### Operation calls other Operation.execute [operation.mdc, lines 14-15, 29]
+- **File:** `vayeate-theme-studio/src/domain/operations/example-operations/load-and-select-example-operation.ts`
+- **Violation:** Constructor injects peer operation classes such as `LoadExampleOperation` and `SelectExampleOperation`; `execute` chains their `.execute(...)` methods instead of owning one atomic domain change.
+- **Suggested fix:** Move orchestration into a **controller** (validations -> sequence of operations) or split into **separate UI actions** so each handler runs one operation; alternatively collapse into a **single operation** that inlines the gateway/state work without delegating to other `Operation` classes.
 
 ---
 

@@ -8,7 +8,7 @@ alwaysApply: false
 ## Rules
 
 - Domain shapes and parsers live in **`src/model/`**.
-- Use **zod** for runtime validation and inferred TypeScript types.
+- Use **zod** for persisted, external, or runtime-parsed model families. Simple internal value objects/constants may use plain TypeScript types when no boundary parsing is needed.
 - Keep models **free** of React, DI, and I/O (no `fs`, no `ipc`).
 
 ## Files

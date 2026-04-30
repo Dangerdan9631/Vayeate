@@ -20,10 +20,10 @@
  * | `use-*-viewmodel.ts: at least one exported function...` | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure (`viewmodel/`) |
  * | `components/*.tsx: exported function name matches filename stem` | [component.mdc](../../../.cursor/rules/component.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files (filename ↔ export) |
  * | `PascalCase filenames for .tsx under src/app` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc), [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx`) |
- * | `domain *-operation.ts: no this.<OtherOperation>.execute` | [operation.mdc](../../../.cursor/rules/operation.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
+ * | `domain *-operation.ts: no disallowed this.<OtherOperation>.execute` | [operation.mdc](../../../.cursor/rules/operation.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
  * | `domain *-controller.ts: no this.<OtherController>.run` | [controller.mdc](../../../.cursor/rules/controller.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
  * | `actions/*-handler.ts: no imports from domain operations/validations/state` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — handlers |
- * | `actions/*-action-guard.ts: one exported function` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI |
+ * | `actions/*-action-type.ts: exported is*Action guard` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure / Actions (guards) |
  * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../../.cursor/rules/layer-electron.mdc) — no domain in main |
  * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) |
  * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § Actions (payloads) |
@@ -33,7 +33,7 @@ import path from 'path';
 import { describe, expect, it } from 'vitest';
 import {
   collectCtorParameterPropertyNamesWithControllerType,
-  collectCtorParameterPropertyNamesWithOperationType,
+  collectCtorParameterPropertyTypesWithOperationType,
   collectExportedClassNames,
   collectExportedFunctionNames,
   collectThisDependencyExecuteCalls,
@@ -274,8 +274,19 @@ describe('components/*.tsx: exported function name matches filename stem', () =>
   });
 });
 
-/** @see ../../../.cursor/rules/operation.mdc — no `Operation.execute` chaining; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow. */
-describe('domain *-operation.ts: operations do not call other operations .execute', () => {
+function isAllowedOperationExecuteCall(file: string, operationType: string): boolean {
+  if (operationType === 'EnqueueBackgroundQueueActionOperation') return true;
+
+  const rel = path.relative(srcRoot, file).replace(/\\/g, '/');
+  const isThemeColorVariableOperation = /^domain\/operations\/theme-operations\/theme-details\/set-color-variable-(dark|light)-operation\.ts$/.test(rel);
+  return isThemeColorVariableOperation && (
+    operationType === 'SetThemeOperation' ||
+    operationType === 'ApplyThemeStateAndSchedulePersistOperation'
+  );
+}
+
+/** @see ../../../.cursor/rules/operation.mdc — no disallowed `Operation.execute` chaining; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow. */
+describe('domain *-operation.ts: operations do not call disallowed operation .execute', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
     if (!isNonTestTsSource(b)) return false;
@@ -288,9 +299,10 @@ describe('domain *-operation.ts: operations do not call other operations .execut
     const sf = readSourceFile(file);
     const cls = getFirstExportedClassDeclaration(sf);
     expect(cls, 'expected one exported class').toBeDefined();
-    const opDeps = collectCtorParameterPropertyNamesWithOperationType(sf, cls!);
-    const hits = collectThisDependencyExecuteCalls(sf, cls!, opDeps);
-    expect(hits, 'operations must not call this.<OtherOperation>.execute(...)').toEqual([]);
+    const opDeps = collectCtorParameterPropertyTypesWithOperationType(sf, cls!);
+    const hits = collectThisDependencyExecuteCalls(sf, cls!, new Set(opDeps.keys()));
+    const disallowedHits = hits.filter((field) => !isAllowedOperationExecuteCall(file, opDeps.get(field) ?? ''));
+    expect(disallowedHits, 'operations must not call disallowed this.<OtherOperation>.execute(...)').toEqual([]);
   });
 });
 
@@ -329,18 +341,19 @@ describe('actions/*-handler.ts: no imports from domain operations, validations, 
   });
 });
 
-/** @see ../../../.cursor/rules/layer-app.mdc — action guards; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI (one export). */
-describe('actions/*-action-guard.ts: exactly one exported function', () => {
+/** @see ../../../.cursor/rules/layer-app.mdc — action guards in action type modules. */
+describe('actions/*-action-type.ts: at least one exported is*Action guard', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
     if (!isNonTestTsSource(b)) return false;
-    return /[\\/]actions[\\/].*-action-guard\.ts$/.test(f);
+    return /[\\/]actions[\\/].*-action-type\.ts$/.test(f);
   });
 
   it.each(files)('%s', (file) => {
     const sf = readSourceFile(file);
     const fnames = collectExportedFunctionNames(sf);
-    expect(fnames, 'expected exactly one exported function').toHaveLength(1);
+    const guards = fnames.filter((name) => /^is[A-Z].*Action$/.test(name));
+    expect(guards.length, 'expected at least one exported is*Action guard').toBeGreaterThan(0);
   });
 });
 

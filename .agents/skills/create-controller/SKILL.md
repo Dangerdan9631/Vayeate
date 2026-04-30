@@ -11,7 +11,7 @@ Follow conventions in [`.cursor/rules/controller.mdc`](../../rules/controller.md
 
 ## Workflow
 
-1. Pick the app controller folder under `vayeate-theme-studio/src/app/**/controllers/`: feature-root `src/app/<domain>/controllers/`, `common/controllers/`, `core/controllers/`, or component-local `src/app/<domain>/components/<component>/controllers/`.
+1. Pick the app controller folder under `vayeate-theme-studio/src/app/**/controllers/`: feature-root `src/app/<domain>/controllers/`, direct feature/component `src/app/<domain>/<feature-or-component>/controllers/` when the surrounding UI flow is colocated there, `common/controllers/`, `core/controllers/`, or component-local `src/app/<domain>/components/<component>/controllers/`.
 2. Name file **kebab-case** matching class (e.g. `delete-current-catalog-controller.ts` → `DeleteCurrentCatalogController`).
 3. Add **`@singleton()`** class with **`run(...): …`** only; inject concrete operation, validation, and store classes as needed — no string or symbol tokens — **do not** inject or call other controllers. A controller may sequence multiple operations for one UI use case after validation, but reusable domain algorithms belong in operations.
 4. Wire **handler** to call or await `container.resolve(...).run(action)` based on whether the controller is sync or async — no logic in handler.

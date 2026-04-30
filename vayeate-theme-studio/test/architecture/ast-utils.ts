@@ -90,6 +90,23 @@ export function collectCtorParameterPropertyNamesWithOperationType(
   return names;
 }
 
+/** Constructor parameter properties keyed to their `*Operation` type text. */
+export function collectCtorParameterPropertyTypesWithOperationType(
+  sf: ts.SourceFile,
+  cls: ts.ClassDeclaration,
+): Map<string, string> {
+  const names = new Map<string, string>();
+  const ctor = cls.members.find(ts.isConstructorDeclaration);
+  if (!ctor) return names;
+  for (const p of ctor.parameters) {
+    if (!ts.isParameterPropertyDeclaration(p, ctor) || !p.type) continue;
+    const typeText = p.type.getText(sf);
+    if (!OPERATION_TYPE_RE.test(typeText)) continue;
+    if (ts.isIdentifier(p.name)) names.set(p.name.text, typeText);
+  }
+  return names;
+}
+
 /** Constructor parameter properties whose type matches `*Controller`. */
 export function collectCtorParameterPropertyNamesWithControllerType(
   sf: ts.SourceFile,

@@ -11,8 +11,9 @@ alwaysApply: false
 
 - Expose selected store values via **`useStore(store.api, selector)`**, derived presentation/business guards, error/message state, and named action callbacks.
 - Viewmodels may use `useAppDispatch()` to enqueue UI actions.
+- **Exception:** the app-shell lifecycle viewmodel may directly invoke load/unload controllers during mount/cleanup, matching [app-architecture.mdc](app-architecture.mdc); ordinary viewmodels dispatch actions.
 - **Components must not** define raw store subscriptions inline; they consume viewmodel hooks only.
-- Use **validations** for disabled states, tooltips, and guard logic aligned with controllers.
+- Use **validations** for guards shared with controllers or domain validation; keep simple view-only derived state in the viewmodel.
 
 ## Anti-patterns
 

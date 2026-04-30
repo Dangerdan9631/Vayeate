@@ -12,7 +12,8 @@ alwaysApply: false
 
   **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change controller class/file naming here, update that `describe` and vice versa.**
 
-- `operations/` — **only** place for business logic, gateways/services, and **store writes** (**exception:** queue-status slice updates invoked **only** from `ActionQueue` in app core — see [app-architecture.mdc](app-architecture.mdc))
+- `operations/` — **only** place for business logic, gateways/services, and **store writes**. Queue observability writes are still operations, but their queue-status controllers may be called directly from the action/background queue implementations — see [app-architecture.mdc](app-architecture.mdc).
+- **Exception — queue adapters:** `EnqueueActionQueueOperation` and `EnqueueBackgroundQueueActionOperation` are infrastructure adapter operations that bridge domain callers to app-core queues and may import the required app queue types/classes. Do not treat this as precedent for ordinary domain operations importing `src/app/**`.
 - `validations/` — `Validate*` classes with `test(...)` returning either `boolean` for simple predicates or `ValidationResult` for UI/error-message workflows. Use `Validator<T>` to compose multiple message-bearing validations.
 - `state/` — zustand store classes plus state shape/helpers
 - `utils/` — pure helpers (no state mutation)

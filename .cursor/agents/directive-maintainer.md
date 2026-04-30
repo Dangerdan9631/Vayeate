@@ -63,7 +63,7 @@ Group by **directive file**. Per issue:
 5. As each directive file is reviewed, add the findings to `/vayeate-theme-studio/directive-review/report.md` and check it off the checklist. Each finding should stand alone. Do not reference other findings with phrases like "Same as above".
 6. Ensure that each directive file is reviewed by verifying that it is checked off the checklist.
 
-**Do not make any changes to rules, skills, agents, or application code.** Only generate a report of the findings.
+**Do not make any changes to rules, skills, agents, or application code.** Only generate the checklist and report review artifacts.
 **Every directive file** in scope must be reviewed and checked off the checklist before completing the audit.
 Include report entries **only** for directive files with real drift, gaps, conflicts, overreach, or stale flow.
 **Always** perform a full audit of all files in scope against the codebase. Do not skip any directive files.
@@ -78,11 +78,11 @@ Scope: `.cursor/rules/**`, `.cursor/agents/*.md`, and `.agents/skills/*/SKILL.md
 
 ## .cursor/rules/operation.mdc
 
-### Missing window-service exception [operation.mdc, lines 12-18]
+### Missing window callback exception [operation.mdc, lines 12-18]
 - **Directive:** `.cursor/rules/operation.mdc`
-- **Code evidence:** `vayeate-theme-studio/src/domain/operations/app-operations/initialize-window-service-operation.ts`
-- **Drift:** The code intentionally injects controller classes into `InitializeWindowServiceOperation` to register `WindowService.init(...)` callbacks, but the directive still states operations must not inject or bridge controllers without documenting this exception.
-- **Suggested update:** Add an exception bullet that explicitly allows controller injection only for `InitializeWindowServiceOperation` callback registration, and state that the exception does not permit broader controller orchestration inside operations.
+- **Code evidence:** `vayeate-theme-studio/src/domain/operations/app-operations/initialize-window-callbacks-operation.ts`
+- **Drift:** The code intentionally injects controller classes into `InitializeWindowCallbacksOperation` to register `WindowService.init(...)` callbacks, but the directive still states operations must not inject or bridge controllers without documenting this exception.
+- **Suggested update:** Add an exception bullet that explicitly allows controller injection only for `InitializeWindowCallbacksOperation` callback registration, and state that the exception does not permit broader controller orchestration inside operations.
 
 ## .cursor/agents/code-maintainer.md
 
@@ -92,4 +92,3 @@ Scope: `.cursor/rules/**`, `.cursor/agents/*.md`, and `.agents/skills/*/SKILL.md
 - **Drift:** The maintainer flow now expects a full-file checklist-driven audit, but the directive maintainer prompt still uses a lightweight directive-quality review and does not mirror the code-maintainer review process.
 - **Suggested update:** Replace the prompt with an inverse audit flow: audit every directive file against the codebase, create `directive-review/checklist.md`, write findings to `directive-review/report.md`, and treat code as the authority when directives drift.
 ```
-
