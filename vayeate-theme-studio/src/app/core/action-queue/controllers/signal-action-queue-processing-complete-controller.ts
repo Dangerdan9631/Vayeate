@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { CompleteActionQueueProcessingOperation } from '../../../../domain/operations/action-queue/complete-action-queue-processing-operation';
 
 @singleton()
-export class CompleteActionQueueProcessingController {
+export class SignalActionQueueProcessingCompleteController {
   constructor(private readonly completeActionQueueProcessing: CompleteActionQueueProcessingOperation) {}
 
   run(): void {

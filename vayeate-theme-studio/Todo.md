@@ -1,8 +1,6 @@
-- [ ] Add Linting
+- [x] Add Linting
 - [ ] Parallelize background actions
 - [ ] Undo stack
-
-Unable to preventDefault inside passive event listener invocation.
 
 ## App Layer
 
@@ -12,12 +10,24 @@ Unable to preventDefault inside passive event listener invocation.
     - [x] ActionProcessor delegates to <base>-handler.ts
     - [x] ActionProcessor logs action processing
     - [x] ActionQueue provides status updates via operations
+    - [x] Controllers
+        - [x] precisely named
+        - [x] Right granularity
+        - [x] Only operations, validations, getState`
 - [x] Background Queue
     - [x] Logs background processing
     - [x] Every action has a status
     - [x] Background Queue provides status updates via operations
     - [x] Supports callbacks
+    - [x] Controllers
+        - [x] precisely named
+        - [x] Right granularity
+        - [x] Only operations, validations, getState
 - [x] Bootstrap
+    - [x] Controllers
+        - [x] precisely named
+        - [x] Right granularity
+        - [x] Only operations, validations, getState
 
 ### [ ] Common
 - [ ] Components

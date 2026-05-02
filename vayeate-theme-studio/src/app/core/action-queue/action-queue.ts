@@ -3,7 +3,7 @@ import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import { ActionProcessor } from './action-processor';
 import { singleton } from 'tsyringe';
 import { UpdateActionQueueStatusController } from './controllers/update-action-queue-status-controller';
-import { CompleteActionQueueProcessingController } from './controllers/complete-action-queue-processing-controller';
+import { SignalActionQueueProcessingCompleteController } from './controllers/signal-action-queue-processing-complete-controller';
 
 export interface IActionQueue {
   enqueue(action: AppAction): void;
@@ -18,7 +18,7 @@ export class ActionQueue implements IActionQueue {
   constructor(
     private readonly actionProcessor: ActionProcessor,
     private readonly updateActionQueueStatus: UpdateActionQueueStatusController,
-    private readonly completeActionQueueProcessing: CompleteActionQueueProcessingController,
+    private readonly signalActionQueueProcessingComplete: SignalActionQueueProcessingCompleteController,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('ActionQueue');
@@ -31,8 +31,8 @@ export class ActionQueue implements IActionQueue {
 
   private async process(): Promise<void> {
     if (this.isProcessing) return;
-
     this.isProcessing = true;
+    
     while (this.queue.length > 0) {
       const action = this.queue.shift()!;
       this.updateActionQueueStatus.run(this.queue.length + 1);
@@ -43,7 +43,7 @@ export class ActionQueue implements IActionQueue {
       }
     }
 
-    this.completeActionQueueProcessing.run();
+    this.signalActionQueueProcessingComplete.run();
     this.isProcessing = false;
   }
 }

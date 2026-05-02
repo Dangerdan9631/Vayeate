@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import { UpdateBackgroundQueueStatusController } from './controllers/update-background-queue-status-controller';
-import { CompleteBackgroundQueueProcessingController } from './controllers/complete-background-queue-processing-controller';
+import { SignalBackgroundQueueProcessingCompleteController } from './controllers/signal-background-queue-processing-complete-controller';
 
 interface QueuedWork {
   description: string;
@@ -17,7 +17,7 @@ export class BackgroundQueue {
 
   constructor(
     private readonly updateBackgroundQueueStatus: UpdateBackgroundQueueStatusController,
-    private readonly completeBackgroundQueueProcessing: CompleteBackgroundQueueProcessingController,
+    private readonly signalBackgroundQueueProcessingComplete: SignalBackgroundQueueProcessingCompleteController,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('BackgroundQueue');
@@ -45,7 +45,7 @@ export class BackgroundQueue {
       }
     }
 
-    this.completeBackgroundQueueProcessing.run();
+    this.signalBackgroundQueueProcessingComplete.run();
     this.processing = false;
   }
 }
