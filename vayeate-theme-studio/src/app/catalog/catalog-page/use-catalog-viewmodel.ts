@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { CatalogPageActionType } from './actions/catalog-page-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);

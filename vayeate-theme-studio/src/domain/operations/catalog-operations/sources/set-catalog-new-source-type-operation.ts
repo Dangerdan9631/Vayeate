@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { SourceType } from '../../../../model/schema/primitives';
-import { CatalogsStore } from '../../../catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 
 @singleton()
 export class SetCatalogNewSourceTypeOperation {

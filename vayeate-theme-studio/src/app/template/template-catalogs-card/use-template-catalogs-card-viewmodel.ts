@@ -7,7 +7,7 @@ import type { CatalogName } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { TemplateCatalogsCardActionType } from './actions/template-catalogs-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import type { Template } from '../../../model/schema/template-schemas';
 

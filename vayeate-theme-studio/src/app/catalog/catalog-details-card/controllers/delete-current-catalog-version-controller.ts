@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../../domain/state/catalog/catalogs-store';
 import { findNearestVersionRef } from '../../../../domain/utils/find-nearest-version-ref';
 import { DeleteCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/delete-catalog-operation';
 import { RefreshCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-operation';

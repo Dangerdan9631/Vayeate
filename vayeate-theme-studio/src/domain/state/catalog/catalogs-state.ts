@@ -40,8 +40,6 @@ export interface CatalogsStateV2 {
   catalogs: CatalogMap;
 }
 
-
-
 export const emptyBulkAddData: BulkAddDialogState = {
   isOpen: false,
   text: '',

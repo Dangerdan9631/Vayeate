@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
 @singleton()

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { CatalogBulkAddDialogActionType } from './actions/catalog-bulk-add-dialog-action-type';
-import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 

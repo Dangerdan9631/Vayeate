@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalog } from '../../../catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../../state/catalog/catalogs-store';
 import { parseThemeJson } from '../../../../model/theme-import';
 
 @singleton()

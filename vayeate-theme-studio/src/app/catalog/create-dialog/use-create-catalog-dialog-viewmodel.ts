@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import type { CatalogType } from '../../../model/schema/primitives';
 import { CatalogCreateDialogActionType } from './actions/catalog-create-dialog-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);

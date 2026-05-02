@@ -1,4 +1,4 @@
-import type { CatalogType } from '../../../../model/schema/primitives';
+import type { CatalogType } from '../../../model/schema/primitives';
 
 export interface CreateCatalogDialogState {
   isOpen: boolean;

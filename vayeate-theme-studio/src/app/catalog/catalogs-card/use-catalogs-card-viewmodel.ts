@@ -4,7 +4,7 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { CatalogsCardActionType } from './actions/catalogs-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);

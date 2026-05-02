@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
-import { DebouncedThemePersistService } from '../../../../gateway/services/debounced-theme-persist-service';
+import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounced-theme-persist-gateway';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../../state/theme/themes-store';
 
@@ -9,7 +9,7 @@ import { ThemesStore } from '../../../state/theme/themes-store';
 export class ApplyThemeStateAndSchedulePersistOperation {
   constructor(
     private readonly themesStateSetter: ThemesStore,
-    private readonly debouncedThemePersist: DebouncedThemePersistService,
+    private readonly debouncedThemePersist: DebouncedThemePersistGateway,
     private readonly themeGateway: ThemeGateway,
   ) {}
 

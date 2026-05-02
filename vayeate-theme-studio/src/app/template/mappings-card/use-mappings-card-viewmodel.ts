@@ -8,7 +8,7 @@ import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../
 import type { CatalogReference, Mapping, Template } from '../../../model/schema/template-schemas';
 import { MappingsCardActionType } from './actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
-import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { TemplatesStore } from '../../../domain/state/template/templates-store';
 import { container } from 'tsyringe';
 

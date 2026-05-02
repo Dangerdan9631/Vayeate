@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
-import { CatalogsStore, getCurrentCatalog } from '../../../catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../../state/catalog/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 

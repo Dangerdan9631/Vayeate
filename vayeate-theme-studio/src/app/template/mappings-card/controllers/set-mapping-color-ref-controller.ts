@@ -1,7 +1,7 @@
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
 import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
-import { CatalogsStore, getAllLoadedCatalogs } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore, getAllLoadedCatalogs } from '../../../../domain/state/catalog/catalogs-store';
 import { TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { isMappingOrphanForTemplate } from '../../../../domain/utils/is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';

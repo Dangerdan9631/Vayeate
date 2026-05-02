@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CreateCatalogDialogStore } from '../state/create-catalog-dialog-store';
+import { CreateCatalogDialogStore } from '../../../state/create-dialog/create-catalog-dialog-store';
 
 @singleton()
 export class SetCatalogCreateDialogErrorOperation {

@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../../domain/state/catalog/catalogs-store';
 import { parseThemeJson } from '../../../../model/theme-import';
 import { AppendTokensToCatalogOperation } from '../../../../domain/operations/catalog-operations/tokens/append-tokens-to-catalog-operation';
 import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { DeduplicateBulkTokensOperation } from '../../../../domain/operations/catalog-operations/tokens/deduplicate-bulk-tokens-operation';
 import { SaveCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
-import { ValidateCanBulkAddTokens } from '../../../../domain/validations/catalog-validations/validate-can-bulk-add-tokens';
+import { ValidateCanBulkAddTokens } from '../../../../domain/catalog/validations/validate-can-bulk-add-tokens';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
-import { getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
+import { getCurrentCatalog } from '../../../../domain/state/catalog/catalogs-store';
 
 @singleton()
 export class BulkAddTokensController {

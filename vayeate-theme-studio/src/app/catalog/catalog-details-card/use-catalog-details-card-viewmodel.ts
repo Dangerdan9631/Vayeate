@@ -5,7 +5,7 @@ import type { Catalog } from '../../../model/schema/catalog';
 import { sourceTypeSchema, tokenTypeSchema, type SourceType, type TokenType } from '../../../model/schema/primitives';
 import { CatalogDetailsCardActionType } from './actions/catalog-details-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);

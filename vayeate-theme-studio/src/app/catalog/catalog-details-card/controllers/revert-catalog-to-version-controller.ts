@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore } from '../../../../domain/state/catalog/catalogs-store';
 import { nextPatchVersion } from '../../../../domain/utils/next-patch-version';
 import { LockHeadCatalogIfUnlockedOperation } from '../../../../domain/operations/catalog-operations/catalog-details/lock-head-catalog-if-unlocked-operation';
 import { RevertCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/revert-catalog-operation';
