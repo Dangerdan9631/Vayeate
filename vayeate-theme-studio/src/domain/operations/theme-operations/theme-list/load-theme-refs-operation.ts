@@ -14,7 +14,7 @@ export class LoadThemeRefsOperation {
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       'Loading themes',
       async () => {
         const refs = await this.themeGateway.listThemes();

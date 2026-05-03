@@ -13,7 +13,7 @@ export class SaveThemeOperation {
 
   execute(theme: Theme): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Saving theme ${theme.name} ${theme.version}`,
       async () => {
         await this.themeGateway.saveTheme(theme);

@@ -20,6 +20,10 @@ export const initialBackgroundQueueUiState: BackgroundQueueUiState = {
         worker: {
             queueLength: 0,
             queueDescriptions: []
+        },
+        data_io: {
+            queueLength: 0,
+            queueDescriptions: []
         }
     }
 };

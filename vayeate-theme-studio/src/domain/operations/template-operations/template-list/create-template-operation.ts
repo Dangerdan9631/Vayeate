@@ -11,8 +11,10 @@ export class CreateTemplateOperation {
   ) {}
 
   execute(params: { name: string }): Promise<Template> {
-    return this.enqueueBackgroundQueue.executeReturning(`Creating template ${params.name}`, () =>
-      this.templateGateway.createTemplate(params),
+    return this.enqueueBackgroundQueue.executeReturning(
+      `Creating template ${params.name}`,
+      () => this.templateGateway.createTemplate(params),
+      'data_io',
     );
   }
 }

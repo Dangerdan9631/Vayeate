@@ -14,7 +14,7 @@ export class LoadAppConfigOperation {
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       'Loading app config',
       async () => {
         const config = await this.configGateway.load();

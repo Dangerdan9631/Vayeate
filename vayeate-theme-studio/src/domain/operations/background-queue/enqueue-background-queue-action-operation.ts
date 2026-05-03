@@ -5,8 +5,6 @@ import {
 import { type BackgroundQueueType } from '../../../app/core/background-queue/background-queue-type';
 import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
 
-export type { BackgroundQueueType as BackgroundQueueLane };
-
 @singleton()
 export class EnqueueBackgroundQueueActionOperation {
   constructor(
@@ -24,7 +22,7 @@ export class EnqueueBackgroundQueueActionOperation {
   executeReturning<T>(
     description: string,
     factory: () => Promise<T>,
-    queue: BackgroundQueueType = 'worker',
+    queue: BackgroundQueueType,
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const run = async () => {

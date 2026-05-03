@@ -16,7 +16,7 @@ export class RefreshCatalogRefsAndSelectOperation {
 
   execute(selectName?: string, selectVersion?: string): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Refreshing catalog ${selectName} ${selectVersion}`,
       async () => {
         const refs = await this.catalogGateway.listCatalogs();

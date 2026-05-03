@@ -28,7 +28,7 @@ export class CreateCatalogOperation {
     const ref = { name: catalog.name, version: catalog.version };
     this.catalogsStore.getStore().updateCatalog(catalog);
     this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Saving catalog ${catalog.name} ${catalog.version}`,
       async () => {
         await this.catalogGateway.saveCatalog(catalog);

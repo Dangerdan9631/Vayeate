@@ -11,7 +11,11 @@ export class ListCatalogRefsOperation {
   ) {}
 
   execute(): Promise<CatalogReference[]> {
-    return this.enqueueBackgroundQueue.executeReturning('Listing catalogs', () => this.catalogGateway.listCatalogs());
+    return this.enqueueBackgroundQueue.executeReturning(
+      'Listing catalogs',
+      () => this.catalogGateway.listCatalogs(),
+      'data_io',
+    );
   }
 }
 

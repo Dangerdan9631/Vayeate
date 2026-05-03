@@ -27,7 +27,7 @@ export class SelectThemeByNameController {
     if (!best) return;
     this.setSelectedThemeRef.execute({ name: best.name, version: best.version });
     this.loadTheme.execute(best.name, best.version)
-      .then(async () => {
+      .then('Loading theme', async () => {
         const theme = this.themeUiStore.getStore().state.theme;
         if (!theme) return;
         this.setThemePaneSelections.execute([], []);

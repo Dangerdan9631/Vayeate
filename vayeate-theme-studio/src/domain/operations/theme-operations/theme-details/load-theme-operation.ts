@@ -14,7 +14,7 @@ export class LoadThemeOperation {
 
   execute(name: string, version: string): ContinuationHandler {
     return this.enqueueBackgroundQueue.execute(
-      `worker`,
+      'data_io',
       `Loading theme ${name} ${version}`,
       async () => {
         const loaded = await this.themeGateway.loadTheme(name, version);

@@ -16,7 +16,7 @@ export class SaveAppConfigOperation {
   execute(): ContinuationHandler {
     const appConfigState = this.appConfigStore.getStore().config;
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       'Saving app config',
       async () => {
         this.configGateway.save(

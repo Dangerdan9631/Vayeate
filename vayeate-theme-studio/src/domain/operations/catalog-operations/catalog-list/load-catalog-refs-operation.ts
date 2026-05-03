@@ -14,7 +14,7 @@ export class LoadCatalogRefsOperation {
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       'Loading catalogs',
       async () => {
         const refs = await this.catalogGateway.listCatalogs();

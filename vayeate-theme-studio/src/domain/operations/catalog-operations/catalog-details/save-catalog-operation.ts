@@ -13,7 +13,7 @@ export class SaveCatalogOperation {
 
   execute(catalog: Catalog): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Saving catalog ${catalog.name} ${catalog.version}`,
       async () => {
         await this.catalogGateway.saveCatalog(catalog);

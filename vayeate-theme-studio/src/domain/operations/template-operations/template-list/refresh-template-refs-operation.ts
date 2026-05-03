@@ -14,10 +14,14 @@ export class RefreshTemplateRefsOperation {
   ) {}
 
   execute(): Promise<TemplateReference[]> {
-    return this.enqueueBackgroundQueue.executeReturning('Refreshing template refs', async () => {
-      const refs = await this.templateGateway.listTemplates();
-      this.templatesStore.getStore().updateTemplateRefs(refs);
-      return refs;
-    });
+    return this.enqueueBackgroundQueue.executeReturning(
+      'Refreshing template refs',
+      async () => {
+        const refs = await this.templateGateway.listTemplates();
+        this.templatesStore.getStore().updateTemplateRefs(refs);
+        return refs;
+      },
+      'data_io',
+    );
   }
 }

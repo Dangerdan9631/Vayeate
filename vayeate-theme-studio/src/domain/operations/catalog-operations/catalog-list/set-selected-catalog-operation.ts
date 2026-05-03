@@ -20,7 +20,7 @@ export class SetSelectedCatalogOperation {
     if (!ref || getCurrentCatalog(this.catalogsStore.getStore().stateV2.catalogs, ref)) return;
 
     this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Loading catalog ${ref.name} ${ref.version}`,
       async () => {
         const catalog = await this.catalogGateway.loadCatalog(ref.name, ref.version);

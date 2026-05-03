@@ -12,7 +12,7 @@ export class DeleteTemplateOperation {
 
   execute(name: string, version: string): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Deleting template ${name} ${version}`,
       async () => {
         await this.templateGateway.deleteTemplate(name, version);

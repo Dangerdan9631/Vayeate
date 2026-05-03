@@ -14,7 +14,7 @@ export class ClearPersistedUndoOperation {
   execute(): ContinuationHandler {
     undoManagerV2.configure({ persistence: this.undoGateway });
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       'Clearing persisted undo',
       async () => {
         await undoManagerV2.clearPersisted();

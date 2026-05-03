@@ -14,7 +14,7 @@ export class LoadTemplateRefsOperation {
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       'Loading templates',
       async () => {
         const refs = await this.templateGateway.listTemplates();

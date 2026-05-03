@@ -31,7 +31,7 @@ export class DeleteThemeVersionController {
     if (nextTh) {
       this.setSelectedThemeRef.execute(nextTh);
       this.loadTheme.execute(nextTh.name, nextTh.version)
-        .then(async () => {
+        .then('Loading next theme version', async () => {
           const loadedNextTh = this.themeUiStore.getStore().state.theme;
           if (loadedNextTh) {
             this.setThemePaneSelections.execute(

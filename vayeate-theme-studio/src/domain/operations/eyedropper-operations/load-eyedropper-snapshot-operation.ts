@@ -40,6 +40,7 @@ export class LoadEyedropperSnapshotOperation {
           this.eyedropperUiStore.getStore().setEyedropperErrorMessage(message);
         }
       },
+      'worker',
     );
   }
 }

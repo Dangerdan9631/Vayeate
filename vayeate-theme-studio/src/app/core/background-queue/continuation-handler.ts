@@ -1,4 +1,6 @@
+import { BackgroundQueueType } from "./background-queue-type";
 
 export interface ContinuationHandler {
-  then(onResolve: () => void): void;
+  onQueue(queue: BackgroundQueueType): ContinuationHandler;
+  then(description: string, onResolve: () => void): void;
 }

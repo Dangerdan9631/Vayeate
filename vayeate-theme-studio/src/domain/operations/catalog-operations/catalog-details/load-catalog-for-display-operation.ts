@@ -16,7 +16,7 @@ export class LoadCatalogForDisplayOperation {
   
   execute(refs: CatalogReference[]): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Loading catalogs for display`,
       async () => {
         const loadedCatalogs: Catalog[] = [];

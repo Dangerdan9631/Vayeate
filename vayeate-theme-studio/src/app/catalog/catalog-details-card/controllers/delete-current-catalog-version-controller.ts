@@ -22,7 +22,7 @@ export class DeleteCurrentCatalogVersionController {
 
     const { name, version } = ref;
     this.deleteCatalog.execute(name, version);
-    this.loadCatalogRefs.execute().then(() => {
+    this.loadCatalogRefs.execute().then('Loading next catalog version', () => {
       const refs = getCurrentCatalogRefs(this.catalogsStore.getStore().stateV2.catalogs);
       const next = findNearestVersionRef(refs, name, version);
       if (next) {

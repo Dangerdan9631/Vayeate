@@ -14,7 +14,7 @@ export class CreateThemeOperation {
   execute(params: { name: string }): Theme {
     const theme = createThemeWithParams(params);
     this.enqueueBackgroundQueue.execute(
-      `worker`,
+      'data_io',
       `Creating theme ${ params.name }`, () =>
         this.themeGateway.saveTheme(theme),
     );

@@ -16,7 +16,7 @@ export class RefreshTemplateRefsAndSelectOperation {
 
   execute(selectName?: string, selectVersion?: string): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Refreshing template ${selectName} ${selectVersion}`,
       async () => {
         const refs = await this.templateGateway.listTemplates();

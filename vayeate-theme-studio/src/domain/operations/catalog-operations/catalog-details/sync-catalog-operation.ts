@@ -13,8 +13,10 @@ export class SyncCatalogOperation {
   ) {}
 
   execute(catalog: Catalog): Promise<Catalog> {
-    return this.enqueueBackgroundQueue.executeReturning(`Syncing catalog ${catalog.name} ${catalog.version}`, () =>
-      this.syncBody(catalog),
+    return this.enqueueBackgroundQueue.executeReturning(
+      `Syncing catalog ${catalog.name} ${catalog.version}`,
+      () => this.syncBody(catalog),
+      'data_io',
     );
   }
 

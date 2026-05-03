@@ -12,7 +12,7 @@ export class DeleteCatalogOperation {
 
   execute(name: string, version: string): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Deleting catalog ${name} ${version}`,
       async () => {
         await this.catalogGateway.deleteCatalog(name, version);

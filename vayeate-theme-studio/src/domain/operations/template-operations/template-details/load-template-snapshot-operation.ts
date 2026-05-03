@@ -11,8 +11,10 @@ export class LoadTemplateSnapshotOperation {
   ) {}
 
   execute(name: string, version: string): Promise<Template | null> {
-    return this.enqueueBackgroundQueue.executeReturning(`Loading template snapshot ${name} ${version}`, () =>
-      this.templateGateway.loadTemplate(name, version),
+    return this.enqueueBackgroundQueue.executeReturning(
+      `Loading template snapshot ${name} ${version}`,
+      () => this.templateGateway.loadTemplate(name, version),
+      'data_io',
     );
   }
 }

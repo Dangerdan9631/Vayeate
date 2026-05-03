@@ -22,7 +22,7 @@ export class SelectThemeAndLoadController {
   async run(name: string, version: string): Promise<void> {
     this.setSelectedThemeRef.execute({ name, version });
     this.loadTheme.execute(name, version)
-    .then(async () => {
+    .then('Loading theme', async () => {
       const theme = this.themeUiStore.getStore().state.theme;
       if (!theme) return;
       this.setThemePaneSelections.execute([], []);

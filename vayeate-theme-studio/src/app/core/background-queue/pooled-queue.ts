@@ -1,13 +1,16 @@
 import { Semaphore } from "async-mutex";
 import { Logger, LoggerFactory } from "../../../domain/utils/logger";
 import { BackgroundQueueResolver } from "./background-queue-resolver";
-import { BackgroundQueueType } from "./background-queue-type";
+import type { BackgroundQueueType } from "./background-queue-type";
 import { ContinuationHandler } from "./continuation-handler";
 import { SignalBackgroundQueueProcessingCompleteController } from "./controllers/signal-background-queue-processing-complete-controller";
 import { UpdateBackgroundQueueStatusController } from "./controllers/update-background-queue-status-controller";
 import { IBackgroundQueue } from "./ibackground-queue";
 import { QueuedWork } from "./queued-work";
+import { EnqueueBackgroundQueueActionOperation } from "../../../domain/operations/background-queue/enqueue-background-queue-action-operation";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class PooledQueue implements IBackgroundQueue {
 
     private queue: QueuedWork[] = [];
@@ -20,6 +23,7 @@ export class PooledQueue implements IBackgroundQueue {
     constructor(
         private readonly queueType: BackgroundQueueType,
         private readonly concurrencyLimit: number,
+        private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
         private readonly updateBackgroundQueueStatus: UpdateBackgroundQueueStatusController,
         private readonly signalBackgroundQueueProcessingComplete: SignalBackgroundQueueProcessingCompleteController,
         loggerFactory: LoggerFactory,
@@ -28,7 +32,7 @@ export class PooledQueue implements IBackgroundQueue {
     }
 
     enqueue(description: string, run: () => void | Promise<void>): ContinuationHandler {
-        const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver() };
+        const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver(description) };
         this.queue.push(item);
         void this.process();
         return item.resolver;
@@ -67,7 +71,7 @@ export class PooledQueue implements IBackgroundQueue {
             this.log.error('Error running background work:', err);
         } finally {
             try {
-                item.resolver.onResolve();
+                item.resolver.onResolve(this.queueType, this.enqueueBackgroundQueue);
             } catch (err) {
                 this.log.error('Error resolving background work:', err);
             } finally {

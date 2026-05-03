@@ -22,6 +22,7 @@ export class LoadTemplateOperation {
         }
         return loaded;
       },
+      'data_io',
     );
   }
 }

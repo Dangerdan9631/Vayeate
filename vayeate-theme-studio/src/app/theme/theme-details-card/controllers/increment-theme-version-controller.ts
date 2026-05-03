@@ -43,7 +43,7 @@ export class IncrementThemeVersionController {
     this.loadThemeRefs.execute();
     this.setSelectedThemeRef.execute({ name: theme.name, version: newVersion });
     this.loadTheme.execute(theme.name, newVersion)
-      .then(() => {
+      .then('Loading new theme version', () => {
         const loaded = this.themeUiStore.getStore().state.theme;
         if (loaded) {
           this.setThemePaneSelections.execute(

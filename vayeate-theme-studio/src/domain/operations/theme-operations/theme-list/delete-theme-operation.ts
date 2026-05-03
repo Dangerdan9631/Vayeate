@@ -12,7 +12,7 @@ export class DeleteThemeOperation {
 
   execute(name: string, version: string): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Deleting theme ${name} ${version}`,
       async () => {
         await this.themeGateway.deleteTheme(name, version);

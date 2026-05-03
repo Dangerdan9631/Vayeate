@@ -11,8 +11,10 @@ export class LoadCatalogOperation {
   ) {}
 
   execute(name: string, version: string): Promise<Catalog | null> {
-    return this.enqueueBackgroundQueue.executeReturning(`Loading catalog ${name} ${version}`, () =>
-      this.catalogGateway.loadCatalog(name, version),
+    return this.enqueueBackgroundQueue.executeReturning(
+      `Loading catalog ${name} ${version}`,
+      () => this.catalogGateway.loadCatalog(name, version),
+      'data_io',
     );
   }
 }

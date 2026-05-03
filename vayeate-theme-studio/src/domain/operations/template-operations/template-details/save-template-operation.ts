@@ -13,7 +13,7 @@ export class SaveTemplateOperation {
 
   execute(template: Template): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'data_io',
       `Saving template ${template.name} ${template.version}`,
       async () => {
         await this.templateGateway.saveTemplate(template);

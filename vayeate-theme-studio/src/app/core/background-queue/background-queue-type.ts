@@ -1,2 +1,2 @@
 
-export type BackgroundQueueType = 'main' | 'worker';
+export type BackgroundQueueType = 'main' | 'worker' | 'data_io';
