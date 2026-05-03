@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplatesStore } from '../../../state/data/templates-store';
 import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
-/** After template mutations, refresh refs from disk and optionally load the selected template. */
 @singleton()
 export class RefreshTemplateRefsAndSelectOperation {
   constructor(
@@ -14,8 +14,9 @@ export class RefreshTemplateRefsAndSelectOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(selectName?: string, selectVersion?: string): void {
-    this.enqueueBackgroundAction.execute(
+  execute(selectName?: string, selectVersion?: string): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       `Refreshing template ${selectName} ${selectVersion}`,
       async () => {
         const refs = await this.templateGateway.listTemplates();
@@ -30,9 +31,7 @@ export class RefreshTemplateRefsAndSelectOperation {
             }
           }
         }
-      },
-      undefined,
-      'worker',
+      }
     );
   }
 }

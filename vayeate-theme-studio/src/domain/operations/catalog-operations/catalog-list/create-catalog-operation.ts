@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../state/data/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { CatalogType } from '../../../../model/schema/primitives';
 
@@ -28,13 +28,13 @@ export class CreateCatalogOperation {
     const ref = { name: catalog.name, version: catalog.version };
     this.catalogsStore.getStore().updateCatalog(catalog);
     this.enqueueBackgroundAction.execute(
+      'worker',
       `Saving catalog ${catalog.name} ${catalog.version}`,
       async () => {
         await this.catalogGateway.saveCatalog(catalog);
-      },
-      undefined,
-      'worker',
+      }
     );
+    
     return ref;
   }
 }

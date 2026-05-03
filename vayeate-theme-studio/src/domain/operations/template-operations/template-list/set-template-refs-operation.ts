@@ -1,6 +1,6 @@
 import type { TemplateReference } from '../../../../model/schema/theme-schemas';
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplatesStore } from '../../../state/data/templates-store';
 
 @singleton()
 export class SetTemplateRefsOperation {

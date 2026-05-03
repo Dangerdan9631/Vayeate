@@ -7,6 +7,7 @@ import { SetSelectedThemeRefOperation } from '../../../../domain/operations/them
 import { LoadThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/load-theme-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
 @singleton()
 export class DeleteThemeVersionController {
@@ -18,6 +19,7 @@ export class DeleteThemeVersionController {
     private readonly loadTheme: LoadThemeOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly setTheme: SetThemeOperation,
+    private readonly themeUiStore: ThemeUiStore,
   ) {}
 
   async run(name: string, version: string): Promise<void> {
@@ -28,17 +30,20 @@ export class DeleteThemeVersionController {
 
     if (nextTh) {
       this.setSelectedThemeRef.execute(nextTh);
-      const loadedNextTh = await this.loadTheme.execute(nextTh.name, nextTh.version);
-      if (loadedNextTh) {
-        this.setThemePaneSelections.execute(
-          loadedNextTh.colorAssignments.map((a) => a.colorRef),
-          loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
-        );
-      }
-    } else {
-      this.setSelectedThemeRef.execute(null);
-      this.setTheme.execute(null);
-      this.setThemePaneSelections.execute([], []);
+      this.loadTheme.execute(nextTh.name, nextTh.version)
+        .then(async () => {
+          const loadedNextTh = this.themeUiStore.getStore().state.theme;
+          if (loadedNextTh) {
+            this.setThemePaneSelections.execute(
+              loadedNextTh.colorAssignments.map((a) => a.colorRef),
+              loadedNextTh.contrastAssignments.map((a) => a.contrastVariableRef),
+            );
+          } else {
+            this.setSelectedThemeRef.execute(null);
+            this.setTheme.execute(null);
+            this.setThemePaneSelections.execute([], []);
+          }
+        });
     }
   }
 }

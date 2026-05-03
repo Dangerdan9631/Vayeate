@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
-/** Delete one theme version from disk. Single responsibility: delete. */
 @singleton()
 export class DeleteThemeOperation {
   constructor(
@@ -10,8 +10,9 @@ export class DeleteThemeOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(name: string, version: string): void {
-    this.enqueueBackgroundAction.execute(
+  execute(name: string, version: string): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       `Deleting theme ${name} ${version}`,
       async () => {
         await this.themeGateway.deleteTheme(name, version);

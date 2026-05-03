@@ -1,8 +1,9 @@
 import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../state/data/catalogs-store';
 import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
 @singleton()
 export class RefreshCatalogRefsAndSelectOperation {
@@ -13,8 +14,9 @@ export class RefreshCatalogRefsAndSelectOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(selectName?: string, selectVersion?: string): void {
-    this.enqueueBackgroundAction.execute(
+  execute(selectName?: string, selectVersion?: string): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       `Refreshing catalog ${selectName} ${selectVersion}`,
       async () => {
         const refs = await this.catalogGateway.listCatalogs();
@@ -29,9 +31,7 @@ export class RefreshCatalogRefsAndSelectOperation {
             }
           }
         }
-      },
-      undefined,
-      'worker'
+      }
     );
   }
 }

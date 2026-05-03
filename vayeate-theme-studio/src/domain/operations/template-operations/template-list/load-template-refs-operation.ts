@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplatesStore } from '../../../state/data/templates-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
-/** Load template refs from data dir into templates slice (template map entries from ref list). */
 @singleton()
 export class LoadTemplateRefsOperation {
   constructor(
@@ -12,15 +12,14 @@ export class LoadTemplateRefsOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(): void {
-    this.enqueueBackgroundAction.execute(
+  execute(): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       'Loading templates',
       async () => {
         const refs = await this.templateGateway.listTemplates();
         this.templatesStore.getStore().updateTemplateRefs(refs);
-      },
-      undefined,
-      'worker',
+      }
     );
   }
 }

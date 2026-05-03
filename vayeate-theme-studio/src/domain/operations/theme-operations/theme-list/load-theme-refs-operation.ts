@@ -1,7 +1,8 @@
 import { singleton } from 'tsyringe';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemesStore } from '../../../state/data/themes-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
 /** Load theme refs from data dir into themes slice (theme map entries from ref list). */
 @singleton()
@@ -12,8 +13,9 @@ export class LoadThemeRefsOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(): void {
-    this.enqueueBackgroundAction.execute(
+  execute(): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       'Loading themes',
       async () => {
         const refs = await this.themeGateway.listThemes();

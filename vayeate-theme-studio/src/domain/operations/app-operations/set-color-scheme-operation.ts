@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { AppConfigStore } from '../../state/app-config/app-config-store';
+import { AppConfigStore } from '../../state/data/app-config-store';
 
 @singleton()
 export class SetColorSchemeOperation {

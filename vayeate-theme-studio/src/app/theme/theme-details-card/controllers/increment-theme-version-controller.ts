@@ -42,13 +42,16 @@ export class IncrementThemeVersionController {
     }
     this.loadThemeRefs.execute();
     this.setSelectedThemeRef.execute({ name: theme.name, version: newVersion });
-    const loaded = await this.loadTheme.execute(theme.name, newVersion);
-    if (loaded) {
-      this.setThemePaneSelections.execute(
-        loaded.colorAssignments.map((a) => a.colorRef),
-        loaded.contrastAssignments.map((a) => a.contrastVariableRef),
-      );
-    }
+    this.loadTheme.execute(theme.name, newVersion)
+      .then(() => {
+        const loaded = this.themeUiStore.getStore().state.theme;
+        if (loaded) {
+          this.setThemePaneSelections.execute(
+            loaded.colorAssignments.map((a) => a.colorRef),
+            loaded.contrastAssignments.map((a) => a.contrastVariableRef),
+          );
+        }
+      });
   }
 }
 

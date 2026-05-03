@@ -3,8 +3,8 @@ import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { CatalogPageActionType } from './actions/catalog-page-action-type';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { CreateCatalogDialogStore } from '../../../domain/state/create-dialog/create-catalog-dialog-store';
-import { BulkAddDialogStore } from '../../../domain/state/bulk-add-dialog/bulk-add-dialog-store';
+import { CreateCatalogDialogStore } from '../../../domain/state/ui/create-catalog-dialog-store';
+import { BulkAddDialogStore } from '../../../domain/state/ui/bulk-add-dialog-store';
 
 const createCatalogDialogStore = container.resolve(CreateCatalogDialogStore);
 const bulkAddDialogStore = container.resolve(BulkAddDialogStore);

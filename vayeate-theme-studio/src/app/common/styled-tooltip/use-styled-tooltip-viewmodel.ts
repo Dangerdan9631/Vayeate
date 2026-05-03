@@ -1,5 +1,5 @@
 import { useStore } from 'zustand';
-import { WindowStore } from '../../../domain/state/window/window-store';
+import { WindowStore } from '../../../domain/state/ui/window-store';
 import { container } from 'tsyringe';
 
 const windowStore = container.resolve(WindowStore);

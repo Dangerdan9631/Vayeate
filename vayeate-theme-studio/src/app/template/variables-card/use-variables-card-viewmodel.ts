@@ -10,7 +10,7 @@ import {
 } from '../../../model/schema/primitives';
 import { VariablesCardActionType } from './actions/variables-card-action-type';
 import { container } from 'tsyringe';
-import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { ColorVariable, ContrastVariable, Template } from '../../../model/schema/template-schemas';
 

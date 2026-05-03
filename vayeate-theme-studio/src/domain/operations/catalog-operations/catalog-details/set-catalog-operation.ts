@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schema/catalog';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore } from '../../../state/data/catalogs-store';
 
 @singleton()
 export class SetCatalogOperation {

@@ -2,7 +2,7 @@ import type { Mapping } from '../../../../model/schema/template-schemas';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../../model/semantic-token-constants';
 import { singleton } from 'tsyringe';
-import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/data/templates-store';
 import { AppendSemanticVariantToTemplateOperation } from '../../../../domain/operations/template-operations/mappings-semantic/append-semantic-variant-to-template-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { GenerateSemanticVariantKeyOperation } from '../../../../domain/operations/template-operations/mappings-semantic/generate-semantic-variant-key-operation';

@@ -1,5 +1,4 @@
 import { singleton } from 'tsyringe';
-import { createThemeWithParams } from '../../model/factories/theme-factory';
 import { themeReferenceSchema, themeSchema } from '../../model/schema/theme-schemas';
 import type { ThemeName, Version } from '../../model/schema/primitives';
 import type { Theme, ThemeReference } from '../../model/schema/theme-schemas';
@@ -31,12 +30,6 @@ function parseFileName(baseName: string): { name: ThemeName; version: Version } 
 @singleton()
 export class ThemeGateway {
   constructor(private readonly fileSystemService: FileSystemService) {}
-
-  async createTheme(params: { name: string }): Promise<Theme> {
-    const theme = createThemeWithParams(params);
-    await this.saveTheme(theme);
-    return theme;
-  }
 
   async saveTheme(theme: Theme): Promise<void> {
     const parsed = themeSchema.safeParse(theme);

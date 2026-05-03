@@ -7,10 +7,12 @@ import { SetThemeLoadedTemplateOperation } from '../../../../domain/operations/t
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadTemplateSnapshotOperation } from '../../../../domain/operations/template-operations/template-details/load-template-snapshot-operation';
 import { findBestVersionRef } from '../../../../domain/utils/find-best-version-ref';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
 @singleton()
 export class SelectThemeByNameController {
   constructor(
+    private readonly themeUiStore: ThemeUiStore,
     private readonly getThemeRefs: GetThemeRefsOperation,
     private readonly setSelectedThemeRef: SetSelectedThemeRefOperation,
     private readonly loadTheme: LoadThemeOperation,
@@ -24,13 +26,17 @@ export class SelectThemeByNameController {
     const best = findBestVersionRef(this.getThemeRefs.execute(), name);
     if (!best) return;
     this.setSelectedThemeRef.execute({ name: best.name, version: best.version });
-    const theme = await this.loadTheme.execute(best.name, best.version);
-    this.setThemePaneSelections.execute([], []);
-    const template =
-      theme?.templateRef != null
-        ? await this.loadTemplateSnapshot.execute(theme.templateRef.name, theme.templateRef.version)
-        : null;
-    if (theme) this.applyThemeStateAndSchedulePersist.execute(theme);
-    this.setThemeLoadedTemplate.execute(template);
+    this.loadTheme.execute(best.name, best.version)
+      .then(async () => {
+        const theme = this.themeUiStore.getStore().state.theme;
+        if (!theme) return;
+        this.setThemePaneSelections.execute([], []);
+        const template =
+          theme?.templateRef != null
+            ? await this.loadTemplateSnapshot.execute(theme.templateRef.name, theme.templateRef.version)
+            : null;
+        if (theme) this.applyThemeStateAndSchedulePersist.execute(theme);
+        this.setThemeLoadedTemplate.execute(template);
+      });
   }
 }

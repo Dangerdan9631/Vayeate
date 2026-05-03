@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schema/template-schemas';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
 @singleton()
 export class SaveTemplateOperation {
@@ -10,15 +11,13 @@ export class SaveTemplateOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  /** Persist template to disk only. Single responsibility: save. */
-  execute(template: Template): void {
-    this.enqueueBackgroundAction.execute(
+  execute(template: Template): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       `Saving template ${template.name} ${template.version}`,
       async () => {
         await this.templateGateway.saveTemplate(template);
-      },
-      undefined,
-      'worker',
+      }
     );
   }
 }

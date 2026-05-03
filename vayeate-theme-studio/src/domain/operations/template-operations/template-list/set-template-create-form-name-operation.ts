@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CreateTemplateDialogStore } from '../../../state/create-dialog/create-template-dialog-store';
+import { CreateTemplateDialogStore } from '../../../state/ui/create-template-dialog-store';
 
 @singleton()
 export class SetTemplateCreateFormNameOperation {

@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { WindowStore } from '../../state/window/window-store';
+import { WindowStore } from '../../state/ui/window-store';
 import { Size } from '../../../model/point';
 
 @singleton()

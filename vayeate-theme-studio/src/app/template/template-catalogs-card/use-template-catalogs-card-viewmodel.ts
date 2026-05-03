@@ -6,8 +6,8 @@ import type { CatalogName } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { TemplateCatalogsCardActionType } from './actions/template-catalogs-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
-import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { CatalogsStore } from '../../../domain/state/data/catalogs-store';
+import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { Template } from '../../../model/schema/template-schemas';
 

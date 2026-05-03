@@ -6,7 +6,7 @@ import type { Catalog, Token } from '../../../model/schema/catalog';
 import { tokenKeySchema, tokenTypeSchema, type SemanticTokenRegistryListKind, type TokenKey, type TokenType } from '../../../model/schema/primitives';
 import { TokensCardActionType } from './actions/tokens-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/state/data/catalogs-store';
 import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
 

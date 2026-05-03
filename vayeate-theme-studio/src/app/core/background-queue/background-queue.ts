@@ -8,10 +8,27 @@ export const BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT = 16;
 
 export type BackgroundQueueType = 'main' | 'worker';
 
+export interface ContinuationHandler {
+  then(onResolve: () => void): void;
+}
+
+const noop = () => { };
+class BackgroundQueueResolver implements ContinuationHandler {
+  private resolve: () => void = noop;
+
+  onResolve(): void {
+    this.resolve();
+  }
+
+  then(onResolve: () => void): void {
+    this.resolve = onResolve;
+  }
+}
+
 interface QueuedWork {
   description: string;
   run: () => void | Promise<void>;
-  resolve: () => void;
+  resolver: BackgroundQueueResolver;
 }
 
 @singleton()
@@ -36,28 +53,29 @@ export class BackgroundQueue {
   }
 
   enqueue(
+    queue: BackgroundQueueType,
     description: string,
     run: () => void | Promise<void>,
-    resolve: () => void,
-    queue: BackgroundQueueType = 'main',
-  ): void {
-    const item: QueuedWork = { description, run, resolve };
+  ): ContinuationHandler {
+    const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver() };
     switch (queue) {
       case 'worker':
         this.log.debug('enqueue background [worker]', description);
         this.workerQueue.push(item);
         void this.processWorkers();
-        return;
+        break;
       case 'main':
         this.log.debug('enqueue background [main]', description);
         this.mainQueue.push(item);
         void this.processMain();
-        return;
+        break;
       default: {
         const _exhaustive: never = queue;
         this.log.error('Unhandled background lane (BackgroundQueueLane union not exhaustive)', { lane: _exhaustive });
       }
     }
+
+    return item.resolver;
   }
 
   private async processMain(): Promise<void> {
@@ -72,7 +90,7 @@ export class BackgroundQueue {
       } catch (err) {
         this.log.error('Error running background work:', err);
       } finally {
-        item.resolve();
+        item.resolver.onResolve();
       }
     }
 
@@ -114,7 +132,7 @@ export class BackgroundQueue {
       this.log.error('Error running background work:', err);
     } finally {
       try {
-        item.resolve();
+        item.resolver.onResolve();
       } catch (err) {
         this.log.error('Error resolving background work:', err);
       } finally {

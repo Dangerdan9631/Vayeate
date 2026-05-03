@@ -2,7 +2,7 @@ import { useStore } from 'zustand';
 import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { ValidateIsTemplateNameValid } from '../../../domain/validations/template-validations/validate-is-template-name-valid';
-import { CreateTemplateDialogStore } from '../../../domain/state/create-dialog/create-template-dialog-store';
+import { CreateTemplateDialogStore } from '../../../domain/state/ui/create-template-dialog-store';
 import { container } from 'tsyringe';
 import { TemplateCreateDialogActionType } from './actions/template-create-dialog-action-type';
 

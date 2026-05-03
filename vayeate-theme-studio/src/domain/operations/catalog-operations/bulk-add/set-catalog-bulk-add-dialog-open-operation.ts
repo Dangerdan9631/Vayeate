@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { BulkAddDialogStore } from '../../../state/bulk-add-dialog/bulk-add-dialog-store';
+import { BulkAddDialogStore } from '../../../state/ui/bulk-add-dialog-store';
 
 @singleton()
 export class SetCatalogBulkAddDialogOpenOperation {

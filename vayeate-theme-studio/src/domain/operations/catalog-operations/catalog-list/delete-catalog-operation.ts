@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
-/** Delete one catalog version from disk. Single responsibility: delete. */
 @singleton()
 export class DeleteCatalogOperation {
   constructor(
@@ -10,14 +10,13 @@ export class DeleteCatalogOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) { }
 
-  execute(name: string, version: string): void {
-    this.enqueueBackgroundAction.execute(
+  execute(name: string, version: string): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       `Deleting catalog ${name} ${version}`,
       async () => {
         await this.catalogGateway.deleteCatalog(name, version);
-      },
-      undefined,
-      'worker',
+      }
     );
   }
 }

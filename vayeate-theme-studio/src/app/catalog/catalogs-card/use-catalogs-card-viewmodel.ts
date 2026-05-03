@@ -4,7 +4,7 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { CatalogsCardActionType } from './actions/catalogs-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/data/catalogs-store';
 import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
 

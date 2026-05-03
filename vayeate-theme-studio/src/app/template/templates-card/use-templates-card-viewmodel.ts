@@ -5,8 +5,8 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import { TemplatesCardActionType } from './actions/templates-card-action-type';
 import { container } from 'tsyringe';
-import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
-import { CreateTemplateDialogStore } from '../../../domain/state/create-dialog/create-template-dialog-store';
+import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
+import { CreateTemplateDialogStore } from '../../../domain/state/ui/create-template-dialog-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 
 const templatesStore = container.resolve(TemplatesStore);

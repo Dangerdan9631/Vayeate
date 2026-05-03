@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { createThemeWithParams } from '../../../../model/factories/theme-factory';
 
 @singleton()
 export class CreateThemeOperation {
@@ -10,9 +11,14 @@ export class CreateThemeOperation {
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(params: { name: string }): Promise<Theme> {
-    return this.enqueueBackgroundQueue.executeReturning(`Creating theme ${params.name}`, () =>
-      this.themeGateway.createTheme(params),
+  execute(params: { name: string }): Theme {
+    const theme = createThemeWithParams(params);
+    this.enqueueBackgroundQueue.execute(
+      `worker`,
+      `Creating theme ${ params.name }`, () =>
+        this.themeGateway.saveTheme(theme),
     );
+    
+    return theme; 
   }
 }

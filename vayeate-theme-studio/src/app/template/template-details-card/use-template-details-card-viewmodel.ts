@@ -4,7 +4,7 @@ import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import { TemplateDetailsCardActionType } from './actions/template-details-card-action-type';
 import { container } from 'tsyringe';
-import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { Mapping, Template } from '../../../model/schema/template-schemas';
 

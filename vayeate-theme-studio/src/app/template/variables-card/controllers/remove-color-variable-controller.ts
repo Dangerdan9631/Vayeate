@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
-import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/data/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../../domain/operations/template-operations/variables-color/remove-color-variable-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';

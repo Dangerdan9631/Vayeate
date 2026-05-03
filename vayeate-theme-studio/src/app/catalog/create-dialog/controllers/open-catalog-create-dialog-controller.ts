@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { OpenCatalogCreateDialogOperation } from '../../../../domain/ui/create-dialog/operations/open-catalog-create-dialog-operation';
+import { OpenCatalogCreateDialogOperation } from '../../../../domain/operations/create-dialog/operations/open-catalog-create-dialog-operation';
 
 @singleton()
 export class OpenCatalogCreateDialogController {

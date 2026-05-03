@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import { SetCatalogCreateDialogDataOperation } from '../../../../domain/ui/create-dialog/operations/set-catalog-create-dialog-data-operation';
+import { SetCatalogCreateDialogDataOperation } from '../../../../domain/operations/create-dialog/operations/set-catalog-create-dialog-data-operation';
 import { ValidateCatalogNameIsValid } from '../../../../domain/catalog/validations/validate-catalog-name-is-valid';
-import { SetCatalogCreateDialogErrorOperation } from '../../../../domain/ui/create-dialog/operations/set-catalog-create-dialog-error-operation';
+import { SetCatalogCreateDialogErrorOperation } from '../../../../domain/operations/create-dialog/operations/set-catalog-create-dialog-error-operation';
 import { ValidateCatalogNameIsUnique } from '../../../../domain/catalog/validations/validate-catalog-name-is-unique';
 import { Validator } from '../../../../domain/validations/validator';
 

@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { Catalog } from '../../../../model/schema/catalog';
 
 @singleton()
 export class LoadCatalogOperation {

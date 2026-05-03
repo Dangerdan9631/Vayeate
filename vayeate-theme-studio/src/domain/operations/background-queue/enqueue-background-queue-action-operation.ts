@@ -1,10 +1,9 @@
 import { singleton } from 'tsyringe';
 import {
   BackgroundQueue,
+  ContinuationHandler,
   type BackgroundQueueType,
 } from '../../../app/core/background-queue/background-queue';
-
-const noop = () => { };
 
 export type { BackgroundQueueType as BackgroundQueueLane };
 
@@ -15,15 +14,13 @@ export class EnqueueBackgroundQueueActionOperation {
   ) {}
 
   execute(
+    queue: BackgroundQueueType,
     description: string,
     run: () => void | Promise<void>,
-    resolve?: (() => void) | undefined,
-    queue: BackgroundQueueType = 'worker',
-  ): void {
-    this.backgroundQueue.enqueue(description, run, resolve || noop, queue);
+  ): ContinuationHandler {
+    return this.backgroundQueue.enqueue(queue, description, run);
   }
 
-  /** Runs `factory` on the background queue and resolves when it completes without surfacing duplicate queue swallowing. */
   executeReturning<T>(
     description: string,
     factory: () => Promise<T>,
@@ -37,7 +34,7 @@ export class EnqueueBackgroundQueueActionOperation {
           reject(e);
         }
       };
-      this.backgroundQueue.enqueue(description, run, noop, queue);
+      this.backgroundQueue.enqueue(queue, description, run);
     });
   }
 }

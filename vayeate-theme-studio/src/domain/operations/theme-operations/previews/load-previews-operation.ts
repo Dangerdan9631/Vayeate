@@ -2,8 +2,8 @@ import { singleton } from 'tsyringe';
 import { PreviewGateway } from '../../../../gateway/preview/preview-gateway';
 import { ThemePreviewStore } from '../../../state/ui/theme-preview-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
-/** Load tokenized preview files and set them in state. */
 @singleton()
 export class LoadPreviewsOperation {
   constructor(
@@ -12,8 +12,9 @@ export class LoadPreviewsOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(): void {
-    this.enqueueBackgroundAction.execute(
+  execute(): ContinuationHandler {
+    return this.enqueueBackgroundAction.execute(
+      'worker',
       'Loading previews',
       async () => {
         try {

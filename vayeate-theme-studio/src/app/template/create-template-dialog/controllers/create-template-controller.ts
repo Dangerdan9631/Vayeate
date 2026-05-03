@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { CreateTemplateDialogStore } from '../../../../domain/state/create-dialog/create-template-dialog-store';
+import { CreateTemplateDialogStore } from '../../../../domain/state/ui/create-template-dialog-store';
 import { CreateTemplateOperation } from '../../../../domain/operations/template-operations/template-list/create-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-operation';
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';

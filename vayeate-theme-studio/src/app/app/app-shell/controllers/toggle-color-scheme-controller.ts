@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { SaveAppConfigOperation } from '../../../../domain/operations/app-operations/save-app-config-operation';
 import { SetColorSchemeOperation } from '../../../../domain/operations/app-operations/set-color-scheme-operation';
-import { AppConfigStore } from '../../../../domain/state/app-config/app-config-store';
+import { AppConfigStore } from '../../../../domain/state/data/app-config-store';
 
 @singleton()
 export class ToggleColorSchemeController {

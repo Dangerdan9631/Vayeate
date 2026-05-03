@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalog } from '../../../state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../../state/data/catalogs-store';
 import { parseThemeJson } from '../../../../model/theme-import';
-import { BulkAddDialogStore } from '../../../state/bulk-add-dialog/bulk-add-dialog-store';
+import { BulkAddDialogStore } from '../../../state/ui/bulk-add-dialog-store';
 import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 
 @singleton()

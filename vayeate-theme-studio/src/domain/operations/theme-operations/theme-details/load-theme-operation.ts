@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
 
 @singleton()
 export class LoadThemeOperation {
@@ -12,13 +12,13 @@ export class LoadThemeOperation {
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(name: string, version: string): Promise<Theme | null> {
-    return this.enqueueBackgroundQueue.executeReturning(
+  execute(name: string, version: string): ContinuationHandler {
+    return this.enqueueBackgroundQueue.execute(
+      `worker`,
       `Loading theme ${name} ${version}`,
       async () => {
         const loaded = await this.themeGateway.loadTheme(name, version);
         this.themeUiStore.getStore().setTheme(loaded);
-        return loaded;
       },
     );
   }

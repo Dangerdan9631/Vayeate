@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { ThemeReference } from '../../../../model/schema/theme-schemas';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemesStore } from '../../../state/data/themes-store';
 
 @singleton()
 export class SetThemeRefsOperation {

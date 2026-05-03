@@ -11,7 +11,6 @@ import { toSafeFileName } from '../../../utils/to-safe-theme-file-name';
 
 const EXTENSION_THEMES_EXPORT_PREFIX = 'exthemes';
 
-/** Generate theme files via service and report result in state. */
 @singleton()
 export class GenerateThemeOperation {
   constructor(
@@ -34,6 +33,7 @@ export class GenerateThemeOperation {
     const templateVersion = templateRef.version;
     this.themeUiStore.getStore().setGenerateResult(null);
     this.enqueueBackgroundAction.execute(
+      'worker',
       `Generating theme ${themeName} ${themeVersion}`,
       async () => {
         try {

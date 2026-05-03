@@ -3,7 +3,7 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { TemplatePageActionType } from './actions/template-page-action-type';
 import { container } from 'tsyringe';
-import { CreateTemplateDialogStore } from '../../../domain/state/create-dialog/create-template-dialog-store';
+import { CreateTemplateDialogStore } from '../../../domain/state/ui/create-template-dialog-store';
 
 const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 

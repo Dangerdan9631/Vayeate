@@ -5,7 +5,7 @@ import type { Catalog } from '../../../model/schema/catalog';
 import { sourceTypeSchema, tokenTypeSchema, type SourceType, type TokenType } from '../../../model/schema/primitives';
 import { CatalogDetailsCardActionType } from './actions/catalog-details-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/state/data/catalogs-store';
 import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
 

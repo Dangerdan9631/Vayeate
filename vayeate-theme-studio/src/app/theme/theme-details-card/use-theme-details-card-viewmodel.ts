@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { ColorAssignment, ContrastAssignment, TemplateReference, Theme } from '../../../model/schema/theme-schemas';

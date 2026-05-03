@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { WindowStateEvent } from '../../../model/window-state-event';
-import { WindowStore } from '../../state/window/window-store';
+import { WindowStore } from '../../state/ui/window-store';
 
 @singleton()
 export class SetWindowDisplayStateOperation {

@@ -6,8 +6,8 @@ import { AppMenuActionType } from './actions/app-menu-action-type';
 import { UiStore } from '../../../domain/state/ui/ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
-import { WindowStore } from '../../../domain/state/window/window-store';
+import { AppConfigStore } from '../../../domain/state/data/app-config-store';
+import { WindowStore } from '../../../domain/state/ui/window-store';
 import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
 
 const uiStore = container.resolve(UiStore);

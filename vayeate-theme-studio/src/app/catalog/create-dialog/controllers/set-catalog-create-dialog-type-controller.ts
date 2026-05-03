@@ -1,6 +1,6 @@
 import type { CatalogType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
-import { SetCatalogCreateDialogDataOperation } from '../../../../domain/ui/create-dialog/operations/set-catalog-create-dialog-data-operation';
+import { SetCatalogCreateDialogDataOperation } from '../../../../domain/operations/create-dialog/operations/set-catalog-create-dialog-data-operation';
 
 @singleton()
 export class SetCatalogCreateDialogTypeController {

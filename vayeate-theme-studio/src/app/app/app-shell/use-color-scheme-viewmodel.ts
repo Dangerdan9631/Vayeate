@@ -1,4 +1,4 @@
-import { AppConfigStore } from '../../../domain/state/app-config/app-config-store';
+import { AppConfigStore } from '../../../domain/state/data/app-config-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 

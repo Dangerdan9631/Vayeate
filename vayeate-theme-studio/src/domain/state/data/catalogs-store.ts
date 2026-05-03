@@ -49,17 +49,24 @@ export class CatalogsStore {
     immer((set): CatalogsStoreState => ({
       stateV2: initialCatalogsStateV2,
       updateCatalogRefs: (refs: CatalogReference[]) => set((storeState) => {
+        const catalogs: CatalogMap = {}
         refs.forEach((ref) => {
-          if (!storeState.stateV2.catalogs[ref.name]) {
-            storeState.stateV2.catalogs[ref.name] = {};
+          if (!catalogs[ref.name]) {
+            catalogs[ref.name] = {};
           }
-          if (!storeState.stateV2.catalogs[ref.name][ref.version]) {
-            storeState.stateV2.catalogs[ref.name][ref.version] = {
+
+          const existing = storeState.stateV2.catalogs[ref.name]?.[ref.version];
+          if (existing) {
+            catalogs[ref.name][ref.version] = storeState.stateV2.catalogs[ref.name][ref.version];
+          } else {
+            catalogs[ref.name][ref.version] = {
               isLoaded: false,
               catalog: null,
             };
           }
         });
+
+        storeState.stateV2.catalogs = castDraft(catalogs);
       }),
       updateCatalog: (catalog: Catalog) => set((storeState) => {
         const catalogRef = {

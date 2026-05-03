@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { EyedropperUiStore } from '../../../domain/state/ui/eyedropper-ui-store';
-import { WindowStore } from '../../../domain/state/window/window-store';
+import { WindowStore } from '../../../domain/state/ui/window-store';
 import type { EyedropperPointerSample } from '../../../model/eyedropper';
 import { EYEDROPPER_LOUPE_SIZE, loupeFixedPosition } from './eyedropper-utils';
 
