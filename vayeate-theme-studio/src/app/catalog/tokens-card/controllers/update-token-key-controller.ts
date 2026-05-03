@@ -6,11 +6,13 @@ import { SaveCatalogOperation } from '../../../../domain/operations/catalog-oper
 import { UpdateTokenKeyInCatalogOperation } from '../../../../domain/operations/catalog-operations/tokens/update-token-key-in-catalog-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 import { getCurrentCatalog } from '../../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()
 export class UpdateTokenKeyController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateTokenKeyInCatalog: UpdateTokenKeyInCatalogOperation,
@@ -19,7 +21,7 @@ export class UpdateTokenKeyController {
 
   run(oldKey: string, newKey: string, tokenType: TokenType): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store);
+    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateTokenKeyInCatalog.execute(base, oldKey, newKey, tokenType);

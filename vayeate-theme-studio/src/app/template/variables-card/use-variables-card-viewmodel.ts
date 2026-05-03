@@ -11,9 +11,11 @@ import {
 import { VariablesCardActionType } from './actions/variables-card-action-type';
 import { container } from 'tsyringe';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { ColorVariable, ContrastVariable, Template } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
+const templateUiStore = container.resolve(TemplateUiStore);
 
 export interface VariablesCardViewModel {
   template: Template | null;
@@ -45,11 +47,11 @@ function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean 
 
 export function useVariablesCardViewModel(): VariablesCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template = useStore(templatesStore.api, getCurrentTemplate);
+  const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
-  const variablesSearchText = useStore(templatesStore.api, (state) => state.state.variablesSearchText);
-  const addVariableName = useStore(templatesStore.api, (state) => state.state.addVariableName);
+  const template = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
+  const variablesSearchText = useStore(templateUiStore.api, (state) => state.state.variablesSearchText);
+  const addVariableName = useStore(templateUiStore.api, (state) => state.state.addVariableName);
 
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);

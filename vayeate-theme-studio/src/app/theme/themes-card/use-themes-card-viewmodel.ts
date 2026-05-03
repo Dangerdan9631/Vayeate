@@ -4,11 +4,15 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { getThemeRefs } from '../../../domain/state/theme/themes-state';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
+import { ThemeCreateDialogStore } from '../../../domain/state/ui/theme-create-dialog-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import { ThemesCardActionType } from './actions/themes-card-action-type';
 import type { ThemeReference } from '../../../model/schema/theme-schemas';
 
 const themesStore = container.resolve(ThemesStore);
+const themeUiStore = container.resolve(ThemeUiStore);
+const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
 
 export interface ThemesCardViewModel {
   themeNames: string[];
@@ -23,8 +27,8 @@ export interface ThemesCardViewModel {
 
 export function useThemesCardViewModel(): ThemesCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
-  const isCreating = useStore(themesStore.api, (state) => state.state.isCreating);
+  const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);
+  const isCreating = useStore(themeCreateDialogStore.api, (state) => state.state.isCreating);
   const themeMap = useStore(themesStore.api, (state) => state.state.themeMap);
   const themeRefs = useMemo(() => getThemeRefs(themeMap), [themeMap]);
 

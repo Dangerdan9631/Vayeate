@@ -3,19 +3,19 @@ import type { ColorVariableKey } from '../../../../model/schema/primitives';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ApplyThemeStateAndSchedulePersistOperation } from './apply-theme-state-and-schedule-persist-operation';
 import { SetThemeOperation } from './set-theme-operation';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 
 @singleton()
 export class SetColorVariableLightOperation {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly setTheme: SetThemeOperation,
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   execute(ref: ColorVariableKey | string | undefined, value: string): void {
-    const theme = this.themesStateGetter.getStore().state.theme;
+    const theme = this.themeUiStore.getStore().state.theme;
     if (!theme || !ref) return;
     const normalized = normalizeHexSafe(value);
     const newAssignments = theme.colorAssignments.map((a) =>

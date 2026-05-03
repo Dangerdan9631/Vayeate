@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { GetCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/get-catalog-refs-operation';
 import { LoadCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/load-catalog-operation';
@@ -35,6 +36,7 @@ async function loadCatalogData(
 export class ToggleCatalogController {
   constructor(
     private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
@@ -43,7 +45,7 @@ export class ToggleCatalogController {
   ) {}
 
   async run(catalogName: string): Promise<void> {
-    const template = getCurrentTemplate(this.templatesStore.getStore());
+    const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
     const currentlyIncluded = template.catalogRefs.some((r) => r.name === catalogName);

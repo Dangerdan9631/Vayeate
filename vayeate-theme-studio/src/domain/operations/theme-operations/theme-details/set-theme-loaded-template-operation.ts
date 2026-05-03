@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schema/template-schemas';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemePreviewStore } from '../../../state/ui/theme-preview-store';
 
 @singleton()
 export class SetThemeLoadedTemplateOperation {
-  constructor(private readonly themesStateSetter: ThemesStore) {}
+  constructor(private readonly themePreviewStore: ThemePreviewStore) {}
 
   execute(template: Template | null): void {
-    this.themesStateSetter.getStore().setLoadedTemplate(template);
+    this.themePreviewStore.getStore().setLoadedTemplate(template);
   }
 }
 

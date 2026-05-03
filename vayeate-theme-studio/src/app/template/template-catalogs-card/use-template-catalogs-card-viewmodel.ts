@@ -8,10 +8,12 @@ import { TemplateCatalogsCardActionType } from './actions/template-catalogs-card
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { Template } from '../../../model/schema/template-schemas';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
+const templateUiStore = container.resolve(TemplateUiStore);
 
 export interface TemplateCatalogRowViewModel {
   name: string;
@@ -32,9 +34,9 @@ export interface TemplateCatalogsCardViewModel {
 
 export function useTemplateCatalogsCardViewModel(): TemplateCatalogsCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template = useStore(templatesStore.api, getCurrentTemplate);
+  const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
+  const template = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 

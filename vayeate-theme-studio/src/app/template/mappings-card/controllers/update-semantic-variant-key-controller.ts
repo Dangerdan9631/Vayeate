@@ -1,4 +1,5 @@
 import { formatSemanticSelector } from '../../../../model/format-semantic-selector';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { parseSemanticSelector } from '../../../../model/parse-semantic-selector';
 import { ParsedSemanticSelector } from '../../../../model/semantic-selector-types';
 import { singleton } from 'tsyringe';
@@ -17,6 +18,7 @@ export type UpdateSemanticVariantKeyPayload =
 export class UpdateSemanticVariantKeyController {
   constructor(
     private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
     private readonly updateSemanticVariantKeyInTemplate: UpdateSemanticVariantKeyInTemplateOperation,
@@ -44,7 +46,7 @@ export class UpdateSemanticVariantKeyController {
     modifiers: string[],
     language: string | null,
   ): void {
-    const template = getCurrentTemplate(this.templatesStore.getStore());
+    const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
     const newKey = formatSemanticSelector(parsed.type, modifiers, language);
     if (!newKey || newKey === oldKey) return;

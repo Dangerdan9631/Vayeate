@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { CatalogsStore, getCurrentCatalog } from '../../../state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 
@@ -8,14 +9,15 @@ import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 export class SetSelectedCatalogOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly catalogGateway: CatalogGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
   execute(ref: CatalogReference | null): void {
-    this.catalogsStore.getStore().selectCatalog(ref);
+    this.catalogUiStore.getStore().selectCatalog(ref);
 
-    if (!ref || getCurrentCatalog(this.catalogsStore.getStore())) return;
+    if (!ref || getCurrentCatalog(this.catalogsStore.getStore().stateV2.catalogs, ref)) return;
 
     this.enqueueBackgroundAction.execute(
       `Loading catalog ${ref.name} ${ref.version}`,

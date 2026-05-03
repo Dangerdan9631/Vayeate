@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
 @singleton()
 export class SetThemeOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeUiStore: ThemeUiStore) {}
 
   execute(theme: Theme | null, preserveHue?: boolean): void {
-    this.ThemesStore.getStore().setTheme(theme, preserveHue);
+    this.themeUiStore.getStore().setTheme(theme, preserveHue);
   }
 }
 

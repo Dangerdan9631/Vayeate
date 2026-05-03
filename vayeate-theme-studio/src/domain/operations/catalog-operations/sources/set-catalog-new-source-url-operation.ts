@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 
 @singleton()
 export class SetCatalogNewSourceUrlOperation {
-  constructor(private readonly catalogsStore: CatalogsStore) {}
+  constructor(private readonly catalogUiStore: CatalogUiStore) {}
 
   execute(value: string): void {
-    this.catalogsStore.getStore().setNewSourceData(value);
+    this.catalogUiStore.getStore().setNewSourceData(value);
   }
 }
 

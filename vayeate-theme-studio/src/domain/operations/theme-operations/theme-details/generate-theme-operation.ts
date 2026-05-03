@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { FileSystemService } from '../../../../gateway/services/file-system-service';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { assertValidThemeFileName } from '../../../utils/assert-valid-theme-file-name';
 import { stringifyTheme } from '../../../utils/stringify-theme';
@@ -15,8 +15,7 @@ const EXTENSION_THEMES_EXPORT_PREFIX = 'exthemes';
 @singleton()
 export class GenerateThemeOperation {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
-    private readonly themesStateSetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly themeGateway: ThemeGateway,
     private readonly templateGateway: TemplateGateway,
     private readonly fileSystemService: FileSystemService,
@@ -24,7 +23,7 @@ export class GenerateThemeOperation {
   ) { }
 
   execute(): void {
-    const { theme } = this.themesStateGetter.getStore().state;
+    const { theme } = this.themeUiStore.getStore().state;
     const templateRef = theme?.templateRef;
     if (!theme || !templateRef) {
       return;
@@ -33,7 +32,7 @@ export class GenerateThemeOperation {
     const themeVersion = theme.version;
     const templateName = templateRef.name;
     const templateVersion = templateRef.version;
-    this.themesStateSetter.getStore().setGenerateResult(null);
+    this.themeUiStore.getStore().setGenerateResult(null);
     this.enqueueBackgroundAction.execute(
       `Generating theme ${themeName} ${themeVersion}`,
       async () => {
@@ -55,13 +54,13 @@ export class GenerateThemeOperation {
           const lightPath = `${EXTENSION_THEMES_EXPORT_PREFIX}/${lightFileName}`;
           await this.fileSystemService.saveFile(darkPath, stringifyTheme(dark));
           await this.fileSystemService.saveFile(lightPath, stringifyTheme(light));
-          this.themesStateSetter.getStore().setGenerateResult({
+          this.themeUiStore.getStore().setGenerateResult({
             success: true,
             message: `Generated ${darkPath} and ${lightPath}`,
           });
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
-          this.themesStateSetter.getStore().setGenerateResult({ success: false, message });
+          this.themeUiStore.getStore().setGenerateResult({ success: false, message });
         }
       }
     );

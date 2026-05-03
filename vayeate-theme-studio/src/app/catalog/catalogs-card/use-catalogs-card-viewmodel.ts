@@ -5,9 +5,11 @@ import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { CatalogsCardActionType } from './actions/catalogs-card-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
+const catalogUiStore = container.resolve(CatalogUiStore);
 
 export interface CatalogsCardViewModel {
   selectedName: string;
@@ -21,7 +23,7 @@ export interface CatalogsCardViewModel {
 
 export function useCatalogsCardViewModel(): CatalogsCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
+  const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);
   const selectedName = useMemo(() => selectedRef?.name ?? '', [selectedRef]);
   const selectedVersion = useMemo(() => selectedRef?.version ?? '', [selectedRef]);
 

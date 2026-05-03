@@ -2,10 +2,12 @@ import { useCallback } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
+import { ThemeCreateDialogStore } from '../../../domain/state/ui/theme-create-dialog-store';
 import { ThemePageActionType } from './actions/theme-page-action-type';
 
-const themesStore = container.resolve(ThemesStore);
+const themeUiStore = container.resolve(ThemeUiStore);
+const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
 
 export interface ThemesPageChromeViewModel {
   saveError: string | null;
@@ -19,8 +21,8 @@ export function useThemesPageChromeViewModel(): ThemesPageChromeViewModel {
     void dispatch({ type: ThemePageActionType.PageSaveErrorDismissButtonOnClick });
   }, [dispatch]);
 
-  const saveError = useStore(themesStore.api, (state) => state.state.saveError);
-  const createDialogOpen = useStore(themesStore.api, (state) => state.state.createDialogOpen);
+  const saveError = useStore(themeUiStore.api, (state) => state.state.saveError);
+  const createDialogOpen = useStore(themeCreateDialogStore.api, (state) => state.state.isOpen);
 
   return { saveError, createDialogOpen, onDismissSaveErrorClick };
 }

@@ -1,4 +1,5 @@
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { CatalogsStore, getAllLoadedCatalogs } from '../../../../domain/state/catalog/catalogs-store';
@@ -14,6 +15,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operat
 export class SetMappingColorRefController {
   constructor(
     private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly catalogsStore: CatalogsStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
@@ -28,9 +30,9 @@ export class SetMappingColorRefController {
     colorRef: ColorVariableKey | null,
   ): Promise<void> {
     const store = this.catalogsStore.getStore();
-    const template = getCurrentTemplate(this.templatesStore.getStore());
+    const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
-    const catalogs = getAllLoadedCatalogs(store);
+    const catalogs = getAllLoadedCatalogs(store.stateV2.catalogs);
     const isOrphan = isMappingOrphanForTemplate(
       template,
       tokenKey,

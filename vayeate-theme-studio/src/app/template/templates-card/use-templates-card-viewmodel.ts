@@ -6,8 +6,12 @@ import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import { TemplatesCardActionType } from './actions/templates-card-action-type';
 import { container } from 'tsyringe';
 import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { CreateTemplateDialogStore } from '../../../domain/state/create-dialog/create-template-dialog-store';
+import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 
 const templatesStore = container.resolve(TemplatesStore);
+const templateUiStore = container.resolve(TemplateUiStore);
+const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 
 export interface TemplatesCardViewModel {
   templateNames: string[];
@@ -22,8 +26,8 @@ export interface TemplatesCardViewModel {
 
 export function useTemplatesCardViewModel(): TemplatesCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const isCreating = useStore(templatesStore.api, (state) => state.state.isCreating);
+  const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
+  const isCreating = useStore(createTemplateDialogStore.api, (state) => state.state?.isCreating ?? false);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
 

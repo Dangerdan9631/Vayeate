@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounced-theme-persist-gateway';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
@@ -10,8 +10,7 @@ import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-u
 @singleton()
 export class CommitAssignColorTextOperation {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
-    private readonly themesStateSetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
     private readonly themeGateway: ThemeGateway,
   ) {}
@@ -19,7 +18,7 @@ export class CommitAssignColorTextOperation {
   execute(value: string): void {
     const normalized = normalizeHexSafe(value);
     if (!normalized) return;
-    const state = this.themesStateGetter.getStore().state;
+    const state = this.themeUiStore.getStore().state;
     const theme = state.theme;
     const checkedColorRefs = new Set(state.checkedColorRefs);
     if (!theme || checkedColorRefs.size === 0) return;
@@ -44,11 +43,11 @@ export class CommitAssignColorTextOperation {
     });
     const base = { ...theme };
     const nextTheme: Theme = { ...base, colorAssignments: newAssignments };
-    this.themesStateSetter.getStore().setHueAdjustment(0);
-    this.themesStateSetter.getStore().setTheme(nextTheme, true);
-    this.themesStateSetter.getStore().setSaveError(null);
+    this.themeUiStore.getStore().setHueAdjustment(0);
+    this.themeUiStore.getStore().setTheme(nextTheme, true);
+    this.themeUiStore.getStore().setSaveError(null);
     this.debouncedThemePersist.schedule(() => this.themeGateway.saveTheme(nextTheme), (message) => {
-      this.themesStateSetter.getStore().setSaveError(message);
+      this.themeUiStore.getStore().setSaveError(message);
     });
   }
 }

@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { TokenType } from '../../../../model/schema/primitives';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 
 @singleton()
 export class SetCatalogNewSourceTokenTypeOperation {
-  constructor(private readonly catalogsStore: CatalogsStore) {}
+  constructor(private readonly catalogUiStore: CatalogUiStore) {}
 
   execute(value: TokenType): void {
-    this.catalogsStore.getStore().setNewSourceData(undefined, value);
+    this.catalogUiStore.getStore().setNewSourceData(undefined, value);
   }
 }
 

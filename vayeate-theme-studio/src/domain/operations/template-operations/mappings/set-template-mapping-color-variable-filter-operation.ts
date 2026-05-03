@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 
 @singleton()
 export class SetTemplateMappingColorVariableFilterOperation {
-  constructor(private readonly templatesStore: TemplatesStore) {}
+  constructor(private readonly templateUiStore: TemplateUiStore) {}
 
   execute(values: ColorVariableKey[]): void {
-    this.templatesStore.getStore().setMappingColorVariableFilter(values);
+    this.templateUiStore.getStore().setMappingColorVariableFilter(values);
   }
 }
 

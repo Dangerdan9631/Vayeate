@@ -9,7 +9,7 @@ import { SetThemeSaveErrorOperation } from '../../../../domain/operations/theme-
 import { LoadThemeRefsOperation } from '../../../../domain/operations/theme-operations/theme-list/load-theme-refs-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/load-theme-operation';
-import { ThemesStore } from '../../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
 @singleton()
 export class IncrementThemeVersionController {
@@ -22,11 +22,11 @@ export class IncrementThemeVersionController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTheme: LoadThemeOperation,
     private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
-    private readonly themesStateGetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
   ) {}
 
   async run(): Promise<void> {
-    const state = this.themesStateGetter.getStore().state;
+    const state = this.themeUiStore.getStore().state;
     const theme = state.theme;
     if (!theme) return;
     const newVersion = nextPatchVersion(theme.version);

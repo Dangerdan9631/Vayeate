@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
 @singleton()
 export class SetGenerateResultOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeUiStore: ThemeUiStore) {}
 
   execute(result: { success: boolean; message: string } | null): void {
-    this.ThemesStore.getStore().setGenerateResult(result);
+    this.themeUiStore.getStore().setGenerateResult(result);
   }
 }
 

@@ -1,20 +1,20 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadTemplateSnapshotOperation } from '../../../../domain/operations/template-operations/template-details/load-template-snapshot-operation';
-import { ThemesStore } from '../../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
 const UNGROUPED_KEY = '__ungrouped__';
 
 @singleton()
 export class SetVariablesSelectByGroupController {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
   ) {}
 
   async run(checked?: boolean, groupId?: string): Promise<void> {
-    const state = this.themesStateGetter.getStore().state;
+    const state = this.themeUiStore.getStore().state;
     const theme = state.theme;
     if (!theme?.templateRef || groupId == null) return;
     const template = await this.loadTemplateSnapshot.execute(

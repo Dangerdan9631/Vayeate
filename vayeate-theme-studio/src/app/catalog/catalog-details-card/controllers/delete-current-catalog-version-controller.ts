@@ -1,21 +1,21 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/state/catalog/catalogs-store';
 import { findNearestVersionRef } from '../../../../domain/utils/find-nearest-version-ref';
 import { DeleteCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/delete-catalog-operation';
 import { RefreshCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-operation';
 import { SetSelectedCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()
 export class DeleteCurrentCatalogVersionController {
   constructor(
-    private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly deleteCatalog: DeleteCatalogOperation,
     private readonly refreshCatalogRefs: RefreshCatalogRefsOperation,
     private readonly setSelectedCatalog: SetSelectedCatalogOperation,
   ) {}
 
   async run(): Promise<void> {
-    const ref = this.catalogsStore.getStore().stateV2.selectedRef;
+    const ref = this.catalogUiStore.getStore().state.selectedRef;
     if (!ref) return;
 
     const { name, version } = ref;

@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { findNearestVersionRef } from '../../../../domain/utils/find-nearest-version-ref';
 import { DeleteTemplateOperation } from '../../../../domain/operations/template-operations/template-list/delete-template-operation';
 import { LoadTemplateOperation } from '../../../../domain/operations/template-operations/template-details/load-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-operation';
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 import { SetTemplateOperation } from '../../../../domain/operations/template-operations/template-details/set-template-operation';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 
 @singleton()
 export class DeleteCurrentTemplateVersionController {
   constructor(
-    private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly deleteTemplate: DeleteTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setSelectedTemplateRef: SetSelectedTemplateRefOperation,
@@ -19,7 +19,7 @@ export class DeleteCurrentTemplateVersionController {
   ) {}
 
   async run(): Promise<void> {
-    const selectedRef = this.templatesStore.getStore().state.selectedRef;
+    const selectedRef = this.templateUiStore.getStore().state.selectedRef;
     if (!selectedRef) return;
 
     const { name, version } = selectedRef;

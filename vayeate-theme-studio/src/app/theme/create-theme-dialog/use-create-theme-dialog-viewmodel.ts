@@ -2,11 +2,11 @@ import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemeCreateDialogStore } from '../../../domain/state/ui/theme-create-dialog-store';
 import { CreateThemeDialogActionType } from './actions/create-theme-dialog-action-type';
 
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
-const themesStore = container.resolve(ThemesStore);
+const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
 
 export interface CreateThemeDialogViewModel {
   name: string;
@@ -19,7 +19,7 @@ export interface CreateThemeDialogViewModel {
 
 export function useCreateThemeDialogViewModel(): CreateThemeDialogViewModel {
   const dispatch = useAppDispatch();
-  const name = useStore(themesStore.api, (state): string => state.state.createFormName);
+  const name = useStore(themeCreateDialogStore.api, (state): string => state.state.name);
   const nameValid = useMemo(() => name.length > 0 && NAME_REGEX.test(name), [name]);
   const canSubmit = useMemo(() => nameValid, [nameValid]);
 

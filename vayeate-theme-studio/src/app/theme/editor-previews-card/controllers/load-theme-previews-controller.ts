@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
 import { LoadPreviewsOperation } from '../../../../domain/operations/theme-operations/previews/load-previews-operation';
-import { ThemesStore } from '../../../../domain/state/theme/themes-store';
+import { ThemePreviewStore } from '../../../../domain/state/ui/theme-preview-store';
 
 @singleton()
 export class LoadThemePreviewsController {
   constructor(
     private readonly loadPreviews: LoadPreviewsOperation,
-    private readonly themesStore: ThemesStore,
+    private readonly themePreviewStore: ThemePreviewStore,
   ) {}
 
   run(): void {
-    if (this.themesStore.getStore().state.editorPreviews.length > 0) {
+    if (this.themePreviewStore.getStore().state.editorPreviews.length > 0) {
       return;
     }
     this.loadPreviews.execute();

@@ -6,10 +6,12 @@ import type { Catalog, Token } from '../../../model/schema/catalog';
 import { tokenKeySchema, tokenTypeSchema, type SemanticTokenRegistryListKind, type TokenKey, type TokenType } from '../../../model/schema/primitives';
 import { TokensCardActionType } from './actions/tokens-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
+const catalogUiStore = container.resolve(CatalogUiStore);
 
 export const CATALOG_TOKEN_LIST_SECTIONS: TokenType[] = tokenTypeSchema.options.filter((tokenType) => tokenType !== 'semantic token');
 
@@ -59,19 +61,16 @@ export interface TokensCardViewModel {
 
 export function useTokensCardViewModel(): TokensCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
-  const tokensSearchText = useStore(catalogsStore.api, (state) => state.stateV2.tokensSearchText);
-  const newTokenKey = useStore(catalogsStore.api, (state) => state.stateV2.newTokenKey);
-  const newSemanticTokenSelectorText = useStore(catalogsStore.api, (state) => state.stateV2.newSemanticTokenSelectorText);
+  const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);
+  const tokensSearchText = useStore(catalogUiStore.api, (state) => state.state.tokensSearchText);
+  const newTokenKey = useStore(catalogUiStore.api, (state) => state.state.newTokenKey);
+  const newSemanticTokenSelectorText = useStore(catalogUiStore.api, (state) => state.state.newSemanticTokenSelectorText);
   const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
   const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const catalog: Catalog | null = useMemo(() => {
-    if (!selectedRef) return null;
-    const catalogEntry = catalogMap[selectedRef.name]?.[selectedRef.version];
-    if (!catalogEntry || !catalogEntry.isLoaded) return null;
-    return catalogEntry.catalog;
+    return getCurrentCatalog(catalogMap, selectedRef);
   }, [catalogMap, selectedRef]);
 
   const isLatestVersion = useMemo(() => {

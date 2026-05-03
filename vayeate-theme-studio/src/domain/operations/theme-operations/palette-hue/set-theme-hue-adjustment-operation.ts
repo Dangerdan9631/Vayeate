@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
 @singleton()
 export class SetThemeHueAdjustmentOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeUiStore: ThemeUiStore) {}
 
   execute(value: number): void {
-    this.ThemesStore.getStore().setHueAdjustment(value);
+    this.themeUiStore.getStore().setHueAdjustment(value);
   }
 }
 

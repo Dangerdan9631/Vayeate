@@ -3,20 +3,20 @@ import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
-import { ThemesStore } from '../../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { applyHueToAssignmentsFiltered } from '../../../../domain/utils/theme-assignment-utils';
 
 @singleton()
 export class RecenterHueReferenceController {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly setTheme: SetThemeOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
   ) {}
 
   run(): void {
-    const state = this.themesStateGetter.getStore().state;
+    const state = this.themeUiStore.getStore().state;
     const theme = state.theme;
     const hueAdjustment = state.hueAdjustment;
     if (!theme || hueAdjustment === 0) {

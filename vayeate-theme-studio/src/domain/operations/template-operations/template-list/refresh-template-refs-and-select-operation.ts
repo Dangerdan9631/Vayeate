@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
 /** After template mutations, refresh refs from disk and optionally load the selected template. */
@@ -8,6 +9,7 @@ import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/en
 export class RefreshTemplateRefsAndSelectOperation {
   constructor(
     private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly templateGateway: TemplateGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
@@ -21,7 +23,7 @@ export class RefreshTemplateRefsAndSelectOperation {
         if (selectName && selectVersion) {
           const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
           if (match) {
-            this.templatesStore.getStore().selectTemplate(match);
+            this.templateUiStore.getStore().selectTemplate(match);
             const template = await this.templateGateway.loadTemplate(match.name, match.version);
             if (template) {
               this.templatesStore.getStore().updateTemplate(template);

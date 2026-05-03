@@ -7,11 +7,13 @@ import { UpdateSourceTypeInCatalogOperation } from '../../../../domain/operation
 import { ValidateCanUpdateCatalogSource } from '../../../../domain/catalog/validations/validate-can-update-catalog-source';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 import { getCurrentCatalog } from '../../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()
 export class UpdateSourceTypeController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSourceTypeInCatalog: UpdateSourceTypeInCatalogOperation,
@@ -21,7 +23,7 @@ export class UpdateSourceTypeController {
 
   run(sourceIndex: number, value: SourceType): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store);
+    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceTypeInCatalog.execute(base, sourceIndex, value);

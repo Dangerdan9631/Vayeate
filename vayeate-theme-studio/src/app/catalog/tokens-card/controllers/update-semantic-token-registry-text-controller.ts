@@ -6,11 +6,13 @@ import { SaveCatalogOperation } from '../../../../domain/operations/catalog-oper
 import { UpdateSemanticTokenRegistryEntryOperation } from '../../../../domain/operations/catalog-operations/tokens/update-semantic-token-registry-entry-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 import { getCurrentCatalog } from '../../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()
 export class UpdateSemanticTokenRegistryTextController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateSemanticTokenRegistryEntry: UpdateSemanticTokenRegistryEntryOperation,
@@ -19,7 +21,7 @@ export class UpdateSemanticTokenRegistryTextController {
 
   run(kind: SemanticTokenRegistryListKind, index: number, value: string): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store);
+    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSemanticTokenRegistryEntry.execute(base, kind, index, value);

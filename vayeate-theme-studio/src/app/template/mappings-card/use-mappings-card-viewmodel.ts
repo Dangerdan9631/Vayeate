@@ -9,20 +9,22 @@ import { MappingsCardActionType } from './actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import { container } from 'tsyringe';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
+const templateUiStore = container.resolve(TemplateUiStore);
 
 export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template: Template | null = useStore(templatesStore.api, getCurrentTemplate);
+  const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
-  const mappingSearchText = useStore(templatesStore.api, (state) => state.state.mappingSearchText);
-  const mappingColorVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingColorVariableFilter);
-  const mappingContrastVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingContrastVariableFilter);
+  const template: Template | null = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
+  const mappingSearchText = useStore(templateUiStore.api, (state) => state.state.mappingSearchText);
+  const mappingColorVariableFilter = useStore(templateUiStore.api, (state) => state.state.mappingColorVariableFilter);
+  const mappingContrastVariableFilter = useStore(templateUiStore.api, (state) => state.state.mappingContrastVariableFilter);
 
   const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
 

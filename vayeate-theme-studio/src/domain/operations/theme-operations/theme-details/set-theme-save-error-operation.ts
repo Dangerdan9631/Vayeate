@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
 @singleton()
 export class SetThemeSaveErrorOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeUiStore: ThemeUiStore) {}
 
   execute(error: string | null): void {
-    this.ThemesStore.getStore().setSaveError(error);
+    this.themeUiStore.getStore().setSaveError(error);
   }
 }
 

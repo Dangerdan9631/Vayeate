@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
 import type { ContrastVariableKey } from '../../../../model/schema/primitives';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 
 @singleton()
 export class SetTemplateMappingContrastVariableFilterOperation {
-  constructor(private readonly templatesStore: TemplatesStore) {}
+  constructor(private readonly templateUiStore: TemplateUiStore) {}
 
   execute(values: ContrastVariableKey[]): void {
-    this.templatesStore.getStore().setMappingContrastVariableFilter(values);
+    this.templateUiStore.getStore().setMappingContrastVariableFilter(values);
   }
 }
 

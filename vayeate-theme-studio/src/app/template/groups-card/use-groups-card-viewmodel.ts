@@ -5,9 +5,11 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import { GroupsCardActionType } from './actions/groups-card-action-type';
 import { container } from 'tsyringe';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { Template } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
+const templateUiStore = container.resolve(TemplateUiStore);
 
 export interface GroupRowViewModel {
   name: string;
@@ -28,10 +30,10 @@ export interface GroupsCardViewModel {
 
 export function useGroupsCardViewModel(): GroupsCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template = useStore(templatesStore.api, getCurrentTemplate);
+  const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
-  const addGroupName = useStore(templatesStore.api, (state) => state.state.addGroupName);
+  const template = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
+  const addGroupName = useStore(templateUiStore.api, (state) => state.state.addGroupName);
 
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);

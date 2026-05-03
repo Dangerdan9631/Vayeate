@@ -1,13 +1,13 @@
 import type { TemplateReference } from '../../../../model/schema/theme-schemas';
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 
 @singleton()
 export class SetSelectedTemplateRefOperation {
-  constructor(private readonly templatesStore: TemplatesStore) {}
+  constructor(private readonly templateUiStore: TemplateUiStore) {}
 
   execute(ref: TemplateReference | null): void {
-    this.templatesStore.getStore().selectTemplate(ref);
+    this.templateUiStore.getStore().selectTemplate(ref);
   }
 }
 

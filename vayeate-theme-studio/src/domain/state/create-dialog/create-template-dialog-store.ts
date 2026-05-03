@@ -7,6 +7,7 @@ import { CreateTemplateDialogState, emptyCreateTemplateData } from './create-tem
 interface CreateTemplateDialogStoreState {
   state: CreateTemplateDialogState | null;
   openCreateTemplateDialog: () => void;
+  setIsCreating: (value: boolean) => void;
   setCreateTemplateDialogData: (name?: string) => void;
   closeCreateTemplateDialog: (result: DialogResultOkCancel) => void;
 }
@@ -21,6 +22,10 @@ export class CreateTemplateDialogStore {
           ...emptyCreateTemplateData,
           isOpen: true,
         };
+      }),
+      setIsCreating: (value: boolean) => set((storeState) => {
+        if (!storeState.state) return;
+        storeState.state.isCreating = value;
       }),
       setCreateTemplateDialogData: (name?: string) => set((storeState) => {
         if (!storeState.state) return;

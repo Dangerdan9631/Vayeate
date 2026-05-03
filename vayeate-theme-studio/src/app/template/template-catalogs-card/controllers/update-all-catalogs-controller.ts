@@ -1,4 +1,5 @@
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { singleton } from 'tsyringe';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { GetCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/get-catalog-refs-operation';
@@ -16,6 +17,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operat
 export class UpdateAllCatalogsController {
   constructor(
     private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
@@ -24,7 +26,7 @@ export class UpdateAllCatalogsController {
   ) {}
 
   async run(): Promise<void> {
-    const template = getCurrentTemplate(this.templatesStore.getStore());
+    const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
     const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);

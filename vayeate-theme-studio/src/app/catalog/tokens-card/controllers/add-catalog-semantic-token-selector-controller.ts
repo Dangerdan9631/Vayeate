@@ -6,11 +6,13 @@ import { SaveCatalogOperation } from '../../../../domain/operations/catalog-oper
 import { SetCatalogNewSemanticTokenSelectorTextOperation } from '../../../../domain/operations/catalog-operations/tokens/set-catalog-new-semantic-token-selector-text-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 import { getCurrentCatalog } from '../../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()
 export class AddCatalogSemanticTokenSelectorController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly mergeSemanticSelectorsIntoCatalog: MergeSemanticSelectorsIntoCatalogOperation,
@@ -20,8 +22,8 @@ export class AddCatalogSemanticTokenSelectorController {
 
   run(): void {
     const store = this.catalogsStore.getStore();
-    const state = store.stateV2;
-    const catalog = getCurrentCatalog(store);
+    const state = this.catalogUiStore.getStore().state;
+    const catalog = getCurrentCatalog(store.stateV2.catalogs, state.selectedRef);
     const selector = state.newSemanticTokenSelectorText?.trim();
     if (!catalog || !selector) return;
 

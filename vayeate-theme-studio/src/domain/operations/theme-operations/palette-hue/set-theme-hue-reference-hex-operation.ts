@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
 @singleton()
 export class SetThemeHueReferenceHexOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeUiStore: ThemeUiStore) {}
 
   execute(value: string): void {
-    this.ThemesStore.getStore().setHueReferenceHex(value);
+    this.themeUiStore.getStore().setHueReferenceHex(value);
   }
 }
 

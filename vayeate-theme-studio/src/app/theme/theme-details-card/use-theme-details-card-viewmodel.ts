@@ -3,13 +3,13 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
-import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { ColorAssignment, ContrastAssignment, TemplateReference, Theme } from '../../../model/schema/theme-schemas';
 import { ThemeDetailsCardActionType } from './actions/theme-details-card-action-type';
 
 const templatesStore = container.resolve(TemplatesStore);
-const themesStore = container.resolve(ThemesStore);
+const themeUiStore = container.resolve(ThemeUiStore);
 
 export interface ThemeDetailsCardViewModel {
   theme: Theme | null;
@@ -29,9 +29,9 @@ export interface ThemeDetailsCardViewModel {
 
 export function useThemeDetailsCardViewModel(): ThemeDetailsCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
-  const theme = useStore(themesStore.api, (state) => state.state.theme);
-  const generateResult = useStore(themesStore.api, (state) => state.state.generateResult);
+  const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);
+  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
+  const generateResult = useStore(themeUiStore.api, (state) => state.state.generateResult);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
 

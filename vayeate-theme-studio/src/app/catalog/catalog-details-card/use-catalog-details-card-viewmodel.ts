@@ -5,10 +5,12 @@ import type { Catalog } from '../../../model/schema/catalog';
 import { sourceTypeSchema, tokenTypeSchema, type SourceType, type TokenType } from '../../../model/schema/primitives';
 import { CatalogDetailsCardActionType } from './actions/catalog-details-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
+const catalogUiStore = container.resolve(CatalogUiStore);
 const TOKEN_TYPE_OPTIONS = tokenTypeSchema.options;
 const SOURCE_TYPE_OPTIONS = sourceTypeSchema.options;
 
@@ -116,18 +118,15 @@ function parseSourceType(value: string): SourceType | null {
 
 export function useCatalogDetailsCardViewModel(): CatalogDetailsCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(catalogsStore.api, (state) => state.stateV2.selectedRef);
-  const newSourceUrl = useStore(catalogsStore.api, (state) => state.stateV2.newSource.url);
-  const newSourceTokenType = useStore(catalogsStore.api, (state) => state.stateV2.newSource.tokenType);
-  const newSourceType = useStore(catalogsStore.api, (state) => state.stateV2.newSource.type);
+  const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);
+  const newSourceUrl = useStore(catalogUiStore.api, (state) => state.state.newSource.url);
+  const newSourceTokenType = useStore(catalogUiStore.api, (state) => state.state.newSource.tokenType);
+  const newSourceType = useStore(catalogUiStore.api, (state) => state.state.newSource.type);
   const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
   const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
 
   const catalog: Catalog | null = useMemo(() => {
-    if (!selectedRef) return null;
-    const catalogEntry = catalogMap[selectedRef.name]?.[selectedRef.version];
-    if (!catalogEntry || !catalogEntry.isLoaded) return null;
-    return catalogEntry.catalog;
+    return getCurrentCatalog(catalogMap, selectedRef);
   }, [catalogMap, selectedRef]);
 
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);

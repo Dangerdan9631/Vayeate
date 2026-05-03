@@ -5,9 +5,11 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import { TemplateDetailsCardActionType } from './actions/template-details-card-action-type';
 import { container } from 'tsyringe';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
+import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { Mapping, Template } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
+const templateUiStore = container.resolve(TemplateUiStore);
 
 export interface TemplateDetailsCardViewModel {
   template: Template | null;
@@ -21,9 +23,9 @@ export interface TemplateDetailsCardViewModel {
 
 export function useTemplateDetailsCardViewModel(): TemplateDetailsCardViewModel {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template = useStore(templatesStore.api, getCurrentTemplate);
+  const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
+  const template = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 

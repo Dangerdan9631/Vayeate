@@ -6,10 +6,12 @@ import type { TokenKey } from '../../../model/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, Theme, ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
 import type { ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
-import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
+import { ThemePreviewStore } from '../../../domain/state/ui/theme-preview-store';
 import { ThemeDetailsCardActionType } from '../theme-details-card/actions/theme-details-card-action-type';
 
-const themesStore = container.resolve(ThemesStore);
+const themeUiStore = container.resolve(ThemeUiStore);
+const themePreviewStore = container.resolve(ThemePreviewStore);
 
 export interface EditorPreviewsCardViewModel {
   theme: Theme | null;
@@ -50,10 +52,10 @@ export interface EditorPreviewsCardViewModel {
 
 export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   const dispatch = useAppDispatch();
-  const theme = useStore(themesStore.api, (state) => state.state.theme);
-  const loadedTemplate = useStore(themesStore.api, (state) => state.state.loadedTemplateForTheme);
-  const editorPreviews = useStore(themesStore.api, (state) => state.state.editorPreviews);
-  const paneDisplayColorAssignments = useStore(themesStore.api, (state) => state.state.paneDisplayColorAssignments);
+  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
+  const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
+  const editorPreviews = useStore(themePreviewStore.api, (state) => state.state.editorPreviews);
+  const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
 
   const templateMappings = useMemo(() => loadedTemplate?.mappings ?? [], [loadedTemplate]);
   const contrastVariablesFromTemplate = useMemo(

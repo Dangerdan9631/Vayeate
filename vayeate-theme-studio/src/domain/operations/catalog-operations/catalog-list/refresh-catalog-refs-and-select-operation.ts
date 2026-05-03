@@ -1,12 +1,14 @@
 import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
 @singleton()
 export class RefreshCatalogRefsAndSelectOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly catalogGateway: CatalogGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
@@ -22,7 +24,7 @@ export class RefreshCatalogRefsAndSelectOperation {
           if (match) {
             const catalog = await this.catalogGateway.loadCatalog(match.name, match.version);
             if (catalog) {
-              this.catalogsStore.getStore().selectCatalog(match);
+              this.catalogUiStore.getStore().selectCatalog(match);
               this.catalogsStore.getStore().updateCatalog(catalog);
             }
           }

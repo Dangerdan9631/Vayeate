@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeCreateDialogStore } from '../../../state/ui/theme-create-dialog-store';
 
 @singleton()
 export class SetThemeIsCreatingOperation {
-  constructor(private readonly themesStateSetter: ThemesStore) {}
+  constructor(private readonly themeCreateDialogStore: ThemeCreateDialogStore) {}
 
   execute(value: boolean): void {
-    this.themesStateSetter.getStore().setIsCreating(value);
+    this.themeCreateDialogStore.getStore().setIsCreating(value);
   }
 }
 

@@ -2,23 +2,25 @@ import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemePreviewStore } from '../../../domain/state/ui/theme-preview-store';
+import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
 import { ThemeVariablesCardActionType } from './actions/theme-variables-card-action-type';
 import type { ContrastComparisonMethod, ContrastValue } from '../../../model/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
 
-const themesStore = container.resolve(ThemesStore);
+const themeUiStore = container.resolve(ThemeUiStore);
+const themePreviewStore = container.resolve(ThemePreviewStore);
 
 export function useThemeVariablesCardViewModel() {
   const dispatch = useAppDispatch();
-  const theme = useStore(themesStore.api, (state) => state.state.theme);
-  const checkedColorRefsArray = useStore(themesStore.api, (state) => state.state.checkedColorRefs);
-  const checkedContrastRefsArray = useStore(themesStore.api, (state) => state.state.checkedContrastRefs);
-  const themeVariablesSearchText = useStore(themesStore.api, (state) => state.state.themeVariablesSearchText);
-  const loadedTemplate = useStore(themesStore.api, (state) => state.state.loadedTemplateForTheme);
-  const paneDisplayColorAssignments = useStore(themesStore.api, (state) => state.state.paneDisplayColorAssignments);
-  const orphanColorKeysArray = useStore(themesStore.api, (state) => state.state.orphanColorKeys);
-  const orphanContrastKeysArray = useStore(themesStore.api, (state) => state.state.orphanContrastKeys);
+  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
+  const checkedColorRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedColorRefs);
+  const checkedContrastRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedContrastRefs);
+  const themeVariablesSearchText = useStore(themeUiStore.api, (state) => state.state.themeVariablesSearchText);
+  const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
+  const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
+  const orphanColorKeysArray = useStore(themeUiStore.api, (state) => state.state.orphanColorKeys);
+  const orphanContrastKeysArray = useStore(themeUiStore.api, (state) => state.state.orphanContrastKeys);
   const checkedColorRefs = useMemo(() => new Set<string>(checkedColorRefsArray), [checkedColorRefsArray]);
   const checkedContrastRefs = useMemo(() => new Set<string>(checkedContrastRefsArray), [checkedContrastRefsArray]);
   const orphanColorKeys = useMemo(() => new Set<string>(orphanColorKeysArray), [orphanColorKeysArray]);

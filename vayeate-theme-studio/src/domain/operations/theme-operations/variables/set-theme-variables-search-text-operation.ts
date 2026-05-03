@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
 /** Set search filter text for the theme variables list. */
 @singleton()
 export class SetThemeVariablesSearchTextOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeUiStore: ThemeUiStore) {}
 
   execute(value: string): void {
-    this.ThemesStore.getStore().setThemeVariablesSearchText(value);
+    this.themeUiStore.getStore().setThemeVariablesSearchText(value);
   }
 }
 

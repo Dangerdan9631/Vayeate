@@ -7,12 +7,14 @@ import { SaveCatalogOperation } from '../../../../domain/operations/catalog-oper
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import { Catalog } from '../../../../model/schema/catalog';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 
 @singleton()
 export class RevertCatalogToVersionController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly lockHeadCatalogIfUnlocked: LockHeadCatalogIfUnlockedOperation,
     private readonly revertCatalog: RevertCatalogOperation,
@@ -22,7 +24,7 @@ export class RevertCatalogToVersionController {
   async run(): Promise<void> {
     const store = this.catalogsStore.getStore();
     const state = store.stateV2;
-    const ref = state.selectedRef;
+    const ref = this.catalogUiStore.getStore().state.selectedRef;
     if (!ref) return;
 
     const { name, version } = ref;

@@ -1,12 +1,4 @@
 import type { Catalog } from '../../../model/schema/catalog';
-import type { SourceType, TokenType } from '../../../model/schema/primitives';
-import type { CatalogReference } from '../../../model/schema/template-schemas';
-
-export interface NewSourceState {
-  url: string;
-  tokenType: TokenType;
-  type: SourceType;
-}
 
 export interface CatalogState {
   isLoaded: boolean;
@@ -22,25 +14,9 @@ export interface CatalogMap {
 }
 
 export interface CatalogsStateV2 {
-  selectedRef: CatalogReference | null;
-  tokensSearchText: string;
-  newSource: NewSourceState;
-  newTokenKey: string;
-  newSemanticTokenSelectorText: string;
   catalogs: CatalogMap;
 }
 
-export const emptyNewSource: NewSourceState = {
-  url: '',
-  tokenType: 'theme',
-  type: 'default',
-};
-
 export const initialCatalogsStateV2: CatalogsStateV2 = {
-  selectedRef: null,
-  tokensSearchText: '',
-  newSource: emptyNewSource,
-  newTokenKey: '',
-  newSemanticTokenSelectorText: '',
   catalogs: {},
 };

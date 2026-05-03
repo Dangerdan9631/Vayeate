@@ -2,11 +2,13 @@ import { singleton } from 'tsyringe';
 import { CatalogsStore, getCurrentCatalog } from '../../../state/catalog/catalogs-store';
 import { parseThemeJson } from '../../../../model/theme-import';
 import { BulkAddDialogStore } from '../../../state/bulk-add-dialog/bulk-add-dialog-store';
+import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 
 @singleton()
 export class SetCatalogBulkAddTextOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
     private readonly bulkAddDialogStore: BulkAddDialogStore,
   ) {}
 
@@ -27,7 +29,10 @@ export class SetCatalogBulkAddTextOperation {
     const trimmed = value.trim();
     if (!trimmed) return null;
 
-    const catalog = getCurrentCatalog(this.catalogsStore.getStore());
+    const catalog = getCurrentCatalog(
+      this.catalogsStore.getStore().stateV2.catalogs,
+      this.catalogUiStore.getStore().state.selectedRef,
+    );
     const existingTokenKeys = new Set(
       catalog ? catalog.tokens.map((t) => `${t.type}::${t.key}`) : [],
     );

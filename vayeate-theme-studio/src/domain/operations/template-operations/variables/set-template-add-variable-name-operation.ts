@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 
 /** Store draft value for the "add variable" name input. */
 @singleton()
 export class SetTemplateAddVariableNameOperation {
-  constructor(private readonly templatesStore: TemplatesStore) {}
+  constructor(private readonly templateUiStore: TemplateUiStore) {}
 
   execute(value: string): void {
-    this.templatesStore.getStore().setAddVariableName(value);
+    this.templateUiStore.getStore().setAddVariableName(value);
   }
 }
 

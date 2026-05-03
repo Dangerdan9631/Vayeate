@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
-import { ThemesStore } from '../../../state/theme/themes-store';
+import { ThemeCreateDialogStore } from '../../../state/ui/theme-create-dialog-store';
 
 @singleton()
 export class SetThemeCreateFormNameOperation {
-  constructor(private readonly ThemesStore: ThemesStore) {}
+  constructor(private readonly themeCreateDialogStore: ThemeCreateDialogStore) {}
 
   execute(value: string): void {
-    this.ThemesStore.getStore().setCreateFormName(value);
+    this.themeCreateDialogStore.getStore().setName(value);
   }
 }
 

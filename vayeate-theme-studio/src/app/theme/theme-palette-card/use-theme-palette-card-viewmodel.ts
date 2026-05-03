@@ -3,26 +3,28 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { buildThemePaneSnapshot } from '../../../domain/utils/theme-pane-utils';
-import { ThemesStore } from '../../../domain/state/theme/themes-store';
+import { ThemePreviewStore } from '../../../domain/state/ui/theme-preview-store';
+import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
 import { ThemePaletteCardActionType } from './actions/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../theme-variables-card/actions/theme-variables-card-action-type';
 import { normalizeThemeHex } from '../../../domain/utils/normalize-theme-hex';
 
-const themesStore = container.resolve(ThemesStore);
+const themeUiStore = container.resolve(ThemeUiStore);
+const themePreviewStore = container.resolve(ThemePreviewStore);
 
 export function useThemePaletteCardViewModel() {
   const dispatch = useAppDispatch();
-  const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
-  const theme = useStore(themesStore.api, (state) => state.state.theme);
-  const checkedColorRefsArray = useStore(themesStore.api, (state) => state.state.checkedColorRefs);
-  const checkedContrastRefsArray = useStore(themesStore.api, (state) => state.state.checkedContrastRefs);
-  const hueAdjustment = useStore(themesStore.api, (state) => state.state.hueAdjustment);
-  const hueReferenceHex = useStore(themesStore.api, (state) => state.state.hueReferenceHex);
-  const loadedTemplate = useStore(themesStore.api, (state) => state.state.loadedTemplateForTheme);
-  const paneDisplayColorAssignments = useStore(themesStore.api, (state) => state.state.paneDisplayColorAssignments);
-  const paneSelectedColorsDisplay = useStore(themesStore.api, (state) => state.state.paneSelectedColorsDisplay);
+  const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);
+  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
+  const checkedColorRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedColorRefs);
+  const checkedContrastRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedContrastRefs);
+  const hueAdjustment = useStore(themeUiStore.api, (state) => state.state.hueAdjustment);
+  const hueReferenceHex = useStore(themeUiStore.api, (state) => state.state.hueReferenceHex);
+  const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
+  const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
+  const paneSelectedColorsDisplay = useStore(themeUiStore.api, (state) => state.state.paneSelectedColorsDisplay);
   const checkedColorRefs = useMemo(() => new Set<string>(checkedColorRefsArray), [checkedColorRefsArray]);
 
   const applyHueToDark = theme?.applyPaletteToDark ?? true;

@@ -1,18 +1,18 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../../model/schema/primitives';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
-import { ThemesStore } from '../../../../domain/state/theme/themes-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
 /** Toggle one variable (color or contrast) in selection; ref determines which set to update. */
 @singleton()
 export class ToggleVariableSelectionController {
   constructor(
-    private readonly themesStateGetter: ThemesStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
   run(checked: boolean, ref: ColorVariableKey | ContrastVariableKey): void {
-    const state = this.themesStateGetter.getStore().state;
+    const state = this.themeUiStore.getStore().state;
     const theme = state.theme;
     if (!theme) return;
     const colorSet = new Set(state.checkedColorRefs);

@@ -1,4 +1,5 @@
 import type { Mapping } from '../../../../model/schema/template-schemas';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../../model/semantic-token-constants';
 import { singleton } from 'tsyringe';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
@@ -13,6 +14,7 @@ import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operat
 export class AddSemanticVariantController {
   constructor(
     private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly generateSemanticVariantKey: GenerateSemanticVariantKeyOperation,
     private readonly mergeSemanticTokenSets: MergeSemanticTokenSetsOperation,
@@ -22,7 +24,7 @@ export class AddSemanticVariantController {
   ) {}
 
   run(type: string, defaultGroupRef?: string | null): void {
-    const template = getCurrentTemplate(this.templatesStore.getStore());
+    const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const baseMapping = base.mappings.find(
