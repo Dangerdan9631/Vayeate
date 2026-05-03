@@ -1,7 +1,12 @@
 import { singleton } from 'tsyringe';
-import { BackgroundQueue } from '../../../app/core/background-queue/background-queue';
+import {
+  BackgroundQueue,
+  type BackgroundQueueType,
+} from '../../../app/core/background-queue/background-queue';
 
 const noop = () => { };
+
+export type { BackgroundQueueType as BackgroundQueueLane };
 
 @singleton()
 export class EnqueueBackgroundQueueActionOperation {
@@ -9,7 +14,12 @@ export class EnqueueBackgroundQueueActionOperation {
     private readonly backgroundQueue: BackgroundQueue,
   ) {}
 
-  execute(description: string, run: () => void | Promise<void>, resolve?: (() => void) | undefined): void {
-    this.backgroundQueue.enqueue(description, run, resolve || noop);
+  execute(
+    description: string,
+    run: () => void | Promise<void>,
+    resolve?: (() => void) | undefined,
+    queue: BackgroundQueueType = 'main',
+  ): void {
+    this.backgroundQueue.enqueue(description, run, resolve || noop, queue);
   }
 }

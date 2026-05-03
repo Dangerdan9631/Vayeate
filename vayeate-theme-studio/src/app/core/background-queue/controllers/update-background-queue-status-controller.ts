@@ -5,7 +5,7 @@ import { UpdateBackgroundQueueStatusOperation } from '../../../../domain/operati
 export class UpdateBackgroundQueueStatusController {
   constructor(private readonly updateBackgroundQueueStatus: UpdateBackgroundQueueStatusOperation) {}
 
-  run(description: string, queueLength: number): void {
-    this.updateBackgroundQueueStatus.execute(description, queueLength);
+  run(args: { main?: { description: string, queueLength: number }, workers?: { descriptions: string[], queueLength: number } }): void {
+    this.updateBackgroundQueueStatus.execute(args);
   }
 }

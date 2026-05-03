@@ -14,6 +14,10 @@ function serializeArg(a: unknown): string {
   return String(a);
 }
 
+function logTimestamp(): string {
+  return new Date().toISOString();
+}
+
 @singleton()
 export class LogService {
   private currentLevel: LogLevel = 'debug';
@@ -36,20 +40,21 @@ export class LogService {
 
   init(): void {
     this.getAPI().onMainLog?.((level, args) => {
-      this.logToConsole(level, 'Main', ...args);
+      this.logToConsole(level, 'Main', logTimestamp(), ...args);
     });
   }
 
   log(severity: LogLevel, tag: string, ...args: unknown[]): void {
     if (LEVEL_ORDER[severity] < LEVEL_ORDER[this.currentLevel]) return;
 
-    this.logToConsole(severity, tag, ...args);
-    this.getAPI().sendLog?.(severity, tag, args.map(serializeArg));
+    const ts = logTimestamp();
+    this.logToConsole(severity, tag, ts, ...args);
+    this.getAPI().sendLog?.(severity, tag, [ts, ...args.map(serializeArg)]);
   }
 
-  private logToConsole(severity: LogLevel, tag: string, ...args: unknown[]): void {
+  private logToConsole(severity: LogLevel, tag: string, timestamp: string, ...args: unknown[]): void {
     try {
-      console[severity](`[${tag}]`, ...args);
+      console[severity](`[${timestamp}] [${tag}]`, ...args);
     } catch {
       // ignore console failures
     }

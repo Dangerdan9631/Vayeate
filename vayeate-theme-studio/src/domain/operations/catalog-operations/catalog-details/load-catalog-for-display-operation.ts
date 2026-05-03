@@ -19,7 +19,9 @@ export class LoadCatalogForDisplayOperation {
         if (loaded) {
           this.catalogsStore.getStore().updateCatalog(loaded);
         }
-      }
+      },
+      undefined,
+      'worker'
     );
   }
 }

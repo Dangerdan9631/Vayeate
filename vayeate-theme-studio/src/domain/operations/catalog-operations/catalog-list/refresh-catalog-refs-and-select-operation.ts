@@ -27,7 +27,9 @@ export class RefreshCatalogRefsAndSelectOperation {
             }
           }
         }
-      }
+      },
+      undefined,
+      'worker'
     );
   }
 }

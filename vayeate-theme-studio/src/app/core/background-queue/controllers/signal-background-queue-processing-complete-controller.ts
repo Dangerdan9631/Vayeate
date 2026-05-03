@@ -5,7 +5,7 @@ import { CompleteBackgroundQueueProcessingOperation } from '../../../../domain/o
 export class SignalBackgroundQueueProcessingCompleteController {
   constructor(private readonly completeBackgroundQueueProcessing: CompleteBackgroundQueueProcessingOperation) {}
 
-  run(): void {
-    this.completeBackgroundQueueProcessing.execute();
+  run( queue: 'main' | 'worker' ): void {
+    this.completeBackgroundQueueProcessing.execute(queue);
   }
 }

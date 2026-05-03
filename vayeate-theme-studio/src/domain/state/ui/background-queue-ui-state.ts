@@ -1,9 +1,13 @@
 export interface BackgroundQueueUiState {
-    queueLength: number;
-    description: string | undefined;
+    mainQueueLength: number;
+    mainQueueDescription: string | undefined;
+    workerQueueLength: number;
+    workerTaskDescriptions: string[];
 }
 
 export const initialBackgroundQueueUiState: BackgroundQueueUiState = {
-    queueLength: 0,
-    description: undefined
+    mainQueueLength: 0,
+    mainQueueDescription: undefined,
+    workerQueueLength: 0,
+    workerTaskDescriptions: []
 };

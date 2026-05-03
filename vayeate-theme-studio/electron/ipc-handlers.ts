@@ -193,17 +193,19 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
   });
 
   ipcMain.on('renderer-log', (_event, level: LogLevel, tag: string, args: string[]) => {
-    const prefix = `[${tag}]`;
+    const timestamp = args.length > 0 ? args[0] : new Date().toISOString();
+    const messageArgs = args.length > 1 ? args.slice(1) : [];
+    const prefix = `[${timestamp}] [${tag}]`;
     switch (level) {
       case 'debug':
       case 'info':
-        console.log(prefix, ...args);
+        console.log(prefix, ...messageArgs);
         break;
       case 'warn':
-        console.warn(prefix, ...args);
+        console.warn(prefix, ...messageArgs);
         break;
       case 'error':
-        console.error(prefix, ...args);
+        console.error(prefix, ...messageArgs);
         break;
     }
   });

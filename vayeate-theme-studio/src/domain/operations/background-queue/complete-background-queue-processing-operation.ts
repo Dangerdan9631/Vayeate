@@ -7,7 +7,11 @@ export class CompleteBackgroundQueueProcessingOperation {
     private readonly backgroundQueueStore: BackgroundQueueUiStore
   ) { }
 
-  execute(): void {
-    this.backgroundQueueStore.getStore().completeQueueProcessing();
+  execute(queue: 'main' | 'worker'): void {
+    if (queue === 'main') {
+      this.backgroundQueueStore.getStore().completeMainQueueProcessing();
+    } else {
+      this.backgroundQueueStore.getStore().completeWorkerQueueProcessing();
+    }
   }
 }

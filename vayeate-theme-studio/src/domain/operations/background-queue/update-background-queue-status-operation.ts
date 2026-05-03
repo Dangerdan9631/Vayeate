@@ -7,7 +7,13 @@ export class UpdateBackgroundQueueStatusOperation {
     private readonly backgroundQueueStore: BackgroundQueueUiStore
   ) { }
 
-  execute(description: string, queueLength: number): void {
-    this.backgroundQueueStore.getStore().updateQueueStatus(description, queueLength);
+  execute(args: { main?: { description: string, queueLength: number }, workers?: { descriptions: string[], queueLength: number } }): void {
+    if (args.main) {
+      this.backgroundQueueStore.getStore().updateMainQueueStatus(args.main.description, args.main.queueLength);
+    }
+    
+    if (args.workers) {
+      this.backgroundQueueStore.getStore().updateWorkerQueueStatus(args.workers.descriptions, args.workers.queueLength);
+    }
   }
 }
