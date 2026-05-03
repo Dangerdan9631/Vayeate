@@ -5,7 +5,7 @@ import { UpdateActionQueueStatusOperation } from '../../../../domain/operations/
 export class UpdateActionQueueStatusController {
   constructor(private readonly setActionQueueProcess: UpdateActionQueueStatusOperation) {}
 
-  run(queueLength: number): void {
-    this.setActionQueueProcess.execute(queueLength);
+  run(queueLength: number, currentActionDescription: string): void {
+    this.setActionQueueProcess.execute(queueLength, currentActionDescription);
   }
 }

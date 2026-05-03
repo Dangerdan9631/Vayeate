@@ -15,7 +15,9 @@ export class DeleteTemplateOperation {
       `Deleting template ${name} ${version}`,
       async () => {
         await this.templateGateway.deleteTemplate(name, version);
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

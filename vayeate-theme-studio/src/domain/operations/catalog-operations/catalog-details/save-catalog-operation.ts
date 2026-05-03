@@ -16,7 +16,9 @@ export class SaveCatalogOperation {
       `Saving catalog ${catalog.name} ${catalog.version}`,
       async () => {
         await this.catalogGateway.saveCatalog(catalog);
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

@@ -1652,21 +1652,8 @@ body {
 }
 
 .status-bar-right {
-  width: 20%;
-  min-width: 280px;
-}
-
-.status-queue-cluster {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-  width: 100%;
-  height: 100%;
-}
-
-.status-queue-cluster > .status-progress-area {
-  flex: 1;
-  min-width: 0;
+  width: 22%;
+  min-width: 240px;
 }
 
 .status-progress-area {
@@ -1707,6 +1694,51 @@ body {
   font-weight: 500;
   color: var(--text-body);
   text-shadow: 0 0 3px var(--surface), 0 0 3px var(--surface);
+}
+
+.status-running-popover {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  z-index: 80;
+  display: none;
+  width: min(520px, 82vw);
+  max-height: calc(100vh - 72px);
+  padding: 10px 12px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  color: var(--text-body);
+}
+
+.status-progress-area:hover .status-running-popover,
+.status-progress-area:focus-within .status-running-popover {
+  display: block;
+}
+
+.status-running-popover-title {
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted-2);
+  text-transform: uppercase;
+}
+
+.status-running-popover-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.status-running-popover-item {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 /* ── Themes page grid ──────────────────────────────────────── */

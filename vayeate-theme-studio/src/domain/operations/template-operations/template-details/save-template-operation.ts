@@ -16,7 +16,9 @@ export class SaveTemplateOperation {
       `Saving template ${template.name} ${template.version}`,
       async () => {
         await this.templateGateway.saveTemplate(template);
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

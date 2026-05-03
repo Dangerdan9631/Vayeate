@@ -5,6 +5,14 @@ import { singleton } from 'tsyringe';
 import { UpdateActionQueueStatusController } from './controllers/update-action-queue-status-controller';
 import { SignalActionQueueProcessingCompleteController } from './controllers/signal-action-queue-processing-complete-controller';
 
+function describeAction(action: AppAction): string {
+  return action.type
+    .toLowerCase()
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 export interface IActionQueue {
   enqueue(action: AppAction): void;
 }
@@ -32,10 +40,10 @@ export class ActionQueue implements IActionQueue {
   private async process(): Promise<void> {
     if (this.isProcessing) return;
     this.isProcessing = true;
-    
+
     while (this.queue.length > 0) {
       const action = this.queue.shift()!;
-      this.updateActionQueueStatus.run(this.queue.length + 1);
+      this.updateActionQueueStatus.run(this.queue.length + 1, describeAction(action));
       try {
         await this.actionProcessor.process(action);
       } catch (err) {

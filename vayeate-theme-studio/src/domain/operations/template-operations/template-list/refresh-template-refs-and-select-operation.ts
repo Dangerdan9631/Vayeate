@@ -28,7 +28,9 @@ export class RefreshTemplateRefsAndSelectOperation {
             this.templatesStore.getStore().setTemplate(template);
           }
         }
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

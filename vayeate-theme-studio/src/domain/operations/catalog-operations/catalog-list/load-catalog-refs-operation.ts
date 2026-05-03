@@ -17,7 +17,9 @@ export class LoadCatalogRefsOperation {
       async () => {
         const refs = await this.catalogGateway.listCatalogs();
         this.catalogsStore.getStore().updateCatalogRefs(refs);
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

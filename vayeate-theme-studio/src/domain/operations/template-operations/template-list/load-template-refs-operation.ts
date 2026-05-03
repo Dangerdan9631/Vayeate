@@ -20,7 +20,9 @@ export class LoadTemplateRefsOperation {
         this.templatesStore.getStore().setTemplateMapEntries(
           refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
         );
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

@@ -8,52 +8,73 @@ const actionQueueStore = container.resolve(ActionQueueUiStore);
 const backgroundQueueStore = container.resolve(BackgroundQueueUiStore);
 
 export interface StatusBarViewModel {
-  showStatusCluster: boolean;
-  showBackgroundProgressArea: boolean;
-  backgroundQueueStatusText: string;
-  showActionQueueProgressArea: boolean;
-  actionQueueStatusText: string;
+  showProgressArea: boolean;
+  queueStatusText: string;
+  runningActionDescriptions: string[];
 }
 
 export function useStatusBarViewModel(): StatusBarViewModel {
   const actionQueueStatus = useStore(actionQueueStore.api, (state) => state.state);
   const {
     queueLength: actionQueueLength,
+    currentActionDescription,
   } = actionQueueStatus;
-  const showActionQueueProgressArea = useMemo(() => actionQueueLength > 0, [actionQueueLength]);
-
-  const actionQueueStatusText = useMemo(
-    () => `${actionQueueLength} action${actionQueueLength !== 1 ? 's' : ''} in queue`,
-    [actionQueueLength],
-  );
 
   const mainQueueLength = useStore(backgroundQueueStore.api, (state) => state.state.mainQueueLength);
   const mainQueueDescription = useStore(backgroundQueueStore.api, (state) => state.state.mainQueueDescription);
   const workerQueueLength = useStore(backgroundQueueStore.api, (state) => state.state.workerQueueLength);
   const workerTaskDescriptions = useStore(backgroundQueueStore.api, (state) => state.state.workerTaskDescriptions);
-  const showBackgroundProgressArea = useMemo(() => mainQueueLength > 0 || workerQueueLength > 0, [mainQueueLength, workerQueueLength]);
 
-  const backgroundQueueStatusText = useMemo(
+  const runningActionDescriptions = useMemo(
     () => {
-      const total = mainQueueLength + workerQueueLength;
-      const description = (mainQueueLength > 0)
-        ? mainQueueDescription
-        : workerTaskDescriptions.length > 0
-          ? `${workerTaskDescriptions[0]} + (${workerTaskDescriptions.length} in parallel)`
-          : "";
-      
-      return `${description} (${total} background task${total !== 1 ? 's' : ''} in queue)`;
+      const descriptions: string[] = [];
+
+      if (actionQueueLength > 0 && currentActionDescription) {
+        descriptions.push(currentActionDescription);
+      }
+
+      if (mainQueueLength > 0 && mainQueueDescription) {
+        descriptions.push(mainQueueDescription);
+      }
+
+      descriptions.push(...workerTaskDescriptions);
+
+      return descriptions;
     },
-    [mainQueueLength, mainQueueDescription, workerQueueLength, workerTaskDescriptions],
+    [actionQueueLength, currentActionDescription, mainQueueLength, mainQueueDescription, workerTaskDescriptions],
   );
 
-  const showStatusCluster = useMemo(() => showBackgroundProgressArea || showActionQueueProgressArea, [showBackgroundProgressArea, showActionQueueProgressArea]);
+  const queuedActionCount = useMemo(
+    () => {
+      const actionQueueQueuedCount = Math.max(actionQueueLength - (currentActionDescription ? 1 : 0), 0);
+      const mainQueueQueuedCount = Math.max(mainQueueLength - (mainQueueDescription ? 1 : 0), 0);
+      const workerQueueQueuedCount = Math.max(workerQueueLength - workerTaskDescriptions.length, 0);
+
+      return actionQueueQueuedCount + mainQueueQueuedCount + workerQueueQueuedCount;
+    },
+    [actionQueueLength, currentActionDescription, mainQueueLength, mainQueueDescription, workerQueueLength, workerTaskDescriptions.length],
+  );
+
+  const queueStatusText = useMemo(
+    () => {
+      const runningActionCount = runningActionDescriptions.length;
+      const executingText = `${runningActionCount} action${runningActionCount !== 1 ? 's' : ''} executing`;
+
+      return queuedActionCount > 0
+        ? `${executingText}, ${queuedActionCount} queued`
+        : executingText;
+    },
+    [queuedActionCount, runningActionDescriptions.length],
+  );
+
+  const showProgressArea = useMemo(
+    () => runningActionDescriptions.length > 0 || queuedActionCount > 0,
+    [queuedActionCount, runningActionDescriptions.length],
+  );
 
   return {
-    showStatusCluster,
-    showBackgroundProgressArea,
-    backgroundQueueStatusText,
-    showActionQueueProgressArea,
-    actionQueueStatusText,
+    showProgressArea,
+    queueStatusText,
+    runningActionDescriptions,
   };
 }

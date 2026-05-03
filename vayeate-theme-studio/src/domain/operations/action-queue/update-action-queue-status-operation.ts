@@ -7,7 +7,7 @@ export class UpdateActionQueueStatusOperation {
     private readonly actionQueueStore: ActionQueueUiStore
   ) { }
 
-  execute(queueLength: number): void {
-    this.actionQueueStore.getStore().setQueueStatus(queueLength);
+  execute(queueLength: number, currentActionDescription: string): void {
+    this.actionQueueStore.getStore().setQueueStatus(queueLength, currentActionDescription);
   }
 }

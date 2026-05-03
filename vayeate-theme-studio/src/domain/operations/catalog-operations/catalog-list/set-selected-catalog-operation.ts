@@ -23,7 +23,9 @@ export class SetSelectedCatalogOperation {
         const catalog = await this.catalogGateway.loadCatalog(ref.name, ref.version);
         if (!catalog) return;
         this.catalogsStore.getStore().updateCatalog(catalog);
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

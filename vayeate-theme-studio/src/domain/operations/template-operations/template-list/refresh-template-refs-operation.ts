@@ -2,6 +2,7 @@ import type { TemplateReference } from '../../../../model/schema/theme-schemas';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../state/template/templates-store';
+import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
 /** List templates and set entries in templates slice. Single responsibility: refresh ref list. */
 @singleton()
@@ -9,13 +10,16 @@ export class RefreshTemplateRefsOperation {
   constructor(
     private readonly templatesStore: TemplatesStore,
     private readonly templateGateway: TemplateGateway,
+    private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  async execute(): Promise<TemplateReference[]> {
-    const refs = await this.templateGateway.listTemplates();
+  execute(): Promise<TemplateReference[]> {
+    return this.enqueueBackgroundQueue.executeReturning('Refreshing template refs', async () => {
+      const refs = await this.templateGateway.listTemplates();
       this.templatesStore.getStore().setTemplateMapEntries(
         refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
       );
-    return refs;
+      return refs;
+    });
   }
 }

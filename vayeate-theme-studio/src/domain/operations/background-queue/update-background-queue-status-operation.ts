@@ -11,7 +11,7 @@ export class UpdateBackgroundQueueStatusOperation {
     if (args.main) {
       this.backgroundQueueStore.getStore().updateMainQueueStatus(args.main.description, args.main.queueLength);
     }
-    
+
     if (args.workers) {
       this.backgroundQueueStore.getStore().updateWorkerQueueStatus(args.workers.descriptions, args.workers.queueLength);
     }

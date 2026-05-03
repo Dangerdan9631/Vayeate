@@ -15,7 +15,9 @@ export class DeleteCatalogOperation {
       `Deleting catalog ${name} ${version}`,
       async () => {
         await this.catalogGateway.deleteCatalog(name, version);
-      }
+      },
+      undefined,
+      'worker',
     );
   }
 }

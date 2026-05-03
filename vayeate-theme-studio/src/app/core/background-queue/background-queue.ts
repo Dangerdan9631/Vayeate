@@ -4,7 +4,7 @@ import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import { UpdateBackgroundQueueStatusController } from './controllers/update-background-queue-status-controller';
 import { SignalBackgroundQueueProcessingCompleteController } from './controllers/signal-background-queue-processing-complete-controller';
 
-export const BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT = 8;
+export const BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT = 16;
 
 export type BackgroundQueueType = 'main' | 'worker';
 
@@ -21,7 +21,7 @@ export class BackgroundQueue {
 
   private workerQueue: QueuedWork[] = [];
   private workerProcessing = false;
-  
+
   private runningWorkerDescriptions: { [key: string]: string } = {};
   private readonly workerSemaphore = new Semaphore(BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT);
 
@@ -95,7 +95,7 @@ export class BackgroundQueue {
     }
 
     this.workerProcessing = false;
-    this.signalBackgroundQueueProcessingComplete.run('main');
+    this.signalBackgroundQueueProcessingComplete.run('worker');
   }
 
   private async runWorker(item: QueuedWork): Promise<void> {

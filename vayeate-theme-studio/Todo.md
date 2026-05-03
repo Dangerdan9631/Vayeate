@@ -1,5 +1,5 @@
 - [x] Add Linting
-- [ ] Parallelize background actions
+- [x] Parallelize background actions
 - [ ] Undo stack
 
 ## App Layer
@@ -9,7 +9,7 @@
     - [x] App Action aggregates <base>-action-types
     - [x] ActionProcessor delegates to <base>-handler.ts
     - [x] ActionProcessor logs action processing
-    - [x] ActionQueue provides status updates via operations
+    - [x] ActionQueue provides status updates via controllers
     - [x] Controllers
         - [x] precisely named
         - [x] Right granularity
@@ -17,7 +17,7 @@
 - [x] Background Queue
     - [x] Logs background processing
     - [x] Every action has a status
-    - [x] Background Queue provides status updates via operations
+    - [x] Background Queue provides status updates via controllers
     - [x] Supports callbacks
     - [x] Controllers
         - [x] precisely named
