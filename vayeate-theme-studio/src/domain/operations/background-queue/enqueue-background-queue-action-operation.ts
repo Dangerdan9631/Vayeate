@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import {
   BackgroundQueue,
-  ContinuationHandler,
-  type BackgroundQueueType,
 } from '../../../app/core/background-queue/background-queue';
+import { type BackgroundQueueType } from '../../../app/core/background-queue/background-queue-type';
+import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
 
 export type { BackgroundQueueType as BackgroundQueueLane };
 

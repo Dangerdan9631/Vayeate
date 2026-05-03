@@ -2,13 +2,12 @@ import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
 import { BackgroundQueueUiState, initialBackgroundQueueUiState } from "./background-queue-ui-state";
+import { BackgroundQueueType } from "../../../app/core/background-queue/background-queue-type";
 
 interface BackgroundQueueUiStoreState {
     state: BackgroundQueueUiState;
-    updateMainQueueStatus: (description: string, queueLength: number) => void;
-    completeMainQueueProcessing: () => void;
-    updateWorkerQueueStatus: (descriptions: string[], queueLength: number) => void;
-    completeWorkerQueueProcessing: () => void;
+    updateQueueStatus: (queueType: BackgroundQueueType, descriptions: string[], queueLength: number) => void;
+    completeQueueProcessing: (queueType: BackgroundQueueType) => void;
 }
 
 @singleton()
@@ -16,21 +15,13 @@ export class BackgroundQueueUiStore {
     private store = createStore<BackgroundQueueUiStoreState>()(
         immer((set): BackgroundQueueUiStoreState => ({
             state: initialBackgroundQueueUiState,
-            updateMainQueueStatus: (description: string, queueLength: number) => set((storeState: BackgroundQueueUiStoreState) => {
-                storeState.state.mainQueueDescription = description;
-                storeState.state.mainQueueLength = queueLength;
+            updateQueueStatus: (queueType: BackgroundQueueType, descriptions: string[], queueLength: number) => set((storeState: BackgroundQueueUiStoreState) => {
+                storeState.state.queues[queueType].queueDescriptions = descriptions;
+                storeState.state.queues[queueType].queueLength = queueLength;
             }),
-            completeMainQueueProcessing: () => set((storeState: BackgroundQueueUiStoreState) => {
-                storeState.state.mainQueueDescription = undefined;
-                storeState.state.mainQueueLength = 0;
-            }),
-            updateWorkerQueueStatus: (descriptions: string[], queueLength: number) => set((storeState: BackgroundQueueUiStoreState) => {
-                storeState.state.workerTaskDescriptions = descriptions;
-                storeState.state.workerQueueLength = queueLength;
-            }),
-            completeWorkerQueueProcessing: () => set((storeState: BackgroundQueueUiStoreState) => {
-                storeState.state.workerTaskDescriptions = [];
-                storeState.state.workerQueueLength = 0;
+            completeQueueProcessing: (queueType: BackgroundQueueType) => set((storeState: BackgroundQueueUiStoreState) => {
+                storeState.state.queues[queueType].queueDescriptions = [];
+                storeState.state.queues[queueType].queueLength = 0;
             }),
         }))
     );

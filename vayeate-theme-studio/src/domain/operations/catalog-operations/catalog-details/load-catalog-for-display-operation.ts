@@ -4,7 +4,7 @@ import { CatalogsStore } from '../../../state/data/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { CatalogReference } from '../../../../model/schema/template-schemas';
 import { Catalog } from '../../../../model/schema/catalog';
-import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
+import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
 
 @singleton()
 export class LoadCatalogForDisplayOperation {

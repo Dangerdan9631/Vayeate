@@ -3,6 +3,7 @@ import { BackgroundQueueUiStore } from '../../../domain/state/ui/background-queu
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { ActionQueueUiStore } from '../../../domain/state/ui/action-queue-ui-store';
+import { QueueMap } from '../../../domain/state/ui/background-queue-ui-state';
 
 const actionQueueStore = container.resolve(ActionQueueUiStore);
 const backgroundQueueStore = container.resolve(BackgroundQueueUiStore);
@@ -20,51 +21,57 @@ export function useStatusBarViewModel(): StatusBarViewModel {
     currentActionDescription,
   } = actionQueueStatus;
 
-  const mainQueueLength = useStore(backgroundQueueStore.api, (state) => state.state.mainQueueLength);
-  const mainQueueDescription = useStore(backgroundQueueStore.api, (state) => state.state.mainQueueDescription);
-  const workerQueueLength = useStore(backgroundQueueStore.api, (state) => state.state.workerQueueLength);
-  const workerTaskDescriptions = useStore(backgroundQueueStore.api, (state) => state.state.workerTaskDescriptions);
+  const backgroundQueues: QueueMap = useStore(backgroundQueueStore.api, (state) => state.state.queues);
 
-  const runningActionDescriptions = useMemo(
+  const { actionText, runningActionDescriptions } = useMemo(
     () => {
+      let actionText: string | undefined = undefined;
       const descriptions: string[] = [];
-
+      
       if (actionQueueLength > 0 && currentActionDescription) {
-        descriptions.push(currentActionDescription);
+        actionText = currentActionDescription;
+        descriptions.push(`[Action] ${currentActionDescription}`);
+      }
+      
+      for (const [queueName, queue] of Object.entries(backgroundQueues)) {
+        if (queue.queueLength == 1 && !actionText) {
+          actionText = queue.queueDescriptions[0];
+        }
+
+        queue.queueDescriptions
+          .map((description) => `[${queueName}] ${description}`)
+          .forEach((description) => descriptions.push(description));
       }
 
-      if (mainQueueLength > 0 && mainQueueDescription) {
-        descriptions.push(mainQueueDescription);
-      }
-
-      descriptions.push(...workerTaskDescriptions);
-
-      return descriptions;
+      return {
+        actionText: descriptions.length === 1 ? actionText : undefined,
+        runningActionDescriptions: descriptions,
+      };
     },
-    [actionQueueLength, currentActionDescription, mainQueueLength, mainQueueDescription, workerTaskDescriptions],
+    [actionQueueLength, currentActionDescription, backgroundQueues],
   );
 
   const queuedActionCount = useMemo(
     () => {
       const actionQueueQueuedCount = Math.max(actionQueueLength - (currentActionDescription ? 1 : 0), 0);
-      const mainQueueQueuedCount = Math.max(mainQueueLength - (mainQueueDescription ? 1 : 0), 0);
-      const workerQueueQueuedCount = Math.max(workerQueueLength - workerTaskDescriptions.length, 0);
+      const backgroundQueueQueuedCount = Object.values(backgroundQueues)
+        .reduce((acc, queue) => acc + Math.max(queue.queueLength - queue.queueDescriptions.length, 0), 0);
 
-      return actionQueueQueuedCount + mainQueueQueuedCount + workerQueueQueuedCount;
+      return actionQueueQueuedCount + backgroundQueueQueuedCount;
     },
-    [actionQueueLength, currentActionDescription, mainQueueLength, mainQueueDescription, workerQueueLength, workerTaskDescriptions.length],
+    [actionQueueLength, currentActionDescription, backgroundQueues],
   );
 
   const queueStatusText = useMemo(
     () => {
       const runningActionCount = runningActionDescriptions.length;
-      const executingText = `${runningActionCount} action${runningActionCount !== 1 ? 's' : ''} executing`;
+      const executingText = actionText ?? `${runningActionCount} action${runningActionCount !== 1 ? 's' : ''} executing`;
 
       return queuedActionCount > 0
         ? `${executingText}, ${queuedActionCount} queued`
         : executingText;
     },
-    [queuedActionCount, runningActionDescriptions.length],
+    [queuedActionCount, actionText, runningActionDescriptions.length],
   );
 
   const showProgressArea = useMemo(

@@ -1,13 +1,25 @@
+export interface QueueUiState {
+    queueLength: number;
+    queueDescriptions: string[];
+}
+
+export interface QueueMap {
+    [key: string]: QueueUiState;
+}
+
 export interface BackgroundQueueUiState {
-    mainQueueLength: number;
-    mainQueueDescription: string | undefined;
-    workerQueueLength: number;
-    workerTaskDescriptions: string[];
+    queues: QueueMap;
 }
 
 export const initialBackgroundQueueUiState: BackgroundQueueUiState = {
-    mainQueueLength: 0,
-    mainQueueDescription: undefined,
-    workerQueueLength: 0,
-    workerTaskDescriptions: []
+    queues: {
+        main: {
+            queueLength: 0,
+            queueDescriptions: []
+        },
+        worker: {
+            queueLength: 0,
+            queueDescriptions: []
+        }
+    }
 };

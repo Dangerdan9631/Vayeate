@@ -2,9 +2,8 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
+import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
 
-/** Persist theme to disk only. Single responsibility: save. */
 @singleton()
 export class SaveThemeOperation {
   constructor(

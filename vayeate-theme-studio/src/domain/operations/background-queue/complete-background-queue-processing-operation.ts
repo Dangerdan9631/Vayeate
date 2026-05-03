@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { BackgroundQueueUiStore } from '../../state/ui/background-queue-ui-store';
+import { BackgroundQueueType } from '../../../app/core/background-queue/background-queue-type';
 
 @singleton()
 export class CompleteBackgroundQueueProcessingOperation {
@@ -7,11 +8,7 @@ export class CompleteBackgroundQueueProcessingOperation {
     private readonly backgroundQueueStore: BackgroundQueueUiStore
   ) { }
 
-  execute(queue: 'main' | 'worker'): void {
-    if (queue === 'main') {
-      this.backgroundQueueStore.getStore().completeMainQueueProcessing();
-    } else {
-      this.backgroundQueueStore.getStore().completeWorkerQueueProcessing();
-    }
+  execute(queueType: BackgroundQueueType): void {
+    this.backgroundQueueStore.getStore().completeQueueProcessing(queueType);
   }
 }

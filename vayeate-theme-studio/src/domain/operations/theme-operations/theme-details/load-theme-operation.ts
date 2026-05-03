@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/background-queue';
+import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
 
 @singleton()
 export class LoadThemeOperation {

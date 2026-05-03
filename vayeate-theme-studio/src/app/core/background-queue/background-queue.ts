@@ -1,47 +1,21 @@
-import { Semaphore } from 'async-mutex';
 import { singleton } from 'tsyringe';
 import { LoggerFactory, type Logger } from '../../../domain/utils/logger';
 import { UpdateBackgroundQueueStatusController } from './controllers/update-background-queue-status-controller';
 import { SignalBackgroundQueueProcessingCompleteController } from './controllers/signal-background-queue-processing-complete-controller';
+import { BackgroundQueueResolver } from './background-queue-resolver';
+import { ContinuationHandler } from './continuation-handler';
+import { QueuedWork } from './queued-work';
+import { SerialQueue } from './serial-queue';
+import { IBackgroundQueue } from './ibackground-queue';
+import { BackgroundQueueType } from './background-queue-type';
+import { PooledQueue } from './pooled-queue';
 
 export const BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT = 16;
 
-export type BackgroundQueueType = 'main' | 'worker';
-
-export interface ContinuationHandler {
-  then(onResolve: () => void): void;
-}
-
-const noop = () => { };
-class BackgroundQueueResolver implements ContinuationHandler {
-  private resolve: () => void = noop;
-
-  onResolve(): void {
-    this.resolve();
-  }
-
-  then(onResolve: () => void): void {
-    this.resolve = onResolve;
-  }
-}
-
-interface QueuedWork {
-  description: string;
-  run: () => void | Promise<void>;
-  resolver: BackgroundQueueResolver;
-}
-
 @singleton()
 export class BackgroundQueue {
-  private mainQueue: QueuedWork[] = [];
-  private mainProcessing = false;
-
-  private workerQueue: QueuedWork[] = [];
-  private workerProcessing = false;
-
-  private runningWorkerDescriptions: { [key: string]: string } = {};
-  private readonly workerSemaphore = new Semaphore(BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT);
-
+  private readonly mainQueue: IBackgroundQueue;
+  private readonly workerQueue: IBackgroundQueue;
   private readonly log: Logger;
 
   constructor(
@@ -50,6 +24,8 @@ export class BackgroundQueue {
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('BackgroundQueue');
+    this.mainQueue = new SerialQueue('main', this.updateBackgroundQueueStatus, this.signalBackgroundQueueProcessingComplete, loggerFactory);
+    this.workerQueue = new PooledQueue('worker', BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT, this.updateBackgroundQueueStatus, this.signalBackgroundQueueProcessingComplete, loggerFactory);
   }
 
   enqueue(
@@ -60,14 +36,10 @@ export class BackgroundQueue {
     const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver() };
     switch (queue) {
       case 'worker':
-        this.log.debug('enqueue background [worker]', description);
-        this.workerQueue.push(item);
-        void this.processWorkers();
+        this.workerQueue.enqueue(description, run);
         break;
       case 'main':
-        this.log.debug('enqueue background [main]', description);
-        this.mainQueue.push(item);
-        void this.processMain();
+        this.mainQueue.enqueue(description, run);
         break;
       default: {
         const _exhaustive: never = queue;
@@ -76,75 +48,5 @@ export class BackgroundQueue {
     }
 
     return item.resolver;
-  }
-
-  private async processMain(): Promise<void> {
-    if (this.mainProcessing) return;
-    this.mainProcessing = true;
-
-    while (this.mainQueue.length > 0) {
-      const item = this.mainQueue.shift()!;
-      this.updateBackgroundQueueStatus.run({ main: { description: item.description, queueLength: this.mainQueue.length + 1 } });
-      try {
-        await item.run();
-      } catch (err) {
-        this.log.error('Error running background work:', err);
-      } finally {
-        item.resolver.onResolve();
-      }
-    }
-
-    this.mainProcessing = false;
-    this.signalBackgroundQueueProcessingComplete.run('main');
-  }
-
-  private async processWorkers(): Promise<void> {
-    if (this.workerProcessing) return;
-    this.workerProcessing = true;
-
-    while (this.workerQueue.length > 0 || this.workerSemaphore.getValue() < BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT) {
-      if (this.workerQueue.length > 0) {
-        await this.workerSemaphore.acquire(1);
-        const item = this.workerQueue.shift()!;
-        void this.runWorker(item);
-      } else {
-        await new Promise(resolve => setTimeout(resolve, 100));
-      }
-    }
-
-    this.workerProcessing = false;
-    this.signalBackgroundQueueProcessingComplete.run('worker');
-  }
-
-  private async runWorker(item: QueuedWork): Promise<void> {
-    const workerId = crypto.randomUUID();
-    this.runningWorkerDescriptions[workerId] = item.description;
-
-    this.updateBackgroundQueueStatus.run({
-      workers: {
-        descriptions: Object.values(this.runningWorkerDescriptions),
-        queueLength: this.workerQueue.length + (BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT - this.workerSemaphore.getValue()),
-      },
-    });
-    try {
-      await item.run();
-    } catch (err) {
-      this.log.error('Error running background work:', err);
-    } finally {
-      try {
-        item.resolver.onResolve();
-      } catch (err) {
-        this.log.error('Error resolving background work:', err);
-      } finally {
-        this.workerSemaphore.release(1);
-        delete this.runningWorkerDescriptions[workerId];
-        this.updateBackgroundQueueStatus.run({
-          workers: {
-            descriptions: Object.values(this.runningWorkerDescriptions),
-            queueLength: this.workerQueue.length + (BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT - this.workerSemaphore.getValue()),
-          },
-        });
-      }
-    }
   }
 }
