@@ -2,6 +2,8 @@ import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/catalog/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
+import { CatalogReference } from '../../../../model/schema/template-schemas';
+import { Catalog } from '../../../../model/schema/catalog';
 
 @singleton()
 export class LoadCatalogForDisplayOperation {
@@ -11,14 +13,18 @@ export class LoadCatalogForDisplayOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(name: string, version: string): void {
+  execute(refs: CatalogReference[]): void {
     this.enqueueBackgroundAction.execute(
-      `Loading catalog ${name} ${version}`,
+      `Loading catalogs for display`,
       async () => {
-        const loaded = await this.catalogGateway.loadCatalog(name, version);
-        if (loaded) {
-          this.catalogsStore.getStore().updateCatalog(loaded);
+        const loadedCatalogs: Catalog[] = [];
+        for (const ref of refs) {
+          const loaded = await this.catalogGateway.loadCatalog(ref.name, ref.version);
+          if (loaded) {
+            loadedCatalogs.push(loaded);
+          }
         }
+        this.catalogsStore.getStore().updateCatalogs(loadedCatalogs);
       },
       undefined,
       'worker'

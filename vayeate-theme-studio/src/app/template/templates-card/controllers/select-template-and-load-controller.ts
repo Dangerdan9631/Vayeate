@@ -16,9 +16,7 @@ export class SelectTemplateAndLoadController {
     this.setSelectedTemplateRef.execute(ref);
     const template = await this.loadTemplate.execute(name, version);
     if (template?.catalogRefs?.length) {
-      for (const r of template.catalogRefs) {
-        this.loadCatalogForDisplay.execute(r.name, r.version);
-      }
+      this.loadCatalogForDisplay.execute(Array.from(template.catalogRefs));
     }
   }
 }
