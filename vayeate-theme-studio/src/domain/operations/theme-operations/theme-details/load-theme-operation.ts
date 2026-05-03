@@ -19,9 +19,12 @@ export class LoadThemeOperation {
       async () => {
         const loaded = await this.themeGateway.loadTheme(name, version);
         this.themeUiStore.getStore().setTheme(loaded);
+        const selectedRef = this.themeUiStore.getStore().state.selectedRef;
+        if (selectedRef?.name === name && selectedRef.version === version) {
+          this.themeUiStore.getStore().setThemeLoadState(loaded ? 'loaded' : 'unloaded');
+        }
       },
     );
   }
 }
-
 

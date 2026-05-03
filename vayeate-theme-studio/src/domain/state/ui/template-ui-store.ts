@@ -3,10 +3,12 @@ import { immer } from 'zustand/middleware/immer';
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
-import { initialTemplateUiState, type TemplateUiState } from './template-ui-state';
+import { initialTemplateUiState, type LoadState, type TemplateUiState } from './template-ui-state';
 
 interface TemplateUiStoreState {
   state: TemplateUiState;
+  setPageLoadState: (loadState: LoadState) => void;
+  setTemplateLoadState: (loadState: LoadState) => void;
   selectTemplate: (ref: TemplateReference | null) => void;
   setMappingSearchText: (value: string) => void;
   setMappingColorVariableFilter: (values: ColorVariableKey[]) => void;
@@ -22,6 +24,14 @@ export class TemplateUiStore {
   private store = createStore<TemplateUiStoreState>()(
     immer((set): TemplateUiStoreState => ({
       state: initialTemplateUiState,
+      setPageLoadState: (loadState: LoadState) =>
+        set((storeState) => {
+          storeState.state.pageLoadState = loadState;
+        }),
+      setTemplateLoadState: (loadState: LoadState) =>
+        set((storeState) => {
+          storeState.state.templateLoadState = loadState;
+        }),
       selectTemplate: (ref: TemplateReference | null) =>
         set((storeState) => {
           storeState.state.selectedRef = ref;

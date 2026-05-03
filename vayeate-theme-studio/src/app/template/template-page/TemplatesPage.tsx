@@ -8,24 +8,50 @@ import { TemplatesCard } from '../templates-card/TemplatesCard';
 import { VariablesCard } from '../variables-card/VariablesCard';
 
 export function TemplatesPage() {
-  const { isCreateDialogOpen } = useTemplateViewModel();
+  const {
+    isPageLoading,
+    isTemplateLoading,
+    isTemplateLoaded,
+    isCreateDialogOpen,
+  } = useTemplateViewModel();
 
   return (
     <>
-      <div className="templates-page-grid">
-        <div className="templates-left-col">
-          <TemplatesCard />
-          <TemplateDetailsCard />
-          <TemplateCatalogsCard />
+      {isPageLoading ? (
+        <div className="placeholder">
+          <h2>Templates</h2>
+          <p>Loading templates...</p>
         </div>
-        <div className="templates-center-col">
-          <MappingsCard />
+      ) : (
+        <div className="templates-page-grid">
+          <div className="templates-left-col">
+            <TemplatesCard />
+            {isTemplateLoading && (
+              <div className="template-details-card placeholder">
+                <h2>Template details</h2>
+                <p>Loading template...</p>
+              </div>
+            )}
+            {isTemplateLoaded && (
+              <>
+                <TemplateDetailsCard />
+                <TemplateCatalogsCard />
+              </>
+            )}
+          </div>
+          {isTemplateLoaded && (
+            <>
+              <div className="templates-center-col">
+                <MappingsCard />
+              </div>
+              <div className="templates-right-col">
+                <GroupsCard />
+                <VariablesCard />
+              </div>
+            </>
+          )}
         </div>
-        <div className="templates-right-col">
-          <GroupsCard />
-          <VariablesCard />
-        </div>
-      </div>
+      )}
       {isCreateDialogOpen && <CreateTemplateDialog />}
     </>
   );

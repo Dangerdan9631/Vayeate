@@ -8,7 +8,7 @@ import { ThemeVariablesCard } from '../theme-variables-card/ThemeVariablesCard';
 import { ThemesCard } from '../themes-card/ThemesCard';
 
 export function ThemesPage() {
-  useThemeViewModel();
+  const { isPageLoading, isThemeLoading, isThemeLoaded } = useThemeViewModel();
   const { saveError, createDialogOpen, onDismissSaveErrorClick } = useThemesPageChromeViewModel();
 
   return (
@@ -26,17 +26,36 @@ export function ThemesPage() {
           </button>
         </div>
       )}
-      <div className="themes-page-grid">
-        <div className="themes-left-col">
-          <ThemesCard />
-          <ThemeDetailsCard />
-          <ThemePaletteCard />
-          <ThemeVariablesCard />
+      {isPageLoading ? (
+        <div className="placeholder">
+          <h2>Themes</h2>
+          <p>Loading themes...</p>
         </div>
-        <div className="themes-right-col">
-          <LazyEditorPreviewsCard />
+      ) : (
+        <div className="themes-page-grid">
+          <div className="themes-left-col">
+            <ThemesCard />
+            {isThemeLoading && (
+              <div className="theme-details-card placeholder">
+                <h2>Theme details</h2>
+                <p>Loading theme...</p>
+              </div>
+            )}
+            {isThemeLoaded && (
+              <>
+                <ThemeDetailsCard />
+                <ThemePaletteCard />
+                <ThemeVariablesCard />
+              </>
+            )}
+          </div>
+          {isThemeLoaded && (
+            <div className="themes-right-col">
+              <LazyEditorPreviewsCard />
+            </div>
+          )}
         </div>
-      </div>
+      )}
       {createDialogOpen && <CreateThemeDialog />}
     </>
   );

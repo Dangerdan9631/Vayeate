@@ -8,6 +8,12 @@ export class SetSelectedThemeRefOperation {
 
   execute(ref: ThemeReference | null): void {
     this.themeUiStore.getStore().setSelectedRef(ref);
+    this.themeUiStore.getStore().setThemeLoadState(ref ? 'loading' : 'unloaded');
+
+    const theme = this.themeUiStore.getStore().state.theme;
+    if (theme && theme.name === ref?.name && theme.version === ref.version) {
+      this.themeUiStore.getStore().setThemeLoadState('loaded');
+    }
   }
 }
 

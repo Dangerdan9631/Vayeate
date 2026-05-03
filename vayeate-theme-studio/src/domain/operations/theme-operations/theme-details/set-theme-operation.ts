@@ -8,6 +8,14 @@ export class SetThemeOperation {
 
   execute(theme: Theme | null, preserveHue?: boolean): void {
     this.themeUiStore.getStore().setTheme(theme, preserveHue);
+    if (!theme) {
+      this.themeUiStore.getStore().setThemeLoadState('unloaded');
+      return;
+    }
+    const selectedRef = this.themeUiStore.getStore().state.selectedRef;
+    if (selectedRef?.name === theme.name && selectedRef.version === theme.version) {
+      this.themeUiStore.getStore().setThemeLoadState('loaded');
+    }
   }
 }
 

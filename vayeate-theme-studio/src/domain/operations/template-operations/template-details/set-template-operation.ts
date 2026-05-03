@@ -13,11 +13,15 @@ export class SetTemplateOperation {
   execute(template: Template | null): void {
     if (!template) {
       this.templateUiStore.getStore().selectTemplate(null);
+      this.templateUiStore.getStore().setTemplateLoadState('unloaded');
       return;
     }
     this.templatesStore.getStore().updateTemplate(template);
+    const selectedRef = this.templateUiStore.getStore().state.selectedRef;
+    if (selectedRef?.name === template.name && selectedRef.version === template.version) {
+      this.templateUiStore.getStore().setTemplateLoadState('loaded');
+    }
   }
 }
-
 
 

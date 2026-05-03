@@ -4,10 +4,12 @@ import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 import type { Theme, ThemeReference } from '../../../model/schema/theme-schemas';
 import { deriveThemePaneFields } from '../../utils/derive-theme-pane-fields';
-import { initialThemeUiState, type GenerateResult, type ThemeUiState } from './theme-ui-state';
+import { initialThemeUiState, type GenerateResult, type LoadState, type ThemeUiState } from './theme-ui-state';
 
 export interface ThemeUiStoreState {
   state: ThemeUiState;
+  setPageLoadState: (loadState: LoadState) => void;
+  setThemeLoadState: (loadState: LoadState) => void;
   setSelectedRef: (ref: ThemeReference | null) => void;
   setTheme: (theme: Theme | null, preserveHue?: boolean) => void;
   setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void;
@@ -33,6 +35,10 @@ export class ThemeUiStore {
 
       return {
         state: initialThemeUiState,
+        setPageLoadState: (loadState: LoadState) =>
+          setThemesState((state) => ({ ...state, pageLoadState: loadState })),
+        setThemeLoadState: (loadState: LoadState) =>
+          setThemesState((state) => ({ ...state, themeLoadState: loadState })),
         setSelectedRef: (ref: ThemeReference | null) =>
           setThemesState((state) => ({ ...state, selectedRef: ref, hueAdjustment: 0 })),
         setTheme: (theme: Theme | null, preserveHue?: boolean) =>
