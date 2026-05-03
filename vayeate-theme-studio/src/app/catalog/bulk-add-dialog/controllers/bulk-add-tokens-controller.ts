@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStore } from '../../../../domain/state/catalog/catalogs-store';
+import { BulkAddDialogStore } from '../../../../domain/state/bulk-add-dialog/bulk-add-dialog-store';
 import { parseThemeJson } from '../../../../model/theme-import';
 import { AppendTokensToCatalogOperation } from '../../../../domain/operations/catalog-operations/tokens/append-tokens-to-catalog-operation';
 import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
@@ -13,6 +14,7 @@ import { getCurrentCatalog } from '../../../../domain/state/catalog/catalogs-sto
 export class BulkAddTokensController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly bulkAddDialogStore: BulkAddDialogStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly deduplicateBulkTokens: DeduplicateBulkTokensOperation,
@@ -23,9 +25,9 @@ export class BulkAddTokensController {
 
   run(): void {
     const store = this.catalogsStore.getStore();
-    const state = store.stateV2;
+    const bulkAddDialogStore = this.bulkAddDialogStore.getStore();
     const catalog = getCurrentCatalog(store);
-    const text = state.bulkAddDialog?.text?.trim();
+    const text = bulkAddDialogStore.state?.text?.trim();
     if (!catalog || !text || !this.validateCanBulkAddTokens.test(catalog, text)) return;
     try {
       const result = parseThemeJson(text!);
@@ -36,7 +38,7 @@ export class BulkAddTokensController {
       this.saveCatalog.execute(updated);
       this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     } finally {
-      store.closeBulkAddDialog('OK');
+      bulkAddDialogStore.closeBulkAddDialog('OK');
     }
   }
 }

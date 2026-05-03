@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { Catalog, Token } from '../../../model/schema/catalog';
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
@@ -9,7 +8,7 @@ import type { CatalogReference, Mapping, Template } from '../../../model/schema/
 import { MappingsCardActionType } from './actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
 import { container } from 'tsyringe';
 
 const catalogsStore = container.resolve(CatalogsStore);
@@ -19,8 +18,8 @@ export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template: Template | null = useStore(templatesStore.api, (state) => state.state.template);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
+  const template: Template | null = useStore(templatesStore.api, getCurrentTemplate);
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
   const mappingSearchText = useStore(templatesStore.api, (state) => state.state.mappingSearchText);
   const mappingColorVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingColorVariableFilter);
   const mappingContrastVariableFilter = useStore(templatesStore.api, (state) => state.state.mappingContrastVariableFilter);
@@ -72,7 +71,7 @@ export function useMappingsCardViewModel() {
     return computed;
   }, [template, loadedCatalogsForTemplateRefs]);
 
-  const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
+  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = selectedRef?.name ?? null;
 
   const isLatestVersion = useMemo(() => {

@@ -3,9 +3,9 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { TemplatePageActionType } from './actions/template-page-action-type';
 import { container } from 'tsyringe';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { CreateTemplateDialogStore } from '../../../domain/state/create-dialog/create-template-dialog-store';
 
-const templatesStore = container.resolve(TemplatesStore);
+const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 
 export interface TemplateViewModel {
   isCreateDialogOpen: boolean;
@@ -15,7 +15,7 @@ export function useTemplateViewModel(): TemplateViewModel {
   const dispatch = useAppDispatch();
   const pageLoadDispatchedRef = useRef(false);
 
-  const isCreateDialogOpen = useStore(templatesStore.api, (state) => state.state.isCreateDialogOpen);
+  const isCreateDialogOpen = useStore(createTemplateDialogStore.api, (state) => !!state.state?.isOpen);
 
   useEffect(() => {
     if (pageLoadDispatchedRef.current) return;

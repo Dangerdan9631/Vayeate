@@ -2,12 +2,12 @@ import { useStore } from 'zustand';
 import { useCallback, useMemo } from 'react';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { ValidateIsTemplateNameValid } from '../../../domain/validations/template-validations/validate-is-template-name-valid';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { CreateTemplateDialogStore } from '../../../domain/state/create-dialog/create-template-dialog-store';
 import { container } from 'tsyringe';
 import { TemplateCreateDialogActionType } from './actions/template-create-dialog-action-type';
 
 const validateIsTemplateNameValid = container.resolve(ValidateIsTemplateNameValid);
-const templatesStore = container.resolve(TemplatesStore);
+const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 
 export interface CreateTemplateDialogViewModel {
   name: string;
@@ -20,7 +20,7 @@ export interface CreateTemplateDialogViewModel {
 
 export function useCreateTemplateDialogViewModel(): CreateTemplateDialogViewModel {
   const dispatch = useAppDispatch();
-  const name = useStore(templatesStore.api, (state) => state.state.createFormName);
+  const name = useStore(createTemplateDialogStore.api, (state) => state.state?.name ?? '');
   const nameValid = useMemo(() => validateIsTemplateNameValid.test(name), [name]);
   const canSubmit = useMemo(() => nameValid, [nameValid]);
   const showNameError = useMemo(() => name.length > 0 && !nameValid, [name, nameValid]);

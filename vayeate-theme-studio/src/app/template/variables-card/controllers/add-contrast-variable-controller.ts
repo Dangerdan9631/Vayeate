@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { AddContrastVariableOperation as AddContrastVariableOp } from '../../../../domain/operations/template-operations/variables-contrast/add-contrast-variable-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
@@ -16,7 +16,7 @@ export class AddContrastVariableController {
   ) {}
 
   run(key: string, groupRef?: string | null): void {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addContrastVariableToTemplate.execute(base, key, groupRef);

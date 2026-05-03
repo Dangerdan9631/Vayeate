@@ -3,17 +3,17 @@ import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import type { CatalogType } from '../../../model/schema/primitives';
 import { CatalogCreateDialogActionType } from './actions/catalog-create-dialog-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
+import { CreateCatalogDialogStore } from '../../../domain/state/create-dialog/create-catalog-dialog-store';
 import { useStore } from 'zustand';
 
-const catalogsStore = container.resolve(CatalogsStore);
+const createCatalogDialogStore = container.resolve(CreateCatalogDialogStore);
 
 export function useCreateCatalogDialogViewModel() {
   const dispatch = useAppDispatch();
-  const name = useStore(catalogsStore.api, (state) => state.stateV2.createCatalogDialog?.name ?? '');
-  const type = useStore(catalogsStore.api, (state) => state.stateV2.createCatalogDialog?.type ?? 'manual');
+  const name = useStore(createCatalogDialogStore.api, (state) => state.state?.name ?? '');
+  const type = useStore(createCatalogDialogStore.api, (state) => state.state?.type ?? 'manual');
 
-  const errorMessage = useStore(catalogsStore.api, (state) => state.stateV2.createCatalogDialog?.errorMessage ?? null);
+  const errorMessage = useStore(createCatalogDialogStore.api, (state) => state.state?.errorMessage ?? null);
   const hasError = useMemo(() => errorMessage !== null, [errorMessage]);
 
   const canSubmit = useMemo(() => { return name.length > 0 && !hasError; }, [name, hasError]);

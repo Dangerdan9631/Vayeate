@@ -7,8 +7,6 @@ export class SetTemplateRefsOperation {
   constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(refs: TemplateReference[]): void {
-    this.templatesStore.getStore().setTemplateMapEntries(
-      refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
-    );
+    this.templatesStore.getStore().updateTemplateRefs(refs);
   }
 }

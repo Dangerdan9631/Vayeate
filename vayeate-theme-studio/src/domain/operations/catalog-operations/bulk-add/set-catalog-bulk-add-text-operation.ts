@@ -1,18 +1,20 @@
 import { singleton } from 'tsyringe';
 import { CatalogsStore, getCurrentCatalog } from '../../../state/catalog/catalogs-store';
 import { parseThemeJson } from '../../../../model/theme-import';
+import { BulkAddDialogStore } from '../../../state/bulk-add-dialog/bulk-add-dialog-store';
 
 @singleton()
 export class SetCatalogBulkAddTextOperation {
   constructor(
     private readonly catalogsStore: CatalogsStore,
+    private readonly bulkAddDialogStore: BulkAddDialogStore,
   ) {}
 
   execute(value: string): void {
     const preview = this.computePreview(value);
-    this.catalogsStore.getStore().setBulkAddDialogData(value);
+    this.bulkAddDialogStore.getStore().setBulkAddDialogData(value);
     if (preview) {
-      this.catalogsStore.getStore().setBulkAddDialogMetrics(
+      this.bulkAddDialogStore.getStore().setBulkAddDialogMetrics(
         preview.errorMessage,
         preview.counts,
         preview.newCount,

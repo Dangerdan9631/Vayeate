@@ -2,19 +2,22 @@ import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schem
 import type { Template } from '../../../model/schema/template-schemas';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
 
-export interface TemplateEntry {
+export interface TemplateState {
   isLoaded: boolean;
-  template: Template | undefined;
+  template: Template | null;
 }
 
-export type TemplateStoreMap = Record<string, Record<string, TemplateEntry>>;
+export interface TemplateVersions {
+  [version: string]: TemplateState;
+}
+
+export interface TemplateMap {
+  [name: string]: TemplateVersions;
+}
 
 export interface TemplatesState {
   selectedRef: TemplateReference | null;
-  template: Template | null;
   isCreating: boolean;
-  isCreateDialogOpen: boolean;
-  createFormName: string;
   mappingSearchText: string;
   mappingColorVariableFilter: ColorVariableKey[];
   mappingContrastVariableFilter: ContrastVariableKey[];
@@ -22,15 +25,12 @@ export interface TemplatesState {
   variablesSearchText: string;
   addGroupName: string;
   addVariableName: string;
-  templateMap: TemplateStoreMap;
+  templates: TemplateMap;
 }
 
 export const initialTemplatesState: TemplatesState = {
   selectedRef: null,
-  template: null,
   isCreating: false,
-  isCreateDialogOpen: false,
-  createFormName: '',
   mappingSearchText: '',
   mappingColorVariableFilter: [],
   mappingContrastVariableFilter: [],
@@ -38,15 +38,5 @@ export const initialTemplatesState: TemplatesState = {
   variablesSearchText: '',
   addGroupName: '',
   addVariableName: '',
-  templateMap: {},
+  templates: {},
 };
-
-export function getTemplateRefs(map: TemplateStoreMap): TemplateReference[] {
-  const refs: TemplateReference[] = [];
-  for (const name of Object.keys(map).sort()) {
-    for (const version of Object.keys(map[name]!).sort()) {
-      refs.push({ name, version });
-    }
-  }
-  return refs;
-}

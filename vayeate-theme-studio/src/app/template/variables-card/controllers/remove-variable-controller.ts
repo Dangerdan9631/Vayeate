@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../../domain/operations/template-operations/variables-color/remove-color-variable-operation';
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../../domain/operations/template-operations/variables-contrast/remove-contrast-variable-operation';
@@ -20,7 +20,7 @@ export class RemoveVariableController {
   ) {}
 
   run(key: string): void {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template || !this.validateCanRemove.test(template, key)) return;
 
     if (template.colorVariables.some((variable) => variable.key === key)) {

@@ -1,11 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import { GroupsCardActionType } from './actions/groups-card-action-type';
 import { container } from 'tsyringe';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
 import type { Template } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
@@ -30,11 +29,11 @@ export interface GroupsCardViewModel {
 export function useGroupsCardViewModel(): GroupsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template = useStore(templatesStore.api, (state) => state.state.template);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
+  const template = useStore(templatesStore.api, getCurrentTemplate);
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
   const addGroupName = useStore(templatesStore.api, (state) => state.state.addGroupName);
 
-  const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
+  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {

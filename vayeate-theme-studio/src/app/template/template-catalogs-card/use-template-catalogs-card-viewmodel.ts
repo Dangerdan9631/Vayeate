@@ -1,14 +1,13 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { CatalogName } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import { TemplateCatalogsCardActionType } from './actions/template-catalogs-card-action-type';
 import { container } from 'tsyringe';
 import { CatalogsStore } from '../../../domain/state/catalog/catalogs-store';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
 import type { Template } from '../../../model/schema/template-schemas';
 
 const catalogsStore = container.resolve(CatalogsStore);
@@ -34,9 +33,9 @@ export interface TemplateCatalogsCardViewModel {
 export function useTemplateCatalogsCardViewModel(): TemplateCatalogsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
-  const template = useStore(templatesStore.api, (state) => state.state.template);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
-  const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
+  const template = useStore(templatesStore.api, getCurrentTemplate);
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
+  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 
   const isLatestVersion = useMemo(() => {

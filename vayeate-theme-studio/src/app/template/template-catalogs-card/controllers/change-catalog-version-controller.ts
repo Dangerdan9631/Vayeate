@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { LoadCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/load-catalog-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
@@ -40,7 +40,7 @@ export class ChangeCatalogVersionController {
   ) {}
 
   async run(catalogName: string, newVersion: string): Promise<void> {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const newCatalogRefs = base.catalogRefs.map((r) =>

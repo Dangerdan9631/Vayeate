@@ -1,7 +1,7 @@
 import type { Mapping } from '../../../../model/schema/template-schemas';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../../model/semantic-token-constants';
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { AppendSemanticVariantToTemplateOperation } from '../../../../domain/operations/template-operations/mappings-semantic/append-semantic-variant-to-template-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { GenerateSemanticVariantKeyOperation } from '../../../../domain/operations/template-operations/mappings-semantic/generate-semantic-variant-key-operation';
@@ -22,7 +22,7 @@ export class AddSemanticVariantController {
   ) {}
 
   run(type: string, defaultGroupRef?: string | null): void {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const baseMapping = base.mappings.find(

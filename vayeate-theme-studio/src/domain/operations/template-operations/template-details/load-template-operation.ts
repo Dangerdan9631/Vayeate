@@ -17,7 +17,9 @@ export class LoadTemplateOperation {
       `Loading template ${name} ${version}`,
       async () => {
         const loaded = await this.templateGateway.loadTemplate(name, version);
-        this.templatesStore.getStore().setTemplate(loaded);
+        if (loaded) {
+          this.templatesStore.getStore().updateTemplate(loaded);
+        }
         return loaded;
       },
     );

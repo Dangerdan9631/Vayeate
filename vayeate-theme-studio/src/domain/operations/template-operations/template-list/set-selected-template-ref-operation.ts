@@ -7,7 +7,7 @@ export class SetSelectedTemplateRefOperation {
   constructor(private readonly templatesStore: TemplatesStore) {}
 
   execute(ref: TemplateReference | null): void {
-    this.templatesStore.getStore().setSelectedRef(ref);
+    this.templatesStore.getStore().selectTemplate(ref);
   }
 }
 

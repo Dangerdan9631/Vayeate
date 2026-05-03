@@ -1,6 +1,6 @@
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceOp } from '../../../../domain/operations/template-operations/variables-contrast/update-contrast-comparison-source-operation';
@@ -20,7 +20,7 @@ export class UpdateContrastComparisonSourceController {
     contrastVariableKey: string,
     comparisonSourceRef: ColorVariableKey | null,
   ): Promise<void> {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.updateContrastComparisonSourceOp.execute(

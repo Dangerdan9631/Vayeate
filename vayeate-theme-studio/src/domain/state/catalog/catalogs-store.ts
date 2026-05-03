@@ -2,11 +2,10 @@ import { createStore } from 'zustand/vanilla';
 import { immer } from 'zustand/middleware/immer';
 import { castDraft } from 'immer';
 import { singleton } from 'tsyringe';
-import { CatalogMap, CatalogsStateV2, emptyBulkAddData, emptyNewSource, initialCatalogsStateV2 } from './catalogs-state';
+import { CatalogMap, CatalogsStateV2, emptyNewSource, initialCatalogsStateV2 } from './catalogs-state';
 import type { Catalog } from '../../../model/schema/catalog';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 import type { SourceType, TokenType } from '../../../model/schema/primitives';
-import { DialogResultOkCancel } from '../../../model/dialog-result';
 
 interface CatalogsStoreState {
   stateV2: CatalogsStateV2;
@@ -14,15 +13,6 @@ interface CatalogsStoreState {
   selectCatalog: (ref: CatalogReference | null) => void;
   updateCatalog: (catalog: Catalog) => void;
   updateCatalogs: (catalogs: Catalog[]) => void;
-  openBulkAddDialog: () => void;
-  setBulkAddDialogData: (text?: string) => void;
-  setBulkAddDialogMetrics: (
-    errorMessage: string | null,
-    counts: Record<TokenType, number> | null,
-    newCount: number,
-    duplicateCount: number
-  ) => void;
-  closeBulkAddDialog: (result: 'OK' | 'CANCEL') => void;
   setTokensSearchText: (value: string) => void;
   setNewSourceData: (url?: string, tokenType?: TokenType, type?: SourceType) => void;
   clearNewSourceData: () => void;
@@ -109,40 +99,6 @@ export class CatalogsStore {
             catalog: castDraft(catalog),
           };
         });
-      }),
-      openBulkAddDialog: () => set((storeState) => {
-        storeState.stateV2.bulkAddDialog = {
-          ...emptyBulkAddData,
-          isOpen: true,
-        };
-      }),
-      setBulkAddDialogData: (text?: string) => set((storeState) => {
-        const bulkAddDialog = storeState.stateV2.bulkAddDialog;
-        if (!bulkAddDialog) return;
-        if (text !== undefined) bulkAddDialog.text = text;
-      }),
-      setBulkAddDialogMetrics: (
-        errorMessage: string | null,
-        counts: Record<TokenType, number> | null,
-        newCount: number,
-        duplicateCount: number
-      ) => set((storeState) => {
-        const bulkAddDialog = storeState.stateV2.bulkAddDialog;
-        if (!bulkAddDialog) return;
-        bulkAddDialog.errorMessage = errorMessage;
-        bulkAddDialog.counts = counts;
-        bulkAddDialog.newCount = newCount;
-        bulkAddDialog.duplicateCount = duplicateCount;
-      }),
-      closeBulkAddDialog: (result: DialogResultOkCancel) => set((storeState) => {
-        if (result === 'OK') {
-          const bulkAddDialog = storeState.stateV2.bulkAddDialog;
-          if (!bulkAddDialog) return;
-
-          bulkAddDialog.isOpen = false;
-        } else {
-          storeState.stateV2.bulkAddDialog = null;
-        }
       }),
       setTokensSearchText: (value: string) => set((storeState) => {
         storeState.stateV2.tokensSearchText = value;

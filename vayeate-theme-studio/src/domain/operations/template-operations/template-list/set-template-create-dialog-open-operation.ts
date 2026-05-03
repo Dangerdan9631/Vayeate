@@ -1,11 +1,15 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../state/template/templates-store';
+import { CreateTemplateDialogStore } from '../../../state/create-dialog/create-template-dialog-store';
 
 @singleton()
 export class SetTemplateCreateDialogOpenOperation {
-  constructor(private readonly templatesStore: TemplatesStore) {}
+  constructor(private readonly createTemplateDialogStore: CreateTemplateDialogStore) {}
 
   execute(value: boolean): void {
-    this.templatesStore.getStore().setCreateDialogOpen(value);
+    if (value) {
+      this.createTemplateDialogStore.getStore().openCreateTemplateDialog();
+    } else {
+      this.createTemplateDialogStore.getStore().closeCreateTemplateDialog('CANCEL');
+    }
   }
 }

@@ -2,7 +2,7 @@ import type { ColorVariableKey } from '../../../../model/schema/primitives';
 import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
 import { CatalogsStore, getAllLoadedCatalogs } from '../../../../domain/state/catalog/catalogs-store';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { isMappingOrphanForTemplate } from '../../../../domain/utils/is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveMappingFromTemplateOperation } from '../../../../domain/operations/template-operations/mappings/remove-mapping-from-template-operation';
@@ -28,7 +28,7 @@ export class SetMappingColorRefController {
     colorRef: ColorVariableKey | null,
   ): Promise<void> {
     const store = this.catalogsStore.getStore();
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const catalogs = getAllLoadedCatalogs(store);
     const isOrphan = isMappingOrphanForTemplate(

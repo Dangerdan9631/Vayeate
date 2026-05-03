@@ -5,22 +5,15 @@ import { singleton } from 'tsyringe';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
 import type { Template } from '../../../model/schema/template-schemas';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
-import { initialTemplatesState, type TemplateStoreMap, type TemplatesState } from './templates-state';
+import { initialTemplatesState, type TemplateMap, type TemplatesState } from './templates-state';
 
-export interface TemplateEntryInput {
-  name: string;
-  version: string;
-  isLoaded: boolean;
-  template?: Template;
-}
-
-interface TemplatesStoreState {
+export interface TemplatesStoreState {
   state: TemplatesState;
-  setSelectedRef: (ref: TemplateReference | null) => void;
-  setTemplate: (template: Template | null) => void;
+  updateTemplateRefs: (refs: TemplateReference[]) => void;
+  selectTemplate: (ref: TemplateReference | null) => void;
+  updateTemplate: (template: Template) => void;
+  updateTemplates: (templates: Template[]) => void;
   setIsCreating: (value: boolean) => void;
-  setCreateDialogOpen: (value: boolean) => void;
-  setCreateFormName: (value: string) => void;
   setMappingSearchText: (value: string) => void;
   setMappingColorVariableFilter: (values: ColorVariableKey[]) => void;
   setMappingContrastVariableFilter: (values: ContrastVariableKey[]) => void;
@@ -28,8 +21,37 @@ interface TemplatesStoreState {
   setVariablesSearchText: (value: string) => void;
   setAddGroupName: (value: string) => void;
   setAddVariableName: (value: string) => void;
-  setTemplateMapEntry: (name: string, version: string, isLoaded: boolean, template?: Template) => void;
-  setTemplateMapEntries: (entries: TemplateEntryInput[]) => void;
+}
+
+export function getCurrentTemplate(storeState: TemplatesStoreState): Template | null {
+  const selectedRef = storeState.state.selectedRef;
+  if (!selectedRef) return null;
+  const template = storeState.state.templates[selectedRef.name]?.[selectedRef.version];
+  if (!template || !template.isLoaded) return null;
+  return template.template;
+}
+
+export function getCurrentTemplateRefs(templateMap: TemplateMap): TemplateReference[] {
+  const refs: TemplateReference[] = [];
+  for (const name of Object.keys(templateMap).sort()) {
+    for (const version of Object.keys(templateMap[name]!).sort()) {
+      refs.push({ name, version });
+    }
+  }
+  return refs;
+}
+
+export function getAllLoadedTemplates(storeState: TemplatesStoreState): Template[] {
+  const templates: Template[] = [];
+  for (const name of Object.keys(storeState.state.templates)) {
+    for (const version of Object.keys(storeState.state.templates[name]!)) {
+      const entry = storeState.state.templates[name]![version];
+      if (entry && entry.isLoaded && entry.template) {
+        templates.push(entry.template as Template);
+      }
+    }
+  }
+  return templates;
 }
 
 @singleton()
@@ -37,25 +59,49 @@ export class TemplatesStore {
   private store = createStore<TemplatesStoreState>()(
     immer((set): TemplatesStoreState => ({
       state: initialTemplatesState,
-      setSelectedRef: (ref: TemplateReference | null) =>
+      updateTemplateRefs: (refs: TemplateReference[]) =>
+        set((storeState) => {
+          refs.forEach((ref) => {
+            if (!storeState.state.templates[ref.name]) {
+              storeState.state.templates[ref.name] = {};
+            }
+            if (!storeState.state.templates[ref.name][ref.version]) {
+              storeState.state.templates[ref.name][ref.version] = {
+                isLoaded: false,
+                template: null,
+              };
+            }
+          });
+        }),
+      selectTemplate: (ref: TemplateReference | null) =>
         set((storeState) => {
           storeState.state.selectedRef = ref;
         }),
-      setTemplate: (template: Template | null) =>
+      updateTemplate: (template: Template) =>
         set((storeState) => {
-          storeState.state.template = castDraft(template);
+          if (!storeState.state.templates[template.name]) {
+            storeState.state.templates[template.name] = {};
+          }
+          storeState.state.templates[template.name][template.version] = {
+            isLoaded: true,
+            template: castDraft(template),
+          };
+        }),
+      updateTemplates: (templates: Template[]) =>
+        set((storeState) => {
+          templates.forEach((template) => {
+            if (!storeState.state.templates[template.name]) {
+              storeState.state.templates[template.name] = {};
+            }
+            storeState.state.templates[template.name][template.version] = {
+              isLoaded: true,
+              template: castDraft(template),
+            };
+          });
         }),
       setIsCreating: (value: boolean) =>
         set((storeState) => {
           storeState.state.isCreating = value;
-        }),
-      setCreateDialogOpen: (value: boolean) =>
-        set((storeState) => {
-          storeState.state.isCreateDialogOpen = value;
-        }),
-      setCreateFormName: (value: string) =>
-        set((storeState) => {
-          storeState.state.createFormName = value;
         }),
       setMappingSearchText: (value: string) =>
         set((storeState) => {
@@ -85,30 +131,7 @@ export class TemplatesStore {
         set((storeState) => {
           storeState.state.addVariableName = value;
         }),
-      setTemplateMapEntry: (name: string, version: string, isLoaded: boolean, template?: Template) =>
-        set((storeState) => {
-          if (!storeState.state.templateMap[name]) {
-            storeState.state.templateMap[name] = {};
-          }
-          storeState.state.templateMap[name]![version] = {
-            isLoaded,
-            template: castDraft(template ?? undefined),
-          };
-        }),
-      setTemplateMapEntries: (entries: TemplateEntryInput[]) =>
-        set((storeState) => {
-          storeState.state.templateMap = castDraft(entries.reduce((acc, entry) => {
-            if (!acc[entry.name]) {
-              acc[entry.name] = {};
-            }
-            acc[entry.name][entry.version] = {
-              isLoaded: entry.isLoaded,
-              template: castDraft(entry.template ?? undefined),
-            };
-            return acc;
-          }, {} as TemplateStoreMap));
-        }),
-    })),
+    }))
   );
 
   get api() {

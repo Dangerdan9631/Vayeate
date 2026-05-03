@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { LockTemplateOperation as LockTemplateOperation } from '../../../../domain/operations/template-operations/template-details/lock-template-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { ValidateCanLockTemplate } from '../../../../domain/validations/template-validations/validate-can-lock-template';
@@ -16,7 +16,7 @@ export class LockTemplateController {
   ) {}
 
   run(): void {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template || !this.validateCanLockTemplate.test(template)) return;
     const updated = this.lockTemplateOperation.execute(template);
     this.saveTemplate.execute(updated);

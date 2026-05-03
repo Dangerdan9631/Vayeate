@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../../domain/operations/template-operations/variables-contrast/remove-contrast-variable-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
@@ -17,7 +17,7 @@ export class RemoveContrastVariableController {
   ) {}
 
   run(key: string): void {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const refs = referencedContrastVarKeysFromTemplate(template);
     if (refs.has(key)) return;

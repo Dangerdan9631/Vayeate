@@ -2,7 +2,7 @@ import { formatSemanticSelector } from '../../../../model/format-semantic-select
 import { parseSemanticSelector } from '../../../../model/parse-semantic-selector';
 import { ParsedSemanticSelector } from '../../../../model/semantic-selector-types';
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { MergeSemanticTokenSetsOperation } from '../../../../domain/operations/template-operations/mappings-semantic/merge-semantic-token-sets-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
@@ -44,7 +44,7 @@ export class UpdateSemanticVariantKeyController {
     modifiers: string[],
     language: string | null,
   ): void {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     if (!template) return;
     const newKey = formatSemanticSelector(parsed.type, modifiers, language);
     if (!newKey || newKey === oldKey) return;

@@ -1,6 +1,6 @@
 import type { CatalogReference } from '../../../../model/schema/template-schemas';
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/template/templates-store';
 import { GetCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/get-catalog-refs-operation';
 import { LoadCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/load-catalog-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
@@ -24,7 +24,7 @@ export class UpdateAllCatalogsController {
   ) {}
 
   async run(): Promise<void> {
-    const template = this.templatesStore.getStore().state.template;
+    const template = getCurrentTemplate(this.templatesStore.getStore());
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
     const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);

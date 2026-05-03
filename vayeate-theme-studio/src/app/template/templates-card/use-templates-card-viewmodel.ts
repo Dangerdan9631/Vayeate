@@ -1,12 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { getTemplateRefs } from '../../../domain/state/template/templates-state';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import { TemplatesCardActionType } from './actions/templates-card-action-type';
 import { container } from 'tsyringe';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
 
 const templatesStore = container.resolve(TemplatesStore);
 
@@ -25,8 +24,8 @@ export function useTemplatesCardViewModel(): TemplatesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templatesStore.api, (state) => state.state.selectedRef);
   const isCreating = useStore(templatesStore.api, (state) => state.state.isCreating);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
-  const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
+  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
 
   const templateNames = useMemo(() => {
     const names = new Set(templateRefs.map((r) => r.name));

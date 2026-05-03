@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { TemplatesStore } from '../../../../domain/state/template/templates-store';
+import { CreateTemplateDialogStore } from '../../../../domain/state/create-dialog/create-template-dialog-store';
 import { CreateTemplateOperation } from '../../../../domain/operations/template-operations/template-list/create-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-operation';
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
@@ -10,7 +10,7 @@ import { SetTemplateIsCreatingOperation } from '../../../../domain/operations/te
 @singleton()
 export class CreateTemplateController {
   constructor(
-    private readonly templatesStore: TemplatesStore,
+    private readonly createTemplateDialogStore: CreateTemplateDialogStore,
     private readonly createTemplate: CreateTemplateOperation,
     private readonly refreshTemplateRefs: RefreshTemplateRefsOperation,
     private readonly setTemplate: SetTemplateOperation,
@@ -20,7 +20,7 @@ export class CreateTemplateController {
   ) {}
 
   async run(): Promise<void> {
-    const name = this.templatesStore.getStore().state.createFormName.trim();
+    const name = this.createTemplateDialogStore.getStore().state?.name.trim();
     if (!name) return;
 
     this.setTemplateIsCreating.execute(true);

@@ -2,8 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
-import { getTemplateRefs } from '../../../domain/state/template/templates-state';
-import { TemplatesStore } from '../../../domain/state/template/templates-store';
+import { getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/template/templates-store';
 import { ThemesStore } from '../../../domain/state/theme/themes-store';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { ColorAssignment, ContrastAssignment, TemplateReference, Theme } from '../../../model/schema/theme-schemas';
@@ -33,8 +32,8 @@ export function useThemeDetailsCardViewModel(): ThemeDetailsCardViewModel {
   const selectedRef = useStore(themesStore.api, (state) => state.state.selectedRef);
   const theme = useStore(themesStore.api, (state) => state.state.theme);
   const generateResult = useStore(themesStore.api, (state) => state.state.generateResult);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templateMap);
-  const templateRefs = useMemo(() => getTemplateRefs(templateMap), [templateMap]);
+  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
+  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
 
   const templateNamesList = useMemo(() => {
     const names = new Set(templateRefs.map((r) => r.name));

@@ -17,15 +17,15 @@ export class RefreshTemplateRefsAndSelectOperation {
       `Refreshing template ${selectName} ${selectVersion}`,
       async () => {
         const refs = await this.templateGateway.listTemplates();
-        this.templatesStore.getStore().setTemplateMapEntries(
-          refs.map((r) => ({ name: r.name, version: r.version, isLoaded: false, template: undefined })),
-        );
+        this.templatesStore.getStore().updateTemplateRefs(refs);
         if (selectName && selectVersion) {
           const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
           if (match) {
-            this.templatesStore.getStore().setSelectedRef(match);
+            this.templatesStore.getStore().selectTemplate(match);
             const template = await this.templateGateway.loadTemplate(match.name, match.version);
-            this.templatesStore.getStore().setTemplate(template);
+            if (template) {
+              this.templatesStore.getStore().updateTemplate(template);
+            }
           }
         }
       },

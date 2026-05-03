@@ -1,15 +1,15 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../state/catalog/catalogs-store';
+import { BulkAddDialogStore } from '../../../state/bulk-add-dialog/bulk-add-dialog-store';
 
 @singleton()
 export class SetCatalogBulkAddDialogOpenOperation {
-  constructor(private readonly catalogsStore: CatalogsStore) {}
+  constructor(private readonly bulkAddDialogStore: BulkAddDialogStore) {}
 
   execute(value: boolean): void {
     if (value) {
-      this.catalogsStore.getStore().openBulkAddDialog();
+      this.bulkAddDialogStore.getStore().openBulkAddDialog();
     } else {
-      this.catalogsStore.getStore().closeBulkAddDialog('CANCEL');
+      this.bulkAddDialogStore.getStore().closeBulkAddDialog('CANCEL');
     }
   }
 }
