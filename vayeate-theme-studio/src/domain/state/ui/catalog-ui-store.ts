@@ -3,10 +3,12 @@ import { immer } from 'zustand/middleware/immer';
 import { singleton } from 'tsyringe';
 import type { SourceType, TokenType } from '../../../model/schema/primitives';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
-import { emptyNewSource, initialCatalogUiState, type CatalogUiState } from './catalog-ui-state';
+import { emptyNewSource, initialCatalogUiState, type CatalogUiState, type LoadState } from './catalog-ui-state';
 
 interface CatalogUiStoreState {
   state: CatalogUiState;
+  setPageLoadState: (loadState: LoadState) => void;
+  setCatalogLoadState: (loadState: LoadState) => void;
   selectCatalog: (ref: CatalogReference | null) => void;
   setTokensSearchText: (value: string) => void;
   setNewSourceData: (url?: string, tokenType?: TokenType, type?: SourceType) => void;
@@ -20,6 +22,12 @@ export class CatalogUiStore {
   private store = createStore<CatalogUiStoreState>()(
     immer((set): CatalogUiStoreState => ({
       state: initialCatalogUiState,
+      setPageLoadState: (loadState: LoadState) => set((storeState) => {
+        storeState.state.pageLoadState = loadState;
+      }),
+      setCatalogLoadState: (loadState: LoadState) => set((storeState) => {
+        storeState.state.catalogLoadState = loadState;
+      }),
       selectCatalog: (ref: CatalogReference | null) => set((storeState) => {
         storeState.state.selectedRef = ref;
       }),

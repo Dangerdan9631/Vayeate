@@ -15,12 +15,17 @@ export class RefreshCatalogRefsAndSelectOperation {
   ) {}
 
   execute(selectName?: string, selectVersion?: string): ContinuationHandler {
+    if (selectName && selectVersion) {
+      this.catalogUiStore.getStore().setCatalogLoadState('loading');
+    }
+
     return this.enqueueBackgroundAction.execute(
       'data_io',
       `Refreshing catalog ${selectName} ${selectVersion}`,
       async () => {
         const refs = await this.catalogGateway.listCatalogs();
         this.catalogsStore.getStore().updateCatalogRefs(refs);
+        let loadedSelectedCatalog = false;
         if (selectName && selectVersion) {
           const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
           if (match) {
@@ -28,8 +33,13 @@ export class RefreshCatalogRefsAndSelectOperation {
             if (catalog) {
               this.catalogUiStore.getStore().selectCatalog(match);
               this.catalogsStore.getStore().updateCatalog(catalog);
+              this.catalogUiStore.getStore().setCatalogLoadState('loaded');
+              loadedSelectedCatalog = true;
             }
           }
+        }
+        if (selectName && selectVersion && !loadedSelectedCatalog) {
+          this.catalogUiStore.getStore().setCatalogLoadState('unloaded');
         }
       }
     );

@@ -7,7 +7,11 @@ export interface NewSourceState {
   type: SourceType;
 }
 
+export type LoadState = 'unloaded' | 'loading' | 'loaded';
+
 export interface CatalogUiState {
+  pageLoadState: LoadState;
+  catalogLoadState: LoadState;
   selectedRef: CatalogReference | null;
   tokensSearchText: string;
   newSource: NewSourceState;
@@ -22,6 +26,8 @@ export const emptyNewSource: NewSourceState = {
 };
 
 export const initialCatalogUiState: CatalogUiState = {
+  pageLoadState: 'unloaded',
+  catalogLoadState: 'unloaded',
   selectedRef: null,
   tokensSearchText: '',
   newSource: emptyNewSource,

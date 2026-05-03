@@ -16,8 +16,14 @@ export class SetSelectedCatalogOperation {
 
   execute(ref: CatalogReference | null): void {
     this.catalogUiStore.getStore().selectCatalog(ref);
+    this.catalogUiStore.getStore().setCatalogLoadState(ref ? 'loading' : 'unloaded');
 
-    if (!ref || getCurrentCatalog(this.catalogsStore.getStore().stateV2.catalogs, ref)) return;
+    if (!ref) return;
+
+    if (getCurrentCatalog(this.catalogsStore.getStore().stateV2.catalogs, ref)) {
+      this.catalogUiStore.getStore().setCatalogLoadState('loaded');
+      return;
+    }
 
     this.enqueueBackgroundAction.execute(
       'data_io',
@@ -26,6 +32,10 @@ export class SetSelectedCatalogOperation {
         const catalog = await this.catalogGateway.loadCatalog(ref.name, ref.version);
         if (!catalog) return;
         this.catalogsStore.getStore().updateCatalog(catalog);
+        const selectedRef = this.catalogUiStore.getStore().state.selectedRef;
+        if (selectedRef?.name === ref.name && selectedRef.version === ref.version) {
+          this.catalogUiStore.getStore().setCatalogLoadState('loaded');
+        }
       },
     );
   }

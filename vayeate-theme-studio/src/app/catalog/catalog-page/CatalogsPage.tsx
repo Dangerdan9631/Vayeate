@@ -6,19 +6,40 @@ import { CreateCatalogDialog } from '../create-dialog/CreateCatalogDialog';
 import { TokensCard } from '../tokens-card/TokensCard';
 
 export function CatalogsPage() {
-  const { createDialogOpen, bulkAddDialogOpen } = useCatalogViewModel();
+  const {
+    isPageLoading,
+    isCatalogLoading,
+    isCatalogLoaded,
+    createDialogOpen,
+    bulkAddDialogOpen,
+  } = useCatalogViewModel();
 
   return (
     <>
-      <div className="catalogs-page-grid">
-        <div className="catalogs-left-col">
-          <CatalogsCard />
-          <CatalogDetailsCard />
+      {isPageLoading ? (
+        <div className="placeholder">
+          <h2>Catalogs</h2>
+          <p>Loading catalogs...</p>
         </div>
-        <div className="catalogs-right-col">
-          <TokensCard />
+      ) : (
+        <div className="catalogs-page-grid">
+          <div className="catalogs-left-col">
+            <CatalogsCard />
+            {isCatalogLoading && (
+              <div className="catalog-details-card placeholder">
+                <h2>Catalog details</h2>
+                <p>Loading catalog...</p>
+              </div>
+            )}
+            {isCatalogLoaded && <CatalogDetailsCard />}
+          </div>
+          {isCatalogLoaded && (
+            <div className="catalogs-right-col">
+              <TokensCard />
+            </div>
+          )}
         </div>
-      </div>
+      )}
       {createDialogOpen && <CreateCatalogDialog />}
       {bulkAddDialogOpen && <BulkAddDialog />}
     </>
