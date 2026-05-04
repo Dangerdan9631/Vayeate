@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { LoadCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/load-catalog-refs-operation';
+import { LoadCatalogRefsOperation } from '../../../../domain/catalog/operations/load-catalog-refs-operation';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()

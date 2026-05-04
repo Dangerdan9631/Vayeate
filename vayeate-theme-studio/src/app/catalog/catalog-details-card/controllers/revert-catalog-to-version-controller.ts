@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/state/data/catalogs-store';
+import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
 import { nextPatchVersion } from '../../../../domain/utils/next-patch-version';
 import { LockHeadCatalogIfUnlockedOperation } from '../../../../domain/operations/catalog-operations/catalog-details/lock-head-catalog-if-unlocked-operation';
 import { RevertCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/revert-catalog-operation';
 import { SaveCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/delete/refresh-catalog-refs-and-select-operation';
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import { Catalog } from '../../../../model/schema/catalog';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';

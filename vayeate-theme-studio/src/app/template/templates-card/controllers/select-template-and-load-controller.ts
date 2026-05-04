@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { LoadCatalogForDisplayOperation } from '../../../../domain/operations/catalog-operations/catalog-details/load-catalog-for-display-operation';
+import { LoadCatalogForDisplayOperation } from '../../../../domain/operations/delete/load-catalog-for-display-operation';
 import { LoadTemplateOperation } from '../../../../domain/operations/template-operations/template-details/load-template-operation';
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 

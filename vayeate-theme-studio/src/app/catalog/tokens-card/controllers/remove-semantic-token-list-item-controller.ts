@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore } from '../../../../domain/state/data/catalogs-store';
+import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
 import type { SemanticTokenRegistryListKind } from '../../../../model/schema/primitives';
 import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { RemoveSemanticTokenListItemOperation } from '../../../../domain/operations/catalog-operations/tokens/remove-semantic-token-list-item-operation';
 import { SaveCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
-import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/catalog-operations/catalog-list/refresh-catalog-refs-and-select-operation';
-import { getCurrentCatalog } from '../../../../domain/state/data/catalogs-store';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/delete/refresh-catalog-refs-and-select-operation';
+import { getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 
 @singleton()

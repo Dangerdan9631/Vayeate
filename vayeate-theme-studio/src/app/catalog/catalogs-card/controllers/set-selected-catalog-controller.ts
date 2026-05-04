@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { SetSelectedCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { SetSelectedCatalogOperation } from '../../../../domain/operations/delete/set-selected-catalog-operation';
 
 @singleton()
 export class SetSelectedCatalogController {

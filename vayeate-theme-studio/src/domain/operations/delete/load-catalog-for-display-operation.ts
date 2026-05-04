@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
-import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../state/data/catalogs-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { CatalogReference } from '../../../../model/schema/template-schemas';
-import { Catalog } from '../../../../model/schema/catalog';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
+import { CatalogsStore } from '../../catalog/state/catalogs-store';
+import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
+import { CatalogReference } from '../../../model/schema/template-schemas';
+import { Catalog } from '../../../model/schema/catalog';
+import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
 
 @singleton()
 export class LoadCatalogForDisplayOperation {
@@ -26,7 +26,7 @@ export class LoadCatalogForDisplayOperation {
             loadedCatalogs.push(loaded);
           }
         }
-        this.catalogsStore.getStore().updateCatalogs(loadedCatalogs);
+        this.catalogsStore.getStore().upsertCatalogs(loadedCatalogs);
       }
     );
   }

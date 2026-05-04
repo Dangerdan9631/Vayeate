@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schema/catalog';
-import { CatalogsStore } from '../../../state/data/catalogs-store';
+import type { Catalog } from '../../../model/schema/catalog';
+import { CatalogsStore } from '../../catalog/state/catalogs-store';
 
 @singleton()
 export class SetCatalogOperation {
@@ -8,7 +8,7 @@ export class SetCatalogOperation {
 
   execute(catalog: Catalog | null): void {
     if (catalog) {
-      this.catalogsStore.getStore().updateCatalog(catalog);
+      this.catalogsStore.getStore().upsertCatalogs([catalog]);
     }
   }
 }

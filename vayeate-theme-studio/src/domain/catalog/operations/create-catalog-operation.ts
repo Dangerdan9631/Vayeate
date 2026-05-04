@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
-import type { CatalogReference } from '../../../../model/schema/template-schemas';
-import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../state/data/catalogs-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { CatalogType } from '../../../../model/schema/primitives';
+import type { CatalogReference } from '../../../model/schema/template-schemas';
+import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
+import { CatalogsStore } from '../state/catalogs-store';
+import { EnqueueBackgroundQueueActionOperation } from '../../operations/background-queue/enqueue-background-queue-action-operation';
+import { CatalogType } from '../../../model/schema/primitives';
 
 @singleton()
 export class CreateCatalogOperation {
@@ -26,7 +26,7 @@ export class CreateCatalogOperation {
       semanticTokenLanguages: [],
     };
     const ref = { name: catalog.name, version: catalog.version };
-    this.catalogsStore.getStore().updateCatalog(catalog);
+    this.catalogsStore.getStore().upsertCatalogs([catalog]);
     this.enqueueBackgroundAction.execute(
       'data_io',
       `Saving catalog ${catalog.name} ${catalog.version}`,

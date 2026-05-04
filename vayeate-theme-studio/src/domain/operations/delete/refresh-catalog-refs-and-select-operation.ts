@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
-import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../../state/data/catalogs-store';
-import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
+import { CatalogsStore } from '../../catalog/state/catalogs-store';
+import { CatalogUiStore } from '../../state/ui/catalog-ui-store';
+import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
 
 @singleton()
 export class RefreshCatalogRefsAndSelectOperation {
@@ -32,7 +32,7 @@ export class RefreshCatalogRefsAndSelectOperation {
             const catalog = await this.catalogGateway.loadCatalog(match.name, match.version);
             if (catalog) {
               this.catalogUiStore.getStore().selectCatalog(match);
-              this.catalogsStore.getStore().updateCatalog(catalog);
+              this.catalogsStore.getStore().upsertCatalogs([catalog]);
               this.catalogUiStore.getStore().setCatalogLoadState('loaded');
               loadedSelectedCatalog = true;
             }

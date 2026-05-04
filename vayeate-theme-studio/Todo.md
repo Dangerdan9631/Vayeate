@@ -1,6 +1,5 @@
 - [x] Add Linting
 - [x] Parallelize background actions
-- [ ] Undo stack
 
 ## App Layer
 

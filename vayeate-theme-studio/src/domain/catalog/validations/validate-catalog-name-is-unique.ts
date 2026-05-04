@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { VALIDATION_RESULT_OK, type ValidationResult } from '../../../model/validation-result';
-import { CatalogsStore } from '../../state/data/catalogs-store';
+import { CatalogsStore } from '../state/catalogs-store';
 
 @singleton()
 export class ValidateCatalogNameIsUnique {

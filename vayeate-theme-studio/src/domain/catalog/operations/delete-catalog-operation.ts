@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
-import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
+import { EnqueueBackgroundQueueActionOperation } from '../../operations/background-queue/enqueue-background-queue-action-operation';
+import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
 
 @singleton()
 export class DeleteCatalogOperation {

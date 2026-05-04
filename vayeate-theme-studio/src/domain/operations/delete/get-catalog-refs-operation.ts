@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../state/data/catalogs-store';
-import type { CatalogReference } from '../../../../model/schema/template-schemas';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../catalog/state/catalogs-store';
+import type { CatalogReference } from '../../../model/schema/template-schemas';
 
 /** Read current catalog refs from state. Use in controllers instead of importing domain/state directly. */
 @singleton()

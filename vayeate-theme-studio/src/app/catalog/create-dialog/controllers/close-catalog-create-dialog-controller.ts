@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { CloseCatalogCreateDialogOperation } from '../../../../domain/operations/create-dialog/operations/close-catalog-create-dialog-operation';
-import { CreateCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/create-catalog-operation';
-import { SetSelectedCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { CreateCatalogOperation } from '../../../../domain/catalog/operations/create-catalog-operation';
+import { SetSelectedCatalogOperation } from '../../../../domain/operations/delete/set-selected-catalog-operation';
 import { CreateCatalogDialogStore } from '../../../../domain/state/ui/create-catalog-dialog-store';
 
 export type CatalogCreateDialogOutcome = 'OK' | 'Cancel';

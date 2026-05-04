@@ -9,8 +9,7 @@ import type { CatalogReference } from '../../../model/schema/template-schemas';
 interface CatalogsStoreState {
   state: CatalogsState;
   updateCatalogRefs: (refs: CatalogReference[]) => void;
-  updateCatalog: (catalog: Catalog) => void;
-  updateCatalogs: (catalogs: Catalog[]) => void;
+  upsertCatalogs: (catalogs: Catalog[]) => void;
 }
 
 export function getCurrentCatalog(catalogMap: CatalogMap, selectedRef: CatalogReference | null): Catalog | null {
@@ -56,18 +55,6 @@ function ensureCatalogRef(catalogMap: CatalogMap, ref: CatalogReference): void {
   }
 }
 
-function upsertCatalog(catalogMap: CatalogMap, catalog: Catalog): void {
-  const ref = {
-    name: catalog.name,
-    version: catalog.version,
-  };
-  ensureCatalogRef(catalogMap, ref);
-  catalogMap[ref.name][ref.version] = {
-    isLoaded: true,
-    catalog: castDraft(catalog),
-  };
-}
-
 @singleton()
 export class CatalogsStore {
   private store = createStore<CatalogsStoreState>()(
@@ -85,12 +72,17 @@ export class CatalogsStore {
 
         storeState.state.catalogs = castDraft(catalogs);
       }),
-      updateCatalog: (catalog: Catalog) => set((storeState) => {
-        upsertCatalog(storeState.state.catalogs, catalog);
-      }),
-      updateCatalogs: (catalogs: Catalog[]) => set((storeState) => {
+      upsertCatalogs: (catalogs: Catalog[]) => set((storeState) => {
         catalogs.forEach((catalog) => {
-          upsertCatalog(storeState.state.catalogs, catalog);
+          const ref = {
+            name: catalog.name,
+            version: catalog.version,
+          };
+          ensureCatalogRef(storeState.state.catalogs, ref);
+          storeState.state.catalogs[ref.name][ref.version] = {
+            isLoaded: true,
+            catalog: castDraft(catalog),
+          };
         });
       }),
     }))

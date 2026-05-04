@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import { findNearestVersionRef } from '../../../../domain/utils/find-nearest-version-ref';
-import { DeleteCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/delete-catalog-operation';
-import { SetSelectedCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-list/set-selected-catalog-operation';
+import { DeleteCatalogOperation } from '../../../../domain/catalog/operations/delete-catalog-operation';
+import { SetSelectedCatalogOperation } from '../../../../domain/operations/delete/set-selected-catalog-operation';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
-import { LoadCatalogRefsOperation } from '../../../../domain/operations/catalog-operations/catalog-list/load-catalog-refs-operation';
-import { CatalogsStore, getCurrentCatalogRefs } from '../../../../domain/state/data/catalogs-store';
+import { LoadCatalogRefsOperation } from '../../../../domain/catalog/operations/load-catalog-refs-operation';
+import { CatalogsStore, getCurrentCatalogRefs } from '../../../../domain/catalog/state/catalogs-store';
 
 @singleton()
 export class DeleteCurrentCatalogVersionController {
