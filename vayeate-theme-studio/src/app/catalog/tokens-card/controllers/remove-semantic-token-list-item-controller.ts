@@ -21,7 +21,7 @@ export class RemoveSemanticTokenListItemController {
 
   run(kind: SemanticTokenRegistryListKind, index: number): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.removeSemanticTokenListItem.execute(base, kind, index);

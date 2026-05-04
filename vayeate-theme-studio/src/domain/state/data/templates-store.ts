@@ -43,6 +43,31 @@ export function getAllLoadedTemplates(templateMap: TemplateMap): Template[] {
   return templates;
 }
 
+function ensureTemplateRef(templateMap: TemplateMap, ref: TemplateReference): void {
+  if (!templateMap[ref.name]) {
+    templateMap[ref.name] = {};
+  }
+
+  if (!templateMap[ref.name][ref.version]) {
+    templateMap[ref.name][ref.version] = {
+      isLoaded: false,
+      template: null,
+    };
+  }
+}
+
+function upsertTemplate(templateMap: TemplateMap, template: Template): void {
+  const ref = {
+    name: template.name,
+    version: template.version,
+  };
+  ensureTemplateRef(templateMap, ref);
+  templateMap[ref.name][ref.version] = {
+    isLoaded: true,
+    template: castDraft(template),
+  };
+}
+
 @singleton()
 export class TemplatesStore {
   private store = createStore<TemplatesStoreState>()(
@@ -51,37 +76,17 @@ export class TemplatesStore {
       updateTemplateRefs: (refs: TemplateReference[]) =>
         set((storeState) => {
           refs.forEach((ref) => {
-            if (!storeState.state.templates[ref.name]) {
-              storeState.state.templates[ref.name] = {};
-            }
-            if (!storeState.state.templates[ref.name][ref.version]) {
-              storeState.state.templates[ref.name][ref.version] = {
-                isLoaded: false,
-                template: null,
-              };
-            }
+            ensureTemplateRef(storeState.state.templates, ref);
           });
         }),
       updateTemplate: (template: Template) =>
         set((storeState) => {
-          if (!storeState.state.templates[template.name]) {
-            storeState.state.templates[template.name] = {};
-          }
-          storeState.state.templates[template.name][template.version] = {
-            isLoaded: true,
-            template: castDraft(template),
-          };
+          upsertTemplate(storeState.state.templates, template);
         }),
       updateTemplates: (templates: Template[]) =>
         set((storeState) => {
           templates.forEach((template) => {
-            if (!storeState.state.templates[template.name]) {
-              storeState.state.templates[template.name] = {};
-            }
-            storeState.state.templates[template.name][template.version] = {
-              isLoaded: true,
-              template: castDraft(template),
-            };
+            upsertTemplate(storeState.state.templates, template);
           });
         }),
     }))

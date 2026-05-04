@@ -13,10 +13,10 @@ export interface CatalogMap {
   [name: string]: CatalogVersions;
 }
 
-export interface CatalogsStateV2 {
+export interface CatalogsState {
   catalogs: CatalogMap;
 }
 
-export const initialCatalogsStateV2: CatalogsStateV2 = {
+export const initialCatalogsState: CatalogsState = {
   catalogs: {},
 };

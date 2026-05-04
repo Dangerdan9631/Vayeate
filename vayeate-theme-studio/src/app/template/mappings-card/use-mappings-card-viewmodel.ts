@@ -26,7 +26,7 @@ export function useMappingsCardViewModel() {
   const mappingColorVariableFilter = useStore(templateUiStore.api, (state) => state.state.mappingColorVariableFilter);
   const mappingContrastVariableFilter = useStore(templateUiStore.api, (state) => state.state.mappingContrastVariableFilter);
 
-  const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogs);
 
   const loadedCatalogsForTemplateRefs = useMemo(() => {
     if (!template || template.catalogRefs.length === 0) return [];

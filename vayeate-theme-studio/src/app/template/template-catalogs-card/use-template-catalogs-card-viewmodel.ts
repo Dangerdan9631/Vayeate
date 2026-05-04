@@ -51,7 +51,7 @@ export function useTemplateCatalogsCardViewModel(): TemplateCatalogsCardViewMode
     return best !== null && best.version === selectedRef.version;
   }, [templateRefs, selectedRef, selectedName]);
 
-  const catalogs = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogs = useStore(catalogsStore.api, (state) => state.state.catalogs);
   const catalogRefs = useMemo(() => {
     const refs: CatalogReference[] = [];
     for (const name of Object.keys(catalogs).sort()) {

@@ -65,7 +65,7 @@ export function useTokensCardViewModel(): TokensCardViewModel {
   const tokensSearchText = useStore(catalogUiStore.api, (state) => state.state.tokensSearchText);
   const newTokenKey = useStore(catalogUiStore.api, (state) => state.state.newTokenKey);
   const newSemanticTokenSelectorText = useStore(catalogUiStore.api, (state) => state.state.newSemanticTokenSelectorText);
-  const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogs);
   const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
 

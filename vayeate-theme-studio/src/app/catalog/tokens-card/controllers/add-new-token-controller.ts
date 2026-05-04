@@ -27,7 +27,7 @@ export class AddNewTokenController {
   run(tokenType: TokenType, key?: string): void {
     const store = this.catalogsStore.getStore();
     const state = this.catalogUiStore.getStore().state;
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, state.selectedRef);
     const tokenKey = (key ?? state.newTokenKey)?.trim();
     if (!catalog || !tokenKey) return;
 

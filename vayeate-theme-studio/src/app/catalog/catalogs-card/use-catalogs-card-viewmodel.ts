@@ -27,7 +27,7 @@ export function useCatalogsCardViewModel(): CatalogsCardViewModel {
   const selectedName = useMemo(() => selectedRef?.name ?? '', [selectedRef]);
   const selectedVersion = useMemo(() => selectedRef?.version ?? '', [selectedRef]);
 
-  const catalogs = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogs = useStore(catalogsStore.api, (state) => state.state.catalogs);
   const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogs), [catalogs]);
   const catalogSelections = useMemo(() => {
     const map: Record<string, CatalogReference> = {};

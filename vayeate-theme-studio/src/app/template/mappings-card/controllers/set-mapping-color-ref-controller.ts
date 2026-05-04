@@ -32,7 +32,7 @@ export class SetMappingColorRefController {
     const store = this.catalogsStore.getStore();
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
-    const catalogs = getAllLoadedCatalogs(store.stateV2.catalogs);
+    const catalogs = getAllLoadedCatalogs(store.state.catalogs);
     const isOrphan = isMappingOrphanForTemplate(
       template,
       tokenKey,

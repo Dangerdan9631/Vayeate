@@ -21,7 +21,7 @@ export class UpdateTokenKeyController {
 
   run(oldKey: string, newKey: string, tokenType: TokenType): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateTokenKeyInCatalog.execute(base, oldKey, newKey, tokenType);

@@ -25,7 +25,7 @@ export class AddNewSourceController {
     const store = this.catalogsStore.getStore();
     const uiStore = this.catalogUiStore.getStore();
     const state = uiStore.state;
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, state.selectedRef);
     const url = state.newSource.url?.trim();
     if (!catalog || !url) return;
     const source: Source = {

@@ -2,12 +2,12 @@ import { createStore } from 'zustand/vanilla';
 import { immer } from 'zustand/middleware/immer';
 import { castDraft } from 'immer';
 import { singleton } from 'tsyringe';
-import { CatalogMap, CatalogsStateV2, initialCatalogsStateV2 } from './catalogs-state';
+import { CatalogMap, type CatalogsState, initialCatalogsState } from './catalogs-state';
 import type { Catalog } from '../../../model/schema/catalog';
 import type { CatalogReference } from '../../../model/schema/template-schemas';
 
 interface CatalogsStoreState {
-  stateV2: CatalogsStateV2;
+  state: CatalogsState;
   updateCatalogRefs: (refs: CatalogReference[]) => void;
   updateCatalog: (catalog: Catalog) => void;
   updateCatalogs: (catalogs: Catalog[]) => void;
@@ -43,57 +43,54 @@ export function getAllLoadedCatalogs(catalogMap: CatalogMap): Catalog[] {
   return catalogs;
 }
 
+function ensureCatalogRef(catalogMap: CatalogMap, ref: CatalogReference): void {
+  if (!catalogMap[ref.name]) {
+    catalogMap[ref.name] = {};
+  }
+
+  if (!catalogMap[ref.name][ref.version]) {
+    catalogMap[ref.name][ref.version] = {
+      isLoaded: false,
+      catalog: null,
+    };
+  }
+}
+
+function upsertCatalog(catalogMap: CatalogMap, catalog: Catalog): void {
+  const ref = {
+    name: catalog.name,
+    version: catalog.version,
+  };
+  ensureCatalogRef(catalogMap, ref);
+  catalogMap[ref.name][ref.version] = {
+    isLoaded: true,
+    catalog: castDraft(catalog),
+  };
+}
+
 @singleton()
 export class CatalogsStore {
   private store = createStore<CatalogsStoreState>()(
     immer((set): CatalogsStoreState => ({
-      stateV2: initialCatalogsStateV2,
+      state: initialCatalogsState,
       updateCatalogRefs: (refs: CatalogReference[]) => set((storeState) => {
-        const catalogs: CatalogMap = {}
+        const catalogs: CatalogMap = {};
         refs.forEach((ref) => {
-          if (!catalogs[ref.name]) {
-            catalogs[ref.name] = {};
-          }
-
-          const existing = storeState.stateV2.catalogs[ref.name]?.[ref.version];
+          const existing = storeState.state.catalogs[ref.name]?.[ref.version];
+          ensureCatalogRef(catalogs, ref);
           if (existing) {
-            catalogs[ref.name][ref.version] = storeState.stateV2.catalogs[ref.name][ref.version];
-          } else {
-            catalogs[ref.name][ref.version] = {
-              isLoaded: false,
-              catalog: null,
-            };
+            catalogs[ref.name][ref.version] = storeState.state.catalogs[ref.name][ref.version];
           }
         });
 
-        storeState.stateV2.catalogs = castDraft(catalogs);
+        storeState.state.catalogs = castDraft(catalogs);
       }),
       updateCatalog: (catalog: Catalog) => set((storeState) => {
-        const catalogRef = {
-          name: catalog.name,
-          version: catalog.version,
-        };
-        if (!storeState.stateV2.catalogs[catalogRef.name]) {
-          storeState.stateV2.catalogs[catalogRef.name] = {};
-        }
-        storeState.stateV2.catalogs[catalogRef.name][catalogRef.version] = {
-          isLoaded: true,
-          catalog: castDraft(catalog),
-        };
+        upsertCatalog(storeState.state.catalogs, catalog);
       }),
       updateCatalogs: (catalogs: Catalog[]) => set((storeState) => {
         catalogs.forEach((catalog) => {
-          const catalogRef = {
-            name: catalog.name,
-            version: catalog.version,
-          };
-          if (!storeState.stateV2.catalogs[catalogRef.name]) {
-            storeState.stateV2.catalogs[catalogRef.name] = {};
-          }
-          storeState.stateV2.catalogs[catalogRef.name][catalogRef.version] = {
-            isLoaded: true,
-            catalog: castDraft(catalog),
-          };
+          upsertCatalog(storeState.state.catalogs, catalog);
         });
       }),
     }))

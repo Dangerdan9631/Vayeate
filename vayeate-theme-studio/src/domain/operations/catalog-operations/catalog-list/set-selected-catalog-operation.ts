@@ -20,7 +20,7 @@ export class SetSelectedCatalogOperation {
 
     if (!ref) return;
 
-    if (getCurrentCatalog(this.catalogsStore.getStore().stateV2.catalogs, ref)) {
+    if (getCurrentCatalog(this.catalogsStore.getStore().state.catalogs, ref)) {
       this.catalogUiStore.getStore().setCatalogLoadState('loaded');
       return;
     }

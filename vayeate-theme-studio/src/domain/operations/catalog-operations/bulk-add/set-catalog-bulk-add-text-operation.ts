@@ -30,7 +30,7 @@ export class SetCatalogBulkAddTextOperation {
     if (!trimmed) return null;
 
     const catalog = getCurrentCatalog(
-      this.catalogsStore.getStore().stateV2.catalogs,
+      this.catalogsStore.getStore().state.catalogs,
       this.catalogUiStore.getStore().state.selectedRef,
     );
     const existingTokenKeys = new Set(

@@ -23,7 +23,7 @@ export class AddCatalogSemanticTokenSelectorController {
   run(): void {
     const store = this.catalogsStore.getStore();
     const state = this.catalogUiStore.getStore().state;
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, state.selectedRef);
     const selector = state.newSemanticTokenSelectorText?.trim();
     if (!catalog || !selector) return;
 

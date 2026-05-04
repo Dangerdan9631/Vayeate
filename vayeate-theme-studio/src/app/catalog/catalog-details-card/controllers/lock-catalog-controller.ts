@@ -20,7 +20,7 @@ export class LockCatalogController {
 
   run(): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog || !this.validateCanLockCatalog.test(catalog)) return;
     const updated = this.lockCatalogTransform.execute(catalog);
     this.saveCatalog.execute(updated);

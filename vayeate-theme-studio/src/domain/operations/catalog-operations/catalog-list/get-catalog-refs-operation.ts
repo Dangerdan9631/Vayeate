@@ -8,6 +8,6 @@ export class GetCatalogRefsOperation {
   constructor(private readonly catalogsStore: CatalogsStore) {}
 
   execute(): CatalogReference[] {
-    return getCurrentCatalogRefs(this.catalogsStore.getStore().stateV2.catalogs);
+    return getCurrentCatalogRefs(this.catalogsStore.getStore().state.catalogs);
   }
 }

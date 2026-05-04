@@ -7,7 +7,7 @@ export class ValidateCatalogNameIsUnique {
   constructor(private readonly catalogsStore: CatalogsStore) { }
 
   test(name: string): ValidationResult {
-    if (this.catalogsStore.getStore().stateV2.catalogs[name]) {
+    if (this.catalogsStore.getStore().state.catalogs[name]) {
       return {
         isValid: false,
         errorMessage: 'Catalog name must be unique.',

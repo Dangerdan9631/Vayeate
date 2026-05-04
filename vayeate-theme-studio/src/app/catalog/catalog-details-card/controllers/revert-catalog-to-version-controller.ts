@@ -23,7 +23,7 @@ export class RevertCatalogToVersionController {
 
   async run(): Promise<void> {
     const store = this.catalogsStore.getStore();
-    const state = store.stateV2;
+    const state = store.state;
     const ref = this.catalogUiStore.getStore().state.selectedRef;
     if (!ref) return;
 

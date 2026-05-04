@@ -21,7 +21,7 @@ export class RemoveTokenController {
 
   run(key: TokenKey, tokenType: TokenType): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.removeTokenFromCatalog.execute(base, key, tokenType);

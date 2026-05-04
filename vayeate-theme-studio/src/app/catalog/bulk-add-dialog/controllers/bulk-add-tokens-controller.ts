@@ -28,7 +28,7 @@ export class BulkAddTokensController {
   run(): void {
     const store = this.catalogsStore.getStore();
     const bulkAddDialogStore = this.bulkAddDialogStore.getStore();
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     const text = bulkAddDialogStore.state?.text?.trim();
     if (!catalog || !text || !this.validateCanBulkAddTokens.test(catalog, text)) return;
     try {

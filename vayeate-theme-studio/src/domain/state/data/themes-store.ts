@@ -14,8 +14,21 @@ export interface ThemeEntryInput {
 
 export interface ThemesStoreState {
   state: ThemesState;
+  updateTheme: (theme: Theme) => void;
+  updateThemes: (themes: Theme[]) => void;
   setThemeMapEntry: (name: string, version: string, isLoaded: boolean, theme?: Theme) => void;
   setThemeMapEntries: (entries: ThemeEntryInput[]) => void;
+}
+
+function upsertTheme(themeMap: ThemeStoreMap, theme: Theme): void {
+  if (!themeMap[theme.name]) {
+    themeMap[theme.name] = {};
+  }
+
+  themeMap[theme.name]![theme.version] = {
+    isLoaded: true,
+    theme: castDraft(theme),
+  };
 }
 
 @singleton()
@@ -23,24 +36,36 @@ export class ThemesStore {
   private store = createStore<ThemesStoreState>()(
     immer((set): ThemesStoreState => ({
         state: initialThemesState,
+        updateTheme: (theme: Theme) =>
+          set((storeState) => {
+            upsertTheme(storeState.state.themeMap, theme);
+          }),
+        updateThemes: (themes: Theme[]) =>
+          set((storeState) => {
+            themes.forEach((theme) => {
+              upsertTheme(storeState.state.themeMap, theme);
+            });
+          }),
         setThemeMapEntry: (name: string, version: string, isLoaded: boolean, theme?: Theme) =>
           set((storeState) => {
             const state = storeState.state;
             const byVersion = {
               ...state.themeMap[name],
-              [version]: { isLoaded, theme: theme ?? undefined },
+              [version]: { isLoaded, theme: theme ? castDraft(theme) : undefined },
             };
             storeState.state.themeMap = castDraft({ ...state.themeMap, [name]: byVersion });
           }),
         setThemeMapEntries: (entries: ThemeEntryInput[]) =>
           set((storeState) => {
+            const existingThemeMap = storeState.state.themeMap;
             storeState.state.themeMap = castDraft(entries.reduce((themeMap, entry) => {
               if (!themeMap[entry.name]) {
                 themeMap[entry.name] = {};
               }
+              const existing = existingThemeMap[entry.name]?.[entry.version];
               themeMap[entry.name]![entry.version] = {
-                isLoaded: entry.isLoaded,
-                theme: entry.theme ?? undefined,
+                isLoaded: entry.isLoaded || existing?.isLoaded === true,
+                theme: entry.theme ? castDraft(entry.theme) : existing?.theme,
               };
               return themeMap;
             }, {} as ThemeStoreMap));

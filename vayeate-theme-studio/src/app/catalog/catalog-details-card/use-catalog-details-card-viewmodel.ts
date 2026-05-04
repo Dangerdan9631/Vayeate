@@ -122,7 +122,7 @@ export function useCatalogDetailsCardViewModel(): CatalogDetailsCardViewModel {
   const newSourceUrl = useStore(catalogUiStore.api, (state) => state.state.newSource.url);
   const newSourceTokenType = useStore(catalogUiStore.api, (state) => state.state.newSource.tokenType);
   const newSourceType = useStore(catalogUiStore.api, (state) => state.state.newSource.type);
-  const catalogMap = useStore(catalogsStore.api, (state) => state.stateV2.catalogs);
+  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogs);
   const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
 
   const catalog: Catalog | null = useMemo(() => {

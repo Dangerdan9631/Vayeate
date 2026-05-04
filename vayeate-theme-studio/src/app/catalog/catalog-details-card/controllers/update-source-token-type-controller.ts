@@ -23,7 +23,7 @@ export class UpdateSourceTokenTypeController {
 
   run(sourceIndex: number, value: TokenType): void {
     const store = this.catalogsStore.getStore();
-    const catalog = getCurrentCatalog(store.stateV2.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceTokenTypeInCatalog.execute(base, sourceIndex, value);
