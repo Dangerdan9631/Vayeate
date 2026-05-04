@@ -11,6 +11,11 @@ import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } fro
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
 
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
 export function useThemeVariablesCardViewModel() {
   const dispatch = useAppDispatch();
   const theme = useStore(themeUiStore.api, (state) => state.state.theme);
@@ -37,6 +42,21 @@ export function useThemeVariablesCardViewModel() {
   );
 
   const groupsFromTemplate = useMemo(() => loadedTemplate?.groups ?? [], [loadedTemplate]);
+
+  const filteredColorAssignments = useMemo(
+    () => paneDisplayColorAssignments
+      .filter((a: ColorAssignment) => matchesSearch(a.colorRef, themeVariablesSearchText))
+      .sort((a: ColorAssignment, b: ColorAssignment) => a.colorRef.localeCompare(b.colorRef)),
+    [paneDisplayColorAssignments, themeVariablesSearchText],
+  );
+
+  const filteredContrastAssignments = useMemo(
+    () => (theme?.contrastAssignments ?? [])
+      .filter((a: ContrastAssignment) => matchesSearch(a.contrastVariableRef, themeVariablesSearchText))
+      .sort((a: ContrastAssignment, b: ContrastAssignment) =>
+        a.contrastVariableRef.localeCompare(b.contrastVariableRef)),
+    [theme?.contrastAssignments, themeVariablesSearchText],
+  );
 
   const colorSectionState = useMemo(() => {
     if (!theme?.colorAssignments.length) return 'all' as const;
@@ -276,8 +296,8 @@ export function useThemeVariablesCardViewModel() {
 
   return {
     theme,
-    colorAssignments: paneDisplayColorAssignments,
-    contrastAssignments: theme?.contrastAssignments ?? [],
+    colorAssignments: filteredColorAssignments,
+    contrastAssignments: filteredContrastAssignments,
     colorVariables: colorVariablesFromTemplate,
     contrastVariables: contrastVariablesFromTemplate,
     groups: groupsFromTemplate,

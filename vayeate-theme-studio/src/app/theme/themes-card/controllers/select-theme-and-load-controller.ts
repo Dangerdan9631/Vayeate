@@ -32,8 +32,8 @@ export class SelectThemeAndLoadController {
           : null;
       if (theme) this.applyThemeStateAndSchedulePersist.execute(theme);
       this.setThemeLoadedTemplate.execute(template);
-      
-    })
-    
+
+    });
+
   }
 }

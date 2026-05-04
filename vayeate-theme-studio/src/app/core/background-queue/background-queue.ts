@@ -9,7 +9,7 @@ import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 @singleton()
 export class BackgroundQueue {
   private readonly log: Logger;
-  
+
   constructor(
     @inject(delay(() => "IBackgroundMainQueue"))
     private readonly mainQueue: IBackgroundQueue,
@@ -20,7 +20,7 @@ export class BackgroundQueue {
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create('BackgroundQueue');
-  } 
+  }
 
   enqueue(
     queue: BackgroundQueueType,

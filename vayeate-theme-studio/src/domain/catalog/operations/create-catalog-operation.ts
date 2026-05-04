@@ -34,7 +34,7 @@ export class CreateCatalogOperation {
         await this.catalogGateway.saveCatalog(catalog);
       }
     );
-    
+
     return ref;
   }
 }

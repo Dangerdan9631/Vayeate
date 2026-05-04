@@ -18,7 +18,7 @@ export class CreateThemeOperation {
       `Creating theme ${ params.name }`, () =>
         this.themeGateway.saveTheme(theme),
     );
-    
-    return theme; 
+
+    return theme;
   }
 }

@@ -912,11 +912,6 @@ function ContrastAssignmentRow({
   );
 }
 
-function matchesSearch(key: string, searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  return !q || key.toLowerCase().includes(q);
-}
-
 export function ThemeVariablesCard() {
   const {
     theme,
@@ -952,13 +947,6 @@ export function ThemeVariablesCard() {
 
   if (!theme?.templateRef) return null;
 
-  const filteredColorAssignments = colorAssignments
-    .filter((a: ColorAssignment) => matchesSearch(a.colorRef, searchQuery))
-    .sort((a: ColorAssignment, b: ColorAssignment) => a.colorRef.localeCompare(b.colorRef));
-  const filteredContrastAssignments = contrastAssignments
-    .filter((a: ContrastAssignment) => matchesSearch(a.contrastVariableRef, searchQuery))
-    .sort((a: ContrastAssignment, b: ContrastAssignment) => a.contrastVariableRef.localeCompare(b.contrastVariableRef));
-
   function onThemeVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.target.value);
   }
@@ -983,7 +971,7 @@ export function ThemeVariablesCard() {
         aria-label="Search variables"
       />
       <ColorAssignmentsSection
-        assignments={filteredColorAssignments}
+        assignments={colorAssignments}
         colorVariables={colorVariables}
         orphanKeys={orphanColorKeys}
         checkedColorRefs={checkedColorRefs}
@@ -998,7 +986,7 @@ export function ThemeVariablesCard() {
         onLightEyedropperClick={onColorLightEyedropperClick}
       />
       <ContrastAssignmentsSection
-        assignments={filteredContrastAssignments}
+        assignments={contrastAssignments}
         contrastVariables={contrastVariables}
         orphanKeys={orphanContrastKeys}
         checkedContrastRefs={checkedContrastRefs}

@@ -23,7 +23,7 @@ container.register("IBackgroundMainQueue", {
     c.resolve(SignalBackgroundQueueProcessingCompleteController),
     c.resolve(LoggerFactory)
   )
-}),
+});
 container.register("IBackgroundWorkerQueue", {
   useFactory: (c: DependencyContainer) => new PooledQueue(
     'worker',
@@ -33,7 +33,7 @@ container.register("IBackgroundWorkerQueue", {
     c.resolve(SignalBackgroundQueueProcessingCompleteController),
     c.resolve(LoggerFactory)
   )
-}),
+});
 container.register("IBackgroundDataIoQueue", {
   useFactory: (c: DependencyContainer) => new SerialQueue(
     'data_io',
@@ -42,7 +42,7 @@ container.register("IBackgroundDataIoQueue", {
     c.resolve(SignalBackgroundQueueProcessingCompleteController),
     c.resolve(LoggerFactory)
   )
-}),
+});
 
 void container.resolve(BootstrapAppController).run();
 

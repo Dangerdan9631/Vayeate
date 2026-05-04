@@ -13,7 +13,7 @@ export class LoadCatalogForDisplayOperation {
     private readonly catalogGateway: CatalogGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
-  
+
   execute(refs: CatalogReference[]): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
       'data_io',

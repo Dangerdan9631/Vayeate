@@ -27,12 +27,12 @@ export function useStatusBarViewModel(): StatusBarViewModel {
     () => {
       let actionText: string | undefined = undefined;
       const descriptions: string[] = [];
-      
+
       if (actionQueueLength > 0 && currentActionDescription) {
         actionText = currentActionDescription;
         descriptions.push(`[Action] ${currentActionDescription}`);
       }
-      
+
       for (const [queueName, queue] of Object.entries(backgroundQueues)) {
         if (queue.queueLength == 1 && !actionText) {
           actionText = queue.queueDescriptions[0];
