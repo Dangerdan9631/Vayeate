@@ -1,8 +1,8 @@
 diff --git a/node_modules/vite-plugin-electron/dist/index.mjs b/node_modules/vite-plugin-electron/dist/index.mjs
-index 50ba407..50751fc 100644
+index bcaa226..0a2244a 100644
 --- a/node_modules/vite-plugin-electron/dist/index.mjs
 +++ b/node_modules/vite-plugin-electron/dist/index.mjs
-@@ -101,7 +101,18 @@ function resolvePackageJson(root = process.cwd()) {
+@@ -144,7 +144,18 @@ async function mockIndexHtml(config) {
  }
  function treeKillSync(pid) {
    if (process.platform === "win32") {

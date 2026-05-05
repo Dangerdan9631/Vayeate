@@ -8,10 +8,10 @@ import {
 } from './eyedropper-utils';
 
 interface EyedropperLoupeProps {
-  loupeCanvasRef: RefObject<HTMLCanvasElement>;
+  loupeCanvasRef: RefObject<HTMLCanvasElement | null>;
   isOpen: boolean;
   errorMessage: string | null;
-  canvasRef: RefObject<HTMLCanvasElement>;
+  canvasRef: RefObject<HTMLCanvasElement | null>;
 }
 
 export function EyedropperLoupe({

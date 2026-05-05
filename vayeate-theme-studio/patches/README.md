@@ -2,7 +2,7 @@
 
 Patches in this folder are applied on **`npm install`** via the **`postinstall`** script (`patch-package`). They edit **`node_modules`** so the changes survive reinstalls and are tracked in git.
 
-## `vite-plugin-electron+0.28.8.patch`
+## `vite-plugin-electron+0.29.1.patch`
 
 **What it changes:** On **Windows** only, `treeKillSync` in `vite-plugin-electron` wraps `taskkill /pid … /T /F` in a try/catch. If the error looks like the process was **already gone** (e.g. you closed the Electron window before the plugin tried to kill the tree), the error is **ignored** instead of thrown.
 

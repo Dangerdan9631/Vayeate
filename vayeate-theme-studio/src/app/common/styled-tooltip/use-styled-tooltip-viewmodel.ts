@@ -16,7 +16,7 @@ interface TooltipState {
 
 export interface StyledTooltipViewModel {
   state: TooltipState | null;
-  tooltipRef: RefObject<HTMLDivElement>;
+  tooltipRef: RefObject<HTMLDivElement | null>;
 }
 
 export function useStyledTooltipViewModel(): StyledTooltipViewModel {

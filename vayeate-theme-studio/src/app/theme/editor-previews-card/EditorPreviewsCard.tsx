@@ -679,7 +679,7 @@ export function EditorPreviewsCard() {
                   return (
                     <div
                       key={key}
-                      ref={(el) => el && virtualizer.measureElement(el)}
+                      ref={(el) => { if (el) virtualizer.measureElement(el); }}
                       data-index={virtualItem.index}
                       className="theme-preview-block theme-preview-virtual-block"
                       style={{

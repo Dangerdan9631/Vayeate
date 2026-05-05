@@ -25,10 +25,10 @@ export interface MenuBarViewModel {
   frames: UndoListEntry[];
   currentId: string | null;
   isMaximized: boolean;
-  fileRef: RefObject<HTMLDivElement>;
-  editRef: RefObject<HTMLDivElement>;
-  historyRef: RefObject<HTMLDivElement>;
-  viewRef: RefObject<HTMLDivElement>;
+  fileRef: RefObject<HTMLDivElement | null>;
+  editRef: RefObject<HTMLDivElement | null>;
+  historyRef: RefObject<HTMLDivElement | null>;
+  viewRef: RefObject<HTMLDivElement | null>;
   themeToggleAriaLabel: string;
   themeToggleIcon: string;
   handleTitleBarDrag: () => void;
