@@ -4,10 +4,21 @@ import type { Plugin } from 'vite';
 type ProcessWithElectronApp = NodeJS.Process & { electronApp?: ChildProcess };
 
 /**
- * vite-plugin-electron spawns Electron and attaches `once('exit', process.exit)`. On some setups the
- * dev server keeps running after the window closes; explicitly closing the Vite server and exiting
- * the Node process fixes that. Re-hooks each time `process.electronApp` is replaced (main/preload
- * rebuild) so hot restart still works.
+ * Custom Vite plugin: tear down the dev server when the Electron child process exits.
+ *
+ * **What it does:** `vite-plugin-electron` spawns Electron and hooks `process.exit` when that child
+ * dies, but on some setups the Vite process keeps running (zombie terminal) after you close the
+ * app window. We listen for `exit` / `close` on `process.electronApp`, then `server.close()` and
+ * `process.exit` so Node and the dev server actually stop. The polling interval re-attaches when
+ * `electronApp` is replaced (main/preload rebuild / hot restart).
+ *
+ * **When it runs:** Dev only (`apply: 'serve'`). Production `vite build` does not load this.
+ *
+ * **Can I delete it?** Yes, if you do not care about lingering `vite` processes after closing
+ * Electron during local dev. Deleting it does not affect builds, tests, or packaged apps.
+ *
+ * **Related:** `patches/README.md` documents a separate Windows patch for `taskkill` errors when
+ * the Electron PID is already gone.
  */
 export function viteElectronDevShutdown(): Plugin {
   let hookedPid: number | undefined;
