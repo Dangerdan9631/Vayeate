@@ -80,3 +80,12 @@ writes during normal authoring workflows.
   UI state.
 - Missing references should surface as orphaned or unavailable state rather
   than being silently repaired.
+- Empty sentinel files used only to preserve directories, such as `.gitkeep`,
+  are not considered authoring artifacts and may be ignored by validation.
+
+## Baseline Verification Coverage
+
+- Catalog, template, theme, and config fixtures are verified by
+  `src/model/schema/baseline-artifacts.test.ts`.
+- Gateway load paths are verified to reject malformed persisted content safely
+  in `src/gateway/baseline-gateways.test.ts`.

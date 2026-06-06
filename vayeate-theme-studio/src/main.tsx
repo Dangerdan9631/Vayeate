@@ -14,44 +14,60 @@ import { PooledQueue } from './app/core/background-queue/pooled-queue';
 
 export const BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT = 16;
 
-container.register("IActionQueue", { useClass: ActionQueue });
-container.register("IBackgroundMainQueue", {
-  useFactory: (c: DependencyContainer) => new SerialQueue(
-    'main',
-    c.resolve(EnqueueBackgroundQueueActionOperation),
-    c.resolve(UpdateBackgroundQueueStatusController),
-    c.resolve(SignalBackgroundQueueProcessingCompleteController),
-    c.resolve(LoggerFactory)
-  )
-});
-container.register("IBackgroundWorkerQueue", {
-  useFactory: (c: DependencyContainer) => new PooledQueue(
-    'worker',
-    BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT,
-    c.resolve(EnqueueBackgroundQueueActionOperation),
-    c.resolve(UpdateBackgroundQueueStatusController),
-    c.resolve(SignalBackgroundQueueProcessingCompleteController),
-    c.resolve(LoggerFactory)
-  )
-});
-container.register("IBackgroundDataIoQueue", {
-  useFactory: (c: DependencyContainer) => new SerialQueue(
-    'data_io',
-    c.resolve(EnqueueBackgroundQueueActionOperation),
-    c.resolve(UpdateBackgroundQueueStatusController),
-    c.resolve(SignalBackgroundQueueProcessingCompleteController),
-    c.resolve(LoggerFactory)
-  )
-});
+export function registerRendererQueues(registry: DependencyContainer): void {
+  registry.register('IActionQueue', { useClass: ActionQueue });
+  registry.register('IBackgroundMainQueue', {
+    useFactory: (c: DependencyContainer) =>
+      new SerialQueue(
+        'main',
+        c.resolve(EnqueueBackgroundQueueActionOperation),
+        c.resolve(UpdateBackgroundQueueStatusController),
+        c.resolve(SignalBackgroundQueueProcessingCompleteController),
+        c.resolve(LoggerFactory),
+      ),
+  });
+  registry.register('IBackgroundWorkerQueue', {
+    useFactory: (c: DependencyContainer) =>
+      new PooledQueue(
+        'worker',
+        BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT,
+        c.resolve(EnqueueBackgroundQueueActionOperation),
+        c.resolve(UpdateBackgroundQueueStatusController),
+        c.resolve(SignalBackgroundQueueProcessingCompleteController),
+        c.resolve(LoggerFactory),
+      ),
+  });
+  registry.register('IBackgroundDataIoQueue', {
+    useFactory: (c: DependencyContainer) =>
+      new SerialQueue(
+        'data_io',
+        c.resolve(EnqueueBackgroundQueueActionOperation),
+        c.resolve(UpdateBackgroundQueueStatusController),
+        c.resolve(SignalBackgroundQueueProcessingCompleteController),
+        c.resolve(LoggerFactory),
+      ),
+  });
+}
 
-void container.resolve(BootstrapAppController).run();
+export function bootstrapRenderer(registry: DependencyContainer): void {
+  void registry.resolve(BootstrapAppController).run();
+}
 
-const appRoot = document.querySelector<HTMLDivElement>('#app');
-if (appRoot) {
+export function mountApp(doc: Document = document): boolean {
+  const appRoot = doc.querySelector<HTMLDivElement>('#app');
+  if (!appRoot) {
+    return false;
+  }
+
   const root = createRoot(appRoot);
   root.render(
     <React.StrictMode>
       <App />
-    </React.StrictMode>
+    </React.StrictMode>,
   );
+  return true;
 }
+
+registerRendererQueues(container);
+bootstrapRenderer(container);
+mountApp();

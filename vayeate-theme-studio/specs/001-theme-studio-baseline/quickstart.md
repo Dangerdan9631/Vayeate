@@ -26,6 +26,26 @@ npm run lint
 npm run test
 ```
 
+Automated baseline validation now covers:
+
+- persisted artifact fixtures and schema parsing in `src/model/schema/baseline-artifacts.test.ts`
+- renderer bootstrap and queue registration harnesses in `src/main.test.tsx`
+- queue and orchestration baselines in `src/app/core/queues/baseline-queues.test.ts`
+- catalog renderer workflows in `src/app/catalog/catalog-renderer-workflows.test.tsx`
+- catalog token mutation and validation coverage in `src/domain/catalog-token-operations.test.ts`
+- catalog action/controller routing coverage in `src/app/catalog/catalog-flow-routing.test.ts`
+- template renderer workflows in `src/app/template/template-renderer-workflows.test.tsx`
+- template action/controller routing coverage in `src/app/template/template-flow-routing.test.ts`
+- template utility and dialog-state coverage in `src/domain/template-utils.test.ts`
+- theme renderer workflows in `src/app/theme/theme-renderer-workflows.test.tsx`
+- preview resolution, display-color, app-config, and undo-history baselines in `src/domain/session-and-preview-baseline.test.ts`
+- session shell and color-scheme renderer workflows in `src/app/app/menu-bar/menu-bar-renderer-workflows.test.tsx`
+- policy and export behavior in `src/domain/baseline-policy.test.ts`
+- catalog dialog operation state transitions in `src/domain/catalog-create-dialog-operations.test.ts`
+- gateway, preview, config, and window seams in `src/gateway/baseline-gateways.test.ts`
+- Electron preload and IPC bridge coverage in `test/electron/preload.test.ts` and `test/electron/ipc-handlers.test.ts`
+- repository layer-boundary enforcement in `test/architecture/layer-boundaries.test.ts`
+
 ## Validation Scenarios
 
 ### 1. Catalog Authoring
@@ -119,3 +139,8 @@ Expected outcome:
 - Persisted state survives restart.
 - History navigation restores earlier states in-session.
 - Desktop shell controls remain functional.
+
+## Baseline Automation Notes
+
+- Empty sentinel files such as `.gitkeep` are allowed in persisted artifact directories and are ignored by schema-oriented validation.
+- Invalid JSON artifacts should remain non-fatal at load boundaries; the automated gateway tests verify that malformed catalog or config content falls back safely instead of entering app state.

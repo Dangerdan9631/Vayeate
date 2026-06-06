@@ -50,3 +50,13 @@ Each generated artifact must contain:
   a failure message instead of partial success.
 - A generation failure must not terminate the editing session or corrupt the
   existing theme artifact.
+
+## Baseline Verification Coverage
+
+- Export naming safety and paired dark/light generation are verified in
+  `src/domain/baseline-policy.test.ts`.
+- Theme generation entry points, template selection, and paired export
+  interaction states are exercised in
+  `src/app/theme/theme-renderer-workflows.test.tsx`.
+- Preview-resolution assumptions that feed export correctness are covered in
+  `src/domain/session-and-preview-baseline.test.ts`.
