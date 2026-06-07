@@ -243,7 +243,7 @@ describe('gateway baselines', () => {
       const onStateEvent = vi.fn();
       const onGlobalKeyDown = vi.fn();
 
-      service.init({
+      service.initialize({
         onMove,
         onResize,
         onViewportResize,

@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { CloseCatalogCreateDialogController } from '../app/catalog/create-dialog/controllers/close-catalog-create-dialog-controller';
 import { CloseCatalogCreateDialogOperation } from './operations/create-dialog/operations/close-catalog-create-dialog-operation';
 import { OpenCatalogCreateDialogOperation } from './operations/create-dialog/operations/open-catalog-create-dialog-operation';
 import { SetCatalogCreateDialogDataOperation } from './operations/create-dialog/operations/set-catalog-create-dialog-data-operation';
@@ -41,5 +42,39 @@ describe('catalog create dialog operations', () => {
     openDialog.execute();
     closeDialog.execute('CANCEL');
     expect(store.getStore().state).toBeNull();
+  });
+
+  it('creates and selects a catalog only when the dialog closes with OK', () => {
+    const store = new CreateCatalogDialogStore();
+    const closeDialog = { execute: vi.fn() };
+    const createCatalog = {
+      execute: vi.fn(() => ({ name: 'catalog-a', version: '1.0.0' })),
+    };
+    const setSelectedCatalog = { execute: vi.fn() };
+    const controller = new CloseCatalogCreateDialogController(
+      store,
+      closeDialog as never,
+      createCatalog as never,
+      setSelectedCatalog as never,
+    );
+
+    store.getStore().openCreateCatalogDialog();
+    store.getStore().setCreateCatalogDialogData('  catalog-a  ', 'remote');
+
+    controller.run('OK');
+
+    expect(closeDialog.execute).toHaveBeenCalledWith('OK');
+    expect(createCatalog.execute).toHaveBeenCalledWith({ name: 'catalog-a', type: 'remote' });
+    expect(setSelectedCatalog.execute).toHaveBeenCalledWith({ name: 'catalog-a', version: '1.0.0' });
+
+    vi.clearAllMocks();
+    store.getStore().openCreateCatalogDialog();
+    store.getStore().setCreateCatalogDialogData('catalog-b', 'manual');
+
+    controller.run('Cancel');
+
+    expect(closeDialog.execute).toHaveBeenCalledWith('OK');
+    expect(createCatalog.execute).not.toHaveBeenCalled();
+    expect(setSelectedCatalog.execute).not.toHaveBeenCalled();
   });
 });

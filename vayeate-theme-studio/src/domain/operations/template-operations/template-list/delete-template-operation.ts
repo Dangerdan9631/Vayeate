@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
 @singleton()
 export class DeleteTemplateOperation {

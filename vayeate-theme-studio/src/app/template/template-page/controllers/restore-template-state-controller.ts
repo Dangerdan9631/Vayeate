@@ -1,10 +1,10 @@
-import type { Template } from '../../../../model/schema/template-schemas';
 import { singleton } from 'tsyringe';
 import { DeleteTemplateOperation } from '../../../../domain/operations/template-operations/template-list/delete-template-operation';
 import { RefreshTemplateRefsOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 import { SetTemplateOperation } from '../../../../domain/operations/template-operations/template-details/set-template-operation';
+import type { RestoreTemplateStateParams } from '../../../../domain/operations/template-operations/types';
 
 @singleton()
 export class RestoreTemplateStateController {
@@ -16,27 +16,28 @@ export class RestoreTemplateStateController {
     private readonly deleteTemplate: DeleteTemplateOperation,
   ) {}
 
-  async run(
-    template: Template | null,
-    deleteTemplateVersionOnRestore?: { name: string; version: string },
-  ): Promise<void> {
-    this.setTemplate.execute(template);
-    if (template !== null) {
+  async run(params: RestoreTemplateStateParams): Promise<void> {
+    if (params.template !== undefined) {
+      this.setTemplate.execute(params.template);
+    }
+
+    if (params.template !== undefined && params.template !== null) {
       this.setSelectedTemplateRef.execute({
-        name: template.name,
-        version: template.version,
+        name: params.template.name,
+        version: params.template.version,
       });
       try {
-        this.saveTemplate.execute(template);
+        this.saveTemplate.execute(params.template);
       } catch {
         // persist failed
       }
       this.refreshTemplateRefs.execute();
     }
-    if (deleteTemplateVersionOnRestore) {
+
+    if (params.deleteTemplateVersionOnRestore) {
       this.deleteTemplate.execute(
-        deleteTemplateVersionOnRestore.name,
-        deleteTemplateVersionOnRestore.version,
+        params.deleteTemplateVersionOnRestore.name,
+        params.deleteTemplateVersionOnRestore.version,
       );
       this.refreshTemplateRefs.execute();
     }

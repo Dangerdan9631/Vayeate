@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
 @singleton()
 export class SaveCatalogOperation {

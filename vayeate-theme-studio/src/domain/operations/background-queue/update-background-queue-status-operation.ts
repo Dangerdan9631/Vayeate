@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { BackgroundQueueUiStore } from '../../state/ui/background-queue-ui-store';
-import { BackgroundQueueType } from '../../../app/core/background-queue/background-queue-type';
+import type { BackgroundQueueKey } from '../../../model/background-queue';
 
 @singleton()
 export class UpdateBackgroundQueueStatusOperation {
@@ -8,7 +8,7 @@ export class UpdateBackgroundQueueStatusOperation {
     private readonly backgroundQueueStore: BackgroundQueueUiStore
   ) { }
 
-  execute(queueType: BackgroundQueueType, descriptions: string[], queueLength: number): void {
+  execute(queueType: BackgroundQueueKey, descriptions: string[], queueLength: number): void {
     this.backgroundQueueStore.getStore().updateQueueStatus(queueType, descriptions, queueLength);
   }
 }

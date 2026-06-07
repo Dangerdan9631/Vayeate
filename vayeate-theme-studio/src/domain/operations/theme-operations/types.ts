@@ -6,7 +6,7 @@ export interface RestoreThemeStateParams {
   checkedContrastRefs?: string[];
   hueAdjustment?: number;
   hueReferenceHex?: string;
-  deleteThemeVersionOnRestore?: { name: string; version: string };
+  deleteThemeVersionOnRestore?: Pick<Theme, 'name' | 'version'>;
 }
 
 

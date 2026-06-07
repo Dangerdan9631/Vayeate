@@ -26,6 +26,11 @@ async function walk(relativeDir: string): Promise<string[]> {
   return nested.flat();
 }
 
+async function walkMany(relativeDirs: string[]): Promise<string[]> {
+  const nested = await Promise.all(relativeDirs.map((relativeDir) => walk(relativeDir)));
+  return nested.flat();
+}
+
 async function getRelativeImportTargets(filePath: string): Promise<string[]> {
   const source = await readFile(filePath, 'utf8');
   const targets: string[] = [];
@@ -49,14 +54,19 @@ function normalizeSlashes(value: string): string {
   return value.replace(/\\/g, '/');
 }
 
-function isAllowedBaselineDomainAppSeam(target: string): boolean {
-  const normalizedTarget = normalizeSlashes(target);
+function authoringControllerRoots(): string[] {
   return [
-    '/src/app/core/action-queue/',
-    '/src/app/core/background-queue/',
-    '/src/app/app/window/controllers/',
-    '/src/app/app/app-shell/controllers/handle-keyboard-shortcut-controller',
-  ].some((allowedPrefix) => normalizedTarget.includes(allowedPrefix));
+    'src/app/catalog/catalog-details-card/controllers',
+    'src/app/catalog/tokens-card/controllers',
+    'src/app/catalog/bulk-add-dialog/controllers',
+    'src/app/template/groups-card/controllers',
+    'src/app/template/variables-card/controllers',
+    'src/app/template/mappings-card/controllers',
+    'src/app/template/template-catalogs-card/controllers',
+    'src/app/theme/theme-details-card/controllers',
+    'src/app/theme/theme-palette-card/controllers',
+    'src/app/theme/theme-variables-card/controllers',
+  ];
 }
 
 describe('layer boundaries', () => {
@@ -80,10 +90,7 @@ describe('layer boundaries', () => {
     for (const filePath of files) {
       const targets = await getRelativeImportTargets(filePath);
       for (const target of targets) {
-        const importsApp = isInside(target, path.join(sourceRoot, 'app'));
-        if (importsApp) {
-          expect(isAllowedBaselineDomainAppSeam(target), filePath).toBe(true);
-        }
+        expect(isInside(target, path.join(sourceRoot, 'app')), filePath).toBe(false);
         expect(isInside(target, electronRoot), filePath).toBe(false);
       }
     }
@@ -97,6 +104,46 @@ describe('layer boundaries', () => {
       for (const target of targets) {
         expect(isInside(target, path.join(sourceRoot, 'app')), filePath).toBe(false);
         expect(isInside(target, electronRoot), filePath).toBe(false);
+      }
+    }
+  });
+
+  it('keeps duplicate action contract compatibility paths out of the app layer', async () => {
+    const files = (await walk('src/app')).map(normalizeSlashes);
+
+    for (const filePath of files) {
+      expect(filePath.includes('/src/app/app/components/app-shell/actions/'), filePath).toBe(false);
+      expect(filePath.includes('/src/app/theme/components/'), filePath).toBe(false);
+    }
+  });
+
+  it('keeps top-level authoring handlers thin and free of policy or detail ownership', async () => {
+    const files = [
+      path.join(sourceRoot, 'app/catalog/actions/catalog-handler.ts'),
+      path.join(sourceRoot, 'app/template/actions/template-handler.ts'),
+      path.join(sourceRoot, 'app/theme/actions/theme-handler.ts'),
+    ];
+
+    for (const filePath of files) {
+      const targets = await getRelativeImportTargets(filePath);
+      for (const target of targets) {
+        expect(isInside(target, path.join(sourceRoot, 'domain/operations')), filePath).toBe(false);
+        expect(isInside(target, path.join(sourceRoot, 'gateway')), filePath).toBe(false);
+        expect(target.includes(`${path.sep}controllers${path.sep}`), filePath).toBe(false);
+      }
+    }
+  });
+
+  it('keeps focused authoring controllers free of handler chaining and outer detail imports', async () => {
+    const files = await walkMany(authoringControllerRoots());
+
+    for (const filePath of files) {
+      const targets = await getRelativeImportTargets(filePath);
+      for (const target of targets) {
+        expect(isInside(target, path.join(sourceRoot, 'gateway')), filePath).toBe(false);
+        expect(isInside(target, electronRoot), filePath).toBe(false);
+        expect(target.includes(`${path.sep}actions${path.sep}`), filePath).toBe(false);
+        expect(target.includes(`${path.sep}controllers${path.sep}`), filePath).toBe(false);
       }
     }
   });

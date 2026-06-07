@@ -1,9 +1,14 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { AddGroupAndClearInputController } from '../app/template/groups-card/controllers/add-group-and-clear-input-controller';
 import { mergeMappingsFromCatalogData } from './utils/template-catalog-merge';
 import { isMappingOrphanForTemplate } from './utils/is-mapping-orphan-for-template';
 import { formatSemanticSelector } from '../model/format-semantic-selector';
 import { parseSemanticSelector } from '../model/parse-semantic-selector';
 import { CreateTemplateDialogStore } from './state/ui/create-template-dialog-store';
+import { TemplatesStore } from './state/data/templates-store';
+import { TemplateUiStore } from './state/ui/template-ui-store';
+import { BumpTemplateVersionForEditOperation } from './operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { AddGroupToTemplateOperation } from './operations/template-operations/groups/add-group-to-template-operation';
 
 describe('template utility baselines', () => {
   it('parses and formats semantic selectors canonically', () => {
@@ -142,5 +147,60 @@ describe('template utility baselines', () => {
     stateApi.openCreateTemplateDialog();
     stateApi.closeCreateTemplateDialog('CANCEL');
     expect(store.getStore().state).toBeNull();
+  });
+
+  it('adds a trimmed group through template operation ports and clears the input only after success', () => {
+    const templatesStore = new TemplatesStore();
+    const templateUiStore = new TemplateUiStore();
+    const lockedTemplate = {
+      name: 'template-a',
+      version: '1.0.0',
+      locked: true,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [],
+      contrastVariables: [],
+      groups: ['existing'],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    };
+    templatesStore.getStore().updateTemplate(lockedTemplate);
+    templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
+    templateUiStore.getStore().setAddGroupName('  new-group  ');
+
+    const saveTemplate = { execute: vi.fn() };
+    const refreshTemplateRefsAndSelect = { execute: vi.fn() };
+    const setTemplateAddGroupName = { execute: vi.fn() };
+    const controller = new AddGroupAndClearInputController(
+      templatesStore,
+      templateUiStore,
+      new BumpTemplateVersionForEditOperation(),
+      new AddGroupToTemplateOperation(),
+      saveTemplate as never,
+      refreshTemplateRefsAndSelect as never,
+      setTemplateAddGroupName as never,
+    );
+
+    controller.run();
+
+    expect(saveTemplate.execute).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'template-a',
+        version: '1.0.1',
+        locked: false,
+        groups: ['existing', 'new-group'],
+      }),
+    );
+    expect(refreshTemplateRefsAndSelect.execute).toHaveBeenCalledWith('template-a', '1.0.1');
+    expect(setTemplateAddGroupName.execute).toHaveBeenCalledWith('');
+
+    vi.clearAllMocks();
+    templateUiStore.getStore().setAddGroupName('existing');
+
+    controller.run();
+
+    expect(saveTemplate.execute).not.toHaveBeenCalled();
+    expect(refreshTemplateRefsAndSelect.execute).not.toHaveBeenCalled();
+    expect(setTemplateAddGroupName.execute).not.toHaveBeenCalled();
   });
 });

@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { PreviewGateway } from '../../../../gateway/preview/preview-gateway';
 import { ThemePreviewStore } from '../../../state/ui/theme-preview-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
 @singleton()
 export class LoadPreviewsOperation {
@@ -27,4 +27,3 @@ export class LoadPreviewsOperation {
     );
   }
 }
-

@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { SetThemeTemplateController } from '../app/theme/theme-details-card/controllers/set-theme-template-controller';
 import { ValidateCanLockCatalog } from './catalog/validations/validate-can-lock-catalog';
 import { ValidateCanBulkAddTokens } from './catalog/validations/validate-can-bulk-add-tokens';
 import { compareVersions } from './utils/compare-versions';
@@ -8,6 +9,10 @@ import { isMappingOrphanForTemplate } from './utils/is-mapping-orphan-for-templa
 import { assertValidThemeFileName } from './utils/assert-valid-theme-file-name';
 import { toSafeFileName } from './utils/to-safe-theme-file-name';
 import { ValidateCanLockTemplate } from './validations/template-validations/validate-can-lock-template';
+import { ApplyThemeStateAndSchedulePersistOperation } from './operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { SetThemeLoadedTemplateOperation } from './operations/theme-operations/theme-details/set-theme-loaded-template-operation';
+import { ThemeUiStore } from './state/ui/theme-ui-store';
+import { ThemePreviewStore } from './state/ui/theme-preview-store';
 import type { Catalog } from '../model/schema/catalog';
 import type { Template } from '../model/schema/template-schemas';
 import type { Theme } from '../model/schema/theme-schemas';
@@ -185,5 +190,82 @@ describe('baseline domain policy', () => {
 
     expect(() => assertValidThemeFileName('baseline-color-theme.json')).not.toThrow();
     expect(() => assertValidThemeFileName('Baseline.json')).toThrow();
+  });
+
+  it('applies a loaded template through theme policy seams and leaves state unchanged when no snapshot loads', async () => {
+    const themeUiStore = new ThemeUiStore();
+    const themePreviewStore = new ThemePreviewStore();
+    themeUiStore.getStore().setTheme(theme);
+    themeUiStore.getStore().setSaveError('stale error');
+
+    const scheduled: Array<{ run: () => Promise<void>; fail: (message: string) => void }> = [];
+    const debouncedThemePersist = {
+      schedule: vi.fn((run: () => Promise<void>, fail: (message: string) => void) => {
+        scheduled.push({ run, fail });
+      }),
+    };
+    const themeGateway = { saveTheme: vi.fn(async () => {}) };
+    const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
+      themeUiStore,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
+    const setThemeLoadedTemplate = new SetThemeLoadedTemplateOperation(themePreviewStore);
+    const loadTemplateSnapshot: { execute: ReturnType<typeof vi.fn> } = {
+      execute: vi.fn(async () => ({
+        name: 'template-b',
+        version: '2.0.0',
+        locked: false,
+        catalogRefs: [],
+        mappings: [
+          {
+            token: { key: 'editor.foreground', type: 'theme' as const },
+            colorVariableRef: 'editorForeground',
+            contrastVariableRef: null,
+            groupRef: null,
+          },
+        ],
+        colorVariables: [{ key: 'editorForeground', groupRef: null }],
+        contrastVariables: [],
+        groups: [],
+        semanticTokenModifiers: [],
+        semanticTokenLanguages: [],
+      })),
+    };
+    const controller = new SetThemeTemplateController(
+      themeUiStore,
+      applyThemeStateAndSchedulePersist,
+      loadTemplateSnapshot as never,
+      setThemeLoadedTemplate,
+    );
+
+    await controller.run('template-b', '2.0.0');
+
+    expect(loadTemplateSnapshot.execute).toHaveBeenCalledWith('template-b', '2.0.0');
+    expect(themeUiStore.getStore().state.theme).toEqual(
+      expect.objectContaining({
+        templateRef: { name: 'template-b', version: '2.0.0' },
+        colorAssignments: [
+          expect.objectContaining({
+            colorRef: 'editorForeground',
+            dark: { value: '#112233' },
+            light: { value: '#445566' },
+          }),
+        ],
+      }),
+    );
+    expect(themeUiStore.getStore().state.saveError).toBeNull();
+    expect(themePreviewStore.getStore().state.loadedTemplateForTheme).toEqual(
+      expect.objectContaining({ name: 'template-b', version: '2.0.0' }),
+    );
+    expect(debouncedThemePersist.schedule).toHaveBeenCalledTimes(1);
+
+    loadTemplateSnapshot.execute = vi.fn(async () => null);
+    const unchangedTheme = themeUiStore.getStore().state.theme;
+
+    await controller.run('missing-template', '9.9.9');
+
+    expect(themeUiStore.getStore().state.theme).toBe(unchangedTheme);
+    expect(debouncedThemePersist.schedule).toHaveBeenCalledTimes(1);
   });
 });

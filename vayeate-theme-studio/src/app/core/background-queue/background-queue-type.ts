@@ -1,2 +1,1 @@
-
-export type BackgroundQueueType = 'main' | 'worker' | 'data_io';
+export type { BackgroundQueueKey as BackgroundQueueType } from '../../../model/background-queue';

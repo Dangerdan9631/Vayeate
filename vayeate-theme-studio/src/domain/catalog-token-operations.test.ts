@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { AddNewTokenController } from '../app/catalog/tokens-card/controllers/add-new-token-controller';
 import { AddPlainTokenToCatalogOperation } from './operations/catalog-operations/tokens/add-plain-token-to-catalog-operation';
 import { MergeSemanticSelectorsIntoCatalogOperation } from './operations/catalog-operations/tokens/merge-semantic-selectors-into-catalog-operation';
 import { RemoveSemanticTokenListItemOperation } from './operations/catalog-operations/tokens/remove-semantic-token-list-item-operation';
@@ -10,6 +11,7 @@ import { ValidateCatalogNameIsUnique } from './catalog/validations/validate-cata
 import { ValidateCatalogNameIsValid } from './catalog/validations/validate-catalog-name-is-valid';
 import { ValidateSyncCatalog } from './catalog/validations/validate-sync-catalog';
 import { CatalogsStore } from './catalog/state/catalogs-store';
+import { CatalogUiStore } from './state/ui/catalog-ui-store';
 
 const catalog = {
   name: 'catalog-a',
@@ -101,5 +103,57 @@ describe('catalog token and validation operations', () => {
 
     expect(validateSync.test({ ...catalog, type: 'remote' })).toBe(true);
     expect(validateSync.test(catalog)).toBe(false);
+  });
+
+  it('routes semantic token authoring through merge/save/refresh ports and short-circuits invalid selectors', () => {
+    const catalogsStore = new CatalogsStore();
+    const catalogUiStore = new CatalogUiStore();
+    catalogsStore.getStore().upsertCatalogs([catalog]);
+    catalogUiStore.getStore().selectCatalog({ name: catalog.name, version: catalog.version });
+    catalogUiStore.getStore().setNewTokenKey(' variable.readonly:javascript ');
+
+    const bumped = { ...catalog, version: '1.0.1', locked: false };
+    const merged = {
+      ...bumped,
+      semanticTokenLanguages: ['javascript', 'typescript'],
+    };
+    const saveCatalog = { execute: vi.fn() };
+    const setCatalogNewTokenKey = { execute: vi.fn() };
+    const bumpCatalogVersionForEdit = { execute: vi.fn(() => bumped) };
+    const addPlainTokenToCatalog = { execute: vi.fn() };
+    const mergeSemanticSelectorsIntoCatalog: { execute: ReturnType<typeof vi.fn> } = {
+      execute: vi.fn(() => merged),
+    };
+    const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const controller = new AddNewTokenController(
+      catalogsStore,
+      catalogUiStore,
+      saveCatalog as never,
+      setCatalogNewTokenKey as never,
+      bumpCatalogVersionForEdit as never,
+      addPlainTokenToCatalog as never,
+      mergeSemanticSelectorsIntoCatalog as never,
+      refreshCatalogRefsAndSelect as never,
+    );
+
+    controller.run('semantic token');
+
+    expect(bumpCatalogVersionForEdit.execute).toHaveBeenCalledWith(catalog);
+    expect(mergeSemanticSelectorsIntoCatalog.execute).toHaveBeenCalledWith(bumped, 'variable.readonly:javascript');
+    expect(saveCatalog.execute).toHaveBeenCalledWith(merged);
+    expect(refreshCatalogRefsAndSelect.execute).toHaveBeenCalledWith(merged.name, merged.version);
+    expect(setCatalogNewTokenKey.execute).toHaveBeenCalledWith('');
+    expect(addPlainTokenToCatalog.execute).not.toHaveBeenCalled();
+
+    vi.clearAllMocks();
+    mergeSemanticSelectorsIntoCatalog.execute = vi.fn(() => null);
+
+    controller.run('semantic token', 'not a selector');
+
+    expect(bumpCatalogVersionForEdit.execute).toHaveBeenCalledWith(catalog);
+    expect(mergeSemanticSelectorsIntoCatalog.execute).toHaveBeenCalledWith(bumped, 'not a selector');
+    expect(saveCatalog.execute).not.toHaveBeenCalled();
+    expect(refreshCatalogRefsAndSelect.execute).not.toHaveBeenCalled();
+    expect(setCatalogNewTokenKey.execute).not.toHaveBeenCalled();
   });
 });

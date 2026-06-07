@@ -1,13 +1,13 @@
 import { singleton } from 'tsyringe';
-import { WindowService } from '../../../gateway/services/window-service';
+import { WindowCallbacksPort } from './window-callbacks-port';
 
 @singleton()
 export class TearDownWindowServiceOperation {
   constructor(
-    private readonly windowService: WindowService
+    private readonly windowCallbacks: WindowCallbacksPort
   ) {}
 
   execute(): void {
-    this.windowService.dispose();
+    this.windowCallbacks.dispose();
   }
 }

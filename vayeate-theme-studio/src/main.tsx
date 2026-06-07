@@ -4,49 +4,20 @@ import { createRoot } from 'react-dom/client';
 import { App } from './app/app/app-shell/App';
 import { container, DependencyContainer } from 'tsyringe';
 import { BootstrapAppController } from './app/core/bootstrap/bootstrap-app-controller';
-import { ActionQueue } from './app/core/action-queue/action-queue';
-import { EnqueueBackgroundQueueActionOperation } from './domain/operations/background-queue/enqueue-background-queue-action-operation';
-import { SignalBackgroundQueueProcessingCompleteController } from './app/core/background-queue/controllers/signal-background-queue-processing-complete-controller';
-import { UpdateBackgroundQueueStatusController } from './app/core/background-queue/controllers/update-background-queue-status-controller';
-import { SerialQueue } from './app/core/background-queue/serial-queue';
-import { LoggerFactory } from './domain/utils/logger';
-import { PooledQueue } from './app/core/background-queue/pooled-queue';
-
-export const BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT = 16;
+import { BackgroundQueue } from './app/core/background-queue/background-queue';
+import { DataIoBackgroundQueue } from './app/core/background-queue/data-io-background-queue';
+import { MainBackgroundQueue } from './app/core/background-queue/main-background-queue';
+import { WorkerBackgroundQueue } from './app/core/background-queue/worker-background-queue';
+import { WindowService } from './gateway/services/window-service';
+import { WindowCallbacksPort } from './domain/operations/app-operations/window-callbacks-port';
+import { BackgroundQueuePort } from './domain/operations/background-queue/background-queue-port';
 
 export function registerRendererQueues(registry: DependencyContainer): void {
-  registry.register('IActionQueue', { useClass: ActionQueue });
-  registry.register('IBackgroundMainQueue', {
-    useFactory: (c: DependencyContainer) =>
-      new SerialQueue(
-        'main',
-        c.resolve(EnqueueBackgroundQueueActionOperation),
-        c.resolve(UpdateBackgroundQueueStatusController),
-        c.resolve(SignalBackgroundQueueProcessingCompleteController),
-        c.resolve(LoggerFactory),
-      ),
-  });
-  registry.register('IBackgroundWorkerQueue', {
-    useFactory: (c: DependencyContainer) =>
-      new PooledQueue(
-        'worker',
-        BACKGROUND_QUEUE_WORKER_CONCURRENCY_LIMIT,
-        c.resolve(EnqueueBackgroundQueueActionOperation),
-        c.resolve(UpdateBackgroundQueueStatusController),
-        c.resolve(SignalBackgroundQueueProcessingCompleteController),
-        c.resolve(LoggerFactory),
-      ),
-  });
-  registry.register('IBackgroundDataIoQueue', {
-    useFactory: (c: DependencyContainer) =>
-      new SerialQueue(
-        'data_io',
-        c.resolve(EnqueueBackgroundQueueActionOperation),
-        c.resolve(UpdateBackgroundQueueStatusController),
-        c.resolve(SignalBackgroundQueueProcessingCompleteController),
-        c.resolve(LoggerFactory),
-      ),
-  });
+  registry.register(BackgroundQueuePort, { useClass: BackgroundQueue });
+  registry.register(WindowCallbacksPort, { useClass: WindowService });
+  registry.register(MainBackgroundQueue, { useClass: MainBackgroundQueue });
+  registry.register(WorkerBackgroundQueue, { useClass: WorkerBackgroundQueue });
+  registry.register(DataIoBackgroundQueue, { useClass: DataIoBackgroundQueue });
 }
 
 export function bootstrapRenderer(registry: DependencyContainer): void {

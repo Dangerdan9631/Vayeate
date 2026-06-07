@@ -1,8 +1,9 @@
 import { singleton } from 'tsyringe';
-import type { WindowInitCallbacks } from './window-service-types';
+import { WindowCallbacksPort } from '../../domain/operations/app-operations/window-callbacks-port';
+import type { KeyboardShortcutEvent, WindowInitializationCallbacks } from '../../domain/operations/app-operations/types';
 
 @singleton()
-export class WindowService {
+export class WindowService extends WindowCallbacksPort {
   private unsubscribes: Array<() => void> = [];
 
   private viewportRaf = 0;
@@ -53,7 +54,7 @@ export class WindowService {
     return this.getAPI().getWindowBounds();
   }
 
-  init(callbacks: WindowInitCallbacks): void {
+  initialize(callbacks: WindowInitializationCallbacks): void {
     const api = this.getAPI();
     for (const u of this.unsubscribes) {
       u();
@@ -65,8 +66,18 @@ export class WindowService {
     };
     push(api.onWindowState?.(callbacks.onStateEvent));
 
-    window.addEventListener('keydown', callbacks.onGlobalKeyDown as EventListener);
-    push(() => window.removeEventListener('keydown', callbacks.onGlobalKeyDown as EventListener));
+    const onGlobalKeyDown = (event: KeyboardEvent) => {
+      const shortcutEvent: KeyboardShortcutEvent = {
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey,
+        key: event.key,
+        preventDefault: () => event.preventDefault(),
+      };
+      callbacks.onGlobalKeyDown(shortcutEvent);
+    };
+    window.addEventListener('keydown', onGlobalKeyDown);
+    push(() => window.removeEventListener('keydown', onGlobalKeyDown));
 
     const flushViewport = () => {
       this.viewportRaf = 0;
@@ -108,7 +119,7 @@ export class WindowService {
       .catch(() => {});
   }
 
-  dispose(): void {
+  override dispose(): void {
     for (const u of this.unsubscribes) {
       u();
     }

@@ -1,28 +1,25 @@
 import { singleton } from 'tsyringe';
-import {
-  BackgroundQueue,
-} from '../../../app/core/background-queue/background-queue';
-import { type BackgroundQueueType } from '../../../app/core/background-queue/background-queue-type';
-import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
+import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../model/background-queue';
+import { BackgroundQueuePort } from './background-queue-port';
 
 @singleton()
 export class EnqueueBackgroundQueueActionOperation {
   constructor(
-    private readonly backgroundQueue: BackgroundQueue,
+    private readonly backgroundQueue: BackgroundQueuePort,
   ) {}
 
   execute(
-    queue: BackgroundQueueType,
+    queue: BackgroundQueueKey,
     description: string,
     run: () => void | Promise<void>,
-  ): ContinuationHandler {
+  ): BackgroundQueueContinuation {
     return this.backgroundQueue.enqueue(queue, description, run);
   }
 
   executeReturning<T>(
     description: string,
     factory: () => Promise<T>,
-    queue: BackgroundQueueType,
+    queue: BackgroundQueueKey,
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const run = async () => {

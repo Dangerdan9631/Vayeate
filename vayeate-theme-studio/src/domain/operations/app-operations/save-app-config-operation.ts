@@ -3,7 +3,7 @@ import { appConfigSchema } from '../../../model/schema/primitives';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { AppConfigStore } from '../../state/data/app-config-store';
-import { ContinuationHandler } from '../../../app/core/background-queue/continuation-handler';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 
 @singleton()
 export class SaveAppConfigOperation {

@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import type { HexColor } from '../../../../model/schema/primitives';
 import { CloseEyedropperOperation } from '../../../../domain/operations/eyedropper-operations/close-eyedropper-operation';
-import { EnqueueActionQueueOperation } from '../../../../domain/operations/action-queue/enqueue-action-queue-operation';
 import { EyedropperUiStore } from '../../../../domain/state/ui/eyedropper-ui-store';
 import { EyedropperCommitTargetType, type EyedropperCommitTarget } from '../../../../model/eyedropper';
+import { ActionQueue } from '../../../core/action-queue/action-queue';
 import type { AppAction } from '../../../core/action-queue/app-action';
 import { ThemePaletteCardActionType } from '../../../theme/theme-palette-card/actions/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../../../theme/theme-variables-card/actions/theme-variables-card-action-type';
@@ -12,7 +12,7 @@ import { ThemeVariablesCardActionType } from '../../../theme/theme-variables-car
 export class CloseEyedropperOverlayController {
   constructor(
     private readonly closeEyedropper: CloseEyedropperOperation,
-    private readonly enqueueCommitAction: EnqueueActionQueueOperation,
+    private readonly actionQueue: ActionQueue,
     private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 
@@ -21,7 +21,7 @@ export class CloseEyedropperOverlayController {
     this.closeEyedropper.execute();
 
     if (commitTarget && result) {
-      this.enqueueCommitAction.execute(this.toCommitAction(commitTarget, result));
+      this.actionQueue.enqueue(this.toCommitAction(commitTarget, result));
     }
   }
 

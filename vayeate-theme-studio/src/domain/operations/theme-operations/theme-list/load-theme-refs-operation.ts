@@ -3,7 +3,7 @@ import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../../state/data/themes-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import { ContinuationHandler } from '../../../../app/core/background-queue/continuation-handler';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
 @singleton()
 export class LoadThemeRefsOperation {

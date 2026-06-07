@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import type { KeyboardShortcutEvent } from '../../../../domain/operations/app-operations/types';
 import { RedoOperation } from '../../../../domain/operations/undo-operations/redo-operation';
 import { UndoOperation } from '../../../../domain/operations/undo-operations/undo-operation';
 
@@ -9,7 +10,7 @@ export class HandleKeyboardShortcutController {
     private readonly performRedo: RedoOperation,
   ) {}
 
-  run(e: KeyboardEvent): void {
+  run(e: KeyboardShortcutEvent): void {
     if (!(e.ctrlKey || e.metaKey)) return;
 
     if (e.key === 'z') {

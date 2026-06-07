@@ -1,16 +1,15 @@
 import { EnqueueBackgroundQueueActionOperation } from '../../../domain/operations/background-queue/enqueue-background-queue-action-operation';
-import { BackgroundQueueType } from './background-queue-type';
-import { ContinuationHandler } from './continuation-handler';
+import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../model/background-queue';
 
 const noop = () => { };
 
-export class BackgroundQueueResolver implements ContinuationHandler {
-  private queue: BackgroundQueueType | undefined;
+export class BackgroundQueueResolver implements BackgroundQueueContinuation {
+  private queue: BackgroundQueueKey | undefined;
   private resolve: () => void = noop;
 
   constructor(private description: string) { }
 
-  onResolve(currentQueueType: BackgroundQueueType, enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation): void {
+  onResolve(currentQueueType: BackgroundQueueKey, enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation): void {
     if (!this.queue || this.queue === currentQueueType) {
       this.resolve();
     } else {
@@ -18,7 +17,7 @@ export class BackgroundQueueResolver implements ContinuationHandler {
     }
   }
 
-  onQueue(queue: BackgroundQueueType): ContinuationHandler {
+  onQueue(queue: BackgroundQueueKey): BackgroundQueueContinuation {
     this.queue = queue;
     return this;
   }

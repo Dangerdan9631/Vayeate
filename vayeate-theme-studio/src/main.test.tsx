@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DependencyContainer } from 'tsyringe';
+import { BackgroundQueuePort } from './domain/operations/background-queue/background-queue-port';
+import { WindowCallbacksPort } from './domain/operations/app-operations/window-callbacks-port';
 
 const mockRender = vi.fn();
 const mockCreateRoot = vi.fn(() => ({ render: mockRender }));
@@ -31,21 +33,19 @@ describe('renderer bootstrap', () => {
 
   it('registers renderer queue providers on the container', async () => {
     const { registerRendererQueues } = await import('./main');
-    const registrations: Array<{ token: string; provider: unknown }> = [];
+    const registrations: Array<{ token: unknown; provider: unknown }> = [];
     const fakeContainer = {
-      register: vi.fn((token: string, provider: unknown) => {
+      register: vi.fn((token: unknown, provider: unknown) => {
         registrations.push({ token, provider });
       }),
     } as unknown as DependencyContainer;
 
     registerRendererQueues(fakeContainer);
 
-    expect(registrations.map((entry) => entry.token)).toEqual([
-      'IActionQueue',
-      'IBackgroundMainQueue',
-      'IBackgroundWorkerQueue',
-      'IBackgroundDataIoQueue',
-    ]);
+    expect(registrations).toHaveLength(5);
+    expect(registrations.map(({ token }) => token)).toEqual(
+      expect.arrayContaining([BackgroundQueuePort, WindowCallbacksPort]),
+    );
   });
 
   it('delegates bootstrap to the bootstrap controller', async () => {

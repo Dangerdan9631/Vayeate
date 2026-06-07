@@ -2,12 +2,12 @@ import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
 import { BackgroundQueueUiState, initialBackgroundQueueUiState } from "./background-queue-ui-state";
-import { BackgroundQueueType } from "../../../app/core/background-queue/background-queue-type";
+import type { BackgroundQueueKey } from "../../../model/background-queue";
 
 interface BackgroundQueueUiStoreState {
     state: BackgroundQueueUiState;
-    updateQueueStatus: (queueType: BackgroundQueueType, descriptions: string[], queueLength: number) => void;
-    completeQueueProcessing: (queueType: BackgroundQueueType) => void;
+    updateQueueStatus: (queueType: BackgroundQueueKey, descriptions: string[], queueLength: number) => void;
+    completeQueueProcessing: (queueType: BackgroundQueueKey) => void;
 }
 
 @singleton()
@@ -15,11 +15,11 @@ export class BackgroundQueueUiStore {
     private store = createStore<BackgroundQueueUiStoreState>()(
         immer((set): BackgroundQueueUiStoreState => ({
             state: initialBackgroundQueueUiState,
-            updateQueueStatus: (queueType: BackgroundQueueType, descriptions: string[], queueLength: number) => set((storeState: BackgroundQueueUiStoreState) => {
+            updateQueueStatus: (queueType: BackgroundQueueKey, descriptions: string[], queueLength: number) => set((storeState: BackgroundQueueUiStoreState) => {
                 storeState.state.queues[queueType].queueDescriptions = descriptions;
                 storeState.state.queues[queueType].queueLength = queueLength;
             }),
-            completeQueueProcessing: (queueType: BackgroundQueueType) => set((storeState: BackgroundQueueUiStoreState) => {
+            completeQueueProcessing: (queueType: BackgroundQueueKey) => set((storeState: BackgroundQueueUiStoreState) => {
                 storeState.state.queues[queueType].queueDescriptions = [];
                 storeState.state.queues[queueType].queueLength = 0;
             }),

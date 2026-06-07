@@ -1,13 +1,12 @@
 import { type Logger, LoggerFactory } from '../../../domain/utils/logger';
-import type { BackgroundQueueType } from './background-queue-type';
 import { QueuedWork } from './queued-work';
-import { ContinuationHandler } from './continuation-handler';
 import { BackgroundQueueResolver } from './background-queue-resolver';
 import { SignalBackgroundQueueProcessingCompleteController } from './controllers/signal-background-queue-processing-complete-controller';
 import { UpdateBackgroundQueueStatusController } from './controllers/update-background-queue-status-controller';
 import { IBackgroundQueue } from './ibackground-queue';
 import { EnqueueBackgroundQueueActionOperation } from '../../../domain/operations/background-queue/enqueue-background-queue-action-operation';
 import { injectable } from 'tsyringe';
+import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../model/background-queue';
 
 @injectable()
 export class SerialQueue implements IBackgroundQueue {
@@ -16,7 +15,7 @@ export class SerialQueue implements IBackgroundQueue {
   private isProcessing = false;
 
   constructor(
-    private readonly queueType: BackgroundQueueType,
+    private readonly queueType: BackgroundQueueKey,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
     private readonly updateBackgroundQueueStatus: UpdateBackgroundQueueStatusController,
     private readonly signalBackgroundQueueProcessingComplete: SignalBackgroundQueueProcessingCompleteController,
@@ -28,7 +27,7 @@ export class SerialQueue implements IBackgroundQueue {
   enqueue(
     description: string,
     run: () => void | Promise<void>
-  ): ContinuationHandler {
+  ): BackgroundQueueContinuation {
     const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver(description) };
     this.log.debug('enqueue:', description);
     this.queue.push(item);
