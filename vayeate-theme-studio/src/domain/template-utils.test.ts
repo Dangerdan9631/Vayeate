@@ -203,4 +203,48 @@ describe('template utility baselines', () => {
     expect(refreshTemplateRefsAndSelect.execute).not.toHaveBeenCalled();
     expect(setTemplateAddGroupName.execute).not.toHaveBeenCalled();
   });
+
+  it('short-circuits group creation when the selected template or input is stale', () => {
+    const templatesStore = new TemplatesStore();
+    const templateUiStore = new TemplateUiStore();
+    const saveTemplate = { execute: vi.fn() };
+    const refreshTemplateRefsAndSelect = { execute: vi.fn() };
+    const setTemplateAddGroupName = { execute: vi.fn() };
+    const controller = new AddGroupAndClearInputController(
+      templatesStore,
+      templateUiStore,
+      new BumpTemplateVersionForEditOperation(),
+      new AddGroupToTemplateOperation(),
+      saveTemplate as never,
+      refreshTemplateRefsAndSelect as never,
+      setTemplateAddGroupName as never,
+    );
+
+    templateUiStore.getStore().setAddGroupName('core');
+    controller.run();
+
+    expect(saveTemplate.execute).not.toHaveBeenCalled();
+
+    const template = {
+      name: 'template-a',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [],
+      contrastVariables: [],
+      groups: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    };
+    templatesStore.getStore().updateTemplate(template);
+    templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
+    templateUiStore.getStore().setAddGroupName('   ');
+
+    controller.run();
+
+    expect(saveTemplate.execute).not.toHaveBeenCalled();
+    expect(refreshTemplateRefsAndSelect.execute).not.toHaveBeenCalled();
+    expect(setTemplateAddGroupName.execute).not.toHaveBeenCalled();
+  });
 });

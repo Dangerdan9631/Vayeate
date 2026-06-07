@@ -1,6 +1,8 @@
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum AppShellActionType {
+  PageOnLoad = 'APP_SHELL_PAGE_ON_LOAD',
+  PageOnUnload = 'APP_SHELL_PAGE_ON_UNLOAD',
   ThemeCheckboxOnToggle = 'APP_SHELL_THEME_CHECKBOX_ON_TOGGLE',
   MinimizeButtonOnClick = 'APP_SHELL_MINIMIZE_BUTTON_ON_CLICK',
   MaximizeButtonOnClick = 'APP_SHELL_MAXIMIZE_BUTTON_ON_CLICK',
@@ -10,6 +12,8 @@ export enum AppShellActionType {
 }
 
 export type AppShellActions =
+  | { type: AppShellActionType.PageOnLoad }
+  | { type: AppShellActionType.PageOnUnload }
   | { type: AppShellActionType.ThemeCheckboxOnToggle }
   | { type: AppShellActionType.MinimizeButtonOnClick }
   | { type: AppShellActionType.MaximizeButtonOnClick }

@@ -119,6 +119,7 @@ describe('layer boundaries', () => {
 
   it('keeps top-level authoring handlers thin and free of policy or detail ownership', async () => {
     const files = [
+      path.join(sourceRoot, 'app/app/actions/app-handler.ts'),
       path.join(sourceRoot, 'app/catalog/actions/catalog-handler.ts'),
       path.join(sourceRoot, 'app/template/actions/template-handler.ts'),
       path.join(sourceRoot, 'app/theme/actions/theme-handler.ts'),

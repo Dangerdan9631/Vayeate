@@ -7,12 +7,16 @@ import { RestoreWindowController } from '../../window/controllers/restore-window
 import { ToggleColorSchemeController } from '../controllers/toggle-color-scheme-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { AppShellActions, AppShellActionType } from './app-shell-action-type';
+import { LoadAppController } from '../controllers/load-app-controller';
+import { UnloadAppController } from '../controllers/unload-app-controller';
 
 @singleton()
 export class AppShellHandler {
   private readonly log: Logger;
 
   constructor(
+    private readonly loadApp: LoadAppController,
+    private readonly unloadApp: UnloadAppController,
     private readonly closeWindow: CloseWindowController,
     private readonly toggleColorScheme: ToggleColorSchemeController,
     private readonly minimizeWindow: MinimizeWindowController,
@@ -26,6 +30,10 @@ export class AppShellHandler {
 
   async handle(action: AppShellActions): Promise<void> {
     switch (action.type) {
+      case AppShellActionType.PageOnLoad:
+        return this.loadApp.run();
+      case AppShellActionType.PageOnUnload:
+        return this.unloadApp.run();
       case AppShellActionType.ThemeCheckboxOnToggle:
         return this.toggleColorScheme.run();
       case AppShellActionType.MinimizeButtonOnClick:

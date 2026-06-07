@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe';
+import { delay, inject, singleton } from 'tsyringe';
 import type { HexColor } from '../../../../model/schema/primitives';
 import { CloseEyedropperOperation } from '../../../../domain/operations/eyedropper-operations/close-eyedropper-operation';
 import { EyedropperUiStore } from '../../../../domain/state/ui/eyedropper-ui-store';
@@ -12,7 +12,7 @@ import { ThemeVariablesCardActionType } from '../../../theme/theme-variables-car
 export class CloseEyedropperOverlayController {
   constructor(
     private readonly closeEyedropper: CloseEyedropperOperation,
-    private readonly actionQueue: ActionQueue,
+    @inject(delay(() => ActionQueue)) private readonly actionQueue: ActionQueue,
     private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 

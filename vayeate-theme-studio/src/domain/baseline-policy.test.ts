@@ -268,4 +268,31 @@ describe('baseline domain policy', () => {
     expect(themeUiStore.getStore().state.theme).toBe(unchangedTheme);
     expect(debouncedThemePersist.schedule).toHaveBeenCalledTimes(1);
   });
+
+  it('leaves theme state unchanged when no theme is selected before template replacement', async () => {
+    const themeUiStore = new ThemeUiStore();
+    const themePreviewStore = new ThemePreviewStore();
+    const debouncedThemePersist = { schedule: vi.fn() };
+    const themeGateway = { saveTheme: vi.fn(async () => {}) };
+    const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
+      themeUiStore,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
+    const setThemeLoadedTemplate = new SetThemeLoadedTemplateOperation(themePreviewStore);
+    const loadTemplateSnapshot = { execute: vi.fn(async () => template) };
+    const controller = new SetThemeTemplateController(
+      themeUiStore,
+      applyThemeStateAndSchedulePersist,
+      loadTemplateSnapshot as never,
+      setThemeLoadedTemplate,
+    );
+
+    await controller.run('template-a', '1.0.0');
+
+    expect(loadTemplateSnapshot.execute).not.toHaveBeenCalled();
+    expect(themeUiStore.getStore().state.theme).toBeNull();
+    expect(themePreviewStore.getStore().state.loadedTemplateForTheme).toBeNull();
+    expect(debouncedThemePersist.schedule).not.toHaveBeenCalled();
+  });
 });

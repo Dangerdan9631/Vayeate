@@ -156,4 +156,40 @@ describe('catalog token and validation operations', () => {
     expect(refreshCatalogRefsAndSelect.execute).not.toHaveBeenCalled();
     expect(setCatalogNewTokenKey.execute).not.toHaveBeenCalled();
   });
+
+  it('short-circuits plain token creation when selection or input is stale', () => {
+    const catalogsStore = new CatalogsStore();
+    const catalogUiStore = new CatalogUiStore();
+    const saveCatalog = { execute: vi.fn() };
+    const setCatalogNewTokenKey = { execute: vi.fn() };
+    const bumpCatalogVersionForEdit = { execute: vi.fn() };
+    const addPlainTokenToCatalog = { execute: vi.fn() };
+    const mergeSemanticSelectorsIntoCatalog = { execute: vi.fn() };
+    const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const controller = new AddNewTokenController(
+      catalogsStore,
+      catalogUiStore,
+      saveCatalog as never,
+      setCatalogNewTokenKey as never,
+      bumpCatalogVersionForEdit as never,
+      addPlainTokenToCatalog as never,
+      mergeSemanticSelectorsIntoCatalog as never,
+      refreshCatalogRefsAndSelect as never,
+    );
+
+    controller.run('theme');
+
+    expect(bumpCatalogVersionForEdit.execute).not.toHaveBeenCalled();
+    expect(saveCatalog.execute).not.toHaveBeenCalled();
+
+    catalogsStore.getStore().upsertCatalogs([catalog]);
+    catalogUiStore.getStore().selectCatalog({ name: catalog.name, version: catalog.version });
+    catalogUiStore.getStore().setNewTokenKey('   ');
+
+    controller.run('theme');
+
+    expect(addPlainTokenToCatalog.execute).not.toHaveBeenCalled();
+    expect(saveCatalog.execute).not.toHaveBeenCalled();
+    expect(refreshCatalogRefsAndSelect.execute).not.toHaveBeenCalled();
+  });
 });
