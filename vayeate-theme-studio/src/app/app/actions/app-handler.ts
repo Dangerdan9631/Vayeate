@@ -4,6 +4,8 @@ import { AppShellHandler } from '../app-shell/actions/app-shell-handler';
 import { isAppShellAction } from '../app-shell/actions/app-shell-action-type';
 import { EyedropperOverlayHandler } from '../../common/eyedropper-overlay/actions/eyedropper-overlay-handler';
 import { isAppEyedropperOverlayAction } from '../../common/eyedropper-overlay/actions/eyedropper-overlay-action-type';
+import { StyledTooltipHandler } from '../../common/styled-tooltip/actions/styled-tooltip-handler';
+import { isAppStyledTooltipAction } from '../../common/styled-tooltip/actions/styled-tooltip-action-type';
 import { AppMenuHandler } from '../menu-bar/actions/app-menu-handler';
 import { isAppMenuAction } from '../menu-bar/actions/app-menu-action-type';
 import { AppRibbonHandler } from '../ribbon/actions/app-ribbon-handler';
@@ -18,6 +20,7 @@ export class AppActionHandler {
     loggerFactory: LoggerFactory,
     @inject(delay(() => AppShellHandler)) private readonly appShellHandler: AppShellHandler,
     @inject(delay(() => EyedropperOverlayHandler)) private readonly appEyedropperOverlayHandler: EyedropperOverlayHandler,
+    @inject(delay(() => StyledTooltipHandler)) private readonly appStyledTooltipHandler: StyledTooltipHandler,
     @inject(delay(() => AppMenuHandler)) private readonly appMenuHandler: AppMenuHandler,
     @inject(delay(() => AppRibbonHandler)) private readonly appRibbonHandler: AppRibbonHandler,
   ) {
@@ -31,6 +34,10 @@ export class AppActionHandler {
 
     if (isAppEyedropperOverlayAction(action)) {
       return this.appEyedropperOverlayHandler.handle(action);
+    }
+
+    if (isAppStyledTooltipAction(action)) {
+      return this.appStyledTooltipHandler.handle(action);
     }
 
     if (isAppMenuAction(action)) {

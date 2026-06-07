@@ -1,31 +1,47 @@
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
 import { useStore } from 'zustand';
 import { WindowStore } from '../../../domain/state/ui/window-store';
 import { container } from 'tsyringe';
+import { StyledTooltipUiStore } from '../../../domain/state/ui/styled-tooltip-ui-store';
+import type { StyledTooltipState } from '../../../model/styled-tooltip';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
+import { StyledTooltipActionType } from './actions/styled-tooltip-action-type';
 
 const OFFSET = 8;
 const PADDING = 8;
 
 const windowStore = container.resolve(WindowStore);
-
-interface TooltipState {
-  text: string;
-  x: number;
-  y: number;
-}
+const styledTooltipStore = container.resolve(StyledTooltipUiStore);
 
 export interface StyledTooltipViewModel {
-  state: TooltipState | null;
+  state: StyledTooltipState | null;
   tooltipRef: RefObject<HTMLDivElement | null>;
 }
 
 export function useStyledTooltipViewModel(): StyledTooltipViewModel {
+  const dispatch = useAppDispatch();
   const viewport = useStore(windowStore.api, (state) => state.state.viewport);
-  const [state, setState] = useState<TooltipState | null>(null);
+  const state = useStore(styledTooltipStore.api, (store) => store.state.tooltip);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLElement | null>(null);
   const backupTitleRef = useRef<string | null>(null);
   const anchorRectRef = useRef<DOMRect | null>(null);
+
+  const restoreNativeTitle = useCallback(() => {
+    const el = targetRef.current;
+    const backup = backupTitleRef.current;
+    if (el && backup !== null) {
+      el.setAttribute('title', backup);
+    }
+    targetRef.current = null;
+    backupTitleRef.current = null;
+    anchorRectRef.current = null;
+  }, []);
+
+  const hide = useCallback(() => {
+    restoreNativeTitle();
+    dispatch({ type: StyledTooltipActionType.TooltipSourceOnMouseOut });
+  }, [dispatch, restoreNativeTitle]);
 
   useLayoutEffect(() => {
     if (!state || !tooltipRef.current || !anchorRectRef.current) return;
@@ -41,9 +57,9 @@ export function useStyledTooltipViewModel(): StyledTooltipViewModel {
     if (y + tipRect.height + PADDING > viewH) y = rect.top - tipRect.height - OFFSET;
     if (y < PADDING) y = PADDING;
     if (x !== state.x || y !== state.y) {
-      setState((prev) => (prev ? { ...prev, x, y } : null));
+      dispatch({ type: StyledTooltipActionType.TooltipOnPositionChange, position: { x, y } });
     }
-  }, [state, viewport.width, viewport.height]);
+  }, [dispatch, state, viewport.width, viewport.height]);
 
   useEffect(() => {
     function show(el: HTMLElement, text: string, hasTitle: boolean) {
@@ -54,23 +70,14 @@ export function useStyledTooltipViewModel(): StyledTooltipViewModel {
       }
       const rect = el.getBoundingClientRect();
       anchorRectRef.current = rect;
-      setState({
-        text,
-        x: rect.left,
-        y: rect.bottom + OFFSET,
+      dispatch({
+        type: StyledTooltipActionType.TooltipSourceOnMouseOver,
+        tooltip: {
+          text,
+          x: rect.left,
+          y: rect.bottom + OFFSET,
+        },
       });
-    }
-
-    function hide() {
-      const el = targetRef.current;
-      const backup = backupTitleRef.current;
-      if (el && backup !== null) {
-        el.setAttribute('title', backup);
-      }
-      targetRef.current = null;
-      backupTitleRef.current = null;
-      anchorRectRef.current = null;
-      setState(null);
     }
 
     function findTooltipSource(el: HTMLElement | null): { el: HTMLElement; text: string; hasTitle: boolean } | null {
@@ -119,7 +126,7 @@ export function useStyledTooltipViewModel(): StyledTooltipViewModel {
       document.removeEventListener('mouseout', handleOut, true);
       hide();
     };
-  }, []);
+  }, [dispatch, hide]);
 
   return { state, tooltipRef };
 }
