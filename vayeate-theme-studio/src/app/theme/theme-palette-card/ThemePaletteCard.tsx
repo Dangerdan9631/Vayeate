@@ -9,9 +9,13 @@ import {
   type FormEvent,
   type KeyboardEvent
 } from 'react';
-import type { ColorVariable } from '../../../model/schema/template-schemas';
 import type { ColorAssignment } from '../../../model/schema/theme-schemas';
-import { clusterColors } from '../../../domain/utils/color-clustering';
+import type { ClusterResult } from '../../../domain/utils/color-clustering';
+import {
+  buildColorAssignmentsByGroup,
+  PALETTE_UNGROUPED_KEY,
+  sortedPaletteGroupKeys,
+} from '../../../domain/utils/palette-cluster-inputs';
 import { hexToHue, hslToRgb } from '../../../domain/utils/color-hsl';
 import { rgbToHex } from '../../../domain/utils/color-hex';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
@@ -33,8 +37,6 @@ function hueSliderGradientFromRefHex(refHex: string): string {
   return `linear-gradient(to right, ${stops.join(', ')})`;
 }
 
-const UNGROUPED_KEY = '__ungrouped__';
-
 const CLUSTER_K_MIN = 1;
 const CLUSTER_K_MAX = 12;
 
@@ -49,60 +51,6 @@ function validRefHexForGradient(input: string): string | null {
   if (!/^[0-9a-f]+$/.test(s) || (s.length !== 3 && s.length !== 6)) return null;
   const expanded = s.length === 3 ? s.split('').map((c) => c + c).join('') : s;
   return `#${expanded}`;
-}
-
-function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
-  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
-  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
-  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
-}
-
-function buildColorAssignmentsByGroup(
-  assignments: readonly ColorAssignment[],
-  colorVariables: readonly ColorVariable[],
-): Map<string, ColorAssignment[]> {
-  const varMap = new Map(colorVariables.map((v) => [v.key, v]));
-  const byGroup = new Map<string, ColorAssignment[]>();
-  for (const a of assignments) {
-    const groupRef = varMap.get(a.colorRef)?.groupRef ?? null;
-    const groupKey = groupRef ?? UNGROUPED_KEY;
-    let list = byGroup.get(groupKey);
-    if (!list) {
-      list = [];
-      byGroup.set(groupKey, list);
-    }
-    list.push(a);
-  }
-  return byGroup;
-}
-
-function collectHexForGroupVariant(
-  assignments: readonly ColorAssignment[],
-  variant: 'light' | 'dark',
-): string[] {
-  const hexes: string[] = [];
-  const seen = new Set<string>();
-  for (const a of assignments) {
-    if (variant === 'dark') {
-      if (a.dark?.value) {
-        const h = a.dark.value.toLowerCase();
-        if (!seen.has(h)) {
-          seen.add(h);
-          hexes.push(a.dark.value);
-        }
-      }
-    } else {
-      const lightHex = a.useDarkForLight ? a.dark?.value : a.light?.value;
-      if (lightHex) {
-        const h = lightHex.toLowerCase();
-        if (!seen.has(h)) {
-          seen.add(h);
-          hexes.push(lightHex);
-        }
-      }
-    }
-  }
-  return hexes;
 }
 
 /** Map normalized hex -> color refs that use that hex in their assignment. */
@@ -151,6 +99,9 @@ export function ThemePaletteCard() {
     clusterCountK,
     onClusterCountDelta,
     onClusterCountCommit,
+    clusterByDark,
+    onClusterByDarkChange,
+    paletteClustersByGroup,
     colorAssignments,
     colorVariables,
     groups: _groups,
@@ -215,7 +166,6 @@ export function ThemePaletteCard() {
       window.removeEventListener('pointercancel', handleHuePointerUp);
     };
   }, [onHueDragEnd, handleHuePointerUp]);
-  const [clusterByDark, setClusterByDark] = useState(true);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
   const [colorPickerValue, setColorPickerValue] = useState('#808080');
   const [pendingHex, setPendingHex] = useState<string | null>(null);
@@ -248,23 +198,17 @@ export function ThemePaletteCard() {
     () => buildColorAssignmentsByGroup(colorAssignments, colorVariables),
     [colorAssignments, colorVariables],
   );
-  const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
+  const groupKeysInOrder = useMemo(() => sortedPaletteGroupKeys(byGroup), [byGroup]);
 
   const hexToRefs = useMemo(
     () => buildHexToColorRefs(colorAssignments),
     [colorAssignments],
   );
 
-  const clustersByGroup = useMemo(() => {
-    const map = new Map<string, ReturnType<typeof clusterColors>>();
-    const variant = clusterByDark ? 'dark' : 'light';
-    for (const groupKey of groupKeysInOrder) {
-      const groupAssignments = byGroup.get(groupKey) ?? [];
-      const hexes = collectHexForGroupVariant(groupAssignments, variant);
-      map.set(groupKey, clusterColors(hexes, { maxClusters: clusterCountK }));
-    }
-    return map;
-  }, [byGroup, groupKeysInOrder, clusterCountK, clusterByDark]);
+  const clustersByGroup = useMemo((): Map<string, ClusterResult[]> => {
+    if (!paletteClustersByGroup) return new Map();
+    return new Map<string, ClusterResult[]>(Object.entries(paletteClustersByGroup));
+  }, [paletteClustersByGroup]);
 
   const copyHexToClipboard = useCallback((hex: string) => {
     const normalized = normalizeHex(hex);
@@ -297,7 +241,7 @@ export function ThemePaletteCard() {
   };
   const handleClusterCountDeltaValue = (value: string) => onClusterCountDelta(Number(value));
   const handleClusterCountCommitCurrent = () => onClusterCountCommit(clusterCountK);
-  const handleClusterByDarkChecked = (checked: boolean) => setClusterByDark(checked);
+  const handleClusterByDarkChecked = (checked: boolean) => onClusterByDarkChange(checked);
   const handleHueReferenceEyedropper = onHueReferenceEyedropperClick;
 
   function onApplyToDarkCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
@@ -637,7 +581,7 @@ export function ThemePaletteCard() {
                   : refsInGroup.every((r) => !checkedColorRefs.has(r))
                     ? 'none'
                     : 'some';
-            const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+            const groupLabel = groupKey === PALETTE_UNGROUPED_KEY ? 'Ungrouped' : groupKey;
 
             function onGroupTriStateChange(checked: boolean) {
               onSetColorGroupChecked(groupKey, checked);

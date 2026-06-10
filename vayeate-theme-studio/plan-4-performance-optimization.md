@@ -301,7 +301,7 @@ timers.
 
 ## Section C — Offload long-running CPU work to real background threads
 
-### [ ] Task C1: Web Worker for k-means palette clustering
+### [x] Task C1: Web Worker for k-means palette clustering
 
 **Problem.** `clusterColors` (k-means, up to 50 iterations per color group)
 runs in a `useMemo` in `ThemePaletteCard` on every cluster-K change and
@@ -337,7 +337,7 @@ disproportionate.
 
 ---
 
-### [ ] Task C2: Web Worker (or scoped recompute) for preview token resolution
+### [x] Task C2: Web Worker (or scoped recompute) for preview token resolution
 
 **Problem.** `EditorPreviewsCard`'s `resolvedPreviews` re-resolves every
 token of every preview — including `adjustColorToMeetContrast` and contrast
@@ -646,7 +646,7 @@ read-back cost, so this only reduces write amplification.
 
 ## Section F — Verification and guardrails
 
-### [ ] Task F1: Performance regression smoke tests + architecture-test sync
+### [x] Task F1: Performance regression smoke tests + architecture-test sync
 
 **Change.**
 - Add unit tests asserting the new queue behaviors (A1 coalescing, A3

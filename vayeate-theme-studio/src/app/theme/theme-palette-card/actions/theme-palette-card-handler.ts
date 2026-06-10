@@ -7,6 +7,8 @@ import { RecenterHueReferenceController } from '../controllers/recenter-hue-refe
 import { SetThemeHueAdjustmentController } from '../controllers/set-theme-hue-adjustment-controller';
 import { SetApplyPaletteToDarkController } from '../controllers/set-apply-palette-to-dark-controller';
 import { SetApplyPaletteToLightController } from '../controllers/set-apply-palette-to-light-controller';
+import { ComputePaletteClustersController } from '../controllers/compute-palette-clusters-controller';
+import { SetPaletteClusterByDarkController } from '../controllers/set-palette-cluster-by-dark-controller';
 import { SetPaletteClusterCountKController } from '../controllers/set-palette-cluster-count-k-controller';
 import { SetPaletteClusterCountKPreviewController } from '../controllers/set-palette-cluster-count-k-preview-controller';
 import { SetColorRefsSelectionBatchController } from '../controllers/set-color-refs-selection-batch-controller';
@@ -31,6 +33,8 @@ export class ThemePaletteCardHandler {
     private readonly setAssignColorPreview: SetAssignColorPreviewController,
     private readonly setPaletteClusterCountK: SetPaletteClusterCountKController,
     private readonly setPaletteClusterCountKPreview: SetPaletteClusterCountKPreviewController,
+    private readonly setPaletteClusterByDark: SetPaletteClusterByDarkController,
+    private readonly computePaletteClusters: ComputePaletteClustersController,
     private readonly commitHueReferenceColor: CommitHueReferenceColorController,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentController,
     private readonly setColorRefsSelectionBatch: SetColorRefsSelectionBatchController,
@@ -66,9 +70,16 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.HueSliderOnDelta:
         return this.setThemeHueAdjustment.run(action.value);
       case ThemePaletteCardActionType.ClusterCountSliderOnDelta:
-        return this.setPaletteClusterCountKPreview.run(action.value);
+        await this.setPaletteClusterCountKPreview.run(action.value);
+        return this.computePaletteClusters.run();
       case ThemePaletteCardActionType.ClusterCountSliderOnCommit:
-        return this.setPaletteClusterCountK.run(action.value);
+        await this.setPaletteClusterCountK.run(action.value);
+        return this.computePaletteClusters.run();
+      case ThemePaletteCardActionType.ClusterVariantCheckboxOnToggle:
+        this.setPaletteClusterByDark.run(action.checked);
+        return this.computePaletteClusters.run();
+      case ThemePaletteCardActionType.RecomputeClusters:
+        return this.computePaletteClusters.run();
       case ThemePaletteCardActionType.ColorRefsSelectionCommit:
         return this.setColorRefsSelectionBatch.run(action.refs, action.checked);
     }

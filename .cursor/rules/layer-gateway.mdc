@@ -17,6 +17,19 @@ alwaysApply: false
 - **Abstractions** over services: parse/serialize, map JSON ↔ model types.
 - **No** business logic; conversion and I/O orchestration at the edge only.
 
+## Web Workers
+
+- CPU-heavy work that must not block the renderer main thread is offloaded via
+  `gateway/services/*-worker.ts` entry files instantiated by a matching
+  `*-worker-service.ts`.
+- Worker entry files are **pure compute boundaries**: they may import only
+  `domain/utils/**` modules (no `domain/state`, `domain/operations`,
+  `src/app`, gateways, or stores). Keep request/response message types
+  colocated with the worker entry or in `domain/utils` when shared.
+- Services own worker lifecycle (spawn, postMessage, terminate) and map results
+  back to model types; operations enqueue work through gateways/services, not
+  by importing worker entries directly.
+
 ## Callers
 
 - **Operations** invoke gateways/services (not components/handlers).

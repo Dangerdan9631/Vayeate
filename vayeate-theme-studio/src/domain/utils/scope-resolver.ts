@@ -22,6 +22,98 @@ export interface ScopeColorMap {
   entries: ScopeColorMapEntry[];
 }
 
+/** Minimal inputs read by {@link buildScopeColorMap}; kept in one place for equality checks. */
+export interface ScopeColorMapInputs {
+  mappings: readonly {
+    tokenKey: string;
+    colorVariableRef: string | null;
+    contrastVariableRef: string | null;
+  }[];
+  colorAssignments: readonly {
+    colorRef: string;
+    dark: string | null;
+    light: string | null;
+    useDarkForLight: boolean;
+  }[];
+  contrastAssignments: readonly {
+    contrastVariableRef: string;
+    dark: {
+      value: number;
+      comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan';
+      min: number | null;
+      max: number | null;
+    } | null;
+    light: {
+      value: number;
+      comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan';
+      min: number | null;
+      max: number | null;
+    } | null;
+    useDarkForLight: boolean;
+  }[];
+  contrastVariables: readonly {
+    key: string;
+    comparisonSourceRef: string | null;
+  }[];
+}
+
+export function selectScopeColorMapInputs(
+  mappings: readonly Mapping[],
+  colorAssignments: readonly ColorAssignment[],
+  contrastAssignments?: readonly ContrastAssignment[],
+  contrastVariables?: readonly ContrastVariable[],
+): ScopeColorMapInputs {
+  return {
+    mappings: mappings.map((m) => ({
+      tokenKey: m.token.key,
+      colorVariableRef: m.colorVariableRef,
+      contrastVariableRef: m.contrastVariableRef,
+    })),
+    colorAssignments: colorAssignments.map((a) => ({
+      colorRef: a.colorRef,
+      dark: a.dark?.value ?? null,
+      light: a.light?.value ?? null,
+      useDarkForLight: a.useDarkForLight,
+    })),
+    contrastAssignments: (contrastAssignments ?? []).map((a) => ({
+      contrastVariableRef: a.contrastVariableRef,
+      dark: a.dark
+        ? {
+            value: a.dark.value,
+            comparisonMethod: a.dark.comparisonMethod,
+            min: a.dark.min ?? null,
+            max: a.dark.max ?? null,
+          }
+        : null,
+      light: a.light
+        ? {
+            value: a.light.value,
+            comparisonMethod: a.light.comparisonMethod,
+            min: a.light.min ?? null,
+            max: a.light.max ?? null,
+          }
+        : null,
+      useDarkForLight: a.useDarkForLight,
+    })),
+    contrastVariables: (contrastVariables ?? []).map((v) => ({
+      key: v.key,
+      comparisonSourceRef: v.comparisonSourceRef,
+    })),
+  };
+}
+
+export function areScopeColorMapInputsEqual(
+  before: ScopeColorMapInputs,
+  after: ScopeColorMapInputs,
+): boolean {
+  return hashScopeColorMapInputs(before) === hashScopeColorMapInputs(after);
+}
+
+/** Stable version string for cache keys; changes only when assignment values read by buildScopeColorMap change. */
+export function hashScopeColorMapInputs(inputs: ScopeColorMapInputs): string {
+  return JSON.stringify(inputs);
+}
+
 /**
  * Split a token key or scope string into segments (dot, space, or colon separated).
  */

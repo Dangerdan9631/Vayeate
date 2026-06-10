@@ -1,5 +1,6 @@
 import type { ColorAssignment, Theme, ThemeReference } from '../../../model/schema/theme-schemas';
 import type { SelectedColorsDisplay } from '../../../model/theme-pane-state';
+import type { ClusterResult } from '../../utils/color-clustering';
 
 export type LoadState = 'unloaded' | 'loading' | 'loaded';
 
@@ -29,6 +30,11 @@ export interface ThemeUiState {
   paneSelectedColorsDisplay: SelectedColorsDisplay;
   orphanColorKeys: string[];
   orphanContrastKeys: string[];
+  /** Last computed palette clusters per group key; null before first compute. */
+  paletteClustersByGroup: Record<string, ClusterResult[]> | null;
+  paletteClustersPending: boolean;
+  /** When true, cluster swatches from dark assignments; otherwise light. */
+  paletteClusterByDark: boolean;
 }
 
 export const initialThemeUiState: ThemeUiState = {
@@ -51,4 +57,7 @@ export const initialThemeUiState: ThemeUiState = {
   paneSelectedColorsDisplay: { kind: 'none' },
   orphanColorKeys: [],
   orphanContrastKeys: [],
+  paletteClustersByGroup: null,
+  paletteClustersPending: false,
+  paletteClusterByDark: true,
 };

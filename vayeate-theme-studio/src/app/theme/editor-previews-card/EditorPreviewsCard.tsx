@@ -8,63 +8,23 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type { ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
-import type { ColorAssignment, ContrastAssignment } from '../../../model/schema/theme-schemas';
+import type { Mapping } from '../../../model/schema/template-schemas';
 import type { TokenizedPreview } from '../../../model/preview-types';
 import { useEditorPreviewsCardViewModel } from './use-editor-previews-card-viewmodel';
-import { contrastRatio } from '../../../domain/utils/color-wcag';
-import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor, resolveTokenEntry } from '../../../domain/utils/scope-resolver';
-
-/** Precomputed colors per token for both modes; avoids resolveTokenColor during render. */
-interface ResolvedToken {
-  text: string;
-  darkColor: string;
-  lightColor: string;
-  /** Tooltip for the dark preview column. */
-  titleDark: string;
-  /** Tooltip for the light preview column. */
-  titleLight: string;
-}
-
-type ResolvedLine = { tokens: ResolvedToken[] };
-type ResolvedPreview = { previewKey: string; lines: ResolvedLine[] };
+import { useResolvedEditorPreviews } from './use-resolved-editor-previews';
+import {
+  buildPreviewTokenTooltipTitle,
+  type PreviewTokenTooltipContext,
+  type ResolvedPreviewLine,
+  type ResolvedPreviewToken,
+} from '../../../domain/utils/resolve-editor-preview-lines';
+import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolver';
 
 const DEFAULT_DARK_FG = '#d4d4d4';
 const DEFAULT_LIGHT_FG = '#1f1f1f';
 /** Text color for preview card chrome (heading, tab label) — not editor content. */
 const CARD_CHROME_DARK = '#cccccc';
 const CARD_CHROME_LIGHT = '#333333';
-
-function colorForRef(
-  colorAssignments: readonly ColorAssignment[],
-  ref: string | null,
-  mode: 'dark' | 'light',
-  fallback: string,
-): string {
-  if (!ref) return fallback;
-  const a = colorAssignments.find((x) => x.colorRef === ref);
-  if (!a) return fallback;
-  if (mode === 'dark') return a.dark?.value ?? fallback;
-  return a.useDarkForLight ? (a.dark?.value ?? fallback) : (a.light?.value ?? fallback);
-}
-
-/** Get contrast assignment params for a contrast variable and mode, or null. */
-function contrastParamsForRef(
-  contrastAssignments: readonly ContrastAssignment[],
-  contrastVariableRef: string,
-  mode: 'dark' | 'light',
-): { value: number; comparisonMethod: string; min: number | null; max: number | null } | null {
-  const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastVariableRef);
-  if (!a) return null;
-  const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
-  if (!val) return null;
-  return {
-    value: val.value,
-    comparisonMethod: val.comparisonMethod,
-    min: val.min ?? null,
-    max: val.max ?? null,
-  };
-}
 
 interface FilterableTokenSelectProps {
   label: string;
@@ -214,12 +174,6 @@ export function EditorPreviewsCard() {
 
   const loadError: string | null = null;
 
-  const scopeColorMap = useMemo(
-    () =>
-      buildScopeColorMap(mappings, colorAssignments, contrastAssignments, contrastVariables),
-    [mappings, colorAssignments, contrastAssignments, contrastVariables],
-  );
-
   /** Editor foreground: default text color for code in the preview blocks only (not card chrome). */
   const defaultEditorFgDark = resolveColorForThemeTokenKey(themeForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', DEFAULT_DARK_FG);
   const defaultEditorFgLight = resolveColorForThemeTokenKey(themeForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', DEFAULT_LIGHT_FG);
@@ -233,83 +187,6 @@ export function EditorPreviewsCard() {
       )].sort((a, b) => (a as string).localeCompare(b as string)),
     [mappings],
   );
-
-  const resolvedPreviews = useMemo((): ResolvedPreview[] => {
-    return previews.map((preview: TokenizedPreview) => ({
-      previewKey: `${preview.language}/${preview.fileName}`,
-      lines: preview.lines.map((line) => ({
-        tokens: line.tokens.map((token) => {
-          const entry = resolveTokenEntry(token.scopes, scopeColorMap);
-          const scopeLabel = token.scopes.length > 0 ? token.scopes.join(' › ') : 'no scope';
-          if (entry) {
-            const buildTitle = (mode: 'dark' | 'light') => {
-              const lines: string[] = [
-                scopeLabel,
-                `Color variable: ${entry.colorVariableRef}`,
-                `Contrast variable: ${entry.contrastVariableRef ?? '—'}`,
-              ];
-              const assigned = mode === 'dark' ? entry.assignedDark : entry.assignedLight;
-              const resolved = mode === 'dark' ? entry.darkColor : entry.lightColor;
-              if (entry.contrastVariableRef) {
-                const cv = contrastVariables.find((v: ContrastVariable) => v.key === entry.contrastVariableRef);
-                const comparisonSourceRef = cv?.comparisonSourceRef ?? null;
-                const comparisonSourceColor = comparisonSourceRef
-                  ? colorForRef(colorAssignments, comparisonSourceRef, mode, '')
-                  : null;
-                const sourceColorDisplay = comparisonSourceColor || '—';
-                lines.push(
-                  `Comparison source: ${comparisonSourceRef ?? '—'} (${sourceColorDisplay})`,
-                );
-                const params = contrastParamsForRef(contrastAssignments, entry.contrastVariableRef, mode);
-                if (params) {
-                  const minMax = [params.min, params.max].filter((x) => x != null).length
-                    ? `, min: ${params.min ?? '—'}, max: ${params.max ?? '—'}`
-                    : '';
-                  lines.push(
-                    `Contrast params: value: ${params.value}, method: ${params.comparisonMethod}${minMax}`,
-                  );
-                }
-                const hasMinMax = params && (params.min != null || params.max != null);
-                const BLACK = '#000000';
-                if (comparisonSourceColor) {
-                  const evaluated =
-                    assigned ? contrastRatio(assigned, comparisonSourceColor) : null;
-                  const resolvedRatio =
-                    resolved ? contrastRatio(resolved, comparisonSourceColor) : null;
-                  const evaluatedVsBlack = assigned ? contrastRatio(assigned, BLACK) : null;
-                  const resolvedVsBlack = resolved ? contrastRatio(resolved, BLACK) : null;
-                  const evalSuffix = hasMinMax && evaluatedVsBlack != null ? ` (vs black: ${evaluatedVsBlack.toFixed(2)})` : '';
-                  const resolvedSuffix = hasMinMax && resolvedVsBlack != null ? ` (vs black: ${resolvedVsBlack.toFixed(2)})` : '';
-                  lines.push(
-                    `Evaluated contrast: ${evaluated != null ? evaluated.toFixed(2) : '—'}${evalSuffix}`,
-                    `Resolved contrast: ${resolvedRatio != null ? resolvedRatio.toFixed(2) : '—'}${resolvedSuffix}`,
-                  );
-                } else {
-                  lines.push('Evaluated contrast: —', 'Resolved contrast: —');
-                }
-              }
-              lines.push(`Assigned: ${assigned ?? '—'}`, `Resolved: ${resolved ?? '—'}`);
-              return lines.join('\n');
-            };
-            return {
-              text: token.text,
-              darkColor: entry.darkColor ?? defaultEditorFgDark,
-              lightColor: entry.lightColor ?? defaultEditorFgLight,
-              titleDark: buildTitle('dark'),
-              titleLight: buildTitle('light'),
-            };
-          }
-          return {
-            text: token.text,
-            darkColor: resolveTokenColor(token.scopes, scopeColorMap, 'dark') ?? defaultEditorFgDark,
-            lightColor: resolveTokenColor(token.scopes, scopeColorMap, 'light') ?? defaultEditorFgLight,
-            titleDark: scopeLabel,
-            titleLight: scopeLabel,
-          };
-        }),
-      })),
-    }));
-  }, [previews, scopeColorMap, colorAssignments, contrastAssignments, contrastVariables, defaultEditorFgDark, defaultEditorFgLight]);
 
   const darkColumnBg = resolveColorForThemeTokenKey(idePrimaryTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', '#1e1e1e');
   const lightColumnBg = resolveColorForThemeTokenKey(idePrimaryTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', '#ffffff');
@@ -360,6 +237,22 @@ export function EditorPreviewsCard() {
     previews.length > 0 && virtualItems.length === 0
       ? previews.map((_: TokenizedPreview, i: number) => i).slice(0, 10)
       : null;
+
+  const visibleIndices = useMemo(
+    () => (fallbackIndices ?? virtualItems.map((item) => item.index)),
+    [fallbackIndices, virtualItems],
+  );
+
+  const { getResolvedPreview, tooltipContext } = useResolvedEditorPreviews({
+    previews,
+    mappings,
+    colorAssignments,
+    contrastAssignments,
+    contrastVariables,
+    defaultEditorFgDark,
+    defaultEditorFgLight,
+    visibleIndices,
+  });
 
   /** Index of the sample at the top of the scroll view (for sticky bar label). Use the item that contains scrollTop, or the last item that starts before scrollTop (e.g. when in padding between items). */
   const currentSampleIndex = (() => {
@@ -636,7 +529,7 @@ export function EditorPreviewsCard() {
             ) : fallbackIndices ? (
               fallbackIndices.map((idx: number) => {
                 const preview = previews[idx];
-                const resolved = resolvedPreviews[idx];
+                const resolved = getResolvedPreview(idx);
                 const key = `${preview.language}/${preview.fileName}`;
                 const lines = resolved?.lines ?? [];
                 return (
@@ -659,7 +552,7 @@ export function EditorPreviewsCard() {
                         style={{ backgroundColor: darkCodeBg }}
                       >
                         <code>
-                          <ResolvedPreviewLines lines={lines} mode="dark" />
+                          <ResolvedPreviewLines lines={lines} mode="dark" tooltipContext={tooltipContext} />
                         </code>
                       </pre>
                     </div>
@@ -673,7 +566,7 @@ export function EditorPreviewsCard() {
               >
                 {virtualItems.map((virtualItem) => {
                   const preview = previews[virtualItem.index];
-                  const resolved = resolvedPreviews[virtualItem.index];
+                  const resolved = getResolvedPreview(virtualItem.index);
                   const key = `${preview.language}/${preview.fileName}`;
                   const lines = resolved?.lines ?? [];
                   return (
@@ -708,7 +601,7 @@ export function EditorPreviewsCard() {
                           style={{ backgroundColor: darkCodeBg }}
                         >
                           <code>
-                            <ResolvedPreviewLines lines={lines} mode="dark" />
+                            <ResolvedPreviewLines lines={lines} mode="dark" tooltipContext={tooltipContext} />
                           </code>
                         </pre>
                       </div>
@@ -800,7 +693,7 @@ export function EditorPreviewsCard() {
             ) : fallbackIndices ? (
               fallbackIndices.map((idx: number) => {
                 const preview = previews[idx];
-                const resolved = resolvedPreviews[idx];
+                const resolved = getResolvedPreview(idx);
                 const key = `${preview.language}/${preview.fileName}`;
                 const lines = resolved?.lines ?? [];
                 return (
@@ -823,7 +716,7 @@ export function EditorPreviewsCard() {
                         style={{ backgroundColor: lightCodeBg }}
                       >
                         <code>
-                          <ResolvedPreviewLines lines={lines} mode="light" />
+                          <ResolvedPreviewLines lines={lines} mode="light" tooltipContext={tooltipContext} />
                         </code>
                       </pre>
                     </div>
@@ -837,7 +730,7 @@ export function EditorPreviewsCard() {
               >
                 {virtualItems.map((virtualItem) => {
                   const preview = previews[virtualItem.index];
-                  const resolved = resolvedPreviews[virtualItem.index];
+                  const resolved = getResolvedPreview(virtualItem.index);
                   const key = `${preview.language}/${preview.fileName}`;
                   const lines = resolved?.lines ?? [];
                   return (
@@ -870,7 +763,7 @@ export function EditorPreviewsCard() {
                           style={{ backgroundColor: lightCodeBg }}
                         >
                           <code>
-                            <ResolvedPreviewLines lines={lines} mode="light" />
+                            <ResolvedPreviewLines lines={lines} mode="light" tooltipContext={tooltipContext} />
                           </code>
                         </pre>
                       </div>
@@ -889,26 +782,54 @@ export function EditorPreviewsCard() {
 function ResolvedPreviewLines({
   lines,
   mode,
+  tooltipContext,
 }: {
-  lines: ResolvedLine[];
+  lines: ResolvedPreviewLine[];
   mode: 'dark' | 'light';
+  tooltipContext: PreviewTokenTooltipContext;
 }) {
   return (
     <>
       {lines.map((line, lineIdx) => (
         <span key={lineIdx} className="theme-preview-line">
           {line.tokens.map((token, tokenIdx) => (
-            <span
+            <PreviewTokenSpan
               key={tokenIdx}
-              style={{ color: mode === 'dark' ? token.darkColor : token.lightColor }}
-              title={mode === 'dark' ? token.titleDark : token.titleLight}
-            >
-              {token.text}
-            </span>
+              token={token}
+              mode={mode}
+              tooltipContext={tooltipContext}
+            />
           ))}
           {'\n'}
         </span>
       ))}
     </>
+  );
+}
+
+function PreviewTokenSpan({
+  token,
+  mode,
+  tooltipContext,
+}: {
+  token: ResolvedPreviewToken;
+  mode: 'dark' | 'light';
+  tooltipContext: PreviewTokenTooltipContext;
+}) {
+  const [title, setTitle] = useState<string | undefined>();
+
+  const onMouseEnter = useCallback(() => {
+    if (!token.tooltipData) return;
+    setTitle(buildPreviewTokenTooltipTitle(mode, token.tooltipData, tooltipContext));
+  }, [token, mode, tooltipContext]);
+
+  return (
+    <span
+      style={{ color: mode === 'dark' ? token.darkColor : token.lightColor }}
+      title={title ?? token.scopeLabel}
+      onMouseEnter={onMouseEnter}
+    >
+      {token.text}
+    </span>
   );
 }

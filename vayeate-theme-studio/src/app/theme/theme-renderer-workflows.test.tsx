@@ -182,6 +182,9 @@ describe('theme renderer workflows', () => {
       clusterCountK: 3,
       onClusterCountDelta: vi.fn(),
       onClusterCountCommit: vi.fn(),
+      clusterByDark: true,
+      onClusterByDarkChange: vi.fn(),
+      paletteClustersByGroup: null,
       colorAssignments: [],
       colorVariables: [],
       groups: [],
@@ -446,6 +449,11 @@ describe('theme renderer workflows', () => {
       applyToDark: true,
       applyToLight: false,
       clusterCountK: 4,
+      clusterByDark: true,
+      onClusterByDarkChange: vi.fn(),
+      paletteClustersByGroup: {
+        core: [{ representative: '#112233', members: [] }],
+      },
       colorAssignments: [
         { colorRef: 'editorFg', dark: { value: '#112233' }, light: { value: '#445566' }, useDarkForLight: false },
       ],

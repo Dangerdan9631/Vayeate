@@ -8,6 +8,7 @@ import {
   deriveThemePaneFields,
   selectThemePaneDerivationInputs,
 } from '../../utils/derive-theme-pane-fields';
+import type { ClusterResult } from '../../utils/color-clustering';
 import { initialThemeUiState, type GenerateResult, type LoadState, type ThemeUiState } from './theme-ui-state';
 
 export interface ThemeUiStoreState {
@@ -26,6 +27,9 @@ export interface ThemeUiStoreState {
   setThemeVariablesSearchText: (value: string) => void;
   setOpenPickerContext: (context: string | null) => void;
   setVariableDraftText: (key: string, value: string) => void;
+  setPaletteClustersByGroup: (clusters: Record<string, ClusterResult[]> | null) => void;
+  setPaletteClustersPending: (pending: boolean) => void;
+  setPaletteClusterByDark: (value: boolean) => void;
 }
 
 @singleton()
@@ -57,12 +61,16 @@ export class ThemeUiStore {
             selectedRef: ref,
             hueAdjustment: 0,
             previewClusterCountK: null,
+            paletteClustersByGroup: null,
+            paletteClustersPending: false,
           })),
         setTheme: (theme: Theme | null, preserveHue?: boolean) =>
           setThemesState((state) => ({
             ...state,
             theme,
             previewClusterCountK: null,
+            paletteClustersByGroup: null,
+            paletteClustersPending: false,
             ...(preserveHue === true ? {} : { hueAdjustment: 0 }),
           })),
         setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) =>
@@ -86,6 +94,19 @@ export class ThemeUiStore {
             ...state,
             variableDraftTexts: { ...state.variableDraftTexts, [key]: value },
           })),
+        setPaletteClustersByGroup: (clusters: Record<string, ClusterResult[]> | null) =>
+          set((storeState) => {
+            storeState.state.paletteClustersByGroup = clusters;
+            storeState.state.paletteClustersPending = false;
+          }),
+        setPaletteClustersPending: (pending: boolean) =>
+          set((storeState) => {
+            storeState.state.paletteClustersPending = pending;
+          }),
+        setPaletteClusterByDark: (value: boolean) =>
+          set((storeState) => {
+            storeState.state.paletteClusterByDark = value;
+          }),
       };
     }),
   );

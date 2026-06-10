@@ -17,6 +17,8 @@ export enum ThemePaletteCardActionType {
   HueSliderOnDelta = 'THEME_PALETTE_HUE_SLIDER_ON_DELTA',
   ClusterCountSliderOnDelta = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_DELTA',
   ClusterCountSliderOnCommit = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_COMMIT',
+  ClusterVariantCheckboxOnToggle = 'THEME_PALETTE_CLUSTER_VARIANT_CHECKBOX_ON_TOGGLE',
+  RecomputeClusters = 'THEME_PALETTE_RECOMPUTE_CLUSTERS',
   ColorRefsSelectionCommit = 'THEME_PALETTE_COLOR_REFS_SELECTION_COMMIT',
 }
 
@@ -35,6 +37,8 @@ export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.HueSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnCommit; value: number }
+  | { type: ThemePaletteCardActionType.ClusterVariantCheckboxOnToggle; checked: boolean }
+  | { type: ThemePaletteCardActionType.RecomputeClusters }
   | { type: ThemePaletteCardActionType.ColorRefsSelectionCommit; refs: string[]; checked: boolean };
 
 

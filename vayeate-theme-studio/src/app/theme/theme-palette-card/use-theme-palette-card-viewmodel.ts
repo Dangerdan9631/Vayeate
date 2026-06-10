@@ -26,6 +26,8 @@ export function useThemePaletteCardViewModel() {
   const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
   const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
   const paneSelectedColorsDisplay = useStore(themeUiStore.api, (state) => state.state.paneSelectedColorsDisplay);
+  const paletteClustersByGroup = useStore(themeUiStore.api, (state) => state.state.paletteClustersByGroup);
+  const paletteClusterByDark = useStore(themeUiStore.api, (state) => state.state.paletteClusterByDark);
   const checkedColorRefs = useMemo(() => new Set<string>(checkedColorRefsArray), [checkedColorRefsArray]);
 
   const applyHueToDark = theme?.applyPaletteToDark ?? true;
@@ -63,6 +65,20 @@ export function useThemePaletteCardViewModel() {
 
   const groupsFromTemplate = useMemo(() => loadedTemplate?.groups ?? [], [loadedTemplate]);
 
+  const clusterCountK = previewClusterCountK ?? theme?.paletteClusterCountK ?? 5;
+
+  useEffect(() => {
+    if (!theme?.templateRef) return;
+    void dispatch({ type: ThemePaletteCardActionType.RecomputeClusters });
+  }, [
+    paneDisplayColorAssignments,
+    colorVariablesFromTemplate,
+    clusterCountK,
+    paletteClusterByDark,
+    theme?.templateRef,
+    dispatch,
+  ]);
+
   const setHueAdjustment = useCallback(
     (value: number) => {
       void dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value });
@@ -94,6 +110,13 @@ export function useThemePaletteCardViewModel() {
   const onClusterCountCommit = useCallback(
     (value: number) => {
       void dispatch({ type: ThemePaletteCardActionType.ClusterCountSliderOnCommit, value });
+    },
+    [dispatch],
+  );
+
+  const onClusterByDarkChange = useCallback(
+    (checked: boolean) => {
+      void dispatch({ type: ThemePaletteCardActionType.ClusterVariantCheckboxOnToggle, checked });
     },
     [dispatch],
   );
@@ -205,9 +228,12 @@ export function useThemePaletteCardViewModel() {
     applyToLight: applyHueToLight,
     onApplyToDarkChange: setApplyHueToDark,
     onApplyToLightChange: setApplyHueToLight,
-    clusterCountK: previewClusterCountK ?? theme?.paletteClusterCountK ?? 5,
+    clusterCountK,
     onClusterCountDelta,
     onClusterCountCommit,
+    clusterByDark: paletteClusterByDark,
+    onClusterByDarkChange,
+    paletteClustersByGroup,
     colorAssignments: paneDisplayColorAssignments,
     colorVariables: colorVariablesFromTemplate,
     groups: groupsFromTemplate,

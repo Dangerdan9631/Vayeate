@@ -27,6 +27,7 @@
  * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../../.cursor/rules/layer-electron.mdc) — no domain in main |
  * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) |
  * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § Actions (payloads) |
+ * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) — Web Worker offload (plan C1) |
  */
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -457,6 +458,37 @@ describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
   it.each(files)('%s', (file) => {
     const src = readFileSync(file, 'utf8');
     expect(src.includes('useContextSelector'), 'move selectors into a viewmodel hook').toBe(false);
+  });
+});
+
+/** @see ../../../.cursor/rules/layer-gateway.mdc — Web Worker offload (plan C1). */
+describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', () => {
+  const files = listSourceFiles(['.ts']).filter((f) => {
+    const b = basename(f);
+    if (!isNonTestTsSource(b)) return false;
+    return /[\\/]gateway[\\/]services[\\/].*-worker\.ts$/.test(f);
+  });
+
+  function forbiddenWorkerImportsInSource(source: string): string[] {
+    const bad: string[] = [];
+    for (const m of source.matchAll(IMPORT_FROM_RE)) {
+      const p = m[1].replace(/\\/g, '/');
+      if (!/^(\.\.\/)+domain\/utils\//.test(p)) {
+        bad.push(p);
+      }
+    }
+    return bad;
+  }
+
+  if (files.length === 0) {
+    it('has no gateway/services/*-worker.ts modules to check', () => {});
+    return;
+  }
+
+  it.each(files)('%s', (file) => {
+    const src = readFileSync(file, 'utf8');
+    const bad = forbiddenWorkerImportsInSource(src);
+    expect(bad, 'worker entry must import only domain/utils modules').toEqual([]);
   });
 });
 
