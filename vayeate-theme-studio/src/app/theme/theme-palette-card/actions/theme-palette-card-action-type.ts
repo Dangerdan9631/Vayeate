@@ -1,4 +1,5 @@
 import type { HexColor } from '../../../../model/schema/primitives';
+import type { ThemePaneState } from '../../../../model/theme-pane-state';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum ThemePaletteCardActionType {
@@ -26,7 +27,7 @@ export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.AssignColorEyeDropperOnCommit; value: HexColor }
   | { type: ThemePaletteCardActionType.AssignColorPickerOnSelect; value: HexColor }
   | { type: ThemePaletteCardActionType.AssignColorPickerOnCommit; value: HexColor }
-  | { type: ThemePaletteCardActionType.AssignColorPickerOnClose }
+  | { type: ThemePaletteCardActionType.AssignColorPickerOnClose; value: HexColor; snapshot: ThemePaneState }
   | { type: ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick }
   | { type: ThemePaletteCardActionType.HueReferenceCommit; value: string }
   | { type: ThemePaletteCardActionType.HueReferenceColorEyedropperButtonOnClick }

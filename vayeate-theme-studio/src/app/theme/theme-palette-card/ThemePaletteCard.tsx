@@ -6,6 +6,7 @@ import {
   useState,
   type ChangeEvent,
   type FocusEvent,
+  type FormEvent,
   type KeyboardEvent
 } from 'react';
 import type { ColorVariable } from '../../../model/schema/template-schemas';
@@ -321,8 +322,15 @@ export function ThemePaletteCard() {
     }
   }
 
-  function onPaletteNativeColorInputChange(e: ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value;
+  function commitNativeColorPicker(value: string) {
+    if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
+      onColorPickerClose(colorPickerSnapshotRef.current, value);
+      colorPickerSnapshotRef.current = null;
+    }
+  }
+
+  function onPaletteNativeColorInputInput(e: FormEvent<HTMLInputElement>) {
+    const v = e.currentTarget.value;
     setColorPickerValue(v);
     setPendingHex(v);
     if (colorPickerSnapshotRef.current != null && onSetSelectedColorsPreview) {
@@ -332,11 +340,12 @@ export function ThemePaletteCard() {
     }
   }
 
-  function onPaletteNativeColorInputBlur() {
-    if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
-      onColorPickerClose(colorPickerSnapshotRef.current);
-      colorPickerSnapshotRef.current = null;
-    }
+  function onPaletteNativeColorInputChange(e: ChangeEvent<HTMLInputElement>) {
+    commitNativeColorPicker(e.target.value);
+  }
+
+  function onPaletteNativeColorInputBlur(e: FocusEvent<HTMLInputElement>) {
+    commitNativeColorPicker(e.target.value);
   }
 
   function onPaletteColorSwatchButtonClick() {
@@ -446,6 +455,7 @@ export function ThemePaletteCard() {
                   ? (pendingHex.startsWith('#') ? pendingHex : `#${pendingHex}`).slice(0, 7)
                   : (colorPickerValue.startsWith('#') ? colorPickerValue : `#${colorPickerValue}`).slice(0, 7)
               }
+              onInput={onPaletteNativeColorInputInput}
               onChange={onPaletteNativeColorInputChange}
               onBlur={onPaletteNativeColorInputBlur}
               disabled={selectedColorsDisplay.kind === 'none'}

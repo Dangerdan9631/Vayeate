@@ -4,6 +4,7 @@ import type { UndoProcessor } from '../../core/undo-stack-types';
 import { CommitAssignColorTextOperation } from '../theme-operations/palette-color-assign/commit-assign-color-text-operation';
 import { SetThemeHueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import { SetThemeHueReferenceHexOperation } from '../theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
+import { SetThemePaneSelectionsOperation } from '../theme-operations/pickers/set-theme-pane-selections-operation';
 import { SetColorVariableDarkOperation } from '../theme-operations/theme-details/set-color-variable-dark-operation';
 import { SetColorVariableLightOperation } from '../theme-operations/theme-details/set-color-variable-light-operation';
 import { SetThemeLoadedTemplateOperation } from '../theme-operations/theme-details/set-theme-loaded-template-operation';
@@ -32,6 +33,7 @@ export class BuildUniversalUndoProcessorOperation {
     private readonly setColorVariableDark: SetColorVariableDarkOperation,
     private readonly setHueAdjustment: SetThemeHueAdjustmentOperation,
     private readonly setHueReferenceHex: SetThemeHueReferenceHexOperation,
+    private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly setLoadedTemplate: SetThemeLoadedTemplateOperation,
   ) {}
 
@@ -53,6 +55,7 @@ export class BuildUniversalUndoProcessorOperation {
         setColorVariableDark: this.setColorVariableDark,
         setHueAdjustment: this.setHueAdjustment,
         setHueReferenceHex: this.setHueReferenceHex,
+        setThemePaneSelections: this.setThemePaneSelections,
         setLoadedTemplate: this.setLoadedTemplate,
       }),
     ]);

@@ -161,8 +161,10 @@ export function useThemePaletteCardViewModel() {
   );
 
   const closeColorPicker = useCallback(
-    (_snapshot: ThemePaneState) => {
-      void dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnClose });
+    (snapshot: ThemePaneState, hex: string) => {
+      const normalized = normalizeThemeHex(hex);
+      if (!normalized) return;
+      void dispatch({ type: ThemePaletteCardActionType.AssignColorPickerOnClose, value: normalized, snapshot });
     },
     [dispatch],
   );

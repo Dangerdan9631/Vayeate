@@ -5,6 +5,7 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/un
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import type { ThemePaneState } from '../../../../model/theme-pane-state';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { recordPaletteColorAssignUndo } from './record-palette-color-assign-undo';
 
@@ -19,7 +20,7 @@ export class AssignColorFromPickerController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
-  async run(hex: string, _ref?: string): Promise<void> {
+  async run(hex: string, _ref?: string, baseState?: ThemePaneState | null): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme) return;
 
@@ -31,11 +32,11 @@ export class AssignColorFromPickerController {
     });
     this.setCurrentUndoStackId.executeForContext(context);
 
-    const edit = this.commitAssignColorText.execute(hex);
+    const edit = this.commitAssignColorText.execute(hex, baseState ?? undefined);
     if (!edit?.changed) return;
 
     await recordPaletteColorAssignUndo(this.recordThemeUndo, {
-      description: 'Assign palette color',
+      description: `Assign palette color: ${hex.toUpperCase()}`,
       target: `${theme.name}@${theme.version}:palette-selection`,
       before: edit.before,
       after: edit.after,

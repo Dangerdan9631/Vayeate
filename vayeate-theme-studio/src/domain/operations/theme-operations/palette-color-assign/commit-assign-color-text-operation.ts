@@ -13,6 +13,12 @@ export interface ThemePaletteAssignColorEditResult {
   changed: boolean;
 }
 
+export interface ThemePaletteAssignColorBaseState {
+  theme: Theme | null;
+  checkedColorRefs: readonly string[];
+  hueAdjustment: number;
+}
+
 /** Applies bulk color text from picker/eyedropper to checked color refs and persists. */
 @singleton()
 export class CommitAssignColorTextOperation {
@@ -23,16 +29,16 @@ export class CommitAssignColorTextOperation {
     private readonly themeGateway: ThemeGateway,
   ) {}
 
-  execute(value: string): ThemePaletteAssignColorEditResult | null {
+  execute(value: string, baseState?: ThemePaletteAssignColorBaseState): ThemePaletteAssignColorEditResult | null {
     const normalized = normalizeHexSafe(value);
     if (!normalized) return null;
     const state = this.themeUiStore.getStore().state;
-    const theme = state.theme;
-    const checkedColorRefs = new Set(state.checkedColorRefs);
+    const theme = baseState?.theme ?? state.theme;
+    const checkedColorRefs = new Set(baseState?.checkedColorRefs ?? state.checkedColorRefs);
     if (!theme || checkedColorRefs.size === 0) return null;
     const applyToDark = theme.applyPaletteToDark ?? true;
     const applyToLight = theme.applyPaletteToLight ?? true;
-    const hueAdjustment = state.hueAdjustment;
+    const hueAdjustment = baseState?.hueAdjustment ?? state.hueAdjustment;
     let workingAssignments = theme.colorAssignments;
     if (hueAdjustment !== 0) {
       workingAssignments = applyHueToAssignmentsFiltered(

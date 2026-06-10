@@ -9,7 +9,6 @@ import { SetApplyPaletteToDarkController } from '../controllers/set-apply-palett
 import { SetApplyPaletteToLightController } from '../controllers/set-apply-palette-to-light-controller';
 import { SetPaletteClusterCountKController } from '../controllers/set-palette-cluster-count-k-controller';
 import { SetPaletteClusterCountKPreviewController } from '../controllers/set-palette-cluster-count-k-preview-controller';
-import { PersistCurrentThemeController } from '../controllers/persist-current-theme-controller';
 import { SetColorRefsSelectionBatchController } from '../controllers/set-color-refs-selection-batch-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemePaletteCardActions, ThemePaletteCardActionType } from './theme-palette-card-action-type';
@@ -26,7 +25,6 @@ export class ThemePaletteCardHandler {
     private readonly openEyedropperOverlay: OpenEyedropperOverlayController,
     private readonly commitHueReferenceEyeDropperColor: CommitHueReferenceEyeDropperColorController,
     private readonly commitAssignColorEyeDropper: CommitAssignColorEyeDropperController,
-    private readonly persistCurrentTheme: PersistCurrentThemeController,
     private readonly recenterHueReference: RecenterHueReferenceController,
     private readonly setApplyPaletteToDark: SetApplyPaletteToDarkController,
     private readonly setApplyPaletteToLight: SetApplyPaletteToLightController,
@@ -56,7 +54,7 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.AssignColorPickerOnCommit:
         return this.assignColorFromPicker.run(action.value);
       case ThemePaletteCardActionType.AssignColorPickerOnClose:
-        return this.persistCurrentTheme.run();
+        return this.assignColorFromPicker.run(action.value, undefined, action.snapshot);
       case ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick:
         return this.recenterHueReference.run();
       case ThemePaletteCardActionType.HueReferenceCommit:

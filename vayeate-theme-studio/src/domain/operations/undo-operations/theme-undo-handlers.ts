@@ -10,6 +10,7 @@ import {
   THEME_PALETTE_COLOR_ASSIGNED,
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
+  THEME_PANE_SELECTIONS_SET,
   THEME_UNDO_ACTION_TYPES,
   THEME_VERSION_DELETED,
   THEME_VERSION_INCREMENTED,
@@ -19,6 +20,7 @@ import type { UndoDiffHandler } from '../../core/undo-processor';
 import type { CommitAssignColorTextOperation } from '../theme-operations/palette-color-assign/commit-assign-color-text-operation';
 import type { SetThemeHueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import type { SetThemeHueReferenceHexOperation } from '../theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
+import type { SetThemePaneSelectionsOperation } from '../theme-operations/pickers/set-theme-pane-selections-operation';
 import type { SetColorVariableDarkOperation } from '../theme-operations/theme-details/set-color-variable-dark-operation';
 import type { SetColorVariableLightOperation } from '../theme-operations/theme-details/set-color-variable-light-operation';
 import type { SetThemeLoadedTemplateOperation } from '../theme-operations/theme-details/set-theme-loaded-template-operation';
@@ -39,7 +41,28 @@ export interface ThemeUndoHandlerDeps {
   setColorVariableDark: SetColorVariableDarkOperation;
   setHueAdjustment: SetThemeHueAdjustmentOperation;
   setHueReferenceHex: SetThemeHueReferenceHexOperation;
+  setThemePaneSelections: SetThemePaneSelectionsOperation;
   setLoadedTemplate: SetThemeLoadedTemplateOperation;
+}
+
+interface ThemePaneSelectionsUndoValue {
+  checkedColorRefs?: unknown;
+  checkedContrastRefs?: unknown;
+}
+
+function readStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+function restorePaneSelections(
+  value: unknown,
+  setThemePaneSelections: SetThemePaneSelectionsOperation,
+): void {
+  const selections = value as ThemePaneSelectionsUndoValue;
+  setThemePaneSelections.execute(
+    readStringArray(selections.checkedColorRefs),
+    readStringArray(selections.checkedContrastRefs),
+  );
 }
 
 function themeSnapshotHandler(
@@ -87,6 +110,11 @@ export function buildThemeUndoHandlers(deps: ThemeUndoHandlerDeps): UndoDiffHand
       actionType: THEME_PALETTE_HUE_REFERENCE_SET,
       apply: (action) => deps.setHueReferenceHex.execute(String(action.after ?? '')),
       revert: (action) => deps.setHueReferenceHex.execute(String(action.before ?? '')),
+    },
+    {
+      actionType: THEME_PANE_SELECTIONS_SET,
+      apply: (action) => restorePaneSelections(action.after, deps.setThemePaneSelections),
+      revert: (action) => restorePaneSelections(action.before, deps.setThemePaneSelections),
     },
     {
       actionType: THEME_LOADED_TEMPLATE_SET,

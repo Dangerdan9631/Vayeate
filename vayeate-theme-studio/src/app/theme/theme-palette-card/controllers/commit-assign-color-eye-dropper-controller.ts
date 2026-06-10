@@ -36,7 +36,7 @@ export class CommitAssignColorEyeDropperController {
     if (!edit?.changed) return;
 
     await recordPaletteColorAssignUndo(this.recordThemeUndo, {
-      description: 'Assign palette color (eyedropper)',
+      description: `Assign palette color: ${value.toUpperCase()} (eyedropper)`,
       target: `${theme.name}@${theme.version}:palette-selection`,
       before: edit.before,
       after: edit.after,

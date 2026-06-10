@@ -19,6 +19,7 @@ import {
   THEME_PALETTE_COLOR_ASSIGNED,
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
+  THEME_PANE_SELECTIONS_SET,
   THEME_UNDO_ACTION_TYPES,
   THEME_VERSION_DELETED,
   THEME_VERSION_INCREMENTED,
@@ -56,6 +57,7 @@ function buildProcessor() {
   const setColorVariableDark = { execute: vi.fn() };
   const setHueAdjustment = { execute: vi.fn() };
   const setHueReferenceHex = { execute: vi.fn() };
+  const setThemePaneSelections = { execute: vi.fn() };
   const setLoadedTemplate = { execute: vi.fn() };
 
   const processor = new BuildUniversalUndoProcessorOperation(
@@ -70,6 +72,7 @@ function buildProcessor() {
     setColorVariableDark as never,
     setHueAdjustment as never,
     setHueReferenceHex as never,
+    setThemePaneSelections as never,
     setLoadedTemplate as never,
   ).execute();
 
@@ -86,6 +89,7 @@ function buildProcessor() {
     setColorVariableDark,
     setHueAdjustment,
     setHueReferenceHex,
+    setThemePaneSelections,
     setLoadedTemplate,
   };
 }
@@ -158,6 +162,13 @@ function diffForActionType(actionType: string): { target: string; before: unknow
   }
   if (actionType === THEME_PALETTE_HUE_REFERENCE_SET) {
     return { target: 'theme-a@1.0.0:hue-reference', before: '#ff0000', after: '#00ff00' };
+  }
+  if (actionType === THEME_PANE_SELECTIONS_SET) {
+    return {
+      target: 'theme-a@1.0.0:pane-selections',
+      before: { checkedColorRefs: ['editorFg'], checkedContrastRefs: [] },
+      after: { checkedColorRefs: ['editorBg'], checkedContrastRefs: ['editorContrast'] },
+    };
   }
   if (actionType === THEME_LOADED_TEMPLATE_SET) {
     return { target: 'theme-a@1.0.0:loaded-template', before: null, after: templateSnapshot };
@@ -267,5 +278,18 @@ describe('build universal undo processor operation', () => {
     });
 
     expect(setHueAdjustment.execute).toHaveBeenCalledWith(12);
+  });
+
+  it('replays theme pane selection diffs through the UI operation', async () => {
+    const { processor, setThemePaneSelections } = buildProcessor();
+
+    await processor.applyProcessor({
+      actionType: THEME_PANE_SELECTIONS_SET,
+      target: 'theme-a@1.0.0:pane-selections',
+      before: { checkedColorRefs: ['editorFg'], checkedContrastRefs: [] },
+      after: { checkedColorRefs: ['editorBg'], checkedContrastRefs: ['editorContrast'] },
+    });
+
+    expect(setThemePaneSelections.execute).toHaveBeenCalledWith(['editorBg'], ['editorContrast']);
   });
 });

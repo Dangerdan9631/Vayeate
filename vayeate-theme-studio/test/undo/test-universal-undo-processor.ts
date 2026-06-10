@@ -85,6 +85,7 @@ export interface TestUniversalUndoProcessorDeps {
   setColorVariableDark?: { execute: (ref: string | undefined, value: string) => unknown };
   setHueAdjustment?: { execute: (value: number) => void };
   setHueReferenceHex?: { execute: (value: string) => void };
+  setThemePaneSelections?: { execute: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void };
   setLoadedTemplate?: { execute: (template: unknown) => void };
 }
 
@@ -132,6 +133,7 @@ export function createTestBuildUniversalUndoProcessor(
     (deps.setColorVariableDark ?? { execute: () => null }) as never,
     (deps.setHueAdjustment ?? { execute: () => undefined }) as never,
     (deps.setHueReferenceHex ?? { execute: () => undefined }) as never,
+    (deps.setThemePaneSelections ?? { execute: () => undefined }) as never,
     (deps.setLoadedTemplate ?? { execute: () => undefined }) as never,
   );
 }

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import * as testingLibraryReact from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ThemesPage } from './theme-page/ThemesPage';
@@ -10,9 +11,11 @@ import { ThemeVariablesCard } from './theme-variables-card/ThemeVariablesCard';
 import { EditorPreviewsCard } from './editor-previews-card/EditorPreviewsCard';
 import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
 import { CommitAssignColorTextOperation } from '../../domain/operations/theme-operations/palette-color-assign/commit-assign-color-text-operation';
+import { SetAssignColorPreviewOperation } from '../../domain/operations/theme-operations/palette-color-assign/set-assign-color-preview-operation';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetColorVariableDarkOperation } from '../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
 import { SetThemeOperation } from '../../domain/operations/theme-operations/theme-details/set-theme-operation';
+import { SetThemePaneSelectionsOperation } from '../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { ApplyThemeUndoStateOperation } from '../../domain/operations/undo-operations/apply-theme-undo-state-operation';
 import { ApplyThemeLifecycleUndoOperation } from '../../domain/operations/undo-operations/apply-theme-lifecycle-undo-operation';
 import { SetThemeHueAdjustmentOperation } from '../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
@@ -33,6 +36,7 @@ import { SetColorVariableDarkController } from './theme-variables-card/controlle
 import { SetContrastVariableDarkValueController } from './theme-variables-card/controllers/set-contrast-variable-dark-value-controller';
 import { SetColorUseDarkForLightController } from './theme-variables-card/controllers/set-color-use-dark-for-light-controller';
 import { SetContrastUseDarkForLightController } from './theme-variables-card/controllers/set-contrast-use-dark-for-light-controller';
+import { ToggleVariableSelectionController } from './theme-variables-card/controllers/toggle-variable-selection-controller';
 import { RecenterHueReferenceController } from './theme-palette-card/controllers/recenter-hue-reference-controller';
 import { CommitAssignColorEyeDropperController } from './theme-palette-card/controllers/commit-assign-color-eye-dropper-controller';
 import { IncrementThemeVersionController } from './theme-details-card/controllers/increment-theme-version-controller';
@@ -44,6 +48,15 @@ import { deriveUndoContext, UNDO_BASELINE_FRAME_ID } from '../../model/undo-hist
 import { themeSchema } from '../../model/schema/theme-schemas';
 import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../domain/state/ui/template-ui-store';
+
+const reactTesting = testingLibraryReact as unknown as {
+  fireEvent: {
+    focus: (element: Element) => boolean;
+    input: (element: Element, eventProperties?: unknown) => boolean;
+    change: (element: Element, eventProperties?: unknown) => boolean;
+    blur: (element: Element) => boolean;
+  };
+};
 
 const viewModelMocks = vi.hoisted(() => ({
   useThemeViewModel: vi.fn(),
@@ -370,6 +383,7 @@ describe('theme renderer workflows', () => {
 
   it('supports palette, variable, and preview renderer interactions', async () => {
     const user = userEvent.setup();
+    const colorPickerSnapshot = { kind: 'dark' };
     const paletteCallbacks = {
       onHueChange: vi.fn(),
       onHueReferenceChange: vi.fn(),
@@ -383,7 +397,7 @@ describe('theme renderer workflows', () => {
       onSetColorGroupChecked: vi.fn(),
       onSetColorRefsChecked: vi.fn(),
       onSetSelectedColors: vi.fn(),
-      onColorPickerOpen: vi.fn(() => ({ kind: 'dark' })),
+      onColorPickerOpen: vi.fn(() => colorPickerSnapshot),
       onSetSelectedColorsPreview: vi.fn(),
       onColorPickerClose: vi.fn(),
       onHueReferenceEyedropperClick: vi.fn(),
@@ -501,6 +515,11 @@ describe('theme renderer workflows', () => {
     await user.type(hueRefInput, '#00ff00');
     await user.click(palette.getByRole('button', { name: 'Pick hue reference color from screen' }));
     await user.click(palette.getByRole('button', { name: /open color picker for selected variables/i }));
+    const nativeColorInput = palette.getByLabelText('Color') as HTMLInputElement;
+    reactTesting.fireEvent.focus(nativeColorInput);
+    reactTesting.fireEvent.input(nativeColorInput, { target: { value: '#abcdef' } });
+    reactTesting.fireEvent.change(nativeColorInput, { target: { value: '#abcdef' } });
+    reactTesting.fireEvent.blur(nativeColorInput);
     await user.click(palette.getByRole('button', { name: /pick color from screen/i }));
     await user.click(palette.getByRole('checkbox', { name: 'Select all in group: core' }));
     expect(paletteCallbacks.onApplyToDarkChange).toHaveBeenCalled();
@@ -509,6 +528,8 @@ describe('theme renderer workflows', () => {
     expect(paletteCallbacks.onHueReferenceEyedropperClick).toHaveBeenCalledTimes(1);
     expect(paletteCallbacks.onAssignEyedropperClick).toHaveBeenCalledTimes(1);
     expect(paletteCallbacks.onSetColorGroupChecked).toHaveBeenCalledWith('core', false);
+    expect(paletteCallbacks.onSetSelectedColorsPreview).toHaveBeenCalledWith('#abcdef');
+    expect(paletteCallbacks.onColorPickerClose).toHaveBeenCalledWith(colorPickerSnapshot, '#abcdef');
     palette.unmount();
 
     const variables = render(<ThemeVariablesCard />);
@@ -889,7 +910,31 @@ describe('theme renderer workflows', () => {
     themeUiStore.getStore().setThemePaneSelections(['editorFg'], []);
     await controller.run('#222222');
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
-    expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color');
+    expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color: #222222');
+
+    await testUndo.undo.execute();
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
+
+    const beforePickerPreview = themeUiStore.getStore().state.theme;
+    expect(beforePickerPreview).not.toBeNull();
+    new SetAssignColorPreviewOperation(themeUiStore).execute({
+      normalizedHex: '#333333',
+      theme: beforePickerPreview!,
+      checkedColorRefs: new Set(['editorFg']),
+      hueAdjustment: 0,
+    });
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#333333');
+
+    await controller.run('#333333', undefined, {
+      theme: beforePickerPreview,
+      checkedColorRefs: ['editorFg'],
+      checkedContrastRefs: [],
+      hueAdjustment: 0,
+      hueReferenceHex: '#FF0000',
+    });
+    const savedTheme = themesStore.getStore().state.themeMap['theme-a']?.['1.0.0']?.theme;
+    expect(savedTheme?.colorAssignments[0].dark?.value).toBe('#333333');
+    expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color: #333333');
 
     await testUndo.undo.execute();
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
@@ -952,6 +997,7 @@ describe('theme renderer workflows', () => {
         commitAssignColorText,
         setColorVariableDark,
         setHueAdjustment: new SetThemeHueAdjustmentOperation(themeUiStore),
+        setThemePaneSelections: new SetThemePaneSelectionsOperation(themeUiStore),
       });
       const testUndo = createTestUndoOperations(undoStackStore, buildUniversalUndoProcessor);
       const recordThemeUndo = new RecordThemeUndoOperation(
@@ -978,6 +1024,32 @@ describe('theme renderer workflows', () => {
       themesStore.getStore().updateTheme(theme);
       return theme;
     }
+
+    it('records, undoes, and redoes theme variable selection changes', async () => {
+      await undoManagerV2.clearPersisted();
+      const themeUiStore = new ThemeUiStore();
+      const themesStore = new ThemesStore();
+      const { testUndo, recordThemeUndo, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
+      seedTheme(themeUiStore, themesStore);
+      const controller = new ToggleVariableSelectionController(
+        themeUiStore,
+        new SetThemePaneSelectionsOperation(themeUiStore),
+        new CatalogUiStore(),
+        new TemplateUiStore(),
+        recordThemeUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+
+      await controller.run(true, 'editorFg');
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+      expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Select theme variable: editorFg');
+
+      await testUndo.undo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual([]);
+
+      await testUndo.redo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+    });
 
     it('records, undoes, and redoes a contrast dark value edit', async () => {
       await undoManagerV2.clearPersisted();

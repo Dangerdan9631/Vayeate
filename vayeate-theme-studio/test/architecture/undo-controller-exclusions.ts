@@ -60,10 +60,10 @@ export const TEMPLATE_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
 // C5 legacy `restore-template-state-controller.ts` removed per plan cleanup.
 
 // ---------------------------------------------------------------------------
-// Phase D6 — Theme: non-state-changing (17)
+// Phase D6 — Theme: non-state-changing (13)
 // ---------------------------------------------------------------------------
 
-/** Selection/navigation, dialog staging, lifecycle hydration, pane selection, live previews, transient slider. */
+/** Selection/navigation, dialog staging, lifecycle hydration, live previews, transient slider. */
 export const THEME_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/theme/themes-card/controllers/select-theme-and-load-controller.ts',
   'src/app/theme/themes-card/controllers/select-theme-by-name-controller.ts',
@@ -73,10 +73,6 @@ export const THEME_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/theme/theme-page/controllers/load-theme-page-controller.ts',
   'src/app/theme/theme-page/controllers/clear-theme-save-error-controller.ts',
   'src/app/theme/editor-previews-card/controllers/load-theme-previews-controller.ts',
-  'src/app/theme/theme-variables-card/controllers/toggle-variable-selection-controller.ts',
-  'src/app/theme/theme-variables-card/controllers/set-variables-select-by-type-controller.ts',
-  'src/app/theme/theme-variables-card/controllers/set-variables-select-by-group-controller.ts',
-  'src/app/theme/theme-variables-card/controllers/set-variables-select-all-controller.ts',
   'src/app/theme/theme-variables-card/controllers/set-theme-variables-search-text-controller.ts',
   'src/app/theme/theme-palette-card/controllers/set-color-refs-selection-batch-controller.ts',
   'src/app/theme/theme-palette-card/controllers/set-assign-color-preview-controller.ts',
