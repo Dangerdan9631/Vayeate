@@ -222,6 +222,8 @@ export function ThemePaletteCard() {
   const copyToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const paletteColorInputRef = useRef<HTMLInputElement | null>(null);
   const colorPickerSnapshotRef = useRef<ThemePaneState | null>(null);
+  const colorPickerCommitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastColorPickerCommitValueRef = useRef<string | null>(null);
   const primaryClickPendingRef = useRef<{
     timeoutId: ReturnType<typeof setTimeout>;
     clusterKey: string;
@@ -234,6 +236,7 @@ export function ThemePaletteCard() {
   useEffect(() => {
     return () => {
       if (copyToastTimeoutRef.current) clearTimeout(copyToastTimeoutRef.current);
+      if (colorPickerCommitTimeoutRef.current) clearTimeout(colorPickerCommitTimeoutRef.current);
       if (primaryClickPendingRef.current) {
         clearTimeout(primaryClickPendingRef.current.timeoutId);
         primaryClickPendingRef.current = null;
@@ -322,11 +325,26 @@ export function ThemePaletteCard() {
     }
   }
 
-  function commitNativeColorPicker(value: string) {
-    if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
-      onColorPickerClose(colorPickerSnapshotRef.current, value);
-      colorPickerSnapshotRef.current = null;
+  function commitNativeColorPicker(value: string, closePicker: boolean) {
+    if (colorPickerCommitTimeoutRef.current) {
+      clearTimeout(colorPickerCommitTimeoutRef.current);
+      colorPickerCommitTimeoutRef.current = null;
     }
+    if (colorPickerSnapshotRef.current != null && onColorPickerClose) {
+      if (lastColorPickerCommitValueRef.current !== value) {
+        onColorPickerClose(colorPickerSnapshotRef.current, value);
+        lastColorPickerCommitValueRef.current = value;
+      }
+      if (closePicker) colorPickerSnapshotRef.current = null;
+    }
+  }
+
+  function scheduleNativeColorPickerCommit(value: string) {
+    if (colorPickerCommitTimeoutRef.current) clearTimeout(colorPickerCommitTimeoutRef.current);
+    colorPickerCommitTimeoutRef.current = setTimeout(() => {
+      colorPickerCommitTimeoutRef.current = null;
+      commitNativeColorPicker(value, false);
+    }, 1200);
   }
 
   function onPaletteNativeColorInputInput(e: FormEvent<HTMLInputElement>) {
@@ -341,16 +359,29 @@ export function ThemePaletteCard() {
   }
 
   function onPaletteNativeColorInputChange(e: ChangeEvent<HTMLInputElement>) {
-    commitNativeColorPicker(e.target.value);
+    const v = e.target.value;
+    setColorPickerValue(v);
+    setPendingHex(v);
+    if (colorPickerSnapshotRef.current != null && onSetSelectedColorsPreview) {
+      onSetSelectedColorsPreview(v);
+      scheduleNativeColorPickerCommit(v);
+      return;
+    }
+    onSetSelectedColors(v);
   }
 
   function onPaletteNativeColorInputBlur(e: FocusEvent<HTMLInputElement>) {
-    commitNativeColorPicker(e.target.value);
+    commitNativeColorPicker(e.target.value, true);
   }
 
   function onPaletteColorSwatchButtonClick() {
     if (selectedColorsDisplay.kind === 'none') return;
+    if (colorPickerCommitTimeoutRef.current) {
+      clearTimeout(colorPickerCommitTimeoutRef.current);
+      colorPickerCommitTimeoutRef.current = null;
+    }
     colorPickerSnapshotRef.current = onColorPickerOpen();
+    lastColorPickerCommitValueRef.current = null;
     setColorPickerValue(
       selectedColorsDisplay.kind === 'single' ? selectedColorsDisplay.hex : '#808080',
     );

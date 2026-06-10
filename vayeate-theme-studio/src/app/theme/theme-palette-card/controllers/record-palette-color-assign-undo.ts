@@ -17,5 +17,6 @@ export async function recordPaletteColorAssignUndo(
     target: input.target,
     before: input.before,
     after: input.after,
+    coalesceWithPrevious: true,
   });
 }

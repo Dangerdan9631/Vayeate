@@ -19,11 +19,16 @@ export class SetActiveTabController {
 
   async run(tabId: TabId): Promise<void> {
     this.setUiActiveTab.execute(tabId);
-    await this.setCurrentUndoStackId?.executeAndLoadForContext(deriveUndoContext({
+    const theme = this.themeUiStore?.getStore().state.theme ?? null;
+    await this.setCurrentUndoStackId?.executeAndLoadForTab(tabId, deriveUndoContext({
       tabId,
       catalogRef: this.catalogUiStore?.getStore().state.selectedRef ?? null,
-      templateRef: this.templateUiStore?.getStore().state.selectedRef ?? null,
-      themeRef: this.themeUiStore?.getStore().state.selectedRef ?? null,
+      templateRef: tabId === 'themes'
+        ? theme?.templateRef ?? this.templateUiStore?.getStore().state.selectedRef ?? null
+        : this.templateUiStore?.getStore().state.selectedRef ?? null,
+      themeRef: theme
+        ? { name: theme.name, version: theme.version }
+        : this.themeUiStore?.getStore().state.selectedRef ?? null,
     }));
   }
 }

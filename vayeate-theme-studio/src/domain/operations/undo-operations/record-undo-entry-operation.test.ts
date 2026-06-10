@@ -56,6 +56,66 @@ describe('record undo entry operation', () => {
     getOrCreateSpy.mockRestore();
   });
 
+  it('collapses adjacent same-target entries when requested', async () => {
+    const manager = createUndoManagerV2();
+    const getOrCreateSpy = vi.spyOn(undoManagerV2, 'getOrCreate').mockImplementation(manager.getOrCreate);
+    const undoStore = store('theme:active');
+    const operation = new RecordUndoEntryOperation(undoStore as never);
+
+    await operation.execute({
+      completed: true,
+      description: 'Select editor foreground',
+      processor: processor(),
+      diffs: [{ actionType: 'set-selection', target: 'theme:pane-selections', before: [], after: ['editor.foreground'] }],
+      coalesceWithPrevious: true,
+    });
+    await operation.execute({
+      completed: true,
+      description: 'Select editor background',
+      processor: processor(),
+      diffs: [{ actionType: 'set-selection', target: 'theme:pane-selections', before: ['editor.foreground'], after: ['editor.foreground', 'editor.background'] }],
+      coalesceWithPrevious: true,
+    });
+
+    expect(undoStore.getStore().state.undoMenu).toMatchObject({
+      canUndo: true,
+      nextUndoDescription: 'Select editor background',
+      recentActions: [{ description: 'Select editor background' }],
+    });
+    getOrCreateSpy.mockRestore();
+  });
+
+  it('does not collapse adjacent coalesced entries with different targets', async () => {
+    const manager = createUndoManagerV2();
+    const getOrCreateSpy = vi.spyOn(undoManagerV2, 'getOrCreate').mockImplementation(manager.getOrCreate);
+    const undoStore = store('theme:active');
+    const operation = new RecordUndoEntryOperation(undoStore as never);
+
+    await operation.execute({
+      completed: true,
+      description: 'Color variable selection changed',
+      processor: processor(),
+      diffs: [{ actionType: 'set-selection', target: 'theme:pane-selections:color-variable', before: [], after: ['editor.foreground'] }],
+      coalesceWithPrevious: true,
+    });
+    await operation.execute({
+      completed: true,
+      description: 'Contrast variable selection changed',
+      processor: processor(),
+      diffs: [{ actionType: 'set-selection', target: 'theme:pane-selections:contrast-variable', before: [], after: ['editor.contrast'] }],
+      coalesceWithPrevious: true,
+    });
+
+    expect(undoStore.getStore().state.undoMenu).toMatchObject({
+      nextUndoDescription: 'Contrast variable selection changed',
+      recentActions: [
+        { description: 'Color variable selection changed' },
+        { description: 'Contrast variable selection changed' },
+      ],
+    });
+    getOrCreateSpy.mockRestore();
+  });
+
   it('does not record failed, no-op, or missing-context actions', async () => {
     const active = new RecordUndoEntryOperation(store('theme:active') as never);
     await expect(active.execute({

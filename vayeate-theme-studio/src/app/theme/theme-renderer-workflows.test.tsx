@@ -519,6 +519,7 @@ describe('theme renderer workflows', () => {
     reactTesting.fireEvent.focus(nativeColorInput);
     reactTesting.fireEvent.input(nativeColorInput, { target: { value: '#abcdef' } });
     reactTesting.fireEvent.change(nativeColorInput, { target: { value: '#abcdef' } });
+    reactTesting.fireEvent.change(nativeColorInput, { target: { value: '#fedcba' } });
     reactTesting.fireEvent.blur(nativeColorInput);
     await user.click(palette.getByRole('button', { name: /pick color from screen/i }));
     await user.click(palette.getByRole('checkbox', { name: 'Select all in group: core' }));
@@ -529,7 +530,9 @@ describe('theme renderer workflows', () => {
     expect(paletteCallbacks.onAssignEyedropperClick).toHaveBeenCalledTimes(1);
     expect(paletteCallbacks.onSetColorGroupChecked).toHaveBeenCalledWith('core', false);
     expect(paletteCallbacks.onSetSelectedColorsPreview).toHaveBeenCalledWith('#abcdef');
-    expect(paletteCallbacks.onColorPickerClose).toHaveBeenCalledWith(colorPickerSnapshot, '#abcdef');
+    expect(paletteCallbacks.onSetSelectedColors).not.toHaveBeenCalledWith('#fedcba');
+    expect(paletteCallbacks.onColorPickerClose).toHaveBeenCalledTimes(1);
+    expect(paletteCallbacks.onColorPickerClose).toHaveBeenLastCalledWith(colorPickerSnapshot, '#fedcba');
     palette.unmount();
 
     const variables = render(<ThemeVariablesCard />);
@@ -936,6 +939,16 @@ describe('theme renderer workflows', () => {
     expect(savedTheme?.colorAssignments[0].dark?.value).toBe('#333333');
     expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color: #333333');
 
+    await controller.run('#444444', undefined, {
+      theme: beforePickerPreview,
+      checkedColorRefs: ['editorFg'],
+      checkedContrastRefs: [],
+      hueAdjustment: 0,
+      hueReferenceHex: '#FF0000',
+    });
+    expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color: #444444');
+    expect(undoStackStore.getStore().state.undoMenu.recentActions).toHaveLength(1);
+
     await testUndo.undo.execute();
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
   });
@@ -1042,7 +1055,16 @@ describe('theme renderer workflows', () => {
 
       await controller.run(true, 'editorFg');
       expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
-      expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Select theme variable: editorFg');
+      expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Color variable selection changed');
+
+      await controller.run(true, 'editorContrast');
+      expect(themeUiStore.getStore().state.checkedContrastRefs).toEqual(['editorContrast']);
+      expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Contrast variable selection changed');
+      expect(undoStackStore.getStore().state.undoMenu.recentActions).toHaveLength(2);
+
+      await testUndo.undo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+      expect(themeUiStore.getStore().state.checkedContrastRefs).toEqual([]);
 
       await testUndo.undo.execute();
       expect(themeUiStore.getStore().state.checkedColorRefs).toEqual([]);

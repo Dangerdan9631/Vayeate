@@ -22,6 +22,7 @@ export interface RecordThemeUndoInput {
   before: unknown;
   after: unknown;
   extraDiffs?: readonly RecordThemeUndoDiffInput[];
+  coalesceWithPrevious?: boolean;
 }
 
 @singleton()
@@ -56,6 +57,7 @@ export class RecordThemeUndoOperation {
       description: input.description,
       diffs,
       processor: this.buildUniversalUndoProcessor.execute(),
+      coalesceWithPrevious: input.coalesceWithPrevious,
     });
   }
 }

@@ -45,8 +45,13 @@ export interface PersistedStack {
   currentId: string | null;
 }
 
+export interface UndoFrameCoalesceOptions {
+  canMerge: (existing: UndoFrame, next: UndoFrame) => boolean;
+  merge: (existing: UndoFrame, next: UndoFrame) => UndoFrame | null;
+}
+
 export interface UndoStack {
-  push(frame: UndoFrame): Promise<void>;
+  push(frame: UndoFrame, coalesce?: UndoFrameCoalesceOptions): Promise<void>;
   undo(): Promise<HistoryTransitionResult>;
   redo(): Promise<HistoryTransitionResult>;
   goto(id: string): Promise<HistoryTransitionResult>;

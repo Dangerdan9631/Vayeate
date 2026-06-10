@@ -1,4 +1,5 @@
-import type { UndoAvailabilitySummary } from '../../../model/undo-history';
+import type { TabId } from '../../../model/app-ui';
+import type { UndoAvailabilitySummary, UndoContext } from '../../../model/undo-history';
 
 export interface UndoMenuSnapshot extends UndoAvailabilitySummary {
   frames: UndoAvailabilitySummary['recentActions'];
@@ -24,6 +25,7 @@ export interface UndoStackState {
   currentBaselineLabel: string;
   undoListVersion: number;
   undoMenu: UndoMenuSnapshot;
+  lastContextByTab: Partial<Record<TabId, UndoContext>>;
 }
 
 export const initialUndoStackState: UndoStackState = {
@@ -31,5 +33,6 @@ export const initialUndoStackState: UndoStackState = {
   currentBaselineLabel: 'Opened',
   undoListVersion: 0,
   undoMenu: emptyUndoMenuSnapshot,
+  lastContextByTab: {},
 };
 

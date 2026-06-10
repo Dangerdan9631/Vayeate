@@ -76,6 +76,27 @@ describe('undo stack', () => {
     expect(stack.canRedo).toBe(false);
   });
 
+  it('coalesces adjacent entries when the caller opts in', async () => {
+    const state = { value: 'a' };
+    const stack = createStack({ stackId: 'theme:one', processor: processor(state) });
+
+    await stack.push(frame('f1', 'a', 'b'));
+    await stack.push(frame('f2', 'b', 'c'), {
+      canMerge: (existing, next) => existing.diffs[0].target === next.diffs[0].target,
+      merge: (existing, next) => ({
+        ...existing,
+        description: next.description,
+        diffs: [{ ...existing.diffs[0], after: next.diffs[0].after }],
+      }),
+    });
+
+    expect(stack.list().frames).toEqual([{ id: 'f1', description: 'Set f2' }]);
+    await stack.undo();
+    expect(state.value).toBe('a');
+    await stack.redo();
+    expect(state.value).toBe('c');
+  });
+
   it('goes to the state immediately after the selected entry', async () => {
     const state = { value: 'a' };
     const stack = createStack({ stackId: 'theme:one', processor: processor(state) });

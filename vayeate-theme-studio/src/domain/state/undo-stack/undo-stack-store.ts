@@ -2,6 +2,8 @@ import { createStore } from "zustand/vanilla";
 import { immer } from "zustand/middleware/immer";
 import { singleton } from "tsyringe";
 import { initialUndoStackState, UndoMenuSnapshot, type UndoStackState } from "./undo-stack-state";
+import type { TabId } from "../../../model/app-ui";
+import type { UndoContext } from "../../../model/undo-history";
 
 interface UndoStackStoreState {
     state: UndoStackState;
@@ -9,6 +11,7 @@ interface UndoStackStoreState {
     setUndoListVersion: (undoListVersion: number) => void;
     setUndoMenuSnapshot: (undoMenuSnapshot: UndoMenuSnapshot) => void;
     setCurrentBaselineLabel: (label: string) => void;
+    setLastContextForTab: (tabId: TabId, context: UndoContext) => void;
 }
 
 @singleton()
@@ -27,6 +30,9 @@ export class UndoStackStore {
             }),
             setCurrentBaselineLabel: (label: string) => set((state) => {
                 state.state.currentBaselineLabel = label;
+            }),
+            setLastContextForTab: (tabId: TabId, context: UndoContext) => set((state) => {
+                state.state.lastContextByTab[tabId] = context;
             }),
         }))
     );

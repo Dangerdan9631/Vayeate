@@ -77,11 +77,24 @@ export function createStack(options: UndoStackOptions): UndoStack {
   }
 
   const stack: UndoStack = {
-    async push(frame: UndoFrame): Promise<void> {
+    async push(frame: UndoFrame, coalesce): Promise<void> {
       const previous = snapshot();
+      const canCoalesce = currentIndex === frames.length - 1;
       frames = frames.slice(0, currentIndex + 1);
-      frames.push({ ...frame, persistenceStatus: 'persisted' });
-      currentIndex = frames.length - 1;
+      const nextFrame = { ...frame, persistenceStatus: 'persisted' as const };
+      const current = currentIndex >= 0 ? frames[currentIndex] : null;
+      if (canCoalesce && current && coalesce?.canMerge(current, nextFrame)) {
+        const merged = coalesce.merge(current, nextFrame);
+        if (merged) {
+          frames[currentIndex] = { ...merged, persistenceStatus: 'persisted' };
+        } else {
+          frames.pop();
+          currentIndex -= 1;
+        }
+      } else {
+        frames.push(nextFrame);
+        currentIndex = frames.length - 1;
+      }
 
       try {
         await notifyChange();
