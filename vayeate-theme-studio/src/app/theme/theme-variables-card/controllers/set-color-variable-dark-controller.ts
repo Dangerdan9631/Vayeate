@@ -1,8 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
-import { createUndoProcessor } from '../../../../domain/core/undo-processor';
 import { SetColorVariableDarkOperation } from '../../../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
-import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_COLOR_VARIABLE_DARK_SET } from '../../../../model/undo-action-types';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
@@ -13,7 +12,7 @@ export class SetColorVariableDarkController {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
     private readonly setColorVariableDark: SetColorVariableDarkOperation,
-    private readonly recordUndoEntry: RecordUndoEntryOperation,
+    private readonly recordThemeUndo: RecordThemeUndoOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
@@ -28,28 +27,14 @@ export class SetColorVariableDarkController {
     this.setCurrentUndoStackId.executeForContext(context);
 
     const edit = this.setColorVariableDark.execute(ref, value);
-    if (!edit) return;
+    if (!edit?.changed) return;
 
-    await this.recordUndoEntry.execute({
-      completed: edit.changed,
+    await this.recordThemeUndo.execute({
       description: `Change ${ref} dark color`,
-      diffs: [{
-        actionType: THEME_COLOR_VARIABLE_DARK_SET,
-        target: ref,
-        before: edit.before,
-        after: edit.after,
-      }],
-      processor: createUndoProcessor([{
-        actionType: THEME_COLOR_VARIABLE_DARK_SET,
-        apply: (action) => {
-          this.setColorVariableDark.execute(action.target as ColorVariableKey, String(action.after ?? ''));
-        },
-        revert: (action) => {
-          this.setColorVariableDark.execute(action.target as ColorVariableKey, String(action.before ?? ''));
-        },
-      }]),
+      actionType: THEME_COLOR_VARIABLE_DARK_SET,
+      target: ref,
+      before: edit.before,
+      after: edit.after,
     });
   }
 }
-
-

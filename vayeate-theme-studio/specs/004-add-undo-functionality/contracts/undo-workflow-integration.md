@@ -84,15 +84,24 @@ Each candidate user action must be classified before implementation closure:
 
 ## Required Coverage
 
-Implementation must include at least one undoable workflow each from:
+Every `*-controller.ts` under `src/app/**` must be classified before closure:
 
-- app shell
-- catalog
-- template
-- theme
+- **Records undo**: completed state-changing reversible controllers import
+  `RecordCatalogUndoOperation`, `RecordTemplateUndoOperation`,
+  `RecordThemeUndoOperation`, or `RecordUndoEntryOperation` and call the
+  matching facade after successful mutation.
+- **Excluded with evidence**: non-state-changing, lifecycle hydration,
+  undo/redo infrastructure, navigation/context selection, app preferences,
+  window chrome, transient overlay, queue status, or non-reversible actions
+  appear in `test/architecture/undo-controller-exclusions.ts`.
 
-Directly related common workflows must be included when they create or commit
-state changes that feed those areas.
+`test/architecture/undo-controller-coverage.test.ts` enforces that every
+controller is either recording or explicitly excluded. New mutating controllers
+fail the test until classified.
+
+Representative renderer workflow tests remain required for app shell, catalog,
+template, and theme smoke coverage; universal controller enforcement supersedes
+the earlier “at least one workflow per area” minimum.
 
 ## Enforcement Triggers
 

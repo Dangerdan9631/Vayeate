@@ -10,6 +10,15 @@ import { RemoveMappingFromTemplateOperation } from '../../../../domain/operation
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { SetMappingColorRefOperation as SetMappingColorRefOp } from '../../../../domain/operations/template-operations/mappings/set-mapping-color-ref-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import {
+  TEMPLATE_MAPPING_COLOR_REF_SET,
+  TEMPLATE_MAPPING_REMOVED,
+} from '../../../../model/undo-action-types';
 
 @singleton()
 export class SetMappingColorRefController {
@@ -17,11 +26,15 @@ export class SetMappingColorRefController {
     private readonly templatesStore: TemplatesStore,
     private readonly templateUiStore: TemplateUiStore,
     private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
     private readonly setMappingColorRefOp: SetMappingColorRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+    private readonly recordTemplateUndo: RecordTemplateUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(
@@ -39,15 +52,37 @@ export class SetMappingColorRefController {
       tokenType,
       catalogs,
     );
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'templates',
+      templateRef: { name: template.name, version: template.version },
+      catalogRef: this.catalogUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
     const base = this.bumpTemplateVersionForEdit.execute(template);
     if (colorRef === null && isOrphan) {
       const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
       this.saveTemplate.execute(next);
       this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+      await this.recordTemplateUndo.execute({
+        description: `Remove orphan mapping ${tokenKey}`,
+        actionType: TEMPLATE_MAPPING_REMOVED,
+        target: `${template.name}@${template.version}:mapping:${tokenType}:${tokenKey}:color`,
+        before: template,
+        after: next,
+      });
       return;
     }
     const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
     this.saveTemplate.execute(next);
     this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+    await this.recordTemplateUndo.execute({
+      description: `Set ${tokenKey} color variable`,
+      actionType: TEMPLATE_MAPPING_COLOR_REF_SET,
+      target: `${template.name}@${template.version}:mapping:${tokenType}:${tokenKey}:color`,
+      before: template,
+      after: next,
+    });
   }
 }

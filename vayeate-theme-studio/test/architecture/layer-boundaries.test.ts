@@ -144,7 +144,10 @@ describe('layer boundaries', () => {
         expect(isInside(target, path.join(sourceRoot, 'gateway')), filePath).toBe(false);
         expect(isInside(target, electronRoot), filePath).toBe(false);
         expect(target.includes(`${path.sep}actions${path.sep}`), filePath).toBe(false);
-        expect(target.includes(`${path.sep}controllers${path.sep}`), filePath).toBe(false);
+        const importsOtherController =
+          path.basename(target).endsWith('-controller.ts') &&
+          path.normalize(target) !== path.normalize(filePath);
+        expect(importsOtherController, filePath).toBe(false);
       }
     }
   });

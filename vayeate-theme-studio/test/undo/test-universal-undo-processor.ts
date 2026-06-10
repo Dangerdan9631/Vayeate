@@ -1,6 +1,14 @@
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
+import type { BackgroundQueueContinuation } from '../../src/model/background-queue';
+import type { CatalogsStore } from '../../src/domain/catalog/state/catalogs-store';
+import type { TemplatesStore } from '../../src/domain/state/data/templates-store';
+import type { ThemesStore } from '../../src/domain/state/data/themes-store';
+import type { UndoStackStore } from '../../src/domain/state/undo-stack/undo-stack-store';
+import { ApplyCatalogLifecycleUndoOperation } from '../../src/domain/operations/undo-operations/apply-catalog-lifecycle-undo-operation';
 import { ApplyCatalogUndoStateOperation } from '../../src/domain/operations/undo-operations/apply-catalog-undo-state-operation';
+import { ApplyTemplateLifecycleUndoOperation } from '../../src/domain/operations/undo-operations/apply-template-lifecycle-undo-operation';
 import { ApplyTemplateUndoStateOperation } from '../../src/domain/operations/undo-operations/apply-template-undo-state-operation';
+import { ApplyThemeLifecycleUndoOperation } from '../../src/domain/operations/undo-operations/apply-theme-lifecycle-undo-operation';
 import { ApplyThemeUndoStateOperation } from '../../src/domain/operations/undo-operations/apply-theme-undo-state-operation';
 import { BuildUniversalUndoProcessorOperation } from '../../src/domain/operations/undo-operations/build-universal-undo-processor-operation';
 import { HistoryGoToOperation } from '../../src/domain/operations/undo-operations/history-go-to-operation';
@@ -8,11 +16,69 @@ import { LoadUndoHistoryOperation } from '../../src/domain/operations/undo-opera
 import { RedoOperation } from '../../src/domain/operations/undo-operations/redo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../src/domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { UndoOperation } from '../../src/domain/operations/undo-operations/undo-operation';
-import type { UndoStackStore } from '../../src/domain/state/undo-stack/undo-stack-store';
+
+export function syncContinuation(run: () => void | Promise<void> = () => undefined): BackgroundQueueContinuation {
+  const continuation: BackgroundQueueContinuation = {
+    onQueue: () => continuation,
+    then: (_label, cb) => {
+      void Promise.resolve(run()).then(() => cb());
+    },
+  };
+  return continuation;
+}
+
+export function createSyncBackgroundQueue() {
+  return {
+    execute: vi.fn((_type: string, _label: string, fn: () => unknown) => {
+      void fn();
+      return syncContinuation();
+    }),
+    executeReturning: vi.fn(async (_label: string, fn: () => unknown) => fn()),
+  };
+}
+
+export function removeCatalogVersion(catalogsStore: CatalogsStore, name: string, version: string): void {
+  catalogsStore.api.setState((draft) => {
+    if (!draft.state.catalogs[name]) return;
+    delete draft.state.catalogs[name][version];
+    if (Object.keys(draft.state.catalogs[name]).length === 0) {
+      delete draft.state.catalogs[name];
+    }
+  });
+}
+
+export function removeTemplateVersion(templatesStore: TemplatesStore, name: string, version: string): void {
+  templatesStore.api.setState((draft) => {
+    if (!draft.state.templates[name]) return;
+    delete draft.state.templates[name][version];
+    if (Object.keys(draft.state.templates[name]).length === 0) {
+      delete draft.state.templates[name];
+    }
+  });
+}
+
+export function removeThemeVersion(themesStore: ThemesStore, name: string, version: string): void {
+  themesStore.api.setState((draft) => {
+    if (!draft.state.themeMap[name]) return;
+    delete draft.state.themeMap[name][version];
+    if (Object.keys(draft.state.themeMap[name]).length === 0) {
+      delete draft.state.themeMap[name];
+    }
+  });
+}
+
+export async function waitForUndoRecorded(undoStackStore: UndoStackStore): Promise<void> {
+  await vi.waitFor(() => {
+    expect(undoStackStore.getStore().state.undoMenu?.canUndo).toBe(true);
+  });
+}
 
 export interface TestUniversalUndoProcessorDeps {
   applyCatalogUndoState: ApplyCatalogUndoStateOperation;
+  applyCatalogLifecycleUndo?: ApplyCatalogLifecycleUndoOperation;
+  applyTemplateLifecycleUndo?: ApplyTemplateLifecycleUndoOperation;
   applyTemplateUndoState: ApplyTemplateUndoStateOperation;
+  applyThemeLifecycleUndo?: ApplyThemeLifecycleUndoOperation;
   applyThemeUndoState: ApplyThemeUndoStateOperation;
   commitAssignColorText?: { restore: (theme: never) => void };
   setColorVariableLight?: { execute: (ref: string | undefined, value: string) => unknown };
@@ -37,7 +103,29 @@ export function createTestBuildUniversalUndoProcessor(
 ): BuildUniversalUndoProcessorOperation {
   return new BuildUniversalUndoProcessorOperation(
     deps.applyCatalogUndoState,
+    (deps.applyCatalogLifecycleUndo ?? {
+      applyVersionDeleted: () => undefined,
+      revertVersionDeleted: () => undefined,
+      applyCreated: () => undefined,
+      revertCreated: () => undefined,
+      applyRevertedToVersion: () => undefined,
+      revertRevertedToVersion: () => undefined,
+    }) as never,
+    (deps.applyTemplateLifecycleUndo ?? {
+      applyVersionDeleted: () => undefined,
+      revertVersionDeleted: () => undefined,
+      applyCreated: () => undefined,
+      revertCreated: () => undefined,
+    }) as never,
     deps.applyTemplateUndoState,
+    (deps.applyThemeLifecycleUndo ?? {
+      applyVersionDeleted: () => undefined,
+      revertVersionDeleted: () => undefined,
+      applyVersionIncremented: () => undefined,
+      revertVersionIncremented: () => undefined,
+      applyCreated: () => undefined,
+      revertCreated: () => undefined,
+    }) as never,
     deps.applyThemeUndoState,
     (deps.commitAssignColorText ?? { restore: () => undefined }) as never,
     (deps.setColorVariableLight ?? { execute: () => null }) as never,

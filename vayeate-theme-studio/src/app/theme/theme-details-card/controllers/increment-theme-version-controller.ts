@@ -9,7 +9,11 @@ import { SetThemeSaveErrorOperation } from '../../../../domain/operations/theme-
 import { LoadThemeRefsOperation } from '../../../../domain/operations/theme-operations/theme-list/load-theme-refs-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/load-theme-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { THEME_VERSION_INCREMENTED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class IncrementThemeVersionController {
@@ -23,12 +27,22 @@ export class IncrementThemeVersionController {
     private readonly loadTheme: LoadThemeOperation,
     private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
     private readonly themeUiStore: ThemeUiStore,
+    private readonly recordThemeUndo: RecordThemeUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;
     if (!theme) return;
+
+    const priorSelectedRef = { name: theme.name, version: theme.version };
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'themes',
+      templateRef: theme.templateRef,
+      themeRef: priorSelectedRef,
+    }));
+
     const newVersion = nextPatchVersion(theme.version);
     const bumped: Theme = { ...theme, version: newVersion };
     this.clearPendingThemeSave.execute();
@@ -41,7 +55,8 @@ export class IncrementThemeVersionController {
       return;
     }
     this.loadThemeRefs.execute();
-    this.setSelectedThemeRef.execute({ name: theme.name, version: newVersion });
+    const newRef = { name: theme.name, version: newVersion };
+    this.setSelectedThemeRef.execute(newRef);
     this.loadTheme.execute(theme.name, newVersion)
       .then('Loading new theme version', () => {
         const loaded = this.themeUiStore.getStore().state.theme;
@@ -52,10 +67,13 @@ export class IncrementThemeVersionController {
           );
         }
       });
+
+    await this.recordThemeUndo.execute({
+      description: 'Increment theme version',
+      actionType: THEME_VERSION_INCREMENTED,
+      target: `${theme.name}@${newVersion}`,
+      before: { theme: null, selectedRef: priorSelectedRef },
+      after: { theme: bumped, selectedRef: newRef },
+    });
   }
 }
-
-
-
-
-

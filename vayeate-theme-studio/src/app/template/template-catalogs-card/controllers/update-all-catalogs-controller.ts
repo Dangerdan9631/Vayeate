@@ -12,17 +12,27 @@ import {
 } from '../../../../domain/utils/template-catalog-merge';
 import { catalogVersionsByNameFromRefs } from '../../../../domain/utils/catalog-versions-by-name-from-refs';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { TEMPLATE_CATALOGS_ALL_UPDATED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class UpdateAllCatalogsController {
   constructor(
     private readonly templatesStore: TemplatesStore,
     private readonly templateUiStore: TemplateUiStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+    private readonly recordTemplateUndo: RecordTemplateUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -30,6 +40,20 @@ export class UpdateAllCatalogsController {
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
     const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
+    const allAtLatest = template.catalogRefs.every((ref) => {
+      const versions = catalogVersionsByName[ref.name];
+      const latest = versions?.[0];
+      return !latest || ref.version === latest.version;
+    });
+    if (allAtLatest) return;
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'templates',
+      templateRef: { name: template.name, version: template.version },
+      catalogRef: this.catalogUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const newCatalogRefs: CatalogReference[] = base.catalogRefs.map((ref) => {
       const versions = catalogVersionsByName[ref.name];
@@ -65,5 +89,13 @@ export class UpdateAllCatalogsController {
     };
     this.saveTemplate.execute(updated);
     this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated);
+
+    await this.recordTemplateUndo.execute({
+      description: 'Update all catalogs to latest',
+      actionType: TEMPLATE_CATALOGS_ALL_UPDATED,
+      target: `${template.name}@${template.version}:catalogs`,
+      before: template,
+      after: updated,
+    });
   }
 }

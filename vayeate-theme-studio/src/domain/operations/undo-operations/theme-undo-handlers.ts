@@ -1,15 +1,20 @@
 import type { ColorVariableKey } from '../../../model/schema/primitives';
 import type { Template } from '../../../model/schema/template-schemas';
 import type { Theme } from '../../../model/schema/theme-schemas';
+import type { ThemeLifecycleUndoSnapshot } from '../../../model/theme-undo-lifecycle';
 import {
   THEME_COLOR_VARIABLE_DARK_SET,
   THEME_COLOR_VARIABLE_LIGHT_SET,
+  THEME_CREATED,
   THEME_LOADED_TEMPLATE_SET,
   THEME_PALETTE_COLOR_ASSIGNED,
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
   THEME_UNDO_ACTION_TYPES,
+  THEME_VERSION_DELETED,
+  THEME_VERSION_INCREMENTED,
 } from '../../../model/undo-action-types';
+import type { UndoAction } from '../../core/undo-stack-types';
 import type { UndoDiffHandler } from '../../core/undo-processor';
 import type { CommitAssignColorTextOperation } from '../theme-operations/palette-color-assign/commit-assign-color-text-operation';
 import type { SetThemeHueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-hue-adjustment-operation';
@@ -17,10 +22,18 @@ import type { SetThemeHueReferenceHexOperation } from '../theme-operations/palet
 import type { SetColorVariableDarkOperation } from '../theme-operations/theme-details/set-color-variable-dark-operation';
 import type { SetColorVariableLightOperation } from '../theme-operations/theme-details/set-color-variable-light-operation';
 import type { SetThemeLoadedTemplateOperation } from '../theme-operations/theme-details/set-theme-loaded-template-operation';
+import type { ApplyThemeLifecycleUndoOperation } from './apply-theme-lifecycle-undo-operation';
 import type { ApplyThemeUndoStateOperation } from './apply-theme-undo-state-operation';
+
+const LIFECYCLE_ACTION_TYPES = new Set<string>([
+  THEME_VERSION_DELETED,
+  THEME_VERSION_INCREMENTED,
+  THEME_CREATED,
+]);
 
 export interface ThemeUndoHandlerDeps {
   applyThemeUndoState: ApplyThemeUndoStateOperation;
+  applyThemeLifecycleUndo: ApplyThemeLifecycleUndoOperation;
   commitAssignColorText: CommitAssignColorTextOperation;
   setColorVariableLight: SetColorVariableLightOperation;
   setColorVariableDark: SetColorVariableDarkOperation;
@@ -84,8 +97,41 @@ export function buildThemeUndoHandlers(deps: ThemeUndoHandlerDeps): UndoDiffHand
 
   const specializedTypes = new Set(specialized.map((handler) => handler.actionType));
   const snapshotHandlers = THEME_UNDO_ACTION_TYPES
-    .filter((actionType) => !specializedTypes.has(actionType))
+    .filter((actionType) => !specializedTypes.has(actionType) && !LIFECYCLE_ACTION_TYPES.has(actionType))
     .map((actionType) => themeSnapshotHandler(actionType, deps.applyThemeUndoState));
 
-  return [...snapshotHandlers, ...specialized];
+  const lifecycleHandlers: UndoDiffHandler[] = [
+    {
+      actionType: THEME_VERSION_DELETED,
+      apply: (action: UndoAction) => deps.applyThemeLifecycleUndo.applyVersionDeleted(
+        action.before as ThemeLifecycleUndoSnapshot,
+        action.after as ThemeLifecycleUndoSnapshot,
+      ),
+      revert: (action: UndoAction) => deps.applyThemeLifecycleUndo.revertVersionDeleted(
+        action.before as ThemeLifecycleUndoSnapshot,
+      ),
+    },
+    {
+      actionType: THEME_VERSION_INCREMENTED,
+      apply: (action: UndoAction) => deps.applyThemeLifecycleUndo.applyVersionIncremented(
+        action.after as ThemeLifecycleUndoSnapshot,
+      ),
+      revert: (action: UndoAction) => deps.applyThemeLifecycleUndo.revertVersionIncremented(
+        action.before as ThemeLifecycleUndoSnapshot,
+        action.after as ThemeLifecycleUndoSnapshot,
+      ),
+    },
+    {
+      actionType: THEME_CREATED,
+      apply: (action: UndoAction) => deps.applyThemeLifecycleUndo.applyCreated(
+        action.after as ThemeLifecycleUndoSnapshot,
+      ),
+      revert: (action: UndoAction) => deps.applyThemeLifecycleUndo.revertCreated(
+        action.before as ThemeLifecycleUndoSnapshot,
+        action.after as ThemeLifecycleUndoSnapshot,
+      ),
+    },
+  ];
+
+  return [...snapshotHandlers, ...specialized, ...lifecycleHandlers];
 }

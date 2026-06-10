@@ -7,7 +7,11 @@ import { SetSelectedThemeRefOperation } from '../../../../domain/operations/them
 import { LoadThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/load-theme-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { THEME_VERSION_DELETED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class DeleteThemeVersionController {
@@ -20,13 +24,25 @@ export class DeleteThemeVersionController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly setTheme: SetThemeOperation,
     private readonly themeUiStore: ThemeUiStore,
+    private readonly recordThemeUndo: RecordThemeUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(name: string, version: string): Promise<void> {
+    const capturedTheme = this.themeUiStore.getStore().state.theme;
+    const priorSelectedRef = { name, version };
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'themes',
+      templateRef: capturedTheme?.templateRef,
+      themeRef: priorSelectedRef,
+    }));
+
     this.deleteTheme.execute(name, version);
     this.loadThemeRefs.execute();
     const refs = this.getThemeRefs.execute();
     const nextTh = findNearestVersionRef(refs, name, version);
+    const nextRef = nextTh ?? null;
 
     if (nextTh) {
       this.setSelectedThemeRef.execute(nextTh);
@@ -45,6 +61,15 @@ export class DeleteThemeVersionController {
           }
         });
     }
+
+    if (!capturedTheme || capturedTheme.name !== name || capturedTheme.version !== version) return;
+
+    await this.recordThemeUndo.execute({
+      description: `Delete theme ${name}@${version}`,
+      actionType: THEME_VERSION_DELETED,
+      target: `${name}@${version}`,
+      before: { theme: capturedTheme, selectedRef: priorSelectedRef },
+      after: { theme: null, selectedRef: nextRef },
+    });
   }
 }
-

@@ -7,8 +7,11 @@ import { SetThemeHueReferenceHexOperation } from '../theme-operations/palette-hu
 import { SetColorVariableDarkOperation } from '../theme-operations/theme-details/set-color-variable-dark-operation';
 import { SetColorVariableLightOperation } from '../theme-operations/theme-details/set-color-variable-light-operation';
 import { SetThemeLoadedTemplateOperation } from '../theme-operations/theme-details/set-theme-loaded-template-operation';
+import { ApplyCatalogLifecycleUndoOperation } from './apply-catalog-lifecycle-undo-operation';
 import { ApplyCatalogUndoStateOperation } from './apply-catalog-undo-state-operation';
+import { ApplyTemplateLifecycleUndoOperation } from './apply-template-lifecycle-undo-operation';
 import { ApplyTemplateUndoStateOperation } from './apply-template-undo-state-operation';
+import { ApplyThemeLifecycleUndoOperation } from './apply-theme-lifecycle-undo-operation';
 import { ApplyThemeUndoStateOperation } from './apply-theme-undo-state-operation';
 import { buildCatalogUndoHandlers } from './catalog-undo-handlers';
 import { buildTemplateUndoHandlers } from './template-undo-handlers';
@@ -19,7 +22,10 @@ import { buildThemeUndoHandlers } from './theme-undo-handlers';
 export class BuildUniversalUndoProcessorOperation {
   constructor(
     private readonly applyCatalogUndoState: ApplyCatalogUndoStateOperation,
+    private readonly applyCatalogLifecycleUndo: ApplyCatalogLifecycleUndoOperation,
+    private readonly applyTemplateLifecycleUndo: ApplyTemplateLifecycleUndoOperation,
     private readonly applyTemplateUndoState: ApplyTemplateUndoStateOperation,
+    private readonly applyThemeLifecycleUndo: ApplyThemeLifecycleUndoOperation,
     private readonly applyThemeUndoState: ApplyThemeUndoStateOperation,
     private readonly commitAssignColorText: CommitAssignColorTextOperation,
     private readonly setColorVariableLight: SetColorVariableLightOperation,
@@ -31,10 +37,17 @@ export class BuildUniversalUndoProcessorOperation {
 
   execute(): UndoProcessor {
     return createUndoProcessor([
-      ...buildCatalogUndoHandlers(this.applyCatalogUndoState),
-      ...buildTemplateUndoHandlers(this.applyTemplateUndoState),
+      ...buildCatalogUndoHandlers({
+        applyCatalogUndoState: this.applyCatalogUndoState,
+        applyCatalogLifecycleUndo: this.applyCatalogLifecycleUndo,
+      }),
+      ...buildTemplateUndoHandlers({
+        applyTemplateUndoState: this.applyTemplateUndoState,
+        applyTemplateLifecycleUndo: this.applyTemplateLifecycleUndo,
+      }),
       ...buildThemeUndoHandlers({
         applyThemeUndoState: this.applyThemeUndoState,
+        applyThemeLifecycleUndo: this.applyThemeLifecycleUndo,
         commitAssignColorText: this.commitAssignColorText,
         setColorVariableLight: this.setColorVariableLight,
         setColorVariableDark: this.setColorVariableDark,

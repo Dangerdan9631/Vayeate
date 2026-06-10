@@ -6,16 +6,26 @@ import { BumpTemplateVersionForEditOperation } from '../../../../domain/operatio
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { UpdateContrastComparisonSourceOperation as UpdateContrastComparisonSourceOp } from '../../../../domain/operations/template-operations/variables-contrast/update-contrast-comparison-source-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { TEMPLATE_CONTRAST_COMPARISON_SOURCE_UPDATED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class UpdateContrastComparisonSourceController {
   constructor(
     private readonly templatesStore: TemplatesStore,
     private readonly templateUiStore: TemplateUiStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly updateContrastComparisonSourceOp: UpdateContrastComparisonSourceOp,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+    private readonly recordTemplateUndo: RecordTemplateUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(
@@ -24,6 +34,14 @@ export class UpdateContrastComparisonSourceController {
   ): Promise<void> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'templates',
+      templateRef: { name: template.name, version: template.version },
+      catalogRef: this.catalogUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.updateContrastComparisonSourceOp.execute(
       base,
@@ -32,5 +50,13 @@ export class UpdateContrastComparisonSourceController {
     );
     this.saveTemplate.execute(next);
     this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+
+    await this.recordTemplateUndo.execute({
+      description: `Set ${contrastVariableKey} comparison source`,
+      actionType: TEMPLATE_CONTRAST_COMPARISON_SOURCE_UPDATED,
+      target: `${template.name}@${template.version}:contrast-variable:${contrastVariableKey}:comparison-source`,
+      before: template,
+      after: next,
+    });
   }
 }

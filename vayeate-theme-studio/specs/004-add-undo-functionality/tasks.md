@@ -234,6 +234,22 @@ stacks.
 
 ---
 
+## Phase 8a: Universal Undo Coverage (Phase F)
+
+**Purpose**: Enforce that every app controller records undo or is explicitly
+excluded; sync architecture exceptions and directives.
+
+- [X] T079 [P] Add universal controller coverage enforcement in `test/architecture/undo-controller-coverage.test.ts` backed by `test/architecture/undo-controller-exclusions.ts`
+- [X] T080 [P] Restore and extend operation-to-operation `execute` exceptions for undo apply-state, lifecycle, and record facades in `test/architecture/architecture.test.ts` and `.cursor/rules/app-architecture.mdc`
+- [X] T081 Verify legacy cleanup: no `RestoreTemplateStateController`, `RestoreThemeStateController`, `CatalogUndoPush`, `TemplateUndoPush`, or unwired duplicate controllers from plan C4/D7 remain referenced in `src/`
+- [X] T082 [P] Update universal coverage language in `specs/004-add-undo-functionality/spec.md`, `specs/004-add-undo-functionality/tasks.md`, and `specs/004-add-undo-functionality/contracts/undo-workflow-integration.md`
+- [X] T083 [P] Refresh `AGENTS.md` SPECKIT directive for universal coverage with documented exclusions
+
+**Checkpoint**: 139 audited controllers — 62 record via `Record*UndoOperation`,
+77 excluded with evidence; architecture tests fail on unclassified controllers.
+
+---
+
 ## Phase 8: Polish & Cross-Cutting Concerns
 
 **Purpose**: Improvements that affect multiple user stories
@@ -327,7 +343,7 @@ stacks.
 | Theme filtering and selection | Theme variable search/selection checkboxes, palette preview sliders, eyedropper open, color picker select/close, page load/restore, theme selection/load | Not undoable unless committed authored state changes | Selection and preview actions either choose active UI context or update transient UI/preview state. Commit actions can become undoable; preview deltas and open/close events should not record entries. |
 | Renderer summaries | Menu disabled state, next undo/redo labels, ordered recent-action list, `UndoMenuSnapshot`/availability state | Not state-changing / read-only summary | Renderer summaries must derive from owned undo state. They must not mutate history, own stack position, or expose inactive-context entries. |
 | Failed or pending work | Validation failures, cancellation, repeated pending actions, persistence failures, missing files, failed undo/redo/go-to | Not undoable unless confirmed reversible state changed | The recording boundary must prove completion before writing an entry. Transition failure must preserve visible state and targeted entries; persistence failure must not present the action as safely undoable without equivalent active-session guarantees. |
-| Directive and enforcement touch points | `AGENTS.md`, `test/architecture/layer-boundaries.test.ts`, `test/architecture/component-workflow-compliance.test.ts` | Enforcement required before final validation | `AGENTS.md` already names active undo rules. Architecture tests currently enforce layer independence, humble handlers/controllers, viewmodel/action patterns, and directive sync for feature 003; Phase 2/Polish must add undo-specific assertions for context-scoped stacks, read-only summaries, action-generated diffs, no placeholder actions, and policy independence from React/Electron/filesystem/gateway details. |
+| Directive and enforcement touch points | `AGENTS.md`, `test/architecture/layer-boundaries.test.ts`, `test/architecture/component-workflow-compliance.test.ts`, `test/architecture/undo-controller-coverage.test.ts`, `test/architecture/undo-controller-exclusions.ts`, `test/architecture/architecture.test.ts` | Enforcement required before final validation | Universal coverage enforced: every `src/app/**` controller records via `Record*UndoOperation` or appears in `undo-controller-exclusions.ts`. Architecture tests also enforce undo apply-state/lifecycle operation exceptions, layer independence, read-only summaries, action-generated diffs, and no placeholder actions. |
 
 ## Notes
 

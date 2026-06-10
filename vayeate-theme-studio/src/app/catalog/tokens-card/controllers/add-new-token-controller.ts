@@ -10,18 +10,28 @@ import { SetCatalogNewTokenKeyOperation } from '../../../../domain/operations/ca
 import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/delete/refresh-catalog-refs-and-select-operation';
 import { getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { CATALOG_TOKEN_ADDED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class AddNewTokenController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogUiStore: CatalogUiStore,
+    private readonly templateUiStore: TemplateUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly setCatalogNewTokenKey: SetCatalogNewTokenKeyOperation,
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly addPlainTokenToCatalog: AddPlainTokenToCatalogOperation,
     private readonly mergeSemanticSelectorsIntoCatalog: MergeSemanticSelectorsIntoCatalogOperation,
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly recordCatalogUndo: RecordCatalogUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   run(tokenType: TokenType, key?: string): void {
@@ -31,6 +41,13 @@ export class AddNewTokenController {
     const tokenKey = (key ?? state.newTokenKey)?.trim();
     if (!catalog || !tokenKey) return;
 
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'catalogs',
+      catalogRef: { name: catalog.name, version: catalog.version },
+      templateRef: this.templateUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
     if (tokenType === 'semantic token') {
       const base = this.bumpCatalogVersionForEdit.execute(catalog);
       const merged = this.mergeSemanticSelectorsIntoCatalog.execute(base, tokenKey);
@@ -38,6 +55,14 @@ export class AddNewTokenController {
       this.saveCatalog.execute(merged);
       this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
       this.setCatalogNewTokenKey.execute('');
+
+      void this.recordCatalogUndo.execute({
+        description: `Add semantic token ${tokenKey}`,
+        actionType: CATALOG_TOKEN_ADDED,
+        target: `${catalog.name}@${catalog.version}:${tokenType}:${tokenKey}`,
+        before: catalog,
+        after: merged,
+      });
       return;
     }
 
@@ -47,5 +72,13 @@ export class AddNewTokenController {
     this.saveCatalog.execute(updated);
     this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
     this.setCatalogNewTokenKey.execute('');
+
+    void this.recordCatalogUndo.execute({
+      description: `Add ${tokenType} token ${tokenKey}`,
+      actionType: CATALOG_TOKEN_ADDED,
+      target: `${catalog.name}@${catalog.version}:${tokenType}:${tokenKey}`,
+      before: catalog,
+      after: updated,
+    });
   }
 }

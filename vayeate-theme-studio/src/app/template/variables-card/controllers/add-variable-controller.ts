@@ -1,5 +1,4 @@
 import { singleton } from 'tsyringe';
-import type { Template } from '../../../../model/schema/template-schemas';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/data/templates-store';
 import { AddColorVariableOperation as AddColorVariableOp } from '../../../../domain/operations/template-operations/variables-color/add-color-variable-operation';
@@ -10,14 +9,12 @@ import { SaveTemplateOperation } from '../../../../domain/operations/template-op
 import { SetTemplateAddVariableNameOperation } from '../../../../domain/operations/template-operations/variables/set-template-add-variable-name-operation';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
-import { createUndoProcessor } from '../../../../domain/core/undo-processor';
-import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import {
   TEMPLATE_COLOR_VARIABLE_ADDED,
   TEMPLATE_CONTRAST_VARIABLE_ADDED,
-  TEMPLATE_GROUP_ADDED,
 } from '../../../../model/undo-action-types';
 
 @singleton()
@@ -33,7 +30,7 @@ export class AddVariableController {
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
     private readonly setTemplateAddVariableName: SetTemplateAddVariableNameOperation,
-    private readonly recordUndoEntry: RecordUndoEntryOperation,
+    private readonly recordTemplateUndo: RecordTemplateUndoOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
@@ -47,13 +44,12 @@ export class AddVariableController {
       : template.colorVariables.map((variable) => variable.key);
     if (existingKeys.includes(key)) return;
 
-    const context = deriveUndoContext({
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
       tabId: 'templates',
       templateRef: { name: template.name, version: template.version },
       catalogRef: this.catalogUiStore.getStore().state.selectedRef,
       themeRef: this.themeUiStore.getStore().state.selectedRef,
-    });
-    this.setCurrentUndoStackId.executeForContext(context);
+    }));
 
     const base = this.bumpTemplateVersionForEdit.execute(template);
     let next;
@@ -65,42 +61,18 @@ export class AddVariableController {
       next = this.addColorVariableToTemplate.execute(base, key, groupRef);
       actionType = TEMPLATE_COLOR_VARIABLE_ADDED;
     }
-    this.applyTemplateState(next);
+    this.templatesStore.getStore().updateTemplate(next);
+    this.templateUiStore.getStore().selectTemplate({ name: next.name, version: next.version });
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
     this.setTemplateAddVariableName.execute('');
 
-    await this.recordUndoEntry.execute({
-      completed: true,
+    await this.recordTemplateUndo.execute({
       description: `Add ${key} ${variableKind} variable`,
-      diffs: [{
-        actionType,
-        target: `${template.name}@${template.version}:${variableKind}-variable:${key}`,
-        before: template,
-        after: next,
-      }],
-      processor: createUndoProcessor([
-        {
-          actionType: TEMPLATE_COLOR_VARIABLE_ADDED,
-          apply: (action) => this.applyTemplateState(action.after as Template),
-          revert: (action) => this.applyTemplateState(action.before as Template),
-        },
-        {
-          actionType: TEMPLATE_CONTRAST_VARIABLE_ADDED,
-          apply: (action) => this.applyTemplateState(action.after as Template),
-          revert: (action) => this.applyTemplateState(action.before as Template),
-        },
-        {
-          actionType: TEMPLATE_GROUP_ADDED,
-          apply: (action) => this.applyTemplateState(action.after as Template),
-          revert: (action) => this.applyTemplateState(action.before as Template),
-        },
-      ]),
+      actionType,
+      target: `${template.name}@${template.version}:${variableKind}-variable:${key}`,
+      before: template,
+      after: next,
     });
-  }
-
-  private applyTemplateState(template: Template): void {
-    this.templatesStore.getStore().updateTemplate(template);
-    this.templateUiStore.getStore().selectTemplate({ name: template.name, version: template.version });
-    this.saveTemplate.execute(template);
-    this.refreshTemplateRefsAndSelect.execute(template.name, template.version, template);
   }
 }

@@ -11,6 +11,12 @@ import {
 } from '../../../../domain/utils/template-catalog-merge';
 import { catalogVersionsByNameFromRefs } from '../../../../domain/utils/catalog-versions-by-name-from-refs';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { TEMPLATE_CATALOG_TOGGLED } from '../../../../model/undo-action-types';
 
 async function loadCatalogData(
   loadCatalog: LoadCatalogOperation,
@@ -37,11 +43,15 @@ export class ToggleCatalogController {
   constructor(
     private readonly templatesStore: TemplatesStore,
     private readonly templateUiStore: TemplateUiStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+    private readonly recordTemplateUndo: RecordTemplateUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(catalogName: string): Promise<void> {
@@ -51,6 +61,14 @@ export class ToggleCatalogController {
     const currentlyIncluded = template.catalogRefs.some((r) => r.name === catalogName);
     const include = !currentlyIncluded;
     const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'templates',
+      templateRef: { name: template.name, version: template.version },
+      catalogRef: this.catalogUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
     const base = this.bumpTemplateVersionForEdit.execute(template);
     let newCatalogRefs: { name: string; version: string }[];
     if (include) {
@@ -95,5 +113,13 @@ export class ToggleCatalogController {
     };
     this.saveTemplate.execute(updated);
     this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated);
+
+    await this.recordTemplateUndo.execute({
+      description: include ? `Include catalog ${catalogName}` : `Exclude catalog ${catalogName}`,
+      actionType: TEMPLATE_CATALOG_TOGGLED,
+      target: `${template.name}@${template.version}:catalog:${catalogName}`,
+      before: template,
+      after: updated,
+    });
   }
 }

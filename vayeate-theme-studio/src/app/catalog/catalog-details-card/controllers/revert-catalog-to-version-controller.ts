@@ -8,17 +8,26 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operati
 import { compareVersions } from '../../../../domain/utils/compare-versions';
 import { Catalog } from '../../../../model/schema/catalog';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
-
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { CATALOG_LOCKED, CATALOG_REVERTED_TO_VERSION } from '../../../../model/undo-action-types';
 
 @singleton()
 export class RevertCatalogToVersionController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogUiStore: CatalogUiStore,
+    private readonly templateUiStore: TemplateUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly lockHeadCatalogIfUnlocked: LockHeadCatalogIfUnlockedOperation,
     private readonly revertCatalog: RevertCatalogOperation,
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly recordCatalogUndo: RecordCatalogUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -31,6 +40,7 @@ export class RevertCatalogToVersionController {
     const snapshot = state.catalogs[name]?.[version]?.catalog;
     if (!snapshot) return;
 
+    const priorRef = ref;
     const versions = state.catalogs[name] ?? {};
     const highestCatalog = Object.values(versions)
       .map((v) => v.catalog)
@@ -38,16 +48,38 @@ export class RevertCatalogToVersionController {
       .sort((a, b) => compareVersions(a.version, b.version))
       .pop();
 
-    if (highestCatalog) {
-      const toLock = this.lockHeadCatalogIfUnlocked.execute(highestCatalog);
-      if (toLock) {
-        this.saveCatalog.execute(toLock);
-      }
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'catalogs',
+      catalogRef: priorRef,
+      templateRef: this.templateUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
+    const toLock = highestCatalog ? this.lockHeadCatalogIfUnlocked.execute(highestCatalog) : null;
+    if (toLock) {
+      this.saveCatalog.execute(toLock);
     }
 
     const newVersion = highestCatalog ? nextPatchVersion(highestCatalog.version) : nextPatchVersion(version);
     const reverted = this.revertCatalog.execute(snapshot, newVersion);
     this.saveCatalog.execute(reverted);
     this.refreshCatalogRefsAndSelect.execute(reverted.name, reverted.version);
+
+    await this.recordCatalogUndo.execute({
+      description: `Revert catalog ${name} to ${snapshot.version}`,
+      actionType: CATALOG_REVERTED_TO_VERSION,
+      target: `${name}@${snapshot.version}->${newVersion}`,
+      before: {
+        deleteVersion: { name: reverted.name, version: reverted.version },
+        selectedRef: priorRef,
+      },
+      after: reverted,
+      extraDiffs: toLock && highestCatalog ? [{
+        actionType: CATALOG_LOCKED,
+        target: `${name}@${highestCatalog.version}`,
+        before: highestCatalog,
+        after: toLock,
+      }] : undefined,
+    });
   }
 }

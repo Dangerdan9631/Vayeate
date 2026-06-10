@@ -7,6 +7,8 @@ import { parseSemanticSelector } from '../model/parse-semantic-selector';
 import { CreateTemplateDialogStore } from './state/ui/create-template-dialog-store';
 import { TemplatesStore } from './state/data/templates-store';
 import { TemplateUiStore } from './state/ui/template-ui-store';
+import { CatalogUiStore } from './state/ui/catalog-ui-store';
+import { ThemeUiStore } from './state/ui/theme-ui-store';
 import { BumpTemplateVersionForEditOperation } from './operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { AddGroupToTemplateOperation } from './operations/template-operations/groups/add-group-to-template-operation';
 
@@ -171,14 +173,20 @@ describe('template utility baselines', () => {
     const saveTemplate = { execute: vi.fn() };
     const refreshTemplateRefsAndSelect = { execute: vi.fn() };
     const setTemplateAddGroupName = { execute: vi.fn() };
+    const recordTemplateUndo = { execute: vi.fn(async () => ({ status: 'recorded', entryId: '1' })) };
+    const setCurrentUndoStackId = { executeForContext: vi.fn() };
     const controller = new AddGroupAndClearInputController(
       templatesStore,
       templateUiStore,
+      new CatalogUiStore(),
+      new ThemeUiStore(),
       new BumpTemplateVersionForEditOperation(),
       new AddGroupToTemplateOperation(),
       saveTemplate as never,
       refreshTemplateRefsAndSelect as never,
       setTemplateAddGroupName as never,
+      recordTemplateUndo as never,
+      setCurrentUndoStackId as never,
     );
 
     await controller.run();
@@ -213,14 +221,20 @@ describe('template utility baselines', () => {
     const saveTemplate = { execute: vi.fn() };
     const refreshTemplateRefsAndSelect = { execute: vi.fn() };
     const setTemplateAddGroupName = { execute: vi.fn() };
+    const recordTemplateUndo = { execute: vi.fn(async () => ({ status: 'recorded', entryId: '1' })) };
+    const setCurrentUndoStackId = { executeForContext: vi.fn() };
     const controller = new AddGroupAndClearInputController(
       templatesStore,
       templateUiStore,
+      new CatalogUiStore(),
+      new ThemeUiStore(),
       new BumpTemplateVersionForEditOperation(),
       new AddGroupToTemplateOperation(),
       saveTemplate as never,
       refreshTemplateRefsAndSelect as never,
       setTemplateAddGroupName as never,
+      recordTemplateUndo as never,
+      setCurrentUndoStackId as never,
     );
 
     templateUiStore.getStore().setAddGroupName('core');

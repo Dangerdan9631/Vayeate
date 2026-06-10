@@ -203,16 +203,35 @@ describe('component workflow compliance', () => {
       readText('src/app/template/variables-card/controllers/add-variable-controller.ts'),
       readText('src/app/template/groups-card/controllers/add-group-and-clear-input-controller.ts'),
       readText('src/app/theme/theme-palette-card/controllers/assign-color-from-picker-controller.ts'),
+      readText('src/app/theme/theme-palette-card/controllers/record-palette-color-assign-undo.ts'),
       readText('src/app/theme/theme-variables-card/controllers/set-color-variable-dark-controller.ts'),
     ]);
     const combined = workflowSources.join('\n');
 
-    expect(combined).toContain('RecordUndoEntryOperation');
+    expect(combined).toContain('RecordCatalogUndoOperation');
+    expect(combined).toContain('RecordTemplateUndoOperation');
+    expect(combined).toContain('RecordThemeUndoOperation');
     expect(combined).toContain('CATALOG_TOKEN_KEY_UPDATED');
     expect(combined).toContain('TEMPLATE_COLOR_VARIABLE_ADDED');
     expect(combined).toContain('TEMPLATE_GROUP_ADDED');
     expect(combined).toContain('THEME_PALETTE_COLOR_ASSIGNED');
     expect(combined).toContain('THEME_COLOR_VARIABLE_DARK_SET');
+  });
+
+  it('keeps universal undo coverage enforcement artifacts synchronized', async () => {
+    const [exclusions, spec, workflowContract, tasks] = await Promise.all([
+      readText('test/architecture/undo-controller-exclusions.ts'),
+      readText('specs/004-add-undo-functionality/spec.md'),
+      readText('specs/004-add-undo-functionality/contracts/undo-workflow-integration.md'),
+      readText('specs/004-add-undo-functionality/tasks.md'),
+    ]);
+
+    expect(exclusions).toContain('UNDO_RECORDING_EXCLUDED_CONTROLLERS');
+    for (const source of [spec, workflowContract, tasks]) {
+      expect(source).toContain('universal');
+      expect(source).toContain('undo-controller-exclusions');
+    }
+    expect(tasks).toContain('undo-controller-coverage.test.ts');
   });
 
   it('keeps component filenames PascalCase, helper modules kebab-case, and tsx files on one primary export', async () => {

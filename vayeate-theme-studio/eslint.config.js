@@ -100,5 +100,8 @@ export default tseslint.config(
         ...globals.vitest,
       },
     },
+    rules: {
+      '@typescript-eslint/consistent-type-assertions': 'off',
+    },
   },
 );

@@ -234,9 +234,12 @@ describe('baseline domain policy', () => {
     };
     const controller = new SetThemeTemplateController(
       themeUiStore,
+      themePreviewStore,
       applyThemeStateAndSchedulePersist,
       loadTemplateSnapshot as never,
       setThemeLoadedTemplate,
+      { execute: vi.fn(async () => ({ status: 'not-recorded', entryId: null })) } as never,
+      { executeForContext: vi.fn() } as never,
     );
 
     await controller.run('template-b', '2.0.0');
@@ -283,9 +286,12 @@ describe('baseline domain policy', () => {
     const loadTemplateSnapshot = { execute: vi.fn(async () => template) };
     const controller = new SetThemeTemplateController(
       themeUiStore,
+      themePreviewStore,
       applyThemeStateAndSchedulePersist,
       loadTemplateSnapshot as never,
       setThemeLoadedTemplate,
+      { execute: vi.fn(async () => ({ status: 'not-recorded', entryId: null })) } as never,
+      { executeForContext: vi.fn() } as never,
     );
 
     await controller.run('template-a', '1.0.0');

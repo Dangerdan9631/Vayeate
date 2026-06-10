@@ -7,6 +7,11 @@ import { CreateCatalogDialog } from './create-dialog/CreateCatalogDialog';
 import { CatalogDetailsCard } from './catalog-details-card/CatalogDetailsCard';
 import { TokensCard } from './tokens-card/TokensCard';
 import { SetSelectedCatalogController } from './catalogs-card/controllers/set-selected-catalog-controller';
+import { UpdateSourceUrlController } from './catalog-details-card/controllers/update-source-url-controller';
+import { SyncCatalogController } from './catalog-details-card/controllers/sync-catalog-controller';
+import { CloseCatalogCreateDialogController } from './create-dialog/controllers/close-catalog-create-dialog-controller';
+import { DeleteCurrentCatalogVersionController } from './catalog-details-card/controllers/delete-current-catalog-version-controller';
+import { RemoveTokenController } from './tokens-card/controllers/remove-token-controller';
 import { UpdateTokenKeyController } from './tokens-card/controllers/update-token-key-controller';
 import { CatalogsStore } from '../../domain/catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
@@ -15,12 +20,26 @@ import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
 import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
 import { BumpCatalogVersionForEditOperation } from '../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { UpdateTokenKeyInCatalogOperation } from '../../domain/operations/catalog-operations/tokens/update-token-key-in-catalog-operation';
+import { UpdateSourceUrlInCatalogOperation } from '../../domain/operations/catalog-operations/sources/update-source-url-in-catalog-operation';
+import { RemoveTokenFromCatalogOperation } from '../../domain/operations/catalog-operations/tokens/remove-token-from-catalog-operation';
+import { CreateCatalogOperation } from '../../domain/catalog/operations/create-catalog-operation';
+import { CloseCatalogCreateDialogOperation } from '../../domain/operations/create-dialog/operations/close-catalog-create-dialog-operation';
+import { SetSelectedCatalogOperation } from '../../domain/operations/delete/set-selected-catalog-operation';
+import { ValidateCanUpdateCatalogSource } from '../../domain/catalog/validations/validate-can-update-catalog-source';
+import { ValidateSyncCatalog } from '../../domain/catalog/validations/validate-sync-catalog';
+import { CreateCatalogDialogStore } from '../../domain/state/ui/create-catalog-dialog-store';
+import { ApplyCatalogLifecycleUndoOperation } from '../../domain/operations/undo-operations/apply-catalog-lifecycle-undo-operation';
 import { ApplyCatalogUndoStateOperation } from '../../domain/operations/undo-operations/apply-catalog-undo-state-operation';
+import { RecordCatalogUndoOperation } from '../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
 import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
 import {
+  createSyncBackgroundQueue,
   createTestBuildUniversalUndoProcessor,
   createTestUndoOperations,
+  removeCatalogVersion,
+  syncContinuation,
+  waitForUndoRecorded,
 } from '../../../test/undo/test-universal-undo-processor';
 import { catalogSchema } from '../../model/schema/catalog';
 
@@ -504,7 +523,10 @@ describe('catalog renderer workflows', () => {
       new BumpCatalogVersionForEditOperation(),
       new UpdateTokenKeyInCatalogOperation(),
       refreshCatalogRefsAndSelect as never,
-      new RecordUndoEntryOperation(undoStackStore),
+      new RecordCatalogUndoOperation(
+        new RecordUndoEntryOperation(undoStackStore),
+        testUndo.buildUniversalUndoProcessor,
+      ),
       testUndo.setCurrentUndoStackId,
     );
     const catalog = catalogSchema.parse({
@@ -558,7 +580,10 @@ describe('catalog renderer workflows', () => {
       new BumpCatalogVersionForEditOperation(),
       new UpdateTokenKeyInCatalogOperation(),
       refreshCatalogRefsAndSelect as never,
-      new RecordUndoEntryOperation(undoStackStore),
+      new RecordCatalogUndoOperation(
+        new RecordUndoEntryOperation(undoStackStore),
+        testUndo.buildUniversalUndoProcessor,
+      ),
       testUndo.setCurrentUndoStackId,
     );
     const catalog = catalogSchema.parse({
@@ -577,5 +602,436 @@ describe('catalog renderer workflows', () => {
 
     expect(saveCatalog.execute).not.toHaveBeenCalled();
     expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(false);
+  });
+
+  describe('catalog undo round-trips', () => {
+    function createCatalogUndoHarness(catalogsStore: CatalogsStore, catalogUiStore: CatalogUiStore) {
+      const undoStackStore = new UndoStackStore();
+      const saveCatalog = { execute: vi.fn() };
+      const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+      const applyCatalogUndoState = new ApplyCatalogUndoStateOperation(
+        catalogsStore,
+        catalogUiStore,
+        saveCatalog as never,
+        refreshCatalogRefsAndSelect as never,
+      );
+      const deleteCatalog = {
+        execute: vi.fn((name: string, version: string) => syncContinuation(() => {
+          removeCatalogVersion(catalogsStore, name, version);
+        })),
+      };
+      const applyCatalogLifecycleUndo = new ApplyCatalogLifecycleUndoOperation(
+        deleteCatalog as never,
+        applyCatalogUndoState,
+        { execute: vi.fn((ref) => catalogUiStore.getStore().selectCatalog(ref)) } as never,
+        { execute: vi.fn(() => syncContinuation()) } as never,
+        refreshCatalogRefsAndSelect as never,
+      );
+      const buildUniversalUndoProcessor = createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState,
+        applyCatalogLifecycleUndo,
+        applyTemplateUndoState: { execute: vi.fn() } as never,
+        applyThemeUndoState: { execute: vi.fn() } as never,
+      });
+      const testUndo = createTestUndoOperations(undoStackStore, buildUniversalUndoProcessor);
+      const recordCatalogUndo = new RecordCatalogUndoOperation(
+        new RecordUndoEntryOperation(undoStackStore),
+        buildUniversalUndoProcessor,
+      );
+      return {
+        undoStackStore,
+        saveCatalog,
+        testUndo,
+        recordCatalogUndo,
+      };
+    }
+
+    function saveCatalogToStore(catalogsStore: CatalogsStore) {
+      return {
+        execute: vi.fn((catalog: ReturnType<typeof catalogSchema.parse>) => {
+          catalogsStore.getStore().upsertCatalogs([catalog]);
+        }),
+      };
+    }
+
+    it('records, undoes, and redoes a catalog source URL edit', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const { testUndo, recordCatalogUndo, undoStackStore } = createCatalogUndoHarness(catalogsStore, catalogUiStore);
+      const saveCatalog = saveCatalogToStore(catalogsStore);
+      const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+      const controller = new UpdateSourceUrlController(
+        catalogsStore,
+        catalogUiStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        saveCatalog as never,
+        new BumpCatalogVersionForEditOperation(),
+        new UpdateSourceUrlInCatalogOperation(),
+        refreshCatalogRefsAndSelect as never,
+        new ValidateCanUpdateCatalogSource(),
+        recordCatalogUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'remote-catalog',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources: [{ url: 'https://example.test/old', tokenType: 'theme', type: 'default' }],
+        tokens: [],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'remote-catalog', version: '1.0.0' });
+
+      controller.run(0, 'https://example.test/new');
+      expect(catalogsStore.getStore().state.catalogs['remote-catalog']?.['1.0.0']?.catalog?.sources[0].url)
+        .toBe('https://example.test/new');
+
+      await waitForUndoRecorded(undoStackStore);
+      await testUndo.undo.execute();
+      expect(catalogsStore.getStore().state.catalogs['remote-catalog']?.['1.0.0']?.catalog?.sources[0].url)
+        .toBe('https://example.test/old');
+
+      await testUndo.redo.execute();
+      expect(catalogsStore.getStore().state.catalogs['remote-catalog']?.['1.0.0']?.catalog?.sources[0].url)
+        .toBe('https://example.test/new');
+    });
+
+    it('records, undoes, and redoes a catalog token removal', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const { testUndo, recordCatalogUndo, undoStackStore } = createCatalogUndoHarness(catalogsStore, catalogUiStore);
+      const saveCatalog = saveCatalogToStore(catalogsStore);
+      const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+      const controller = new RemoveTokenController(
+        catalogsStore,
+        catalogUiStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        saveCatalog as never,
+        new BumpCatalogVersionForEditOperation(),
+        new RemoveTokenFromCatalogOperation(),
+        refreshCatalogRefsAndSelect as never,
+        recordCatalogUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'catalog-a',
+        version: '1.0.0',
+        type: 'manual',
+        locked: false,
+        sources: [],
+        tokens: [
+          { key: 'editor.foreground', type: 'theme' },
+          { key: 'editor.background', type: 'theme' },
+        ],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'catalog-a', version: '1.0.0' });
+
+      controller.run('editor.foreground', 'theme');
+      expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens).toHaveLength(1);
+
+      await waitForUndoRecorded(undoStackStore);
+      await testUndo.undo.execute();
+      expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens).toHaveLength(2);
+
+      await testUndo.redo.execute();
+      expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens).toHaveLength(1);
+    });
+
+    it('records, undoes, and redoes a catalog sync', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const { testUndo, recordCatalogUndo, undoStackStore } = createCatalogUndoHarness(catalogsStore, catalogUiStore);
+      const saveCatalog = saveCatalogToStore(catalogsStore);
+      const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+      const syncCatalog = {
+        execute: vi.fn(async (catalog) => ({
+          ...catalog,
+          locked: true,
+          tokens: [{ key: 'synced.token', type: 'theme' as const }],
+        })),
+      };
+      const controller = new SyncCatalogController(
+        catalogsStore,
+        catalogUiStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        new ValidateSyncCatalog(),
+        saveCatalog as never,
+        syncCatalog as never,
+        refreshCatalogRefsAndSelect as never,
+        recordCatalogUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'remote-catalog',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources: [{ url: 'https://example.test/source', tokenType: 'theme', type: 'default' }],
+        tokens: [],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'remote-catalog', version: '1.0.0' });
+
+      await controller.run();
+      expect(catalogsStore.getStore().state.catalogs['remote-catalog']?.['1.0.0']?.catalog?.tokens[0].key)
+        .toBe('synced.token');
+
+      await waitForUndoRecorded(undoStackStore);
+      await testUndo.undo.execute();
+      expect(catalogsStore.getStore().state.catalogs['remote-catalog']?.['1.0.0']?.catalog?.tokens).toHaveLength(0);
+
+      await testUndo.redo.execute();
+      expect(catalogsStore.getStore().state.catalogs['remote-catalog']?.['1.0.0']?.catalog?.tokens[0].key)
+        .toBe('synced.token');
+    });
+
+    it('records, undoes, and redoes catalog creation', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const createCatalogDialogStore = new CreateCatalogDialogStore();
+      const { testUndo, recordCatalogUndo, undoStackStore } = createCatalogUndoHarness(catalogsStore, catalogUiStore);
+      const backgroundQueue = createSyncBackgroundQueue();
+      const createCatalog = new CreateCatalogOperation(
+        catalogsStore,
+        { saveCatalog: vi.fn() } as never,
+        backgroundQueue as never,
+      );
+      const controller = new CloseCatalogCreateDialogController(
+        createCatalogDialogStore,
+        catalogUiStore,
+        catalogsStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        new CloseCatalogCreateDialogOperation(createCatalogDialogStore),
+        createCatalog,
+        new SetSelectedCatalogOperation(
+          catalogsStore,
+          catalogUiStore,
+          { loadCatalog: vi.fn() } as never,
+          backgroundQueue as never,
+        ),
+        recordCatalogUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+      createCatalogDialogStore.getStore().openCreateCatalogDialog();
+      createCatalogDialogStore.getStore().setCreateCatalogDialogData('new-catalog', 'manual');
+
+      controller.run('OK');
+      expect(catalogsStore.getStore().state.catalogs['new-catalog']?.['1.0.0']?.catalog?.name).toBe('new-catalog');
+
+      await waitForUndoRecorded(undoStackStore);
+      await testUndo.undo.execute();
+      await vi.waitFor(() => {
+        expect(catalogsStore.getStore().state.catalogs['new-catalog']).toBeUndefined();
+      });
+
+      await testUndo.redo.execute();
+      expect(catalogsStore.getStore().state.catalogs['new-catalog']?.['1.0.0']?.catalog?.name).toBe('new-catalog');
+    });
+
+    it('records, undoes, and redoes catalog version deletion', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const { testUndo, recordCatalogUndo, undoStackStore } = createCatalogUndoHarness(catalogsStore, catalogUiStore);
+      const deleteCatalog = {
+        execute: vi.fn((name: string, version: string) => syncContinuation(() => {
+          removeCatalogVersion(catalogsStore, name, version);
+        })),
+      };
+      const controller = new DeleteCurrentCatalogVersionController(
+        catalogUiStore,
+        catalogsStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        deleteCatalog as never,
+        { execute: vi.fn(() => syncContinuation()) } as never,
+        { execute: vi.fn((ref) => catalogUiStore.getStore().selectCatalog(ref)) } as never,
+        recordCatalogUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'catalog-a',
+        version: '1.0.0',
+        type: 'manual',
+        locked: false,
+        sources: [],
+        tokens: [{ key: 'editor.foreground', type: 'theme' }],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'catalog-a', version: '1.0.0' });
+
+      await controller.run();
+      await vi.waitFor(() => {
+        expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']).toBeUndefined();
+      });
+
+      await waitForUndoRecorded(undoStackStore);
+      await testUndo.undo.execute();
+      expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key)
+        .toBe('editor.foreground');
+
+      await testUndo.redo.execute();
+      expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']).toBeUndefined();
+    });
+  });
+
+  describe('catalog undo failure paths', () => {
+    it('does not record undo entries for no-op token key edits', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const undoStackStore = new UndoStackStore();
+      const testUndo = createTestUndoOperations(
+        undoStackStore,
+        createTestBuildUniversalUndoProcessor({
+          applyCatalogUndoState: new ApplyCatalogUndoStateOperation(
+            catalogsStore,
+            catalogUiStore,
+            { execute: vi.fn() } as never,
+            { execute: vi.fn() } as never,
+          ),
+          applyTemplateUndoState: { execute: vi.fn() } as never,
+          applyThemeUndoState: { execute: vi.fn() } as never,
+        }),
+      );
+      const controller = new UpdateTokenKeyController(
+        catalogsStore,
+        catalogUiStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        { execute: vi.fn() } as never,
+        new BumpCatalogVersionForEditOperation(),
+        new UpdateTokenKeyInCatalogOperation(),
+        { execute: vi.fn() } as never,
+        new RecordCatalogUndoOperation(
+          new RecordUndoEntryOperation(undoStackStore),
+          testUndo.buildUniversalUndoProcessor,
+        ),
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'catalog-a',
+        version: '1.0.0',
+        type: 'manual',
+        locked: false,
+        sources: [],
+        tokens: [{ key: 'editor.foreground', type: 'theme' }],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'catalog-a', version: '1.0.0' });
+
+      await controller.run('editor.foreground', 'editor.foreground', 'theme');
+      expect(undoStackStore.getStore().state.undoMenu?.canUndo ?? false).toBe(false);
+    });
+
+    it('does not record undo entries for rejected source URL edits', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const undoStackStore = new UndoStackStore();
+      const saveCatalog = { execute: vi.fn() };
+      const testUndo = createTestUndoOperations(
+        undoStackStore,
+        createTestBuildUniversalUndoProcessor({
+          applyCatalogUndoState: new ApplyCatalogUndoStateOperation(
+            catalogsStore,
+            catalogUiStore,
+            saveCatalog as never,
+            { execute: vi.fn() } as never,
+          ),
+          applyTemplateUndoState: { execute: vi.fn() } as never,
+          applyThemeUndoState: { execute: vi.fn() } as never,
+        }),
+      );
+      const controller = new UpdateSourceUrlController(
+        catalogsStore,
+        catalogUiStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        saveCatalog as never,
+        new BumpCatalogVersionForEditOperation(),
+        new UpdateSourceUrlInCatalogOperation(),
+        { execute: vi.fn() } as never,
+        new ValidateCanUpdateCatalogSource(),
+        new RecordCatalogUndoOperation(
+          new RecordUndoEntryOperation(undoStackStore),
+          testUndo.buildUniversalUndoProcessor,
+        ),
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'remote-catalog',
+        version: '1.0.0',
+        type: 'remote',
+        locked: false,
+        sources: [],
+        tokens: [],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'remote-catalog', version: '1.0.0' });
+
+      controller.run(0, 'https://example.test/new');
+      expect(saveCatalog.execute).not.toHaveBeenCalled();
+      expect(undoStackStore.getStore().state.undoMenu?.canUndo ?? false).toBe(false);
+    });
+
+    it('does not record undo entries when catalog save fails', async () => {
+      await undoManagerV2.clearPersisted();
+      const catalogsStore = new CatalogsStore();
+      const catalogUiStore = new CatalogUiStore();
+      const undoStackStore = new UndoStackStore();
+      const saveCatalog = { execute: vi.fn(() => { throw new Error('save failed'); }) };
+      const testUndo = createTestUndoOperations(
+        undoStackStore,
+        createTestBuildUniversalUndoProcessor({
+          applyCatalogUndoState: new ApplyCatalogUndoStateOperation(
+            catalogsStore,
+            catalogUiStore,
+            saveCatalog as never,
+            { execute: vi.fn() } as never,
+          ),
+          applyTemplateUndoState: { execute: vi.fn() } as never,
+          applyThemeUndoState: { execute: vi.fn() } as never,
+        }),
+      );
+      const controller = new RemoveTokenController(
+        catalogsStore,
+        catalogUiStore,
+        new TemplateUiStore(),
+        new ThemeUiStore(),
+        saveCatalog as never,
+        new BumpCatalogVersionForEditOperation(),
+        new RemoveTokenFromCatalogOperation(),
+        { execute: vi.fn() } as never,
+        new RecordCatalogUndoOperation(
+          new RecordUndoEntryOperation(undoStackStore),
+          testUndo.buildUniversalUndoProcessor,
+        ),
+        testUndo.setCurrentUndoStackId,
+      );
+      const catalog = catalogSchema.parse({
+        name: 'catalog-a',
+        version: '1.0.0',
+        type: 'manual',
+        locked: false,
+        sources: [],
+        tokens: [{ key: 'editor.foreground', type: 'theme' }],
+      });
+      catalogsStore.getStore().upsertCatalogs([catalog]);
+      catalogUiStore.getStore().selectCatalog({ name: 'catalog-a', version: '1.0.0' });
+
+      expect(() => controller.run('editor.foreground', 'theme')).toThrow('save failed');
+      expect(undoStackStore.getStore().state.undoMenu?.canUndo ?? false).toBe(false);
+    });
   });
 });

@@ -1,8 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
-import { createUndoProcessor } from '../../../../domain/core/undo-processor';
 import { SetColorVariableLightOperation } from '../../../../domain/operations/theme-operations/theme-details/set-color-variable-light-operation';
-import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
@@ -13,7 +12,7 @@ export class SetColorVariableLightController {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
     private readonly setColorVariableLight: SetColorVariableLightOperation,
-    private readonly recordUndoEntry: RecordUndoEntryOperation,
+    private readonly recordThemeUndo: RecordThemeUndoOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
@@ -28,28 +27,14 @@ export class SetColorVariableLightController {
     this.setCurrentUndoStackId.executeForContext(context);
 
     const edit = this.setColorVariableLight.execute(ref, value);
-    if (!edit) return;
+    if (!edit?.changed) return;
 
-    await this.recordUndoEntry.execute({
-      completed: edit.changed,
+    await this.recordThemeUndo.execute({
       description: `Change ${ref} light color`,
-      diffs: [{
-        actionType: THEME_COLOR_VARIABLE_LIGHT_SET,
-        target: ref,
-        before: edit.before,
-        after: edit.after,
-      }],
-      processor: createUndoProcessor([{
-        actionType: THEME_COLOR_VARIABLE_LIGHT_SET,
-        apply: (action) => {
-          this.setColorVariableLight.execute(action.target as ColorVariableKey, String(action.after ?? ''));
-        },
-        revert: (action) => {
-          this.setColorVariableLight.execute(action.target as ColorVariableKey, String(action.before ?? ''));
-        },
-      }]),
+      actionType: THEME_COLOR_VARIABLE_LIGHT_SET,
+      target: ref,
+      before: edit.before,
+      after: edit.after,
     });
   }
 }
-
-

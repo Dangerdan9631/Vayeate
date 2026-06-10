@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { catalogSchema } from '../../../model/schema/catalog';
 import { CATALOG_TOKEN_KEY_UPDATED } from '../../../model/undo-action-types';
+import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import { RecordCatalogUndoOperation } from './record-catalog-undo-operation';
+import { RecordUndoEntryOperation } from './record-undo-entry-operation';
 
 describe('record catalog undo operation', () => {
   it('skips recording when before and after are equal', async () => {
@@ -75,5 +77,35 @@ describe('record catalog undo operation', () => {
       }],
       processor,
     });
+  });
+
+  it('skips recording when no undo context is active', async () => {
+    const undoStackStore = new UndoStackStore();
+    const before = catalogSchema.parse({
+      name: 'catalog-a',
+      version: '1.0.0',
+      type: 'manual',
+      locked: false,
+      sources: [],
+      tokens: [],
+    });
+    const after = catalogSchema.parse({
+      ...before,
+      tokens: [{ key: 'editorFg', type: 'theme' }],
+    });
+
+    const result = await new RecordCatalogUndoOperation(
+      new RecordUndoEntryOperation(undoStackStore),
+      { execute: vi.fn(() => ({ applyProcessor: vi.fn(), revertProcessor: vi.fn() })) } as never,
+    ).execute({
+      description: 'Rename token',
+      actionType: CATALOG_TOKEN_KEY_UPDATED,
+      target: 'catalog-a@1.0.0:theme:editorFg',
+      before,
+      after,
+    });
+
+    expect(result.status).toBe('not-recorded');
+    expect(undoStackStore.getStore().state.undoMenu?.canUndo ?? false).toBe(false);
   });
 });

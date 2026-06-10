@@ -125,15 +125,21 @@ describe('catalog token and validation operations', () => {
       execute: vi.fn(() => merged),
     };
     const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const recordCatalogUndo = { execute: vi.fn() };
+    const setCurrentUndoStackId = { executeForContext: vi.fn() };
     const controller = new AddNewTokenController(
       catalogsStore,
       catalogUiStore,
+      { getStore: () => ({ state: { selectedRef: null } }) } as never,
+      { getStore: () => ({ state: { selectedRef: null } }) } as never,
       saveCatalog as never,
       setCatalogNewTokenKey as never,
       bumpCatalogVersionForEdit as never,
       addPlainTokenToCatalog as never,
       mergeSemanticSelectorsIntoCatalog as never,
       refreshCatalogRefsAndSelect as never,
+      recordCatalogUndo as never,
+      setCurrentUndoStackId as never,
     );
 
     controller.run('semantic token');
@@ -166,15 +172,21 @@ describe('catalog token and validation operations', () => {
     const addPlainTokenToCatalog = { execute: vi.fn() };
     const mergeSemanticSelectorsIntoCatalog = { execute: vi.fn() };
     const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const recordCatalogUndo = { execute: vi.fn() };
+    const setCurrentUndoStackId = { executeForContext: vi.fn() };
     const controller = new AddNewTokenController(
       catalogsStore,
       catalogUiStore,
+      { getStore: () => ({ state: { selectedRef: null } }) } as never,
+      { getStore: () => ({ state: { selectedRef: null } }) } as never,
       saveCatalog as never,
       setCatalogNewTokenKey as never,
       bumpCatalogVersionForEdit as never,
       addPlainTokenToCatalog as never,
       mergeSemanticSelectorsIntoCatalog as never,
       refreshCatalogRefsAndSelect as never,
+      recordCatalogUndo as never,
+      setCurrentUndoStackId as never,
     );
 
     controller.run('theme');

@@ -6,16 +6,26 @@ import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operati
 import { ValidateSyncCatalog } from '../../../../domain/catalog/validations/validate-sync-catalog';
 import { getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { CATALOG_SYNCED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class SyncCatalogController {
   constructor(
     private readonly catalogsStore: CatalogsStore,
     private readonly catalogUiStore: CatalogUiStore,
+    private readonly templateUiStore: TemplateUiStore,
+    private readonly themeUiStore: ThemeUiStore,
     private readonly validateSyncCatalog: ValidateSyncCatalog,
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly syncCatalog: SyncCatalogOperation,
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly recordCatalogUndo: RecordCatalogUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
   async run(): Promise<void> {
@@ -23,8 +33,23 @@ export class SyncCatalogController {
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
     if (!this.validateSyncCatalog.test(catalog)) return;
 
-    const synced = await this.syncCatalog.execute(catalog);
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'catalogs',
+      catalogRef: { name: catalog!.name, version: catalog!.version },
+      templateRef: this.templateUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
+    const synced = await this.syncCatalog.execute(catalog!);
     this.saveCatalog.execute(synced);
     this.refreshCatalogRefsAndSelect.execute(synced.name, synced.version);
+
+    await this.recordCatalogUndo.execute({
+      description: `Sync catalog ${catalog!.name} from sources`,
+      actionType: CATALOG_SYNCED,
+      target: `${catalog!.name}@${catalog!.version}`,
+      before: catalog!,
+      after: synced,
+    });
   }
 }

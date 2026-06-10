@@ -1,6 +1,5 @@
 import type { TokenType } from '../../../../model/schema/primitives';
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../model/schema/catalog';
 import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
 import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { SaveCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
@@ -10,8 +9,7 @@ import { getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-sto
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
-import { createUndoProcessor } from '../../../../domain/core/undo-processor';
-import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKEN_KEY_UPDATED } from '../../../../model/undo-action-types';
@@ -27,7 +25,7 @@ export class UpdateTokenKeyController {
     private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
     private readonly updateTokenKeyInCatalog: UpdateTokenKeyInCatalogOperation,
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
-    private readonly recordUndoEntry: RecordUndoEntryOperation,
+    private readonly recordCatalogUndo: RecordCatalogUndoOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
@@ -39,39 +37,26 @@ export class UpdateTokenKeyController {
     const tokenExists = catalog.tokens.some((token) => token.key === oldKey && token.type === tokenType);
     if (!trimmedNewKey || trimmedNewKey === oldKey || !tokenExists) return;
 
-    const context = deriveUndoContext({
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
       tabId: 'catalogs',
       catalogRef: { name: catalog.name, version: catalog.version },
       templateRef: this.templateUiStore.getStore().state.selectedRef,
       themeRef: this.themeUiStore.getStore().state.selectedRef,
-    });
-    this.setCurrentUndoStackId.executeForContext(context);
+    }));
 
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateTokenKeyInCatalog.execute(base, oldKey, trimmedNewKey, tokenType);
-    this.applyCatalogState(updated);
+    this.catalogsStore.getStore().upsertCatalogs([updated]);
+    this.catalogUiStore.getStore().selectCatalog({ name: updated.name, version: updated.version });
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
 
-    await this.recordUndoEntry.execute({
-      completed: true,
+    await this.recordCatalogUndo.execute({
       description: `Rename ${oldKey} catalog token`,
-      diffs: [{
-        actionType: CATALOG_TOKEN_KEY_UPDATED,
-        target: `${catalog.name}@${catalog.version}:${tokenType}:${oldKey}`,
-        before: catalog,
-        after: updated,
-      }],
-      processor: createUndoProcessor([{
-        actionType: CATALOG_TOKEN_KEY_UPDATED,
-        apply: (action) => this.applyCatalogState(action.after as Catalog),
-        revert: (action) => this.applyCatalogState(action.before as Catalog),
-      }]),
+      actionType: CATALOG_TOKEN_KEY_UPDATED,
+      target: `${catalog.name}@${catalog.version}:${tokenType}:${oldKey}`,
+      before: catalog,
+      after: updated,
     });
-  }
-
-  private applyCatalogState(catalog: Catalog): void {
-    this.catalogsStore.getStore().upsertCatalogs([catalog]);
-    this.catalogUiStore.getStore().selectCatalog({ name: catalog.name, version: catalog.version });
-    this.saveCatalog.execute(catalog);
-    this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
   }
 }
