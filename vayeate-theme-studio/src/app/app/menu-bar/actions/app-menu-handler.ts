@@ -39,13 +39,16 @@ export class AppMenuHandler {
       case AppMenuActionType.EditMenuTriggerButtonOnClick:
         return this.toggleMenuOpen.run('edit');
       case AppMenuActionType.EditMenuUndoButtonOnClick:
-        return this.performUndo.run();
+        await this.performUndo.run();
+        return;
       case AppMenuActionType.EditMenuRedoButtonOnClick:
-        return this.performRedo.run();
+        await this.performRedo.run();
+        return;
       case AppMenuActionType.HistoryMenuTriggerButtonOnClick:
         return this.toggleMenuOpen.run('history');
       case AppMenuActionType.HistoryMenuGoToButtonOnClick:
-        return this.performHistoryGoTo.run(action.frameId);
+        await this.performHistoryGoTo.run(action.frameId);
+        return;
       case AppMenuActionType.ViewMenuTriggerButtonOnClick:
         return this.toggleMenuOpen.run('view');
       case AppMenuActionType.ViewMenuReloadButtonOnClick:

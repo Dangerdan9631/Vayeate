@@ -16,7 +16,7 @@ export class CatalogsCardHandler {
     this.log = loggerFactory.create(CatalogsCardHandler.name);
   }
 
-  handle(action: CatalogsCardActions): void {
+  async handle(action: CatalogsCardActions): Promise<void> {
     switch (action.type) {
       case CatalogsCardActionType.CatalogsListOnCommit:
       case CatalogsCardActionType.CatalogVersionsListOnCommit:

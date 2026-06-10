@@ -43,11 +43,11 @@ export class SetMappingColorRefController {
     if (colorRef === null && isOrphan) {
       const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
       this.saveTemplate.execute(next);
-      this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+      this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
       return;
     }
     const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

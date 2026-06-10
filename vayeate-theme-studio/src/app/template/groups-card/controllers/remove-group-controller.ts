@@ -26,6 +26,6 @@ export class RemoveGroupController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeGroupFromTemplate.execute(base, groupId);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

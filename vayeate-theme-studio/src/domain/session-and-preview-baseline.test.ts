@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { LoadAppConfigOperation } from './operations/app-operations/load-app-config-operation';
 import { SaveAppConfigOperation } from './operations/app-operations/save-app-config-operation';
 import { LoadUndoHistoryOperation } from './operations/undo-operations/load-undo-history-operation';
+import { LoadAppController } from '../app/app/app-shell/controllers/load-app-controller';
 import { undoManagerV2 } from './core/undo-manager-v2';
 import { emptyUndoMenuSnapshot } from './state/undo-stack/undo-stack-state';
 import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor } from './utils/scope-resolver';
@@ -79,13 +80,47 @@ describe('session and preview baselines', () => {
     await new LoadUndoHistoryOperation(populatedStore as never).execute();
     expect(getOrCreateSpy).toHaveBeenCalledWith('theme:baseline', expect.any(Object));
     expect(setSnapshot).toHaveBeenCalledWith({
+      activeContextKey: 'theme:baseline',
       frames: [{ id: 'frame-1', description: 'Changed color' }],
+      recentActions: [{ id: 'frame-1', description: 'Changed color' }],
       currentId: 'frame-1',
       canUndo: true,
       canRedo: false,
+      nextUndoDescription: null,
+      nextRedoDescription: null,
+      historyVersion: 1,
     });
 
     getOrCreateSpy.mockRestore();
+  });
+
+  it('loads app startup undo history only after clearing prior-session files', () => {
+    const order: string[] = [];
+    const clearPersistedUndo = {
+      execute: vi.fn(() => ({
+        then: vi.fn((_label: string, onCleared: () => void) => {
+          order.push('clear');
+          onCleared();
+        }),
+      })),
+    };
+    const loadUndoHistory = {
+      execute: vi.fn(() => {
+        order.push('load-undo');
+      }),
+    };
+    const controller = new LoadAppController(
+      { run: vi.fn(() => order.push('window')) } as never,
+      { execute: vi.fn(() => order.push('config')) } as never,
+      clearPersistedUndo as never,
+      loadUndoHistory as never,
+    );
+
+    controller.run();
+
+    expect(clearPersistedUndo.execute).toHaveBeenCalledTimes(1);
+    expect(loadUndoHistory.execute).toHaveBeenCalledTimes(1);
+    expect(order).toEqual(['window', 'clear', 'load-undo', 'config']);
   });
 
   it('resolves preview colors and display assignments from theme/template state', () => {

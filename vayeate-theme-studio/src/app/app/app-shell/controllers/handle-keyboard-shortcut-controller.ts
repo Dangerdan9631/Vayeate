@@ -10,22 +10,22 @@ export class HandleKeyboardShortcutController {
     private readonly performRedo: RedoOperation,
   ) {}
 
-  run(e: KeyboardShortcutEvent): void {
+  async run(e: KeyboardShortcutEvent): Promise<void> {
     if (!(e.ctrlKey || e.metaKey)) return;
 
     if (e.key === 'z') {
       e.preventDefault();
       if (e.shiftKey) {
-        void this.performRedo.execute();
+        await this.performRedo.execute();
       } else {
-        void this.performUndo.execute();
+        await this.performUndo.execute();
       }
       return;
     }
 
     if (e.key === 'y') {
       e.preventDefault();
-      void this.performRedo.execute();
+      await this.performRedo.execute();
     }
   }
 }

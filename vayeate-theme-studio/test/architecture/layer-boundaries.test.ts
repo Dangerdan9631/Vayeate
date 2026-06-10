@@ -148,4 +148,25 @@ describe('layer boundaries', () => {
       }
     }
   });
+
+  it('keeps undo policy independent from React, Electron, filesystem, and gateway details', async () => {
+    const files = await walkMany([
+      'src/domain/core',
+      'src/domain/state/undo-stack',
+      'src/domain/operations/undo-operations',
+    ]);
+
+    for (const filePath of files) {
+      const source = await readFile(filePath, 'utf8');
+      const targets = await getRelativeImportTargets(filePath);
+
+      expect(source.includes('react'), filePath).toBe(false);
+      expect(source.includes('electron'), filePath).toBe(false);
+      expect(source.includes('FileSystemService'), filePath).toBe(false);
+      for (const target of targets) {
+        expect(isInside(target, path.join(sourceRoot, 'gateway')), filePath).toBe(false);
+        expect(isInside(target, electronRoot), filePath).toBe(false);
+      }
+    }
+  });
 });

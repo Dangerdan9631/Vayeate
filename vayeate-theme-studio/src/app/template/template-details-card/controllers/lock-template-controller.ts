@@ -22,6 +22,6 @@ export class LockTemplateController {
     if (!template || !this.validateCanLockTemplate.test(template)) return;
     const updated = this.lockTemplateOperation.execute(template);
     this.saveTemplate.execute(updated);
-    this.refreshTemplateRefsAndSelect.execute(template.name, template.version);
+    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated);
   }
 }

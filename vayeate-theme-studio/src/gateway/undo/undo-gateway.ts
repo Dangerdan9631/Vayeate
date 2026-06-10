@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { FileSystemService } from '../services/file-system-service';
+import { UndoPersistencePort } from '../../domain/operations/undo-operations/undo-persistence-port';
 
 const UNDO_RELATIVE_DIR = 'data/.undo';
 
@@ -12,8 +13,10 @@ function stackRelativeFilePath(stackId: string): string {
 }
 
 @singleton()
-export class UndoGateway {
-  constructor(private readonly fileSystemService: FileSystemService) {}
+export class UndoGateway extends UndoPersistencePort {
+  constructor(private readonly fileSystemService: FileSystemService) {
+    super();
+  }
 
   async saveStack(stackId: string, payload: string): Promise<void> {
     if (!stackId) return;

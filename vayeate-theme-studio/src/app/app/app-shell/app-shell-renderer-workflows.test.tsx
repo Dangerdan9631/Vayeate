@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { LoggerFactory } from '../../../domain/utils/logger';
 import { AppShellHandler } from './actions/app-shell-handler';
 import { AppShellActionType } from './actions/app-shell-action-type';
+import { HandleKeyboardShortcutController } from './controllers/handle-keyboard-shortcut-controller';
 import { useAppShellViewModel } from './use-app-shell-viewmodel';
 
 const dispatchMock = vi.fn();
@@ -91,5 +92,45 @@ describe('app shell renderer workflows', () => {
     expect(dragWindow.run).toHaveBeenCalledTimes(1);
     expect(closeWindow.run).toHaveBeenCalledTimes(1);
     expect(unloadApp.run).toHaveBeenCalledTimes(1);
+  });
+
+  it('routes keyboard undo and redo shortcuts to typed history operations', async () => {
+    const performUndo = { execute: vi.fn(async () => ({ status: 'transitioned' })) };
+    const performRedo = { execute: vi.fn(async () => ({ status: 'transitioned' })) };
+    const controller = new HandleKeyboardShortcutController(
+      performUndo as never,
+      performRedo as never,
+    );
+    const undoEvent = {
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      key: 'z',
+      preventDefault: vi.fn(),
+    };
+    const redoShiftEvent = {
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: true,
+      key: 'z',
+      preventDefault: vi.fn(),
+    };
+    const redoEvent = {
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      key: 'y',
+      preventDefault: vi.fn(),
+    };
+
+    await controller.run(undoEvent);
+    await controller.run(redoShiftEvent);
+    await controller.run(redoEvent);
+
+    expect(undoEvent.preventDefault).toHaveBeenCalledTimes(1);
+    expect(redoShiftEvent.preventDefault).toHaveBeenCalledTimes(1);
+    expect(redoEvent.preventDefault).toHaveBeenCalledTimes(1);
+    expect(performUndo.execute).toHaveBeenCalledTimes(1);
+    expect(performRedo.execute).toHaveBeenCalledTimes(2);
   });
 });

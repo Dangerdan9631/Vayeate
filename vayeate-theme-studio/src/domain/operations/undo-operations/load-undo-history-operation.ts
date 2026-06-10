@@ -3,6 +3,7 @@ import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { createUndoProcessor } from '../../core/undo-processor';
 import { emptyUndoMenuSnapshot } from '../../state/undo-stack/undo-stack-state';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
+import { refreshUndoSummary } from './undo-operation-helpers';
 
 @singleton()
 export class LoadUndoHistoryOperation {
@@ -18,12 +19,6 @@ export class LoadUndoHistoryOperation {
     }
     const processor = createUndoProcessor();
     const stack = await undoManagerV2.getOrCreate(snap.currentUndoStackId, { processor });
-    const list = stack.list();
-    this.undoStackStore.getStore().setUndoMenuSnapshot({
-      frames: list.frames,
-      currentId: list.currentId,
-      canUndo: stack.canUndo,
-      canRedo: stack.canRedo,
-    });
+    refreshUndoSummary(this.undoStackStore, stack);
   }
 }

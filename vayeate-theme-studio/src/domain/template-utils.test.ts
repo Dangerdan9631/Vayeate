@@ -149,7 +149,7 @@ describe('template utility baselines', () => {
     expect(store.getStore().state).toBeNull();
   });
 
-  it('adds a trimmed group through template operation ports and clears the input only after success', () => {
+  it('adds a trimmed group through template operation ports and clears the input only after success', async () => {
     const templatesStore = new TemplatesStore();
     const templateUiStore = new TemplateUiStore();
     const lockedTemplate = {
@@ -181,7 +181,7 @@ describe('template utility baselines', () => {
       setTemplateAddGroupName as never,
     );
 
-    controller.run();
+    await controller.run();
 
     expect(saveTemplate.execute).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -191,20 +191,23 @@ describe('template utility baselines', () => {
         groups: ['existing', 'new-group'],
       }),
     );
-    expect(refreshTemplateRefsAndSelect.execute).toHaveBeenCalledWith('template-a', '1.0.1');
+    expect(refreshTemplateRefsAndSelect.execute).toHaveBeenCalledWith('template-a', '1.0.1', expect.objectContaining({
+      name: 'template-a',
+      version: '1.0.1',
+    }));
     expect(setTemplateAddGroupName.execute).toHaveBeenCalledWith('');
 
     vi.clearAllMocks();
     templateUiStore.getStore().setAddGroupName('existing');
 
-    controller.run();
+    await controller.run();
 
     expect(saveTemplate.execute).not.toHaveBeenCalled();
     expect(refreshTemplateRefsAndSelect.execute).not.toHaveBeenCalled();
     expect(setTemplateAddGroupName.execute).not.toHaveBeenCalled();
   });
 
-  it('short-circuits group creation when the selected template or input is stale', () => {
+  it('short-circuits group creation when the selected template or input is stale', async () => {
     const templatesStore = new TemplatesStore();
     const templateUiStore = new TemplateUiStore();
     const saveTemplate = { execute: vi.fn() };
@@ -221,7 +224,7 @@ describe('template utility baselines', () => {
     );
 
     templateUiStore.getStore().setAddGroupName('core');
-    controller.run();
+    await controller.run();
 
     expect(saveTemplate.execute).not.toHaveBeenCalled();
 
@@ -241,7 +244,7 @@ describe('template utility baselines', () => {
     templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
     templateUiStore.getStore().setAddGroupName('   ');
 
-    controller.run();
+    await controller.run();
 
     expect(saveTemplate.execute).not.toHaveBeenCalled();
     expect(refreshTemplateRefsAndSelect.execute).not.toHaveBeenCalled();

@@ -23,6 +23,6 @@ export class UpdateVariableGroupRefController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.updateVariableGroupRefOp.execute(base, variableKey, groupRef);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

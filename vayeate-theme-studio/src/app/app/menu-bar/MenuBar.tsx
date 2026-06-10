@@ -9,6 +9,8 @@ export function MenuBar() {
     viewOpen,
     canUndo,
     canRedo,
+    nextUndoDescription,
+    nextRedoDescription,
     frames,
     currentId,
     isMaximized,
@@ -148,7 +150,7 @@ export function MenuBar() {
                 className="menu-edit-item"
                 onClick={handleUndo}
                 disabled={!canUndo}
-                aria-label="Undo"
+                aria-label={nextUndoDescription ? `Undo ${nextUndoDescription}` : 'Undo'}
               >
                 <span className="material-symbols-outlined menu-edit-icon" aria-hidden>undo</span>
                 Undo
@@ -159,7 +161,7 @@ export function MenuBar() {
                 className="menu-edit-item"
                 onClick={handleRedo}
                 disabled={!canRedo}
-                aria-label="Redo"
+                aria-label={nextRedoDescription ? `Redo ${nextRedoDescription}` : 'Redo'}
               >
                 <span className="material-symbols-outlined menu-edit-icon" aria-hidden>redo</span>
                 Redo

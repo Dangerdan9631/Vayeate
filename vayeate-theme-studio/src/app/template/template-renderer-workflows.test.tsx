@@ -9,6 +9,23 @@ import { TemplateCatalogsCard } from './template-catalogs-card/TemplateCatalogsC
 import { GroupsCard } from './groups-card/GroupsCard';
 import { VariablesCard } from './variables-card/VariablesCard';
 import { MappingsCard } from './mappings-card/MappingsCard';
+import { SelectTemplateAndLoadController } from './templates-card/controllers/select-template-and-load-controller';
+import { AddColorVariableController } from './variables-card/controllers/add-color-variable-controller';
+import { AddGroupController } from './groups-card/controllers/add-group-controller';
+import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
+import { TemplatesStore } from '../../domain/state/data/templates-store';
+import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
+import { BumpTemplateVersionForEditOperation } from '../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { AddColorVariableOperation } from '../../domain/operations/template-operations/variables-color/add-color-variable-operation';
+import { AddGroupToTemplateOperation } from '../../domain/operations/template-operations/groups/add-group-to-template-operation';
+import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
+import { SetCurrentUndoStackIdOperation } from '../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { UndoOperation } from '../../domain/operations/undo-operations/undo-operation';
+import { RedoOperation } from '../../domain/operations/undo-operations/redo-operation';
+import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import { templateSchema } from '../../model/schema/template-schemas';
 
 const viewModelMocks = vi.hoisted(() => ({
   useTemplateViewModel: vi.fn(),
@@ -260,6 +277,37 @@ describe('template renderer workflows', () => {
     expect(view.getByRole('heading', { name: 'Create New Template' })).toBeInTheDocument();
   });
 
+  it('selects a template-scoped undo stack when template references change', async () => {
+    const setSelectedTemplateRef = { execute: vi.fn() };
+    const loadTemplate = { execute: vi.fn(async () => ({ catalogRefs: [] })) };
+    const loadCatalogForDisplay = { execute: vi.fn() };
+    const catalogUiStore = {
+      getStore: () => ({ state: { selectedRef: { name: 'catalog-a', version: '2.0.0' } } }),
+    };
+    const themeUiStore = {
+      getStore: () => ({ state: { selectedRef: { name: 'theme-a', version: '3.0.0' } } }),
+    };
+    const setCurrentUndoStackId = { executeAndLoadForContext: vi.fn() };
+    const controller = new SelectTemplateAndLoadController(
+      setSelectedTemplateRef as never,
+      loadTemplate as never,
+      loadCatalogForDisplay as never,
+      catalogUiStore as never,
+      themeUiStore as never,
+      setCurrentUndoStackId as never,
+    );
+
+    await controller.run('template-a', '1.0.0');
+    await controller.run('template-a', '1.0.1');
+
+    expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(1, expect.objectContaining({
+      contextKey: 'tab=templates|template=template-a@1.0.0|catalog=catalog-a@2.0.0|theme=theme-a@3.0.0',
+    }));
+    expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      contextKey: 'tab=templates|template=template-a@1.0.1|catalog=catalog-a@2.0.0|theme=theme-a@3.0.0',
+    }));
+  });
+
   it('supports template selection and create actions', async () => {
     const user = userEvent.setup();
     const onSelectName = vi.fn();
@@ -493,5 +541,117 @@ describe('template renderer workflows', () => {
     expect(mappingCallbacks.setMappingColorVariableFilter).toHaveBeenCalled();
     await user.click(mappingsView.getAllByRole('button', { name: 'Add semantic token variant' })[0]);
     expect(mappingCallbacks.semanticVariant.onAddSemanticVariant).toHaveBeenCalled();
+  });
+
+  it('records, undoes, and redoes completed template variable and group edits', async () => {
+    await undoManagerV2.clearPersisted();
+    const templatesStore = new TemplatesStore();
+    const templateUiStore = new TemplateUiStore();
+    const catalogUiStore = new CatalogUiStore();
+    const themeUiStore = new ThemeUiStore();
+    const undoStackStore = new UndoStackStore();
+    const saveTemplate = { execute: vi.fn() };
+    const refreshTemplateRefsAndSelect = { execute: vi.fn() };
+    const template = templateSchema.parse({
+      name: 'template-a',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [],
+      contrastVariables: [],
+      groups: [],
+    });
+    templatesStore.getStore().updateTemplate(template);
+    templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
+    const recordUndoEntry = new RecordUndoEntryOperation(undoStackStore);
+    const setCurrentUndoStackId = new SetCurrentUndoStackIdOperation(undoStackStore);
+    const addVariable = new AddColorVariableController(
+      templatesStore,
+      templateUiStore,
+      catalogUiStore,
+      themeUiStore,
+      new BumpTemplateVersionForEditOperation(),
+      new AddColorVariableOperation(),
+      saveTemplate as never,
+      refreshTemplateRefsAndSelect as never,
+      recordUndoEntry,
+      setCurrentUndoStackId,
+    );
+    const addGroup = new AddGroupController(
+      templatesStore,
+      templateUiStore,
+      catalogUiStore,
+      themeUiStore,
+      new BumpTemplateVersionForEditOperation(),
+      new AddGroupToTemplateOperation(),
+      saveTemplate as never,
+      refreshTemplateRefsAndSelect as never,
+      recordUndoEntry,
+      setCurrentUndoStackId,
+    );
+
+    await addVariable.run('editorFg');
+    await addGroup.run('core');
+    expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual(['core']);
+    expect(undoStackStore.getStore().state.undoMenu.frames).toHaveLength(2);
+
+    await new UndoOperation(undoStackStore).execute();
+    expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual([]);
+
+    await new RedoOperation(undoStackStore).execute();
+    expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual(['core']);
+  });
+
+  it('does not record template undo entries for rejected variable or group edits', async () => {
+    await undoManagerV2.clearPersisted();
+    const templatesStore = new TemplatesStore();
+    const templateUiStore = new TemplateUiStore();
+    const undoStackStore = new UndoStackStore();
+    const saveTemplate = { execute: vi.fn() };
+    const template = templateSchema.parse({
+      name: 'template-a',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [],
+      colorVariables: [{ key: 'editorFg', groupRef: null }],
+      contrastVariables: [],
+      groups: ['core'],
+    });
+    templatesStore.getStore().updateTemplate(template);
+    templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
+    const addVariable = new AddColorVariableController(
+      templatesStore,
+      templateUiStore,
+      new CatalogUiStore(),
+      new ThemeUiStore(),
+      new BumpTemplateVersionForEditOperation(),
+      new AddColorVariableOperation(),
+      saveTemplate as never,
+      { execute: vi.fn() } as never,
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+    const addGroup = new AddGroupController(
+      templatesStore,
+      templateUiStore,
+      new CatalogUiStore(),
+      new ThemeUiStore(),
+      new BumpTemplateVersionForEditOperation(),
+      new AddGroupToTemplateOperation(),
+      saveTemplate as never,
+      { execute: vi.fn() } as never,
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+
+    await addVariable.run('editorFg');
+    await addVariable.run('   ');
+    await addGroup.run('core');
+    await addGroup.run('   ');
+
+    expect(saveTemplate.execute).not.toHaveBeenCalled();
+    expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(false);
   });
 });

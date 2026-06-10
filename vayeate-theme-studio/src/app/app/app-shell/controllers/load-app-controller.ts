@@ -15,8 +15,9 @@ export class LoadAppController {
 
   run(): void {
     this.initializeWindowService.run();
-    this.clearPersistedUndo.execute();
+    this.clearPersistedUndo.execute().then('Loading undo history', () => {
+      void this.loadUndoHistory.execute();
+    });
     this.loadAppConfig.execute();
-    this.loadUndoHistory.execute();
   }
 }

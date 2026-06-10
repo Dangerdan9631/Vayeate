@@ -23,6 +23,6 @@ export class AddContrastVariableController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.addContrastVariableToTemplate.execute(base, key, groupRef);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

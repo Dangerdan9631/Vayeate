@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { HistoryGoToOperation } from '../../../domain/operations/undo-operations/history-go-to-operation';
 import { CloseMenusOperation } from '../../../domain/operations/app-operations/close-menus-operation';
+import type { HistoryTransitionResult } from '../../../model/undo-history';
 
 @singleton()
 export class HistoryGoToController {
@@ -9,8 +10,9 @@ export class HistoryGoToController {
     private readonly closeMenus: CloseMenusOperation,
   ) {}
 
-  run(frameId: string): void {
-    this.performHistoryGoTo.execute(frameId);
+  async run(frameId: string): Promise<HistoryTransitionResult> {
+    const result = await this.performHistoryGoTo.execute(frameId);
     this.closeMenus.execute();
+    return result;
   }
 }

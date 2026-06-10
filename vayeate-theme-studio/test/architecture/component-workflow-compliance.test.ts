@@ -121,14 +121,12 @@ describe('component workflow compliance', () => {
     expect(canonicalPatterns).toContain('Read-only renderer summaries do not need synthetic actions');
   });
 
-  it('keeps directives and contracts synchronized with the active 003 feature rules', async () => {
-    const [agents, plan, inventoryContract] = await Promise.all([
-      readText('AGENTS.md'),
+  it('keeps 003 component workflow contracts internally synchronized', async () => {
+    const [plan, inventoryContract] = await Promise.all([
       readText('specs/003-ui-component-compliance/plan.md'),
       readText('specs/003-ui-component-compliance/contracts/inventory-and-enforcement.md'),
     ]);
 
-    expect(agents).toContain('specs/003-ui-component-compliance/plan.md');
     expect(plan).toContain('Review and remediate the remaining unchecked component workflow inventory from');
     expect(inventoryContract).toContain('The unchecked component entries in `Todo.md` are the minimum authoritative');
     expect(inventoryContract).toContain('Directive artifacts must be synchronized');
@@ -150,6 +148,71 @@ describe('component workflow compliance', () => {
         filePath,
       ).toBe(true);
     }
+  });
+
+  it('keeps active undo directives synchronized with contracts and tasks', async () => {
+    const [agents, historyContract, workflowContract, tasks] = await Promise.all([
+      readText('AGENTS.md'),
+      readText('specs/004-add-undo-functionality/contracts/undo-history-contract.md'),
+      readText('specs/004-add-undo-functionality/contracts/undo-workflow-integration.md'),
+      readText('specs/004-add-undo-functionality/tasks.md'),
+    ]);
+
+    for (const source of [agents, historyContract, workflowContract, tasks]) {
+      expect(source).toContain('action-generated');
+      expect(source).toContain('read-only');
+    }
+    expect(agents).toContain('cleared on startup');
+    expect(historyContract).toContain('Startup clears persisted undo state');
+    expect(workflowContract).toContain('renderer summaries are read-only');
+    expect(tasks).toContain('no placeholder undo actions');
+  });
+
+  it('prevents placeholder undo actions and whole-application undo snapshots', async () => {
+    const undoSources = await Promise.all([
+      readText('src/domain/core/undo-stack-types.ts'),
+      readText('src/domain/core/undo-processor.ts'),
+      readText('src/domain/core/undo-stack.ts'),
+    ]);
+    const combined = undoSources.join('\n');
+
+    expect(combined).not.toContain('NOOP');
+    expect(combined).not.toContain('UndoActionNoop');
+    expect(combined).not.toContain('whole application');
+    expect(combined).toContain('UndoDiff');
+    expect(combined).toContain('HistoryTransitionResult');
+  });
+
+  it('keeps undo summaries read-only and context-scoped', async () => {
+    const [stateSource, modelSource] = await Promise.all([
+      readText('src/domain/state/undo-stack/undo-stack-state.ts'),
+      readText('src/model/undo-history.ts'),
+    ]);
+
+    expect(stateSource).toContain('UndoAvailabilitySummary');
+    expect(stateSource).toContain('activeContextKey');
+    expect(modelSource).toContain('deriveUndoContext');
+    expect(modelSource).toContain('templateRef');
+    expect(modelSource).toContain('catalogRef');
+    expect(modelSource).toContain('themeRef');
+  });
+
+  it('tracks representative undo workflow participation across catalog, template, and theme', async () => {
+    const workflowSources = await Promise.all([
+      readText('src/app/catalog/tokens-card/controllers/update-token-key-controller.ts'),
+      readText('src/app/template/variables-card/controllers/add-variable-controller.ts'),
+      readText('src/app/template/groups-card/controllers/add-group-and-clear-input-controller.ts'),
+      readText('src/app/theme/theme-palette-card/controllers/assign-color-from-picker-controller.ts'),
+      readText('src/app/theme/theme-variables-card/controllers/set-color-variable-dark-controller.ts'),
+    ]);
+    const combined = workflowSources.join('\n');
+
+    expect(combined).toContain('RecordUndoEntryOperation');
+    expect(combined).toContain('CATALOG_TOKEN_KEY_UPDATED');
+    expect(combined).toContain('TEMPLATE_COLOR_VARIABLE_ADDED');
+    expect(combined).toContain('TEMPLATE_GROUP_ADDED');
+    expect(combined).toContain('THEME_PALETTE_COLOR_ASSIGNED');
+    expect(combined).toContain('THEME_COLOR_VARIABLE_DARK_SET');
   });
 
   it('keeps component filenames PascalCase, helper modules kebab-case, and tsx files on one primary export', async () => {

@@ -32,7 +32,7 @@ export class InitializeWindowCallbacksController {
         this.setViewportSize.execute(size);
       },
       onGlobalKeyDown: (event) => {
-        this.handleKeyboardShortcut.run(event);
+        void this.handleKeyboardShortcut.run(event);
       },
     });
   }

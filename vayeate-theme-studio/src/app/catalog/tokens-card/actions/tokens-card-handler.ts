@@ -32,7 +32,7 @@ export class TokensCardHandler {
     this.log = loggerFactory.create(TokensCardHandler.name);
   }
 
-  handle(action: TokensCardActions): void {
+  async handle(action: TokensCardActions): Promise<void> {
     switch (action.type) {
       case TokensCardActionType.SearchTextOnChange:
         return this.setCatalogTokensSearchText.run(action.value);

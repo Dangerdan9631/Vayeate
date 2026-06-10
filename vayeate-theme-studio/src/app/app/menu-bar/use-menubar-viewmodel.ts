@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
-import type { UndoListEntry } from '../../../domain/core/undo-stack-types';
+import type { UndoHistoryListEntry } from '../../../model/undo-history';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { AppShellActionType } from '../app-shell/actions/app-shell-action-type';
 import { AppMenuActionType } from './actions/app-menu-action-type';
@@ -22,7 +22,9 @@ export interface MenuBarViewModel {
   viewOpen: boolean;
   canUndo: boolean;
   canRedo: boolean;
-  frames: UndoListEntry[];
+  nextUndoDescription: string | null;
+  nextRedoDescription: string | null;
+  frames: UndoHistoryListEntry[];
   currentId: string | null;
   isMaximized: boolean;
   fileRef: RefObject<HTMLDivElement | null>;
@@ -56,7 +58,7 @@ export function useMenuBarViewModel(): MenuBarViewModel {
   const undoMenu = useStore(undoStackStore.api, (state) => state.state.undoMenu);
   const theme = useStore(appConfigStore.api, (state) => state.config.colorScheme);
   const openMenu = useStore(uiStore.api, (state) => state.state.openMenu);
-  const { frames, currentId, canUndo, canRedo } = undoMenu;
+  const { frames, currentId, canUndo, canRedo, nextUndoDescription, nextRedoDescription } = undoMenu;
 
   const fileRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);
@@ -167,6 +169,8 @@ export function useMenuBarViewModel(): MenuBarViewModel {
     viewOpen,
     canUndo,
     canRedo,
+    nextUndoDescription,
+    nextRedoDescription,
     frames,
     currentId,
     isMaximized,

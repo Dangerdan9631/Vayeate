@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { RedoOperation } from '../../../domain/operations/undo-operations/redo-operation';
 import { CloseMenusOperation } from '../../../domain/operations/app-operations/close-menus-operation';
+import type { HistoryTransitionResult } from '../../../model/undo-history';
 
 @singleton()
 export class RedoController {
@@ -9,8 +10,9 @@ export class RedoController {
     private readonly closeMenus: CloseMenusOperation,
   ) {}
 
-  run(): void {
-    this.performRedo.execute();
+  async run(): Promise<HistoryTransitionResult> {
+    const result = await this.performRedo.execute();
     this.closeMenus.execute();
+    return result;
   }
 }

@@ -29,13 +29,13 @@ export class RemoveVariableController {
       const base = this.bumpTemplateVersionForEdit.execute(template);
       const next = this.removeColorVariableFromTemplate.execute(base, key);
       this.saveTemplate.execute(next);
-      this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+      this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
       return;
     }
 
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeContrastVariableFromTemplate.execute(base, key);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

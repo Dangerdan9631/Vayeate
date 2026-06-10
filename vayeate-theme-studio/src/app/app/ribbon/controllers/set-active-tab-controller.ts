@@ -1,12 +1,29 @@
 import { singleton } from 'tsyringe';
 import type { TabId } from '../../../../model/app-ui';
 import { SetUiActiveTabOperation } from '../../../../domain/operations/app-operations/set-ui-active-tab-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { deriveUndoContext } from '../../../../model/undo-history';
 
 @singleton()
 export class SetActiveTabController {
-  constructor(private readonly setUiActiveTab: SetUiActiveTabOperation) {}
+  constructor(
+    private readonly setUiActiveTab: SetUiActiveTabOperation,
+    private readonly catalogUiStore?: CatalogUiStore,
+    private readonly templateUiStore?: TemplateUiStore,
+    private readonly themeUiStore?: ThemeUiStore,
+    private readonly setCurrentUndoStackId?: SetCurrentUndoStackIdOperation,
+  ) {}
 
-  run(tabId: TabId): void {
+  async run(tabId: TabId): Promise<void> {
     this.setUiActiveTab.execute(tabId);
+    await this.setCurrentUndoStackId?.executeAndLoadForContext(deriveUndoContext({
+      tabId,
+      catalogRef: this.catalogUiStore?.getStore().state.selectedRef ?? null,
+      templateRef: this.templateUiStore?.getStore().state.selectedRef ?? null,
+      themeRef: this.themeUiStore?.getStore().state.selectedRef ?? null,
+    }));
   }
 }

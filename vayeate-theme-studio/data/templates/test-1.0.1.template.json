@@ -24878,5 +24878,7 @@
     "textmate-xml-grammar",
     "textmate-yaml",
     "vs-code-color-registry"
-  ]
+  ],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
 }

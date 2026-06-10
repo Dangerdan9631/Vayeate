@@ -6,6 +6,21 @@ import { CatalogsCard } from './catalogs-card/CatalogsCard';
 import { CreateCatalogDialog } from './create-dialog/CreateCatalogDialog';
 import { CatalogDetailsCard } from './catalog-details-card/CatalogDetailsCard';
 import { TokensCard } from './tokens-card/TokensCard';
+import { SetSelectedCatalogController } from './catalogs-card/controllers/set-selected-catalog-controller';
+import { UpdateTokenKeyController } from './tokens-card/controllers/update-token-key-controller';
+import { CatalogsStore } from '../../domain/catalog/state/catalogs-store';
+import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
+import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
+import { BumpCatalogVersionForEditOperation } from '../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { UpdateTokenKeyInCatalogOperation } from '../../domain/operations/catalog-operations/tokens/update-token-key-in-catalog-operation';
+import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
+import { SetCurrentUndoStackIdOperation } from '../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { UndoOperation } from '../../domain/operations/undo-operations/undo-operation';
+import { RedoOperation } from '../../domain/operations/undo-operations/redo-operation';
+import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import { catalogSchema } from '../../model/schema/catalog';
 
 const viewModelMocks = vi.hoisted(() => ({
   useCatalogViewModel: vi.fn(),
@@ -245,6 +260,33 @@ describe('catalog renderer workflows', () => {
     expect(onCreateCatalogClick).toHaveBeenCalledTimes(1);
   });
 
+  it('selects a catalog-scoped undo stack when catalog references change', async () => {
+    const setSelectedCatalog = { execute: vi.fn() };
+    const templateUiStore = {
+      getStore: () => ({ state: { selectedRef: { name: 'template-a', version: '1.0.0' } } }),
+    };
+    const themeUiStore = {
+      getStore: () => ({ state: { selectedRef: { name: 'theme-a', version: '1.0.0' } } }),
+    };
+    const setCurrentUndoStackId = { executeAndLoadForContext: vi.fn() };
+    const controller = new SetSelectedCatalogController(
+      setSelectedCatalog as never,
+      templateUiStore as never,
+      themeUiStore as never,
+      setCurrentUndoStackId as never,
+    );
+
+    await controller.run('catalog-a', '1.0.0');
+    await controller.run('catalog-b', '1.0.0');
+
+    expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(1, expect.objectContaining({
+      contextKey: 'tab=catalogs|template=template-a@1.0.0|catalog=catalog-a@1.0.0|theme=theme-a@1.0.0',
+    }));
+    expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      contextKey: 'tab=catalogs|template=template-a@1.0.0|catalog=catalog-b@1.0.0|theme=theme-a@1.0.0',
+    }));
+  });
+
   it('renders remote catalog details and dispatches source editing actions', async () => {
     const user = userEvent.setup();
     const callbacks = {
@@ -422,5 +464,84 @@ describe('catalog renderer workflows', () => {
     expect(callbacks.onSemanticRegistryTextCommit).toHaveBeenCalledWith('types', 0, 'property');
     await user.click(view.getAllByTitle('Remove')[2]);
     expect(callbacks.onSemanticRegistryRemoveClick).toHaveBeenCalled();
+  });
+
+  it('records, undoes, and redoes a completed catalog token key edit', async () => {
+    await undoManagerV2.clearPersisted();
+    const catalogsStore = new CatalogsStore();
+    const catalogUiStore = new CatalogUiStore();
+    const templateUiStore = new TemplateUiStore();
+    const themeUiStore = new ThemeUiStore();
+    const undoStackStore = new UndoStackStore();
+    const saveCatalog = { execute: vi.fn() };
+    const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const controller = new UpdateTokenKeyController(
+      catalogsStore,
+      catalogUiStore,
+      templateUiStore,
+      themeUiStore,
+      saveCatalog as never,
+      new BumpCatalogVersionForEditOperation(),
+      new UpdateTokenKeyInCatalogOperation(),
+      refreshCatalogRefsAndSelect as never,
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+    const catalog = catalogSchema.parse({
+      name: 'catalog-a',
+      version: '1.0.0',
+      type: 'manual',
+      locked: false,
+      sources: [],
+      tokens: [{ key: 'editor.foreground', type: 'theme' }],
+    });
+    catalogsStore.getStore().upsertCatalogs([catalog]);
+    catalogUiStore.getStore().selectCatalog({ name: 'catalog-a', version: '1.0.0' });
+
+    await controller.run('editor.foreground', 'editor.background', 'theme');
+    expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key).toBe('editor.background');
+    expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(true);
+
+    await new UndoOperation(undoStackStore).execute();
+    expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key).toBe('editor.foreground');
+
+    await new RedoOperation(undoStackStore).execute();
+    expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key).toBe('editor.background');
+  });
+
+  it('does not record catalog undo entries for rejected token key edits', async () => {
+    await undoManagerV2.clearPersisted();
+    const catalogsStore = new CatalogsStore();
+    const catalogUiStore = new CatalogUiStore();
+    const undoStackStore = new UndoStackStore();
+    const saveCatalog = { execute: vi.fn() };
+    const controller = new UpdateTokenKeyController(
+      catalogsStore,
+      catalogUiStore,
+      new TemplateUiStore(),
+      new ThemeUiStore(),
+      saveCatalog as never,
+      new BumpCatalogVersionForEditOperation(),
+      new UpdateTokenKeyInCatalogOperation(),
+      { execute: vi.fn() } as never,
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+    const catalog = catalogSchema.parse({
+      name: 'catalog-a',
+      version: '1.0.0',
+      type: 'manual',
+      locked: false,
+      sources: [],
+      tokens: [{ key: 'editor.foreground', type: 'theme' }],
+    });
+    catalogsStore.getStore().upsertCatalogs([catalog]);
+    catalogUiStore.getStore().selectCatalog({ name: 'catalog-a', version: '1.0.0' });
+
+    await controller.run('missing.token', 'editor.background', 'theme');
+    await controller.run('editor.foreground', '   ', 'theme');
+
+    expect(saveCatalog.execute).not.toHaveBeenCalled();
+    expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(false);
   });
 });

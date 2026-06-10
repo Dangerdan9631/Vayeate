@@ -26,6 +26,6 @@ export class RemoveContrastVariableController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeContrastVariableFromTemplate.execute(base, key);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

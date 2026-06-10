@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
-import { undoManagerV2 } from '../../core/undo-manager-v2';
+import type { HistoryTransitionResult } from '../../../model/undo-history';
+import { getActiveUndoStack, refreshUndoSummary, unavailableResult } from './undo-operation-helpers';
 
 @singleton()
 export class HistoryGoToOperation {
@@ -8,12 +9,14 @@ export class HistoryGoToOperation {
     private readonly undoStackStore: UndoStackStore,
   ) {}
 
-  async execute(frameId: string): Promise<void> {
-    const snap = this.undoStackStore.getStore().state;
-    const stackId = snap.currentUndoStackId;
-    if (!stackId) return;
-    const stack = await undoManagerV2.getOrCreate(stackId);
-    stack.goto(frameId);
-    this.undoStackStore.getStore().setUndoListVersion(snap.undoListVersion + 1);
+  async execute(frameId: string): Promise<HistoryTransitionResult> {
+    const active = await getActiveUndoStack(this.undoStackStore);
+    if (!active) {
+      return unavailableResult('go-to', null, 'No undo context is active.');
+    }
+
+    const result = await active.stack.goto(frameId);
+    refreshUndoSummary(this.undoStackStore, active.stack);
+    return result;
   }
 }

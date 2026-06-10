@@ -1,0 +1,57 @@
+import { createUndoProcessor } from '../../core/undo-processor';
+import type { UndoStack } from '../../core/undo-stack-types';
+import { undoManagerV2 } from '../../core/undo-manager-v2';
+import type { HistoryTransitionResult } from '../../../model/undo-history';
+import { emptyUndoMenuSnapshot, type UndoMenuSnapshot } from '../../state/undo-stack/undo-stack-state';
+import type { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
+
+export function unavailableResult(
+  mode: HistoryTransitionResult['mode'],
+  contextKey: string | null,
+  message: string,
+): HistoryTransitionResult {
+  return {
+    status: 'not-available',
+    mode,
+    contextKey: contextKey ?? 'none',
+    entryId: null,
+    message,
+  };
+}
+
+export async function getActiveUndoStack(
+  undoStackStore: UndoStackStore,
+): Promise<{ stackId: string; stack: UndoStack } | null> {
+  const stackId = undoStackStore.getStore().state.currentUndoStackId;
+  if (!stackId) return null;
+  const stack = await undoManagerV2.getOrCreate(stackId, { processor: createUndoProcessor() });
+  return { stackId, stack };
+}
+
+export function refreshUndoSummary(undoStackStore: UndoStackStore, stack: UndoStack | null): void {
+  const store = undoStackStore.getStore();
+  const nextVersion = (store.state.undoListVersion ?? 0) + 1;
+  store.setUndoListVersion?.(nextVersion);
+
+  if (!stack) {
+    store.setUndoMenuSnapshot({ ...emptyUndoMenuSnapshot, historyVersion: nextVersion });
+    return;
+  }
+
+  const list = stack.list();
+  const availability = stack.availability?.(nextVersion) ?? {
+    activeContextKey: store.state.currentUndoStackId,
+    canUndo: stack.canUndo,
+    canRedo: stack.canRedo,
+    nextUndoDescription: null,
+    nextRedoDescription: null,
+    recentActions: list.frames,
+    historyVersion: nextVersion,
+  };
+  const snapshot: UndoMenuSnapshot = {
+    ...availability,
+    frames: availability.recentActions,
+    currentId: list.currentId,
+  };
+  store.setUndoMenuSnapshot(snapshot);
+}

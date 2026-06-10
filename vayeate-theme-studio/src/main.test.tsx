@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DependencyContainer } from 'tsyringe';
 import { BackgroundQueuePort } from './domain/operations/background-queue/background-queue-port';
 import { WindowCallbacksPort } from './domain/operations/app-operations/window-callbacks-port';
+import { UndoPersistencePort } from './domain/operations/undo-operations/undo-persistence-port';
 
 const mockRender = vi.fn();
 const mockCreateRoot = vi.fn(() => ({ render: mockRender }));
@@ -42,9 +43,9 @@ describe('renderer bootstrap', () => {
 
     registerRendererQueues(fakeContainer);
 
-    expect(registrations).toHaveLength(5);
+    expect(registrations).toHaveLength(6);
     expect(registrations.map(({ token }) => token)).toEqual(
-      expect.arrayContaining([BackgroundQueuePort, WindowCallbacksPort]),
+      expect.arrayContaining([BackgroundQueuePort, WindowCallbacksPort, UndoPersistencePort]),
     );
   });
 

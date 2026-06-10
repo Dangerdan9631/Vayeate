@@ -1,28 +1,31 @@
-/**
- * Creates an UndoProcessor that applies/reverts UndoAction by updating app state.
- * Used when calling undoManagerV2.getOrCreate(stackId, { processor }).
- */
-
 import type { UndoAction, UndoProcessor } from './undo-stack-types';
 
-export function createUndoProcessor(): UndoProcessor {
+export interface UndoDiffHandler {
+  actionType: string;
+  apply(action: UndoAction): Promise<void> | void;
+  revert(action: UndoAction): Promise<void> | void;
+}
+
+export function createUndoProcessor(handlers: UndoDiffHandler[] = []): UndoProcessor {
+  const handlersByType = new Map(handlers.map((handler) => [handler.actionType, handler]));
+
+  function getHandler(action: UndoAction): UndoDiffHandler {
+    const handler = handlersByType.get(action.actionType);
+    if (!handler) {
+      throw new Error(`No undo handler registered for action type: ${action.actionType}`);
+    }
+    return handler;
+  }
+
   return {
-    applyProcessor(action: UndoAction): void {
-      switch (action.type) {
-        case 'NOOP':
-          break;
-        default:
-          break;
-      }
+    handlerCount: handlers.length,
+
+    async applyProcessor(action: UndoAction): Promise<void> {
+      await getHandler(action).apply(action);
     },
 
-    revertProcessor(action: UndoAction): void {
-      switch (action.type) {
-        case 'NOOP':
-          break;
-        default:
-          break;
-      }
+    async revertProcessor(action: UndoAction): Promise<void> {
+      await getHandler(action).revert(action);
     },
   };
 }

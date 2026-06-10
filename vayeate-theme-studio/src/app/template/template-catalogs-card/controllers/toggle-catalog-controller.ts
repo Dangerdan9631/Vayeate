@@ -94,6 +94,6 @@ export class ToggleCatalogController {
       semanticTokenLanguages,
     };
     this.saveTemplate.execute(updated);
-    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version);
+    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated);
   }
 }

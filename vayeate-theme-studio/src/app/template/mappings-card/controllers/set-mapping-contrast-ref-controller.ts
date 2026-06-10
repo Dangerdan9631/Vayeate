@@ -28,6 +28,6 @@ export class SetMappingContrastRefController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingContrastRefOp.execute(base, tokenKey, tokenType, contrastVariableRef);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

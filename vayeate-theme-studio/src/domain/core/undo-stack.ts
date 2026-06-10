@@ -1,3 +1,4 @@
+import type { HistoryTransitionResult, UndoStackPosition } from '../../model/undo-history';
 import type {
   PersistedStack,
   UndoAction,
@@ -8,269 +9,214 @@ import type {
   UndoStack,
   UndoStackOptions,
 } from './undo-stack-types';
-import { DEFAULT_DISK_MAX_FRAMES, DEFAULT_MAX_SIZE } from './undo-stack-types';
+import { DEFAULT_DISK_MAX_FRAMES } from './undo-stack-types';
 
-interface FrameNode {
-  frame: UndoFrame;
-  prev: FrameNode | null;
-  next: FrameNode | null;
-}
-
-function runApply(processor: UndoProcessor, actions: UndoAction[]): void {
+async function runApply(processor: UndoProcessor, actions: readonly UndoAction[]): Promise<void> {
   for (const action of actions) {
-    processor.applyProcessor(action);
+    await processor.applyProcessor(action);
   }
 }
 
-function runRevert(processor: UndoProcessor, actions: UndoAction[]): void {
+async function runRevert(processor: UndoProcessor, actions: readonly UndoAction[]): Promise<void> {
   for (let i = actions.length - 1; i >= 0; i--) {
-    processor.revertProcessor(actions[i]);
+    await processor.revertProcessor(actions[i]);
   }
+}
+
+function transitionResult(
+  status: HistoryTransitionResult['status'],
+  mode: HistoryTransitionResult['mode'],
+  contextKey: string,
+  entryId: string | null,
+  message?: string,
+): HistoryTransitionResult {
+  return { status, mode, contextKey, entryId, message };
 }
 
 export function createStack(options: UndoStackOptions): UndoStack {
-  const maxSize = options.maxSize ?? DEFAULT_MAX_SIZE;
   const diskMaxFrames = options.diskMaxFrames ?? DEFAULT_DISK_MAX_FRAMES;
-  const processor = options.processor;
+  let processor = options.processor;
   const onAfterChange = options.onAfterChange;
+  const stackId = options.stackId ?? 'unknown';
 
-  let head: FrameNode | null = null;
-  let tail: FrameNode | null = null;
-  let current: FrameNode | null = null;
-  let size = 0;
-  /** Frames trimmed from head when in-memory size exceeded maxSize; still persisted. */
-  let trimmedFrames: UndoFrame[] = [];
+  let frames: UndoFrame[] = [];
+  let currentIndex = -1;
 
-  function indexOfNode(node: FrameNode): number {
-    let i = 0;
-    let n: FrameNode | null = head;
-    while (n) {
-      if (n === node) return i;
-      n = n.next;
-      i++;
-    }
-    return -1;
+  function snapshot(): PersistedStack {
+    return {
+      frames: [...frames],
+      currentId: currentIndex >= 0 ? frames[currentIndex]?.id ?? null : null,
+    };
   }
 
-  function findNodeById(id: string): FrameNode | null {
-    let n: FrameNode | null = head;
-    while (n) {
-      if (n.frame.id === id) return n;
-      n = n.next;
-    }
-    return null;
+  function restore(state: PersistedStack): void {
+    frames = [...state.frames];
+    currentIndex = state.currentId ? frames.findIndex((frame) => frame.id === state.currentId) : -1;
+    if (currentIndex < -1) currentIndex = -1;
   }
 
-  function collectFrames(): UndoFrame[] {
-    const out: UndoFrame[] = [];
-    let n: FrameNode | null = head;
-    while (n) {
-      out.push(n.frame);
-      n = n.next;
-    }
-    return out;
+  async function notifyChange(): Promise<void> {
+    await onAfterChange?.();
   }
 
-  function dropAllAfter(node: FrameNode): void {
-    if (node.next === null) return;
-    node.next.prev = null;
-    node.next = null;
-    tail = node;
-    let count = 0;
-    let n: FrameNode | null = tail;
-    while (n) {
-      count++;
-      n = n.prev;
-    }
-    size = count;
+  function listEntries(): UndoListEntry[] {
+    return frames.map((frame) => ({ id: frame.id, description: frame.description }));
   }
 
-  function enforceMaxSize(): void {
-    while (size > maxSize && head) {
-      trimmedFrames.push(head.frame);
-      const next = head.next;
-      if (current === head) current = null;
-      head.next = null;
-      if (next) next.prev = null;
-      head = next;
-      size--;
-    }
-  }
+  function getPosition(): UndoStackPosition {
+    const nextUndo = currentIndex >= 0 ? frames[currentIndex] : null;
+    const nextRedo = currentIndex + 1 < frames.length ? frames[currentIndex + 1] : null;
 
-  function notifyChange(): void {
-    onAfterChange?.();
+    return {
+      currentEntryId: currentIndex >= 0 ? frames[currentIndex]?.id ?? null : null,
+      canUndo: nextUndo !== null,
+      canRedo: nextRedo !== null,
+      nextUndoEntryId: nextUndo?.id ?? null,
+      nextRedoEntryId: nextRedo?.id ?? null,
+    };
   }
 
   const stack: UndoStack = {
-    push(frame: UndoFrame): void {
-      if (current && current !== tail) dropAllAfter(current);
-      const node: FrameNode = { frame, prev: tail, next: null };
-      if (tail) tail.next = node;
-      else head = node;
-      tail = node;
-      current = node;
-      size++;
-      enforceMaxSize();
-      notifyChange();
+    async push(frame: UndoFrame): Promise<void> {
+      const previous = snapshot();
+      frames = frames.slice(0, currentIndex + 1);
+      frames.push({ ...frame, persistenceStatus: 'persisted' });
+      currentIndex = frames.length - 1;
+
+      try {
+        await notifyChange();
+      } catch (error) {
+        restore(previous);
+        throw error;
+      }
     },
 
-    undo(): boolean {
-      if (current !== null) {
-        runRevert(processor, current.frame.actions);
-        current = current.prev;
-        notifyChange();
-        return true;
+    async undo(): Promise<HistoryTransitionResult> {
+      if (currentIndex < 0) {
+        return transitionResult('not-available', 'undo', stackId, null, 'No undo entry is available.');
       }
-      if (trimmedFrames.length === 0) return false;
-      const popped = trimmedFrames.pop()!;
-      runRevert(processor, popped.actions);
-      const newNode: FrameNode = { frame: popped, prev: null, next: head };
-      if (head) head.prev = newNode;
-      else tail = newNode;
-      head = newNode;
-      current = null;
-      size++;
-      while (size > maxSize && tail) {
-        const prev = tail.prev;
-        tail.prev = null;
-        if (prev) prev.next = null;
-        tail = prev;
-        size--;
+
+      const entry = frames[currentIndex];
+      try {
+        await runRevert(processor, entry.diffs);
+        currentIndex -= 1;
+        await notifyChange();
+        return transitionResult('transitioned', 'undo', stackId, entry.id);
+      } catch (error) {
+        return transitionResult(
+          'failed',
+          'undo',
+          stackId,
+          entry.id,
+          error instanceof Error ? error.message : 'Undo failed.',
+        );
       }
-      notifyChange();
-      return true;
     },
 
-    redo(): boolean {
-      if (!current) {
-        if (!head) return false;
-        runApply(processor, head.frame.actions);
-        current = head;
-        notifyChange();
-        return true;
+    async redo(): Promise<HistoryTransitionResult> {
+      const entry = frames[currentIndex + 1];
+      if (!entry) {
+        return transitionResult('not-available', 'redo', stackId, null, 'No redo entry is available.');
       }
-      if (!current.next) return false;
-      const next = current.next;
-      runApply(processor, next.frame.actions);
-      current = next;
-      notifyChange();
-      return true;
+
+      try {
+        await runApply(processor, entry.diffs);
+        currentIndex += 1;
+        await notifyChange();
+        return transitionResult('transitioned', 'redo', stackId, entry.id);
+      } catch (error) {
+        return transitionResult(
+          'failed',
+          'redo',
+          stackId,
+          entry.id,
+          error instanceof Error ? error.message : 'Redo failed.',
+        );
+      }
     },
 
-    goto(id: string): boolean {
-      const target = findNodeById(id);
-      if (!target && trimmedFrames.length > 0) {
-        const idx = trimmedFrames.findIndex((f) => f.id === id);
-        if (idx >= 0) {
-          while (current !== null) {
-            runRevert(processor, current.frame.actions);
-            current = current.prev;
-          }
-          for (let i = trimmedFrames.length - 1; i > idx; i--) {
-            const f = trimmedFrames[i];
-            runRevert(processor, f.actions);
-          }
-          const frame = trimmedFrames[idx];
-          runRevert(processor, frame.actions);
-          const newNode: FrameNode = { frame, prev: null, next: head };
-          if (head) head.prev = newNode;
-          else tail = newNode;
-          head = newNode;
-          trimmedFrames = trimmedFrames.slice(0, idx);
-          current = null;
-          size++;
-          while (size > maxSize && tail) {
-            const p = tail.prev;
-            tail.prev = null;
-            if (p) p.next = null;
-            tail = p;
-            size--;
-          }
-          notifyChange();
-          return true;
-        }
+    async goto(id: string): Promise<HistoryTransitionResult> {
+      const targetIndex = frames.findIndex((frame) => frame.id === id);
+      if (targetIndex < 0) {
+        return transitionResult('not-available', 'go-to', stackId, id, 'The selected history entry is unavailable.');
       }
-      if (!target) return false;
-      const currentIndex = current ? indexOfNode(current) : -1;
-      const targetIndex = indexOfNode(target);
-      if (currentIndex === targetIndex) return true;
-      if (targetIndex < currentIndex) {
-        while (current && current.frame.id !== id) {
-          runRevert(processor, current.frame.actions);
-          current = current.prev;
-        }
-      } else {
-        let n = current ? current.next : head;
-        while (n && n.frame.id !== id) {
-          runApply(processor, n.frame.actions);
-          current = n;
-          n = n.next;
-        }
-        if (n) {
-          runApply(processor, n.frame.actions);
-          current = n;
-        }
+
+      const targetCurrentIndex = targetIndex - 1;
+      if (currentIndex === targetCurrentIndex) {
+        return transitionResult('transitioned', 'go-to', stackId, id);
       }
-      notifyChange();
-      return true;
+
+      const previousIndex = currentIndex;
+      try {
+        while (currentIndex > targetCurrentIndex) {
+          await runRevert(processor, frames[currentIndex].diffs);
+          currentIndex -= 1;
+        }
+        while (currentIndex < targetCurrentIndex) {
+          const next = frames[currentIndex + 1];
+          await runApply(processor, next.diffs);
+          currentIndex += 1;
+        }
+        await notifyChange();
+        return transitionResult('transitioned', 'go-to', stackId, id);
+      } catch (error) {
+        currentIndex = previousIndex;
+        return transitionResult(
+          'failed',
+          'go-to',
+          stackId,
+          id,
+          error instanceof Error ? error.message : 'History navigation failed.',
+        );
+      }
     },
 
     list(): UndoListResult {
-      const frames: UndoListEntry[] = [];
-      let n: FrameNode | null = head;
-      while (n) {
-        frames.push({ id: n.frame.id, description: n.frame.description });
-        n = n.next;
-      }
       return {
-        frames,
-        currentId: current ? current.frame.id : null,
+        frames: listEntries(),
+        currentId: currentIndex >= 0 ? frames[currentIndex]?.id ?? null : null,
+      };
+    },
+
+    position(): UndoStackPosition {
+      return getPosition();
+    },
+
+    availability(historyVersion: number) {
+      const position = getPosition();
+      return {
+        activeContextKey: stackId,
+        canUndo: position.canUndo,
+        canRedo: position.canRedo,
+        nextUndoDescription: currentIndex >= 0 ? frames[currentIndex]?.description ?? null : null,
+        nextRedoDescription: currentIndex + 1 < frames.length ? frames[currentIndex + 1]?.description ?? null : null,
+        recentActions: listEntries(),
+        historyVersion,
       };
     },
 
     get canUndo(): boolean {
-      return current !== null || trimmedFrames.length > 0;
+      return currentIndex >= 0;
     },
 
     get canRedo(): boolean {
-      if (current === null) return head !== null;
-      return current.next !== null;
+      return currentIndex + 1 < frames.length;
     },
 
     getPersistedState(): PersistedStack {
-      const all = [...trimmedFrames, ...collectFrames()];
-      const capped = all.length <= diskMaxFrames ? all : all.slice(-diskMaxFrames);
-      return {
-        frames: capped,
-        currentId: current ? current.frame.id : null,
-      };
+      const capped = frames.length <= diskMaxFrames ? frames : frames.slice(-diskMaxFrames);
+      const currentId = currentIndex >= 0 ? frames[currentIndex]?.id ?? null : null;
+      return { frames: capped, currentId };
     },
 
-    hydrate(frames: UndoFrame[], currentId: string | null): void {
-      trimmedFrames = [];
-      head = null;
-      tail = null;
-      current = null;
-      size = 0;
-      if (frames.length === 0) {
-        notifyChange();
-        return;
-      }
-      const inMemory = frames.slice(-maxSize);
-      trimmedFrames = frames.slice(0, -inMemory.length);
-      for (const f of inMemory) {
-        const node: FrameNode = { frame: f, prev: tail, next: null };
-        if (tail) tail.next = node;
-        else head = node;
-        tail = node;
-        size++;
-      }
-      if (currentId) {
-        const node = findNodeById(currentId);
-        if (node) current = node;
-        else if (inMemory.length > 0) current = tail;
-      }
-      notifyChange();
+    hydrate(persistedFrames: UndoFrame[], currentId: string | null): void {
+      frames = [...persistedFrames];
+      currentIndex = currentId ? frames.findIndex((frame) => frame.id === currentId) : -1;
+      if (currentIndex < -1) currentIndex = -1;
+    },
+
+    setProcessor(nextProcessor: UndoProcessor): void {
+      processor = nextProcessor;
     },
   };
 

@@ -3,7 +3,7 @@ import type { HexColor } from '../../../../model/schema/primitives';
 import { CloseEyedropperOperation } from '../../../../domain/operations/eyedropper-operations/close-eyedropper-operation';
 import { EyedropperUiStore } from '../../../../domain/state/ui/eyedropper-ui-store';
 import { EyedropperCommitTargetType, type EyedropperCommitTarget } from '../../../../model/eyedropper';
-import { ActionQueue } from '../../../core/action-queue/action-queue';
+import { ActionQueue, type IActionQueue } from '../../../core/action-queue/action-queue';
 import type { AppAction } from '../../../core/action-queue/app-action';
 import { ThemePaletteCardActionType } from '../../../theme/theme-palette-card/actions/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../../../theme/theme-variables-card/actions/theme-variables-card-action-type';
@@ -12,7 +12,7 @@ import { ThemeVariablesCardActionType } from '../../../theme/theme-variables-car
 export class CloseEyedropperOverlayController {
   constructor(
     private readonly closeEyedropper: CloseEyedropperOperation,
-    @inject(delay(() => ActionQueue)) private readonly actionQueue: ActionQueue,
+    @inject(delay(() => ActionQueue)) private readonly actionQueue: IActionQueue,
     private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 

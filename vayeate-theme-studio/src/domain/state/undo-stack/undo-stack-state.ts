@@ -1,18 +1,20 @@
-import type { UndoListEntry } from '../../core/undo-stack-types';
+import type { UndoAvailabilitySummary } from '../../../model/undo-history';
 
-/** Snapshot of undo stack list + capabilities for the menu bar (synced from IPC by operations). */
-export interface UndoMenuSnapshot {
-  frames: UndoListEntry[];
+export interface UndoMenuSnapshot extends UndoAvailabilitySummary {
+  frames: UndoAvailabilitySummary['recentActions'];
   currentId: string | null;
-  canUndo: boolean;
-  canRedo: boolean;
 }
 
 export const emptyUndoMenuSnapshot: UndoMenuSnapshot = {
-  frames: [],
-  currentId: null,
+  activeContextKey: null,
   canUndo: false,
   canRedo: false,
+  nextUndoDescription: null,
+  nextRedoDescription: null,
+  recentActions: [],
+  frames: [],
+  currentId: null,
+  historyVersion: 0,
 };
 
 export interface UndoStackState {
@@ -26,3 +28,4 @@ export const initialUndoStackState: UndoStackState = {
   undoListVersion: 0,
   undoMenu: emptyUndoMenuSnapshot,
 };
+

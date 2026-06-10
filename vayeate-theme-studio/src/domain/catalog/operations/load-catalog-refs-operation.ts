@@ -22,7 +22,10 @@ export class LoadCatalogRefsOperation {
       'Loading catalogs refs',
       async () => {
         const refs = await this.catalogGateway.listCatalogs();
-        this.catalogsStore.getStore().updateCatalogRefs(refs);
+        if (this.catalogUiStore.getStore().state.pageLoadState === 'loading') {
+          this.catalogUiStore.getStore().setPageLoadState('loaded');
+          this.catalogsStore.getStore().updateCatalogRefs(refs);
+        }
       }
     );
   }

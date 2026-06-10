@@ -8,6 +8,23 @@ import { ThemeDetailsCard } from './theme-details-card/ThemeDetailsCard';
 import { ThemePaletteCard } from './theme-palette-card/ThemePaletteCard';
 import { ThemeVariablesCard } from './theme-variables-card/ThemeVariablesCard';
 import { EditorPreviewsCard } from './editor-previews-card/EditorPreviewsCard';
+import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import { SetColorVariableDarkOperation } from '../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
+import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
+import { RedoOperation } from '../../domain/operations/undo-operations/redo-operation';
+import { HistoryGoToOperation } from '../../domain/operations/undo-operations/history-go-to-operation';
+import { SetCurrentUndoStackIdOperation } from '../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { UndoOperation } from '../../domain/operations/undo-operations/undo-operation';
+import { ThemesStore } from '../../domain/state/data/themes-store';
+import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
+import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
+import { SetColorVariableDarkController } from './theme-variables-card/controllers/set-color-variable-dark-controller';
+import { AssignColorFromPickerController } from './theme-palette-card/controllers/assign-color-from-picker-controller';
+import { SelectThemeAndLoadController } from './themes-card/controllers/select-theme-and-load-controller';
+import { themeSchema } from '../../model/schema/theme-schemas';
+import { CommitAssignColorTextOperation } from '../../domain/operations/theme-operations/palette-color-assign/commit-assign-color-text-operation';
+import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../domain/state/ui/template-ui-store';
 
 const viewModelMocks = vi.hoisted(() => ({
   useThemeViewModel: vi.fn(),
@@ -506,5 +523,189 @@ describe('theme renderer workflows', () => {
     expect(previewCallbacks.onChangeIdeForegroundTokenRef).toHaveBeenCalledWith('editor.foreground');
     expect(previews.getByText('Dark')).toBeInTheDocument();
     expect(previews.getByText('Light')).toBeInTheDocument();
+  });
+
+  it('records, undoes, and redoes a completed theme dark color edit', async () => {
+    await undoManagerV2.clearPersisted();
+    const themeUiStore = new ThemeUiStore();
+    const themesStore = new ThemesStore();
+    const undoStackStore = new UndoStackStore();
+    const debouncedThemePersist = {
+      schedule: vi.fn((saveTheme: () => Promise<void> | void) => {
+        void saveTheme();
+      }),
+    };
+    const themeGateway = {
+      saveTheme: vi.fn(),
+    };
+    const setColorVariableDark = new SetColorVariableDarkOperation(
+      themeUiStore,
+      themesStore,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
+    const controller = new SetColorVariableDarkController(
+      themeUiStore,
+      setColorVariableDark,
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+    const undo = new UndoOperation(undoStackStore);
+    const redo = new RedoOperation(undoStackStore);
+
+    themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
+    themeUiStore.getStore().setTheme(themeSchema.parse({
+      name: 'theme-a',
+      version: '1.0.0',
+      templateRef: { name: 'template-a', version: '1.0.0' },
+      colorAssignments: [
+        { colorRef: 'editorFg', dark: { value: '#111111' }, light: { value: '#eeeeee' }, useDarkForLight: false },
+      ],
+      contrastAssignments: [],
+    }));
+
+    await controller.run('editorFg', '#222222');
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
+    expect(undoStackStore.getStore().state.undoMenu).toMatchObject({
+      canUndo: true,
+      nextUndoDescription: 'Change editorFg dark color',
+    });
+
+    await undo.execute();
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
+
+    await redo.execute();
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
+  });
+
+  it('navigates theme edit history to the state immediately before a selected item', async () => {
+    await undoManagerV2.clearPersisted();
+    const themeUiStore = new ThemeUiStore();
+    const themesStore = new ThemesStore();
+    const undoStackStore = new UndoStackStore();
+    const setColorVariableDark = new SetColorVariableDarkOperation(
+      themeUiStore,
+      themesStore,
+      { schedule: vi.fn((saveTheme: () => Promise<void> | void) => void saveTheme()) } as never,
+      { saveTheme: vi.fn() } as never,
+    );
+    const controller = new SetColorVariableDarkController(
+      themeUiStore,
+      setColorVariableDark,
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+    const goTo = new HistoryGoToOperation(undoStackStore);
+
+    themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
+    themeUiStore.getStore().setTheme(themeSchema.parse({
+      name: 'theme-a',
+      version: '1.0.0',
+      templateRef: { name: 'template-a', version: '1.0.0' },
+      colorAssignments: [
+        { colorRef: 'editorFg', dark: { value: '#111111' }, light: { value: '#eeeeee' }, useDarkForLight: false },
+      ],
+      contrastAssignments: [],
+    }));
+
+    await controller.run('editorFg', '#222222');
+    await controller.run('editorFg', '#333333');
+    const secondEntryId = undoStackStore.getStore().state.undoMenu.frames[1].id;
+
+    await expect(goTo.execute(secondEntryId)).resolves.toMatchObject({
+      status: 'transitioned',
+      mode: 'go-to',
+      entryId: secondEntryId,
+    });
+
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
+    expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(
+      undoStackStore.getStore().state.undoMenu.frames[0].id,
+    );
+    expect(undoStackStore.getStore().state.undoMenu.canRedo).toBe(true);
+  });
+
+  it('selects a theme-scoped undo stack when theme references change', async () => {
+    const themeUiStore = {
+      getStore: () => ({
+        state: {
+          theme: {
+            name: 'theme-b',
+            version: '3.0.0',
+            templateRef: { name: 'theme-template', version: '1.0.0' },
+          },
+        },
+      }),
+    };
+    const loadThemeThen = vi.fn(async (_label: string, onLoaded: () => Promise<void>) => {
+      await onLoaded();
+    });
+    const loadTheme = { execute: vi.fn(() => ({ then: loadThemeThen })) };
+    const setCurrentUndoStackId = { executeAndLoadForContext: vi.fn() };
+    const controller = new SelectThemeAndLoadController(
+      themeUiStore as never,
+      { execute: vi.fn() } as never,
+      loadTheme as never,
+      { execute: vi.fn() } as never,
+      { execute: vi.fn(async () => null) } as never,
+      { execute: vi.fn() } as never,
+      { execute: vi.fn() } as never,
+      { getStore: () => ({ state: { selectedRef: { name: 'catalog-a', version: '2.0.0' } } }) } as never,
+      { getStore: () => ({ state: { selectedRef: { name: 'template-a', version: '1.0.0' } } }) } as never,
+      setCurrentUndoStackId as never,
+    );
+
+    await controller.run('theme-a', '3.0.0');
+
+    expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(1, expect.objectContaining({
+      contextKey: 'tab=themes|template=template-a@1.0.0|catalog=catalog-a@2.0.0|theme=theme-a@3.0.0',
+    }));
+    expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      contextKey: 'tab=themes|template=theme-template@1.0.0|catalog=catalog-a@2.0.0|theme=theme-a@3.0.0',
+    }));
+  });
+
+  it('records palette color assignments and skips rejected palette commits', async () => {
+    await undoManagerV2.clearPersisted();
+    const themeUiStore = new ThemeUiStore();
+    const themesStore = new ThemesStore();
+    const undoStackStore = new UndoStackStore();
+    const saveTheme = vi.fn();
+    const commitAssignColorText = new CommitAssignColorTextOperation(
+      themeUiStore,
+      themesStore,
+      { schedule: vi.fn((save: () => Promise<void> | void) => void save()) } as never,
+      { saveTheme } as never,
+    );
+    const controller = new AssignColorFromPickerController(
+      commitAssignColorText,
+      themeUiStore,
+      new CatalogUiStore(),
+      new TemplateUiStore(),
+      new RecordUndoEntryOperation(undoStackStore),
+      new SetCurrentUndoStackIdOperation(undoStackStore),
+    );
+    themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
+    themeUiStore.getStore().setTheme(themeSchema.parse({
+      name: 'theme-a',
+      version: '1.0.0',
+      templateRef: { name: 'template-a', version: '1.0.0' },
+      colorAssignments: [
+        { colorRef: 'editorFg', dark: { value: '#111111' }, light: { value: '#eeeeee' }, useDarkForLight: false },
+      ],
+      contrastAssignments: [],
+    }));
+
+    await controller.run('#222222');
+    expect(saveTheme).not.toHaveBeenCalled();
+    expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(false);
+
+    themeUiStore.getStore().setThemePaneSelections(['editorFg'], []);
+    await controller.run('#222222');
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
+    expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color');
+
+    await new UndoOperation(undoStackStore).execute();
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
   });
 });

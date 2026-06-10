@@ -65,6 +65,6 @@ export class UpdateSemanticVariantKeyController {
       sets.semanticTokenLanguages,
     );
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
   }
 }

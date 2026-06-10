@@ -1,51 +1,38 @@
-/**
- * Types and defaults for undo stacks (UndoManagerV2).
- */
+import type {
+  HistoryTransitionResult,
+  UndoDiff,
+  UndoEntry,
+  UndoHistoryListEntry,
+  UndoStackPosition,
+} from '../../model/undo-history';
 
 export const DEFAULT_MAX_SIZE = 20;
 export const DEFAULT_STACK_COUNT = 5;
 export const DEFAULT_DISK_MAX_FRAMES = 999;
 
-/** Globally unique, chronologically sortable frame ID. */
+let frameSequence = 0;
+
 export function createFrameId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+  frameSequence += 1;
+  return `${Date.now()}-${frameSequence}`;
 }
 
-/** Placeholder undo action; apply and revert are no-ops. */
-export interface UndoActionNoop {
-  type: 'NOOP';
-}
+export type UndoAction = UndoDiff;
+export type UndoFrame = UndoEntry;
+export type UndoListEntry = UndoHistoryListEntry;
 
-/** Discriminated union of undo actions. Each action has a type and the data needed to apply and revert. */
-export type UndoAction = UndoActionNoop;
-
-export interface UndoFrame {
-  id: string;
-  description: string;
-  /** Single list; apply runs in order, revert runs in reverse order. */
-  actions: UndoAction[];
-}
-
-/** Processor that applies or reverts a single action; implementation switches on action.type. */
 export interface UndoProcessor {
-  applyProcessor(action: UndoAction): void;
-  revertProcessor(action: UndoAction): void;
+  applyProcessor(action: UndoAction): Promise<void> | void;
+  revertProcessor(action: UndoAction): Promise<void> | void;
+  handlerCount?: number;
 }
 
 export interface UndoStackOptions {
   maxSize?: number;
   processor: UndoProcessor;
-  /** Used by manager for persistence callbacks. */
   stackId?: string;
-  /** Called after push/undo/redo/goto so manager can persist. */
-  onAfterChange?: () => void;
-  /** Cap for persisted frame count (default DEFAULT_DISK_MAX_FRAMES). */
+  onAfterChange?: () => Promise<void> | void;
   diskMaxFrames?: number;
-}
-
-export interface UndoListEntry {
-  id: string;
-  description: string;
 }
 
 export interface UndoListResult {
@@ -53,24 +40,32 @@ export interface UndoListResult {
   currentId: string | null;
 }
 
-/** Serialized form for one stack (persisted to disk). */
 export interface PersistedStack {
   frames: UndoFrame[];
   currentId: string | null;
 }
 
 export interface UndoStack {
-  push(frame: UndoFrame): void;
-  undo(): boolean;
-  redo(): boolean;
-  goto(id: string): boolean;
+  push(frame: UndoFrame): Promise<void>;
+  undo(): Promise<HistoryTransitionResult>;
+  redo(): Promise<HistoryTransitionResult>;
+  goto(id: string): Promise<HistoryTransitionResult>;
   list(): UndoListResult;
+  position(): UndoStackPosition;
+  availability(historyVersion: number): {
+    activeContextKey: string;
+    canUndo: boolean;
+    canRedo: boolean;
+    nextUndoDescription: string | null;
+    nextRedoDescription: string | null;
+    recentActions: UndoListEntry[];
+    historyVersion: number;
+  };
   readonly canUndo: boolean;
   readonly canRedo: boolean;
-  /** For persistence; returns full frame list (trimmed + in-memory) and currentId. */
-  getPersistedState?(): PersistedStack;
-  /** Restore stack from persisted state (e.g. after load from disk). */
-  hydrate?(frames: UndoFrame[], currentId: string | null): void;
+  getPersistedState(): PersistedStack;
+  hydrate(frames: UndoFrame[], currentId: string | null): void;
+  setProcessor(processor: UndoProcessor): void;
 }
 
 export interface UndoPersistenceAdapter {
@@ -87,7 +82,7 @@ export interface UndoManagerOptions {
 
 export interface UndoManagerV2 {
   getOrCreate(stackId: string, options?: UndoStackOptions): Promise<UndoStack>;
+  release(stackId: string): Promise<void>;
   clearPersisted(): Promise<void>;
-  /** Configure manager options (stack count, disk limit, persistence adapter). */
   configure(options: UndoManagerOptions): void;
 }
