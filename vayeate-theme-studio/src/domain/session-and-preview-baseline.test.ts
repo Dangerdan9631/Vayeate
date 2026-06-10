@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { LoadAppConfigOperation } from './operations/app-operations/load-app-config-operation';
 import { SaveAppConfigOperation } from './operations/app-operations/save-app-config-operation';
 import { LoadUndoHistoryOperation } from './operations/undo-operations/load-undo-history-operation';
+import { createMinimalTestBuildUniversalUndoProcessor } from '../../test/undo/test-universal-undo-processor';
 import { LoadAppController } from '../app/app/app-shell/controllers/load-app-controller';
 import { undoManagerV2 } from './core/undo-manager-v2';
 import { UNDO_BASELINE_FRAME_ID } from '../model/undo-history';
@@ -58,7 +59,10 @@ describe('session and preview baselines', () => {
       }),
     };
 
-    await new LoadUndoHistoryOperation(undoStore as never).execute();
+    await new LoadUndoHistoryOperation(
+      undoStore as never,
+      createMinimalTestBuildUniversalUndoProcessor(),
+    ).execute();
     expect(setUndoMenuSnapshot).toHaveBeenCalledWith(emptyUndoMenuSnapshot);
 
     const getOrCreateSpy = vi.spyOn(undoManagerV2, 'getOrCreate').mockResolvedValue({
@@ -79,7 +83,10 @@ describe('session and preview baselines', () => {
       }),
     };
 
-    await new LoadUndoHistoryOperation(populatedStore as never).execute();
+    await new LoadUndoHistoryOperation(
+      populatedStore as never,
+      createMinimalTestBuildUniversalUndoProcessor(),
+    ).execute();
     expect(getOrCreateSpy).toHaveBeenCalledWith('theme:baseline', expect.any(Object));
     expect(setSnapshot).toHaveBeenCalledWith({
       activeContextKey: 'theme:baseline',

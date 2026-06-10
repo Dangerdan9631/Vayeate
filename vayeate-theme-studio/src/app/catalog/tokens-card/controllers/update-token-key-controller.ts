@@ -14,6 +14,7 @@ import { createUndoProcessor } from '../../../../domain/core/undo-processor';
 import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
+import { CATALOG_TOKEN_KEY_UPDATED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class UpdateTokenKeyController {
@@ -54,13 +55,13 @@ export class UpdateTokenKeyController {
       completed: true,
       description: `Rename ${oldKey} catalog token`,
       diffs: [{
-        actionType: 'CATALOG_TOKEN_KEY_UPDATED',
+        actionType: CATALOG_TOKEN_KEY_UPDATED,
         target: `${catalog.name}@${catalog.version}:${tokenType}:${oldKey}`,
         before: catalog,
         after: updated,
       }],
       processor: createUndoProcessor([{
-        actionType: 'CATALOG_TOKEN_KEY_UPDATED',
+        actionType: CATALOG_TOKEN_KEY_UPDATED,
         apply: (action) => this.applyCatalogState(action.after as Catalog),
         revert: (action) => this.applyCatalogState(action.before as Catalog),
       }]),

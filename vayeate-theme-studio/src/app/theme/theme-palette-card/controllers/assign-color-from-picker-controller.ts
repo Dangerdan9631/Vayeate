@@ -8,6 +8,7 @@ import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
+import { THEME_PALETTE_COLOR_ASSIGNED } from '../../../../model/undo-action-types';
 
 @singleton()
 export class AssignColorFromPickerController {
@@ -39,13 +40,13 @@ export class AssignColorFromPickerController {
       completed: edit.changed,
       description: 'Assign palette color',
       diffs: [{
-        actionType: 'THEME_PALETTE_COLOR_ASSIGNED',
+        actionType: THEME_PALETTE_COLOR_ASSIGNED,
         target: `${theme.name}@${theme.version}:palette-selection`,
         before: edit.before,
         after: edit.after,
       }],
       processor: createUndoProcessor([{
-        actionType: 'THEME_PALETTE_COLOR_ASSIGNED',
+        actionType: THEME_PALETTE_COLOR_ASSIGNED,
         apply: (action) => this.commitAssignColorText.restore(action.after as Theme),
         revert: (action) => this.commitAssignColorText.restore(action.before as Theme),
       }]),

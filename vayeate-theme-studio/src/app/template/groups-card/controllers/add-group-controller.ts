@@ -12,6 +12,10 @@ import { createUndoProcessor } from '../../../../domain/core/undo-processor';
 import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
+import {
+  TEMPLATE_COLOR_VARIABLE_ADDED,
+  TEMPLATE_GROUP_ADDED,
+} from '../../../../model/undo-action-types';
 
 @singleton()
 export class AddGroupController {
@@ -48,19 +52,19 @@ export class AddGroupController {
       completed: true,
       description: `Add ${name.trim()} template group`,
       diffs: [{
-        actionType: 'TEMPLATE_GROUP_ADDED',
+        actionType: TEMPLATE_GROUP_ADDED,
         target: `${template.name}@${template.version}:group:${name.trim()}`,
         before: template,
         after: next,
       }],
       processor: createUndoProcessor([
         {
-          actionType: 'TEMPLATE_COLOR_VARIABLE_ADDED',
+          actionType: TEMPLATE_COLOR_VARIABLE_ADDED,
           apply: (action) => this.applyTemplateState(action.after as Template),
           revert: (action) => this.applyTemplateState(action.before as Template),
         },
         {
-          actionType: 'TEMPLATE_GROUP_ADDED',
+          actionType: TEMPLATE_GROUP_ADDED,
           apply: (action) => this.applyTemplateState(action.after as Template),
           revert: (action) => this.applyTemplateState(action.before as Template),
         },

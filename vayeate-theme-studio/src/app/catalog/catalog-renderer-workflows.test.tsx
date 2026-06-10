@@ -15,11 +15,13 @@ import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
 import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
 import { BumpCatalogVersionForEditOperation } from '../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
 import { UpdateTokenKeyInCatalogOperation } from '../../domain/operations/catalog-operations/tokens/update-token-key-in-catalog-operation';
+import { ApplyCatalogUndoStateOperation } from '../../domain/operations/undo-operations/apply-catalog-undo-state-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
-import { SetCurrentUndoStackIdOperation } from '../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
-import { UndoOperation } from '../../domain/operations/undo-operations/undo-operation';
-import { RedoOperation } from '../../domain/operations/undo-operations/redo-operation';
 import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import {
+  createTestBuildUniversalUndoProcessor,
+  createTestUndoOperations,
+} from '../../../test/undo/test-universal-undo-processor';
 import { catalogSchema } from '../../model/schema/catalog';
 
 const viewModelMocks = vi.hoisted(() => ({
@@ -475,6 +477,24 @@ describe('catalog renderer workflows', () => {
     const undoStackStore = new UndoStackStore();
     const saveCatalog = { execute: vi.fn() };
     const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const applyCatalogUndoState = new ApplyCatalogUndoStateOperation(
+      catalogsStore,
+      catalogUiStore,
+      saveCatalog as never,
+      refreshCatalogRefsAndSelect as never,
+    );
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState,
+        applyTemplateUndoState: {
+          execute: vi.fn(),
+        } as never,
+        applyThemeUndoState: {
+          execute: vi.fn(),
+        } as never,
+      }),
+    );
     const controller = new UpdateTokenKeyController(
       catalogsStore,
       catalogUiStore,
@@ -485,7 +505,7 @@ describe('catalog renderer workflows', () => {
       new UpdateTokenKeyInCatalogOperation(),
       refreshCatalogRefsAndSelect as never,
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
     const catalog = catalogSchema.parse({
       name: 'catalog-a',
@@ -502,10 +522,10 @@ describe('catalog renderer workflows', () => {
     expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key).toBe('editor.background');
     expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(true);
 
-    await new UndoOperation(undoStackStore).execute();
+    await testUndo.undo.execute();
     expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key).toBe('editor.foreground');
 
-    await new RedoOperation(undoStackStore).execute();
+    await testUndo.redo.execute();
     expect(catalogsStore.getStore().state.catalogs['catalog-a']?.['1.0.0']?.catalog?.tokens[0].key).toBe('editor.background');
   });
 
@@ -515,6 +535,20 @@ describe('catalog renderer workflows', () => {
     const catalogUiStore = new CatalogUiStore();
     const undoStackStore = new UndoStackStore();
     const saveCatalog = { execute: vi.fn() };
+    const refreshCatalogRefsAndSelect = { execute: vi.fn() };
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: new ApplyCatalogUndoStateOperation(
+          catalogsStore,
+          catalogUiStore,
+          saveCatalog as never,
+          refreshCatalogRefsAndSelect as never,
+        ),
+        applyTemplateUndoState: { execute: vi.fn() } as never,
+        applyThemeUndoState: { execute: vi.fn() } as never,
+      }),
+    );
     const controller = new UpdateTokenKeyController(
       catalogsStore,
       catalogUiStore,
@@ -523,9 +557,9 @@ describe('catalog renderer workflows', () => {
       saveCatalog as never,
       new BumpCatalogVersionForEditOperation(),
       new UpdateTokenKeyInCatalogOperation(),
-      { execute: vi.fn() } as never,
+      refreshCatalogRefsAndSelect as never,
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
     const catalog = catalogSchema.parse({
       name: 'catalog-a',

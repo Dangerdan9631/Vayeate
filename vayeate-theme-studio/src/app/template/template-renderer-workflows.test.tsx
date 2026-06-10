@@ -20,11 +20,13 @@ import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
 import { BumpTemplateVersionForEditOperation } from '../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { AddColorVariableOperation } from '../../domain/operations/template-operations/variables-color/add-color-variable-operation';
 import { AddGroupToTemplateOperation } from '../../domain/operations/template-operations/groups/add-group-to-template-operation';
+import { ApplyTemplateUndoStateOperation } from '../../domain/operations/undo-operations/apply-template-undo-state-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
-import { SetCurrentUndoStackIdOperation } from '../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
-import { UndoOperation } from '../../domain/operations/undo-operations/undo-operation';
-import { RedoOperation } from '../../domain/operations/undo-operations/redo-operation';
 import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import {
+  createTestBuildUniversalUndoProcessor,
+  createTestUndoOperations,
+} from '../../../test/undo/test-universal-undo-processor';
 import { templateSchema } from '../../model/schema/template-schemas';
 
 const viewModelMocks = vi.hoisted(() => ({
@@ -564,8 +566,21 @@ describe('template renderer workflows', () => {
     });
     templatesStore.getStore().updateTemplate(template);
     templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
+    const applyTemplateUndoState = new ApplyTemplateUndoStateOperation(
+      templatesStore,
+      templateUiStore,
+      saveTemplate as never,
+      refreshTemplateRefsAndSelect as never,
+    );
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: { execute: vi.fn() } as never,
+        applyTemplateUndoState,
+        applyThemeUndoState: { execute: vi.fn() } as never,
+      }),
+    );
     const recordUndoEntry = new RecordUndoEntryOperation(undoStackStore);
-    const setCurrentUndoStackId = new SetCurrentUndoStackIdOperation(undoStackStore);
     const addVariable = new AddColorVariableController(
       templatesStore,
       templateUiStore,
@@ -576,7 +591,7 @@ describe('template renderer workflows', () => {
       saveTemplate as never,
       refreshTemplateRefsAndSelect as never,
       recordUndoEntry,
-      setCurrentUndoStackId,
+      testUndo.setCurrentUndoStackId,
     );
     const addGroup = new AddGroupController(
       templatesStore,
@@ -588,7 +603,7 @@ describe('template renderer workflows', () => {
       saveTemplate as never,
       refreshTemplateRefsAndSelect as never,
       recordUndoEntry,
-      setCurrentUndoStackId,
+      testUndo.setCurrentUndoStackId,
     );
 
     await addVariable.run('editorFg');
@@ -596,10 +611,10 @@ describe('template renderer workflows', () => {
     expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual(['core']);
     expect(undoStackStore.getStore().state.undoMenu.frames).toHaveLength(3);
 
-    await new UndoOperation(undoStackStore).execute();
+    await testUndo.undo.execute();
     expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual([]);
 
-    await new RedoOperation(undoStackStore).execute();
+    await testUndo.redo.execute();
     expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual(['core']);
   });
 
@@ -621,6 +636,20 @@ describe('template renderer workflows', () => {
     });
     templatesStore.getStore().updateTemplate(template);
     templateUiStore.getStore().selectTemplate({ name: 'template-a', version: '1.0.0' });
+    const refreshTemplateRefsAndSelect = { execute: vi.fn() };
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: { execute: vi.fn() } as never,
+        applyTemplateUndoState: new ApplyTemplateUndoStateOperation(
+          templatesStore,
+          templateUiStore,
+          saveTemplate as never,
+          refreshTemplateRefsAndSelect as never,
+        ),
+        applyThemeUndoState: { execute: vi.fn() } as never,
+      }),
+    );
     const addVariable = new AddColorVariableController(
       templatesStore,
       templateUiStore,
@@ -629,9 +658,9 @@ describe('template renderer workflows', () => {
       new BumpTemplateVersionForEditOperation(),
       new AddColorVariableOperation(),
       saveTemplate as never,
-      { execute: vi.fn() } as never,
+      refreshTemplateRefsAndSelect as never,
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
     const addGroup = new AddGroupController(
       templatesStore,
@@ -641,9 +670,9 @@ describe('template renderer workflows', () => {
       new BumpTemplateVersionForEditOperation(),
       new AddGroupToTemplateOperation(),
       saveTemplate as never,
-      { execute: vi.fn() } as never,
+      refreshTemplateRefsAndSelect as never,
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
 
     await addVariable.run('editorFg');

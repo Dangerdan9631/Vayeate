@@ -14,6 +14,11 @@ import { createUndoProcessor } from '../../../../domain/core/undo-processor';
 import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
+import {
+  TEMPLATE_COLOR_VARIABLE_ADDED,
+  TEMPLATE_CONTRAST_VARIABLE_ADDED,
+  TEMPLATE_GROUP_ADDED,
+} from '../../../../model/undo-action-types';
 
 @singleton()
 export class AddVariableController {
@@ -55,10 +60,10 @@ export class AddVariableController {
     let actionType: string;
     if (variableKind === 'contrast') {
       next = this.addContrastVariableToTemplate.execute(base, key, groupRef);
-      actionType = 'TEMPLATE_CONTRAST_VARIABLE_ADDED';
+      actionType = TEMPLATE_CONTRAST_VARIABLE_ADDED;
     } else {
       next = this.addColorVariableToTemplate.execute(base, key, groupRef);
-      actionType = 'TEMPLATE_COLOR_VARIABLE_ADDED';
+      actionType = TEMPLATE_COLOR_VARIABLE_ADDED;
     }
     this.applyTemplateState(next);
     this.setTemplateAddVariableName.execute('');
@@ -74,17 +79,17 @@ export class AddVariableController {
       }],
       processor: createUndoProcessor([
         {
-          actionType: 'TEMPLATE_COLOR_VARIABLE_ADDED',
+          actionType: TEMPLATE_COLOR_VARIABLE_ADDED,
           apply: (action) => this.applyTemplateState(action.after as Template),
           revert: (action) => this.applyTemplateState(action.before as Template),
         },
         {
-          actionType: 'TEMPLATE_CONTRAST_VARIABLE_ADDED',
+          actionType: TEMPLATE_CONTRAST_VARIABLE_ADDED,
           apply: (action) => this.applyTemplateState(action.after as Template),
           revert: (action) => this.applyTemplateState(action.before as Template),
         },
         {
-          actionType: 'TEMPLATE_GROUP_ADDED',
+          actionType: TEMPLATE_GROUP_ADDED,
           apply: (action) => this.applyTemplateState(action.after as Template),
           revert: (action) => this.applyTemplateState(action.before as Template),
         },

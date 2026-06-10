@@ -9,12 +9,17 @@ import { ThemePaletteCard } from './theme-palette-card/ThemePaletteCard';
 import { ThemeVariablesCard } from './theme-variables-card/ThemeVariablesCard';
 import { EditorPreviewsCard } from './editor-previews-card/EditorPreviewsCard';
 import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
+import { CommitAssignColorTextOperation } from '../../domain/operations/theme-operations/palette-color-assign/commit-assign-color-text-operation';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetColorVariableDarkOperation } from '../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
+import { SetThemeOperation } from '../../domain/operations/theme-operations/theme-details/set-theme-operation';
+import { ApplyThemeUndoStateOperation } from '../../domain/operations/undo-operations/apply-theme-undo-state-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
-import { RedoOperation } from '../../domain/operations/undo-operations/redo-operation';
-import { HistoryGoToOperation } from '../../domain/operations/undo-operations/history-go-to-operation';
-import { SetCurrentUndoStackIdOperation } from '../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
-import { UndoOperation } from '../../domain/operations/undo-operations/undo-operation';
+import {
+  createMinimalTestBuildUniversalUndoProcessor,
+  createTestBuildUniversalUndoProcessor,
+  createTestUndoOperations,
+} from '../../../test/undo/test-universal-undo-processor';
 import { ThemesStore } from '../../domain/state/data/themes-store';
 import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
 import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
@@ -23,7 +28,6 @@ import { AssignColorFromPickerController } from './theme-palette-card/controller
 import { SelectThemeAndLoadController } from './themes-card/controllers/select-theme-and-load-controller';
 import { deriveUndoContext, UNDO_BASELINE_FRAME_ID } from '../../model/undo-history';
 import { themeSchema } from '../../model/schema/theme-schemas';
-import { CommitAssignColorTextOperation } from '../../domain/operations/theme-operations/palette-color-assign/commit-assign-color-text-operation';
 import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../domain/state/ui/template-ui-store';
 
@@ -545,14 +549,29 @@ describe('theme renderer workflows', () => {
       debouncedThemePersist as never,
       themeGateway as never,
     );
+    const applyThemeUndoState = new ApplyThemeUndoStateOperation(
+      new SetThemeOperation(themesStore, themeUiStore),
+      new ApplyThemeStateAndSchedulePersistOperation(
+        themeUiStore,
+        debouncedThemePersist as never,
+        themeGateway as never,
+      ),
+    );
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: { execute: vi.fn() } as never,
+        applyTemplateUndoState: { execute: vi.fn() } as never,
+        applyThemeUndoState,
+        setColorVariableDark,
+      }),
+    );
     const controller = new SetColorVariableDarkController(
       themeUiStore,
       setColorVariableDark,
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
-    const undo = new UndoOperation(undoStackStore);
-    const redo = new RedoOperation(undoStackStore);
 
     themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
     themeUiStore.getStore().setTheme(themeSchema.parse({
@@ -572,10 +591,10 @@ describe('theme renderer workflows', () => {
       nextUndoDescription: 'Change editorFg dark color',
     });
 
-    await undo.execute();
+    await testUndo.undo.execute();
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
 
-    await redo.execute();
+    await testUndo.redo.execute();
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
   });
 
@@ -584,19 +603,38 @@ describe('theme renderer workflows', () => {
     const themeUiStore = new ThemeUiStore();
     const themesStore = new ThemesStore();
     const undoStackStore = new UndoStackStore();
+    const debouncedThemePersist = {
+      schedule: vi.fn((saveTheme: () => Promise<void> | void) => void saveTheme()),
+    };
+    const themeGateway = { saveTheme: vi.fn() };
     const setColorVariableDark = new SetColorVariableDarkOperation(
       themeUiStore,
       themesStore,
-      { schedule: vi.fn((saveTheme: () => Promise<void> | void) => void saveTheme()) } as never,
-      { saveTheme: vi.fn() } as never,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: { execute: vi.fn() } as never,
+        applyTemplateUndoState: { execute: vi.fn() } as never,
+        applyThemeUndoState: new ApplyThemeUndoStateOperation(
+          new SetThemeOperation(themesStore, themeUiStore),
+          new ApplyThemeStateAndSchedulePersistOperation(
+            themeUiStore,
+            debouncedThemePersist as never,
+            themeGateway as never,
+          ),
+        ),
+        setColorVariableDark,
+      }),
     );
     const controller = new SetColorVariableDarkController(
       themeUiStore,
       setColorVariableDark,
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
-    const goTo = new HistoryGoToOperation(undoStackStore);
 
     themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
     themeUiStore.getStore().setTheme(themeSchema.parse({
@@ -614,7 +652,7 @@ describe('theme renderer workflows', () => {
     const firstEntryId = undoStackStore.getStore().state.undoMenu.frames[1].id;
     const secondEntryId = undoStackStore.getStore().state.undoMenu.frames[0].id;
 
-    await expect(goTo.execute(firstEntryId)).resolves.toMatchObject({
+    await expect(testUndo.historyGoTo.execute(firstEntryId)).resolves.toMatchObject({
       status: 'transitioned',
       mode: 'go-to',
       entryId: firstEntryId,
@@ -624,7 +662,7 @@ describe('theme renderer workflows', () => {
     expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(firstEntryId);
     expect(undoStackStore.getStore().state.undoMenu.canRedo).toBe(true);
 
-    await expect(goTo.execute(secondEntryId)).resolves.toMatchObject({
+    await expect(testUndo.historyGoTo.execute(secondEntryId)).resolves.toMatchObject({
       status: 'transitioned',
       mode: 'go-to',
       entryId: secondEntryId,
@@ -638,9 +676,12 @@ describe('theme renderer workflows', () => {
   it('shows the opened baseline label when a theme context is activated', async () => {
     await undoManagerV2.clearPersisted();
     const undoStackStore = new UndoStackStore();
-    const setCurrentUndoStackId = new SetCurrentUndoStackIdOperation(undoStackStore);
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createMinimalTestBuildUniversalUndoProcessor(),
+    );
 
-    await setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
+    await testUndo.setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
       tabId: 'themes',
       themeRef: { name: 'theme-a', version: '3.0.0' },
       templateRef: { name: 'template-a', version: '1.0.0' },
@@ -659,22 +700,40 @@ describe('theme renderer workflows', () => {
     const themeUiStore = new ThemeUiStore();
     const themesStore = new ThemesStore();
     const undoStackStore = new UndoStackStore();
-    const setCurrentUndoStackId = new SetCurrentUndoStackIdOperation(undoStackStore);
+    const debouncedThemePersist = {
+      schedule: vi.fn((saveTheme: () => Promise<void> | void) => void saveTheme()),
+    };
+    const themeGateway = { saveTheme: vi.fn() };
     const setColorVariableDark = new SetColorVariableDarkOperation(
       themeUiStore,
       themesStore,
-      { schedule: vi.fn((saveTheme: () => Promise<void> | void) => void saveTheme()) } as never,
-      { saveTheme: vi.fn() } as never,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: { execute: vi.fn() } as never,
+        applyTemplateUndoState: { execute: vi.fn() } as never,
+        applyThemeUndoState: new ApplyThemeUndoStateOperation(
+          new SetThemeOperation(themesStore, themeUiStore),
+          new ApplyThemeStateAndSchedulePersistOperation(
+            themeUiStore,
+            debouncedThemePersist as never,
+            themeGateway as never,
+          ),
+        ),
+        setColorVariableDark,
+      }),
     );
     const controller = new SetColorVariableDarkController(
       themeUiStore,
       setColorVariableDark,
       new RecordUndoEntryOperation(undoStackStore),
-      setCurrentUndoStackId,
+      testUndo.setCurrentUndoStackId,
     );
-    const goTo = new HistoryGoToOperation(undoStackStore);
 
-    await setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
+    await testUndo.setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
       tabId: 'themes',
       themeRef: { name: 'theme-a', version: '1.0.0' },
       templateRef: { name: 'template-a', version: '1.0.0' },
@@ -694,7 +753,7 @@ describe('theme renderer workflows', () => {
     await controller.run('editorFg', '#222222');
     await controller.run('editorFg', '#333333');
 
-    await expect(goTo.execute(UNDO_BASELINE_FRAME_ID)).resolves.toMatchObject({
+    await expect(testUndo.historyGoTo.execute(UNDO_BASELINE_FRAME_ID)).resolves.toMatchObject({
       status: 'transitioned',
       mode: 'go-to',
       entryId: UNDO_BASELINE_FRAME_ID,
@@ -752,11 +811,31 @@ describe('theme renderer workflows', () => {
     const themesStore = new ThemesStore();
     const undoStackStore = new UndoStackStore();
     const saveTheme = vi.fn();
+    const debouncedThemePersist = {
+      schedule: vi.fn((save: () => Promise<void> | void) => void save()),
+    };
+    const themeGateway = { saveTheme };
     const commitAssignColorText = new CommitAssignColorTextOperation(
       themeUiStore,
       themesStore,
-      { schedule: vi.fn((save: () => Promise<void> | void) => void save()) } as never,
-      { saveTheme } as never,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
+    const testUndo = createTestUndoOperations(
+      undoStackStore,
+      createTestBuildUniversalUndoProcessor({
+        applyCatalogUndoState: { execute: vi.fn() } as never,
+        applyTemplateUndoState: { execute: vi.fn() } as never,
+        applyThemeUndoState: new ApplyThemeUndoStateOperation(
+          new SetThemeOperation(themesStore, themeUiStore),
+          new ApplyThemeStateAndSchedulePersistOperation(
+            themeUiStore,
+            debouncedThemePersist as never,
+            themeGateway as never,
+          ),
+        ),
+        commitAssignColorText,
+      }),
     );
     const controller = new AssignColorFromPickerController(
       commitAssignColorText,
@@ -764,7 +843,7 @@ describe('theme renderer workflows', () => {
       new CatalogUiStore(),
       new TemplateUiStore(),
       new RecordUndoEntryOperation(undoStackStore),
-      new SetCurrentUndoStackIdOperation(undoStackStore),
+      testUndo.setCurrentUndoStackId,
     );
     themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
     themeUiStore.getStore().setTheme(themeSchema.parse({
@@ -786,7 +865,7 @@ describe('theme renderer workflows', () => {
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
     expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color');
 
-    await new UndoOperation(undoStackStore).execute();
+    await testUndo.undo.execute();
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
   });
 });

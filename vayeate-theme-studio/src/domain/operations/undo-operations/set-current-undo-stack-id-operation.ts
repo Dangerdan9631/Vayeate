@@ -1,13 +1,16 @@
 import { singleton } from 'tsyringe';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
-import { createUndoProcessor } from '../../core/undo-processor';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import { deriveUndoBaselineLabel, type UndoContext } from '../../../model/undo-history';
+import { BuildUniversalUndoProcessorOperation } from './build-universal-undo-processor-operation';
 import { refreshUndoSummary } from './undo-operation-helpers';
 
 @singleton()
 export class SetCurrentUndoStackIdOperation {
-  constructor(private readonly undoStackStore: UndoStackStore) {}
+  constructor(
+    private readonly undoStackStore: UndoStackStore,
+    private readonly buildUniversalUndoProcessor: BuildUniversalUndoProcessorOperation,
+  ) {}
 
   execute(stackId: string | null): void {
     this.undoStackStore.getStore().setCurrentUndoStackId(stackId);
@@ -28,7 +31,7 @@ export class SetCurrentUndoStackIdOperation {
     }
 
     const stack = await undoManagerV2.getOrCreate(context.contextKey, {
-      processor: createUndoProcessor(),
+      processor: this.buildUniversalUndoProcessor.execute(),
     });
     refreshUndoSummary(this.undoStackStore, stack);
   }

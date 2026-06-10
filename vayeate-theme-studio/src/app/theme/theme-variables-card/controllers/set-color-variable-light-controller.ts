@@ -6,6 +6,7 @@ import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-ope
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
+import { THEME_COLOR_VARIABLE_LIGHT_SET } from '../../../../model/undo-action-types';
 
 @singleton()
 export class SetColorVariableLightController {
@@ -33,13 +34,13 @@ export class SetColorVariableLightController {
       completed: edit.changed,
       description: `Change ${ref} light color`,
       diffs: [{
-        actionType: 'THEME_COLOR_VARIABLE_LIGHT_SET',
+        actionType: THEME_COLOR_VARIABLE_LIGHT_SET,
         target: ref,
         before: edit.before,
         after: edit.after,
       }],
       processor: createUndoProcessor([{
-        actionType: 'THEME_COLOR_VARIABLE_LIGHT_SET',
+        actionType: THEME_COLOR_VARIABLE_LIGHT_SET,
         apply: (action) => {
           this.setColorVariableLight.execute(action.target as ColorVariableKey, String(action.after ?? ''));
         },

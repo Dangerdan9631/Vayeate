@@ -4,6 +4,7 @@ import { createUndoProcessor } from '../../../../domain/core/undo-processor';
 import { SetColorVariableDarkOperation } from '../../../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
 import { RecordUndoEntryOperation } from '../../../../domain/operations/undo-operations/record-undo-entry-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
+import { THEME_COLOR_VARIABLE_DARK_SET } from '../../../../model/undo-action-types';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
@@ -33,13 +34,13 @@ export class SetColorVariableDarkController {
       completed: edit.changed,
       description: `Change ${ref} dark color`,
       diffs: [{
-        actionType: 'THEME_COLOR_VARIABLE_DARK_SET',
+        actionType: THEME_COLOR_VARIABLE_DARK_SET,
         target: ref,
         before: edit.before,
         after: edit.after,
       }],
       processor: createUndoProcessor([{
-        actionType: 'THEME_COLOR_VARIABLE_DARK_SET',
+        actionType: THEME_COLOR_VARIABLE_DARK_SET,
         apply: (action) => {
           this.setColorVariableDark.execute(action.target as ColorVariableKey, String(action.after ?? ''));
         },

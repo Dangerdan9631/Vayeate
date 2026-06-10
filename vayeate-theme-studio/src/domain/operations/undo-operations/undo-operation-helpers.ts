@@ -1,5 +1,4 @@
-import { createUndoProcessor } from '../../core/undo-processor';
-import type { UndoStack } from '../../core/undo-stack-types';
+import type { UndoProcessor, UndoStack } from '../../core/undo-stack-types';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
 import {
   UNDO_BASELINE_FRAME_ID,
@@ -32,10 +31,11 @@ export function buildUndoMenuFrames(
 
 export async function getActiveUndoStack(
   undoStackStore: UndoStackStore,
+  processor: UndoProcessor,
 ): Promise<{ stackId: string; stack: UndoStack } | null> {
   const stackId = undoStackStore.getStore().state.currentUndoStackId;
   if (!stackId) return null;
-  const stack = await undoManagerV2.getOrCreate(stackId, { processor: createUndoProcessor() });
+  const stack = await undoManagerV2.getOrCreate(stackId, { processor });
   return { stackId, stack };
 }
 
