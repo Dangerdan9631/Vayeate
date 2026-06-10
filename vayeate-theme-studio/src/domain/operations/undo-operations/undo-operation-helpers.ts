@@ -1,7 +1,11 @@
 import { createUndoProcessor } from '../../core/undo-processor';
 import type { UndoStack } from '../../core/undo-stack-types';
 import { undoManagerV2 } from '../../core/undo-manager-v2';
-import type { HistoryTransitionResult } from '../../../model/undo-history';
+import {
+  UNDO_BASELINE_FRAME_ID,
+  type HistoryTransitionResult,
+  type UndoHistoryListEntry,
+} from '../../../model/undo-history';
 import { emptyUndoMenuSnapshot, type UndoMenuSnapshot } from '../../state/undo-stack/undo-stack-state';
 import type { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 
@@ -17,6 +21,13 @@ export function unavailableResult(
     entryId: null,
     message,
   };
+}
+
+export function buildUndoMenuFrames(
+  recentActions: readonly UndoHistoryListEntry[],
+  baselineEntry: UndoHistoryListEntry,
+): UndoHistoryListEntry[] {
+  return [...recentActions].reverse().concat(baselineEntry);
 }
 
 export async function getActiveUndoStack(
@@ -48,10 +59,13 @@ export function refreshUndoSummary(undoStackStore: UndoStackStore, stack: UndoSt
     recentActions: list.frames,
     historyVersion: nextVersion,
   };
+  const baselineLabel = store.state.currentBaselineLabel;
+  const baselineEntry = { id: UNDO_BASELINE_FRAME_ID, description: baselineLabel };
   const snapshot: UndoMenuSnapshot = {
     ...availability,
-    frames: availability.recentActions,
-    currentId: list.currentId,
+    frames: buildUndoMenuFrames(availability.recentActions, baselineEntry),
+    currentId: list.currentId ?? UNDO_BASELINE_FRAME_ID,
+    baselineLabel,
   };
   store.setUndoMenuSnapshot(snapshot);
 }

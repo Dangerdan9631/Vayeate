@@ -50,6 +50,9 @@ export const historyTransitionResultSchema = z
   })
   .readonly();
 
+export const UNDO_BASELINE_FRAME_ID = '__undo-baseline__';
+export const UNDO_HISTORY_MENU_MAX_VISIBLE_ITEMS = 10;
+
 export type UndoContext = z.infer<typeof undoContextSchema>;
 export type UndoDiff = z.infer<typeof undoDiffSchema>;
 export type UndoEntry = z.infer<typeof undoEntrySchema>;
@@ -88,6 +91,15 @@ export interface UndoContextInput {
 function refPart(label: string, ref: { name: string; version: string } | null | undefined): string {
   if (!ref) return `${label}=none`;
   return `${label}=${encodeURIComponent(ref.name)}@${encodeURIComponent(ref.version)}`;
+}
+
+export function deriveUndoBaselineLabel(context: UndoContext): string {
+  const ref =
+    context.tabId === 'catalogs' ? context.catalogRef :
+    context.tabId === 'templates' ? context.templateRef :
+    context.themeRef;
+  if (!ref) return 'Opened';
+  return `Opened ${ref.name}@${ref.version}`;
 }
 
 export function deriveUndoContext(input: UndoContextInput): UndoContext {

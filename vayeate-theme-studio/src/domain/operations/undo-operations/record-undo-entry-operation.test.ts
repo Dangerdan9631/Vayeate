@@ -7,6 +7,7 @@ import { RecordUndoEntryOperation } from './record-undo-entry-operation';
 function store(stackId: string | null) {
   const state = {
     currentUndoStackId: stackId,
+    currentBaselineLabel: 'Opened',
     undoListVersion: 0,
     undoMenu: null,
   };
@@ -18,6 +19,9 @@ function store(stackId: string | null) {
       },
       setUndoMenuSnapshot: (snapshot: never) => {
         state.undoMenu = snapshot;
+      },
+      setCurrentBaselineLabel: (label: string) => {
+        state.currentBaselineLabel = label;
       },
     }),
   };

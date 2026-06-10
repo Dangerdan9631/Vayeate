@@ -13,7 +13,7 @@
 ### Session 2026-06-08
 
 - Q: How should template, catalog, and theme identity be represented in undo contexts? -> A: Use existing `*Ref` types such as `templateRef`, `catalogRef`, and `themeRef`, each carrying `name` and `version`, instead of separate ID and version fields.
-- Q: What history navigation is in scope beyond undo? -> A: Undone actions can be redone, the undo stack can be displayed as an ordered recent-action list, and selecting an item returns to the state immediately before that item by undoing or redoing intervening items in order.
+- Q: What history navigation is in scope beyond undo? -> A: Undone actions can be redone, the undo stack can be displayed as an ordered recent-action list, and selecting an item returns to the state immediately after that item by undoing or redoing intervening items in order.
 - Q: What happens to redo history when a new action is recorded after undo? -> A: Previously undone actions are removed and can no longer be redone, while existing undo history before that point remains.
 - Q: How should large undo history be stored while remaining per-session? -> A: Undo stack information must be written to disk as it changes, may release in-memory data for performance, remains per-session, and persisted undo state is cleared on app startup.
 - Q: What should undo entries store? -> A: Undo entries store action-generated diffs rather than whole application snapshots, and each diff records before and after state needed for undo and redo.
@@ -108,14 +108,14 @@ persisted undo state is cleared before use.
 
 As a user reviewing recent changes, I need to redo undone actions and choose an
 item from the ordered recent-action list so I can move to the state immediately
-before that item without repeatedly invoking undo or redo manually.
+after that item without repeatedly invoking undo or redo manually.
 
 **Why this priority**: Undo history is more usable when users can inspect recent
 actions and intentionally move through the history instead of stepping blindly.
 
 **Independent Test**: Perform several completed actions, undo one or more,
 verify redo restores the undone changes in order, then select an older and newer
-history item and verify the application reaches the state immediately before the
+history item and verify the application reaches the state immediately after the
 selected action by undoing or redoing intervening actions in order.
 
 **Acceptance Scenarios**:
@@ -125,9 +125,17 @@ selected action by undoing or redoing intervening actions in order.
    redo path is reapplied and the remaining undone action stays redoable.
 2. **Given** a user views the ordered recent-action list for the active context,
    **When** the user selects a history item, **Then** the application returns to
-   the state immediately before that item by undoing or redoing each intervening
+   the state immediately after that item by undoing or redoing each intervening
    item in order.
-3. **Given** a user has undone one or more actions, **When** the user completes a
+3. **Given** an active undo context, **When** the user views the ordered
+   recent-action list, **Then** the list begins with a baseline "opened" item
+   naming the active tab-appropriate `*Ref` (for example
+   `Opened dark-theme@3.0.0`).
+4. **Given** a user has recorded one or more undoable actions in the active
+   context, **When** the user selects the baseline opened item, **Then** every
+   recorded action in that context is reverted and the application returns to
+   the state immediately before the first user action.
+5. **Given** a user has undone one or more actions, **When** the user completes a
    new undoable action, **Then** the previously undone actions are removed from
    the stack and can no longer be redone while earlier undo history remains.
 
@@ -219,7 +227,7 @@ errors.
   actions? The undone actions are pruned from the active stack and are no longer
   redoable, while earlier undo history remains available.
 - What happens if a user selects an item from the recent-action list? The app
-  returns to the state immediately before that item by applying undo or redo for
+  returns to the state immediately after that item by applying undo or redo for
   each intervening entry in order.
 - What happens if a user action is repeated while queue work is still pending?
   Only completed actions are recorded, and pending work does not create duplicate
@@ -276,7 +284,7 @@ errors.
   the new action.
 - **FR-010**: System MUST expose the active context stack as an ordered list of
   recent actions that the user can select.
-- **FR-011**: System MUST return to the state immediately before a selected
+- **FR-011**: System MUST return to the state immediately after a selected
   recent-action item by undoing or redoing intervening entries in order.
 - **FR-012**: System MUST keep undo and redo history for inactive contexts unchanged when
   the user invokes undo in the active context.
@@ -339,7 +347,7 @@ errors.
   workflow each from app shell, catalog, template, and theme areas, plus any
   directly related common workflow required for consistency.
 - **SC-007**: In history navigation testing, 100% of selected recent-action list
-  items return the active context to the state immediately before the selected
+  items return the active context to the state immediately after the selected
   item.
 - **SC-008**: In redo-branch testing, 100% of newly recorded actions after undo
   prune previously undone actions while preserving earlier undo history.

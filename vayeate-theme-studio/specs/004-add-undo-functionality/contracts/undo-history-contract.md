@@ -75,10 +75,25 @@ Entries before the current stack position remain available as undo history.
 ## History List Navigation
 
 The active stack can be displayed as an ordered list of recent actions. Selecting
-an item from the list moves the application to the state immediately before that
+an item from the list moves the application to the state immediately after that
 item by undoing or redoing each intervening item in order. History-list
 navigation must use the same policy-owned transition rules as stepwise undo and
 redo.
+
+### Baseline Opened Item
+
+Every active context's ordered history list begins with a synthetic baseline
+"opened" item. It is not stored as a persisted frame and is never pruned.
+
+- Reserved id: `__undo-baseline__` (`UNDO_BASELINE_FRAME_ID`).
+- Label: `Opened <name>@<version>` derived from the active tab's primary ref
+  (`catalogRef`, `templateRef`, or `themeRef`), or `Opened` when no ref is set.
+- Always rendered first in renderer summaries.
+- Selecting the baseline moves the stack to `currentIndex === -1`, reverting
+  every recorded action in the context (state immediately before the first user
+  action).
+- The baseline is checkmarked when `currentIndex === -1` (fresh context or fully
+  undone).
 
 ## Availability
 

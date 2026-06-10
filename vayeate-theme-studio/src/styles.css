@@ -349,8 +349,12 @@ body {
 }
 
 .menu-edit-history-list {
+  --menu-edit-history-row-height: 28px;
+  --menu-edit-history-max-visible-items: 10;
+  max-height: calc(
+    var(--menu-edit-history-row-height) * var(--menu-edit-history-max-visible-items) + 8px
+  );
   overflow-y: auto;
-  max-height: 280px;
   padding-bottom: 8px;
 }
 
@@ -359,6 +363,7 @@ body {
   align-items: center;
   gap: 8px;
   width: 100%;
+  min-height: var(--menu-edit-history-row-height);
   padding: 6px 12px;
   text-align: left;
   font-size: 13px;

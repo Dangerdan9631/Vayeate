@@ -12,8 +12,10 @@ whole-application undo snapshots, cross-session history restoration, or workflow
 bypasses solely because they currently exist. Do not mark final validation
 complete until representative app shell, catalog, template, and theme workflows
 can undo and redo completed changes from action-generated before/after diffs,
-ordered history-list selection returns to the state immediately before the
-selected item, new actions after undo prune redoable branch entries, stack
+ordered history-list selection returns to the state immediately after the
+selected item, every active context's history list begins with a baseline
+opened item that reverts all recorded actions when selected, new actions after
+undo prune redoable branch entries, stack
 changes are written to disk, startup clears prior-session persisted state,
 context switching restores the correct stack, failure paths avoid incorrect
 history entries, renderer summaries remain read-only, and enforcement plus

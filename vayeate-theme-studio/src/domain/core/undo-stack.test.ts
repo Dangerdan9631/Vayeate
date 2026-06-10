@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { UNDO_BASELINE_FRAME_ID } from '../../model/undo-history';
 import { createStack } from './undo-stack';
 import type { UndoFrame, UndoProcessor } from './undo-stack-types';
 
@@ -75,7 +76,7 @@ describe('undo stack', () => {
     expect(stack.canRedo).toBe(false);
   });
 
-  it('goes to the state immediately before the selected entry', async () => {
+  it('goes to the state immediately after the selected entry', async () => {
     const state = { value: 'a' };
     const stack = createStack({ stackId: 'theme:one', processor: processor(state) });
 
@@ -87,8 +88,60 @@ describe('undo stack', () => {
     state.value = 'd';
 
     expect(await stack.goto('f2')).toMatchObject({ status: 'transitioned', entryId: 'f2' });
-    expect(state.value).toBe('b');
-    expect(stack.list().currentId).toBe('f1');
+    expect(state.value).toBe('c');
+    expect(stack.list().currentId).toBe('f2');
+
+    expect(await stack.goto('f3')).toMatchObject({ status: 'transitioned', entryId: 'f3' });
+    expect(state.value).toBe('d');
+    expect(stack.list().currentId).toBe('f3');
+
+    expect(await stack.goto('f2')).toMatchObject({ status: 'transitioned', entryId: 'f2' });
+    expect(await stack.goto('f2')).toMatchObject({ status: 'transitioned', entryId: 'f2' });
+    expect(state.value).toBe('c');
+    expect(stack.list().currentId).toBe('f2');
+  });
+
+  it('goes to the baseline state when the baseline id is selected', async () => {
+    const state = { value: 'a' };
+    const stack = createStack({ stackId: 'theme:one', processor: processor(state) });
+
+    await stack.push(frame('f1', 'a', 'b'));
+    state.value = 'b';
+    await stack.push(frame('f2', 'b', 'c'));
+    state.value = 'c';
+
+    expect(await stack.goto(UNDO_BASELINE_FRAME_ID)).toMatchObject({ status: 'transitioned' });
+    expect(state.value).toBe('a');
+    expect(stack.list().currentId).toBeNull();
+    expect(stack.canRedo).toBe(true);
+  });
+
+  it('redoes forward from the baseline', async () => {
+    const state = { value: 'a' };
+    const stack = createStack({ stackId: 'theme:one', processor: processor(state) });
+
+    await stack.push(frame('f1', 'a', 'b'));
+    state.value = 'b';
+    await stack.push(frame('f2', 'b', 'c'));
+    state.value = 'c';
+
+    await stack.goto(UNDO_BASELINE_FRAME_ID);
+    expect(await stack.goto('f2')).toMatchObject({ status: 'transitioned', entryId: 'f2' });
+    expect(state.value).toBe('c');
+  });
+
+  it('baseline goto is a no-op on a fresh stack', async () => {
+    const processorSpy = vi.fn();
+    const stack = createStack({
+      stackId: 'theme:one',
+      processor: {
+        applyProcessor: processorSpy,
+        revertProcessor: processorSpy,
+      },
+    });
+
+    expect(await stack.goto(UNDO_BASELINE_FRAME_ID)).toMatchObject({ status: 'transitioned' });
+    expect(processorSpy).not.toHaveBeenCalled();
   });
 
   it('rolls back a push when persistence fails', async () => {

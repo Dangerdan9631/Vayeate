@@ -1,4 +1,4 @@
-import type { HistoryTransitionResult, UndoStackPosition } from '../../model/undo-history';
+import { UNDO_BASELINE_FRAME_ID, type HistoryTransitionResult, type UndoStackPosition } from '../../model/undo-history';
 import type {
   PersistedStack,
   UndoAction,
@@ -136,12 +136,14 @@ export function createStack(options: UndoStackOptions): UndoStack {
     },
 
     async goto(id: string): Promise<HistoryTransitionResult> {
-      const targetIndex = frames.findIndex((frame) => frame.id === id);
-      if (targetIndex < 0) {
+      const targetIndex = id === UNDO_BASELINE_FRAME_ID
+        ? -1
+        : frames.findIndex((frame) => frame.id === id);
+      if (targetIndex < 0 && id !== UNDO_BASELINE_FRAME_ID) {
         return transitionResult('not-available', 'go-to', stackId, id, 'The selected history entry is unavailable.');
       }
 
-      const targetCurrentIndex = targetIndex - 1;
+      const targetCurrentIndex = targetIndex;
       if (currentIndex === targetCurrentIndex) {
         return transitionResult('transitioned', 'go-to', stackId, id);
       }

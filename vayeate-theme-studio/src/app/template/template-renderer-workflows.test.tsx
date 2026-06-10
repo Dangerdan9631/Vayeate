@@ -594,7 +594,7 @@ describe('template renderer workflows', () => {
     await addVariable.run('editorFg');
     await addGroup.run('core');
     expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual(['core']);
-    expect(undoStackStore.getStore().state.undoMenu.frames).toHaveLength(2);
+    expect(undoStackStore.getStore().state.undoMenu.frames).toHaveLength(3);
 
     await new UndoOperation(undoStackStore).execute();
     expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual([]);

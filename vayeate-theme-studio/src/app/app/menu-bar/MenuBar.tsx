@@ -1,4 +1,5 @@
 import type { MouseEvent } from 'react';
+import { UNDO_BASELINE_FRAME_ID } from '../../../model/undo-history';
 import { useMenuBarViewModel } from './use-menubar-viewmodel';
 
 export function MenuBar() {
@@ -190,7 +191,7 @@ export function MenuBar() {
                       type="button"
                       data-frame-id={frame.id}
                       role="menuitem"
-                      className={`menu-edit-history-item ${frame.id === currentId ? 'menu-edit-history-current' : ''}`}
+                      className={`menu-edit-history-item ${frame.id === currentId ? 'menu-edit-history-current' : ''} ${frame.id === UNDO_BASELINE_FRAME_ID ? 'menu-edit-history-baseline' : ''}`}
                       onClick={onHistoryItemClick}
                     >
                       {frame.id === currentId && (

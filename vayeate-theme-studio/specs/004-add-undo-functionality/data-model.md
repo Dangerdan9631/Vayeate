@@ -138,7 +138,26 @@ Represents the user's current location in an ordered stack.
 - Redo reapplies undone entries in order.
 - History-list selection moves by undoing or redoing intervening entries in
   order.
-- Selecting a list item targets the state immediately before that item.
+- Selecting a list item targets the state immediately after that item.
+
+## Baseline Opened List Entry
+
+Represents the synthetic first row in an active context's ordered history list.
+
+**Fields**:
+
+- `id`: Reserved constant `__undo-baseline__` (`UNDO_BASELINE_FRAME_ID`).
+- `description`: `Opened <name>@<version>` from the active tab's primary ref, or
+  `Opened` when no ref is available.
+
+**Validation Rules**:
+
+- Not stored as an undo frame; synthesized when building renderer summaries.
+- Never persisted to disk and never pruned by stack push operations.
+- Selecting it targets stack position before the first recorded entry
+  (`currentIndex === -1`).
+- Label is stored per active context in undo stack state (`currentBaselineLabel`)
+  and refreshed on context switch.
 
 ## Undo Availability Summary
 
@@ -155,6 +174,7 @@ renderer surfaces.
 - `recentActions`: Ordered recent-action entries for the active context.
 - `historyVersion`: Runtime version that changes when the active context stack
   changes.
+- `baselineLabel`: Current baseline opened label for the active context.
 
 **Validation Rules**:
 

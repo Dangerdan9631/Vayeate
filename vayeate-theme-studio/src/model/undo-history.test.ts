@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deriveUndoContext, undoDiffSchema } from './undo-history';
+import { deriveUndoBaselineLabel, deriveUndoContext, undoDiffSchema } from './undo-history';
 
 describe('undo history model', () => {
   it('derives stable context keys from active tab and existing refs', () => {
@@ -19,6 +19,22 @@ describe('undo history model', () => {
       catalogRef: { name: 'core-catalog', version: '2.0.0' },
       themeRef: { name: 'dark-theme', version: '3.0.0' },
     }).contextKey).toBe(context.contextKey);
+  });
+
+  it('derives baseline labels from the active tab ref', () => {
+    expect(deriveUndoBaselineLabel(deriveUndoContext({
+      tabId: 'catalogs',
+      catalogRef: { name: 'core-catalog', version: '2.0.0' },
+    }))).toBe('Opened core-catalog@2.0.0');
+    expect(deriveUndoBaselineLabel(deriveUndoContext({
+      tabId: 'templates',
+      templateRef: { name: 'base-template', version: '1.0.0' },
+    }))).toBe('Opened base-template@1.0.0');
+    expect(deriveUndoBaselineLabel(deriveUndoContext({
+      tabId: 'themes',
+      themeRef: { name: 'dark-theme', version: '3.0.0' },
+    }))).toBe('Opened dark-theme@3.0.0');
+    expect(deriveUndoBaselineLabel(deriveUndoContext({ tabId: 'themes' }))).toBe('Opened');
   });
 
   it('changes context keys when any visible context ref changes', () => {

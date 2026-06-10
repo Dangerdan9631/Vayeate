@@ -157,7 +157,7 @@ action behavior, whole-state snapshots, or cross-session hydration.
   context; recording a new action prunes the undone branch while preserving
   earlier undo history.
 - Ordered history-list selection is in scope and moves the active context to the
-  state immediately before the selected item by undoing or redoing intervening
+  state immediately after the selected item by undoing or redoing intervening
   entries in order.
 - Undo policy belongs in domain/application operations; components, handlers,
   gateways, and renderer summaries remain translators or read-only views.
@@ -228,7 +228,7 @@ action behavior, whole-state snapshots, or cross-session hydration.
 - Failure-path validation must prove invalid, canceled, interrupted, failed, and
   pending actions do not create incorrect undo entries.
 - History-list validation must prove selecting an entry moves to the state
-  immediately before that entry and that new actions after undo prune redoable
+  immediately after that entry and that new actions after undo prune redoable
   branch entries.
 - Persistence validation must prove stack changes are written to disk before
   in-memory data for those entries is eligible for release.

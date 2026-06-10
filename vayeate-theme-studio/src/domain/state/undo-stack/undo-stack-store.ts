@@ -8,6 +8,7 @@ interface UndoStackStoreState {
     setCurrentUndoStackId: (currentUndoStackId: string | null) => void;
     setUndoListVersion: (undoListVersion: number) => void;
     setUndoMenuSnapshot: (undoMenuSnapshot: UndoMenuSnapshot) => void;
+    setCurrentBaselineLabel: (label: string) => void;
 }
 
 @singleton()
@@ -23,6 +24,9 @@ export class UndoStackStore {
             }),
             setUndoMenuSnapshot: (undoMenuSnapshot: UndoMenuSnapshot) => set((state) => {
                 state.state.undoMenu = undoMenuSnapshot;
+            }),
+            setCurrentBaselineLabel: (label: string) => set((state) => {
+                state.state.currentBaselineLabel = label;
             }),
         }))
     );

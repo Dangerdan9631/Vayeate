@@ -93,7 +93,7 @@ components, handlers, or gateways to write state directly.
 
 **Rationale**: The user clarified that undone actions can be redone and that the
 stack can be displayed as an ordered recent-action list. Selecting an item
-returns to the state immediately before that item by applying undo or redo for
+returns to the state immediately after that item by applying undo or redo for
 each intervening item in order. This aligns with existing redo and
 history-go-to affordance names in the codebase while making their semantics
 explicit in the spec.

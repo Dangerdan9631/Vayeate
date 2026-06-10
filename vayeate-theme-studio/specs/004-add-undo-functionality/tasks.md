@@ -161,7 +161,7 @@ prior-session history
 ## Phase 6: User Story 4 - Redo and Navigate Recent Action History (Priority: P2)
 
 **Goal**: Redo undone actions, expose ordered recent actions, navigate to the
-state immediately before a selected item, and prune redo branches after new
+state immediately after a selected item, and prune redo branches after new
 actions.
 
 **Independent Test**: Perform several actions, undo multiple actions, redo in
@@ -177,7 +177,7 @@ verify redoable branch entries are pruned while earlier history remains.
 ### Implementation for User Story 4
 
 - [X] T051 [US4] Ensure redo reapplies undone entries in order in `src/domain/operations/undo-operations/redo-operation.ts` and `src/domain/core/undo-stack.ts`
-- [X] T052 [US4] Ensure history go-to targets the state immediately before the selected item in `src/domain/operations/undo-operations/history-go-to-operation.ts` and `src/domain/core/undo-stack.ts`
+- [X] T052 [US4] Ensure history go-to targets the state immediately after the selected item in `src/domain/operations/undo-operations/history-go-to-operation.ts` and `src/domain/core/undo-stack.ts`
 - [X] T053 [US4] Expose ordered recent actions, current position, canUndo, and canRedo in `src/domain/state/undo-stack/undo-stack-state.ts` and `src/app/app/menu-bar/use-menubar-viewmodel.ts`
 - [X] T054 [US4] Wire history-list item selection through named actions in `src/app/app/menu-bar/MenuBar.tsx`, `src/app/app/menu-bar/actions/app-menu-action-type.ts`, and `src/app/app/menu-bar/actions/app-menu-handler.ts`
 - [X] T055 [US4] Prune redoable branch entries when a new undoable action is recorded in `src/domain/operations/undo-operations/record-undo-entry-operation.ts` and `src/domain/core/undo-stack.ts`
@@ -213,6 +213,24 @@ only completed user-visible reversible changes appear in undo history.
 
 **Checkpoint**: User Story 5 should prevent incorrect history entries and keep
 history consistent after failures
+
+---
+
+## Phase 8b: Baseline Opened History Entry
+
+**Purpose**: Prepend a synthetic "opened" baseline item to every active context's
+history list; selecting it reverts all recorded actions in that context.
+
+- [X] T073 [P] Add `UNDO_BASELINE_FRAME_ID`, `deriveUndoBaselineLabel`, and baseline label tests in `src/model/undo-history.ts` and `src/model/undo-history.test.ts`
+- [X] T074 [P] Add baseline goto tests in `src/domain/core/undo-stack.test.ts`
+- [X] T075 Expose `currentBaselineLabel`, prepend synthetic baseline rows in `refreshUndoSummary`, and set labels on context switch in `src/domain/state/undo-stack/undo-stack-state.ts`, `src/domain/state/undo-stack/undo-stack-store.ts`, `src/domain/operations/undo-operations/undo-operation-helpers.ts`, `src/domain/operations/undo-operations/set-current-undo-stack-id-operation.ts`, and `src/domain/core/undo-stack.ts`
+- [X] T076 [P] Update theme, template, menu bar, and session baseline workflow tests in `src/app/theme/theme-renderer-workflows.test.tsx`, `src/app/template/template-renderer-workflows.test.tsx`, `src/app/app/menu-bar/menu-bar-renderer-workflows.test.tsx`, and `src/domain/session-and-preview-baseline.test.ts`
+- [X] T077 Add baseline opened-item styling hook in `src/app/app/menu-bar/MenuBar.tsx`
+- [X] T078 [P] Document baseline opened-item rules in `specs/004-add-undo-functionality/spec.md`, `specs/004-add-undo-functionality/data-model.md`, and `specs/004-add-undo-functionality/contracts/undo-history-contract.md`
+
+**Checkpoint**: Every active context shows an opened baseline first; selecting it
+reverts all recorded actions and checkmarks the baseline on fresh or fully undone
+stacks.
 
 ---
 

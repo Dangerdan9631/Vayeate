@@ -21,6 +21,7 @@ import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
 import { SetColorVariableDarkController } from './theme-variables-card/controllers/set-color-variable-dark-controller';
 import { AssignColorFromPickerController } from './theme-palette-card/controllers/assign-color-from-picker-controller';
 import { SelectThemeAndLoadController } from './themes-card/controllers/select-theme-and-load-controller';
+import { deriveUndoContext, UNDO_BASELINE_FRAME_ID } from '../../model/undo-history';
 import { themeSchema } from '../../model/schema/theme-schemas';
 import { CommitAssignColorTextOperation } from '../../domain/operations/theme-operations/palette-color-assign/commit-assign-color-text-operation';
 import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
@@ -578,7 +579,7 @@ describe('theme renderer workflows', () => {
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
   });
 
-  it('navigates theme edit history to the state immediately before a selected item', async () => {
+  it('navigates theme edit history to the state immediately after a selected item', async () => {
     await undoManagerV2.clearPersisted();
     const themeUiStore = new ThemeUiStore();
     const themesStore = new ThemesStore();
@@ -610,7 +611,18 @@ describe('theme renderer workflows', () => {
 
     await controller.run('editorFg', '#222222');
     await controller.run('editorFg', '#333333');
-    const secondEntryId = undoStackStore.getStore().state.undoMenu.frames[1].id;
+    const firstEntryId = undoStackStore.getStore().state.undoMenu.frames[1].id;
+    const secondEntryId = undoStackStore.getStore().state.undoMenu.frames[0].id;
+
+    await expect(goTo.execute(firstEntryId)).resolves.toMatchObject({
+      status: 'transitioned',
+      mode: 'go-to',
+      entryId: firstEntryId,
+    });
+
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
+    expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(firstEntryId);
+    expect(undoStackStore.getStore().state.undoMenu.canRedo).toBe(true);
 
     await expect(goTo.execute(secondEntryId)).resolves.toMatchObject({
       status: 'transitioned',
@@ -618,10 +630,79 @@ describe('theme renderer workflows', () => {
       entryId: secondEntryId,
     });
 
-    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#222222');
-    expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(
-      undoStackStore.getStore().state.undoMenu.frames[0].id,
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#333333');
+    expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(secondEntryId);
+    expect(undoStackStore.getStore().state.undoMenu.canRedo).toBe(false);
+  });
+
+  it('shows the opened baseline label when a theme context is activated', async () => {
+    await undoManagerV2.clearPersisted();
+    const undoStackStore = new UndoStackStore();
+    const setCurrentUndoStackId = new SetCurrentUndoStackIdOperation(undoStackStore);
+
+    await setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
+      tabId: 'themes',
+      themeRef: { name: 'theme-a', version: '3.0.0' },
+      templateRef: { name: 'template-a', version: '1.0.0' },
+      catalogRef: { name: 'catalog-a', version: '2.0.0' },
+    }));
+
+    expect(undoStackStore.getStore().state.undoMenu.frames.at(-1)).toEqual({
+      id: UNDO_BASELINE_FRAME_ID,
+      description: 'Opened theme-a@3.0.0',
+    });
+    expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(UNDO_BASELINE_FRAME_ID);
+  });
+
+  it('reverts all theme edits when the opened baseline is selected', async () => {
+    await undoManagerV2.clearPersisted();
+    const themeUiStore = new ThemeUiStore();
+    const themesStore = new ThemesStore();
+    const undoStackStore = new UndoStackStore();
+    const setCurrentUndoStackId = new SetCurrentUndoStackIdOperation(undoStackStore);
+    const setColorVariableDark = new SetColorVariableDarkOperation(
+      themeUiStore,
+      themesStore,
+      { schedule: vi.fn((saveTheme: () => Promise<void> | void) => void saveTheme()) } as never,
+      { saveTheme: vi.fn() } as never,
     );
+    const controller = new SetColorVariableDarkController(
+      themeUiStore,
+      setColorVariableDark,
+      new RecordUndoEntryOperation(undoStackStore),
+      setCurrentUndoStackId,
+    );
+    const goTo = new HistoryGoToOperation(undoStackStore);
+
+    await setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
+      tabId: 'themes',
+      themeRef: { name: 'theme-a', version: '1.0.0' },
+      templateRef: { name: 'template-a', version: '1.0.0' },
+    }));
+
+    themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
+    themeUiStore.getStore().setTheme(themeSchema.parse({
+      name: 'theme-a',
+      version: '1.0.0',
+      templateRef: { name: 'template-a', version: '1.0.0' },
+      colorAssignments: [
+        { colorRef: 'editorFg', dark: { value: '#111111' }, light: { value: '#eeeeee' }, useDarkForLight: false },
+      ],
+      contrastAssignments: [],
+    }));
+
+    await controller.run('editorFg', '#222222');
+    await controller.run('editorFg', '#333333');
+
+    await expect(goTo.execute(UNDO_BASELINE_FRAME_ID)).resolves.toMatchObject({
+      status: 'transitioned',
+      mode: 'go-to',
+      entryId: UNDO_BASELINE_FRAME_ID,
+    });
+
+    expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#111111');
+    expect(undoStackStore.getStore().state.undoMenu.currentId).toBe(UNDO_BASELINE_FRAME_ID);
+    expect(undoStackStore.getStore().state.undoMenu.canUndo).toBe(false);
     expect(undoStackStore.getStore().state.undoMenu.canRedo).toBe(true);
   });
 

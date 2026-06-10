@@ -4,6 +4,7 @@ import { SaveAppConfigOperation } from './operations/app-operations/save-app-con
 import { LoadUndoHistoryOperation } from './operations/undo-operations/load-undo-history-operation';
 import { LoadAppController } from '../app/app/app-shell/controllers/load-app-controller';
 import { undoManagerV2 } from './core/undo-manager-v2';
+import { UNDO_BASELINE_FRAME_ID } from '../model/undo-history';
 import { emptyUndoMenuSnapshot } from './state/undo-stack/undo-stack-state';
 import { buildScopeColorMap, resolveColorForThemeTokenKey, resolveTokenColor } from './utils/scope-resolver';
 import { computeDisplayColorAssignments } from './utils/compute-display-color-assignments';
@@ -52,7 +53,7 @@ describe('session and preview baselines', () => {
     const setUndoMenuSnapshot = vi.fn();
     const undoStore = {
       getStore: () => ({
-        state: { currentUndoStackId: null },
+        state: { currentUndoStackId: null, currentBaselineLabel: 'Opened' },
         setUndoMenuSnapshot,
       }),
     };
@@ -72,8 +73,9 @@ describe('session and preview baselines', () => {
     const setSnapshot = vi.fn();
     const populatedStore = {
       getStore: () => ({
-        state: { currentUndoStackId: 'theme:baseline' },
+        state: { currentUndoStackId: 'theme:baseline', currentBaselineLabel: 'Opened' },
         setUndoMenuSnapshot: setSnapshot,
+        setUndoListVersion: vi.fn(),
       }),
     };
 
@@ -81,9 +83,13 @@ describe('session and preview baselines', () => {
     expect(getOrCreateSpy).toHaveBeenCalledWith('theme:baseline', expect.any(Object));
     expect(setSnapshot).toHaveBeenCalledWith({
       activeContextKey: 'theme:baseline',
-      frames: [{ id: 'frame-1', description: 'Changed color' }],
+      frames: [
+        { id: 'frame-1', description: 'Changed color' },
+        { id: UNDO_BASELINE_FRAME_ID, description: 'Opened' },
+      ],
       recentActions: [{ id: 'frame-1', description: 'Changed color' }],
       currentId: 'frame-1',
+      baselineLabel: 'Opened',
       canUndo: true,
       canRedo: false,
       nextUndoDescription: null,

@@ -10,10 +10,14 @@ import { isTemplateAction } from '../../template/actions/template-action-type';
 import { ThemeActionHandler } from '../../theme/actions/theme-handler';
 import { isThemeAction } from '../../theme/actions/theme-action-type';
 import { EyedropperOverlayActionType } from '../../common/eyedropper-overlay/actions/eyedropper-overlay-action-type';
+import { StyledTooltipActionType } from '../../common/styled-tooltip/actions/styled-tooltip-action-type';
 
 const SILENCED_ACTION_TYPES = new Set<string>([
   EyedropperOverlayActionType.OverlayViewportSizeChange,
   EyedropperOverlayActionType.OverlayMouseMove,
+  StyledTooltipActionType.TooltipOnPositionChange,
+  StyledTooltipActionType.TooltipSourceOnMouseOut,
+  StyledTooltipActionType.TooltipSourceOnMouseOver,
 ]);
 
 @singleton()

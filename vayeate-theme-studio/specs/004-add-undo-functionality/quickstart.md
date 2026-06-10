@@ -53,7 +53,7 @@ work, validate each undoable workflow against these checks:
 - undo context uses existing template, catalog, and theme reference values
 - inactive context stacks remain unchanged
 - redo reapplies undone actions in order
-- ordered history-list selection moves to the state immediately before the
+- ordered history-list selection moves to the state immediately after the
   selected entry
 - recording a new action after undo prunes previously undone entries while
   preserving earlier history
@@ -118,7 +118,7 @@ Adjust the command list to the exact files touched by implementation.
 
 7. Open the ordered recent-action list and select an older and newer item.
 
-   Expected result: the app reaches the state immediately before the selected
+   Expected result: the app reaches the state immediately after the selected
    item by undoing or redoing intervening entries in order.
 
 8. Build a large undo history, confirm stack data is written to disk, release
