@@ -299,6 +299,9 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
   if (rel === 'domain/operations/undo-operations/apply-theme-undo-state-operation.ts') {
     return operationType === 'SetThemeOperation' || operationType === 'ApplyThemeStateAndSchedulePersistOperation';
   }
+  if (rel === 'domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation.ts') {
+    return operationType === 'ApplyThemeStateOperation';
+  }
 
   if (rel === 'domain/operations/undo-operations/apply-catalog-lifecycle-undo-operation.ts') {
     return (

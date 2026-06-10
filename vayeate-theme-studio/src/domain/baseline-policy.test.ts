@@ -10,6 +10,7 @@ import { assertValidThemeFileName } from './utils/assert-valid-theme-file-name';
 import { toSafeFileName } from './utils/to-safe-theme-file-name';
 import { ValidateCanLockTemplate } from './validations/template-validations/validate-can-lock-template';
 import { ApplyThemeStateAndSchedulePersistOperation } from './operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { ApplyThemeStateOperation } from './operations/theme-operations/theme-details/apply-theme-state-operation';
 import { SetThemeLoadedTemplateOperation } from './operations/theme-operations/theme-details/set-theme-loaded-template-operation';
 import { ThemeUiStore } from './state/ui/theme-ui-store';
 import { ThemePreviewStore } from './state/ui/theme-preview-store';
@@ -206,9 +207,10 @@ describe('baseline domain policy', () => {
     };
     const themeGateway = { saveTheme: vi.fn(async () => {}) };
     const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
-      themeUiStore,
+      new ApplyThemeStateOperation(themeUiStore),
       debouncedThemePersist as never,
       themeGateway as never,
+      themeUiStore,
     );
     const setThemeLoadedTemplate = new SetThemeLoadedTemplateOperation(themePreviewStore);
     const loadTemplateSnapshot: { execute: ReturnType<typeof vi.fn> } = {
@@ -278,9 +280,10 @@ describe('baseline domain policy', () => {
     const debouncedThemePersist = { schedule: vi.fn() };
     const themeGateway = { saveTheme: vi.fn(async () => {}) };
     const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
-      themeUiStore,
+      new ApplyThemeStateOperation(themeUiStore),
       debouncedThemePersist as never,
       themeGateway as never,
+      themeUiStore,
     );
     const setThemeLoadedTemplate = new SetThemeLoadedTemplateOperation(themePreviewStore);
     const loadTemplateSnapshot = { execute: vi.fn(async () => template) };

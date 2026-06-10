@@ -3,10 +3,13 @@ import { EnqueueBackgroundQueueActionOperation } from '../../../domain/operation
 import { LoggerFactory } from '../../../domain/utils/logger';
 import { SignalBackgroundQueueProcessingCompleteController } from './controllers/signal-background-queue-processing-complete-controller';
 import { UpdateBackgroundQueueStatusController } from './controllers/update-background-queue-status-controller';
-import { SerialQueue } from './serial-queue';
+import {
+  DEFAULT_DATA_IO_READ_CONCURRENCY_LIMIT,
+  KeyedDataIoQueue,
+} from './keyed-data-io-queue';
 
 @singleton()
-export class DataIoBackgroundQueue extends SerialQueue {
+export class DataIoBackgroundQueue extends KeyedDataIoQueue {
   constructor(
     enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
     updateBackgroundQueueStatus: UpdateBackgroundQueueStatusController,
@@ -15,6 +18,7 @@ export class DataIoBackgroundQueue extends SerialQueue {
   ) {
     super(
       'data_io',
+      DEFAULT_DATA_IO_READ_CONCURRENCY_LIMIT,
       enqueueBackgroundQueue,
       updateBackgroundQueueStatus,
       signalBackgroundQueueProcessingComplete,

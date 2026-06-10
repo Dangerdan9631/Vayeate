@@ -1,9 +1,15 @@
 import { singleton } from 'tsyringe';
+import type { Catalog } from '../../../model/schema/catalog';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 import { CatalogsStore } from '../../catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../state/ui/catalog-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
+
+const noopContinuation: ContinuationHandler = {
+  onQueue: () => noopContinuation,
+  then: () => {},
+};
 
 @singleton()
 export class RefreshCatalogRefsAndSelectOperation {
@@ -14,14 +20,29 @@ export class RefreshCatalogRefsAndSelectOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(selectName?: string, selectVersion?: string): ContinuationHandler {
-    if (selectName && selectVersion) {
+  execute(
+    selectName?: string,
+    selectVersion?: string,
+    catalog?: Catalog,
+    refsChanged = true,
+  ): ContinuationHandler {
+    if (selectName && selectVersion && catalog) {
+      this.catalogUiStore.getStore().selectCatalog({ name: selectName, version: selectVersion });
+      this.catalogsStore.getStore().upsertCatalogs([catalog]);
+      this.catalogUiStore.getStore().setCatalogLoadState('loaded');
+    } else if (selectName && selectVersion) {
       this.catalogUiStore.getStore().setCatalogLoadState('loading');
+    }
+
+    if (!refsChanged) {
+      return noopContinuation;
     }
 
     return this.enqueueBackgroundAction.execute(
       'data_io',
-      `Refreshing catalog ${selectName} ${selectVersion}`,
+      selectName && selectVersion
+        ? `Refreshing catalog refs for ${selectName} ${selectVersion}`
+        : 'Refreshing catalog refs',
       async () => {
         const refs = await this.catalogGateway.listCatalogs();
         this.catalogsStore.getStore().updateCatalogRefs(refs);
@@ -29,13 +50,18 @@ export class RefreshCatalogRefsAndSelectOperation {
         if (selectName && selectVersion) {
           const match = refs.find((r) => r.name === selectName && r.version === selectVersion);
           if (match) {
-            const catalog = await this.catalogGateway.loadCatalog(match.name, match.version);
-            if (catalog) {
-              this.catalogUiStore.getStore().selectCatalog(match);
-              this.catalogsStore.getStore().upsertCatalogs([catalog]);
+            this.catalogUiStore.getStore().selectCatalog(match);
+          }
+          if (!catalog) {
+            const ref = match ?? { name: selectName, version: selectVersion };
+            const loaded = await this.catalogGateway.loadCatalog(ref.name, ref.version);
+            if (loaded) {
+              this.catalogsStore.getStore().upsertCatalogs([loaded]);
               this.catalogUiStore.getStore().setCatalogLoadState('loaded');
               loadedSelectedCatalog = true;
             }
+          } else {
+            loadedSelectedCatalog = true;
           }
         }
         if (selectName && selectVersion && !loadedSelectedCatalog) {

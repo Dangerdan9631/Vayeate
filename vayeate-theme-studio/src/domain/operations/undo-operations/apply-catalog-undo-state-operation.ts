@@ -1,7 +1,8 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../model/schema/catalog';
-import { CatalogsStore } from '../../catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../state/ui/catalog-ui-store';
+import { entityRefsChanged } from '../../utils/entity-refs-changed';
 import { SaveCatalogOperation } from '../catalog-operations/catalog-details/save-catalog-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../delete/refresh-catalog-refs-and-select-operation';
 
@@ -16,9 +17,14 @@ export class ApplyCatalogUndoStateOperation {
   ) {}
 
   execute(catalog: Catalog): void {
+    const store = this.catalogsStore.getStore();
+    const selectedRef = this.catalogUiStore.getStore().state.selectedRef;
+    const prior = selectedRef ? getCurrentCatalog(store.state.catalogs, selectedRef) : null;
+    const refsChanged = prior !== null && entityRefsChanged(prior, catalog);
+
     this.catalogsStore.getStore().upsertCatalogs([catalog]);
     this.catalogUiStore.getStore().selectCatalog({ name: catalog.name, version: catalog.version });
     this.saveCatalog.execute(catalog);
-    this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
+    this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version, catalog, refsChanged);
   }
 }

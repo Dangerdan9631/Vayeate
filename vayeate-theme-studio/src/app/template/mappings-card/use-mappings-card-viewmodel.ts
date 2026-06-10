@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { Catalog, Token } from '../../../model/schema/catalog';
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
-import type { CatalogReference, Mapping, Template } from '../../../model/schema/template-schemas';
+import type { CatalogReference, ColorVariable, ContrastVariable, Mapping, Template } from '../../../model/schema/template-schemas';
 import { MappingsCardActionType } from './actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
@@ -16,6 +17,11 @@ const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+const EMPTY_GROUPS: readonly string[] = [];
+const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
+const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_STRINGS: readonly string[] = [];
+
 export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();
@@ -23,8 +29,14 @@ export function useMappingsCardViewModel() {
   const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
   const template: Template | null = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
   const mappingSearchText = useStore(templateUiStore.api, (state) => state.state.mappingSearchText);
-  const mappingColorVariableFilter = useStore(templateUiStore.api, (state) => state.state.mappingColorVariableFilter);
-  const mappingContrastVariableFilter = useStore(templateUiStore.api, (state) => state.state.mappingContrastVariableFilter);
+  const mappingColorVariableFilter = useStore(
+    templateUiStore.api,
+    useShallow((state) => state.state.mappingColorVariableFilter),
+  );
+  const mappingContrastVariableFilter = useStore(
+    templateUiStore.api,
+    useShallow((state) => state.state.mappingContrastVariableFilter),
+  );
 
   const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogs);
 
@@ -205,12 +217,35 @@ export function useMappingsCardViewModel() {
     [dispatch],
   );
 
+  const sortedGroups = useMemo(
+    () => [...(template?.groups ?? EMPTY_GROUPS)].sort((a, b) => a.localeCompare(b)),
+    [template?.groups],
+  );
+
+  const sortedColorVariables = useMemo(
+    () => [...(template?.colorVariables ?? EMPTY_COLOR_VARIABLES)].sort((a, b) => a.key.localeCompare(b.key)),
+    [template?.colorVariables],
+  );
+
+  const sortedContrastVariables = useMemo(
+    () => [...(template?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES)].sort((a, b) => a.key.localeCompare(b.key)),
+    [template?.contrastVariables],
+  );
+
+  const sortedSemanticTokenModifiers = useMemo(
+    () => [...(template?.semanticTokenModifiers ?? EMPTY_STRINGS)].sort((a, b) => a.localeCompare(b)),
+    [template?.semanticTokenModifiers],
+  );
+
+  const sortedSemanticTokenLanguages = useMemo(
+    () => [...(template?.semanticTokenLanguages ?? EMPTY_STRINGS)].sort((a, b) => a.localeCompare(b)),
+    [template?.semanticTokenLanguages],
+  );
+
   const semanticVariant =
     template === null
       ? undefined
       : {
-          semanticTokenModifiers: template.semanticTokenModifiers ?? [],
-          semanticTokenLanguages: template.semanticTokenLanguages ?? [],
           onAddSemanticVariant: addSemanticVariantMapping,
           onCommitSemanticTokenModifiers: commitSemanticTokenModifiers,
           onCommitSemanticTokenLanguage: commitSemanticTokenLanguage,
@@ -219,9 +254,11 @@ export function useMappingsCardViewModel() {
   return {
     template,
     mappingsByType,
-    groups: template?.groups ?? [],
-    colorVariables: template?.colorVariables ?? [],
-    contrastVariables: template?.contrastVariables ?? [],
+    sortedGroups,
+    sortedColorVariables,
+    sortedContrastVariables,
+    sortedSemanticTokenModifiers,
+    sortedSemanticTokenLanguages,
     orphanKeys,
     canEdit,
     mappingSearchText,

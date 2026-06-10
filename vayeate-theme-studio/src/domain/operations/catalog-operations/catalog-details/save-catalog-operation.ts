@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/schema/catalog';
+import { catalogDataFileKey } from '../../../../model/data-path-keys';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
@@ -17,7 +18,8 @@ export class SaveCatalogOperation {
       `Saving catalog ${catalog.name} ${catalog.version}`,
       async () => {
         await this.catalogGateway.saveCatalog(catalog);
-      }
+      },
+      { key: catalogDataFileKey(catalog.name, catalog.version), access: 'write' },
     );
   }
 }

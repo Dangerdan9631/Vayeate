@@ -12,6 +12,7 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { ClearCatalogNewSourceDataOperation } from '../../../../domain/operations/catalog-operations/sources/clear-catalog-new-source-data-operation';
 import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_ADDED } from '../../../../model/undo-action-types';
 
@@ -54,7 +55,7 @@ export class AddNewSourceController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.addSourceToCatalog.execute(base, source);
     this.saveCatalog.execute(updated);
-    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
     this.clearCatalogNewSourceData.execute();
 
     void this.recordCatalogUndo.execute({

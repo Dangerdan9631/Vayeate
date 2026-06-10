@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { catalogDataFileKey } from '../../../../model/data-path-keys';
 import { CatalogGateway } from '../../../../gateway/catalog/catalog-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { Catalog } from '../../../../model/schema/catalog';
@@ -15,6 +16,7 @@ export class LoadCatalogOperation {
       `Loading catalog ${name} ${version}`,
       () => this.catalogGateway.loadCatalog(name, version),
       'data_io',
+      { key: catalogDataFileKey(name, version), access: 'read' },
     );
   }
 }

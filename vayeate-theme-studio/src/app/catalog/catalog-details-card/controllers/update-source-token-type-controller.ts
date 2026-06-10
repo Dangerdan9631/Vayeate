@@ -12,6 +12,7 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_TOKEN_TYPE_UPDATED } from '../../../../model/undo-action-types';
 
@@ -46,7 +47,7 @@ export class UpdateSourceTokenTypeController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.updateSourceTokenTypeInCatalog.execute(base, sourceIndex, value);
     this.saveCatalog.execute(updated);
-    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
 
     void this.recordCatalogUndo.execute({
       description: 'Update catalog source token type',

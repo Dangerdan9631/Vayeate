@@ -42,7 +42,7 @@ export class LockCatalogController {
 
     const updated = this.lockCatalogTransform.execute(catalog);
     this.saveCatalog.execute(updated);
-    this.refreshCatalogRefsAndSelect.execute(catalog.name, catalog.version);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, false);
 
     void this.recordCatalogUndo.execute({
       description: `Lock catalog ${catalog.name}`,

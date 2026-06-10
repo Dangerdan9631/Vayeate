@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { appConfigSchema } from '../../../model/schema/primitives';
+import { APP_CONFIG_DATA_FILE_KEY } from '../../../model/data-path-keys';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { AppConfigStore } from '../../state/data/app-config-store';
@@ -22,7 +23,8 @@ export class SaveAppConfigOperation {
         this.configGateway.save(
           appConfigSchema.parse(appConfigState),
         );
-      }
+      },
+      { key: APP_CONFIG_DATA_FILE_KEY, access: 'write' },
     );
   }
 }

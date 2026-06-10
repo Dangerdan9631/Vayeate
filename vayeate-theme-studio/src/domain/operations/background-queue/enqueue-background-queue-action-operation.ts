@@ -1,5 +1,9 @@
 import { singleton } from 'tsyringe';
-import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../model/background-queue';
+import type {
+  BackgroundQueueContinuation,
+  BackgroundQueueEnqueueOptions,
+  BackgroundQueueKey,
+} from '../../../model/background-queue';
 import { BackgroundQueuePort } from './background-queue-port';
 
 @singleton()
@@ -12,14 +16,16 @@ export class EnqueueBackgroundQueueActionOperation {
     queue: BackgroundQueueKey,
     description: string,
     run: () => void | Promise<void>,
+    options?: BackgroundQueueEnqueueOptions,
   ): BackgroundQueueContinuation {
-    return this.backgroundQueue.enqueue(queue, description, run);
+    return this.backgroundQueue.enqueue(queue, description, run, options);
   }
 
   executeReturning<T>(
     description: string,
     factory: () => Promise<T>,
     queue: BackgroundQueueKey,
+    options?: BackgroundQueueEnqueueOptions,
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const run = async () => {
@@ -29,7 +35,7 @@ export class EnqueueBackgroundQueueActionOperation {
           reject(e);
         }
       };
-      this.backgroundQueue.enqueue(queue, description, run);
+      this.backgroundQueue.enqueue(queue, description, run, options);
     });
   }
 }

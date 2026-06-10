@@ -12,6 +12,7 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_LOCKED, CATALOG_REVERTED_TO_VERSION } from '../../../../model/undo-action-types';
 
@@ -63,7 +64,7 @@ export class RevertCatalogToVersionController {
     const newVersion = highestCatalog ? nextPatchVersion(highestCatalog.version) : nextPatchVersion(version);
     const reverted = this.revertCatalog.execute(snapshot, newVersion);
     this.saveCatalog.execute(reverted);
-    this.refreshCatalogRefsAndSelect.execute(reverted.name, reverted.version);
+    this.refreshCatalogRefsAndSelect.execute(reverted.name, reverted.version, reverted, entityRefsChanged(ref, reverted));
 
     await this.recordCatalogUndo.execute({
       description: `Revert catalog ${name} to ${snapshot.version}`,

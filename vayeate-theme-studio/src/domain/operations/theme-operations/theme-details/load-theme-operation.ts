@@ -1,7 +1,10 @@
 import { singleton } from 'tsyringe';
+import { themeDataFileKey } from '../../../../model/data-path-keys';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
+import { getLoadedTheme } from '../../../state/data/themes-state';
 import { ThemesStore } from '../../../state/data/themes-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
+import { immediateContinuation } from '../../background-queue/immediate-continuation';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
@@ -15,6 +18,17 @@ export class LoadThemeOperation {
   ) {}
 
   execute(name: string, version: string): ContinuationHandler {
+    const ref = { name, version };
+    const cached = getLoadedTheme(this.themesStore.getStore().state.themeMap, ref);
+    if (cached) {
+      this.themeUiStore.getStore().setTheme(cached);
+      const selectedRef = this.themeUiStore.getStore().state.selectedRef;
+      if (selectedRef?.name === name && selectedRef.version === version) {
+        this.themeUiStore.getStore().setThemeLoadState('loaded');
+      }
+      return immediateContinuation();
+    }
+
     return this.enqueueBackgroundQueue.execute(
       'data_io',
       `Loading theme ${name} ${version}`,
@@ -29,6 +43,7 @@ export class LoadThemeOperation {
           this.themeUiStore.getStore().setThemeLoadState(loaded ? 'loaded' : 'unloaded');
         }
       },
+      { key: themeDataFileKey(name, version), access: 'read' },
     );
   }
 }

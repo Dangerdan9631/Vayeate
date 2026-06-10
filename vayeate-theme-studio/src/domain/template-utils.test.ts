@@ -202,7 +202,7 @@ describe('template utility baselines', () => {
     expect(refreshTemplateRefsAndSelect.execute).toHaveBeenCalledWith('template-a', '1.0.1', expect.objectContaining({
       name: 'template-a',
       version: '1.0.1',
-    }));
+    }), true);
     expect(setTemplateAddGroupName.execute).toHaveBeenCalledWith('');
 
     vi.clearAllMocks();

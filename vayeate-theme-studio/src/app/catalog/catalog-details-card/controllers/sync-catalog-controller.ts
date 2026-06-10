@@ -42,7 +42,7 @@ export class SyncCatalogController {
 
     const synced = await this.syncCatalog.execute(catalog!);
     this.saveCatalog.execute(synced);
-    this.refreshCatalogRefsAndSelect.execute(synced.name, synced.version);
+    this.refreshCatalogRefsAndSelect.execute(synced.name, synced.version, synced, false);
 
     await this.recordCatalogUndo.execute({
       description: `Sync catalog ${catalog!.name} from sources`,

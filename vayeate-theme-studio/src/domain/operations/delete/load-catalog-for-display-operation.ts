@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
+import { catalogDataFileKey } from '../../../model/data-path-keys';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
-import { CatalogsStore } from '../../catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../catalog/state/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { CatalogReference } from '../../../model/schema/template-schemas';
-import { Catalog } from '../../../model/schema/catalog';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 
 @singleton()
@@ -14,23 +14,29 @@ export class LoadCatalogForDisplayOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(refs: CatalogReference[]): ContinuationHandler {
-    return this.enqueueBackgroundAction.execute(
-      'data_io',
-      `Loading catalogs for display`,
-      async () => {
-        const loadedCatalogs: Catalog[] = [];
-        for (const ref of refs) {
+  execute(refs: CatalogReference[]): ContinuationHandler | undefined {
+    if (refs.length === 0) {
+      return undefined;
+    }
+
+    for (const ref of refs) {
+      if (getCurrentCatalog(this.catalogsStore.getStore().state.catalogs, ref)) {
+        continue;
+      }
+
+      this.enqueueBackgroundAction.execute(
+        'data_io',
+        `Loading catalog ${ref.name} ${ref.version}`,
+        async () => {
           const loaded = await this.catalogGateway.loadCatalog(ref.name, ref.version);
           if (loaded) {
-            loadedCatalogs.push(loaded);
+            this.catalogsStore.getStore().upsertCatalogs([loaded]);
           }
-        }
-        this.catalogsStore.getStore().upsertCatalogs(loadedCatalogs);
-      }
-    );
+        },
+        { key: catalogDataFileKey(ref.name, ref.version), access: 'read' },
+      );
+    }
+
+    return undefined;
   }
 }
-
-
-

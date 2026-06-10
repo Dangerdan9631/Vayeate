@@ -46,7 +46,7 @@ section they are ordered by expected impact.
 
 ## Section A — Action queue: coalescing and non-blocking dispatch
 
-### Task A1: Coalescing policy for high-frequency actions in `ActionQueue`
+### [x] Task A1: Coalescing policy for high-frequency actions in `ActionQueue`
 
 **Problem.** Fast hue-slider drags, cluster-K drags, native color-picker
 `onInput` previews, search keystrokes, eyedropper pointer moves, viewport
@@ -125,7 +125,7 @@ frames, so fewer intermediate actions does not change undo semantics.
 
 ---
 
-### Task A2: Stop blocking the action queue on the eyedropper snapshot load
+### [x] Task A2: Stop blocking the action queue on the eyedropper snapshot load
 
 **Problem.** `OpenEyedropperOverlayController` `await`s
 `loadEyedropperSnapshot.execute()` (screen capture + `createImageBitmap` per
@@ -155,7 +155,7 @@ snapshot).
 
 ---
 
-### Task A3: Move undo-stack persistence off the action path
+### [x] Task A3: Move undo-stack persistence off the action path
 
 **Problem.** Every undo push/undo/redo/goto awaits a full-stack
 `JSON.stringify` + IPC file write inside `onAfterChange`
@@ -196,7 +196,7 @@ same serial `data_io` lane keyed in FIFO order.
 
 ---
 
-### Task A4: Don't reload the undo stack from disk on tab switch when it is in memory
+### [x] Task A4: Don't reload the undo stack from disk on tab switch when it is in memory
 
 **Problem.** `SetActiveTabController` awaits
 `setCurrentUndoStackId.executeAndLoadForTab`, which can hit disk. With the
@@ -224,7 +224,7 @@ operating on an empty stack. Depends on A3's ordering guarantee.
 
 ## Section B — Background queue: parallelism and scheduling
 
-### Task B1: Parallelize independent reads inside load operations
+### [x] Task B1: Parallelize independent reads inside load operations
 
 **Problem.** `LoadCatalogForDisplayOperation` loads each linked catalog
 sequentially; theme selection loads theme then template snapshot serially;
@@ -250,7 +250,7 @@ in the owning operation.
 
 ---
 
-### Task B2: Split `data_io` into parallel reads / serialized-per-file writes
+### [x] Task B2: Split `data_io` into parallel reads / serialized-per-file writes
 
 **Problem.** The single serial `data_io` lane means a theme save blocks a
 catalog load and vice versa. Reads never conflict with each other; writes
@@ -282,7 +282,7 @@ complexity after those land.**
 
 ---
 
-### Task B3: Event-driven wakeup for `PooledQueue` (remove 100ms poll)
+### [x] Task B3: Event-driven wakeup for `PooledQueue` (remove 100ms poll)
 
 **Problem.** `pooled-queue.ts` polls with `setTimeout(..., 100)` while
 waiting for in-flight workers, delaying completion signaling and burning
@@ -301,7 +301,7 @@ timers.
 
 ## Section C — Offload long-running CPU work to real background threads
 
-### Task C1: Web Worker for k-means palette clustering
+### [ ] Task C1: Web Worker for k-means palette clustering
 
 **Problem.** `clusterColors` (k-means, up to 50 iterations per color group)
 runs in a `useMemo` in `ThemePaletteCard` on every cluster-K change and
@@ -337,7 +337,7 @@ disproportionate.
 
 ---
 
-### Task C2: Web Worker (or scoped recompute) for preview token resolution
+### [ ] Task C2: Web Worker (or scoped recompute) for preview token resolution
 
 **Problem.** `EditorPreviewsCard`'s `resolvedPreviews` re-resolves every
 token of every preview — including `adjustColorToMeetContrast` and contrast
@@ -369,7 +369,7 @@ sub-step 2 as contingent on profiling after A1 + D1 + sub-step 1.
 
 ## Section D — Scope state derivation and render work
 
-### Task D1: Stop running `deriveThemePaneFields` for unrelated store writes
+### [x] Task D1: Stop running `deriveThemePaneFields` for unrelated store writes
 
 **Problem.** `ThemeUiStore.setThemesState` recomputes display assignments,
 selected-color summary, and orphan-key sorts on **every** write — including
@@ -398,7 +398,7 @@ downstream React re-renders for free.
 
 ---
 
-### Task D2: Preview-only path for the cluster-count slider
+### [x] Task D2: Preview-only path for the cluster-count slider
 
 **Problem.** Cluster-K **preview** (during drag) goes through
 `SetThemeOperation`, which writes both `ThemeUiStore` and `ThemesStore` and
@@ -427,7 +427,7 @@ evidence, like the existing hue preview path.
 
 ---
 
-### Task D3: Selector and memoization hygiene in hot viewmodels and rows
+### [x] Task D3: Selector and memoization hygiene in hot viewmodels and rows
 
 **Problem.** No `React.memo` or `useShallow` anywhere in `src/`. Several
 viewmodels subscribe to the whole `theme` object; one selector materializes
@@ -460,7 +460,7 @@ in PascalCase under the feature folder).
 
 ---
 
-### Task D4: Virtualize `ThemeVariablesCard` and `MappingsCard` rows
+### [x] Task D4: Virtualize `ThemeVariablesCard` and `MappingsCard` rows
 
 **Problem.** ~100 complex rows each (inputs, checkboxes, contrast rows)
 rendered unconditionally. `@tanstack/react-virtual` is already a dependency
@@ -483,7 +483,7 @@ for `MappingsCard` if memoized rows are cheap enough.**
 
 ## Section E — Memory-authoritative data (persist on write, stop re-reading)
 
-### Task E1: `RefreshCatalogRefsAndSelectOperation` accepts the in-memory catalog
+### [x] Task E1: `RefreshCatalogRefsAndSelectOperation` accepts the in-memory catalog
 
 **Problem.** After every catalog mutation (~20 controllers), the app saves
 the catalog, then re-lists the catalogs directory **and re-loads the file it
@@ -508,7 +508,7 @@ only the read-back is skipped.
 
 ---
 
-### Task E2: Skip directory re-listing when refs are unchanged
+### [x] Task E2: Skip directory re-listing when refs are unchanged
 
 **Problem.** `RefreshCatalogRefsAndSelectOperation` /
 `RefreshTemplateRefsAndSelectOperation` always re-run `listCatalogs()` /
@@ -530,7 +530,7 @@ Reviewable as an explicit table in the PR.
 
 ---
 
-### Task E3: Store-cache checks in entity load operations
+### [x] Task E3: Store-cache checks in entity load operations
 
 **Problem.** `LoadThemeOperation`, `LoadTemplateOperation`,
 `LoadTemplateSnapshotOperation`, and `LoadCatalogForDisplayOperation` always
@@ -556,7 +556,7 @@ undo paths and delete-fallback paths; call out in review.
 
 ---
 
-### Task E4: Remove redundant persist-on-select for themes
+### [x] Task E4: Remove redundant persist-on-select for themes
 
 **Problem.** `SelectThemeAndLoadController` / `SelectThemeByNameController`
 load a theme from disk, then immediately call
@@ -580,7 +580,7 @@ file.
 
 ---
 
-### Task E5: Use in-memory theme/template in `GenerateThemeOperation` and version bump
+### [x] Task E5: Use in-memory theme/template in `GenerateThemeOperation` and version bump
 
 **Problem.** `GenerateThemeOperation` re-reads theme and template from disk
 though both live in stores; `IncrementThemeVersionController` saves the
@@ -601,7 +601,7 @@ the store *is* the newest state (the debounce only delays the disk copy).
 
 ---
 
-### Task E6: Flush pending debounced theme save on app unload
+### [ ] Task E6: Flush pending debounced theme save on app unload
 
 **Problem.** The 400ms theme-save debounce has no flush-on-unload; closing
 the app within the window loses the last edit. This becomes more important
@@ -622,7 +622,7 @@ net for E1–E5.
 
 ---
 
-### Task E7 (optional): Debounce catalog/template saves
+### [ ] Task E7 (optional): Debounce catalog/template saves
 
 **Problem.** Catalog/template edits (e.g. token key typing committed per
 change) trigger an immediate full-file write per mutation, unlike themes
@@ -646,7 +646,7 @@ read-back cost, so this only reduces write amplification.
 
 ## Section F — Verification and guardrails
 
-### Task F1: Performance regression smoke tests + architecture-test sync
+### [ ] Task F1: Performance regression smoke tests + architecture-test sync
 
 **Change.**
 - Add unit tests asserting the new queue behaviors (A1 coalescing, A3

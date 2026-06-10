@@ -14,6 +14,7 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKEN_ADDED } from '../../../../model/undo-action-types';
 
@@ -53,7 +54,7 @@ export class AddNewTokenController {
       const merged = this.mergeSemanticSelectorsIntoCatalog.execute(base, tokenKey);
       if (!merged) return;
       this.saveCatalog.execute(merged);
-      this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version);
+      this.refreshCatalogRefsAndSelect.execute(merged.name, merged.version, merged, entityRefsChanged(catalog, merged));
       this.setCatalogNewTokenKey.execute('');
 
       void this.recordCatalogUndo.execute({
@@ -70,7 +71,7 @@ export class AddNewTokenController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.addPlainTokenToCatalog.execute(base, newToken);
     this.saveCatalog.execute(updated);
-    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
     this.setCatalogNewTokenKey.execute('');
 
     void this.recordCatalogUndo.execute({

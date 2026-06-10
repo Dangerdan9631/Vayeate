@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { ApplyThemeStateOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-operation';
 import { GetThemeRefsOperation } from '../../../../domain/operations/theme-operations/theme-list/get-theme-refs-operation';
 import { LoadThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/load-theme-operation';
 import { SetSelectedThemeRefOperation } from '../../../../domain/operations/theme-operations/theme-list/set-selected-theme-ref-operation';
@@ -18,7 +18,7 @@ export class SelectThemeByNameController {
     private readonly loadTheme: LoadThemeOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
-    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
+    private readonly applyThemeState: ApplyThemeStateOperation,
     private readonly setThemeLoadedTemplate: SetThemeLoadedTemplateOperation,
   ) {}
 
@@ -35,7 +35,7 @@ export class SelectThemeByNameController {
           theme?.templateRef != null
             ? await this.loadTemplateSnapshot.execute(theme.templateRef.name, theme.templateRef.version)
             : null;
-        if (theme) this.applyThemeStateAndSchedulePersist.execute(theme);
+        if (theme) this.applyThemeState.execute(theme);
         this.setThemeLoadedTemplate.execute(template);
       });
   }

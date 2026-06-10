@@ -1,15 +1,22 @@
 import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { ThemePreviewStore } from '../../../domain/state/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
 import { ThemeVariablesCardActionType } from './actions/theme-variables-card-action-type';
 import type { ContrastComparisonMethod, ContrastValue } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
 
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
+
+const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
+const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_COLOR_ASSIGNMENTS: readonly ColorAssignment[] = [];
+const EMPTY_CONTRAST_ASSIGNMENTS: readonly ContrastAssignment[] = [];
 
 function matchesSearch(key: string, searchQuery: string): boolean {
   const q = searchQuery.trim().toLowerCase();
@@ -18,30 +25,48 @@ function matchesSearch(key: string, searchQuery: string): boolean {
 
 export function useThemeVariablesCardViewModel() {
   const dispatch = useAppDispatch();
-  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
-  const checkedColorRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedColorRefs);
-  const checkedContrastRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedContrastRefs);
+  const themeTemplateRef = useStore(themeUiStore.api, (state) => state.state.theme?.templateRef);
+  const themeColorAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.theme?.colorAssignments ?? EMPTY_COLOR_ASSIGNMENTS),
+  );
+  const themeContrastAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.theme?.contrastAssignments ?? EMPTY_CONTRAST_ASSIGNMENTS),
+  );
+  const checkedColorRefsArray = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.checkedColorRefs),
+  );
+  const checkedContrastRefsArray = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.checkedContrastRefs),
+  );
   const themeVariablesSearchText = useStore(themeUiStore.api, (state) => state.state.themeVariablesSearchText);
-  const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
-  const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
-  const orphanColorKeysArray = useStore(themeUiStore.api, (state) => state.state.orphanColorKeys);
-  const orphanContrastKeysArray = useStore(themeUiStore.api, (state) => state.state.orphanContrastKeys);
+  const colorVariablesFromTemplate = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.colorVariables ?? EMPTY_COLOR_VARIABLES),
+  );
+  const contrastVariablesFromTemplate = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES),
+  );
+  const paneDisplayColorAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.paneDisplayColorAssignments),
+  );
+  const orphanColorKeysArray = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.orphanColorKeys),
+  );
+  const orphanContrastKeysArray = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.orphanContrastKeys),
+  );
   const checkedColorRefs = useMemo(() => new Set<string>(checkedColorRefsArray), [checkedColorRefsArray]);
   const checkedContrastRefs = useMemo(() => new Set<string>(checkedContrastRefsArray), [checkedContrastRefsArray]);
   const orphanColorKeys = useMemo(() => new Set<string>(orphanColorKeysArray), [orphanColorKeysArray]);
   const orphanContrastKeys = useMemo(() => new Set<string>(orphanContrastKeysArray), [orphanContrastKeysArray]);
-
-  const colorVariablesFromTemplate = useMemo(
-    () => loadedTemplate?.colorVariables ?? [],
-    [loadedTemplate],
-  );
-
-  const contrastVariablesFromTemplate = useMemo(
-    () => loadedTemplate?.contrastVariables ?? [],
-    [loadedTemplate],
-  );
-
-  const groupsFromTemplate = useMemo(() => loadedTemplate?.groups ?? [], [loadedTemplate]);
 
   const filteredColorAssignments = useMemo(
     () => paneDisplayColorAssignments
@@ -51,32 +76,32 @@ export function useThemeVariablesCardViewModel() {
   );
 
   const filteredContrastAssignments = useMemo(
-    () => (theme?.contrastAssignments ?? [])
+    () => themeContrastAssignments
       .filter((a: ContrastAssignment) => matchesSearch(a.contrastVariableRef, themeVariablesSearchText))
       .sort((a: ContrastAssignment, b: ContrastAssignment) =>
         a.contrastVariableRef.localeCompare(b.contrastVariableRef)),
-    [theme?.contrastAssignments, themeVariablesSearchText],
+    [themeContrastAssignments, themeVariablesSearchText],
   );
 
   const colorSectionState = useMemo(() => {
-    if (!theme?.colorAssignments.length) return 'all' as const;
-    const refs = theme.colorAssignments.map((a: ColorAssignment) => a.colorRef);
+    if (!themeColorAssignments.length) return 'all' as const;
+    const refs = themeColorAssignments.map((a: ColorAssignment) => a.colorRef);
     const all = refs.every((r: string) => checkedColorRefs.has(r));
     const none = refs.every((r: string) => !checkedColorRefs.has(r));
     if (all) return 'all' as const;
     if (none) return 'none' as const;
     return 'some' as const;
-  }, [theme, checkedColorRefs]);
+  }, [themeColorAssignments, checkedColorRefs]);
 
   const contrastSectionState = useMemo(() => {
-    if (!theme?.contrastAssignments.length) return 'all' as const;
-    const refs = theme.contrastAssignments.map((a: ContrastAssignment) => a.contrastVariableRef);
+    if (!themeContrastAssignments.length) return 'all' as const;
+    const refs = themeContrastAssignments.map((a: ContrastAssignment) => a.contrastVariableRef);
     const all = refs.every((r: string) => checkedContrastRefs.has(r));
     const none = refs.every((r: string) => !checkedContrastRefs.has(r));
     if (all) return 'all' as const;
     if (none) return 'none' as const;
     return 'some' as const;
-  }, [theme, checkedContrastRefs]);
+  }, [themeContrastAssignments, checkedContrastRefs]);
 
   const cardState = useMemo(() => {
     const colorAll = colorSectionState === 'all';
@@ -295,12 +320,11 @@ export function useThemeVariablesCardViewModel() {
   );
 
   return {
-    theme,
+    themeTemplateRef,
     colorAssignments: filteredColorAssignments,
     contrastAssignments: filteredContrastAssignments,
     colorVariables: colorVariablesFromTemplate,
     contrastVariables: contrastVariablesFromTemplate,
-    groups: groupsFromTemplate,
     orphanColorKeys,
     orphanContrastKeys,
     checkedColorRefs: checkedColorRefs as ReadonlySet<string>,
@@ -327,4 +351,3 @@ export function useThemeVariablesCardViewModel() {
     onColorLightEyedropperClick,
   };
 }
-

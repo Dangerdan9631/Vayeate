@@ -1,7 +1,9 @@
-import { useCallback, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent, type MouseEvent } from 'react';
+import { useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from './use-tokens-card-viewmodel';
 import type { Catalog, Token } from '../../../model/schema/catalog';
 import type { SemanticTokenRegistryListKind, TokenType } from '../../../model/schema/primitives';
+import { TokenRow } from './TokenRow';
+import { SemanticTokenRegistryRow } from './SemanticTokenRegistryRow';
 
 function TokenTypeSection({
   tokenType,
@@ -34,20 +36,6 @@ function TokenTypeSection({
     onAdd(tokenType);
   }
 
-  const onTokenRowBlur = useCallback(
-    (e: FocusEvent<HTMLInputElement>) => {
-      onUpdateKey(tokenType, e.currentTarget.dataset.tokenKey, e.target.value);
-    },
-    [onUpdateKey, tokenType],
-  );
-
-  const onRemoveButtonClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) => {
-      onRemove(tokenType, e.currentTarget.dataset.tokenKey);
-    },
-    [onRemove, tokenType],
-  );
-
   function onNewKeyInputChange(e: ChangeEvent<HTMLInputElement>) {
     onNewKeyChange?.(e.target.value);
   }
@@ -74,30 +62,14 @@ function TokenTypeSection({
       {!collapsed && (
         <div className="tree-children">
           {tokens.map((t) => (
-            <div key={t.key} className="token-row">
-              {isManual ? (
-                <>
-                  <input
-                    className="token-input"
-                    type="text"
-                    data-token-key={t.key}
-                    defaultValue={t.key}
-                    onBlur={onTokenRowBlur}
-                  />
-                  <button
-                    type="button"
-                    className="btn-icon btn-danger-icon"
-                    title="Remove"
-                    data-token-key={t.key}
-                    onClick={onRemoveButtonClick}
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                  </button>
-                </>
-              ) : (
-                <span className="token-text">{t.key}</span>
-              )}
-            </div>
+            <TokenRow
+              key={t.key}
+              token={t}
+              isManual={isManual}
+              tokenType={tokenType}
+              onUpdateKey={onUpdateKey}
+              onRemove={onRemove}
+            />
           ))}
 
           {isManual && (
@@ -217,108 +189,45 @@ function SemanticTokenCatalogSection({
               </button>
             </div>
           )}
-          {types.map((t, i) => {
-            function onTypeRowBlur(e: FocusEvent<HTMLInputElement>) {
-              onSemanticRegistryTextCommit?.('types', i, e.target.value);
-            }
-            function onTypeRemoveClick() {
-              onSemanticRegistryRemove?.('types', i);
-            }
-            return (
-            <div key={`type-${i}-${t}`} className="token-row">
-              <span className="token-label">tokenType:</span>
-              {canEdit && onSemanticRegistryTextCommit ? (
-                <>
-                  <input
-                    className="token-input"
-                    type="text"
-                    defaultValue={t}
-                    onBlur={onTypeRowBlur}
-                    aria-label={`tokenType ${i + 1}`}
-                  />
-                  <button
-                    type="button"
-                    className="btn-icon btn-danger-icon"
-                    title="Remove"
-                    onClick={onTypeRemoveClick}
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                  </button>
-                </>
-              ) : (
-                <span className="token-text">{t}</span>
-              )}
-            </div>
-            );
-          })}
-          {modifiers.map((m: string, i: number) => {
-            function onModifierRowBlur(e: FocusEvent<HTMLInputElement>) {
-              onSemanticRegistryTextCommit?.('modifiers', i, e.target.value);
-            }
-            function onModifierRemoveClick() {
-              onSemanticRegistryRemove?.('modifiers', i);
-            }
-            return (
-            <div key={`modifier-${i}-${m}`} className="token-row">
-              <span className="token-label">modifier:</span>
-              {canEdit && onSemanticRegistryTextCommit ? (
-                <>
-                  <input
-                    className="token-input"
-                    type="text"
-                    defaultValue={m}
-                    onBlur={onModifierRowBlur}
-                    aria-label={`modifier ${i + 1}`}
-                  />
-                  <button
-                    type="button"
-                    className="btn-icon btn-danger-icon"
-                    title="Remove"
-                    onClick={onModifierRemoveClick}
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                  </button>
-                </>
-              ) : (
-                <span className="token-text">{m}</span>
-              )}
-            </div>
-            );
-          })}
-          {languages.map((lang: string, i: number) => {
-            function onLanguageRowBlur(e: FocusEvent<HTMLInputElement>) {
-              onSemanticRegistryTextCommit?.('languages', i, e.target.value);
-            }
-            function onLanguageRemoveClick() {
-              onSemanticRegistryRemove?.('languages', i);
-            }
-            return (
-            <div key={`language-${i}-${lang}`} className="token-row">
-              <span className="token-label">language:</span>
-              {canEdit && onSemanticRegistryTextCommit ? (
-                <>
-                  <input
-                    className="token-input"
-                    type="text"
-                    defaultValue={lang}
-                    onBlur={onLanguageRowBlur}
-                    aria-label={`language ${i + 1}`}
-                  />
-                  <button
-                    type="button"
-                    className="btn-icon btn-danger-icon"
-                    title="Remove"
-                    onClick={onLanguageRemoveClick}
-                  >
-                    <span className="material-symbols-outlined">close</span>
-                  </button>
-                </>
-              ) : (
-                <span className="token-text">{lang}</span>
-              )}
-            </div>
-            );
-          })}
+          {types.map((t, i) => (
+            <SemanticTokenRegistryRow
+              key={`type-${i}-${t}`}
+              label="tokenType:"
+              value={t}
+              canEdit={canEdit}
+              inputAriaLabel={`tokenType ${i + 1}`}
+              registryList="types"
+              index={i}
+              onSemanticRegistryTextCommit={onSemanticRegistryTextCommit}
+              onSemanticRegistryRemove={onSemanticRegistryRemove}
+            />
+          ))}
+          {modifiers.map((m: string, i: number) => (
+            <SemanticTokenRegistryRow
+              key={`modifier-${i}-${m}`}
+              label="modifier:"
+              value={m}
+              canEdit={canEdit}
+              inputAriaLabel={`modifier ${i + 1}`}
+              registryList="modifiers"
+              index={i}
+              onSemanticRegistryTextCommit={onSemanticRegistryTextCommit}
+              onSemanticRegistryRemove={onSemanticRegistryRemove}
+            />
+          ))}
+          {languages.map((lang: string, i: number) => (
+            <SemanticTokenRegistryRow
+              key={`language-${i}-${lang}`}
+              label="language:"
+              value={lang}
+              index={i}
+              canEdit={canEdit}
+              inputAriaLabel={`language ${i + 1}`}
+              registryList="languages"
+              onSemanticRegistryTextCommit={onSemanticRegistryTextCommit}
+              onSemanticRegistryRemove={onSemanticRegistryRemove}
+            />
+          ))}
         </div>
       )}
     </div>

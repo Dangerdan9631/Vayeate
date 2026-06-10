@@ -147,7 +147,7 @@ describe('catalog token and validation operations', () => {
     expect(bumpCatalogVersionForEdit.execute).toHaveBeenCalledWith(catalog);
     expect(mergeSemanticSelectorsIntoCatalog.execute).toHaveBeenCalledWith(bumped, 'variable.readonly:javascript');
     expect(saveCatalog.execute).toHaveBeenCalledWith(merged);
-    expect(refreshCatalogRefsAndSelect.execute).toHaveBeenCalledWith(merged.name, merged.version);
+    expect(refreshCatalogRefsAndSelect.execute).toHaveBeenCalledWith(merged.name, merged.version, merged, true);
     expect(setCatalogNewTokenKey.execute).toHaveBeenCalledWith('');
     expect(addPlainTokenToCatalog.execute).not.toHaveBeenCalled();
 

@@ -7,7 +7,11 @@ import { IBackgroundQueue } from "./ibackground-queue";
 import { QueuedWork } from "./queued-work";
 import { EnqueueBackgroundQueueActionOperation } from "../../../domain/operations/background-queue/enqueue-background-queue-action-operation";
 import { injectable } from "tsyringe";
-import type { BackgroundQueueContinuation, BackgroundQueueKey } from "../../../model/background-queue";
+import type {
+    BackgroundQueueContinuation,
+    BackgroundQueueEnqueueOptions,
+    BackgroundQueueKey,
+} from "../../../model/background-queue";
 
 @injectable()
 export class PooledQueue implements IBackgroundQueue {
@@ -16,6 +20,8 @@ export class PooledQueue implements IBackgroundQueue {
     private isProcessing = false;
     private runningDescriptions: { [key: string]: string } = {};
     private readonly semaphore = new Semaphore(this.concurrencyLimit);
+    private pendingWakeup = false;
+    private wakeupWaiters: Array<() => void> = [];
 
     private readonly log: Logger;
 
@@ -30,9 +36,14 @@ export class PooledQueue implements IBackgroundQueue {
         this.log = loggerFactory.create(`BackgroundQueue[${queueType}]`);
     }
 
-    enqueue(description: string, run: () => void | Promise<void>): BackgroundQueueContinuation {
+    enqueue(
+        description: string,
+        run: () => void | Promise<void>,
+        _options?: BackgroundQueueEnqueueOptions,
+    ): BackgroundQueueContinuation {
         const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver(description) };
         this.queue.push(item);
+        this.signalWakeup();
         void this.process();
         return item.resolver;
     }
@@ -47,7 +58,7 @@ export class PooledQueue implements IBackgroundQueue {
                 const item = this.queue.shift()!;
                 void this.runWorker(item);
             } else {
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await this.waitForWakeup();
             }
         }
 
@@ -81,7 +92,29 @@ export class PooledQueue implements IBackgroundQueue {
                     Object.values(this.runningDescriptions),
                     this.queue.length + (this.concurrencyLimit - this.semaphore.getValue())
                 );
+                this.signalWakeup();
             }
         }
+    }
+
+    private signalWakeup(): void {
+        const waiters = this.wakeupWaiters.splice(0);
+        if (waiters.length > 0) {
+            for (const resolve of waiters) {
+                resolve();
+            }
+        } else {
+            this.pendingWakeup = true;
+        }
+    }
+
+    private waitForWakeup(): Promise<void> {
+        if (this.pendingWakeup) {
+            this.pendingWakeup = false;
+            return Promise.resolve();
+        }
+        return new Promise(resolve => {
+            this.wakeupWaiters.push(resolve);
+        });
     }
 }

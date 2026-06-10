@@ -6,7 +6,11 @@ import { UpdateBackgroundQueueStatusController } from './controllers/update-back
 import { IBackgroundQueue } from './ibackground-queue';
 import { EnqueueBackgroundQueueActionOperation } from '../../../domain/operations/background-queue/enqueue-background-queue-action-operation';
 import { injectable } from 'tsyringe';
-import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../model/background-queue';
+import type {
+  BackgroundQueueContinuation,
+  BackgroundQueueEnqueueOptions,
+  BackgroundQueueKey,
+} from '../../../model/background-queue';
 
 @injectable()
 export class SerialQueue implements IBackgroundQueue {
@@ -26,7 +30,8 @@ export class SerialQueue implements IBackgroundQueue {
 
   enqueue(
     description: string,
-    run: () => void | Promise<void>
+    run: () => void | Promise<void>,
+    _options?: BackgroundQueueEnqueueOptions,
   ): BackgroundQueueContinuation {
     const item: QueuedWork = { description, run, resolver: new BackgroundQueueResolver(description) };
     this.log.debug('enqueue:', description);

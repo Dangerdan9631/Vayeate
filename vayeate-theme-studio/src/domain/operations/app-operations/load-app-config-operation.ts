@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { APP_CONFIG_DATA_FILE_KEY } from '../../../model/data-path-keys';
 import { ConfigGateway } from '../../../gateway/config/config-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { AppConfigStore } from '../../state/data/app-config-store';
@@ -19,7 +20,8 @@ export class LoadAppConfigOperation {
       async () => {
         const config = await this.configGateway.load();
         this.appConfigStore.getStore().setConfig(config);
-      }
+      },
+      { key: APP_CONFIG_DATA_FILE_KEY, access: 'read' },
     );
   }
 }

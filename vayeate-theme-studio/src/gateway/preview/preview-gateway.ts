@@ -28,56 +28,62 @@ export class PreviewGateway {
   async loadPreviews(): Promise<TokenizedPreview[]> {
     await this.textmateTokenizerService.init({ loadWasm: createPreviewOnigWasmLoader() });
 
-    const results: TokenizedPreview[] = [];
-
     let topEntries: Array<{ name: string; isDirectory: boolean }>;
     try {
       topEntries = await this.fileSystemService.listDirEntries(PREVIEWS_RELATIVE_DIR);
     } catch {
-      return results;
+      return [];
     }
 
     const langDirs = topEntries.filter((e) => e.isDirectory).map((e) => e.name);
 
-    for (const lang of langDirs) {
-      const langRel = `${PREVIEWS_RELATIVE_DIR}/${lang}`;
-      let files: string[];
-      try {
-        files = await this.fileSystemService.listFiles(langRel);
-      } catch {
-        continue;
-      }
+    const langPreviews = await Promise.all(
+      langDirs.map(async (lang) => this.loadLanguagePreviews(lang)),
+    );
 
-      const grammarFile = files.find((f) => GRAMMAR_GLOB.test(f));
-      if (!grammarFile) continue;
+    return langPreviews.flat();
+  }
 
-      const grammarRel = `${langRel}/${grammarFile}`;
-      let rawGrammar: IRawGrammar;
-      try {
-        const grammarText = await this.fileSystemService.loadFile(grammarRel);
-        if (grammarText === null) continue;
-        rawGrammar = JSON.parse(grammarText) as IRawGrammar;
-      } catch {
-        continue;
-      }
+  private async loadLanguagePreviews(lang: string): Promise<TokenizedPreview[]> {
+    const langRel = `${PREVIEWS_RELATIVE_DIR}/${lang}`;
+    let files: string[];
+    try {
+      files = await this.fileSystemService.listFiles(langRel);
+    } catch {
+      return [];
+    }
 
-      if (!rawGrammar.scopeName) continue;
+    const grammarFile = files.find((f) => GRAMMAR_GLOB.test(f));
+    if (!grammarFile) return [];
 
-      const exampleFiles = files.filter((f) => !GRAMMAR_GLOB.test(f) && !f.startsWith('.'));
+    const grammarRel = `${langRel}/${grammarFile}`;
+    let rawGrammar: IRawGrammar;
+    try {
+      const grammarText = await this.fileSystemService.loadFile(grammarRel);
+      if (grammarText === null) return [];
+      rawGrammar = JSON.parse(grammarText) as IRawGrammar;
+    } catch {
+      return [];
+    }
 
-      for (const fileName of exampleFiles) {
+    if (!rawGrammar.scopeName) return [];
+
+    const exampleFiles = files.filter((f) => !GRAMMAR_GLOB.test(f) && !f.startsWith('.'));
+
+    const examplePreviews = await Promise.all(
+      exampleFiles.map(async (fileName) => {
         const fileRel = `${langRel}/${fileName}`;
         try {
           const sourceCode = await this.fileSystemService.loadFile(fileRel);
-          if (sourceCode === null) continue;
+          if (sourceCode === null) return null;
           const lines = await this.textmateTokenizerService.tokenizeFile(rawGrammar, sourceCode);
-          results.push({ language: lang, fileName, lines });
+          return { language: lang, fileName, lines };
         } catch {
-          // skip files that fail to tokenize
+          return null;
         }
-      }
-    }
+      }),
+    );
 
-    return results;
+    return examplePreviews.filter((preview): preview is TokenizedPreview => preview != null);
   }
 }

@@ -13,6 +13,7 @@ import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
 import { CommitAssignColorTextOperation } from '../../domain/operations/theme-operations/palette-color-assign/commit-assign-color-text-operation';
 import { SetAssignColorPreviewOperation } from '../../domain/operations/theme-operations/palette-color-assign/set-assign-color-preview-operation';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
+import { ApplyThemeStateOperation } from '../../domain/operations/theme-operations/theme-details/apply-theme-state-operation';
 import { SetColorVariableDarkOperation } from '../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
 import { SetThemeOperation } from '../../domain/operations/theme-operations/theme-details/set-theme-operation';
 import { SetThemePaneSelectionsOperation } from '../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
@@ -196,7 +197,7 @@ describe('theme renderer workflows', () => {
       onAssignEyedropperClick: vi.fn(),
     });
     viewModelMocks.useThemeVariablesCardViewModel.mockReturnValue({
-      theme: null,
+      themeTemplateRef: null,
       colorAssignments: [],
       contrastAssignments: [],
       colorVariables: [],
@@ -455,7 +456,7 @@ describe('theme renderer workflows', () => {
       ...paletteCallbacks,
     });
     viewModelMocks.useThemeVariablesCardViewModel.mockReturnValue({
-      theme: { templateRef: { name: 'template-a', version: '1.0.0' } },
+      themeTemplateRef: { name: 'template-a', version: '1.0.0' },
       colorAssignments: [
         { colorRef: 'editorFg', dark: { value: '#112233' }, light: { value: '#445566' }, useDarkForLight: false },
       ],
@@ -590,9 +591,10 @@ describe('theme renderer workflows', () => {
     const applyThemeUndoState = new ApplyThemeUndoStateOperation(
       new SetThemeOperation(themesStore, themeUiStore),
       new ApplyThemeStateAndSchedulePersistOperation(
-        themeUiStore,
+        new ApplyThemeStateOperation(themeUiStore),
         debouncedThemePersist as never,
         themeGateway as never,
+        themeUiStore,
       ),
     );
     const testUndo = createTestUndoOperations(
@@ -662,9 +664,10 @@ describe('theme renderer workflows', () => {
         applyThemeUndoState: new ApplyThemeUndoStateOperation(
           new SetThemeOperation(themesStore, themeUiStore),
           new ApplyThemeStateAndSchedulePersistOperation(
-            themeUiStore,
+            new ApplyThemeStateOperation(themeUiStore),
             debouncedThemePersist as never,
             themeGateway as never,
+            themeUiStore,
           ),
         ),
         setColorVariableDark,
@@ -763,9 +766,10 @@ describe('theme renderer workflows', () => {
         applyThemeUndoState: new ApplyThemeUndoStateOperation(
           new SetThemeOperation(themesStore, themeUiStore),
           new ApplyThemeStateAndSchedulePersistOperation(
-            themeUiStore,
+            new ApplyThemeStateOperation(themeUiStore),
             debouncedThemePersist as never,
             themeGateway as never,
+            themeUiStore,
           ),
         ),
         setColorVariableDark,
@@ -829,14 +833,12 @@ describe('theme renderer workflows', () => {
     const loadThemeThen = vi.fn(async (_label: string, onLoaded: () => Promise<void>) => {
       await onLoaded();
     });
-    const loadTheme = { execute: vi.fn(() => ({ then: loadThemeThen })) };
+    const loadThemeWithLinkedTemplate = { execute: vi.fn(() => ({ then: loadThemeThen })) };
     const setCurrentUndoStackId = { executeAndLoadForContext: vi.fn() };
     const controller = new SelectThemeAndLoadController(
       themeUiStore as never,
       { execute: vi.fn() } as never,
-      loadTheme as never,
-      { execute: vi.fn() } as never,
-      { execute: vi.fn(async () => null) } as never,
+      loadThemeWithLinkedTemplate as never,
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
       { getStore: () => ({ state: { selectedRef: { name: 'catalog-a', version: '2.0.0' } } }) } as never,
@@ -878,9 +880,10 @@ describe('theme renderer workflows', () => {
         applyThemeUndoState: new ApplyThemeUndoStateOperation(
           new SetThemeOperation(themesStore, themeUiStore),
           new ApplyThemeStateAndSchedulePersistOperation(
-            themeUiStore,
+            new ApplyThemeStateOperation(themeUiStore),
             debouncedThemePersist as never,
             themeGateway as never,
+            themeUiStore,
           ),
         ),
         commitAssignColorText,
@@ -964,9 +967,10 @@ describe('theme renderer workflows', () => {
       const themeGateway = { saveTheme: vi.fn() };
       const setTheme = new SetThemeOperation(themesStore, themeUiStore);
       const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
-        themeUiStore,
+        new ApplyThemeStateOperation(themeUiStore),
         debouncedThemePersist as never,
         themeGateway as never,
+        themeUiStore,
       );
       const applyThemeUndoState = new ApplyThemeUndoStateOperation(
         setTheme,
@@ -1085,9 +1089,10 @@ describe('theme renderer workflows', () => {
         themeUiStore,
         new SetThemeOperation(themesStore, themeUiStore),
         new ApplyThemeStateAndSchedulePersistOperation(
-          themeUiStore,
+          new ApplyThemeStateOperation(themeUiStore),
           { schedule: vi.fn((fn) => void fn()) } as never,
           { saveTheme: vi.fn() } as never,
+          themeUiStore,
         ),
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
@@ -1113,9 +1118,10 @@ describe('theme renderer workflows', () => {
         themeUiStore,
         new SetThemeOperation(themesStore, themeUiStore),
         new ApplyThemeStateAndSchedulePersistOperation(
-          themeUiStore,
+          new ApplyThemeStateOperation(themeUiStore),
           { schedule: vi.fn((fn) => void fn()) } as never,
           { saveTheme: vi.fn() } as never,
+          themeUiStore,
         ),
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
@@ -1141,9 +1147,10 @@ describe('theme renderer workflows', () => {
         themeUiStore,
         new SetThemeOperation(themesStore, themeUiStore),
         new ApplyThemeStateAndSchedulePersistOperation(
-          themeUiStore,
+          new ApplyThemeStateOperation(themeUiStore),
           { schedule: vi.fn((fn) => void fn()) } as never,
           { saveTheme: vi.fn() } as never,
+          themeUiStore,
         ),
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
@@ -1172,9 +1179,10 @@ describe('theme renderer workflows', () => {
         new SetThemeOperation(themesStore, themeUiStore),
         new SetThemeHueAdjustmentOperation(themeUiStore),
         new ApplyThemeStateAndSchedulePersistOperation(
-          themeUiStore,
+          new ApplyThemeStateOperation(themeUiStore),
           { schedule: vi.fn((fn) => void fn()) } as never,
           { saveTheme: vi.fn() } as never,
+          themeUiStore,
         ),
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
@@ -1230,11 +1238,7 @@ describe('theme renderer workflows', () => {
       const themesStore = new ThemesStore();
       const { testUndo, recordThemeUndo, setTheme, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
       seedTheme(themeUiStore, themesStore);
-      const saveTheme = {
-        execute: vi.fn((theme) => {
-          setTheme.execute(theme);
-        }),
-      };
+      const saveTheme = { execute: vi.fn() };
       const controller = new IncrementThemeVersionController(
         { execute: vi.fn((ref) => themeUiStore.getStore().setSelectedRef(ref)) } as never,
         new SetThemeHueAdjustmentOperation(themeUiStore),
@@ -1242,7 +1246,7 @@ describe('theme renderer workflows', () => {
         { execute: vi.fn() } as never,
         { execute: vi.fn() } as never,
         { execute: vi.fn() } as never,
-        { execute: vi.fn(async () => null) } as never,
+        setTheme,
         { execute: vi.fn() } as never,
         themeUiStore,
         recordThemeUndo,
@@ -1363,9 +1367,10 @@ describe('theme renderer workflows', () => {
         themeUiStore,
         new SetThemeOperation(themesStore, themeUiStore),
         new ApplyThemeStateAndSchedulePersistOperation(
-          themeUiStore,
+          new ApplyThemeStateOperation(themeUiStore),
           { schedule: vi.fn() } as never,
           { saveTheme: vi.fn() } as never,
+          themeUiStore,
         ),
         new RecordThemeUndoOperation(
           new RecordUndoEntryOperation(undoStackStore),

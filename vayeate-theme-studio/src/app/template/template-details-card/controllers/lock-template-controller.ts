@@ -40,7 +40,7 @@ export class LockTemplateController {
 
     const updated = this.lockTemplateOperation.execute(template);
     this.saveTemplate.execute(updated);
-    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated);
+    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated, false);
 
     void this.recordTemplateUndo.execute({
       description: `Lock template ${template.name}`,

@@ -10,6 +10,7 @@ import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_MAPPING_REMOVED } from '../../../../model/undo-action-types';
 
@@ -42,7 +43,7 @@ export class RemoveMappingController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
 
     void this.recordTemplateUndo.execute({
       description: `Remove mapping ${tokenKey}`,

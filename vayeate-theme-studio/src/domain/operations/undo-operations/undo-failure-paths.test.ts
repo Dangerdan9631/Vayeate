@@ -164,7 +164,7 @@ describe('undo failure paths', () => {
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
-      { execute: vi.fn(async () => null) } as never,
+      { execute: vi.fn() } as never,
       { execute: vi.fn() } as never,
       themeUiStore,
       new RecordThemeUndoOperation(

@@ -24,3 +24,9 @@ export function getThemeRefs(map: ThemeStoreMap): ThemeReference[] {
   }
   return refs;
 }
+
+export function getLoadedTheme(themeMap: ThemeStoreMap, ref: ThemeReference): Theme | null {
+  const entry = themeMap[ref.name]?.[ref.version];
+  if (!entry || !entry.isLoaded || !entry.theme) return null;
+  return entry.theme;
+}

@@ -10,6 +10,7 @@ import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_MAPPING_CONTRAST_REF_SET } from '../../../../model/undo-action-types';
 
@@ -46,7 +47,7 @@ export class SetMappingContrastRefController {
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingContrastRefOp.execute(base, tokenKey, tokenType, contrastVariableRef);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
 
     await this.recordTemplateUndo.execute({
       description: `Set ${tokenKey} contrast variable`,

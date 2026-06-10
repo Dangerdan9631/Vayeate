@@ -1,6 +1,10 @@
 import { delay, inject, singleton } from 'tsyringe';
 import { BackgroundQueuePort } from '../../../domain/operations/background-queue/background-queue-port';
-import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../model/background-queue';
+import type {
+  BackgroundQueueContinuation,
+  BackgroundQueueEnqueueOptions,
+  BackgroundQueueKey,
+} from '../../../model/background-queue';
 import { DataIoBackgroundQueue } from './data-io-background-queue';
 import { MainBackgroundQueue } from './main-background-queue';
 import { WorkerBackgroundQueue } from './worker-background-queue';
@@ -27,14 +31,15 @@ export class BackgroundQueue extends BackgroundQueuePort {
     queue: BackgroundQueueKey,
     description: string,
     run: () => void | Promise<void>,
+    options?: BackgroundQueueEnqueueOptions,
   ): BackgroundQueueContinuation {
     switch (queue) {
       case 'main':
-        return this.mainQueue.enqueue(description, run);
+        return this.mainQueue.enqueue(description, run, options);
       case 'worker':
-        return this.workerQueue.enqueue(description, run);
+        return this.workerQueue.enqueue(description, run, options);
       case 'data_io':
-        return this.dataIoQueue.enqueue(description, run);
+        return this.dataIoQueue.enqueue(description, run, options);
       default: {
         const _exhaustive: never = queue;
         this.log.error('Unhandled background queue type', { queueType: _exhaustive });

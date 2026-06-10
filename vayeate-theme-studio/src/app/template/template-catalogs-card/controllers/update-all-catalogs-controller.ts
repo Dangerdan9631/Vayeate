@@ -16,6 +16,7 @@ import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_CATALOGS_ALL_UPDATED } from '../../../../model/undo-action-types';
 
@@ -88,7 +89,7 @@ export class UpdateAllCatalogsController {
       semanticTokenLanguages,
     };
     this.saveTemplate.execute(updated);
-    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated);
+    this.refreshTemplateRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(template, updated));
 
     await this.recordTemplateUndo.execute({
       description: 'Update all catalogs to latest',

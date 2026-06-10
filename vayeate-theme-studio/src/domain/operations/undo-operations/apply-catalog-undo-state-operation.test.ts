@@ -18,8 +18,8 @@ describe('apply catalog undo state operation', () => {
     const refreshCatalogRefsAndSelect = { execute: vi.fn() };
 
     new ApplyCatalogUndoStateOperation(
-      { getStore: () => ({ upsertCatalogs }) } as never,
-      { getStore: () => ({ selectCatalog }) } as never,
+      { getStore: () => ({ upsertCatalogs, state: { catalogs: {} } }) } as never,
+      { getStore: () => ({ selectCatalog, state: { selectedRef: null } }) } as never,
       saveCatalog as never,
       refreshCatalogRefsAndSelect as never,
     ).execute(catalog);
@@ -27,6 +27,6 @@ describe('apply catalog undo state operation', () => {
     expect(upsertCatalogs).toHaveBeenCalledWith([catalog]);
     expect(selectCatalog).toHaveBeenCalledWith({ name: 'catalog-a', version: '1.0.0' });
     expect(saveCatalog.execute).toHaveBeenCalledWith(catalog);
-    expect(refreshCatalogRefsAndSelect.execute).toHaveBeenCalledWith('catalog-a', '1.0.0');
+    expect(refreshCatalogRefsAndSelect.execute).toHaveBeenCalledWith('catalog-a', '1.0.0', catalog, false);
   });
 });

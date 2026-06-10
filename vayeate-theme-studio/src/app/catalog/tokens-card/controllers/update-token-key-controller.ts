@@ -11,6 +11,7 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKEN_KEY_UPDATED } from '../../../../model/undo-action-types';
 
@@ -49,7 +50,7 @@ export class UpdateTokenKeyController {
     this.catalogsStore.getStore().upsertCatalogs([updated]);
     this.catalogUiStore.getStore().selectCatalog({ name: updated.name, version: updated.version });
     this.saveCatalog.execute(updated);
-    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
 
     await this.recordCatalogUndo.execute({
       description: `Rename ${oldKey} catalog token`,

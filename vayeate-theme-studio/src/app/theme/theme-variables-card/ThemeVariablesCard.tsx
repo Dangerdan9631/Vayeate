@@ -1,17 +1,145 @@
-import { useMemo, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent } from 'react';
+import {
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ReactNode,
+} from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import type { ContrastComparisonMethod } from '../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
 import { useThemeVariablesCardViewModel } from './use-theme-variables-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
+import { ColorAssignmentRow } from './ColorAssignmentRow';
+import { ContrastAssignmentRow } from './ContrastAssignmentRow';
 
 const UNGROUPED_KEY = '__ungrouped__';
+const VIRTUALIZE_MIN_COUNT = 10;
+const VIRTUAL_OVERSCAN = 8;
+const VIRTUAL_FALLBACK_MAX = 15;
 
-const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] = [
-  { value: 'lessThan', label: '< Less than' },
-  { value: 'equalTo', label: '= Equal to' },
-  { value: 'greaterThan', label: '> Greater than' },
-];
+function findScrollParent(el: HTMLElement | null): HTMLElement | null {
+  let node = el?.parentElement ?? null;
+  while (node) {
+    const { overflowY } = getComputedStyle(node);
+    if (overflowY === 'auto' || overflowY === 'scroll') return node;
+    node = node.parentElement;
+  }
+  return null;
+}
+
+function scrollMarginFor(listEl: HTMLElement, scrollEl: HTMLElement): number {
+  return listEl.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
+}
+
+interface VirtualizedRowListProps<T> {
+  items: readonly T[];
+  getItemKey: (item: T, index: number) => string;
+  estimateSize: () => number;
+  renderItem: (item: T, index: number) => ReactNode;
+  emptyHint?: string;
+}
+
+function VirtualizedRowList<T>({
+  items,
+  getItemKey,
+  estimateSize,
+  renderItem,
+  emptyHint,
+}: VirtualizedRowListProps<T>) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
+  const [scrollMargin, setScrollMargin] = useState(0);
+  const shouldVirtualize = items.length >= VIRTUALIZE_MIN_COUNT;
+
+  const updateScrollMetrics = useCallback(() => {
+    const listEl = listRef.current;
+    if (!listEl) return;
+    const scrollEl = findScrollParent(listEl);
+    setScrollElement(scrollEl);
+    setScrollMargin(scrollEl ? scrollMarginFor(listEl, scrollEl) : 0);
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!shouldVirtualize) return;
+    updateScrollMetrics();
+    const listEl = listRef.current;
+    if (!listEl) return;
+    const ro = new ResizeObserver(updateScrollMetrics);
+    ro.observe(listEl);
+    const scrollEl = findScrollParent(listEl);
+    if (scrollEl) ro.observe(scrollEl);
+    window.addEventListener('resize', updateScrollMetrics);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', updateScrollMetrics);
+    };
+  }, [shouldVirtualize, items.length, updateScrollMetrics]);
+
+  const virtualizer = useVirtualizer({
+    count: shouldVirtualize ? items.length : 0,
+    getScrollElement: () => scrollElement,
+    estimateSize,
+    overscan: VIRTUAL_OVERSCAN,
+    scrollMargin,
+  });
+
+  if (items.length === 0) {
+    return emptyHint ? <p className="empty-hint">{emptyHint}</p> : null;
+  }
+
+  if (!shouldVirtualize) {
+    return (
+      <>
+        {items.map((item, index) => (
+          <div key={getItemKey(item, index)}>{renderItem(item, index)}</div>
+        ))}
+      </>
+    );
+  }
+
+  const virtualItems = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+  const fallbackIndices =
+    items.length > 0 && virtualItems.length === 0
+      ? items.map((_, i) => i).slice(0, Math.min(items.length, VIRTUAL_FALLBACK_MAX))
+      : null;
+
+  return (
+    <div ref={listRef} className="virtual-row-list">
+      {fallbackIndices ? (
+        fallbackIndices.map((index) => (
+          <div key={getItemKey(items[index], index)}>{renderItem(items[index], index)}</div>
+        ))
+      ) : (
+        <div style={{ height: totalSize, position: 'relative', width: '100%' }}>
+          {virtualItems.map((virtualItem) => {
+            const item = items[virtualItem.index];
+            return (
+              <div
+                key={getItemKey(item, virtualItem.index)}
+                data-index={virtualItem.index}
+                ref={(el) => { if (el) virtualizer.measureElement(el); }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                {renderItem(item, virtualItem.index)}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
   const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
@@ -222,232 +350,27 @@ function ColorAssignmentsGroupSubsection({
       </div>
       {!collapsed && (
         <div className="tree-children">
-          {assignments.length === 0 && (
-            <p className="empty-hint">No color variables</p>
-          )}
-          {assignments.map((a) => (
-            <ColorAssignmentRow
-              key={a.colorRef}
-              assignment={a}
-              isOrphan={orphanKeys.has(a.colorRef)}
-              checked={checkedColorRefs.has(a.colorRef)}
-              onToggleChecked={onToggleColorChecked}
-              onUpdateDark={onUpdateDark}
-              onUpdateLight={onUpdateLight}
-              onUpdateUseDark={onUpdateUseDark}
-              onDarkEyedropperClick={onDarkEyedropperClick}
-              onLightEyedropperClick={onLightEyedropperClick}
-            />
-          ))}
+          <VirtualizedRowList
+            items={assignments}
+            getItemKey={(a) => a.colorRef}
+            estimateSize={() => 40}
+            emptyHint="No color variables"
+            renderItem={(a) => (
+              <ColorAssignmentRow
+                assignment={a}
+                isOrphan={orphanKeys.has(a.colorRef)}
+                checked={checkedColorRefs.has(a.colorRef)}
+                onToggleChecked={onToggleColorChecked}
+                onUpdateDark={onUpdateDark}
+                onUpdateLight={onUpdateLight}
+                onUpdateUseDark={onUpdateUseDark}
+                onDarkEyedropperClick={onDarkEyedropperClick}
+                onLightEyedropperClick={onLightEyedropperClick}
+              />
+            )}
+          />
         </div>
       )}
-    </div>
-  );
-}
-
-function ColorAssignmentRow({
-  assignment,
-  isOrphan,
-  checked,
-  onToggleChecked,
-  onUpdateDark,
-  onUpdateLight,
-  onUpdateUseDark,
-  onDarkEyedropperClick,
-  onLightEyedropperClick,
-}: {
-  assignment: ColorAssignment;
-  isOrphan: boolean;
-  checked: boolean;
-  onToggleChecked: (ref: string) => void;
-  onUpdateDark: (colorRef: string, value: string | null) => void;
-  onUpdateLight: (colorRef: string, value: string | null) => void;
-  onUpdateUseDark: (colorRef: string, useDark: boolean) => void;
-  onDarkEyedropperClick: (colorRef: string) => void;
-  onLightEyedropperClick: (colorRef: string) => void;
-}) {
-  const darkValue = assignment.dark?.value ?? '';
-  const lightValue = assignment.light?.value ?? '';
-  const [pendingDarkPicker, setPendingDarkPicker] = useState<string | null>(null);
-  const [pendingLightPicker, setPendingLightPicker] = useState<string | null>(null);
-  const [pendingDarkHex, setPendingDarkHex] = useState<string | null>(null);
-  const [pendingLightHex, setPendingLightHex] = useState<string | null>(null);
-
-  const displayDark = pendingDarkPicker ?? darkValue;
-  const displayLight = assignment.useDarkForLight ? darkValue : (pendingLightPicker ?? lightValue);
-  const displayDarkHex = pendingDarkHex ?? darkValue;
-  const displayLightHex = assignment.useDarkForLight ? darkValue : (pendingLightHex ?? lightValue);
-  const pickerValueDark = (displayDark.length === 9 ? displayDark.slice(0, 7) : displayDark) || '#000000';
-  const pickerValueLight = (displayLight.length === 9 ? displayLight.slice(0, 7) : displayLight) || '#ffffff';
-  const hasGenerationIssue =
-    assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
-
-  function onColorRowToggleClick() {
-    onToggleChecked(assignment.colorRef);
-  }
-
-  function onColorRowToggleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      onToggleChecked(assignment.colorRef);
-    }
-  }
-
-  function onDarkHexInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setPendingDarkHex(e.target.value);
-  }
-
-  function onDarkHexInputBlur(e: FocusEvent<HTMLInputElement>) {
-    const v = e.target.value.trim() || null;
-    onUpdateDark(assignment.colorRef, v);
-    setPendingDarkHex(null);
-  }
-
-  function onDarkPickerInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setPendingDarkPicker(e.target.value);
-  }
-
-  function onDarkPickerInputBlur(e: FocusEvent<HTMLInputElement>) {
-    let v = e.target.value.trim() || null;
-    if (v && darkValue.length === 9) v = v + darkValue.slice(7, 9);
-    onUpdateDark(assignment.colorRef, v);
-    setPendingDarkPicker(null);
-  }
-
-  function onDarkEyedropperButtonClick() {
-    onDarkEyedropperClick(assignment.colorRef);
-  }
-
-  function onLightHexInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setPendingLightHex(e.target.value);
-  }
-
-  function onLightHexInputBlur(e: FocusEvent<HTMLInputElement>) {
-    if (!assignment.useDarkForLight) {
-      const v = e.target.value.trim() || null;
-      onUpdateLight(assignment.colorRef, v);
-    }
-    setPendingLightHex(null);
-  }
-
-  function onLightPickerInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setPendingLightPicker(e.target.value);
-  }
-
-  function onLightPickerInputBlur() {
-    if (!assignment.useDarkForLight) {
-      let v = (pendingLightPicker ?? lightValue) || null;
-      if (v && lightValue.length === 9) v = v + lightValue.slice(7, 9);
-      onUpdateLight(assignment.colorRef, v);
-    }
-    setPendingLightPicker(null);
-  }
-
-  function onLightEyedropperButtonClick() {
-    if (assignment.useDarkForLight) return;
-    onLightEyedropperClick(assignment.colorRef);
-  }
-
-  function onUseDarkForLightCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
-    onUpdateUseDark(assignment.colorRef, e.target.checked);
-  }
-
-  return (
-    <div
-      className={`theme-color-row theme-color-row--has-eyedropper ${isOrphan ? 'theme-row-orphan' : ''}`}
-    >
-      <button
-        type="button"
-        role="checkbox"
-        aria-checked={checked}
-        aria-label={`Include ${assignment.colorRef} in palette adjustments`}
-        title="Include in palette adjustments"
-        className="theme-var-check-wrap checkbox-icon-btn"
-        onClick={onColorRowToggleClick}
-        onKeyDown={onColorRowToggleKeyDown}
-      >
-        <span className="material-symbols-outlined" aria-hidden>
-          {checked ? 'check_box' : 'check_box_outline_blank'}
-        </span>
-      </button>
-      <span
-        className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
-        title={assignment.colorRef}
-      >
-        {assignment.colorRef}
-        {isOrphan && (
-          <span className="material-symbols-outlined mapping-warning-icon" title="Variable not in template">
-            warning
-          </span>
-        )}
-      </span>
-      <input
-        className="field-input theme-color-hex"
-        type="text"
-        placeholder="#000000"
-        value={displayDarkHex}
-        onChange={onDarkHexInputChange}
-        onBlur={onDarkHexInputBlur}
-      />
-      <input
-        type="color"
-        className="theme-color-picker"
-        value={pickerValueDark}
-        onChange={onDarkPickerInputChange}
-        onBlur={onDarkPickerInputBlur}
-      />
-      <button
-        type="button"
-        className="theme-eyedropper-btn"
-        title="Pick color from screen (dark)"
-        aria-label="Pick dark color from screen"
-        onClick={onDarkEyedropperButtonClick}
-      >
-        <span className="material-symbols-outlined" aria-hidden>colorize</span>
-      </button>
-      <input
-        className="field-input theme-color-hex"
-        type="text"
-        placeholder="#ffffff"
-        value={displayLightHex}
-        disabled={assignment.useDarkForLight}
-        onChange={onLightHexInputChange}
-        onBlur={onLightHexInputBlur}
-      />
-      <input
-        type="color"
-        className="theme-color-picker"
-        value={pickerValueLight}
-        disabled={assignment.useDarkForLight}
-        onChange={onLightPickerInputChange}
-        onBlur={onLightPickerInputBlur}
-      />
-      <button
-        type="button"
-        className="theme-eyedropper-btn"
-        disabled={assignment.useDarkForLight}
-        title="Pick color from screen (light)"
-        aria-label="Pick light color from screen"
-        onClick={onLightEyedropperButtonClick}
-      >
-        <span className="material-symbols-outlined" aria-hidden>colorize</span>
-      </button>
-      <label
-        className="theme-use-dark-check theme-icon-checkbox"
-        title={
-          assignment.useDarkForLight
-            ? 'Use dark value for light theme. Currently on.'
-            : 'Use dark value for light theme. Currently off. Click to use the same value for light as dark.'
-        }
-      >
-        <input
-          type="checkbox"
-          checked={assignment.useDarkForLight}
-          onChange={onUseDarkForLightCheckboxChange}
-          aria-label="Use dark value for light theme"
-        />
-        <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
-      </label>
     </div>
   );
 }
@@ -614,307 +537,33 @@ function ContrastAssignmentsGroupSubsection({
       </div>
       {!collapsed && (
         <div className="tree-children">
-          {assignments.length === 0 && (
-            <p className="empty-hint">No contrast variables</p>
-          )}
-          {assignments.map((a) => (
-            <ContrastAssignmentRow
-              key={a.contrastVariableRef}
-              assignment={a}
-              variable={varMap.get(a.contrastVariableRef) ?? null}
-              isOrphan={orphanKeys.has(a.contrastVariableRef)}
-              checked={checkedContrastRefs.has(a.contrastVariableRef)}
-              onToggleChecked={onToggleContrastChecked}
-              onUpdateDark={onUpdateDark}
-              onUpdateLight={onUpdateLight}
-              onUpdateUseDark={onUpdateUseDark}
-            />
-          ))}
+          <VirtualizedRowList
+            items={assignments}
+            getItemKey={(a) => a.contrastVariableRef}
+            estimateSize={() => 88}
+            emptyHint="No contrast variables"
+            renderItem={(a) => (
+              <ContrastAssignmentRow
+                assignment={a}
+                variable={varMap.get(a.contrastVariableRef) ?? null}
+                isOrphan={orphanKeys.has(a.contrastVariableRef)}
+                checked={checkedContrastRefs.has(a.contrastVariableRef)}
+                onToggleChecked={onToggleContrastChecked}
+                onUpdateDark={onUpdateDark}
+                onUpdateLight={onUpdateLight}
+                onUpdateUseDark={onUpdateUseDark}
+              />
+            )}
+          />
         </div>
       )}
     </div>
   );
 }
 
-function ContrastAssignmentRow({
-  assignment,
-  variable,
-  isOrphan,
-  checked,
-  onToggleChecked,
-  onUpdateDark,
-  onUpdateLight,
-  onUpdateUseDark,
-}: {
-  assignment: ContrastAssignment;
-  variable: ContrastVariable | null;
-  isOrphan: boolean;
-  checked: boolean;
-  onToggleChecked: (ref: string) => void;
-  onUpdateDark: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
-  onUpdateLight: (contrastRef: string, field: keyof ContrastAssignmentValue, value: number | ContrastComparisonMethod | null) => void;
-  onUpdateUseDark: (contrastRef: string, useDark: boolean) => void;
-}) {
-  const ref = assignment.contrastVariableRef;
-  const dark = assignment.dark;
-  const light = assignment.light;
-
-  const [editValueDark, setEditValueDark] = useState<string | null>(null);
-  const [editValueLight, setEditValueLight] = useState<string | null>(null);
-  const [editMinDark, setEditMinDark] = useState<string | null>(null);
-  const [editMaxDark, setEditMaxDark] = useState<string | null>(null);
-  const [editMinLight, setEditMinLight] = useState<string | null>(null);
-  const [editMaxLight, setEditMaxLight] = useState<string | null>(null);
-
-  const hasGenerationIssue =
-    assignment.dark === null || (!assignment.useDarkForLight && assignment.light === null);
-
-  function onContrastRowToggleClick() {
-    onToggleChecked(ref);
-  }
-
-  function onContrastRowToggleKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      onToggleChecked(ref);
-    }
-  }
-
-  function onContrastUseDarkCheckboxChange(e: ChangeEvent<HTMLInputElement>) {
-    onUpdateUseDark(ref, e.target.checked);
-  }
-
-  function onContrastValueDarkInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setEditValueDark(e.target.value);
-  }
-
-  function onContrastValueDarkInputBlur(e: FocusEvent<HTMLInputElement>) {
-    const v = e.target.value ? parseFloat(e.target.value) : null;
-    onUpdateDark(ref, 'value', v);
-    setEditValueDark(null);
-  }
-
-  function onContrastMethodDarkSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    onUpdateDark(ref, 'comparisonMethod', e.target.value as ContrastComparisonMethod);
-  }
-
-  function onContrastValueLightInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setEditValueLight(e.target.value);
-  }
-
-  function onContrastValueLightInputBlur(e: FocusEvent<HTMLInputElement>) {
-    if (!assignment.useDarkForLight) {
-      const v = e.target.value ? parseFloat(e.target.value) : null;
-      onUpdateLight(ref, 'value', v);
-    }
-    setEditValueLight(null);
-  }
-
-  function onContrastMethodLightSelectChange(e: ChangeEvent<HTMLSelectElement>) {
-    onUpdateLight(ref, 'comparisonMethod', e.target.value as ContrastComparisonMethod);
-  }
-
-  function onContrastMinDarkInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setEditMinDark(e.target.value);
-  }
-
-  function onContrastMinDarkInputBlur(e: FocusEvent<HTMLInputElement>) {
-    const v = e.target.value ? parseFloat(e.target.value) : null;
-    onUpdateDark(ref, 'min', v);
-    setEditMinDark(null);
-  }
-
-  function onContrastMaxDarkInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setEditMaxDark(e.target.value);
-  }
-
-  function onContrastMaxDarkInputBlur(e: FocusEvent<HTMLInputElement>) {
-    const v = e.target.value ? parseFloat(e.target.value) : null;
-    onUpdateDark(ref, 'max', v);
-    setEditMaxDark(null);
-  }
-
-  function onContrastMinLightInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setEditMinLight(e.target.value);
-  }
-
-  function onContrastMinLightInputBlur(e: FocusEvent<HTMLInputElement>) {
-    if (!assignment.useDarkForLight) {
-      const v = e.target.value ? parseFloat(e.target.value) : null;
-      onUpdateLight(ref, 'min', v);
-    }
-    setEditMinLight(null);
-  }
-
-  function onContrastMaxLightInputChange(e: ChangeEvent<HTMLInputElement>) {
-    setEditMaxLight(e.target.value);
-  }
-
-  function onContrastMaxLightInputBlur(e: FocusEvent<HTMLInputElement>) {
-    if (!assignment.useDarkForLight) {
-      const v = e.target.value ? parseFloat(e.target.value) : null;
-      onUpdateLight(ref, 'max', v);
-    }
-    setEditMaxLight(null);
-  }
-
-  return (
-    <div className={`theme-contrast-block ${isOrphan ? 'theme-row-orphan' : ''}`}>
-      <div className="theme-contrast-row1">
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={checked}
-          aria-label={`Include ${ref} in palette adjustments`}
-          title="Include in palette adjustments"
-          className="theme-var-check-wrap checkbox-icon-btn"
-          onClick={onContrastRowToggleClick}
-          onKeyDown={onContrastRowToggleKeyDown}
-        >
-          <span className="material-symbols-outlined" aria-hidden>
-            {checked ? 'check_box' : 'check_box_outline_blank'}
-          </span>
-        </button>
-        <span
-          className={`theme-var-name ${hasGenerationIssue ? 'theme-var-name--blocking' : ''}`}
-          title={ref}
-        >
-          {ref}
-          {isOrphan && (
-            <span className="material-symbols-outlined mapping-warning-icon" title="Variable not in template">
-              warning
-            </span>
-          )}
-        </span>
-        <span className="theme-contrast-source-wrap">
-          <span className="theme-contrast-source-label">Source:</span>
-          <span className="theme-contrast-source">
-            {variable?.comparisonSourceRef ?? '—'}
-          </span>
-        </span>
-        <label
-          className="theme-use-dark-check theme-icon-checkbox"
-          title={
-            assignment.useDarkForLight
-              ? 'Use dark value for light theme. Currently on.'
-              : 'Use dark value for light theme. Currently off. Click to use the same value for light as dark.'
-          }
-        >
-          <input
-            type="checkbox"
-            checked={assignment.useDarkForLight}
-            onChange={onContrastUseDarkCheckboxChange}
-            aria-label="Use dark value for light theme"
-          />
-          <span className="material-symbols-outlined theme-use-dark-icon" aria-hidden>join_left</span>
-        </label>
-      </div>
-
-      <div className="theme-contrast-row-labels">
-        <span className="theme-contrast-dark-label">dark</span>
-        <span className="theme-contrast-light-label">light</span>
-      </div>
-
-      <div className="theme-contrast-row2">
-        <input
-          className="field-input theme-contrast-value"
-          type="number"
-          step="0.1"
-          min="1"
-          max="10"
-          placeholder="Value"
-          value={editValueDark ?? (dark?.value ?? '')}
-          onChange={onContrastValueDarkInputChange}
-          onBlur={onContrastValueDarkInputBlur}
-        />
-        <select
-          className="field-select theme-contrast-method"
-          value={dark?.comparisonMethod ?? 'greaterThan'}
-          onChange={onContrastMethodDarkSelectChange}
-        >
-          {COMPARISON_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <input
-          className="field-input theme-contrast-value"
-          type="number"
-          step="0.1"
-          min="1"
-          max="10"
-          placeholder="Value"
-          value={assignment.useDarkForLight ? (dark?.value ?? '') : (editValueLight ?? (light?.value ?? ''))}
-          disabled={assignment.useDarkForLight}
-          onChange={onContrastValueLightInputChange}
-          onBlur={onContrastValueLightInputBlur}
-        />
-        <select
-          className="field-select theme-contrast-method"
-          value={assignment.useDarkForLight ? (dark?.comparisonMethod ?? 'greaterThan') : (light?.comparisonMethod ?? 'greaterThan')}
-          disabled={assignment.useDarkForLight}
-          onChange={onContrastMethodLightSelectChange}
-        >
-          {COMPARISON_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="theme-contrast-row3">
-        <input
-          className="field-input theme-contrast-minmax"
-          type="number"
-          step="0.1"
-          min="1"
-          max="10"
-          placeholder="Min"
-          value={editMinDark ?? (dark?.min ?? '')}
-          onChange={onContrastMinDarkInputChange}
-          onBlur={onContrastMinDarkInputBlur}
-        />
-        <input
-          className="field-input theme-contrast-minmax"
-          type="number"
-          step="0.1"
-          min="1"
-          max="10"
-          placeholder="Max"
-          value={editMaxDark ?? (dark?.max ?? '')}
-          onChange={onContrastMaxDarkInputChange}
-          onBlur={onContrastMaxDarkInputBlur}
-        />
-        <input
-          className="field-input theme-contrast-minmax"
-          type="number"
-          step="0.1"
-          min="1"
-          max="10"
-          placeholder="Min"
-          value={assignment.useDarkForLight ? (dark?.min ?? '') : (editMinLight ?? (light?.min ?? ''))}
-          disabled={assignment.useDarkForLight}
-          onChange={onContrastMinLightInputChange}
-          onBlur={onContrastMinLightInputBlur}
-        />
-        <input
-          className="field-input theme-contrast-minmax"
-          type="number"
-          step="0.1"
-          min="1"
-          max="10"
-          placeholder="Max"
-          value={assignment.useDarkForLight ? (dark?.max ?? '') : (editMaxLight ?? (light?.max ?? ''))}
-          disabled={assignment.useDarkForLight}
-          onChange={onContrastMaxLightInputChange}
-          onBlur={onContrastMaxLightInputBlur}
-        />
-      </div>
-    </div>
-  );
-}
-
 export function ThemeVariablesCard() {
   const {
-    theme,
+    themeTemplateRef,
     colorAssignments,
     contrastAssignments,
     colorVariables,
@@ -945,7 +594,7 @@ export function ThemeVariablesCard() {
     onSearchChange: setSearchQuery,
   } = useThemeVariablesCardViewModel();
 
-  if (!theme?.templateRef) return null;
+  if (!themeTemplateRef) return null;
 
   function onThemeVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.target.value);

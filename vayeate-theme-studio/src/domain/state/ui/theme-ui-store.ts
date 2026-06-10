@@ -3,7 +3,11 @@ import { singleton } from 'tsyringe';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 import type { Theme, ThemeReference } from '../../../model/schema/theme-schemas';
-import { deriveThemePaneFields } from '../../utils/derive-theme-pane-fields';
+import {
+  areThemePaneDerivationInputsEqual,
+  deriveThemePaneFields,
+  selectThemePaneDerivationInputs,
+} from '../../utils/derive-theme-pane-fields';
 import { initialThemeUiState, type GenerateResult, type LoadState, type ThemeUiState } from './theme-ui-state';
 
 export interface ThemeUiStoreState {
@@ -15,6 +19,7 @@ export interface ThemeUiStoreState {
   setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void;
   setHueAdjustment: (value: number) => void;
   setHueReferenceHex: (value: string) => void;
+  setPreviewClusterCountK: (value: number | null) => void;
   setGenerateResult: (result: GenerateResult | null) => void;
   setSaveError: (error: string | null) => void;
   setAssignColorDraftText: (value: string) => void;
@@ -29,7 +34,14 @@ export class ThemeUiStore {
     immer((set): ThemeUiStoreState => {
       const setThemesState = (updater: (state: ThemeUiState) => ThemeUiState) => {
         set((storeState) => {
-          storeState.state = castDraft(deriveThemePaneFields(updater(storeState.state)));
+          const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
+          const nextState = updater(storeState.state);
+          const afterInputs = selectThemePaneDerivationInputs(nextState);
+          storeState.state = castDraft(
+            areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
+              ? nextState
+              : deriveThemePaneFields(nextState),
+          );
         });
       };
 
@@ -40,11 +52,17 @@ export class ThemeUiStore {
         setThemeLoadState: (loadState: LoadState) =>
           setThemesState((state) => ({ ...state, themeLoadState: loadState })),
         setSelectedRef: (ref: ThemeReference | null) =>
-          setThemesState((state) => ({ ...state, selectedRef: ref, hueAdjustment: 0 })),
+          setThemesState((state) => ({
+            ...state,
+            selectedRef: ref,
+            hueAdjustment: 0,
+            previewClusterCountK: null,
+          })),
         setTheme: (theme: Theme | null, preserveHue?: boolean) =>
           setThemesState((state) => ({
             ...state,
             theme,
+            previewClusterCountK: null,
             ...(preserveHue === true ? {} : { hueAdjustment: 0 }),
           })),
         setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) =>
@@ -52,6 +70,8 @@ export class ThemeUiStore {
         setHueAdjustment: (value: number) => setThemesState((state) => ({ ...state, hueAdjustment: value })),
         setHueReferenceHex: (value: string) =>
           setThemesState((state) => ({ ...state, hueReferenceHex: value })),
+        setPreviewClusterCountK: (value: number | null) =>
+          setThemesState((state) => ({ ...state, previewClusterCountK: value })),
         setGenerateResult: (result: GenerateResult | null) =>
           setThemesState((state) => ({ ...state, generateResult: result })),
         setSaveError: (error: string | null) => setThemesState((state) => ({ ...state, saveError: error })),

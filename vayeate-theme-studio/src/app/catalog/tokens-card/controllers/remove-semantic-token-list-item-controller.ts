@@ -11,6 +11,7 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SEMANTIC_REGISTRY_ITEM_REMOVED } from '../../../../model/undo-action-types';
 
@@ -44,7 +45,7 @@ export class RemoveSemanticTokenListItemController {
     const base = this.bumpCatalogVersionForEdit.execute(catalog);
     const updated = this.removeSemanticTokenListItem.execute(base, kind, index);
     this.saveCatalog.execute(updated);
-    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
 
     void this.recordCatalogUndo.execute({
       description: `Remove semantic ${kind} entry`,

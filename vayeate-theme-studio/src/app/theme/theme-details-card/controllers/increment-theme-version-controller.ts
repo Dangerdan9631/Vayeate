@@ -8,7 +8,7 @@ import { SaveThemeOperation } from '../../../../domain/operations/theme-operatio
 import { SetThemeSaveErrorOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-save-error-operation';
 import { LoadThemeRefsOperation } from '../../../../domain/operations/theme-operations/theme-list/load-theme-refs-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
-import { LoadThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/load-theme-operation';
+import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
 import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
@@ -24,7 +24,7 @@ export class IncrementThemeVersionController {
     private readonly setThemeSaveError: SetThemeSaveErrorOperation,
     private readonly loadThemeRefs: LoadThemeRefsOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
-    private readonly loadTheme: LoadThemeOperation,
+    private readonly setTheme: SetThemeOperation,
     private readonly clearPendingThemeSave: ClearPendingThemeSaveOperation,
     private readonly themeUiStore: ThemeUiStore,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
@@ -57,16 +57,11 @@ export class IncrementThemeVersionController {
     this.loadThemeRefs.execute();
     const newRef = { name: theme.name, version: newVersion };
     this.setSelectedThemeRef.execute(newRef);
-    this.loadTheme.execute(theme.name, newVersion)
-      .then('Loading new theme version', () => {
-        const loaded = this.themeUiStore.getStore().state.theme;
-        if (loaded) {
-          this.setThemePaneSelections.execute(
-            loaded.colorAssignments.map((a) => a.colorRef),
-            loaded.contrastAssignments.map((a) => a.contrastVariableRef),
-          );
-        }
-      });
+    this.setTheme.execute(bumped, true);
+    this.setThemePaneSelections.execute(
+      bumped.colorAssignments.map((a) => a.colorRef),
+      bumped.contrastAssignments.map((a) => a.contrastVariableRef),
+    );
 
     await this.recordThemeUndo.execute({
       description: 'Increment theme version',

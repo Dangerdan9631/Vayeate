@@ -3,6 +3,7 @@ import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import type { TabId } from '../../../model/app-ui';
 import { deriveUndoBaselineLabel, type UndoContext } from '../../../model/undo-history';
+import { undoStackDataFileKey } from '../../../model/data-path-keys';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { BuildUniversalUndoProcessorOperation } from './build-universal-undo-processor-operation';
 import { refreshUndoSummary } from './undo-operation-helpers';
@@ -53,6 +54,7 @@ export class SetCurrentUndoStackIdOperation {
           refreshUndoSummary(this.undoStackStore, hydrated);
         }
       },
+      { key: undoStackDataFileKey(contextKey), access: 'read' },
     );
   }
 

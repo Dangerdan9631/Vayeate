@@ -1,10 +1,15 @@
 import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/schema/template-schemas';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { TemplatesStore } from '../../../state/data/templates-store';
 import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
+
+const noopContinuation: ContinuationHandler = {
+  onQueue: () => noopContinuation,
+  then: () => {},
+};
 
 @singleton()
 export class RefreshTemplateRefsAndSelectOperation {
@@ -15,11 +20,20 @@ export class RefreshTemplateRefsAndSelectOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(selectName?: string, selectVersion?: string, template?: Template): ContinuationHandler {
+  execute(
+    selectName?: string,
+    selectVersion?: string,
+    template?: Template,
+    refsChanged = true,
+  ): ContinuationHandler {
     if (selectName && selectVersion && template) {
       this.templateUiStore.getStore().selectTemplate({ name: selectName, version: selectVersion });
       this.templatesStore.getStore().updateTemplate(template);
       this.templateUiStore.getStore().setTemplateLoadState('loaded');
+    }
+
+    if (!refsChanged) {
+      return noopContinuation;
     }
 
     return this.enqueueBackgroundAction.execute(

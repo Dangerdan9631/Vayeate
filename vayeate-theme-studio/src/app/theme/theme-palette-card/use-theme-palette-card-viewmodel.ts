@@ -22,6 +22,7 @@ export function useThemePaletteCardViewModel() {
   const checkedContrastRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedContrastRefs);
   const hueAdjustment = useStore(themeUiStore.api, (state) => state.state.hueAdjustment);
   const hueReferenceHex = useStore(themeUiStore.api, (state) => state.state.hueReferenceHex);
+  const previewClusterCountK = useStore(themeUiStore.api, (state) => state.state.previewClusterCountK);
   const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
   const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
   const paneSelectedColorsDisplay = useStore(themeUiStore.api, (state) => state.state.paneSelectedColorsDisplay);
@@ -204,7 +205,7 @@ export function useThemePaletteCardViewModel() {
     applyToLight: applyHueToLight,
     onApplyToDarkChange: setApplyHueToDark,
     onApplyToLightChange: setApplyHueToLight,
-    clusterCountK: theme?.paletteClusterCountK ?? 5,
+    clusterCountK: previewClusterCountK ?? theme?.paletteClusterCountK ?? 5,
     onClusterCountDelta,
     onClusterCountCommit,
     colorAssignments: paneDisplayColorAssignments,

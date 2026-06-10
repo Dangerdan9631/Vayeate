@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { themeDataFileKey } from '../../../../model/data-path-keys';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
@@ -16,7 +17,8 @@ export class DeleteThemeOperation {
       `Deleting theme ${name} ${version}`,
       async () => {
         await this.themeGateway.deleteTheme(name, version);
-      }
+      },
+      { key: themeDataFileKey(name, version), access: 'write' },
     );
   }
 }

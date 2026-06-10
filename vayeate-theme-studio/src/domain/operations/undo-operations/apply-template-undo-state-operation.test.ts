@@ -20,8 +20,8 @@ describe('apply template undo state operation', () => {
     const refreshTemplateRefsAndSelect = { execute: vi.fn() };
 
     new ApplyTemplateUndoStateOperation(
-      { getStore: () => ({ updateTemplate }) } as never,
-      { getStore: () => ({ selectTemplate }) } as never,
+      { getStore: () => ({ updateTemplate, state: { templates: {} } }) } as never,
+      { getStore: () => ({ selectTemplate, state: { selectedRef: null } }) } as never,
       saveTemplate as never,
       refreshTemplateRefsAndSelect as never,
     ).execute(template);
@@ -29,6 +29,6 @@ describe('apply template undo state operation', () => {
     expect(updateTemplate).toHaveBeenCalledWith(template);
     expect(selectTemplate).toHaveBeenCalledWith({ name: 'template-a', version: '1.0.0' });
     expect(saveTemplate.execute).toHaveBeenCalledWith(template);
-    expect(refreshTemplateRefsAndSelect.execute).toHaveBeenCalledWith('template-a', '1.0.0', template);
+    expect(refreshTemplateRefsAndSelect.execute).toHaveBeenCalledWith('template-a', '1.0.0', template, false);
   });
 });

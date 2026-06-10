@@ -14,6 +14,7 @@ import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import {
   TEMPLATE_MAPPING_COLOR_REF_SET,
@@ -64,7 +65,7 @@ export class SetMappingColorRefController {
     if (colorRef === null && isOrphan) {
       const next = this.removeMappingFromTemplate.execute(base, tokenKey, tokenType);
       this.saveTemplate.execute(next);
-      this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+      this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
       await this.recordTemplateUndo.execute({
         description: `Remove orphan mapping ${tokenKey}`,
         actionType: TEMPLATE_MAPPING_REMOVED,
@@ -76,7 +77,7 @@ export class SetMappingColorRefController {
     }
     const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
     this.saveTemplate.execute(next);
-    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
     await this.recordTemplateUndo.execute({
       description: `Set ${tokenKey} color variable`,
       actionType: TEMPLATE_MAPPING_COLOR_REF_SET,
