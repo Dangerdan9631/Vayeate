@@ -5,6 +5,7 @@ import type {
   UndoHistoryListEntry,
   UndoStackPosition,
 } from '../../model/undo-history';
+import type { PersistEnqueueFn } from './undo-stack-persist-scheduler';
 
 export const DEFAULT_MAX_SIZE = 20;
 export const DEFAULT_STACK_COUNT = 5;
@@ -83,11 +84,15 @@ export interface UndoManagerOptions {
   stackCount?: number;
   diskMaxFrames?: number;
   persistence?: UndoPersistenceAdapter | null;
+  persistEnqueue?: PersistEnqueueFn | null;
 }
 
 export interface UndoManagerV2 {
+  getIfLoaded(stackId: string, options?: UndoStackOptions): UndoStack | null;
+  hydrateFromPersistence(stackId: string, options: UndoStackOptions): Promise<UndoStack>;
   getOrCreate(stackId: string, options?: UndoStackOptions): Promise<UndoStack>;
   release(stackId: string): Promise<void>;
   clearPersisted(): Promise<void>;
+  flushPendingPersists(stackId?: string): Promise<void>;
   configure(options: UndoManagerOptions): void;
 }

@@ -14,6 +14,7 @@ import { BuildUniversalUndoProcessorOperation } from '../../src/domain/operation
 import { HistoryGoToOperation } from '../../src/domain/operations/undo-operations/history-go-to-operation';
 import { LoadUndoHistoryOperation } from '../../src/domain/operations/undo-operations/load-undo-history-operation';
 import { RedoOperation } from '../../src/domain/operations/undo-operations/redo-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../src/domain/operations/background-queue/enqueue-background-queue-action-operation';
 import { SetCurrentUndoStackIdOperation } from '../../src/domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { UndoOperation } from '../../src/domain/operations/undo-operations/undo-operation';
 
@@ -28,13 +29,22 @@ export function syncContinuation(run: () => void | Promise<void> = () => undefin
 }
 
 export function createSyncBackgroundQueue() {
-  return {
-    execute: vi.fn((_type: string, _label: string, fn: () => unknown) => {
-      void fn();
-      return syncContinuation();
+  const pendingRuns: Array<() => void | Promise<void>> = [];
+  const queue = {
+    pendingRuns,
+    execute: vi.fn((_type: string, _label: string, fn: () => void | Promise<void>) => {
+      pendingRuns.push(fn);
+      return syncContinuation(fn);
     }),
     executeReturning: vi.fn(async (_label: string, fn: () => unknown) => fn()),
+    async flush(): Promise<void> {
+      while (pendingRuns.length > 0) {
+        const run = pendingRuns.shift()!;
+        await run();
+      }
+    },
   };
+  return queue;
 }
 
 export function removeCatalogVersion(catalogsStore: CatalogsStore, name: string, version: string): void {
@@ -141,10 +151,16 @@ export function createTestBuildUniversalUndoProcessor(
 export function createTestUndoOperations(
   undoStackStore: UndoStackStore,
   buildUniversalUndoProcessor: BuildUniversalUndoProcessorOperation,
+  backgroundQueue = createSyncBackgroundQueue(),
 ) {
   return {
+    backgroundQueue,
     buildUniversalUndoProcessor,
-    setCurrentUndoStackId: new SetCurrentUndoStackIdOperation(undoStackStore, buildUniversalUndoProcessor),
+    setCurrentUndoStackId: new SetCurrentUndoStackIdOperation(
+      undoStackStore,
+      buildUniversalUndoProcessor,
+      backgroundQueue as unknown as EnqueueBackgroundQueueActionOperation,
+    ),
     loadUndoHistory: new LoadUndoHistoryOperation(undoStackStore, buildUniversalUndoProcessor),
     undo: new UndoOperation(undoStackStore, buildUniversalUndoProcessor),
     redo: new RedoOperation(undoStackStore, buildUniversalUndoProcessor),

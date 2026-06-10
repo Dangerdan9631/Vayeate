@@ -12,7 +12,12 @@ export class ClearPersistedUndoOperation {
   ) { }
 
   async executeNow(): Promise<void> {
-    undoManagerV2.configure({ persistence: this.undoPersistence });
+    undoManagerV2.configure({
+      persistence: this.undoPersistence,
+      persistEnqueue: (description, run) => {
+        this.enqueueBackgroundAction.execute('data_io', description, run);
+      },
+    });
     await undoManagerV2.clearPersisted();
   }
 

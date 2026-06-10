@@ -17,10 +17,10 @@ export class SetActiveTabController {
     private readonly setCurrentUndoStackId?: SetCurrentUndoStackIdOperation,
   ) {}
 
-  async run(tabId: TabId): Promise<void> {
+  run(tabId: TabId): void {
     this.setUiActiveTab.execute(tabId);
     const theme = this.themeUiStore?.getStore().state.theme ?? null;
-    await this.setCurrentUndoStackId?.executeAndLoadForTab(tabId, deriveUndoContext({
+    this.setCurrentUndoStackId?.executeAndLoadForTab(tabId, deriveUndoContext({
       tabId,
       catalogRef: this.catalogUiStore?.getStore().state.selectedRef ?? null,
       templateRef: tabId === 'themes'

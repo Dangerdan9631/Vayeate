@@ -12,8 +12,9 @@ export class LoadEyedropperSnapshotOperation {
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
 
-  execute(): Promise<void> {
-    return this.enqueueBackgroundQueue.executeReturning(
+  execute(): void {
+    this.enqueueBackgroundQueue.execute(
+      'worker',
       'Capturing desktop snapshot for eyedropper',
       async () => {
         try {
@@ -40,7 +41,6 @@ export class LoadEyedropperSnapshotOperation {
           this.eyedropperUiStore.getStore().setEyedropperErrorMessage(message);
         }
       },
-      'worker',
     );
   }
 }

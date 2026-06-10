@@ -10,8 +10,8 @@ export class OpenEyedropperOverlayController {
     private readonly loadEyedropperSnapshot: LoadEyedropperSnapshotOperation,
   ) {}
 
-  async run(commitTarget: EyedropperCommitTarget): Promise<void> {
+  run(commitTarget: EyedropperCommitTarget): void {
     this.openEyedropper.execute(commitTarget);
-    await this.loadEyedropperSnapshot.execute();
+    this.loadEyedropperSnapshot.execute();
   }
 }

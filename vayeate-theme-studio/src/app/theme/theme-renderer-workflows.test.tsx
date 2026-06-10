@@ -725,12 +725,13 @@ describe('theme renderer workflows', () => {
       createMinimalTestBuildUniversalUndoProcessor(),
     );
 
-    await testUndo.setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
+    testUndo.setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
       tabId: 'themes',
       themeRef: { name: 'theme-a', version: '3.0.0' },
       templateRef: { name: 'template-a', version: '1.0.0' },
       catalogRef: { name: 'catalog-a', version: '2.0.0' },
     }));
+    await testUndo.backgroundQueue.flush();
 
     expect(undoStackStore.getStore().state.undoMenu.frames.at(-1)).toEqual({
       id: UNDO_BASELINE_FRAME_ID,
@@ -780,11 +781,12 @@ describe('theme renderer workflows', () => {
       testUndo.setCurrentUndoStackId,
     );
 
-    await testUndo.setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
+    testUndo.setCurrentUndoStackId.executeAndLoadForContext(deriveUndoContext({
       tabId: 'themes',
       themeRef: { name: 'theme-a', version: '1.0.0' },
       templateRef: { name: 'template-a', version: '1.0.0' },
     }));
+    await testUndo.backgroundQueue.flush();
 
     themeUiStore.getStore().setSelectedRef({ name: 'theme-a', version: '1.0.0' });
     themeUiStore.getStore().setTheme(themeSchema.parse({

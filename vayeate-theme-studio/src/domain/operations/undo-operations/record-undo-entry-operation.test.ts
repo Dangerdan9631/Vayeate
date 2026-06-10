@@ -163,7 +163,8 @@ describe('record undo entry operation', () => {
     }
   });
 
-  it('does not expose a history summary when recording fails', async () => {
+  it('records the entry before asynchronous persistence completes', async () => {
+    const pendingRuns: Array<() => void | Promise<void>> = [];
     const manager = createUndoManagerV2({
       persistence: {
         saveStack: vi.fn(async () => {
@@ -172,22 +173,30 @@ describe('record undo entry operation', () => {
         loadStack: vi.fn(async () => null),
         clearPersisted: vi.fn(),
       },
+      persistEnqueue: (_description, run) => {
+        pendingRuns.push(run);
+      },
     });
     const getOrCreateSpy = vi.spyOn(undoManagerV2, 'getOrCreate').mockImplementation(manager.getOrCreate);
     const undoStore = store('theme:active');
 
-    await new RecordUndoEntryOperation(undoStore as never).execute({
+    const result = await new RecordUndoEntryOperation(undoStore as never).execute({
       completed: true,
       description: 'Change dark color',
       processor: processor(),
       diffs: [{ actionType: 'set-color', target: 'editorFg:dark', before: '#111111', after: '#222222' }],
     });
 
-    expect(undoStore.getStore().state.undoMenu).toBeNull();
+    expect(result.status).toBe('recorded');
+    expect(undoStore.getStore().state.undoMenu).not.toBeNull();
+    const persistPromise = manager.flushPendingPersists('theme:active');
+    await expect(pendingRuns[0]!()).rejects.toThrow('write failed');
+    await expect(persistPromise).rejects.toThrow('write failed');
     getOrCreateSpy.mockRestore();
   });
 
-  it('reports persistence failures instead of presenting an entry as undoable', async () => {
+  it('does not fail recording when persistence fails asynchronously', async () => {
+    const pendingRuns: Array<() => void | Promise<void>> = [];
     const manager = createUndoManagerV2({
       persistence: {
         saveStack: vi.fn(async () => {
@@ -195,6 +204,9 @@ describe('record undo entry operation', () => {
         }),
         loadStack: vi.fn(async () => null),
         clearPersisted: vi.fn(),
+      },
+      persistEnqueue: (_description, run) => {
+        pendingRuns.push(run);
       },
     });
     const getOrCreateSpy = vi.spyOn(undoManagerV2, 'getOrCreate').mockImplementation(manager.getOrCreate);
@@ -206,7 +218,10 @@ describe('record undo entry operation', () => {
       diffs: [{ actionType: 'set-color', target: 'editorFg:dark', before: '#111111', after: '#222222' }],
     });
 
-    expect(result).toMatchObject({ status: 'failed', message: 'disk full' });
+    expect(result.status).toBe('recorded');
+    const persistPromise = manager.flushPendingPersists('theme:active');
+    await expect(pendingRuns[0]!()).rejects.toThrow('disk full');
+    await expect(persistPromise).rejects.toThrow('disk full');
     getOrCreateSpy.mockRestore();
   });
 });

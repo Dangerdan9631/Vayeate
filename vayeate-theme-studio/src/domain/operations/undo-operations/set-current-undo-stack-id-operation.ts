@@ -3,6 +3,7 @@ import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import type { TabId } from '../../../model/app-ui';
 import { deriveUndoBaselineLabel, type UndoContext } from '../../../model/undo-history';
+import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { BuildUniversalUndoProcessorOperation } from './build-universal-undo-processor-operation';
 import { refreshUndoSummary } from './undo-operation-helpers';
 
@@ -11,6 +12,7 @@ export class SetCurrentUndoStackIdOperation {
   constructor(
     private readonly undoStackStore: UndoStackStore,
     private readonly buildUniversalUndoProcessor: BuildUniversalUndoProcessorOperation,
+    private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
   execute(stackId: string | null): void {
@@ -24,7 +26,7 @@ export class SetCurrentUndoStackIdOperation {
     if (context) store.setLastContextForTab(context.tabId, context);
   }
 
-  async executeAndLoadForContext(context: UndoContext | null): Promise<void> {
+  executeAndLoadForContext(context: UndoContext | null): void {
     this.executeForContext(context);
 
     if (!context) {
@@ -32,14 +34,30 @@ export class SetCurrentUndoStackIdOperation {
       return;
     }
 
-    const stack = await undoManagerV2.getOrCreate(context.contextKey, {
-      processor: this.buildUniversalUndoProcessor.execute(),
-    });
-    refreshUndoSummary(this.undoStackStore, stack);
+    const processor = this.buildUniversalUndoProcessor.execute();
+    const stack = undoManagerV2.getIfLoaded(context.contextKey, { processor });
+    if (stack) {
+      refreshUndoSummary(this.undoStackStore, stack);
+      return;
+    }
+
+    refreshUndoSummary(this.undoStackStore, null);
+    const contextKey = context.contextKey;
+    this.enqueueBackgroundAction.execute(
+      'data_io',
+      `Hydrate undo stack ${contextKey}`,
+      async () => {
+        const hydrated = await undoManagerV2.hydrateFromPersistence(contextKey, { processor });
+        const store = this.undoStackStore.getStore();
+        if (store.state.currentUndoStackId === contextKey) {
+          refreshUndoSummary(this.undoStackStore, hydrated);
+        }
+      },
+    );
   }
 
-  async executeAndLoadForTab(tabId: TabId, fallbackContext: UndoContext | null): Promise<void> {
+  executeAndLoadForTab(tabId: TabId, fallbackContext: UndoContext | null): void {
     const context = this.undoStackStore.getStore().state.lastContextByTab[tabId] ?? fallbackContext;
-    await this.executeAndLoadForContext(context);
+    this.executeAndLoadForContext(context);
   }
 }

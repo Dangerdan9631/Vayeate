@@ -4,6 +4,7 @@ import { ActionProcessor } from './action-processor';
 import { singleton } from 'tsyringe';
 import { UpdateActionQueueStatusController } from './controllers/update-action-queue-status-controller';
 import { SignalActionQueueProcessingCompleteController } from './controllers/signal-action-queue-processing-complete-controller';
+import { tryCoalesce } from './action-coalescing-policy';
 
 function describeAction(action: AppAction): string {
   return action.type
@@ -33,6 +34,18 @@ export class ActionQueue implements IActionQueue {
   }
 
   enqueue(action: AppAction): void {
+    // Scan backwards through pending actions: if a coalescing policy matches,
+    // merge into the most-recent matching entry instead of appending.
+    // The currently-processing action (already shifted out) is never touched,
+    // preserving at-least-once delivery of the final value.
+    for (let i = this.queue.length - 1; i >= 0; i--) {
+      const merged = tryCoalesce(this.queue[i], action);
+      if (merged !== null) {
+        this.queue[i] = merged;
+        void this.process();
+        return;
+      }
+    }
     this.queue.push(action);
     void this.process();
   }
