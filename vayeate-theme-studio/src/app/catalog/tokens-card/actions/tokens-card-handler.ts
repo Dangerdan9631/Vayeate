@@ -12,6 +12,9 @@ import { UpdateTokenKeyController } from "../controllers/update-token-key-contro
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { TokensCardActions, TokensCardActionType } from "./tokens-card-action-type";
 
+/**
+ * Routes tokens card actions to token, semantic registry, and bulk-add controllers.
+ */
 @singleton()
 export class TokensCardHandler {
   private readonly log: Logger;
@@ -32,6 +35,11 @@ export class TokensCardHandler {
     this.log = loggerFactory.create(TokensCardHandler.name);
   }
 
+  /**
+   * Dispatches a tokens card action to the matching controller.
+   * @param action - Tokens card action from the queue.
+   * @returns Promise that settles when handling completes.
+   */
   async handle(action: TokensCardActions): Promise<void> {
     switch (action.type) {
       case TokensCardActionType.SearchTextOnChange:

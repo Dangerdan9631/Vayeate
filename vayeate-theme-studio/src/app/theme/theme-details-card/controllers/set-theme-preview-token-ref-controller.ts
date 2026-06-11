@@ -16,7 +16,12 @@ import {
   THEME_PREVIEW_TOKEN_REF_SET,
 } from '../../../../model/undo-action-types';
 
-/** Set a preview token ref field (THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT). Updates theme, saves, recenters hue. */
+/**
+ * Set a preview token ref field (THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT). Updates theme, saves, recenters hue.
+ */
+/**
+ * Orchestrates set theme preview token ref work for the theme UI.
+ */
 @singleton()
 export class SetThemePreviewTokenRefController {
   constructor(
@@ -29,6 +34,12 @@ export class SetThemePreviewTokenRefController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param tokenRefField Input for this call.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(tokenRefField: ThemePreviewTokenRefField, value: string | null): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

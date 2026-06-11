@@ -14,6 +14,9 @@ import { isThemePaletteCardAction, tryCoalesceThemePaletteCardAction } from '../
 import { isThemesCardAction } from '../themes-card/actions/themes-card-action-type';
 import { isThemeVariablesCardAction, tryCoalesceThemeVariablesCardAction } from '../theme-variables-card/actions/theme-variables-card-action-type';
 
+/**
+ * Union of actions handled by the theme UI domain.
+ */
 export type ThemeActions =
   | CreateThemeDialogActions
   | EditorPreviewsCardActions
@@ -24,6 +27,11 @@ export type ThemeActions =
   | ThemeVariablesCardActions;
 
 
+/**
+ * Returns whether the app action belongs to the theme UI domain.
+ * @param a Candidate action from the app queue.
+ * @returns True when the action is part of the theme UI union.
+ */
 export function isThemeAction(a: AppAction): a is ThemeActions {
   return isCreateThemeDialogAction(a)
     || isEditorPreviewsCardAction(a)
@@ -34,6 +42,12 @@ export function isThemeAction(a: AppAction): a is ThemeActions {
     || isThemeVariablesCardAction(a);
 }
 
+/**
+ * Coalesces consecutive theme UI actions when the action queue merges duplicate streams.
+ * @param pending Input for this call.
+ * @param incoming Input for this call.
+ * @returns Coalesced action, or null when coalescing does not apply.
+ */
 export function tryCoalesceThemeAction(pending: AppAction, incoming: AppAction): ThemeActions | null {
   if (isCreateThemeDialogAction(pending) && isCreateThemeDialogAction(incoming)) {
     return tryCoalesceCreateThemeDialogAction(pending, incoming);

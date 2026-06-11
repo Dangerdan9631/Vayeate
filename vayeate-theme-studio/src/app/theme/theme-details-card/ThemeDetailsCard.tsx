@@ -1,6 +1,9 @@
 import type { ChangeEvent } from 'react';
 import { useThemeDetailsCardViewModel } from './use-theme-details-card-viewmodel';
 
+/**
+ * Renders the Theme Details Card UI for the theme editor.
+ */
 export function ThemeDetailsCard() {
   const {
     theme,

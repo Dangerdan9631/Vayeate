@@ -17,6 +17,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_SEMANTIC_VARIANT_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_MAPPING_SEMANTIC_TOKEN_ADD_VARIANT_BUTTON_ON_CLICK by adding a semantic variant.
+ */
 @singleton()
 export class AddSemanticVariantController {
   constructor(
@@ -34,6 +37,12 @@ export class AddSemanticVariantController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Adds a new semantic token variant row for the given semantic type.
+   * @param type Semantic token type from the add-variant button.
+   * @param defaultGroupRef Optional default group ref for the new variant.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(type: string, defaultGroupRef?: string | null): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;

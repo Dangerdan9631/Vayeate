@@ -1,6 +1,9 @@
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useBulkAddDialogViewModel } from './use-bulk-add-dialog-viewmodel';
 
+/**
+ * Modal dialog to paste theme JSON and bulk-import tokens into the selected catalog.
+ */
 export function BulkAddDialog() {
   const {
     text,

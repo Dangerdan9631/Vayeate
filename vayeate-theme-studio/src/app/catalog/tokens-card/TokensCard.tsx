@@ -5,6 +5,9 @@ import type { SemanticTokenRegistryListKind, TokenType } from '../../../model/sc
 import { TokenRow } from './TokenRow';
 import { SemanticTokenRegistryRow } from './SemanticTokenRegistryRow';
 
+/**
+ * Collapsible section listing tokens of one type with an optional add row.
+ */
 function TokenTypeSection({
   tokenType,
   tokens,
@@ -98,6 +101,9 @@ function TokenTypeSection({
   );
 }
 
+/**
+ * Collapsible semantic token registry section with selector add and list rows.
+ */
 function SemanticTokenCatalogSection({
   catalog,
   canEdit,
@@ -234,6 +240,9 @@ function SemanticTokenCatalogSection({
   );
 }
 
+/**
+ * Searchable token lists, semantic registry editor, and bulk-add entry for the selected catalog.
+ */
 export function TokensCard() {
   const {
     catalog,

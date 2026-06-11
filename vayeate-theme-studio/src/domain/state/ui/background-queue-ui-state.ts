@@ -1,16 +1,28 @@
+/**
+ * Observable length and pending action descriptions for one background queue.
+ */
 export interface QueueUiState {
     queueLength: number;
     queueDescriptions: string[];
 }
 
+/**
+ * Named background queues keyed by queue identifier.
+ */
 export interface QueueMap {
     [key: string]: QueueUiState;
 }
 
+/**
+ * Observable status for all background worker queues shown in the shell.
+ */
 export interface BackgroundQueueUiState {
     queues: QueueMap;
 }
 
+/**
+ * Default background queue observability state for main, worker, and data I/O queues.
+ */
 export const initialBackgroundQueueUiState: BackgroundQueueUiState = {
     queues: {
         main: {

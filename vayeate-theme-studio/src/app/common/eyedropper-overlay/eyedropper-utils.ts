@@ -4,19 +4,44 @@ import { ZERO_POINT } from '../../../model/point';
 import type { Rect } from '../../../model/rect';
 import type { HexColor } from '../../../model/schema/primitives';
 
-/** Loupe canvas size (CSS pixels). */
+/**
+ * Loupe canvas edge length in CSS pixels.
+ */
 export const EYEDROPPER_LOUPE_SIZE = 120;
-/** Source pixels on each side of center (side length = 2 * radius + 1). */
+
+/**
+ * Source pixel radius on each side of the loupe center; side length is `2 * radius + 1`.
+ */
 export const EYEDROPPER_LOUPE_PIXEL_RADIUS = 10;
 
+/**
+ * Maximum zoom multiplier relative to the contain-fit scale.
+ */
 export const EYEDROPPER_ZOOM_MAX = 8;
+
+/**
+ * Per-wheel-step zoom multiplier applied before clamping to the fit range.
+ */
 export const EYEDROPPER_ZOOM_STEP = 1.1;
 
+/**
+ * Converts RGB channel values to a normalized hex color string.
+ * @param r Red channel (0–255).
+ * @param g Green channel (0–255).
+ * @param b Blue channel (0–255).
+ * @returns Hex color including leading `#`.
+ */
 export function rgbToHex(r: number, g: number, b: number): HexColor {
   const pad = (n: number) => Math.max(0, Math.min(255, Math.round(n))).toString(16).padStart(2, '0');
   return `#${pad(r)}${pad(g)}${pad(b)}`;
 }
 
+/**
+ * Reads one canvas pixel and returns its color as hex.
+ * @param canvas Snapshot canvas element.
+ * @param position Bitmap pixel coordinates.
+ * @returns Sampled hex color, or null when the 2D context is unavailable.
+ */
 export function getCanvasColor(canvas: HTMLCanvasElement, position: Point): HexColor | null {
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   if (!ctx) return null;
@@ -24,6 +49,13 @@ export function getCanvasColor(canvas: HTMLCanvasElement, position: Point): HexC
   return rgbToHex(r, g, b);
 }
 
+/**
+ * Paints all display bitmaps from a snapshot into the eyedropper canvas.
+ * @param canvas Target canvas element.
+ * @param snapshotBounds Full snapshot bounding rect in screen space.
+ * @param snapshot Per-display bitmap entries relative to the snapshot bounds.
+ * @returns A promise that settles when drawing completes.
+ */
 export async function loadSnapshotToCanvas(
   canvas: HTMLCanvasElement,
   snapshotBounds: Rect,
@@ -43,6 +75,12 @@ export async function loadSnapshotToCanvas(
   }
 }
 
+/**
+ * Maps a client-space point to floored bitmap pixel coordinates inside the canvas.
+ * @param clientPosition Pointer position in viewport client coordinates.
+ * @param canvas Canvas element used for layout and bitmap sizing.
+ * @returns Clamped pixel coordinates, or null when the point lies outside the canvas element.
+ */
 export function clientToCanvasPixel(
   clientPosition: Point,
   canvas: HTMLCanvasElement
@@ -58,7 +96,15 @@ export function clientToCanvasPixel(
   return { x: clampedX, y: clampedY };
 }
 
-/** Continuous bitmap coordinates (for zoom anchoring). Returns null if outside the canvas element. */
+/**
+ * Maps a client-space point to continuous bitmap coordinates for zoom anchoring.
+ * @param clientX Pointer x in viewport client coordinates.
+ * @param clientY Pointer y in viewport client coordinates.
+ * @param canvas Canvas or other element providing layout bounds.
+ * @param canvasWidth Bitmap width in pixels.
+ * @param canvasHeight Bitmap height in pixels.
+ * @returns Bitmap coordinates, or null when the point lies outside the element.
+ */
 export function clientToCanvasFloat(
   clientX: number,
   clientY: number,
@@ -75,9 +121,14 @@ export function clientToCanvasFloat(
 }
 
 /**
- * Bitmap coordinates for zoom anchoring: clamps the client point to the canvas rect, then maps
- * linearly (same as `clientToCanvasFloat` for points on the canvas). Use for wheel zoom when the
- * cursor may be in scroll padding outside the image.
+ * Maps a client point to bitmap coordinates, clamping to the canvas rect first.
+ * Use when the cursor may sit in scroll padding outside the image during wheel zoom.
+ * @param clientX Pointer x in viewport client coordinates.
+ * @param clientY Pointer y in viewport client coordinates.
+ * @param canvas Canvas or other element providing layout bounds.
+ * @param canvasWidth Bitmap width in pixels.
+ * @param canvasHeight Bitmap height in pixels.
+ * @returns Clamped bitmap coordinates, or null when layout size is invalid.
  */
 export function clientToCanvasFloatClamped(
   clientX: number,
@@ -93,7 +144,11 @@ export function clientToCanvasFloatClamped(
   return clientToCanvasFloat(cx, cy, canvas, canvasWidth, canvasHeight);
 }
 
-/** Clamp scroll offsets so the scrollable area does not exceed content bounds. */
+/**
+ * Clamps scroll offsets so content cannot scroll past its bounds.
+ * @param el Scrollable HTML element to correct in place.
+ * @returns Nothing.
+ */
 export function clampElementScroll(el: HTMLElement): void {
   const maxL = Math.max(0, el.scrollWidth - el.clientWidth);
   const maxT = Math.max(0, el.scrollHeight - el.clientHeight);
@@ -101,7 +156,11 @@ export function clampElementScroll(el: HTMLElement): void {
   el.scrollTop = Math.max(0, Math.min(maxT, el.scrollTop));
 }
 
-/** Content-box width/height inside padding (for contain + aspect bounds). */
+/**
+ * Returns the content-box width and height inside an element's padding.
+ * @param el Scroll container element with optional CSS padding.
+ * @returns Inner content dimensions used for contain and aspect calculations.
+ */
 export function scrollContainerContentSize(el: HTMLElement): Size {
   const cs = getComputedStyle(el);
   const pl = parseFloat(cs.paddingLeft) || 0;
@@ -115,8 +174,12 @@ export function scrollContainerContentSize(el: HTMLElement): Size {
 }
 
 /**
- * Width and height of the centered aspect "contain" rectangle inside the scroll content area
- * (same aspect as the bitmap; the largest such rect that fits in `innerW` × `innerH`).
+ * Computes the largest centered contain rectangle matching bitmap aspect inside inner bounds.
+ * @param innerW Scroll content inner width.
+ * @param innerH Scroll content inner height.
+ * @param bitmapW Snapshot bitmap width.
+ * @param bitmapH Snapshot bitmap height.
+ * @returns Contain rectangle width and height as `{ x, y }`, or zero when inputs are invalid.
  */
 export function eyedropperAspectContainRect(
   innerW: number,
@@ -133,9 +196,13 @@ export function eyedropperAspectContainRect(
 }
 
 /**
- * Keeps the canvas edges inside the centered "contain" rect (same aspect as the bitmap) in the
- * scroll container's **content** area. Does not force centering when the image is smaller than
- * that rect—only prevents each edge from crossing past the matching edge of R.
+ * Keeps canvas edges inside the centered contain rectangle within the scroll content area.
+ * Does not force centering when the image is smaller than that rectangle.
+ * @param scrollEl Scroll container element.
+ * @param canvas Canvas element whose screen position is constrained.
+ * @param bitmapW Snapshot bitmap width.
+ * @param bitmapH Snapshot bitmap height.
+ * @returns Nothing.
  */
 export function clampEyedropperCanvasInAspectBounds(
   scrollEl: HTMLElement,
@@ -180,8 +247,12 @@ export function clampEyedropperCanvasInAspectBounds(
 }
 
 /**
- * CSS scale (bitmap px → CSS px) so the full bitmap fits in the viewport (object-fit: contain),
- * preserving image aspect ratio and centering.
+ * Computes the CSS scale that fits the full bitmap inside the viewport (object-fit: contain).
+ * @param viewportW Available viewport width.
+ * @param viewportH Available viewport height.
+ * @param bitmapW Snapshot bitmap width.
+ * @param bitmapH Snapshot bitmap height.
+ * @returns Contain-fit scale, or zero when dimensions are invalid.
  */
 export function eyedropperZoomFitContain(
   viewportW: number,
@@ -194,8 +265,11 @@ export function eyedropperZoomFitContain(
 }
 
 /**
- * Clamp absolute zoom scale relative to the contain-fit scale `zFit`.
- * Minimum is exactly `zFit` (image fills the view; cannot zoom out further). Maximum is `zFit * EYEDROPPER_ZOOM_MAX`.
+ * Clamps absolute zoom relative to the contain-fit scale.
+ * Minimum is exactly `zFit`; maximum is `zFit * EYEDROPPER_ZOOM_MAX`.
+ * @param z Requested absolute zoom scale.
+ * @param zFit Contain-fit baseline scale for the current viewport.
+ * @returns Clamped zoom scale.
  */
 export function clampEyedropperZoomToFitRange(z: number, zFit: number): number {
   if (zFit <= 0) return z;
@@ -204,7 +278,15 @@ export function clampEyedropperZoomToFitRange(z: number, zFit: number): number {
   return Math.max(min, Math.min(max, z));
 }
 
-/** Rectangle in canvas pixel space for `getImageData` / `drawImage` (clamped at edges). */
+/**
+ * Returns a clamped source rectangle in canvas pixel space for loupe sampling.
+ * @param px Cursor x in bitmap pixels.
+ * @param py Cursor y in bitmap pixels.
+ * @param radius Pixel radius on each side of center.
+ * @param canvasWidth Canvas bitmap width.
+ * @param canvasHeight Canvas bitmap height.
+ * @returns Source rect `{ sx, sy, sw, sh }` for `drawImage` or `getImageData`.
+ */
 export function loupeSourceRect(
   px: number,
   py: number,
@@ -224,7 +306,15 @@ export function loupeSourceRect(
   return { sx, sy, sw, sh };
 }
 
-/** Place fixed loupe so it stays on-screen and away from the cursor. */
+/**
+ * Positions the fixed loupe near the cursor while keeping it on screen.
+ * @param clientX Pointer x in viewport client coordinates.
+ * @param clientY Pointer y in viewport client coordinates.
+ * @param loupeSize Loupe edge length in CSS pixels.
+ * @param viewportW App viewport width.
+ * @param viewportH App viewport height.
+ * @returns Screen `left` and `top` offsets for the loupe element.
+ */
 export function loupeFixedPosition(
   clientX: number,
   clientY: number,
@@ -244,7 +334,15 @@ export function loupeFixedPosition(
 }
 
 /**
- * Crosshair center in loupe canvas coordinates; `sw`/`sh` are the sampled region size.
+ * Maps the sampled cursor pixel to crosshair center coordinates in the loupe canvas.
+ * @param cursorPx Cursor x in bitmap pixels.
+ * @param cursorPy Cursor y in bitmap pixels.
+ * @param sx Source rect x from `loupeSourceRect`.
+ * @param sy Source rect y from `loupeSourceRect`.
+ * @param sw Sampled region width.
+ * @param sh Sampled region height.
+ * @param loupeSize Loupe canvas edge length.
+ * @returns Crosshair center `{ cx, cy }` in loupe canvas coordinates.
  */
 export function loupeCrosshairCenter(
   cursorPx: number,

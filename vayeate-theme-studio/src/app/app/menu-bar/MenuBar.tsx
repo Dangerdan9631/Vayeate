@@ -2,6 +2,9 @@ import type { MouseEvent } from 'react';
 import { UNDO_BASELINE_FRAME_ID } from '../../../model/undo-history';
 import { useMenuBarViewModel } from './use-menubar-viewmodel';
 
+/**
+ * Application menu bar with window controls, dropdown menus, and theme toggle.
+ */
 export function MenuBar() {
   const {
     fileOpen,

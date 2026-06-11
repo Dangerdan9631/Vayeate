@@ -449,6 +449,10 @@ function matchesSearch(key: string, searchQuery: string): boolean {
   return !q || key.toLowerCase().includes(q);
 }
 
+/**
+ * Renders color and contrast variable lists with search and assignment controls.
+ * @returns Variables card UI wired to its viewmodel.
+ */
 export function VariablesCard() {
   const {
     template,

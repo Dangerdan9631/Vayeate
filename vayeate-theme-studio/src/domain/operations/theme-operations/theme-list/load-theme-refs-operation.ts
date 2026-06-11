@@ -5,6 +5,10 @@ import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
+/**
+ * Loads theme refs from persistence into the store.
+ */
+
 @singleton()
 export class LoadThemeRefsOperation {
   constructor(
@@ -13,6 +17,11 @@ export class LoadThemeRefsOperation {
     private readonly themeGateway: ThemeGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load theme refs mutation.
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(): ContinuationHandler {
     this.themeUiStore.getStore().setPageLoadState('loading');

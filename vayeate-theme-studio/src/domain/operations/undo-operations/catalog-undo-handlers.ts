@@ -20,10 +20,20 @@ const LIFECYCLE_ACTION_TYPES = new Set<string>([
   CATALOG_REVERTED_TO_VERSION,
 ]);
 
+/**
+ * Input or state shape for catalog undo handler deps.
+ */
+
 export interface CatalogUndoHandlerDeps {
   applyCatalogUndoState: ApplyCatalogUndoStateOperation;
   applyCatalogLifecycleUndo: ApplyCatalogLifecycleUndoOperation;
 }
+
+/**
+ * Builds catalog undo diff handlers for snapshot and lifecycle action types.
+ * @param deps Operations used to apply catalog undo and lifecycle replay.
+ * @returns Handler list wired for the universal undo processor.
+ */
 
 export function buildCatalogUndoHandlers(deps: CatalogUndoHandlerDeps): UndoDiffHandler[] {
   const snapshotHandlers = CATALOG_UNDO_ACTION_TYPES

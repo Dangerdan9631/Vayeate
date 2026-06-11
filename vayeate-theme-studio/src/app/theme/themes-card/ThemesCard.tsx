@@ -1,6 +1,9 @@
 import type { ChangeEvent } from 'react';
 import { useThemesCardViewModel } from './use-themes-card-viewmodel';
 
+/**
+ * Renders the Themes Card UI for the theme editor.
+ */
 export function ThemesCard() {
   const {
     themeNames,

@@ -8,10 +8,23 @@ import type { CatalogReference } from '../../../model/schema/template-schemas';
 
 interface CatalogsStoreState {
   state: CatalogsState;
+  /**
+   * Replace the ref map from a gateway list while preserving loaded bodies for matching refs.
+   */
   updateCatalogRefs: (refs: CatalogReference[]) => void;
+  /**
+   * Merge loaded catalog bodies into the map, creating ref slots as needed.
+   */
   upsertCatalogs: (catalogs: Catalog[]) => void;
 }
 
+/**
+ * Resolves the loaded catalog body for the given selection, if any.
+ *
+ * @param catalogMap - Current catalogs map from store state.
+ * @param selectedRef - Selected name/version ref, or null when nothing is selected.
+ * @returns Loaded catalog entity, or null when missing or not yet loaded.
+ */
 export function getCurrentCatalog(catalogMap: CatalogMap, selectedRef: CatalogReference | null): Catalog | null {
   if (!selectedRef) return null;
   const catalog = catalogMap[selectedRef.name]?.[selectedRef.version];
@@ -19,6 +32,12 @@ export function getCurrentCatalog(catalogMap: CatalogMap, selectedRef: CatalogRe
   return catalog.catalog;
 }
 
+/**
+ * Builds a sorted flat list of every catalog ref present in the map.
+ *
+ * @param catalogMap - Current catalogs map from store state.
+ * @returns Name/version pairs in stable name-then-version order.
+ */
 export function getCurrentCatalogRefs(catalogMap: CatalogMap): CatalogReference[] {
   const refs: CatalogReference[] = [];
   for (const name of Object.keys(catalogMap).sort()) {
@@ -29,6 +48,12 @@ export function getCurrentCatalogRefs(catalogMap: CatalogMap): CatalogReference[
   return refs;
 }
 
+/**
+ * Collects every catalog whose body is loaded in the map.
+ *
+ * @param catalogMap - Current catalogs map from store state.
+ * @returns All loaded catalog entities (order follows map iteration).
+ */
 export function getAllLoadedCatalogs(catalogMap: CatalogMap): Catalog[] {
   const catalogs: Catalog[] = [];
   for (const name of Object.keys(catalogMap)) {
@@ -55,6 +80,9 @@ function ensureCatalogRef(catalogMap: CatalogMap, ref: CatalogReference): void {
   }
 }
 
+/**
+ * Zustand store for catalog refs and loaded catalog bodies.
+ */
 @singleton()
 export class CatalogsStore {
   private store = createStore<CatalogsStoreState>()(
@@ -88,10 +116,18 @@ export class CatalogsStore {
     }))
   );
 
+  /**
+   * React subscription API for viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current store snapshot including mutation methods.
+   *
+   * @returns Live catalogs state and upsert/update helpers for operations.
+   */
   getStore(): CatalogsStoreState {
     return this.store.getState();
   }

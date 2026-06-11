@@ -18,6 +18,9 @@ import { CommitHueReferenceEyeDropperColorController } from '../controllers/comm
 import { CommitAssignColorEyeDropperController } from '../controllers/commit-assign-color-eye-dropper-controller';
 import { EyedropperCommitTargetType } from '../../../../model/eyedropper';
 
+/**
+ * Routes Theme Palette Card actions to their controllers.
+ */
 @singleton()
 export class ThemePaletteCardHandler {
   private readonly log: Logger;
@@ -43,6 +46,11 @@ export class ThemePaletteCardHandler {
     this.log = loggerFactory.create(ThemePaletteCardHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: ThemePaletteCardActions): Promise<void> {
     switch (action.type) {
       case ThemePaletteCardActionType.ApplyToDarkCheckboxOnToggle:

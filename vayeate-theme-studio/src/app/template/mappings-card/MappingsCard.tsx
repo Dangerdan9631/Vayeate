@@ -153,6 +153,9 @@ const VIRTUAL_STAR_BASE: Mapping = {
 
 const DISPLAYED_TOKEN_TYPES: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 
+/**
+ * Callback props for semantic variant editing inside MappingsCard.
+ */
 export interface SemanticVariantProps {
   onAddSemanticVariant: (type: string, defaultGroupRef?: string | null) => void;
   onCommitSemanticTokenModifiers: (oldKey: string, modifiers: string[]) => void;
@@ -169,6 +172,9 @@ function tokenTypeLabel(tokenType: TokenType): string {
 
 function noopRemoveMapping(): void {}
 
+/**
+ * Groups one semantic base mapping with its variant rows for display.
+ */
 export interface SemanticBlock {
   base: Mapping;
   variants: Mapping[];
@@ -688,6 +694,10 @@ function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): st
   return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
 }
 
+/**
+ * Renders token mapping rows, filters, and semantic variant editors.
+ * @returns Mappings card UI wired to its viewmodel.
+ */
 export function MappingsCard() {
   const {
     template,

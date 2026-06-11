@@ -13,11 +13,18 @@ const PADDING = 8;
 const windowStore = container.resolve(WindowStore);
 const styledTooltipStore = container.resolve(StyledTooltipUiStore);
 
+/**
+ * Presentation state for the global styled tooltip overlay.
+ */
 export interface StyledTooltipViewModel {
   state: StyledTooltipState | null;
   tooltipRef: RefObject<HTMLDivElement | null>;
 }
 
+/**
+ * Wires document hover listeners, native title suppression, and viewport-aware reposition actions.
+ * @returns View model for the styled tooltip component.
+ */
 export function useStyledTooltipViewModel(): StyledTooltipViewModel {
   const dispatch = useAppDispatch();
   const viewport = useStore(windowStore.api, (state) => state.state.viewport);

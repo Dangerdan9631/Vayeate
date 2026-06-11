@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKEN_REMOVED } from '../../../../model/undo-action-types';
 
+/**
+ * Removes a token key from the selected manual catalog version.
+ */
 @singleton()
 export class RemoveTokenController {
   constructor(
@@ -30,6 +33,11 @@ export class RemoveTokenController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Deletes the token matching key and type from the catalog.
+   * @param key - Token key to remove.
+   * @param tokenType - Token type group containing the key.
+   */
   run(key: TokenKey, tokenType: TokenType): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

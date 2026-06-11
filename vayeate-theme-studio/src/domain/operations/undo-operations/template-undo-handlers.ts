@@ -15,10 +15,20 @@ const LIFECYCLE_ACTION_TYPES = new Set<string>([
   TEMPLATE_CREATED,
 ]);
 
+/**
+ * Input or state shape for template undo handler deps.
+ */
+
 export interface TemplateUndoHandlerDeps {
   applyTemplateUndoState: ApplyTemplateUndoStateOperation;
   applyTemplateLifecycleUndo: ApplyTemplateLifecycleUndoOperation;
 }
+
+/**
+ * Builds template undo diff handlers for snapshot and lifecycle action types.
+ * @param deps Operations used to apply template undo and lifecycle replay.
+ * @returns Handler list wired for the universal undo processor.
+ */
 
 export function buildTemplateUndoHandlers(deps: TemplateUndoHandlerDeps): UndoDiffHandler[] {
   const snapshotHandlers = TEMPLATE_UNDO_ACTION_TYPES

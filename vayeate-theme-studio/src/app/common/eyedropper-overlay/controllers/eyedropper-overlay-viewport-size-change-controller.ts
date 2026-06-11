@@ -5,6 +5,9 @@ import { UpdateEyedropperZoomOperation } from '../../../../domain/operations/eye
 import { EyedropperUiStore } from '../../../../domain/state/ui/eyedropper-ui-store';
 import { clampEyedropperZoomToFitRange, eyedropperZoomFitContain } from '../eyedropper-utils';
 
+/**
+ * Syncs eyedropper overlay viewport size and reclamps zoom after layout changes.
+ */
 @singleton()
 export class EyedropperOverlayViewportSizeChangeController {
   constructor(
@@ -13,6 +16,11 @@ export class EyedropperOverlayViewportSizeChangeController {
     private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 
+  /**
+   * Stores the scroll container content size and adjusts zoom to remain within fit bounds.
+   * @param size Measured content-box width and height of the overlay scroll area.
+   * @returns A promise that settles when viewport and zoom updates finish.
+   */
   async run(size: Size): Promise<void> {
     const previousState = this.eyedropperUiStore.getStore().state;
     const previousViewportSize = previousState.overlayViewportSize;

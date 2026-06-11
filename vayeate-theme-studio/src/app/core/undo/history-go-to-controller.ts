@@ -3,6 +3,9 @@ import { HistoryGoToOperation } from '../../../domain/operations/undo-operations
 import { CloseMenusOperation } from '../../../domain/operations/app-operations/close-menus-operation';
 import type { HistoryTransitionResult } from '../../../model/undo-history';
 
+/**
+ * Jumps the undo history to a specific frame and closes open menus after the transition.
+ */
 @singleton()
 export class HistoryGoToController {
   constructor(

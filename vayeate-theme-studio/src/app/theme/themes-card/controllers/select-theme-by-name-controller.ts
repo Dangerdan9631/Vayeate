@@ -9,6 +9,9 @@ import { LoadTemplateSnapshotOperation } from '../../../../domain/operations/tem
 import { findBestVersionRef } from '../../../../domain/utils/find-best-version-ref';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
+/**
+ * Orchestrates select theme by name work for the theme UI.
+ */
 @singleton()
 export class SelectThemeByNameController {
   constructor(
@@ -22,6 +25,11 @@ export class SelectThemeByNameController {
     private readonly setThemeLoadedTemplate: SetThemeLoadedTemplateOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param name Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(name: string): Promise<void> {
     const best = findBestVersionRef(this.getThemeRefs.execute(), name);
     if (!best) return;

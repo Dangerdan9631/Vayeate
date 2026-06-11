@@ -1,6 +1,9 @@
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useCreateThemeDialogViewModel } from './use-create-theme-dialog-viewmodel';
 
+/**
+ * Renders the Create Theme Dialog UI for the theme editor.
+ */
 export function CreateThemeDialog() {
   const {
     name,

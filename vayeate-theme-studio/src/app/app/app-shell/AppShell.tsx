@@ -6,6 +6,9 @@ import { Ribbon } from '../ribbon/Ribbon';
 import { StatusBar } from '../status-bar/StatusBar';
 import { StyledTooltip } from '../../common/styled-tooltip/StyledTooltip';
 
+/**
+ * Main application layout composing chrome, global overlays, and tab content.
+ */
 export function AppShell() {
   const { activeTab } = useAppShellViewModel();
 

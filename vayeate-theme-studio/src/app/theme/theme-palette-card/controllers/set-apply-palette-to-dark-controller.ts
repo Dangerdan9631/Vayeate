@@ -8,6 +8,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_PALETTE_APPLY_TO_DARK_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates set apply palette to dark work for the theme UI.
+ */
 @singleton()
 export class SetApplyPaletteToDarkController {
   constructor(
@@ -18,6 +21,11 @@ export class SetApplyPaletteToDarkController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param checked Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(checked: boolean): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme) return;

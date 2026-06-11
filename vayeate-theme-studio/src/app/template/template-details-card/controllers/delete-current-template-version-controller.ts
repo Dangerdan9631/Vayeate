@@ -14,6 +14,9 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/un
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_VERSION_DELETED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK by deleting the selected version.
+ */
 @singleton()
 export class DeleteCurrentTemplateVersionController {
   constructor(
@@ -30,6 +33,10 @@ export class DeleteCurrentTemplateVersionController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Deletes the currently selected template version and updates selection.
+   * @returns Resolves when deletion and follow-up selection finish.
+   */
   async run(): Promise<void> {
     const selectedRef = this.templateUiStore.getStore().state.selectedRef;
     if (!selectedRef) return;

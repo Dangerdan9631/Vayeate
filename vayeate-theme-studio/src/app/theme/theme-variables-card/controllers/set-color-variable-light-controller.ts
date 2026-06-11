@@ -7,6 +7,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_COLOR_VARIABLE_LIGHT_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates set color variable light work for the theme UI.
+ */
 @singleton()
 export class SetColorVariableLightController {
   constructor(
@@ -16,6 +19,12 @@ export class SetColorVariableLightController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param ref Input for this call.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(ref: ColorVariableKey | undefined, value: string): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme || !ref) return;

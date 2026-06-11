@@ -16,6 +16,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_TOKEN_TYPE_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Changes the token type assigned to an existing remote source row.
+ */
 @singleton()
 export class UpdateSourceTokenTypeController {
   constructor(
@@ -32,6 +35,11 @@ export class UpdateSourceTokenTypeController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Commits a new token type for the source at the given index.
+   * @param sourceIndex - Zero-based index in the catalog sources array.
+   * @param value - Selected token type for the source.
+   */
   run(sourceIndex: number, value: TokenType): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

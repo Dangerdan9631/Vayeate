@@ -13,6 +13,9 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/un
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SYNCED } from '../../../../model/undo-action-types';
 
+/**
+ * Pulls token data from remote sources into the selected catalog version.
+ */
 @singleton()
 export class SyncCatalogController {
   constructor(
@@ -28,6 +31,10 @@ export class SyncCatalogController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Syncs remote catalog sources when validation passes.
+   * @returns Promise that settles when sync and undo recording complete.
+   */
   async run(): Promise<void> {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

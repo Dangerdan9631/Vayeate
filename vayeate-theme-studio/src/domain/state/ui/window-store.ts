@@ -13,6 +13,9 @@ interface WindowStoreState {
     setViewportSize: (size: Size) => void;
 }
 
+/**
+ * Zustand store for mirrored Electron window geometry and lifecycle state.
+ */
 @singleton()
 export class WindowStore {
     private store = createStore<WindowStoreState>()(
@@ -38,10 +41,17 @@ export class WindowStore {
         }))
     );
 
+    /**
+     * Zustand store API for React subscriptions via viewmodels.
+     */
     get api() {
         return this.store;
     }
 
+    /**
+     * Returns the current snapshot and mutation methods for domain operations.
+     * @returns Live window store state and setters.
+     */
     getStore(): WindowStoreState {
         return this.store.getState();
     }

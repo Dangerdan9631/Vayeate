@@ -1,6 +1,9 @@
 import { memo, useState, type ChangeEvent, type FocusEvent, type KeyboardEvent } from 'react';
 import type { ColorAssignment } from '../../../model/schema/theme-schemas';
 
+/**
+ * Props consumed by the Color Assignment Row component.
+ */
 export interface ColorAssignmentRowProps {
   assignment: ColorAssignment;
   isOrphan: boolean;
@@ -210,4 +213,7 @@ function ColorAssignmentRowComponent({
   );
 }
 
+/**
+ * Memoized Color Assignment Row component for the theme UI.
+ */
 export const ColorAssignmentRow = memo(ColorAssignmentRowComponent);

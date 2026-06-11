@@ -2,6 +2,9 @@ import { memo, type FocusEvent, type MouseEvent } from 'react';
 import type { TokenType } from '../../../model/schema/primitives';
 import type { Token } from '../../../model/schema/catalog';
 
+/**
+ * Props for a single editable or read-only token key row.
+ */
 export interface TokenRowProps {
   token: Token;
   isManual: boolean;
@@ -10,6 +13,9 @@ export interface TokenRowProps {
   tokenType: TokenType;
 }
 
+/**
+ * Renders one token key row with optional edit and remove controls.
+ */
 function TokenRowComponent({
   token,
   isManual,
@@ -53,4 +59,7 @@ function TokenRowComponent({
   );
 }
 
+/**
+ * Memoized row component for one theme or textmate token key.
+ */
 export const TokenRow = memo(TokenRowComponent);

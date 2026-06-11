@@ -3,10 +3,23 @@ import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
-/** Live palette preview for assign-color (checked refs only); does not persist. */
+/**
+ * Live palette preview for assign-color (checked refs only); does not persist.
+ */
 @singleton()
 export class SetAssignColorPreviewOperation {
   constructor(private readonly themeUiStore: ThemeUiStore) {}
+
+  /**
+   * Runs the set assign color preview mutation.
+   * @param args Args ({
+      normalizedHex: string;
+      theme: Theme;
+      checkedColorRefs: ReadonlySet<string>;
+      hueAdjustment: number;
+    }).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(args: {
     normalizedHex: string;

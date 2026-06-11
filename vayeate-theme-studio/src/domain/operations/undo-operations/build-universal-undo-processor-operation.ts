@@ -18,7 +18,9 @@ import { buildCatalogUndoHandlers } from './catalog-undo-handlers';
 import { buildTemplateUndoHandlers } from './template-undo-handlers';
 import { buildThemeUndoHandlers } from './theme-undo-handlers';
 
-/** Builds an undo processor with every catalog, template, and theme handler registered. */
+/**
+ * Builds an undo processor with every catalog, template, and theme handler registered.
+ */
 @singleton()
 export class BuildUniversalUndoProcessorOperation {
   constructor(
@@ -36,6 +38,11 @@ export class BuildUniversalUndoProcessorOperation {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly setLoadedTemplate: SetThemeLoadedTemplateOperation,
   ) {}
+
+  /**
+   * Runs the build universal undo processor mutation.
+   * @returns UndoProcessor result.
+   */
 
   execute(): UndoProcessor {
     return createUndoProcessor([

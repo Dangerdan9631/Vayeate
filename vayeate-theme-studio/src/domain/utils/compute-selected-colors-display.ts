@@ -2,6 +2,16 @@ import type { ColorAssignment, Theme } from '../../model/schema/theme-schemas';
 import type { SelectedColorsDisplay } from '../../model/theme-pane-state';
 import { normalizeThemeHex } from './normalize-theme-hex';
 
+/**
+ * Summarizes checked palette colors for the theme pane selection indicator.
+ *
+ * @param theme - Loaded theme or null when none is selected.
+ * @param checkedColorRefs - Color variable keys currently checked.
+ * @param displayColorAssignments - Hue-adjusted assignments used for display.
+ * @param applyHueToDark - Whether dark variant hexes contribute to the summary.
+ * @param applyHueToLight - Whether light variant hexes contribute to the summary.
+ * @returns `none`, `single` with one hex, or `mixed` when effective colors differ.
+ */
 export function computeSelectedColorsDisplay(
   theme: Theme | null,
   checkedColorRefs: ReadonlySet<string>,

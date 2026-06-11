@@ -1,6 +1,9 @@
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { useCatalogDetailsCardViewModel } from './use-catalog-details-card-viewmodel';
 
+/**
+ * Metadata, remote sources, and version actions for the selected catalog.
+ */
 export function CatalogDetailsCard() {
   const {
     catalog,

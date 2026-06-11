@@ -23,7 +23,9 @@ import { useThemePaletteCardViewModel } from './use-theme-palette-card-viewmodel
 import { TriStateCheckbox, type TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
 import { ThemePaletteClusterColumn } from './ThemePaletteClusterColumn';
 
-/** Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles. */
+/**
+ * Build CSS linear-gradient for hue slider track so center (slider 0) matches ref hex hue; full hue cycle with that hue at center and at edges. Uses hex colors to avoid hsl() parsing issues in injected styles.
+ */
 function hueSliderGradientFromRefHex(refHex: string): string {
   const refHue = hexToHue(refHex);
   const stops: string[] = [];
@@ -45,7 +47,9 @@ function normalizeHex(hex: string): string {
   return s.startsWith('#') ? s : `#${s}`;
 }
 
-/** If input looks like a valid hex (3 or 6 digits), return normalized hex for gradient; else null. */
+/**
+ * If input looks like a valid hex (3 or 6 digits), return normalized hex for gradient; else null.
+ */
 function validRefHexForGradient(input: string): string | null {
   const s = input.trim().toLowerCase().replace(/^#/, '');
   if (!/^[0-9a-f]+$/.test(s) || (s.length !== 3 && s.length !== 6)) return null;
@@ -53,7 +57,9 @@ function validRefHexForGradient(input: string): string | null {
   return `#${expanded}`;
 }
 
-/** Map normalized hex -> color refs that use that hex in their assignment. */
+/**
+ * Map normalized hex -> color refs that use that hex in their assignment.
+ */
 function buildHexToColorRefs(assignments: readonly ColorAssignment[]): Map<string, string[]> {
   const map = new Map<string, string[]>();
   for (const a of assignments) {
@@ -82,6 +88,9 @@ function swatchState(refs: string[], checkedColorRefs: ReadonlySet<string>): Tri
   return 'some';
 }
 
+/**
+ * Renders the Theme Palette Card UI for the theme editor.
+ */
 export function ThemePaletteCard() {
   const vm = useThemePaletteCardViewModel();
   const {

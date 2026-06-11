@@ -6,12 +6,22 @@ import { useStore } from 'zustand';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { AppShellActionType } from './actions/app-shell-action-type';
 
+/**
+ * Resolved UI store used for active-tab reads in the shell viewmodel.
+ */
 const uiStore = container.resolve(UiStore);
 
+/**
+ * State and selectors exposed by the app shell viewmodel.
+ */
 export interface AppShellViewModel {
   activeTab: TabId;
 }
 
+/**
+ * Subscribes to shell UI state and dispatches page load/unload lifecycle actions.
+ * @returns Active tab id and shell selectors for layout components.
+ */
 export function useAppShellViewModel(): AppShellViewModel {
   const dispatch = useAppDispatch();
   const activeTab = useStore(uiStore.api, (state) => state.state.activeTabId);

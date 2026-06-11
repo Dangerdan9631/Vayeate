@@ -4,10 +4,16 @@ import { CatalogsPage } from '../../catalog/catalog-page/CatalogsPage';
 import { TemplatesPage } from '../../template/template-page/TemplatesPage';
 import { ThemesPage } from '../../theme/theme-page/ThemesPage';
 
+/**
+ * Props for the main tab content region.
+ */
 interface ContentAreaProps {
   activeTab: TabId;
 }
 
+/**
+ * Renders primary tab pages and keeps visited tabs mounted for faster reactivation.
+ */
 export function ContentArea({ activeTab }: ContentAreaProps) {
 
   const [templatesOpened, setTemplatesOpened] = useState(false);

@@ -5,6 +5,9 @@ import { SetCatalogBulkAddTextController } from "../controllers/set-catalog-bulk
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { CatalogBulkAddDialogActions, CatalogBulkAddDialogActionType } from "./catalog-bulk-add-dialog-action-type";
 
+/**
+ * Routes bulk-add dialog actions to text, close, and import controllers.
+ */
 @singleton()
 export class CatalogBulkAddDialogHandler {
   private readonly log: Logger;
@@ -18,6 +21,10 @@ export class CatalogBulkAddDialogHandler {
     this.log = loggerFactory.create(CatalogBulkAddDialogHandler.name);
   }
 
+  /**
+   * Dispatches a bulk-add dialog action to the matching controller.
+   * @param action - Bulk-add dialog action from the queue.
+   */
   handle(action: CatalogBulkAddDialogActions): void {
     switch (action.type) {
       case CatalogBulkAddDialogActionType.TextOnChange:

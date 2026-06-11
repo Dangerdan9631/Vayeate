@@ -3,7 +3,9 @@ import type { Token } from '../../model/schema/catalog';
 import type { CatalogReference, Mapping } from '../../model/schema/template-schemas';
 import type { MergeMappingsResult } from '../../model/schema/theme-schemas';
 
-/** Pre-loaded catalog data for mergeMappingsFromCatalogData. */
+/**
+ * Pre-loaded catalog snapshot passed to {@link mergeMappingsFromCatalogData}.
+ */
 export interface CatalogDataItem {
   ref: CatalogReference;
   tokens: readonly Token[];
@@ -13,8 +15,11 @@ export interface CatalogDataItem {
 }
 
 /**
- * Merge template mappings with pre-loaded catalog tokens.
- * Used by template controller after loading catalogs via catalogService.
+ * Merges template mappings with pre-loaded catalog tokens and semantic metadata.
+ *
+ * @param catalogData - Loaded catalog snapshots referenced by the template.
+ * @param existingMappings - Current template mappings to preserve and extend.
+ * @returns Merged mappings, groups to ensure, and aggregated semantic token lists.
  */
 export function mergeMappingsFromCatalogData(
   catalogData: readonly CatalogDataItem[],

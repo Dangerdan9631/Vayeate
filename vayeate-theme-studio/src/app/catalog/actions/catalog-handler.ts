@@ -14,6 +14,9 @@ import { CatalogPageHandler } from '../catalog-page/actions/catalog-page-handler
 import { isCatalogPageAction } from '../catalog-page/actions/catalog-page-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
+/**
+ * Routes catalog-domain actions to the matching feature handler.
+ */
 @singleton()
 export class CatalogActionHandler {
   private readonly log: Logger;
@@ -30,6 +33,11 @@ export class CatalogActionHandler {
     this.log = loggerFactory.create('CatalogActionHandler');
   }
 
+  /**
+   * Dispatches a catalog action to the appropriate feature handler.
+   * @param action - Catalog action from the action queue.
+   * @returns Promise that settles when feature handling completes.
+   */
   async handle(action: CatalogActions): Promise<void> {
     if (isCatalogPageAction(action)) {
       return this.catalogPageHandler.handle(action);

@@ -16,6 +16,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_TYPE_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Changes the fetch type of an existing remote source row.
+ */
 @singleton()
 export class UpdateSourceTypeController {
   constructor(
@@ -32,6 +35,11 @@ export class UpdateSourceTypeController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Commits a new source type for the source at the given index.
+   * @param sourceIndex - Zero-based index in the catalog sources array.
+   * @param value - Selected source fetch type.
+   */
   run(sourceIndex: number, value: SourceType): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

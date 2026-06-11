@@ -16,6 +16,9 @@ import { ThemeVariablesCardHandler } from '../theme-variables-card/actions/theme
 import { isThemeVariablesCardAction } from '../theme-variables-card/actions/theme-variables-card-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
+/**
+ * Routes theme UI actions to their controllers.
+ */
 @singleton()
 export class ThemeActionHandler {
   private readonly log: Logger;
@@ -33,6 +36,11 @@ export class ThemeActionHandler {
     this.log = loggerFactory.create(ThemeActionHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: ThemeActions): Promise<void> {
     if (isCreateThemeDialogAction(action)) {
       return this.createThemeDialogHandler.handle(action);

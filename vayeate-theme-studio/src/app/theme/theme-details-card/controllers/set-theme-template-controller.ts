@@ -11,6 +11,9 @@ import { mergeAssignmentsFromTemplate } from '../../../../domain/utils/theme-tem
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_LOADED_TEMPLATE_SET, THEME_TEMPLATE_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates set theme template work for the theme UI.
+ */
 @singleton()
 export class SetThemeTemplateController {
   constructor(
@@ -23,6 +26,12 @@ export class SetThemeTemplateController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param name Input for this call.
+ * @param version Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(name: TemplateName, version: Version): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme) return;

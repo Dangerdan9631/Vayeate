@@ -7,18 +7,27 @@ import { adjustColorToMeetContrast } from './color-adjust-contrast';
 import type { Mapping, Template } from '../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
 
+/**
+ * VS Code `tokenColors` entry grouping scopes that share one foreground color.
+ */
 export interface TokenColorRule {
   name: string;
   scope: string[];
   settings: { foreground: string };
 }
 
+/**
+ * Semantic token color value or style override in generated theme JSON.
+ */
 export interface SemanticTokenValue {
   foreground?: string;
   fontStyle?: string;
   strikethrough?: boolean;
 }
 
+/**
+ * VS Code color theme object produced by {@link generateTheme}.
+ */
 export interface GeneratedTheme {
   name: string;
   type: 'dark' | 'light';
@@ -59,8 +68,13 @@ function contrastValueForRef(
 }
 
 /**
- * Resolve the hex color for a single mapping in a given mode.
- * Applies contrast adjustment when the mapping has a contrast variable.
+ * Resolves the hex color for one template mapping in the given mode.
+ *
+ * @param theme - Theme supplying color and contrast assignments.
+ * @param template - Template supplying contrast variable definitions.
+ * @param mapping - Single mapping whose color and contrast refs are resolved.
+ * @param mode - `dark` or `light` variant to resolve.
+ * @returns Resolved hex color or null when the mapping has no assigned color.
  */
 export function resolveColor(
   theme: Theme,
@@ -108,7 +122,12 @@ function themeDisplayName(themeName: string, mode: Mode): string {
 }
 
 /**
- * Generate a single theme (dark or light) from theme + template.
+ * Generates one VS Code theme JSON object (dark or light) from theme and template.
+ *
+ * @param theme - Theme with color and contrast assignments.
+ * @param template - Template with mappings and variable definitions.
+ * @param mode - `dark` or `light` theme type to build.
+ * @returns Complete {@link GeneratedTheme} ready for export serialization.
  */
 export function generateTheme(theme: Theme, template: Template, mode: Mode): GeneratedTheme {
   const colors: Record<string, string> = {};
@@ -169,7 +188,11 @@ export function generateTheme(theme: Theme, template: Template, mode: Mode): Gen
 }
 
 /**
- * Generate both dark and light theme objects.
+ * Generates paired dark and light VS Code theme objects from one theme and template.
+ *
+ * @param theme - Theme with color and contrast assignments.
+ * @param template - Template with mappings and variable definitions.
+ * @returns Object with `dark` and `light` {@link GeneratedTheme} instances.
  */
 export function generateThemePair(
   theme: Theme,

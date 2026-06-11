@@ -8,6 +8,9 @@ import { ThemePageActionType } from './actions/theme-page-action-type';
 
 const themeUiStore = container.resolve(ThemeUiStore);
 
+/**
+ * Read model returned by useThemeViewModel.
+ */
 export interface ThemeViewModel {
   pageLoadState: LoadState;
   themeLoadState: LoadState;
@@ -16,6 +19,10 @@ export interface ThemeViewModel {
   isThemeLoaded: boolean;
 }
 
+/**
+ * Exposes Theme Page state and dispatches user or lifecycle actions.
+ * @returns View-model state and action callbacks for the component.
+ */
 export function useThemeViewModel(): ThemeViewModel {
   const dispatch = useAppDispatch();
   const pageLoadState = useStore(themeUiStore.api, (state) => state.state.pageLoadState);

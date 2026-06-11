@@ -11,12 +11,18 @@ import type { Template } from '../../../model/schema/template-schemas';
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+/**
+ * Presentation model for one group row in the groups card.
+ */
 export interface GroupRowViewModel {
   name: string;
   isInUse: boolean;
   removeButtonTitle: string;
 }
 
+/**
+ * Read model and action callbacks for the template groups card.
+ */
 export interface GroupsCardViewModel {
   template: Template | null;
   groupRows: GroupRowViewModel[];
@@ -28,6 +34,10 @@ export interface GroupsCardViewModel {
   onAddGroupClick: () => void;
 }
 
+/**
+ * Subscribes to template groups and exposes add/remove callbacks.
+ * @returns Groups card state and dispatch-backed handlers.
+ */
 export function useGroupsCardViewModel(): GroupsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);

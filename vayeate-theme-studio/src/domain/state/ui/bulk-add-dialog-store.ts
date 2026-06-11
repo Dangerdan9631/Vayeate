@@ -18,6 +18,9 @@ interface BulkAddDialogStoreState {
   closeBulkAddDialog: (result: DialogResultOkCancel) => void;
 }
 
+/**
+ * Zustand store for bulk-add tokens dialog visibility, draft text, and parse metrics.
+ */
 @singleton()
 export class BulkAddDialogStore {
   private store = createStore<BulkAddDialogStoreState>()(
@@ -59,10 +62,17 @@ export class BulkAddDialogStore {
     }))
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live bulk-add dialog store state and setters.
+   */
   getStore(): BulkAddDialogStoreState {
     return this.store.getState();
   }

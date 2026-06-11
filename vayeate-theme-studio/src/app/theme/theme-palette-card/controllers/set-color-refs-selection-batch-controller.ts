@@ -2,7 +2,12 @@ import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
-/** Applies checked state to many color variable refs in one state update (single user gesture). */
+/**
+ * Applies checked state to many color variable refs in one state update (single user gesture).
+ */
+/**
+ * Orchestrates set color refs selection batch work for the theme UI.
+ */
 @singleton()
 export class SetColorRefsSelectionBatchController {
   constructor(
@@ -10,6 +15,12 @@ export class SetColorRefsSelectionBatchController {
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param refs Input for this call.
+ * @param checked Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   run(refs: readonly string[], checked: boolean): void {
     const state = this.themeUiStore.getStore().state;
     if (!state.theme || refs.length === 0) return;

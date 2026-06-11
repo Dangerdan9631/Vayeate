@@ -13,6 +13,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_VARIABLE_GROUP_REF_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_VARIABLES_GROUP_LIST_ON_COMMIT by assigning a variable group.
+ */
 @singleton()
 export class UpdateVariableGroupRefController {
   constructor(
@@ -28,6 +31,12 @@ export class UpdateVariableGroupRefController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Updates the group ref for a template variable and records undo.
+   * @param variableKey Variable whose group list committed.
+   * @param groupRef Group ref chosen in the list, or null to clear.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(variableKey: string, groupRef: string | null): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;

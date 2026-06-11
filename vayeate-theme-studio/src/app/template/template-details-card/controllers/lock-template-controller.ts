@@ -12,6 +12,9 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/un
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_LOCKED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_DETAILS_LOCK_BUTTON_ON_CLICK by locking the selected template.
+ */
 @singleton()
 export class LockTemplateController {
   constructor(
@@ -27,6 +30,10 @@ export class LockTemplateController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Locks the currently selected template version to prevent further edits.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template || !this.validateCanLockTemplate.test(template)) return;

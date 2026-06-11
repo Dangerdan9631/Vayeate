@@ -13,6 +13,10 @@ import {
 } from './eyedropper-utils';
 import type { Point } from '../../../model/point';
 
+/**
+ * Renders the full-screen eyedropper overlay with zoom, scroll bounds, and color preview.
+ * @returns The overlay UI when open, or null when closed.
+ */
 export function EyedropperOverlay() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);

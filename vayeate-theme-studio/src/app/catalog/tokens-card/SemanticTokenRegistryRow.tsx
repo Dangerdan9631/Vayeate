@@ -1,6 +1,9 @@
 import { memo, type FocusEvent } from 'react';
 import type { SemanticTokenRegistryListKind } from '../../../model/schema/primitives';
 
+/**
+ * Props for one semantic registry list entry (type, modifier, or language).
+ */
 export interface SemanticTokenRegistryRowProps {
   label: string;
   value: string;
@@ -16,6 +19,9 @@ export interface SemanticTokenRegistryRowProps {
   onSemanticRegistryRemove?: (registryList: SemanticTokenRegistryListKind, index: number) => void;
 }
 
+/**
+ * Renders one semantic registry entry with optional edit and remove controls.
+ */
 function SemanticTokenRegistryRowComponent({
   label,
   value,
@@ -62,4 +68,7 @@ function SemanticTokenRegistryRowComponent({
   );
 }
 
+/**
+ * Memoized row for editing or displaying a semantic token registry value.
+ */
 export const SemanticTokenRegistryRow = memo(SemanticTokenRegistryRowComponent);

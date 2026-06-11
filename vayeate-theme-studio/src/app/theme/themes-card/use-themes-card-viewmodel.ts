@@ -14,6 +14,9 @@ const themesStore = container.resolve(ThemesStore);
 const themeUiStore = container.resolve(ThemeUiStore);
 const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
 
+/**
+ * Read model returned by useThemesCardViewModel.
+ */
 export interface ThemesCardViewModel {
   themeNames: string[];
   selectedName: string | null;
@@ -25,6 +28,10 @@ export interface ThemesCardViewModel {
   onCreateClick: () => void;
 }
 
+/**
+ * Exposes Themes Card state and dispatches user or lifecycle actions.
+ * @returns View-model state and action callbacks for the component.
+ */
 export function useThemesCardViewModel(): ThemesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);

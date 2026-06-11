@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SEMANTIC_REGISTRY_ITEM_REMOVED } from '../../../../model/undo-action-types';
 
+/**
+ * Removes one entry from a semantic token registry list on the selected catalog.
+ */
 @singleton()
 export class RemoveSemanticTokenListItemController {
   constructor(
@@ -30,6 +33,11 @@ export class RemoveSemanticTokenListItemController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Deletes the registry entry at the given index.
+   * @param kind - Registry list being edited (types, modifiers, or languages).
+   * @param index - Zero-based index within that list.
+   */
   run(kind: SemanticTokenRegistryListKind, index: number): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

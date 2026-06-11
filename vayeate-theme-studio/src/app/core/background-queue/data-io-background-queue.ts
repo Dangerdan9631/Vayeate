@@ -8,6 +8,9 @@ import {
   KeyedDataIoQueue,
 } from './keyed-data-io-queue';
 
+/**
+ * `data_io` background queue with keyed read/write lanes and a global serial fallback.
+ */
 @singleton()
 export class DataIoBackgroundQueue extends KeyedDataIoQueue {
   constructor(

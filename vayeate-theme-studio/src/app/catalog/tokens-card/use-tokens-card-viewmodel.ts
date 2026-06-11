@@ -13,17 +13,29 @@ import { useStore } from 'zustand';
 const catalogsStore = container.resolve(CatalogsStore);
 const catalogUiStore = container.resolve(CatalogUiStore);
 
+/**
+ * Token types shown as collapsible sections in `TokensCard` (excludes semantic token list).
+ */
 export const CATALOG_TOKEN_LIST_SECTIONS: TokenType[] = tokenTypeSchema.options.filter((tokenType) => tokenType !== 'semantic token');
 
+/**
+ * Returns whether a token key matches the trimmed, case-insensitive search query.
+ */
 function matchesSearch(key: string, searchQuery: string): boolean {
   const q = searchQuery.trim().toLowerCase();
   return !q || key.toLowerCase().includes(q);
 }
 
+/**
+ * Returns whether the string satisfies the token key schema.
+ */
 function isValidTokenKey(value: string): boolean {
   return tokenKeySchema.safeParse(value).success;
 }
 
+/**
+ * Returns whether the selector parses and would change the catalog semantic registry.
+ */
 function canAddSemanticSelector(selector: string, catalog: Catalog | null): boolean {
   if (!catalog) return false;
   const trimmed = selector.trim();
@@ -36,6 +48,9 @@ function canAddSemanticSelector(selector: string, catalog: Catalog | null): bool
   return mergeSemanticSelectorInto(trimmed, current) !== null;
 }
 
+/**
+ * Filtered token groups, edit flags, and callbacks for the tokens card.
+ */
 export interface TokensCardViewModel {
   catalog: Catalog | null;
   tokensSearchText: string;
@@ -59,6 +74,10 @@ export interface TokensCardViewModel {
   onSemanticRegistryRemoveClick: (registryList: SemanticTokenRegistryListKind, index: number) => void;
 }
 
+/**
+ * Derives token editability and search results for the selected catalog.
+ * @returns View model for `TokensCard`.
+ */
 export function useTokensCardViewModel(): TokensCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);

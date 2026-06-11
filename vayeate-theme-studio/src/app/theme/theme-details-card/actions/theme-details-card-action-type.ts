@@ -2,6 +2,9 @@ import type { TemplateName, ThemeName, TokenKey, Version } from '../../../../mod
 import type { ThemePreviewTokenRefField } from '../../../../model/schema/theme-schemas';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
+/**
+ * Action type literals dispatched from the Theme Details Card.
+ */
 export enum ThemeDetailsCardActionType {
   TemplateListOnCommit = 'THEME_DETAILS_TEMPLATE_LIST_ON_COMMIT',
   TemplateVersionListOnCommit = 'THEME_DETAILS_TEMPLATE_VERSION_LIST_ON_COMMIT',
@@ -11,6 +14,9 @@ export enum ThemeDetailsCardActionType {
   PreviewTokenRefListOnCommit = 'THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT',
 }
 
+/**
+ * Union of actions handled by the Theme Details Card.
+ */
 export type ThemeDetailsCardActions =
   | { type: ThemeDetailsCardActionType.TemplateListOnCommit; name: TemplateName; version: Version }
   | { type: ThemeDetailsCardActionType.TemplateVersionListOnCommit; name: TemplateName; version: Version }
@@ -26,6 +32,10 @@ export type ThemeDetailsCardActions =
 
 const themeDetailsCardTypes = new Set<string>(Object.values(ThemeDetailsCardActionType));
 
+/**
+ * Returns whether the app action belongs to the Theme Details Card.
+ * @param a Input for this call.
+ */
 export function isThemeDetailsCardAction(a: AppAction): a is ThemeDetailsCardActions {
   return themeDetailsCardTypes.has(a.type);
 }

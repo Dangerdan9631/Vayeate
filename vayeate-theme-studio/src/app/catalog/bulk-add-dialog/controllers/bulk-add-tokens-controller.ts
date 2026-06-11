@@ -18,6 +18,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKENS_BULK_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Parses pasted theme JSON and appends deduplicated tokens to the selected catalog.
+ */
 @singleton()
 export class BulkAddTokensController {
   constructor(
@@ -36,6 +39,9 @@ export class BulkAddTokensController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Imports new tokens from the dialog text and closes the bulk-add dialog.
+   */
   run(): void {
     const store = this.catalogsStore.getStore();
     const bulkAddDialogStore = this.bulkAddDialogStore.getStore();

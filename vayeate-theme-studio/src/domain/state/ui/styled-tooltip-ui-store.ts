@@ -11,6 +11,9 @@ interface StyledTooltipUiStoreState {
   repositionTooltip: (position: Pick<StyledTooltipState, 'x' | 'y'>) => void;
 }
 
+/**
+ * Zustand store for global styled tooltip visibility and position.
+ */
 @singleton()
 export class StyledTooltipUiStore {
   private store = createStore<StyledTooltipUiStoreState>()(
@@ -33,10 +36,17 @@ export class StyledTooltipUiStore {
     })),
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live styled tooltip store state and setters.
+   */
   getStore(): StyledTooltipUiStoreState {
     return this.store.getState();
   }

@@ -3,6 +3,9 @@ import { UpdateEyedropperZoomOperation } from '../../../../domain/operations/eye
 import { EyedropperUiStore } from '../../../../domain/state/ui/eyedropper-ui-store';
 import { clampEyedropperZoomToFitRange, EYEDROPPER_ZOOM_STEP, eyedropperZoomFitContain } from '../eyedropper-utils';
 
+/**
+ * Applies wheel-driven zoom changes for the eyedropper overlay canvas.
+ */
 @singleton()
 export class EyedropperOverlayWheelScrollController {
   constructor(
@@ -10,6 +13,11 @@ export class EyedropperOverlayWheelScrollController {
     private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 
+  /**
+   * Steps zoom in or out relative to the current contain-fit scale and clamps to allowed range.
+   * @param deltaY Wheel delta from the overlay scroll event.
+   * @returns A promise that settles when zoom state is updated, if a change applies.
+   */
   async run(deltaY: number): Promise<void> {
     const state = this.eyedropperUiStore.getStore().state;
     const currentZoom = state.zoom;

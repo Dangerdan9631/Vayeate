@@ -7,6 +7,9 @@ import { useStore } from 'zustand';
 
 const bulkAddDialogStore = container.resolve(BulkAddDialogStore);
 
+/**
+ * Parsed token preview and callbacks for the bulk-add tokens dialog.
+ */
 export interface BulkAddDialogViewModel {
   text: string;
   errorMessage: string | null;
@@ -18,6 +21,10 @@ export interface BulkAddDialogViewModel {
   onCancelClick: () => void;
 }
 
+/**
+ * Subscribes to bulk-add dialog state and dispatches text and confirm actions.
+ * @returns View model for `BulkAddDialog`.
+ */
 export function useBulkAddDialogViewModel(): BulkAddDialogViewModel {
   const dispatch = useAppDispatch();
   const text = useStore(bulkAddDialogStore.api, (state) => state.state?.text ?? '');

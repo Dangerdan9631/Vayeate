@@ -3,6 +3,9 @@ import { clusterColors, type ClusterResult } from '../../domain/utils/color-clus
 import type { PaletteClusterGroupInput } from '../../domain/utils/palette-cluster-inputs';
 import type { ClusterWorkerRequest, ClusterWorkerResponse } from './clustering-worker';
 
+/**
+ * Runs palette color clustering off the main thread with request coalescing.
+ */
 @singleton()
 export class ClusteringService {
   private worker: Worker | null = null;
@@ -10,8 +13,10 @@ export class ClusteringService {
   private latestSequence = 0;
 
   /**
-   * Cluster each group's hex colors off the main thread. Returns null when a
-   * newer request superseded this one before the worker responded.
+   * Clusters each group's hex colors off the main thread.
+   *
+   * @param groups - Palette inputs keyed by group with per-group cluster limits.
+   * @returns Cluster results by group, or null when a newer request superseded this one.
    */
   clusterGroups(groups: PaletteClusterGroupInput[]): Promise<Record<string, ClusterResult[]> | null> {
     const seq = ++this.sequence;
@@ -55,6 +60,11 @@ export class ClusteringService {
     });
   }
 
+  /**
+   * Lazily creates the clustering web worker module.
+   *
+   * @returns Shared worker instance for cluster requests.
+   */
   private getWorker(): Worker {
     if (!this.worker) {
       this.worker = new Worker(new URL('./clustering-worker.ts', import.meta.url), { type: 'module' });
@@ -62,6 +72,12 @@ export class ClusteringService {
     return this.worker;
   }
 
+  /**
+   * Synchronous fallback when `Worker` is unavailable in the environment.
+   *
+   * @param groups - Palette inputs to cluster on the main thread.
+   * @returns Cluster results keyed by group id.
+   */
   private clusterGroupsSync(groups: PaletteClusterGroupInput[]): Record<string, ClusterResult[]> {
     const clustersByGroup: Record<string, ClusterResult[]> = {};
     for (const group of groups) {

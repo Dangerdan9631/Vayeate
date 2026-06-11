@@ -3,8 +3,21 @@ import type { TokenType } from '../../../../model/schema/primitives';
 import type { Template } from '../../../../model/schema/template-schemas';
 import { parseSemanticSelector } from '../../../../model/parse-semantic-selector';
 
+/**
+ * Updates mapping group ref in the domain or UI store.
+ */
+
 @singleton()
 export class SetMappingGroupRefOperation {
+
+  /**
+   * Runs the set mapping group ref mutation.
+   * @param template Template (Template).
+   * @param tokenKey Token key (string).
+   * @param tokenType Token type (TokenType).
+   * @param groupRef Group ref (string | null).
+   * @returns Template result.
+   */
   execute(
     template: Template,
     tokenKey: string,

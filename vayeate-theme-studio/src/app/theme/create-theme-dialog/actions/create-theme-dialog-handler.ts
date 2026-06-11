@@ -5,6 +5,9 @@ import { SetThemeCreateFormNameController } from '../controllers/set-theme-creat
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { CreateThemeDialogActions, CreateThemeDialogActionType } from './create-theme-dialog-action-type';
 
+/**
+ * Routes Create Theme Dialog actions to their controllers.
+ */
 @singleton()
 export class CreateThemeDialogHandler {
   private readonly log: Logger;
@@ -18,6 +21,11 @@ export class CreateThemeDialogHandler {
     this.log = loggerFactory.create(CreateThemeDialogHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: CreateThemeDialogActions): Promise<void> {
     switch (action.type) {
       case CreateThemeDialogActionType.NameTextOnChange:

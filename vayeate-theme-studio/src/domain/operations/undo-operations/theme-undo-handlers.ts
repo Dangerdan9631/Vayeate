@@ -33,6 +33,10 @@ const LIFECYCLE_ACTION_TYPES = new Set<string>([
   THEME_CREATED,
 ]);
 
+/**
+ * Input or state shape for theme undo handler deps.
+ */
+
 export interface ThemeUndoHandlerDeps {
   applyThemeUndoState: ApplyThemeUndoStateOperation;
   applyThemeLifecycleUndo: ApplyThemeLifecycleUndoOperation;
@@ -75,6 +79,12 @@ function themeSnapshotHandler(
     revert: (action) => applyThemeUndoState.execute(action.before as Theme),
   };
 }
+
+/**
+ * Builds theme undo diff handlers for snapshot, specialized, and lifecycle actions.
+ * @param deps Operations used to apply theme undo, palette edits, and lifecycle replay.
+ * @returns Handler list wired for the universal undo processor.
+ */
 
 export function buildThemeUndoHandlers(deps: ThemeUndoHandlerDeps): UndoDiffHandler[] {
   const specialized: UndoDiffHandler[] = [

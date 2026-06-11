@@ -6,7 +6,9 @@ import { entityRefsChanged } from '../../utils/entity-refs-changed';
 import { SaveTemplateOperation } from '../template-operations/template-details/save-template-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../template-operations/template-list/refresh-template-refs-and-select-operation';
 
-/** Applies a template snapshot through the standard persist and selection path (undo/redo). */
+/**
+ * Applies a template snapshot through the standard persist and selection path (undo/redo).
+ */
 @singleton()
 export class ApplyTemplateUndoStateOperation {
   constructor(
@@ -15,6 +17,12 @@ export class ApplyTemplateUndoStateOperation {
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
   ) {}
+
+  /**
+   * Runs the apply template undo state mutation.
+   * @param template Template (Template).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(template: Template): void {
     const store = this.templatesStore.getStore();

@@ -22,7 +22,9 @@ import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolv
 
 const DEFAULT_DARK_FG = '#d4d4d4';
 const DEFAULT_LIGHT_FG = '#1f1f1f';
-/** Text color for preview card chrome (heading, tab label) — not editor content. */
+/**
+ * Text color for preview card chrome (heading, tab label) — not editor content.
+ */
 const CARD_CHROME_DARK = '#cccccc';
 const CARD_CHROME_LIGHT = '#333333';
 
@@ -134,6 +136,9 @@ function FilterableTokenSelect({ label, value, onChange, options }: FilterableTo
   );
 }
 
+/**
+ * Renders the Editor Previews Card UI for the theme editor.
+ */
 export function EditorPreviewsCard() {
   const vm = useEditorPreviewsCardViewModel();
   const {
@@ -174,7 +179,9 @@ export function EditorPreviewsCard() {
 
   const loadError: string | null = null;
 
-  /** Editor foreground: default text color for code in the preview blocks only (not card chrome). */
+  /**
+   * Editor foreground: default text color for code in the preview blocks only (not card chrome).
+   */
   const defaultEditorFgDark = resolveColorForThemeTokenKey(themeForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'dark', DEFAULT_DARK_FG);
   const defaultEditorFgLight = resolveColorForThemeTokenKey(themeForegroundTokenRef, mappings, colorAssignments, contrastAssignments, contrastVariables, 'light', DEFAULT_LIGHT_FG);
 
@@ -221,7 +228,9 @@ export function EditorPreviewsCard() {
   const [sampleDropdownOpen, setSampleDropdownOpen] = useState(false);
   const sampleDropdownRef = useRef<HTMLDivElement | null>(null);
   const lightSampleDropdownRef = useRef<HTMLDivElement | null>(null);
-  /** Track scroll position so sticky bar label updates reliably when the user scrolls. */
+  /**
+   * Track scroll position so sticky bar label updates reliably when the user scrolls.
+   */
   const [scrollTop, setScrollTop] = useState(0);
 
   const virtualizer = useVirtualizer({
@@ -232,7 +241,9 @@ export function EditorPreviewsCard() {
   });
   const virtualItems = virtualizer.getVirtualItems();
   const totalSize = virtualizer.getTotalSize();
-  /** When scroll container has no size (e.g. jsdom, initial layout), virtualizer returns no items; show first N so content is visible. */
+  /**
+   * When scroll container has no size (e.g. jsdom, initial layout), virtualizer returns no items; show first N so content is visible.
+   */
   const fallbackIndices =
     previews.length > 0 && virtualItems.length === 0
       ? previews.map((_: TokenizedPreview, i: number) => i).slice(0, 10)
@@ -254,7 +265,9 @@ export function EditorPreviewsCard() {
     visibleIndices,
   });
 
-  /** Index of the sample at the top of the scroll view (for sticky bar label). Use the item that contains scrollTop, or the last item that starts before scrollTop (e.g. when in padding between items). */
+  /**
+   * Index of the sample at the top of the scroll view (for sticky bar label). Use the item that contains scrollTop, or the last item that starts before scrollTop (e.g. when in padding between items).
+   */
   const currentSampleIndex = (() => {
     const containing = virtualItems.find((item) => scrollTop >= item.start && scrollTop < item.end);
     if (containing != null) return containing.index;
@@ -263,7 +276,9 @@ export function EditorPreviewsCard() {
   })();
   const currentPreview = previews[currentSampleIndex];
 
-  /** When multiple previews share a language, show "lang - file.ex"; otherwise just the language. */
+  /**
+   * When multiple previews share a language, show "lang - file.ex"; otherwise just the language.
+   */
   const previewLabelByIndex = useMemo(() => {
     const countByLang = new Map<string, number>();
     for (const p of previews) {

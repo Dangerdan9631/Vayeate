@@ -14,6 +14,9 @@ import { UpdateSourceUrlController } from "../controllers/update-source-url-cont
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { CatalogDetailsCardActions, CatalogDetailsCardActionType } from "./catalog-details-card-action-type";
 
+/**
+ * Routes catalog details card actions to source and lifecycle controllers.
+ */
 @singleton()
 export class CatalogDetailsCardHandler {
   private readonly log: Logger;
@@ -36,6 +39,11 @@ export class CatalogDetailsCardHandler {
     this.log = loggerFactory.create(CatalogDetailsCardHandler.name);
   }
 
+  /**
+   * Dispatches a catalog details card action to the matching controller.
+   * @param action - Catalog details card action from the queue.
+   * @returns Promise that settles when handling completes.
+   */
   async handle(action: CatalogDetailsCardActions): Promise<void> {
     switch (action.type) {
       case CatalogDetailsCardActionType.SourceUrlTextOnCommit:

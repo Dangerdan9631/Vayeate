@@ -13,6 +13,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_CREATED } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates create theme work for the theme UI.
+ */
 @singleton()
 export class CreateThemeController {
   constructor(
@@ -29,6 +32,11 @@ export class CreateThemeController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param params Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(params: { name: string }): Promise<void> {
     const priorSelectedRef = this.themeUiStore.getStore().state.selectedRef;
 

@@ -3,6 +3,9 @@ import type { BackgroundQueueContinuation, BackgroundQueueKey } from '../../../m
 
 const noop = () => { };
 
+/**
+ * Resolves a completed background job and optionally re-enqueues follow-up work on another queue.
+ */
 export class BackgroundQueueResolver implements BackgroundQueueContinuation {
   private queue: BackgroundQueueKey | undefined;
   private resolve: () => void = noop;

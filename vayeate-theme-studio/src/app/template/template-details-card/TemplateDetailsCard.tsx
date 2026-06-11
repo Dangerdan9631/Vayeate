@@ -1,5 +1,9 @@
 import { useTemplateDetailsCardViewModel } from './use-template-details-card-viewmodel';
 
+/**
+ * Renders template version metadata with lock and delete actions.
+ * @returns Template details card UI wired to its viewmodel.
+ */
 export function TemplateDetailsCard() {
   const { template, canLock, canShowLockButton, lockButtonTitle, onDeleteVersionClick, onLockClick } =
     useTemplateDetailsCardViewModel();

@@ -2,7 +2,9 @@ import type { BrowserWindow } from 'electron';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-/** Serialize log args for IPC so main process logs appear in renderer DevTools console. No-op if window is closed/destroyed. */
+/**
+ * Serialize log args for IPC so main process logs appear in renderer DevTools console. No-op if window is closed/destroyed.
+ */
 export function forwardMainLog(
   getMainWindow: () => BrowserWindow | null,
   level: LogLevel,
@@ -21,7 +23,9 @@ export function forwardMainLog(
   }
 }
 
-/** Wrap console so main process logs also go to the renderer (DevTools) and use console.log for debug so the IDE console shows all levels. */
+/**
+ * Wrap console so main process logs also go to the renderer (DevTools) and use console.log for debug so the IDE console shows all levels.
+ */
 export function installMainLogForwarding(getMainWindow: () => BrowserWindow | null): void {
   const orig = {
     debug: console.log.bind(console),

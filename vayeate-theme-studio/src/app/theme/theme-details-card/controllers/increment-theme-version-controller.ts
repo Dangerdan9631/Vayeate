@@ -15,6 +15,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_VERSION_INCREMENTED } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates increment theme version work for the theme UI.
+ */
 @singleton()
 export class IncrementThemeVersionController {
   constructor(
@@ -31,6 +34,10 @@ export class IncrementThemeVersionController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

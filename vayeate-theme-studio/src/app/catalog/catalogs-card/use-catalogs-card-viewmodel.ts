@@ -11,6 +11,9 @@ import { useStore } from 'zustand';
 const catalogsStore = container.resolve(CatalogsStore);
 const catalogUiStore = container.resolve(CatalogUiStore);
 
+/**
+ * Selection lists and action callbacks for the catalogs picker card.
+ */
 export interface CatalogsCardViewModel {
   selectedName: string;
   selectedVersion: string;
@@ -21,6 +24,10 @@ export interface CatalogsCardViewModel {
   onCreateCatalogClick: () => void;
 }
 
+/**
+ * Builds catalog name/version options and dispatches selection and create actions.
+ * @returns View model for `CatalogsCard`.
+ */
 export function useCatalogsCardViewModel(): CatalogsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);

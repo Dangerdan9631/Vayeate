@@ -6,6 +6,10 @@ import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enque
 import { AppConfigStore } from '../../state/data/app-config-store';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 
+/**
+ * Persists app config from the store through background I/O.
+ */
+
 @singleton()
 export class SaveAppConfigOperation {
   constructor(
@@ -13,6 +17,11 @@ export class SaveAppConfigOperation {
     private readonly configGateway: ConfigGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the save app config mutation.
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(): ContinuationHandler {
     const appConfigState = this.appConfigStore.getStore().config;

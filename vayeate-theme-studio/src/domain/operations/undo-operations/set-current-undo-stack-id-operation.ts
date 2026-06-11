@@ -8,6 +8,10 @@ import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enque
 import { BuildUniversalUndoProcessorOperation } from './build-universal-undo-processor-operation';
 import { refreshUndoSummary } from './undo-operation-helpers';
 
+/**
+ * Updates current undo stack id in the domain or UI store.
+ */
+
 @singleton()
 export class SetCurrentUndoStackIdOperation {
   constructor(
@@ -16,9 +20,21 @@ export class SetCurrentUndoStackIdOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
+  /**
+   * Runs the set current undo stack id mutation.
+   * @param stackId Stack id (string | null).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   execute(stackId: string | null): void {
     this.undoStackStore.getStore().setCurrentUndoStackId(stackId);
   }
+
+  /**
+   * Runs execute for context for set current undo stack id.
+   * @param context Context (UndoContext | null).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   executeForContext(context: UndoContext | null): void {
     const store = this.undoStackStore.getStore();
@@ -26,6 +42,12 @@ export class SetCurrentUndoStackIdOperation {
     store.setCurrentBaselineLabel(context ? deriveUndoBaselineLabel(context) : 'Opened');
     if (context) store.setLastContextForTab(context.tabId, context);
   }
+
+  /**
+   * Runs execute and load for context for set current undo stack id.
+   * @param context Context (UndoContext | null).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   executeAndLoadForContext(context: UndoContext | null): void {
     this.executeForContext(context);
@@ -57,6 +79,13 @@ export class SetCurrentUndoStackIdOperation {
       { key: undoStackDataFileKey(contextKey), access: 'read' },
     );
   }
+
+  /**
+   * Runs execute and load for tab for set current undo stack id.
+   * @param tabId Tab id (TabId).
+   * @param fallbackContext Fallback context (UndoContext | null).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   executeAndLoadForTab(tabId: TabId, fallbackContext: UndoContext | null): void {
     const context = this.undoStackStore.getStore().state.lastContextByTab[tabId] ?? fallbackContext;

@@ -4,6 +4,10 @@ import type { ParsedSemanticSelector, SemanticCatalogArrays } from './semantic-s
 /**
  * Parse a selector and merge into the given catalog arrays. Returns merged, deduped, sorted
  * arrays, or null if the selector is invalid or contributes nothing (e.g. empty, or only "*").
+ *
+ * @param selector - Semantic selector string to parse and merge.
+ * @param current - Existing catalog type, modifier, and language lists.
+ * @returns Updated sorted arrays, or null when the selector adds no catalog entries.
  */
 export function mergeSemanticSelectorInto(
   selector: string,

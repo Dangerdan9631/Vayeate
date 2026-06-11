@@ -10,6 +10,9 @@ import type { LoadState } from '../../../domain/state/ui/template-ui-state';
 const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+/**
+ * Read model and lifecycle hooks for the Templates page shell.
+ */
 export interface TemplateViewModel {
   pageLoadState: LoadState;
   templateLoadState: LoadState;
@@ -19,6 +22,10 @@ export interface TemplateViewModel {
   isCreateDialogOpen: boolean;
 }
 
+/**
+ * Subscribes to template page load state and dispatches page on-load.
+ * @returns Template page selectors and derived loading flags.
+ */
 export function useTemplateViewModel(): TemplateViewModel {
   const dispatch = useAppDispatch();
 

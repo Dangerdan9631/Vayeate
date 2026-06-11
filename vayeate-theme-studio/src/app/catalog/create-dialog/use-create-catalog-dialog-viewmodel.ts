@@ -8,6 +8,10 @@ import { useStore } from 'zustand';
 
 const createCatalogDialogStore = container.resolve(CreateCatalogDialogStore);
 
+/**
+ * Subscribes to create-dialog store fields and exposes submit and field change callbacks.
+ * @returns View model for `CreateCatalogDialog`.
+ */
 export function useCreateCatalogDialogViewModel() {
   const dispatch = useAppDispatch();
   const name = useStore(createCatalogDialogStore.api, (state) => state.state?.name ?? '');

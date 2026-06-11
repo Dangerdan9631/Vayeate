@@ -4,6 +4,9 @@ import type { ParsedSemanticSelector } from './semantic-selector-types';
 /**
  * Parse a semantic token selector into type, modifiers, and optional language.
  * "*" is a valid type but is not added to catalog type list by callers.
+ *
+ * @param selector - Raw VS Code-style semantic selector string.
+ * @returns Validated parsed selector; throws when the string is invalid.
  */
 export function parseSemanticSelector(selector: string): ParsedSemanticSelector {
   const result = safeParseSemanticSelector(selector);
@@ -15,6 +18,12 @@ export function parseSemanticSelector(selector: string): ParsedSemanticSelector 
   return result.data;
 }
 
+/**
+ * Parse a semantic selector without throwing, returning a zod safe-parse result.
+ *
+ * @param selector - Raw VS Code-style semantic selector string; whitespace is trimmed.
+ * @returns Zod safe-parse outcome with `ParsedSemanticSelector` data on success.
+ */
 export function safeParseSemanticSelector(selector: string) {
   const trimmed = selector.trim();
   if (!trimmed) {

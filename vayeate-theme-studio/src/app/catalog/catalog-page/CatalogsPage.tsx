@@ -5,6 +5,9 @@ import { CatalogsCard } from '../catalogs-card/CatalogsCard';
 import { CreateCatalogDialog } from '../create-dialog/CreateCatalogDialog';
 import { TokensCard } from '../tokens-card/TokensCard';
 
+/**
+ * Root layout for the Catalogs ribbon tab: picker, details, tokens, and overlay dialogs.
+ */
 export function CatalogsPage() {
   const {
     isPageLoading,

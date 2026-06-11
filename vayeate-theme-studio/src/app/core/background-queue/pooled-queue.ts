@@ -13,6 +13,9 @@ import type {
     BackgroundQueueKey,
 } from "../../../model/background-queue";
 
+/**
+ * Background queue that runs up to `concurrencyLimit` jobs in parallel.
+ */
 @injectable()
 export class PooledQueue implements IBackgroundQueue {
 

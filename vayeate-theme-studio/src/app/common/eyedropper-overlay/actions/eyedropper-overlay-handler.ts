@@ -6,6 +6,9 @@ import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { AppEyedropperOverlayActions, EyedropperOverlayActionType } from './eyedropper-overlay-action-type';
 import { EyedropperOverlayViewportSizeChangeController } from '../controllers/eyedropper-overlay-viewport-size-change-controller';
 
+/**
+ * Routes eyedropper overlay actions to their dedicated controllers.
+ */
 @singleton()
 export class EyedropperOverlayHandler {
   private readonly log: Logger;
@@ -20,6 +23,11 @@ export class EyedropperOverlayHandler {
     this.log = loggerFactory.create(EyedropperOverlayHandler.name);
   }
 
+  /**
+   * Dispatches one eyedropper overlay action to the matching controller entry point.
+   * @param action Typed eyedropper overlay action from the queue.
+   * @returns A promise that settles when the controller run completes.
+   */
   async handle(action: AppEyedropperOverlayActions): Promise<void> {
     switch (action.type) {
       case EyedropperOverlayActionType.CancelButtonOnClick:

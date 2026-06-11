@@ -6,19 +6,34 @@ const themeImportTokenColorEntrySchema = z.object({
   scope: z.union([z.string(), z.array(z.string())]).optional(),
 }).passthrough();
 
+/**
+ * Zod schema for VS Code theme JSON used during bulk token import.
+ */
 export const themeImportSchema = z.object({
   colors: z.record(z.string(), z.unknown()).optional(),
   tokenColors: z.array(themeImportTokenColorEntrySchema).optional(),
   semanticTokenColors: z.record(z.string(), z.unknown()).optional(),
 }).passthrough();
 
+/**
+ * Parsed VS Code theme import document with optional color sections.
+ */
 export type ThemeImport = z.infer<typeof themeImportSchema>;
 
+/**
+ * Result of parsing theme JSON into deduplicated catalog tokens and counts.
+ */
 export interface BulkParseResult {
   tokens: Token[];
   counts: Record<TokenType, number>;
 }
 
+/**
+ * Parses theme JSON text into deduplicated tokens grouped by token type.
+ *
+ * @param text - Raw JSON string from a VS Code theme file.
+ * @returns Deduplicated tokens and per-type counts after schema validation.
+ */
 export function parseThemeJson(text: string): BulkParseResult {
   const parsedJson: unknown = JSON.parse(text);
   const theme = themeImportSchema.parse(parsedJson);

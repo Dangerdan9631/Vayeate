@@ -1,8 +1,13 @@
 import { compareVersions } from './compare-versions';
 
 /**
- * After deleting `deletedVersion` of `deletedName`, pick the nearest remaining ref:
- * prefer the latest lower version, else the earliest higher version.
+ * Selects the nearest remaining ref after deleting a name/version pair.
+ * Prefers the latest lower version, otherwise the earliest higher version.
+ *
+ * @param refs - Entity refs to search within.
+ * @param deletedName - Name of the deleted entity.
+ * @param deletedVersion - Version of the deleted entity.
+ * @returns Nearest surviving ref for the same name, or null when none remain.
  */
 export function findNearestVersionRef<T extends { name: string; version: string }>(
   refs: readonly T[],

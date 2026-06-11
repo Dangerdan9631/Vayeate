@@ -16,6 +16,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Appends the new-source row to the selected remote catalog and records undo.
+ */
 @singleton()
 export class AddNewSourceController {
   constructor(
@@ -32,6 +35,9 @@ export class AddNewSourceController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Commits the pending new source fields when URL and catalog are valid.
+   */
   run(): void {
     const store = this.catalogsStore.getStore();
     const uiStore = this.catalogUiStore.getStore();

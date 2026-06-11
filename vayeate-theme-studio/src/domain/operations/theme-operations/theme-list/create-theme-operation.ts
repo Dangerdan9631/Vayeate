@@ -5,12 +5,22 @@ import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import { createThemeWithParams } from '../../../../model/factories/theme-factory';
 
+/**
+ * Creates theme and updates list or selection state.
+ */
+
 @singleton()
 export class CreateThemeOperation {
   constructor(
     private readonly themeGateway: ThemeGateway,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the create theme mutation.
+   * @param params Params ({ name: string }).
+   * @returns Theme result.
+   */
 
   execute(params: { name: string }): Theme {
     const theme = createThemeWithParams(params);

@@ -16,6 +16,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_LOCKED, CATALOG_REVERTED_TO_VERSION } from '../../../../model/undo-action-types';
 
+/**
+ * Creates a new head version from an older selected catalog snapshot.
+ */
 @singleton()
 export class RevertCatalogToVersionController {
   constructor(
@@ -31,6 +34,10 @@ export class RevertCatalogToVersionController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Reverts the catalog to the selected historical version as a new patch version.
+   * @returns Promise that settles when persist and undo recording complete.
+   */
   async run(): Promise<void> {
     const store = this.catalogsStore.getStore();
     const state = store.state;

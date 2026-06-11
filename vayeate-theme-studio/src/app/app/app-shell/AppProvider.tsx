@@ -4,6 +4,9 @@ import { ActionQueue } from '../../core/action-queue/action-queue';
 import { AppAction } from '../../core/action-queue/app-action';
 import { AppContextValue, AppContext } from './app-context';
 
+/**
+ * Provides the action-queue dispatch function to the React tree via {@link AppContext}.
+ */
 export function AppProvider({ children }: { children: ReactNode }) {
   const queueRef = useRef<ActionQueue | null>(null);
   const dispatch = useCallback((action: AppAction): void => {

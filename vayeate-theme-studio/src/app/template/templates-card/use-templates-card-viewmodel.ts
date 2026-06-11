@@ -13,6 +13,9 @@ const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 
+/**
+ * Read model and action callbacks for the Templates list card.
+ */
 export interface TemplatesCardViewModel {
   templateNames: string[];
   selectedName: string | null;
@@ -24,6 +27,10 @@ export interface TemplatesCardViewModel {
   onCreateClick: () => void;
 }
 
+/**
+ * Subscribes to template refs and exposes list selection callbacks.
+ * @returns Templates list card state and dispatch-backed handlers.
+ */
 export function useTemplatesCardViewModel(): TemplatesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);

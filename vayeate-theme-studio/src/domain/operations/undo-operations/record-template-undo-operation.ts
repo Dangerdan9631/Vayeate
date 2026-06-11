@@ -8,12 +8,20 @@ import {
 } from './record-undo-entry-operation';
 import { undoValuesEqual } from './undo-values-equal';
 
+/**
+ * Input or state shape for record template undo diff input.
+ */
+
 export interface RecordTemplateUndoDiffInput {
   actionType: TemplateUndoActionType | string;
   target: string;
   before: unknown;
   after: unknown;
 }
+
+/**
+ * Input or state shape for record template undo input.
+ */
 
 export interface RecordTemplateUndoInput {
   description: string;
@@ -24,12 +32,22 @@ export interface RecordTemplateUndoInput {
   extraDiffs?: readonly RecordTemplateUndoDiffInput[];
 }
 
+/**
+ * Records an undo entry after template undo completes.
+ */
+
 @singleton()
 export class RecordTemplateUndoOperation {
   constructor(
     private readonly recordUndoEntry: RecordUndoEntryOperation,
     private readonly buildUniversalUndoProcessor: BuildUniversalUndoProcessorOperation,
   ) {}
+
+  /**
+   * Runs the record template undo mutation.
+   * @param input Input (RecordTemplateUndoInput).
+   * @returns Promise resolving to RecordUndoEntryResult.
+   */
 
   async execute(input: RecordTemplateUndoInput): Promise<RecordUndoEntryResult> {
     const diffs: UndoDiff[] = [

@@ -3,12 +3,23 @@ import type { Mapping } from '../../model/schema/template-schemas';
 import { parseSemanticSelector } from '../../model/parse-semantic-selector';
 import { SEMANTIC_WILDCARD_TYPE } from '../../model/semantic-token-constants';
 
+/**
+ * Aggregated semantic token metadata from loaded catalogs for orphan detection.
+ */
 export interface SemanticCatalogInfo {
   semanticTokenTypes: string[];
   semanticTokenModifiers: string[];
   semanticTokenLanguages: string[];
 }
 
+/**
+ * Finds mapping token keys absent from catalog tokens and semantic metadata.
+ *
+ * @param mappings - Template mappings to test against catalog coverage.
+ * @param catalogTokens - Tokens exported from referenced catalogs.
+ * @param semanticCatalog - Optional semantic types, modifiers, and languages.
+ * @returns Set of `type::key` strings for mappings with no catalog match.
+ */
 export function computeOrphanKeys(
   mappings: readonly Mapping[],
   catalogTokens: readonly Token[],

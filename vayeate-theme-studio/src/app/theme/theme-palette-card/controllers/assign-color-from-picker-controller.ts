@@ -9,6 +9,9 @@ import type { ThemePaneState } from '../../../../model/theme-pane-state';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { recordPaletteColorAssignUndo } from './record-palette-color-assign-undo';
 
+/**
+ * Orchestrates assign color from picker work for the theme UI.
+ */
 @singleton()
 export class AssignColorFromPickerController {
   constructor(
@@ -20,6 +23,13 @@ export class AssignColorFromPickerController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param hex Input for this call.
+ * @param _ref Input for this call.
+ * @param baseState Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(hex: string, _ref?: string, baseState?: ThemePaneState | null): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme) return;

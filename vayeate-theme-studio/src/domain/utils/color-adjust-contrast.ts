@@ -7,7 +7,9 @@ const WCAG_RATIO_MAX = 21;
 
 const BLACK = '#000000';
 
-/** Adjust foreground to have at least target contrast vs background. */
+/**
+ * Adjust foreground to have at least target contrast vs background.
+ */
 function adjustBrightnessMin(foreground: string, background: string, target: number): string {
   const fg = normalizeHex(foreground);
   const bg = normalizeHex(background);
@@ -44,7 +46,9 @@ function adjustBrightnessMin(foreground: string, background: string, target: num
   return best;
 }
 
-/** Adjust foreground to have exactly target contrast vs background (binary search). */
+/**
+ * Adjust foreground to have exactly target contrast vs background (binary search).
+ */
 function adjustBrightnessExact(foreground: string, background: string, target: number): string {
   const fg = normalizeHex(foreground);
   const bg = normalizeHex(background);
@@ -75,7 +79,14 @@ function adjustBrightnessExact(foreground: string, background: string, target: n
   return best;
 }
 
-/** Adjust color so contrast vs reference is at or below maxRatio. */
+/**
+ * Adjusts a color so its contrast against a reference is at or below a maximum ratio.
+ *
+ * @param color - Foreground hex color to darken or lighten.
+ * @param reference - Background reference hex for contrast measurement.
+ * @param maxRatio - Maximum allowed WCAG contrast ratio.
+ * @returns Adjusted hex color meeting the upper contrast bound.
+ */
 export function adjustBrightnessMax(color: string, reference: string, maxRatio: number): string {
   const c = normalizeHex(color);
   const r = normalizeHex(reference);
@@ -112,7 +123,9 @@ export function adjustBrightnessMax(color: string, reference: string, maxRatio: 
   return best;
 }
 
-/** Find a color with contrast vs background in [targetMin, targetMax] by varying lightness. */
+/**
+ * Find a color with contrast vs background in [targetMin, targetMax] by varying lightness.
+ */
 function adjustBrightnessToRange(
   foreground: string,
   background: string,
@@ -167,11 +180,13 @@ function clampContrastVsBlack(
 }
 
 /**
- * Adjust tokenColor so that contrast(tokenColor, sourceColor) meets the given constraint.
- * - greaterThan: ratio vs source >= value.
- * - lessThan: ratio vs source <= value.
- * - equalTo: ratio vs source as close as possible to value.
- * If min/max are set, the result is then clamped so that contrast(result, black) is in [min, max].
+ * Adjusts a token color so contrast against a source color meets the given constraint.
+ * Optionally clamps the result so contrast versus black stays within min/max bounds.
+ *
+ * @param tokenColor - Token foreground hex to adjust.
+ * @param sourceColor - Comparison source background hex.
+ * @param options - Comparison method, target value, and optional black-contrast bounds.
+ * @returns Adjusted hex color in sRGB gamut.
  */
 export function adjustColorToMeetContrast(
   tokenColor: string,

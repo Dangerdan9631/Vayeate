@@ -25,6 +25,9 @@ function normalizeHexLocal(hex: string): string {
   return s.startsWith('#') ? s : `#${s}`;
 }
 
+/**
+ * Props consumed by the Theme Palette Cluster Column component.
+ */
 export interface ThemePaletteClusterColumnProps {
   cluster: ClusterResult;
   groupKey: string;
@@ -44,6 +47,9 @@ export interface ThemePaletteClusterColumnProps {
   } | null>;
 }
 
+/**
+ * Renders the Theme Palette Cluster Column UI for the theme editor.
+ */
 export function ThemePaletteClusterColumn({
   cluster,
   groupKey,

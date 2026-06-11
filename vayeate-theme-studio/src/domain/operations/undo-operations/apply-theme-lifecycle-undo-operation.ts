@@ -8,6 +8,10 @@ import { SetSelectedThemeRefOperation } from '../theme-operations/theme-list/set
 import { SetThemeOperation } from '../theme-operations/theme-details/set-theme-operation';
 import { ApplyThemeUndoStateOperation } from './apply-theme-undo-state-operation';
 
+/**
+ * Applies theme lifecycle undo to the store as part of undo or theme replay.
+ */
+
 @singleton()
 export class ApplyThemeLifecycleUndoOperation {
   constructor(
@@ -18,6 +22,13 @@ export class ApplyThemeLifecycleUndoOperation {
     private readonly loadTheme: LoadThemeOperation,
     private readonly setTheme: SetThemeOperation,
   ) {}
+
+  /**
+   * Runs apply version deleted for apply theme lifecycle undo.
+   * @param before Before (ThemeLifecycleUndoSnapshot).
+   * @param after After (ThemeLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   applyVersionDeleted(before: ThemeLifecycleUndoSnapshot, after: ThemeLifecycleUndoSnapshot): void {
     const theme = before.theme;
@@ -30,10 +41,22 @@ export class ApplyThemeLifecycleUndoOperation {
       });
   }
 
+  /**
+   * Runs revert version deleted for apply theme lifecycle undo.
+   * @param before Before (ThemeLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   revertVersionDeleted(before: ThemeLifecycleUndoSnapshot): void {
     if (!before.theme) return;
     this.applyThemeUndoState.execute(before.theme);
   }
+
+  /**
+   * Runs apply version incremented for apply theme lifecycle undo.
+   * @param after After (ThemeLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   applyVersionIncremented(after: ThemeLifecycleUndoSnapshot): void {
     if (!after.theme) return;
@@ -42,6 +65,13 @@ export class ApplyThemeLifecycleUndoOperation {
       this.setSelectedThemeRef.execute(after.selectedRef);
     }
   }
+
+  /**
+   * Runs revert version incremented for apply theme lifecycle undo.
+   * @param before Before (ThemeLifecycleUndoSnapshot).
+   * @param after After (ThemeLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   revertVersionIncremented(before: ThemeLifecycleUndoSnapshot, after: ThemeLifecycleUndoSnapshot): void {
     const theme = after.theme;
@@ -54,6 +84,12 @@ export class ApplyThemeLifecycleUndoOperation {
       });
   }
 
+  /**
+   * Runs apply created for apply theme lifecycle undo.
+   * @param after After (ThemeLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   applyCreated(after: ThemeLifecycleUndoSnapshot): void {
     if (!after.theme) return;
     this.applyThemeUndoState.execute(after.theme);
@@ -61,6 +97,13 @@ export class ApplyThemeLifecycleUndoOperation {
       this.setSelectedThemeRef.execute(after.selectedRef);
     }
   }
+
+  /**
+   * Runs revert created for apply theme lifecycle undo.
+   * @param before Before (ThemeLifecycleUndoSnapshot).
+   * @param after After (ThemeLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   revertCreated(before: ThemeLifecycleUndoSnapshot, after: ThemeLifecycleUndoSnapshot): void {
     const theme = after.theme;

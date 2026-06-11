@@ -1,6 +1,8 @@
 import type { Theme } from './schema/theme-schemas';
 
-/** Theme pane state used for palette/undo snapshot (e.g. color picker open). */
+/**
+ * Theme pane state used for palette/undo snapshot (e.g. color picker open).
+ */
 export interface ThemePaneState {
   theme: Theme | null;
   checkedColorRefs: string[];
@@ -9,6 +11,9 @@ export interface ThemePaneState {
   hueReferenceHex: string;
 }
 
+/**
+ * How selected theme colors should be summarized in the UI.
+ */
 export type SelectedColorsDisplay =
   | { kind: 'none' }
   | { kind: 'single'; hex: string }

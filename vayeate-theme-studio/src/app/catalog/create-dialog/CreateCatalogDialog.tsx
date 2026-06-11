@@ -2,6 +2,9 @@ import type { ChangeEvent, MouseEvent } from 'react';
 import { useCreateCatalogDialogViewModel } from './use-create-catalog-dialog-viewmodel';
 import { CatalogType } from '../../../model/schema/primitives';
 
+/**
+ * Modal dialog to name and type a new catalog before creation.
+ */
 export function CreateCatalogDialog() {
   const {
     name,

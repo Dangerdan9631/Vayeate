@@ -10,6 +10,9 @@ interface BackgroundQueueUiStoreState {
     completeQueueProcessing: (queueType: BackgroundQueueKey) => void;
 }
 
+/**
+ * Zustand store for background queue lengths and pending action descriptions.
+ */
 @singleton()
 export class BackgroundQueueUiStore {
     private store = createStore<BackgroundQueueUiStoreState>()(
@@ -26,10 +29,17 @@ export class BackgroundQueueUiStore {
         }))
     );
 
+    /**
+     * Zustand store API for React subscriptions via viewmodels.
+     */
     get api() {
         return this.store;
     }
 
+    /**
+     * Returns the current snapshot and mutation methods for the background queue implementation.
+     * @returns Live background queue UI store state and setters.
+     */
     getStore(): BackgroundQueueUiStoreState {
         return this.store.getState();
     }

@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SEMANTIC_SELECTOR_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Merges a typed semantic selector string into the catalog registry lists.
+ */
 @singleton()
 export class AddCatalogSemanticTokenSelectorController {
   constructor(
@@ -31,6 +34,9 @@ export class AddCatalogSemanticTokenSelectorController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Adds the pending semantic selector when it parses and merges successfully.
+   */
   run(): void {
     const store = this.catalogsStore.getStore();
     const state = this.catalogUiStore.getStore().state;

@@ -5,6 +5,10 @@ import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enque
 import { AppConfigStore } from '../../state/data/app-config-store';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 
+/**
+ * Loads app config from persistence into the store.
+ */
+
 @singleton()
 export class LoadAppConfigOperation {
   constructor(
@@ -12,6 +16,11 @@ export class LoadAppConfigOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
     private readonly appConfigStore: AppConfigStore,
   ) {}
+
+  /**
+   * Runs the load app config mutation.
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(

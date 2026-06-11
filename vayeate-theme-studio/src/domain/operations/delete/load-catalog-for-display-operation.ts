@@ -6,6 +6,10 @@ import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enque
 import { CatalogReference } from '../../../model/schema/template-schemas';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 
+/**
+ * Loads catalog for display from persistence into the store.
+ */
+
 @singleton()
 export class LoadCatalogForDisplayOperation {
   constructor(
@@ -13,6 +17,12 @@ export class LoadCatalogForDisplayOperation {
     private readonly catalogGateway: CatalogGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load catalog for display mutation.
+   * @param refs Refs (CatalogReference[]).
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(refs: CatalogReference[]): ContinuationHandler | undefined {
     if (refs.length === 0) {

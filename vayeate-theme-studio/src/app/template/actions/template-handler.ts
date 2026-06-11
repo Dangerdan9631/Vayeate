@@ -18,6 +18,9 @@ import { VariablesCardHandler } from '../variables-card/actions/variables-card-h
 import { isVariablesCardAction } from '../variables-card/actions/variables-card-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
+/**
+ * Routes template-domain actions to the matching feature handler.
+ */
 @singleton()
 export class TemplateActionHandler {
   private readonly log: Logger;
@@ -36,6 +39,11 @@ export class TemplateActionHandler {
     this.log = loggerFactory.create('TemplateActionHandler');
   }
 
+  /**
+   * Dispatches a template action to the first matching feature handler.
+   * @param action Typed template action from the action queue.
+   * @returns Resolves when the delegated handler finishes.
+   */
   async handle(action: TemplateActions): Promise<void> {
     if (isTemplatePageAction(action)) {
       return this.templatePageHandler.handle(action);

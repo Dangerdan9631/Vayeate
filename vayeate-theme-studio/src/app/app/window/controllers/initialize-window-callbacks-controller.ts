@@ -6,6 +6,9 @@ import { SetWindowPositionOperation } from '../../../../domain/operations/window
 import { SetWindowSizeOperation } from '../../../../domain/operations/window-operations/set-window-size-operation';
 import { HandleKeyboardShortcutController } from '../../app-shell/controllers/handle-keyboard-shortcut-controller';
 
+/**
+ * Registers Electron window callbacks that sync display state into app stores.
+ */
 @singleton()
 export class InitializeWindowCallbacksController {
   constructor(
@@ -17,6 +20,9 @@ export class InitializeWindowCallbacksController {
     private readonly handleKeyboardShortcut: HandleKeyboardShortcutController,
   ) {}
 
+  /**
+   * Wires resize, move, display-state, viewport, and keyboard callbacks on startup.
+   */
   run(): void {
     this.windowCallbacks.initialize({
       onStateEvent: (event) => {

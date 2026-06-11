@@ -4,19 +4,34 @@ import { Registry } from 'vscode-textmate';
 import type { IRawGrammar } from 'vscode-textmate';
 import type { TokenizedLine, TokenizedToken } from '../../model/preview-types';
 
+/**
+ * Oniguruma bindings passed to the TextMate registry after WASM load.
+ */
 type OnigLib = {
   createOnigScanner: typeof createOnigScanner;
   createOnigString: typeof createOnigString;
 };
 
+/**
+ * Options for one-time Oniguruma WASM initialization.
+ */
 export type InitTextmateTokenizerOptions = {
   loadWasm: () => Promise<ArrayBuffer>;
 };
 
+/**
+ * Tokenizes source files with vscode-textmate after Oniguruma WASM is loaded.
+ */
 @singleton()
 export class TextmateTokenizerService {
   private onigurumaReady: Promise<OnigLib> | null = null;
 
+  /**
+   * Loads Oniguruma WASM once and prepares the tokenizer for `tokenizeFile`.
+   *
+   * @param options - WASM loader supplied by the caller (e.g. Vite asset URL).
+   * @returns Resolves when Oniguruma is ready.
+   */
   async init(options: InitTextmateTokenizerOptions): Promise<void> {
     if (!this.onigurumaReady) {
       this.onigurumaReady = (async (): Promise<OnigLib> => {
@@ -29,6 +44,13 @@ export class TextmateTokenizerService {
     await this.onigurumaReady;
   }
 
+  /**
+   * Tokenizes each line of source text with the given TextMate grammar.
+   *
+   * @param grammarJson - Raw grammar JSON including `scopeName`.
+   * @param sourceCode - Full sample file contents.
+   * @returns Per-line tokens with text spans and scope stacks.
+   */
   async tokenizeFile(grammarJson: IRawGrammar, sourceCode: string): Promise<TokenizedLine[]> {
     if (!this.onigurumaReady) {
       throw new Error('TextmateTokenizerService.init must be called before tokenizeFile');

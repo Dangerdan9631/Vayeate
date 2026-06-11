@@ -5,6 +5,9 @@ import { SelectThemeByNameController } from '../controllers/select-theme-by-name
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemesCardActions, ThemesCardActionType } from './themes-card-action-type';
 
+/**
+ * Routes Themes Card actions to their controllers.
+ */
 @singleton()
 export class ThemesCardHandler {
   private readonly log: Logger;
@@ -18,6 +21,11 @@ export class ThemesCardHandler {
     this.log = loggerFactory.create(ThemesCardHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: ThemesCardActions): Promise<void> {
     switch (action.type) {
       case ThemesCardActionType.NameListOnCommit:

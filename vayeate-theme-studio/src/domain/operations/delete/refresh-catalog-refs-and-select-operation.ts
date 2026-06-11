@@ -11,6 +11,10 @@ const noopContinuation: ContinuationHandler = {
   then: () => {},
 };
 
+/**
+ * Refreshes catalog refs and select from persistence or derived state.
+ */
+
 @singleton()
 export class RefreshCatalogRefsAndSelectOperation {
   constructor(
@@ -19,6 +23,15 @@ export class RefreshCatalogRefsAndSelectOperation {
     private readonly catalogGateway: CatalogGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the refresh catalog refs and select mutation.
+   * @param selectName Select name (string).
+   * @param selectVersion Select version (string).
+   * @param catalog Catalog (Catalog).
+   * @param refsChanged Refs changed (unknown).
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(
     selectName?: string,

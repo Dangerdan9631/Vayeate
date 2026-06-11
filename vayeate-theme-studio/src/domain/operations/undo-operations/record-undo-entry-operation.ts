@@ -7,6 +7,10 @@ import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import { refreshUndoSummary } from './undo-operation-helpers';
 import { undoValuesEqual } from './undo-values-equal';
 
+/**
+ * Input or state shape for record undo entry input.
+ */
+
 export interface RecordUndoEntryInput {
   description: string;
   diffs: UndoDiff[];
@@ -15,11 +19,19 @@ export interface RecordUndoEntryInput {
   coalesceWithPrevious?: boolean;
 }
 
+/**
+ * Input or state shape for record undo entry result.
+ */
+
 export interface RecordUndoEntryResult {
   status: 'recorded' | 'not-recorded' | 'failed';
   entryId: string | null;
   message?: string;
 }
+
+/**
+ * Records an undo entry after undo entry completes.
+ */
 
 @singleton()
 export class RecordUndoEntryOperation {
@@ -28,6 +40,12 @@ export class RecordUndoEntryOperation {
   constructor(
     private readonly undoStackStore: UndoStackStore,
   ) {}
+
+  /**
+   * Runs the record undo entry mutation.
+   * @param input Input (RecordUndoEntryInput).
+   * @returns Promise resolving to RecordUndoEntryResult.
+   */
 
   async execute(input: RecordUndoEntryInput): Promise<RecordUndoEntryResult> {
     const contextKey = this.undoStackStore.getStore().state.currentUndoStackId;

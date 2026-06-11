@@ -12,6 +12,9 @@ const createCatalogDialogStore = container.resolve(CreateCatalogDialogStore);
 const bulkAddDialogStore = container.resolve(BulkAddDialogStore);
 const catalogUiStore = container.resolve(CatalogUiStore);
 
+/**
+ * Read model and lifecycle hooks for the catalog page shell.
+ */
 export interface CatalogViewModel {
   pageLoadState: LoadState;
   catalogLoadState: LoadState;
@@ -22,6 +25,10 @@ export interface CatalogViewModel {
   bulkAddDialogOpen: boolean;
 }
 
+/**
+ * Subscribes to catalog page load state and dialog visibility for `CatalogsPage`.
+ * @returns View model with loading flags and overlay open state.
+ */
 export function useCatalogViewModel(): CatalogViewModel {
   const dispatch = useAppDispatch();
   const pageLoadState = useStore(catalogUiStore.api, (state) => state.state.pageLoadState);

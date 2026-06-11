@@ -1,7 +1,13 @@
 import { z } from 'zod';
 
+/**
+ * Zod schema for one dot-separated semantic selector segment.
+ */
 export const semanticSelectorSegmentSchema = z.string().regex(/^[a-zA-Z*][a-zA-Z0-9_*-]*$/);
 
+/**
+ * Zod schema for a parsed semantic selector with cross-field validation.
+ */
 export const parsedSemanticSelectorSchema = z.object({
   type: z.union([z.literal(''), semanticSelectorSegmentSchema]),
   modifiers: z.array(semanticSelectorSegmentSchema),
@@ -24,8 +30,14 @@ export const parsedSemanticSelectorSchema = z.object({
   }
 });
 
+/**
+ * Parsed semantic selector split into type, modifiers, and optional language.
+ */
 export type ParsedSemanticSelector = z.infer<typeof parsedSemanticSelectorSchema>;
 
+/**
+ * Catalog lists of known semantic types, modifiers, and languages.
+ */
 export interface SemanticCatalogArrays {
   types: readonly string[];
   modifiers: readonly string[];

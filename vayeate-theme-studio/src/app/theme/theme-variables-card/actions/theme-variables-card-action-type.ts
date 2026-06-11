@@ -2,6 +2,9 @@ import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, Contras
 import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
+/**
+ * Action type literals dispatched from the Theme Variables Card.
+ */
 export enum ThemeVariablesCardActionType {
   SearchTextOnChange = 'THEME_VARIABLES_SEARCH_TEXT_ON_CHANGE',
   SelectAllCheckboxOnToggle = 'THEME_VARIABLES_SELECT_ALL_CHECKBOX_ON_TOGGLE',
@@ -26,6 +29,9 @@ export enum ThemeVariablesCardActionType {
   ContrastUseDarkForLightCheckboxOnToggle = 'THEME_VARIABLES_CONTRAST_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE',
 }
 
+/**
+ * Union of actions handled by the Theme Variables Card.
+ */
 export type ThemeVariablesCardActions =
   | { type: ThemeVariablesCardActionType.SearchTextOnChange; value: string }
   | { type: ThemeVariablesCardActionType.SelectAllCheckboxOnToggle; checked: boolean }
@@ -64,6 +70,10 @@ export type ThemeVariablesCardActions =
 
 const themeVariablesCardTypes = new Set<string>(Object.values(ThemeVariablesCardActionType));
 
+/**
+ * Returns whether the app action belongs to the Theme Variables Card.
+ * @param a Input for this call.
+ */
 export function isThemeVariablesCardAction(a: AppAction): a is ThemeVariablesCardActions {
   return themeVariablesCardTypes.has(a.type);
 }
@@ -72,6 +82,12 @@ const themeVariablesCardCoalescers: Partial<Record<ThemeVariablesCardActionType,
   [ThemeVariablesCardActionType.SearchTextOnChange]: coalesceLatest,
 };
 
+/**
+ * Coalesces consecutive Theme Variables Card actions when the action queue merges duplicate streams.
+ * @param pending Input for this call.
+ * @param incoming Input for this call.
+ * @returns Coalesced action, or null when coalescing does not apply.
+ */
 export function tryCoalesceThemeVariablesCardAction(
   pending: ThemeVariablesCardActions,
   incoming: ThemeVariablesCardActions,

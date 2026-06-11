@@ -9,6 +9,9 @@ interface ActionQueueUiStoreState {
     completeQueueProcessing: () => void;
 }
 
+/**
+ * Zustand store for UI action queue length and current action description.
+ */
 @singleton()
 export class ActionQueueUiStore {
     private store = createStore<ActionQueueUiStoreState>()(
@@ -25,10 +28,17 @@ export class ActionQueueUiStore {
         }))
     );
 
+    /**
+     * Zustand store API for React subscriptions via viewmodels.
+     */
     get api() {
         return this.store;
     }
 
+    /**
+     * Returns the current snapshot and mutation methods for the action queue implementation.
+     * @returns Live action queue UI store state and setters.
+     */
     getStore(): ActionQueueUiStoreState {
         return this.store.getState();
     }

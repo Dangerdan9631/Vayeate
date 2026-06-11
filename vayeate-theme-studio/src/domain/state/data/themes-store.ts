@@ -5,6 +5,9 @@ import { createStore } from 'zustand/vanilla';
 import type { Theme } from '../../../model/schema/theme-schemas';
 import { initialThemesState, type ThemeStoreMap, type ThemesState } from './themes-state';
 
+/**
+ * Input for upserting one theme map slot during bulk or partial updates.
+ */
 export interface ThemeEntryInput {
   name: string;
   version: string;
@@ -12,6 +15,9 @@ export interface ThemeEntryInput {
   theme?: Theme;
 }
 
+/**
+ * Themes cache snapshot plus mutation methods exposed from the store.
+ */
 export interface ThemesStoreState {
   state: ThemesState;
   updateTheme: (theme: Theme) => void;
@@ -31,6 +37,9 @@ function upsertTheme(themeMap: ThemeStoreMap, theme: Theme): void {
   };
 }
 
+/**
+ * Zustand store for the in-memory theme entity cache.
+ */
 @singleton()
 export class ThemesStore {
   private store = createStore<ThemesStoreState>()(
@@ -73,12 +82,18 @@ export class ThemesStore {
     })),
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live themes store state and setters.
+   */
   getStore(): ThemesStoreState {
     return this.store.getState();
   }
 }
-

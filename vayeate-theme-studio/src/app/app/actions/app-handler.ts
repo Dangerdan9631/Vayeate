@@ -12,6 +12,9 @@ import { AppRibbonHandler } from '../ribbon/actions/app-ribbon-handler';
 import { isAppRibbonAction } from '../ribbon/actions/app-ribbon-action-type';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
+/**
+ * Root app action handler that delegates to feature handlers by action subdomain.
+ */
 @singleton()
 export class AppActionHandler {
   private readonly log: Logger;
@@ -27,6 +30,10 @@ export class AppActionHandler {
     this.log = loggerFactory.create(AppActionHandler.name);
   }
 
+  /**
+   * Routes one app action to the matching feature handler.
+   * @param action App-scoped action to handle; must be a member of {@link AppActions}.
+   */
   async handle(action: AppActions): Promise<void> {
     if (isAppShellAction(action)) {
       return this.appShellHandler.handle(action);

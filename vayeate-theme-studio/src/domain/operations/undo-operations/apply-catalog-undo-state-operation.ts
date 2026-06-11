@@ -6,7 +6,9 @@ import { entityRefsChanged } from '../../utils/entity-refs-changed';
 import { SaveCatalogOperation } from '../catalog-operations/catalog-details/save-catalog-operation';
 import { RefreshCatalogRefsAndSelectOperation } from '../delete/refresh-catalog-refs-and-select-operation';
 
-/** Applies a catalog snapshot through the standard persist and selection path (undo/redo). */
+/**
+ * Applies a catalog snapshot through the standard persist and selection path (undo/redo).
+ */
 @singleton()
 export class ApplyCatalogUndoStateOperation {
   constructor(
@@ -15,6 +17,12 @@ export class ApplyCatalogUndoStateOperation {
     private readonly saveCatalog: SaveCatalogOperation,
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
+
+  /**
+   * Runs the apply catalog undo state mutation.
+   * @param catalog Catalog (Catalog).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(catalog: Catalog): void {
     const store = this.catalogsStore.getStore();

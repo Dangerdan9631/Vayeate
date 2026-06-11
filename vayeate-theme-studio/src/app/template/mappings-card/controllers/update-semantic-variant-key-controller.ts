@@ -17,10 +17,16 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_SEMANTIC_VARIANT_KEY_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Payload for semantic variant key updates from modifier or language list commits.
+ */
 export type UpdateSemanticVariantKeyPayload =
   | { variant: 'modifier'; tokenKey: string; modifiers: string[] }
   | { variant: 'language'; tokenKey: string; language: string | null };
 
+/**
+ * Handles semantic variant modifier and language list commits by rewriting the variant key.
+ */
 @singleton()
 export class UpdateSemanticVariantKeyController {
   constructor(
@@ -37,6 +43,11 @@ export class UpdateSemanticVariantKeyController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Rebuilds a semantic variant token key from modifier or language edits.
+   * @param payload Discriminated commit payload from the mappings card handler.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(payload: UpdateSemanticVariantKeyPayload): void {
     let parsed: ParsedSemanticSelector;
     try {

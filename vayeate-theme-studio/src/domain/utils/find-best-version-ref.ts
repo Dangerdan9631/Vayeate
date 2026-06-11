@@ -1,6 +1,12 @@
 import { compareVersions } from './compare-versions';
 
-/** Latest semver ref among those with the given name. */
+/**
+ * Finds the highest semver ref among entries sharing the given name.
+ *
+ * @param refs - Entity refs to search within.
+ * @param name - Entity name to match.
+ * @returns Ref with the greatest version for that name, or null when none exist.
+ */
 export function findBestVersionRef<T extends { name: string; version: string }>(
   refs: readonly T[],
   name: string,

@@ -13,6 +13,9 @@ import { ThemeDetailsCardActionType } from '../theme-details-card/actions/theme-
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
 
+/**
+ * Read model returned by useEditorPreviewsCardViewModel.
+ */
 export interface EditorPreviewsCardViewModel {
   theme: Theme | null;
   editorPreviews: TokenizedPreview[];
@@ -50,6 +53,10 @@ export interface EditorPreviewsCardViewModel {
   onChangeEditorPreviewMenuBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
 }
 
+/**
+ * Exposes Editor Previews Card state and dispatches user or lifecycle actions.
+ * @returns View-model state and action callbacks for the component.
+ */
 export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   const dispatch = useAppDispatch();
   const theme = useStore(themeUiStore.api, (state) => state.state.theme);

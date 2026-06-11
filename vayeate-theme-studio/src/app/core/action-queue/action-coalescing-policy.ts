@@ -8,13 +8,12 @@ export { actionCoalescer, coalesceLatest, coalesceSumValue } from './action-coal
 export type { ActionCoalesceFn } from './action-coalesce';
 
 /**
- * Attempts to coalesce `incoming` into `pending`.
+ * Attempts to coalesce `incoming` into `pending` by delegating to feature coalescing policies.
+ * Precondition: `pending.type === incoming.type` (enforced by `ActionQueue.enqueue`).
  *
- * Precondition: `pending.type === incoming.type` (enforced by `ActionQueue.enqueue`
- * before this router is invoked).
- *
- * Returns the merged action when a coalescing policy applies for that type, or
- * `null` when no coalescing is possible.
+ * @param pending - The action already waiting in the queue.
+ * @param incoming - The newly enqueued action of the same type.
+ * @returns The merged action when a policy applies, or `null` when no coalescing is possible.
  */
 export function tryCoalesce(pending: AppAction, incoming: AppAction): AppAction | null {
   return tryCoalesceAppAction(pending, incoming)

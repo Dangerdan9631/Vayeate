@@ -2,8 +2,11 @@ import type { Template } from '../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
 
 /**
- * Merge template color/contrast variables and mappings into a theme.
- * Used when changing theme template or template version.
+ * Merges template color and contrast variables into a theme when the template changes.
+ *
+ * @param theme - Existing theme whose assignments and token refs are preserved when valid.
+ * @param template - Target template supplying variable keys and template ref.
+ * @returns New theme with merged assignments and sanitized IDE/preview token refs.
  */
 export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): Theme {
   const templateRef = { name: template.name, version: template.version };

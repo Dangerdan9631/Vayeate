@@ -3,6 +3,9 @@ import { SetWindowStateOperation } from '../../../../domain/operations/window-op
 import { LoggerFactory, type Logger } from '../../../../domain/utils/logger';
 import { ValidateCanMinimizeWindow } from '../../../../domain/validations/window-validations/validate-can-minimize-window';
 
+/**
+ * Minimizes the main window when validation allows it.
+ */
 @singleton()
 export class MinimizeWindowController {
   private readonly log: Logger;
@@ -15,6 +18,9 @@ export class MinimizeWindowController {
     this.log = loggerFactory.create('WindowController');
   }
 
+  /**
+   * Skips minimize when the window is already minimized.
+   */
   run(): void {
     if (!this.validateCanMinimize.test()) {
       this.log.warn('minimizeWindow skipped: validation failed (window already minimized)');

@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SEMANTIC_REGISTRY_TEXT_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Updates one semantic registry list entry on the selected catalog.
+ */
 @singleton()
 export class UpdateSemanticTokenRegistryTextController {
   constructor(
@@ -30,6 +33,12 @@ export class UpdateSemanticTokenRegistryTextController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Commits edited text for a semantic registry row.
+   * @param kind - Registry list being edited (types, modifiers, or languages).
+   * @param index - Zero-based index within that list.
+   * @param value - Committed text from the row input.
+   */
   run(kind: SemanticTokenRegistryListKind, index: number, value: string): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

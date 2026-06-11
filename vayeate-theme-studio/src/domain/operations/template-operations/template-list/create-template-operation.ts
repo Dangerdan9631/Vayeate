@@ -5,12 +5,22 @@ import { createTemplateWithParams } from '../../../../model/factories/template-f
 import { singleton } from 'tsyringe';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
+/**
+ * Creates template and updates list or selection state.
+ */
+
 @singleton()
 export class CreateTemplateOperation {
   constructor(
     private readonly templateGateway: TemplateGateway,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the create template mutation.
+   * @param params Params ({ name: string }).
+   * @returns Promise resolving to Template.
+   */
 
   execute(params: { name: string }): Promise<Template> {
     const draft = createTemplateWithParams(params);

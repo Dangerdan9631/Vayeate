@@ -8,6 +8,9 @@ import { CreateThemeDialogActionType } from './actions/create-theme-dialog-actio
 const NAME_REGEX = /^[a-zA-Z0-9-]+$/;
 const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
 
+/**
+ * Read model returned by useCreateThemeDialogViewModel.
+ */
 export interface CreateThemeDialogViewModel {
   name: string;
   canSubmit: boolean;
@@ -17,6 +20,10 @@ export interface CreateThemeDialogViewModel {
   onNameChange: (value: string) => void;
 }
 
+/**
+ * Exposes Create Theme Dialog state and dispatches user or lifecycle actions.
+ * @returns View-model state and action callbacks for the component.
+ */
 export function useCreateThemeDialogViewModel(): CreateThemeDialogViewModel {
   const dispatch = useAppDispatch();
   const name = useStore(themeCreateDialogStore.api, (state): string => state.state.name);

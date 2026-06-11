@@ -14,6 +14,9 @@ import { normalizeThemeHex } from '../../../domain/utils/normalize-theme-hex';
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
 
+/**
+ * Exposes Theme Palette Card state and dispatches user or lifecycle actions.
+ */
 export function useThemePaletteCardViewModel() {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);

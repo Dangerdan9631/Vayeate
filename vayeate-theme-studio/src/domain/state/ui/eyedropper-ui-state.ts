@@ -6,6 +6,9 @@ import type {
 import type { Size } from '../../../model/point';
 import { ZERO_SIZE } from '../../../model/point';
 
+/**
+ * Eyedropper overlay UI state including capture snapshot, pointer, and commit target.
+ */
 export interface EyedropperUiState {
   isOpen: boolean;
   errorMessage: string | null;
@@ -16,6 +19,9 @@ export interface EyedropperUiState {
   overlayViewportSize: Size;
 }
 
+/**
+ * Default eyedropper overlay state when the tool is closed.
+ */
 export const initialEyedropperUiState: EyedropperUiState = {
   isOpen: false,
   errorMessage: null,

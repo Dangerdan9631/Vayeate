@@ -7,6 +7,9 @@ import { THEME_COLOR_VARIABLE_DARK_SET } from '../../../../model/undo-action-typ
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 
+/**
+ * Orchestrates set color variable dark work for the theme UI.
+ */
 @singleton()
 export class SetColorVariableDarkController {
   constructor(
@@ -16,6 +19,12 @@ export class SetColorVariableDarkController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param ref Input for this call.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(ref: ColorVariableKey | undefined, value: string): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme || !ref) return;

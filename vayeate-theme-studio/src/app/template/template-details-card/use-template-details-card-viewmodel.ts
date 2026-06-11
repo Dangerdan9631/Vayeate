@@ -11,6 +11,9 @@ import type { Mapping, Template } from '../../../model/schema/template-schemas';
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+/**
+ * Read model and action callbacks for the template details card.
+ */
 export interface TemplateDetailsCardViewModel {
   template: Template | null;
   isLatestVersion: boolean;
@@ -21,6 +24,10 @@ export interface TemplateDetailsCardViewModel {
   onLockClick: () => void;
 }
 
+/**
+ * Subscribes to the selected template and derives lock/delete affordances.
+ * @returns Template details card state and dispatch-backed handlers.
+ */
 export function useTemplateDetailsCardViewModel(): TemplateDetailsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);

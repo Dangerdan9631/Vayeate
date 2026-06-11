@@ -4,19 +4,44 @@ import type { ThemeName, Version } from '../../model/schema/primitives';
 import type { Theme, ThemeReference } from '../../model/schema/theme-schemas';
 import { FileSystemService } from '../services/file-system-service';
 
+/**
+ * Package-relative path: Theme Studio root `data/themes/`.
+ */
 const THEMES_RELATIVE_DIR = 'data/themes';
 
-/** Semver at end of filename: optional prerelease and build. */
+/**
+ * Semver at end of filename: optional prerelease and build.
+ */
 const FILENAME_VERSION_REGEX = /^(.+)-(\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?)$/;
 
+/**
+ * Builds the on-disk theme filename for a name and version pair.
+ *
+ * @param name - Theme name segment of the filename.
+ * @param version - Semver segment of the filename.
+ * @returns Filename in the form `<name>-<version>.theme.json`.
+ */
 function fileName(name: ThemeName, version: Version): string {
   return `${name}-${version}.theme.json`;
 }
 
+/**
+ * Resolves the package-relative path for a theme JSON file.
+ *
+ * @param name - Theme name.
+ * @param version - Theme version.
+ * @returns Path under `data/themes/`.
+ */
 function themeRelativeFilePath(name: ThemeName, version: Version): string {
   return `${THEMES_RELATIVE_DIR}/${fileName(name, version)}`;
 }
 
+/**
+ * Parses a theme filename (without path) into name and version, or null if not valid.
+ *
+ * @param baseName - Filename including extension.
+ * @returns Parsed reference, or null when the name does not match the expected pattern.
+ */
 function parseFileName(baseName: string): { name: ThemeName; version: Version } | null {
   if (!baseName.endsWith('.theme.json')) return null;
   const withoutExt = baseName.slice(0, -'.theme.json'.length);
@@ -27,10 +52,19 @@ function parseFileName(baseName: string): { name: ThemeName; version: Version } 
   return refResult.success ? refResult.data : null;
 }
 
+/**
+ * Persists themes under `data/themes/` with zod validation on read and write.
+ */
 @singleton()
 export class ThemeGateway {
   constructor(private readonly fileSystemService: FileSystemService) {}
 
+  /**
+   * Validates and writes a theme JSON file for its name and version.
+   *
+   * @param theme - Domain theme to persist.
+   * @returns Resolves when the file is saved.
+   */
   async saveTheme(theme: Theme): Promise<void> {
     const parsed = themeSchema.safeParse(theme);
     if (!parsed.success) {
@@ -40,6 +74,13 @@ export class ThemeGateway {
     await this.fileSystemService.saveFile(rel, JSON.stringify(parsed.data, null, 2));
   }
 
+  /**
+   * Loads and parses a theme file by name and version.
+   *
+   * @param name - Theme name.
+   * @param version - Theme version.
+   * @returns Parsed theme, or null when missing or invalid.
+   */
   async loadTheme(name: string, version: string): Promise<Theme | null> {
     const rel = themeRelativeFilePath(name, version);
     try {
@@ -56,6 +97,13 @@ export class ThemeGateway {
     }
   }
 
+  /**
+   * Deletes a theme file; missing files are ignored.
+   *
+   * @param name - Theme name.
+   * @param version - Theme version.
+   * @returns Resolves when delete completes or the file is absent.
+   */
   async deleteTheme(name: string, version: string): Promise<void> {
     const rel = themeRelativeFilePath(name, version);
     try {
@@ -65,6 +113,11 @@ export class ThemeGateway {
     }
   }
 
+  /**
+   * Lists theme name/version pairs inferred from filenames in `data/themes/`.
+   *
+   * @returns Valid theme references, or an empty list on I/O failure.
+   */
   async listThemes(): Promise<ThemeReference[]> {
     try {
       const names = await this.fileSystemService.listFiles(THEMES_RELATIVE_DIR);

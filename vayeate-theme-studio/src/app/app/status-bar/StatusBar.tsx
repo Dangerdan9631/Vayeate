@@ -1,5 +1,8 @@
 import { useStatusBarViewModel } from './use-status-bar-viewmodel';
 
+/**
+ * Footer showing action-queue and background-queue execution progress.
+ */
 export function StatusBar() {
   const {
     showProgressArea,

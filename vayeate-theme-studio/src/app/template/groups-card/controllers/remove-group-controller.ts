@@ -14,6 +14,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_GROUP_REMOVED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_GROUP_REMOVE_BUTTON_ON_CLICK by removing a template group.
+ */
 @singleton()
 export class RemoveGroupController {
   constructor(
@@ -29,6 +32,11 @@ export class RemoveGroupController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Removes a group from the selected template and records undo.
+   * @param groupId Group identifier from the remove button.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(groupId: string): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;

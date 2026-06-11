@@ -8,6 +8,10 @@ import { immediateContinuation } from '../../background-queue/immediate-continua
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
+/**
+ * Loads theme from persistence into the store.
+ */
+
 @singleton()
 export class LoadThemeOperation {
   constructor(
@@ -16,6 +20,13 @@ export class LoadThemeOperation {
     private readonly themeGateway: ThemeGateway,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load theme mutation.
+   * @param name Name (string).
+   * @param version Version (string).
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(name: string, version: string): ContinuationHandler {
     const ref = { name, version };

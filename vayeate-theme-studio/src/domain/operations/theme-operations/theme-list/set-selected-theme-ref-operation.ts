@@ -2,9 +2,19 @@ import { singleton } from 'tsyringe';
 import type { ThemeReference } from '../../../../model/schema/theme-schemas';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 
+/**
+ * Updates selected theme ref in the domain or UI store.
+ */
+
 @singleton()
 export class SetSelectedThemeRefOperation {
   constructor(private readonly themeUiStore: ThemeUiStore) {}
+
+  /**
+   * Runs the set selected theme ref mutation.
+   * @param ref Ref (ThemeReference | null).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(ref: ThemeReference | null): void {
     this.themeUiStore.getStore().setSelectedRef(ref);

@@ -5,7 +5,9 @@ import { computeDisplayColorAssignments } from './compute-display-color-assignme
 import { computeSelectedColorsDisplay } from './compute-selected-colors-display';
 import { computeOrphanColorKeys, computeOrphanContrastKeys } from './theme-orphan-keys';
 
-/** Inputs read by {@link deriveThemePaneFields}; kept in one place for equality checks. */
+/**
+ * Inputs read by {@link deriveThemePaneFields}; kept in one place for equality checks.
+ */
 export interface ThemePaneDerivationInputs {
   colorAssignments: readonly ColorAssignment[] | null;
   templateRef: TemplateReference | null;
@@ -15,6 +17,12 @@ export interface ThemePaneDerivationInputs {
   checkedColorRefs: readonly string[];
 }
 
+/**
+ * Selects the theme pane slice fields that drive derived display computations.
+ *
+ * @param state - Current theme UI store snapshot.
+ * @returns Inputs compared by {@link areThemePaneDerivationInputsEqual} before recomputing.
+ */
 export function selectThemePaneDerivationInputs(state: ThemeUiState): ThemePaneDerivationInputs {
   const theme = state.theme;
   return {
@@ -27,6 +35,13 @@ export function selectThemePaneDerivationInputs(state: ThemeUiState): ThemePaneD
   };
 }
 
+/**
+ * Shallow-compares theme pane derivation inputs for memoization guards.
+ *
+ * @param before - Previous derivation inputs.
+ * @param after - Current derivation inputs.
+ * @returns True when all tracked fields are referentially or strictly equal.
+ */
 export function areThemePaneDerivationInputsEqual(
   before: ThemePaneDerivationInputs,
   after: ThemePaneDerivationInputs,
@@ -42,8 +57,10 @@ export function areThemePaneDerivationInputsEqual(
 }
 
 /**
- * Recomputes palette/editor preview display fields from theme + pane inputs.
- * Call after any themes slice update that can affect hue, selection, or theme data.
+ * Recomputes palette and editor preview display fields from theme pane inputs.
+ *
+ * @param themes - Theme UI state snapshot to derive from.
+ * @returns Updated state with display assignments, selection summary, and orphan key lists.
  */
 export function deriveThemePaneFields(themes: ThemeUiState): ThemeUiState {
   const inputs = selectThemePaneDerivationInputs(themes);

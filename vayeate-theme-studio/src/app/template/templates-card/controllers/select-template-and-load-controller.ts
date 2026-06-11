@@ -7,6 +7,9 @@ import { LoadTemplateOperation } from '../../../../domain/operations/template-op
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 import { deriveUndoContext } from '../../../../model/undo-history';
 
+/**
+ * Handles TEMPLATE_TEMPLATES_LIST_ON_COMMIT by selecting and loading a template.
+ */
 @singleton()
 export class SelectTemplateAndLoadController {
   constructor(
@@ -18,6 +21,12 @@ export class SelectTemplateAndLoadController {
     private readonly setCurrentUndoStackId?: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Selects a template reference and loads its editor state.
+   * @param name Template name from the list commit.
+   * @param version Template version from the list commit.
+   * @returns Resolves when selection and load complete.
+   */
   async run(name: string, version: string): Promise<void> {
     const ref = { name, version };
     this.setSelectedTemplateRef.execute(ref);

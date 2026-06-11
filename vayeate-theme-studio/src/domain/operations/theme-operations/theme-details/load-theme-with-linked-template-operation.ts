@@ -9,6 +9,10 @@ import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
+/**
+ * Loads theme with linked template from persistence into the store.
+ */
+
 @singleton()
 export class LoadThemeWithLinkedTemplateOperation {
   constructor(
@@ -19,6 +23,13 @@ export class LoadThemeWithLinkedTemplateOperation {
     private readonly templateGateway: TemplateGateway,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load theme with linked template mutation.
+   * @param name Name (string).
+   * @param version Version (string).
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(name: string, version: string): ContinuationHandler {
     return this.enqueueBackgroundQueue.execute(

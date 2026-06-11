@@ -4,6 +4,9 @@ import { ClearThemeSaveErrorController } from '../controllers/clear-theme-save-e
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemePageActions, ThemePageActionType } from './theme-page-action-type';
 
+/**
+ * Routes Theme Page actions to their controllers.
+ */
 @singleton()
 export class ThemePageHandler {
   private readonly log: Logger;
@@ -16,6 +19,11 @@ export class ThemePageHandler {
     this.log = loggerFactory.create(ThemePageHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: ThemePageActions): Promise<void> {
     switch (action.type) {
       case ThemePageActionType.PageOnLoad:

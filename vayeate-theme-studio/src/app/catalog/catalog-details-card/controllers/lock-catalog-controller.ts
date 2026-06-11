@@ -13,6 +13,9 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/un
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_LOCKED } from '../../../../model/undo-action-types';
 
+/**
+ * Locks a manual catalog on the latest version so tokens cannot be edited.
+ */
 @singleton()
 export class LockCatalogController {
   constructor(
@@ -28,6 +31,9 @@ export class LockCatalogController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Locks the selected catalog when validation allows.
+   */
   run(): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

@@ -36,6 +36,9 @@ function ThemePreviewsFallback() {
   );
 }
 
+/**
+ * Renders the Lazy Editor Previews Card UI for the theme editor.
+ */
 export function LazyEditorPreviewsCard() {
   const { onPagePreviewsLoad } = useLazyEditorPreviewsCardViewModel();
   const hasQueuedPreviewLoadRef = useRef(false);

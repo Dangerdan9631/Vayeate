@@ -5,6 +5,9 @@ import { SetTemplateAddGroupNameController } from "../controllers/set-template-a
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { GroupsCardActions, GroupsCardActionType } from "./groups-card-action-type";
 
+/**
+ * Routes template groups card actions to their controllers.
+ */
 @singleton()
 export class GroupsCardHandler {
   private readonly log: Logger;
@@ -18,6 +21,11 @@ export class GroupsCardHandler {
     this.log = loggerFactory.create(GroupsCardHandler.name);
   }
 
+  /**
+   * Dispatches a groups card action to its controller.
+   * @param action Typed card action from the action queue.
+   * @returns Resolves when the controller finishes.
+   */
   async handle(action: GroupsCardActions): Promise<void> {
     switch (action.type) {
       case GroupsCardActionType.GroupAddTextOnChange:

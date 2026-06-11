@@ -11,6 +11,10 @@ const noopContinuation: ContinuationHandler = {
   then: () => {},
 };
 
+/**
+ * Refreshes template refs and select from persistence or derived state.
+ */
+
 @singleton()
 export class RefreshTemplateRefsAndSelectOperation {
   constructor(
@@ -19,6 +23,15 @@ export class RefreshTemplateRefsAndSelectOperation {
     private readonly templateGateway: TemplateGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the refresh template refs and select mutation.
+   * @param selectName Select name (string).
+   * @param selectVersion Select version (string).
+   * @param template Template (Template).
+   * @param refsChanged Refs changed (unknown).
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(
     selectName?: string,

@@ -18,6 +18,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKEN_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Adds a plain or semantic token to the selected manual catalog version.
+ */
 @singleton()
 export class AddNewTokenController {
   constructor(
@@ -35,6 +38,11 @@ export class AddNewTokenController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Appends a token or merges a semantic selector when inputs are valid.
+   * @param tokenType - Theme, textmate, or semantic token type being added.
+   * @param key - Optional explicit key; defaults to pending new-token key UI state.
+   */
   run(tokenType: TokenType, key?: string): void {
     const store = this.catalogsStore.getStore();
     const state = this.catalogUiStore.getStore().state;

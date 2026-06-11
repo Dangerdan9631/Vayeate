@@ -8,12 +8,20 @@ import {
 } from './record-undo-entry-operation';
 import { undoValuesEqual } from './undo-values-equal';
 
+/**
+ * Input or state shape for record theme undo diff input.
+ */
+
 export interface RecordThemeUndoDiffInput {
   actionType: ThemeUndoActionType | string;
   target: string;
   before: unknown;
   after: unknown;
 }
+
+/**
+ * Input or state shape for record theme undo input.
+ */
 
 export interface RecordThemeUndoInput {
   description: string;
@@ -25,12 +33,22 @@ export interface RecordThemeUndoInput {
   coalesceWithPrevious?: boolean;
 }
 
+/**
+ * Records an undo entry after theme undo completes.
+ */
+
 @singleton()
 export class RecordThemeUndoOperation {
   constructor(
     private readonly recordUndoEntry: RecordUndoEntryOperation,
     private readonly buildUniversalUndoProcessor: BuildUniversalUndoProcessorOperation,
   ) {}
+
+  /**
+   * Runs the record theme undo mutation.
+   * @param input Input (RecordThemeUndoInput).
+   * @returns Promise resolving to RecordUndoEntryResult.
+   */
 
   async execute(input: RecordThemeUndoInput): Promise<RecordUndoEntryResult> {
     const diffs: UndoDiff[] = [

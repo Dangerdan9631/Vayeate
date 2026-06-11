@@ -34,6 +34,9 @@ interface EyedropperUiStoreState {
   setEyedropperOverlayViewportSize: (size: Size) => void;
 }
 
+/**
+ * Zustand store for eyedropper overlay lifecycle, capture, and pointer state.
+ */
 @singleton()
 export class EyedropperUiStore {
   private store = createStore<EyedropperUiStoreState>()(
@@ -81,10 +84,17 @@ export class EyedropperUiStore {
     })),
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live eyedropper UI store state and setters.
+   */
   getStore(): EyedropperUiStoreState {
     return this.store.getState();
   }

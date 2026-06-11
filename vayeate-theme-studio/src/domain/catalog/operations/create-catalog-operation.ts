@@ -6,6 +6,9 @@ import { CatalogsStore } from '../state/catalogs-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../operations/background-queue/enqueue-background-queue-action-operation';
 import { CatalogType } from '../../../model/schema/primitives';
 
+/**
+ * Creates a new catalog at version 1.0.0 in memory and schedules disk persist.
+ */
 @singleton()
 export class CreateCatalogOperation {
   constructor(
@@ -14,6 +17,12 @@ export class CreateCatalogOperation {
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
 
+  /**
+   * Builds a default empty catalog, upserts it into the store, and enqueues save I/O.
+   *
+   * @param params - Display name and catalog type (`manual` or `remote`).
+   * @returns Name/version ref for the new catalog.
+   */
   execute(params: { name: string; type: CatalogType }): CatalogReference {
     const catalog = {
       name: params.name,

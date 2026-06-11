@@ -11,6 +11,9 @@ interface UiStoreState {
     openMenu: (menuId: MenuId) => void;
 }
 
+/**
+ * Zustand store for shell tab and menu visibility state.
+ */
 @singleton()
 export class UiStore {
     private store = createStore<UiStoreState>()(
@@ -28,10 +31,17 @@ export class UiStore {
         }))
     );
 
+    /**
+     * Zustand store API for React subscriptions via viewmodels.
+     */
     get api() {
         return this.store;
     }
 
+    /**
+     * Returns the current snapshot and mutation methods for domain operations.
+     * @returns Live shell UI store state and setters.
+     */
     getStore(): UiStoreState {
         return this.store.getState();
     }

@@ -1,6 +1,12 @@
 import type { Hsl, Rgb } from './color-types';
 import { hexToRgb, rgbToHex } from './color-hex';
 
+/**
+ * Converts normalized RGB channels to HSL representation.
+ *
+ * @param rgb - Input color with channels in [0, 1].
+ * @returns HSL color with hue in [0, 1].
+ */
 export function rgbToHsl(rgb: Rgb): Hsl {
   const max = Math.max(rgb.r, rgb.g, rgb.b);
   const min = Math.min(rgb.r, rgb.g, rgb.b);
@@ -35,6 +41,12 @@ function hueToRgb(p: number, q: number, t: number): number {
   return p;
 }
 
+/**
+ * Converts HSL color to normalized RGB channels.
+ *
+ * @param hsl - Input HSL color with hue in [0, 1].
+ * @returns RGB color with channels in [0, 1].
+ */
 export function hslToRgb(hsl: Hsl): Rgb {
   if (hsl.s === 0) {
     return { r: hsl.l, g: hsl.l, b: hsl.l };
@@ -51,7 +63,10 @@ export function hslToRgb(hsl: Hsl): Rgb {
 }
 
 /**
- * Return hue of a hex color in [0, 1]. Uses rgbToHsl; grays return 0. Invalid hex returns 0.
+ * Returns the hue component of a hex color in [0, 1].
+ *
+ * @param hex - Hex color string to inspect.
+ * @returns Hue in [0, 1]; grays and invalid hex return 0.
  */
 export function hexToHue(hex: string): number {
   try {
@@ -64,8 +79,11 @@ export function hexToHue(hex: string): number {
 }
 
 /**
- * Shift hue of a hex color. shift in [-1, 1] (e.g. slider value / 100); ±1 is a full rotation.
- * Invalid hex is returned unchanged.
+ * Rotates the hue of a hex color by a fractional turn.
+ *
+ * @param hex - Source hex color to shift.
+ * @param shift - Hue delta in [-1, 1] where ±1 is a full rotation.
+ * @returns Shifted hex color, or the original string when hex is invalid.
  */
 export function applyHueShift(hex: string, shift: number): string {
   try {

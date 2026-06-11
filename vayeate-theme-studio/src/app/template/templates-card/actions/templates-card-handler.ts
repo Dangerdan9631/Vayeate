@@ -4,6 +4,9 @@ import { SelectTemplateAndLoadController } from "../controllers/select-template-
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { TemplatesCardActions, TemplatesCardActionType } from "./templates-card-action-type";
 
+/**
+ * Routes Templates list card actions to their controllers.
+ */
 @singleton()
 export class TemplatesCardHandler {
   private readonly log: Logger;
@@ -16,6 +19,11 @@ export class TemplatesCardHandler {
     this.log = loggerFactory.create(TemplatesCardHandler.name);
   }
 
+  /**
+   * Dispatches a Templates list card action to its controller.
+   * @param action Typed card action from the action queue.
+   * @returns Resolves when the controller finishes.
+   */
   async handle(action: TemplatesCardActions): Promise<void> {
     switch (action.type) {
       case TemplatesCardActionType.TemplatesListOnCommit:

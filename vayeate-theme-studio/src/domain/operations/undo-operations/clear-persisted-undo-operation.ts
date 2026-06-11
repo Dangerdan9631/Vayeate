@@ -4,12 +4,21 @@ import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enque
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../model/background-queue';
 import { UndoPersistencePort } from './undo-persistence-port';
 
+/**
+ * Clears persisted undo from the store.
+ */
+
 @singleton()
 export class ClearPersistedUndoOperation {
   constructor(
     private readonly undoPersistence: UndoPersistencePort,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) { }
+
+  /**
+   * Runs execute now for clear persisted undo.
+   * @returns Promise resolving to void.
+   */
 
   async executeNow(): Promise<void> {
     undoManagerV2.configure({
@@ -20,6 +29,11 @@ export class ClearPersistedUndoOperation {
     });
     await undoManagerV2.clearPersisted();
   }
+
+  /**
+   * Runs the clear persisted undo mutation.
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(

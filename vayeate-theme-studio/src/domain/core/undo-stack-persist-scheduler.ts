@@ -1,5 +1,11 @@
 import type { UndoPersistenceAdapter } from './undo-stack-types';
 
+/**
+ * Enqueues a background job with a human-readable label for undo stack persistence.
+ *
+ * @param description Queue label shown for the persist job.
+ * @param run Async work that writes the latest stack payload to disk.
+ */
 export type PersistEnqueueFn = (
   description: string,
   run: () => void | Promise<void>,
@@ -11,6 +17,9 @@ interface PendingPersist {
   job: Promise<void>;
 }
 
+/**
+ * Coalesces per-stack persist writes and exposes flush and cancel for release and shutdown.
+ */
 export interface UndoStackPersistScheduler {
   schedulePersist(stackId: string, adapter: UndoPersistenceAdapter, payload: string): void;
   flushPersist(stackId: string): Promise<void>;
@@ -18,6 +27,12 @@ export interface UndoStackPersistScheduler {
   cancelAll(): void;
 }
 
+/**
+ * Creates a scheduler that batches rapid stack changes into one persist job per stack id.
+ *
+ * @param enqueue Background queue hook used to run persist work without blocking callers.
+ * @returns A scheduler that coalesces payloads and supports flush and cancel.
+ */
 export function createUndoStackPersistScheduler(enqueue: PersistEnqueueFn): UndoStackPersistScheduler {
   const pendingByStackId = new Map<string, PendingPersist>();
 

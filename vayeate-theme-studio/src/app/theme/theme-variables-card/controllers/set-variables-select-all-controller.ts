@@ -7,6 +7,9 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { recordThemePaneSelectionUndo } from './record-theme-pane-selection-undo';
 
+/**
+ * Orchestrates set variables select all work for the theme UI.
+ */
 @singleton()
 export class SetVariablesSelectAllController {
   constructor(
@@ -18,6 +21,11 @@ export class SetVariablesSelectAllController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param checked Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(checked?: boolean): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

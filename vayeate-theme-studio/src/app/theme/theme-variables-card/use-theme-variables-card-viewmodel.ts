@@ -23,6 +23,9 @@ function matchesSearch(key: string, searchQuery: string): boolean {
   return !q || key.toLowerCase().includes(q);
 }
 
+/**
+ * Exposes Theme Variables Card state and dispatches user or lifecycle actions.
+ */
 export function useThemeVariablesCardViewModel() {
   const dispatch = useAppDispatch();
   const themeTemplateRef = useStore(themeUiStore.api, (state) => state.state.theme?.templateRef);

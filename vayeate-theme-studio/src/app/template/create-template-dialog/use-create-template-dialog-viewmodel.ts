@@ -9,6 +9,9 @@ import { TemplateCreateDialogActionType } from './actions/template-create-dialog
 const validateIsTemplateNameValid = container.resolve(ValidateIsTemplateNameValid);
 const createTemplateDialogStore = container.resolve(CreateTemplateDialogStore);
 
+/**
+ * Read model and action callbacks for the create-template dialog.
+ */
 export interface CreateTemplateDialogViewModel {
   name: string;
   canSubmit: boolean;
@@ -18,6 +21,10 @@ export interface CreateTemplateDialogViewModel {
   onOkClick: () => void;
 }
 
+/**
+ * Subscribes to create-dialog state and exposes validated submit callbacks.
+ * @returns Create dialog form state and dispatch-backed handlers.
+ */
 export function useCreateTemplateDialogViewModel(): CreateTemplateDialogViewModel {
   const dispatch = useAppDispatch();
   const name = useStore(createTemplateDialogStore.api, (state) => state.state?.name ?? '');

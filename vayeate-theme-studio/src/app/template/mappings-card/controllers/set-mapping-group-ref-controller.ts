@@ -14,6 +14,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_MAPPING_GROUP_REF_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_MAPPING_EXISTING_TOKEN_GROUP_LIST_ON_COMMIT by assigning a mapping group.
+ */
 @singleton()
 export class SetMappingGroupRefController {
   constructor(
@@ -29,6 +32,13 @@ export class SetMappingGroupRefController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Updates the group ref for a token mapping and records undo.
+   * @param tokenKey Token key from the group list commit.
+   * @param tokenType Token type discriminant for the mapping row.
+   * @param groupRef Group ref chosen in the list, or null to clear.
+   * @returns Resolves when the template update and undo recording finish.
+   */
   async run(
     tokenKey: string,
     tokenType: TokenType,

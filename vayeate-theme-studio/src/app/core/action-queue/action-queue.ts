@@ -14,10 +14,20 @@ function describeAction(action: AppAction): string {
     .join(' ');
 }
 
+/**
+ * Minimal contract for enqueueing UI-originated actions into the renderer pipeline.
+ */
 export interface IActionQueue {
+  /**
+   * Adds an action to the queue and starts processing when idle.
+   */
   enqueue(action: AppAction): void;
 }
 
+/**
+ * Serial FIFO queue for `AppAction` signals from the renderer.
+ * Coalesces compatible pending actions before appending and routes each item through `ActionProcessor`.
+ */
 @singleton()
 export class ActionQueue implements IActionQueue {
   private queue: AppAction[] = [];

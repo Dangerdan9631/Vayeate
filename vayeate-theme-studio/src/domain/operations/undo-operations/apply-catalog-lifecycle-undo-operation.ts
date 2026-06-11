@@ -10,6 +10,10 @@ import { RefreshCatalogRefsAndSelectOperation } from '../delete/refresh-catalog-
 import { SetSelectedCatalogOperation } from '../delete/set-selected-catalog-operation';
 import { ApplyCatalogUndoStateOperation } from './apply-catalog-undo-state-operation';
 
+/**
+ * Applies catalog lifecycle undo to the store as part of undo or theme replay.
+ */
+
 @singleton()
 export class ApplyCatalogLifecycleUndoOperation {
   constructor(
@@ -19,6 +23,13 @@ export class ApplyCatalogLifecycleUndoOperation {
     private readonly loadCatalogRefs: LoadCatalogRefsOperation,
     private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
   ) {}
+
+  /**
+   * Runs apply version deleted for apply catalog lifecycle undo.
+   * @param before Before (CatalogLifecycleUndoSnapshot).
+   * @param after After (CatalogLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   applyVersionDeleted(before: CatalogLifecycleUndoSnapshot, after: CatalogLifecycleUndoSnapshot): void {
     const catalog = before.catalog;
@@ -31,15 +42,34 @@ export class ApplyCatalogLifecycleUndoOperation {
       });
   }
 
+  /**
+   * Runs revert version deleted for apply catalog lifecycle undo.
+   * @param before Before (CatalogLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   revertVersionDeleted(before: CatalogLifecycleUndoSnapshot): void {
     if (!before.catalog) return;
     this.applyCatalogUndoState.execute(before.catalog);
   }
 
+  /**
+   * Runs apply created for apply catalog lifecycle undo.
+   * @param after After (CatalogLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   applyCreated(after: CatalogLifecycleUndoSnapshot): void {
     if (!after.catalog) return;
     this.applyCatalogUndoState.execute(after.catalog);
   }
+
+  /**
+   * Runs revert created for apply catalog lifecycle undo.
+   * @param before Before (CatalogLifecycleUndoSnapshot).
+   * @param after After (CatalogLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   revertCreated(before: CatalogLifecycleUndoSnapshot, after: CatalogLifecycleUndoSnapshot): void {
     const catalog = after.catalog;
@@ -52,9 +82,21 @@ export class ApplyCatalogLifecycleUndoOperation {
       });
   }
 
+  /**
+   * Runs apply reverted to version for apply catalog lifecycle undo.
+   * @param after After (Catalog).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   applyRevertedToVersion(after: Catalog): void {
     this.applyCatalogUndoState.execute(after);
   }
+
+  /**
+   * Runs revert reverted to version for apply catalog lifecycle undo.
+   * @param before Before (CatalogRevertedToVersionUndoBefore).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   revertRevertedToVersion(before: CatalogRevertedToVersionUndoBefore): void {
     this.deleteCatalog.execute(before.deleteVersion.name, before.deleteVersion.version)

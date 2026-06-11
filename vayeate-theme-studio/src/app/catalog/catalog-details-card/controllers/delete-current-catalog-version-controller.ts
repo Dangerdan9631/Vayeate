@@ -12,6 +12,9 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/un
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_VERSION_DELETED } from '../../../../model/undo-action-types';
 
+/**
+ * Deletes the selected catalog version and selects the nearest remaining version.
+ */
 @singleton()
 export class DeleteCurrentCatalogVersionController {
   constructor(
@@ -26,6 +29,10 @@ export class DeleteCurrentCatalogVersionController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Removes the current version from disk and updates selection.
+   * @returns Promise that settles when delete, reload, and undo recording complete.
+   */
   async run(): Promise<void> {
     const ref = this.catalogUiStore.getStore().state.selectedRef;
     if (!ref) return;

@@ -14,6 +14,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_MAPPING_REMOVED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK by removing a mapping.
+ */
 @singleton()
 export class RemoveMappingController {
   constructor(
@@ -29,6 +32,12 @@ export class RemoveMappingController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Removes a token mapping or semantic variant from the selected template.
+   * @param tokenKey Token key from the remove button.
+   * @param tokenType Token type discriminant for the mapping row.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(tokenKey: string, tokenType: TokenType): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;

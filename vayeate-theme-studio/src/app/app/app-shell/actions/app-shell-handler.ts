@@ -10,6 +10,9 @@ import { AppShellActions, AppShellActionType } from './app-shell-action-type';
 import { LoadAppController } from '../controllers/load-app-controller';
 import { UnloadAppController } from '../controllers/unload-app-controller';
 
+/**
+ * Routes app shell actions to lifecycle and window chrome controllers.
+ */
 @singleton()
 export class AppShellHandler {
   private readonly log: Logger;
@@ -28,6 +31,10 @@ export class AppShellHandler {
     this.log = loggerFactory.create(AppShellHandler.name);
   }
 
+  /**
+   * Dispatches one app shell action to its controller entry point.
+   * @param action Shell action to handle; must be a member of {@link AppShellActions}.
+   */
   async handle(action: AppShellActions): Promise<void> {
     switch (action.type) {
       case AppShellActionType.PageOnLoad:

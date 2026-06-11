@@ -1,6 +1,10 @@
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useTemplateCatalogsCardViewModel } from './use-template-catalogs-card-viewmodel';
 
+/**
+ * Renders linked catalogs with inclusion toggles and version pins.
+ * @returns Template catalogs card UI wired to its viewmodel.
+ */
 export function TemplateCatalogsCard() {
   const {
     template,

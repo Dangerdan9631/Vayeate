@@ -1,6 +1,10 @@
 import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useGroupsCardViewModel } from './use-groups-card-viewmodel';
 
+/**
+ * Renders the template group list with add and remove controls.
+ * @returns Groups card UI wired to its viewmodel.
+ */
 export function GroupsCard() {
   const {
     template,

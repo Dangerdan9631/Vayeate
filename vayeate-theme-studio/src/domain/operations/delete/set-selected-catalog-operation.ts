@@ -5,6 +5,10 @@ import { CatalogUiStore } from '../../state/ui/catalog-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 import { CatalogGateway } from '../../../gateway/catalog/catalog-gateway';
 
+/**
+ * Updates selected catalog in the domain or UI store.
+ */
+
 @singleton()
 export class SetSelectedCatalogOperation {
   constructor(
@@ -13,6 +17,12 @@ export class SetSelectedCatalogOperation {
     private readonly catalogGateway: CatalogGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the set selected catalog mutation.
+   * @param ref Ref (CatalogReference | null).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(ref: CatalogReference | null): void {
     this.catalogUiStore.getStore().selectCatalog(ref);

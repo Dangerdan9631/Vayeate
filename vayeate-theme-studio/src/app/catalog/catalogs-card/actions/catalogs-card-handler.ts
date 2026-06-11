@@ -4,6 +4,9 @@ import { OpenCatalogCreateDialogController } from "../../create-dialog/controlle
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { CatalogsCardActions, CatalogsCardActionType } from "./catalogs-card-action-type";
 
+/**
+ * Routes catalogs picker actions to selection and create-dialog controllers.
+ */
 @singleton()
 export class CatalogsCardHandler {
   private readonly log: Logger;
@@ -16,6 +19,11 @@ export class CatalogsCardHandler {
     this.log = loggerFactory.create(CatalogsCardHandler.name);
   }
 
+  /**
+   * Dispatches a catalogs card action to the matching controller.
+   * @param action - Catalogs card action from the queue.
+   * @returns Promise that settles when handling completes.
+   */
   async handle(action: CatalogsCardActions): Promise<void> {
     switch (action.type) {
       case CatalogsCardActionType.CatalogsListOnCommit:

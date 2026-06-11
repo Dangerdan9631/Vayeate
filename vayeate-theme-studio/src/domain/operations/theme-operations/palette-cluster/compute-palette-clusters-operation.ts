@@ -4,6 +4,10 @@ import { ThemePreviewStore } from '../../../state/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { buildPaletteClusterGroupInputs } from '../../../utils/palette-cluster-inputs';
 
+/**
+ * Computes palette clusters from current theme or catalog data.
+ */
+
 @singleton()
 export class ComputePaletteClustersOperation {
   private requestGeneration = 0;
@@ -13,6 +17,11 @@ export class ComputePaletteClustersOperation {
     private readonly themePreviewStore: ThemePreviewStore,
     private readonly clusteringService: ClusteringService,
   ) {}
+
+  /**
+   * Runs the compute palette clusters mutation.
+   * @returns Promise resolving to void.
+   */
 
   async execute(): Promise<void> {
     const generation = ++this.requestGeneration;

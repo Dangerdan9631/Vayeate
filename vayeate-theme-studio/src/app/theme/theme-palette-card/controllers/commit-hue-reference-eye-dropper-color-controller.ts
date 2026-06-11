@@ -8,6 +8,9 @@ import type { HexColor } from '../../../../model/schema/primitives';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { recordCommitHueReferenceColorUndo } from './record-commit-hue-reference-color-undo';
 
+/**
+ * Orchestrates commit hue reference eye dropper color work for the theme UI.
+ */
 @singleton()
 export class CommitHueReferenceEyeDropperColorController {
   constructor(
@@ -18,6 +21,11 @@ export class CommitHueReferenceEyeDropperColorController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(value: HexColor): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

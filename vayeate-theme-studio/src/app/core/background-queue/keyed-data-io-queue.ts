@@ -14,6 +14,9 @@ import { UpdateBackgroundQueueStatusController } from './controllers/update-back
 import { IBackgroundQueue } from './ibackground-queue';
 import { QueuedWork } from './queued-work';
 
+/**
+ * Maximum number of concurrent keyed read operations across all keys.
+ */
 export const DEFAULT_DATA_IO_READ_CONCURRENCY_LIMIT = 16;
 
 interface KeyLaneItem {
@@ -21,6 +24,9 @@ interface KeyLaneItem {
   work: QueuedWork;
 }
 
+/**
+ * Keyed data I/O queue: serial per key for writes, pooled reads, and a global serial lane when no key is supplied.
+ */
 @injectable()
 export class KeyedDataIoQueue implements IBackgroundQueue {
   private readonly log: Logger;

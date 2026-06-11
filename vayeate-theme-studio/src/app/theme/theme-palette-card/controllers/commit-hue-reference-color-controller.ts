@@ -7,6 +7,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { recordCommitHueReferenceColorUndo } from './record-commit-hue-reference-color-undo';
 
+/**
+ * Orchestrates commit hue reference color work for the theme UI.
+ */
 @singleton()
 export class CommitHueReferenceColorController {
   constructor(
@@ -17,6 +20,11 @@ export class CommitHueReferenceColorController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(value: string): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

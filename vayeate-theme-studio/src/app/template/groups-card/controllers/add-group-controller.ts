@@ -13,6 +13,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_GROUP_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Adds a named group to the selected template and records undo.
+ */
 @singleton()
 export class AddGroupController {
   constructor(
@@ -28,6 +31,11 @@ export class AddGroupController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Bumps the template version, adds the group, persists, and records undo.
+   * @param name Group name to add.
+   * @returns True when the group was added; false when the template or name is invalid.
+   */
   async run(name: string): Promise<boolean> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return false;

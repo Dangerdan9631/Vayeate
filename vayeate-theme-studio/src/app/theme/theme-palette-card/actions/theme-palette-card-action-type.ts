@@ -3,6 +3,9 @@ import type { ThemePaneState } from '../../../../model/theme-pane-state';
 import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
+/**
+ * Action type literals dispatched from the Theme Palette Card.
+ */
 export enum ThemePaletteCardActionType {
   ApplyToDarkCheckboxOnToggle = 'THEME_PALETTE_APPLY_TO_DARK_CHECKBOX_ON_TOGGLE',
   ApplyToLightCheckboxOnToggle = 'THEME_PALETTE_APPLY_TO_LIGHT_CHECKBOX_ON_TOGGLE',
@@ -23,6 +26,9 @@ export enum ThemePaletteCardActionType {
   ColorRefsSelectionCommit = 'THEME_PALETTE_COLOR_REFS_SELECTION_COMMIT',
 }
 
+/**
+ * Union of actions handled by the Theme Palette Card.
+ */
 export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.ApplyToDarkCheckboxOnToggle; checked: boolean }
   | { type: ThemePaletteCardActionType.ApplyToLightCheckboxOnToggle; checked: boolean }
@@ -45,6 +51,10 @@ export type ThemePaletteCardActions =
 
 const themePaletteCardTypes = new Set<string>(Object.values(ThemePaletteCardActionType));
 
+/**
+ * Returns whether the app action belongs to the Theme Palette Card.
+ * @param a Input for this call.
+ */
 export function isThemePaletteCardAction(a: AppAction): a is ThemePaletteCardActions {
   return themePaletteCardTypes.has(a.type);
 }
@@ -55,6 +65,12 @@ const themePaletteCardCoalescers: Partial<Record<ThemePaletteCardActionType, Act
   [ThemePaletteCardActionType.ClusterCountSliderOnDelta]: coalesceLatest,
 };
 
+/**
+ * Coalesces consecutive Theme Palette Card actions when the action queue merges duplicate streams.
+ * @param pending Input for this call.
+ * @param incoming Input for this call.
+ * @returns Coalesced action, or null when coalescing does not apply.
+ */
 export function tryCoalesceThemePaletteCardAction(
   pending: ThemePaletteCardActions,
   incoming: ThemePaletteCardActions,

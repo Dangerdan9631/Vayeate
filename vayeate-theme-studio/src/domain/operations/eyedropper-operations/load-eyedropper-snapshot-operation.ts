@@ -4,6 +4,10 @@ import type { EyedropperDisplaySnapshotEntry } from '../../../model/eyedropper';
 import { EyedropperUiStore } from '../../state/ui/eyedropper-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 
+/**
+ * Loads eyedropper snapshot from persistence into the store.
+ */
+
 @singleton()
 export class LoadEyedropperSnapshotOperation {
   constructor(
@@ -11,6 +15,11 @@ export class LoadEyedropperSnapshotOperation {
     private readonly screenshotService: ScreenshotService,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load eyedropper snapshot mutation.
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(): void {
     this.enqueueBackgroundQueue.execute(

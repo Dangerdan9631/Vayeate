@@ -5,6 +5,9 @@ import { SignalBackgroundQueueProcessingCompleteController } from './controllers
 import { UpdateBackgroundQueueStatusController } from './controllers/update-background-queue-status-controller';
 import { SerialQueue } from './serial-queue';
 
+/**
+ * Serial `main` background queue for work that must not run concurrently on the renderer.
+ */
 @singleton()
 export class MainBackgroundQueue extends SerialQueue {
   constructor(

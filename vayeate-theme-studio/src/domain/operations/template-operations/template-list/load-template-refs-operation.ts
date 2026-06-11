@@ -5,6 +5,10 @@ import { TemplateUiStore } from '../../../state/ui/template-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
+/**
+ * Loads template refs from persistence into the store.
+ */
+
 @singleton()
 export class LoadTemplateRefsOperation {
   constructor(
@@ -13,6 +17,11 @@ export class LoadTemplateRefsOperation {
     private readonly templateGateway: TemplateGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load template refs mutation.
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(): ContinuationHandler {
     this.templateUiStore.getStore().setPageLoadState('loading');

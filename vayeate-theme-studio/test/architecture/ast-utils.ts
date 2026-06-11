@@ -5,10 +5,14 @@ import ts from 'typescript';
 
 const thisDir = path.dirname(fileURLToPath(import.meta.url));
 
-/** App `src` root (`vayeate-theme-studio/src`), resolved from this file's directory. */
+/**
+ * App `src` root (`vayeate-theme-studio/src`), resolved from this file's directory.
+ */
 export const srcRoot = path.resolve(thisDir, '../../src');
 
-/** Electron main/preload root (`vayeate-theme-studio/electron`). */
+/**
+ * Electron main/preload root (`vayeate-theme-studio/electron`).
+ */
 export const electronRoot = path.resolve(thisDir, '../../electron');
 
 function walkFiles(dir: string): string[] {
@@ -24,7 +28,9 @@ function walkFiles(dir: string): string[] {
   return out;
 }
 
-/** All files under `srcRoot` with the given extension(s). */
+/**
+ * All files under `srcRoot` with the given extension(s).
+ */
 export function listSourceFiles(extensions: string[]): string[] {
   const extSet = new Set(extensions.map((e) => (e.startsWith('.') ? e : `.${e}`)));
   return walkFiles(srcRoot).filter((f) => extSet.has(path.extname(f)));
@@ -45,7 +51,9 @@ function isExported(node: ts.Node): boolean {
   return (flags & ts.ModifierFlags.Export) !== 0;
 }
 
-/** First top-level exported class (domain modules use a single primary class). */
+/**
+ * First top-level exported class (domain modules use a single primary class).
+ */
 export function getFirstExportedClassDeclaration(sf: ts.SourceFile): ts.ClassDeclaration | undefined {
   for (const stmt of sf.statements) {
     if (ts.isClassDeclaration(stmt) && stmt.name && isExported(stmt)) {
@@ -55,7 +63,9 @@ export function getFirstExportedClassDeclaration(sf: ts.SourceFile): ts.ClassDec
   return undefined;
 }
 
-/** The `run` method on a controller class, if declared as a simple method (not a signature-only member). */
+/**
+ * The `run` method on a controller class, if declared as a simple method (not a signature-only member).
+ */
 export function getRunMethodDeclaration(cls: ts.ClassDeclaration): ts.MethodDeclaration | undefined {
   for (const member of cls.members) {
     if (!ts.isMethodDeclaration(member) || !member.name) continue;
@@ -195,7 +205,9 @@ export function listElectronSourceFiles(): string[] {
   return walkFiles(electronRoot).filter((f) => f.endsWith('.ts') && !f.endsWith('.d.ts'));
 }
 
-/** Top-level exported class names (including `export default class Name`). */
+/**
+ * Top-level exported class names (including `export default class Name`).
+ */
 export function collectExportedClassNames(sf: ts.SourceFile): string[] {
   const names: string[] = [];
   for (const stmt of sf.statements) {
@@ -206,7 +218,9 @@ export function collectExportedClassNames(sf: ts.SourceFile): string[] {
   return names;
 }
 
-/** Top-level exported function names (`export function` / `export async function` / `export default function Name`). */
+/**
+ * Top-level exported function names (`export function` / `export async function` / `export default function Name`).
+ */
 export function collectExportedFunctionNames(sf: ts.SourceFile): string[] {
   const names: string[] = [];
   for (const stmt of sf.statements) {

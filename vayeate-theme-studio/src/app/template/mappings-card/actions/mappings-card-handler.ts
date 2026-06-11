@@ -11,6 +11,9 @@ import { UpdateSemanticVariantKeyController } from "../controllers/update-semant
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { MappingsCardActions, MappingsCardActionType } from "./mappings-card-action-type";
 
+/**
+ * Routes template mappings card actions to their controllers.
+ */
 @singleton()
 export class MappingsCardHandler {
   private readonly log: Logger;
@@ -30,6 +33,11 @@ export class MappingsCardHandler {
     this.log = loggerFactory.create(MappingsCardHandler.name);
   }
 
+  /**
+   * Dispatches a mappings card action to its controller.
+   * @param action Typed card action from the action queue.
+   * @returns Resolves when the controller finishes.
+   */
   async handle(action: MappingsCardActions): Promise<void> {
     switch (action.type) {
       case MappingsCardActionType.MappingSearchTextOnChange:

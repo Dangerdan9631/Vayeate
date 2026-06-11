@@ -5,15 +5,28 @@ import { useStore } from 'zustand';
 import { ActionQueueUiStore } from '../../../domain/state/ui/action-queue-ui-store';
 import { QueueMap } from '../../../domain/state/ui/background-queue-ui-state';
 
+/**
+ * Resolved action queue UI store for foreground queue status.
+ */
 const actionQueueStore = container.resolve(ActionQueueUiStore);
+/**
+ * Resolved background queue UI store for worker queue status.
+ */
 const backgroundQueueStore = container.resolve(BackgroundQueueUiStore);
 
+/**
+ * Derived queue progress fields exposed by the status bar viewmodel.
+ */
 export interface StatusBarViewModel {
   showProgressArea: boolean;
   queueStatusText: string;
   runningActionDescriptions: string[];
 }
 
+/**
+ * Aggregates action and background queue observability for the status footer.
+ * @returns Progress visibility, summary text, and running action descriptions.
+ */
 export function useStatusBarViewModel(): StatusBarViewModel {
   const actionQueueStatus = useStore(actionQueueStore.api, (state) => state.state);
   const {

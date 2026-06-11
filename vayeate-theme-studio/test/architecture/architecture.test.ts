@@ -92,7 +92,9 @@ function forbiddenDomainImportsInSource(source: string): string[] {
   return bad;
 }
 
-/** Relative import path whose resolved target is the renderer src tree (e.g. ../src/...). */
+/**
+ * Relative import path whose resolved target is the renderer src tree (e.g. ../src/...).
+ */
 function pointsAtRendererSrcModule(spec: string): boolean {
   const n = spec.replace(/\\/g, '/');
   return /^(\.\.\/)+src(\/|$)/.test(n);
@@ -128,7 +130,9 @@ describe('PascalCase filenames for .tsx under src/app', () => {
   });
 });
 
-/** @see ../../AGENTS.md#controller.mdc — § Contract / Naming; [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`controllers/`). */
+/**
+ * @see ../../AGENTS.md#controller.mdc — § Contract / Naming; [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`controllers/`).
+ */
 describe('*-controller.ts: one exported class ending with Controller', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -144,7 +148,9 @@ describe('*-controller.ts: one exported class ending with Controller', () => {
   });
 });
 
-/** @see ../../AGENTS.md#controller.mdc — § Contract (`run` returns void or Promise). */
+/**
+ * @see ../../AGENTS.md#controller.mdc — § Contract (`run` returns void or Promise).
+ */
 describe('*-controller.ts: declares a run method', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -161,7 +167,9 @@ describe('*-controller.ts: declares a run method', () => {
   });
 });
 
-/** @see ../../AGENTS.md#operation.mdc — § Contract; [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`operations/`). */
+/**
+ * @see ../../AGENTS.md#operation.mdc — § Contract; [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`operations/`).
+ */
 describe('*-operation.ts: one exported class ending with Operation', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -193,7 +201,9 @@ describe('validate-*.ts: one exported class starting with Validate', () => {
   });
 });
 
-/** @see ../../AGENTS.md#gateway.mdc — DI / role; [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Gateways / Callers. */
+/**
+ * @see ../../AGENTS.md#gateway.mdc — DI / role; [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Gateways / Callers.
+ */
 describe('*-gateway.ts: one exported class ending with Gateway', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -209,7 +219,9 @@ describe('*-gateway.ts: one exported class ending with Gateway', () => {
   });
 });
 
-/** @see ../../AGENTS.md#service.mdc — § Role / DI; [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Services. */
+/**
+ * @see ../../AGENTS.md#service.mdc — § Role / DI; [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Services.
+ */
 describe('*-service.ts: one exported class ending with Service', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -225,7 +237,9 @@ describe('*-service.ts: one exported class ending with Service', () => {
   });
 });
 
-/** @see ../../AGENTS.md#layer-app.mdc — § Structure (`actions/` handlers) / § Actions. */
+/**
+ * @see ../../AGENTS.md#layer-app.mdc — § Structure (`actions/` handlers) / § Actions.
+ */
 describe('*-handler.ts: one exported class ending with Handler', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -242,7 +256,9 @@ describe('*-handler.ts: one exported class ending with Handler', () => {
   });
 });
 
-/** @see ../../AGENTS.md#viewmodel.mdc — § Contract (hooks); [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure (`viewmodel/`). */
+/**
+ * @see ../../AGENTS.md#viewmodel.mdc — § Contract (hooks); [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure (`viewmodel/`).
+ */
 describe('use-*-viewmodel.ts: at least one exported function whose name starts with use', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -258,7 +274,9 @@ describe('use-*-viewmodel.ts: at least one exported function whose name starts w
   });
 });
 
-/** @see ../../AGENTS.md#component.mdc — § Contract (filename ↔ component); [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files. */
+/**
+ * @see ../../AGENTS.md#component.mdc — § Contract (filename ↔ component); [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files.
+ */
 describe('components/*.tsx: exported function name matches filename stem', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
@@ -355,7 +373,9 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
   return false;
 }
 
-/** @see ../../AGENTS.md#operation.mdc — no disallowed `Operation.execute` chaining; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow. */
+/**
+ * @see ../../AGENTS.md#operation.mdc — no disallowed `Operation.execute` chaining; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow.
+ */
 describe('domain *-operation.ts: operations do not call disallowed operation .execute', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -376,7 +396,9 @@ describe('domain *-operation.ts: operations do not call disallowed operation .ex
   });
 });
 
-/** @see ../../AGENTS.md#controller.mdc — controllers do not call other controllers; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc). */
+/**
+ * @see ../../AGENTS.md#controller.mdc — controllers do not call other controllers; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc).
+ */
 describe('domain *-controller.ts: controllers do not call other controllers .run', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -401,7 +423,9 @@ describe('domain *-controller.ts: controllers do not call other controllers .run
   });
 });
 
-/** @see ../../AGENTS.md#layer-app.mdc — handlers route to controllers only. */
+/**
+ * @see ../../AGENTS.md#layer-app.mdc — handlers route to controllers only.
+ */
 describe('actions/*-handler.ts: no imports from domain operations, validations, or state', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -416,7 +440,9 @@ describe('actions/*-handler.ts: no imports from domain operations, validations, 
   });
 });
 
-/** @see ../../AGENTS.md#layer-app.mdc — action guards in action type modules. */
+/**
+ * @see ../../AGENTS.md#layer-app.mdc — action guards in action type modules.
+ */
 describe('actions/*-action-type.ts: at least one exported is*Action guard', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -432,7 +458,9 @@ describe('actions/*-action-type.ts: at least one exported is*Action guard', () =
   });
 });
 
-/** @see ../../AGENTS.md#layer-electron.mdc — Electron must not depend on renderer `src/`. */
+/**
+ * @see ../../AGENTS.md#layer-electron.mdc — Electron must not depend on renderer `src/`.
+ */
 describe('electron/*.ts: no imports from renderer src/', () => {
   const files = listElectronSourceFiles();
 
@@ -447,7 +475,9 @@ describe('electron/*.ts: no imports from renderer src/', () => {
   });
 });
 
-/** @see ../../AGENTS.md#viewmodel.mdc — [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) (useContextSelector in viewmodels, not components). */
+/**
+ * @see ../../AGENTS.md#viewmodel.mdc — [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) (useContextSelector in viewmodels, not components).
+ */
 describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
@@ -461,7 +491,9 @@ describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
   });
 });
 
-/** @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (plan C1). */
+/**
+ * @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (plan C1).
+ */
 describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -492,7 +524,9 @@ describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', 
   });
 });
 
-/** @see ../../AGENTS.md#app-architecture.mdc — § Actions (payloads: user input / ids, not state snapshots). */
+/**
+ * @see ../../AGENTS.md#app-architecture.mdc — § Actions (payloads: user input / ids, not state snapshots).
+ */
 describe('actions/*-action-type.ts: no imports from domain/state', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);

@@ -1,5 +1,8 @@
 import type { AppAction } from '../../../core/action-queue/app-action';
 
+/**
+ * Action type strings for menu bar dropdowns and commands.
+ */
 export enum AppMenuActionType {
   FileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',
   FileMenuExitButtonOnClick = 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK',
@@ -15,6 +18,9 @@ export enum AppMenuActionType {
   MenuOnClose = 'APP_MENU_ON_CLOSE',
 }
 
+/**
+ * Discriminated union of menu bar actions dispatched from the header menus.
+ */
 export type AppMenuActions =
   | { type: AppMenuActionType.FileMenuTriggerButtonOnClick }
   | { type: AppMenuActionType.FileMenuExitButtonOnClick }
@@ -30,8 +36,16 @@ export type AppMenuActions =
   | { type: AppMenuActionType.MenuOnClose };
 
 
+/**
+ * Set of menu action type strings used by the {@link isAppMenuAction} guard.
+ */
 const appMenuTypes = new Set<string>(Object.values(AppMenuActionType));
 
+/**
+ * Narrows a queued action to a menu bar action when its type is menu-scoped.
+ * @param a Action from the global action queue.
+ * @returns True when the action belongs to {@link AppMenuActions}.
+ */
 export function isAppMenuAction(a: AppAction): a is AppMenuActions {
   return appMenuTypes.has(a.type);
 }

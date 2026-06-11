@@ -10,6 +10,9 @@ interface AppConfigStoreState {
     setColorScheme: (colorScheme: ColorScheme) => void;
 }
 
+/**
+ * Zustand store for application-wide renderer configuration.
+ */
 @singleton()
 export class AppConfigStore {
     private store = createStore<AppConfigStoreState>()(
@@ -24,10 +27,17 @@ export class AppConfigStore {
         }))
     );
 
+    /**
+     * Zustand store API for React subscriptions via viewmodels.
+     */
     get api() {
         return this.store;
     }
 
+    /**
+     * Returns the current snapshot and mutation methods for domain operations.
+     * @returns Live app config store state and setters.
+     */
     getStore(): AppConfigStoreState {
         return this.store.getState();
     }

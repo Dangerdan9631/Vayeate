@@ -1,5 +1,8 @@
 import type { TokenType } from '../../../model/schema/primitives';
 
+/**
+ * In-progress fields and validation metrics for the bulk-add tokens dialog.
+ */
 export interface BulkAddDialogState {
   isOpen: boolean;
   text: string;
@@ -9,6 +12,9 @@ export interface BulkAddDialogState {
   duplicateCount: number;
 }
 
+/**
+ * Default bulk-add dialog data used when opening a new dialog session.
+ */
 export const emptyBulkAddData: BulkAddDialogState = {
   isOpen: false,
   text: '',

@@ -10,11 +10,26 @@ import { AppConfigStore } from '../../../domain/state/data/app-config-store';
 import { WindowStore } from '../../../domain/state/ui/window-store';
 import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
 
+/**
+ * Resolved UI store for menu open state.
+ */
 const uiStore = container.resolve(UiStore);
+/**
+ * Resolved app config store for theme toggle presentation.
+ */
 const appConfigStore = container.resolve(AppConfigStore);
+/**
+ * Resolved undo stack store for edit and history menu data.
+ */
 const undoStackStore = container.resolve(UndoStackStore);
+/**
+ * Resolved window store for maximize/restore control visibility.
+ */
 const windowStore = container.resolve(WindowStore);
 
+/**
+ * State, refs, and action callbacks exposed by the menu bar viewmodel.
+ */
 export interface MenuBarViewModel {
   fileOpen: boolean;
   editOpen: boolean;
@@ -52,6 +67,10 @@ export interface MenuBarViewModel {
   handleToggleDevTools: () => void;
 }
 
+/**
+ * Wires menu bar UI state to stores and dispatches menu and window actions.
+ * @returns Menu visibility, undo/history data, refs, and named action callbacks.
+ */
 export function useMenuBarViewModel(): MenuBarViewModel {
   const dispatch = useAppDispatch();
   const isMaximized = useStore(windowStore.api, (state) => state.state.isMaximized);

@@ -53,6 +53,12 @@ function parsePersistedStack(raw: string | null): PersistedStack {
   }
 }
 
+/**
+ * Creates a multi-stack undo manager with LRU eviction and optional persistence.
+ *
+ * @param initialOptions Optional manager configuration applied before first use.
+ * @returns An undo manager that loads, caches, and persists stacks by context key.
+ */
 export function createUndoManagerV2(initialOptions?: UndoManagerOptions): UndoManagerV2 {
   const state = createUndoManagerState();
   state.scheduler = createUndoStackPersistScheduler((description, run) => {
@@ -208,4 +214,7 @@ export function createUndoManagerV2(initialOptions?: UndoManagerOptions): UndoMa
   };
 }
 
+/**
+ * Shared undo manager instance used by domain undo operations.
+ */
 export const undoManagerV2: UndoManagerV2 = createUndoManagerV2();

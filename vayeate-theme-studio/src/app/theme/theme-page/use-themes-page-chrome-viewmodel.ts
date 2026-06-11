@@ -9,12 +9,19 @@ import { ThemePageActionType } from './actions/theme-page-action-type';
 const themeUiStore = container.resolve(ThemeUiStore);
 const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
 
+/**
+ * Read model returned by useThemesPageChromeViewModel.
+ */
 export interface ThemesPageChromeViewModel {
   saveError: string | null;
   createDialogOpen: boolean;
   onDismissSaveErrorClick: () => void;
 }
 
+/**
+ * Exposes Theme Page state and dispatches user or lifecycle actions.
+ * @returns View-model state and action callbacks for the component.
+ */
 export function useThemesPageChromeViewModel(): ThemesPageChromeViewModel {
   const dispatch = useAppDispatch();
   const onDismissSaveErrorClick = useCallback(() => {

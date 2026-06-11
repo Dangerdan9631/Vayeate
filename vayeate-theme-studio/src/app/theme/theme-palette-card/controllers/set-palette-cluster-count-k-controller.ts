@@ -8,6 +8,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_PALETTE_CLUSTER_COUNT_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates set palette cluster count k work for the theme UI.
+ */
 @singleton()
 export class SetPaletteClusterCountKController {
   constructor(
@@ -18,6 +21,11 @@ export class SetPaletteClusterCountKController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(value: number): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme) return;

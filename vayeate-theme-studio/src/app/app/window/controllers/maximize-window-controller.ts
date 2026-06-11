@@ -3,6 +3,9 @@ import { SetWindowStateOperation } from '../../../../domain/operations/window-op
 import { LoggerFactory, type Logger } from '../../../../domain/utils/logger';
 import { ValidateCanMaximizeWindow } from '../../../../domain/validations/window-validations/validate-can-maximize-window';
 
+/**
+ * Maximizes the main window when validation allows it.
+ */
 @singleton()
 export class MaximizeWindowController {
   private readonly log: Logger;
@@ -15,6 +18,9 @@ export class MaximizeWindowController {
     this.log = loggerFactory.create('WindowController');
   }
 
+  /**
+   * Skips maximize when the window is already maximized.
+   */
   run(): void {
     if (!this.validateCanMaximize.test()) {
       this.log.warn('maximizeWindow skipped: validation failed (window already maximized)');

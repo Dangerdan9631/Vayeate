@@ -20,6 +20,9 @@ const SILENCED_ACTION_TYPES = new Set<string>([
   StyledTooltipActionType.TooltipSourceOnMouseOver,
 ]);
 
+/**
+ * Routes a dequeued `AppAction` to the matching feature handler based on its discriminant.
+ */
 @singleton()
 export class ActionProcessor {
   private readonly log: Logger;

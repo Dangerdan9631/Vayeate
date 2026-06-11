@@ -22,6 +22,10 @@ const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
 const EMPTY_STRINGS: readonly string[] = [];
 
+/**
+ * Subscribes to template mappings, catalogs, and filter state for the mappings card.
+ * @returns Mappings card state and dispatch-backed handlers.
+ */
 export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();

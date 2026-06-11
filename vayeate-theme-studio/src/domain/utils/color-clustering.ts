@@ -6,6 +6,9 @@
 import type { Rgb } from './color-types';
 import { hexToRgb } from './color-hex';
 
+/**
+ * One k-means cluster with a medoid representative and member hex colors.
+ */
 export interface ClusterResult {
   representative: string;
   members: string[];
@@ -41,9 +44,11 @@ function meanRgb(points: Rgb[]): Rgb {
 }
 
 /**
- * Clusters hex colors and returns one representative (medoid) per cluster
- * plus the other members of that cluster. Uses k-means in RGB; k is capped
- * by maxClusters and by the number of unique valid colors.
+ * Clusters hex colors in RGB space and returns one medoid representative per cluster.
+ *
+ * @param hexColors - Input hex strings; invalid and duplicate values are skipped.
+ * @param options - Optional `maxClusters` cap (default 5).
+ * @returns Cluster results with representative and member hex lists.
  */
 export function clusterColors(
   hexColors: string[],

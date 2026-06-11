@@ -8,6 +8,9 @@ import { adjustColorToMeetContrast } from './color-adjust-contrast';
 import type { ContrastVariable, Mapping } from '../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment } from '../../model/schema/theme-schemas';
 
+/**
+ * Resolved colors and variable refs for one template mapping token key.
+ */
 export interface ScopeColorMapEntry {
   segments: string[];
   darkColor: string | null;
@@ -18,11 +21,16 @@ export interface ScopeColorMapEntry {
   assignedLight: string | null;
 }
 
+/**
+ * Scope color map entries sorted by specificity for token resolution.
+ */
 export interface ScopeColorMap {
   entries: ScopeColorMapEntry[];
 }
 
-/** Minimal inputs read by {@link buildScopeColorMap}; kept in one place for equality checks. */
+/**
+ * Minimal inputs read by {@link buildScopeColorMap}; kept in one place for equality checks.
+ */
 export interface ScopeColorMapInputs {
   mappings: readonly {
     tokenKey: string;
@@ -57,6 +65,15 @@ export interface ScopeColorMapInputs {
   }[];
 }
 
+/**
+ * Projects full template and theme models into minimal scope-map build inputs.
+ *
+ * @param mappings - Template token mappings.
+ * @param colorAssignments - Theme color assignments.
+ * @param contrastAssignments - Optional theme contrast assignments.
+ * @param contrastVariables - Optional template contrast variable definitions.
+ * @returns Normalized inputs for {@link buildScopeColorMap} and equality checks.
+ */
 export function selectScopeColorMapInputs(
   mappings: readonly Mapping[],
   colorAssignments: readonly ColorAssignment[],
@@ -102,6 +119,13 @@ export function selectScopeColorMapInputs(
   };
 }
 
+/**
+ * Compares two scope color map input snapshots for memoization invalidation.
+ *
+ * @param before - Previous scope map inputs.
+ * @param after - Current scope map inputs.
+ * @returns True when serialized inputs are identical.
+ */
 export function areScopeColorMapInputsEqual(
   before: ScopeColorMapInputs,
   after: ScopeColorMapInputs,
@@ -109,7 +133,12 @@ export function areScopeColorMapInputsEqual(
   return hashScopeColorMapInputs(before) === hashScopeColorMapInputs(after);
 }
 
-/** Stable version string for cache keys; changes only when assignment values read by buildScopeColorMap change. */
+/**
+ * Stable version string for cache keys; changes only when assignment values read by buildScopeColorMap change.
+ *
+ * @param inputs - Scope color map inputs to fingerprint.
+ * @returns JSON string used as a memoization or cache key.
+ */
 export function hashScopeColorMapInputs(inputs: ScopeColorMapInputs): string {
   return JSON.stringify(inputs);
 }
@@ -170,10 +199,14 @@ function contrastValueForRef(
 }
 
 /**
- * Build a scope-to-color map from template mappings and theme color assignments.
- * When contrastAssignments and contrastVariables are provided, token colors are adjusted
- * to meet the contrast variable's constraint against its comparison source color.
- * Entries are sorted by segment count descending so that more specific token keys are tried first.
+ * Builds a scope-to-color map from template mappings and theme color assignments.
+ * When contrast data is provided, token colors are adjusted to meet contrast constraints.
+ *
+ * @param mappings - Template token mappings with color and contrast variable refs.
+ * @param colorAssignments - Theme color assignments for resolved hex values.
+ * @param contrastAssignments - Optional theme contrast assignment values.
+ * @param contrastVariables - Optional template contrast variable definitions.
+ * @returns Scope color map with entries sorted by specificity (longest token key first).
  */
 export function buildScopeColorMap(
   mappings: readonly Mapping[],
@@ -251,8 +284,11 @@ export function buildScopeColorMap(
 }
 
 /**
- * Resolve the best-matching entry for a token's scope stack.
- * Same matching logic as resolveTokenColor but returns the full entry, or null if no entry has a color.
+ * Resolves the best-matching scope map entry for a token's scope stack.
+ *
+ * @param scopes - TextMate scope stack from most to least specific.
+ * @param scopeColorMap - Prebuilt scope color map.
+ * @returns Matching entry when one has a color, otherwise null.
  */
 export function resolveTokenEntry(
   scopes: string[],
@@ -272,8 +308,12 @@ export function resolveTokenEntry(
 }
 
 /**
- * Resolve the best-matching color for a token's scope stack.
- * Scopes are checked from most specific (rightmost) to least specific; the longest matching token key wins.
+ * Resolves the best-matching hex color for a token's scope stack in the given mode.
+ *
+ * @param scopes - TextMate scope stack from most to least specific.
+ * @param scopeColorMap - Prebuilt scope color map.
+ * @param mode - `dark` or `light` color variant to return.
+ * @returns Resolved hex color or null when no mapping matches.
  */
 export function resolveTokenColor(
   scopes: string[],
@@ -295,8 +335,16 @@ export function resolveTokenColor(
 }
 
 /**
- * Resolve the color for a theme token key using its mapping's color and contrast variable.
- * Returns the resolved dark or light hex, or fallback if tokenKey is null or no theme mapping is found.
+ * Resolves the color for a VS Code theme token key with contrast adjustment when configured.
+ *
+ * @param tokenKey - Theme token key from template mappings, or null.
+ * @param mappings - Template mappings including theme-type tokens.
+ * @param colorAssignments - Theme color assignments.
+ * @param contrastAssignments - Theme contrast assignments.
+ * @param contrastVariables - Template contrast variable definitions.
+ * @param mode - `dark` or `light` variant to resolve.
+ * @param fallback - Hex returned when the token key is missing or unmapped.
+ * @returns Resolved hex color or fallback.
  */
 export function resolveColorForThemeTokenKey(
   tokenKey: string | null,

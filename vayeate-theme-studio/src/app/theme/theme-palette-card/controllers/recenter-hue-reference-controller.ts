@@ -13,6 +13,9 @@ import {
   THEME_PALETTE_HUE_RECENTERED,
 } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates recenter hue reference work for the theme UI.
+ */
 @singleton()
 export class RecenterHueReferenceController {
   constructor(
@@ -24,6 +27,10 @@ export class RecenterHueReferenceController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

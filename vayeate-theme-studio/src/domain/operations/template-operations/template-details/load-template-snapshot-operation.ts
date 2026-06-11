@@ -5,6 +5,10 @@ import { TemplateGateway } from '../../../../gateway/template/template-gateway';
 import { getCurrentTemplate, TemplatesStore } from '../../../state/data/templates-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 
+/**
+ * Loads template snapshot from persistence into the store.
+ */
+
 @singleton()
 export class LoadTemplateSnapshotOperation {
   constructor(
@@ -12,6 +16,13 @@ export class LoadTemplateSnapshotOperation {
     private readonly templateGateway: TemplateGateway,
     private readonly enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load template snapshot mutation.
+   * @param name Name (string).
+   * @param version Version (string).
+   * @returns Promise resolving to Template | null.
+   */
 
   execute(name: string, version: string): Promise<Template | null> {
     const ref = { name, version };

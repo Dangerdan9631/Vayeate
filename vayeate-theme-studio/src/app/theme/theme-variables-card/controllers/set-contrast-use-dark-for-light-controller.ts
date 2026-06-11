@@ -9,6 +9,9 @@ import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_CONTRAST_USE_DARK_FOR_LIGHT_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates set contrast use dark for light work for the theme UI.
+ */
 @singleton()
 export class SetContrastUseDarkForLightController {
   constructor(
@@ -19,6 +22,12 @@ export class SetContrastUseDarkForLightController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param ref Input for this call.
+ * @param checked Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(ref: ContrastVariableKey | undefined, checked: boolean | undefined): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme || ref == null) return;

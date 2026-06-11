@@ -2,6 +2,12 @@ import type { Theme } from '../../../../model/schema/theme-schemas';
 import type { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { THEME_PALETTE_COLOR_ASSIGNED } from '../../../../model/undo-action-types';
 
+/**
+ * Records an undo entry after palette color assign undo.
+ * @param recordThemeUndo Undo recording operation to invoke.
+ * @param input Undo entry payload.
+ * @returns Promise resolved after the undo entry is stored.
+ */
 export async function recordPaletteColorAssignUndo(
   recordThemeUndo: RecordThemeUndoOperation,
   input: {

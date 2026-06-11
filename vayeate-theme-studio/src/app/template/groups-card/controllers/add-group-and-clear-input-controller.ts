@@ -14,6 +14,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_GROUP_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK by adding a group and clearing the input.
+ */
 @singleton()
 export class AddGroupAndClearInputController {
   constructor(
@@ -30,6 +33,10 @@ export class AddGroupAndClearInputController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Reads the add-group name from UI state, adds the group, then clears the input.
+   * @returns Resolves when add-group completes or is skipped for an empty name.
+   */
   async run(): Promise<void> {
     const name = this.templateUiStore.getStore().state.addGroupName.trim();
     if (!name) return;

@@ -1,7 +1,12 @@
 import type { CatalogReference } from '../../model/schema/template-schemas';
 import { compareVersions } from './compare-versions';
 
-/** Build catalog refs grouped by name, sorted by version descending (latest first). */
+/**
+ * Groups catalog refs by name with versions sorted latest-first.
+ *
+ * @param catalogRefs - Catalog references from a template or directory listing.
+ * @returns Record mapping each catalog name to its refs ordered by descending version.
+ */
 export function catalogVersionsByNameFromRefs(
   catalogRefs: CatalogReference[],
 ): Record<string, CatalogReference[]> {

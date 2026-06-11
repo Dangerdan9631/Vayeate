@@ -1,7 +1,10 @@
 import type { Rgb } from './color-types';
 
 /**
- * Lenient hex normalizer for UI/palette input. Returns null if invalid or empty.
+ * Lenient hex normalizer for UI and palette input.
+ *
+ * @param hex - Raw hex string from user input or assignments.
+ * @returns Expanded `#rrggbb` hex, or null when empty or invalid.
  */
 export function normalizeHexSafe(hex: string): string | null {
   const s = (hex ?? '').trim().toLowerCase();
@@ -15,6 +18,13 @@ export function normalizeHexSafe(hex: string): string | null {
   return `#${expanded}`;
 }
 
+/**
+ * Strict hex normalizer that expands shorthand and validates length.
+ *
+ * @param hex - Hex string expected to include a leading `#`.
+ * @returns Lowercase `#rrggbb` or `#rrggbbaa` hex.
+ * @throws When the input is missing `#` or has an invalid length.
+ */
 export function normalizeHex(hex: string): string {
   const h = hex.trim().toLowerCase();
   if (!h.startsWith('#')) {
@@ -36,13 +46,17 @@ export function normalizeHex(hex: string): string {
   throw new Error(`Invalid hex color length: ${hex}`);
 }
 
-/** Clamp a single channel to sRGB [0, 1]. Handles NaN/Infinity. */
+/**
+ * Clamp a single channel to sRGB [0, 1]. Handles NaN/Infinity.
+ */
 function clampChannel(value: number): number {
   if (Number.isFinite(value)) return Math.max(0, Math.min(1, value));
   return 0;
 }
 
-/** Clamp RGB to sRGB gamut so hex output never clips out of range. */
+/**
+ * Clamp RGB to sRGB gamut so hex output never clips out of range.
+ */
 function clampRgbToSrgb(rgb: Rgb): Rgb {
   return {
     r: clampChannel(rgb.r),
@@ -51,6 +65,12 @@ function clampRgbToSrgb(rgb: Rgb): Rgb {
   };
 }
 
+/**
+ * Parses a hex color into normalized RGB channels (alpha ignored).
+ *
+ * @param hex - Hex string normalized via {@link normalizeHex}.
+ * @returns RGB with channels in [0, 1].
+ */
 export function hexToRgb(hex: string): Rgb {
   const n = normalizeHex(hex);
   const rgbHex = n.slice(1, 7);
@@ -61,6 +81,12 @@ export function hexToRgb(hex: string): Rgb {
   };
 }
 
+/**
+ * Encodes normalized RGB channels as a lowercase `#rrggbb` hex string.
+ *
+ * @param rgb - RGB color with channels clamped to sRGB [0, 1].
+ * @returns Hex string suitable for theme assignments and export.
+ */
 export function rgbToHex(rgb: Rgb): string {
   const clamped = clampRgbToSrgb(rgb);
   const toHex = (value: number) =>

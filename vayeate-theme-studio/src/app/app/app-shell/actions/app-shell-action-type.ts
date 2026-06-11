@@ -1,5 +1,8 @@
 import type { AppAction } from '../../../core/action-queue/app-action';
 
+/**
+ * Action type strings for app shell controls and lifecycle events.
+ */
 export enum AppShellActionType {
   PageOnLoad = 'APP_SHELL_PAGE_ON_LOAD',
   PageOnUnload = 'APP_SHELL_PAGE_ON_UNLOAD',
@@ -11,6 +14,9 @@ export enum AppShellActionType {
   TitleBarOnDrag = 'APP_SHELL_TITLE_BAR_ON_DRAG',
 }
 
+/**
+ * Discriminated union of app shell actions dispatched from shell chrome.
+ */
 export type AppShellActions =
   | { type: AppShellActionType.PageOnLoad }
   | { type: AppShellActionType.PageOnUnload }
@@ -22,8 +28,16 @@ export type AppShellActions =
   | { type: AppShellActionType.TitleBarOnDrag };
 
 
+/**
+ * Set of shell action type strings used by the {@link isAppShellAction} guard.
+ */
 const appShellTypes = new Set<string>(Object.values(AppShellActionType));
 
+/**
+ * Narrows a queued action to an app shell action when its type is shell-scoped.
+ * @param a Action from the global action queue.
+ * @returns True when the action belongs to {@link AppShellActions}.
+ */
 export function isAppShellAction(a: AppAction): a is AppShellActions {
   return appShellTypes.has(a.type);
 }

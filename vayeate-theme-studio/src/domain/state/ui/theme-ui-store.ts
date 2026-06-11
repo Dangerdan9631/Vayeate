@@ -11,6 +11,9 @@ import {
 import type { ClusterResult } from '../../utils/color-clustering';
 import { initialThemeUiState, type GenerateResult, type LoadState, type ThemeUiState } from './theme-ui-state';
 
+/**
+ * Theme pane UI snapshot plus mutation methods exposed from the store.
+ */
 export interface ThemeUiStoreState {
   state: ThemeUiState;
   setPageLoadState: (loadState: LoadState) => void;
@@ -32,6 +35,9 @@ export interface ThemeUiStoreState {
   setPaletteClusterByDark: (value: boolean) => void;
 }
 
+/**
+ * Zustand store for theme editor pane UI state and derived pane fields.
+ */
 @singleton()
 export class ThemeUiStore {
   private store = createStore<ThemeUiStoreState>()(
@@ -111,10 +117,17 @@ export class ThemeUiStore {
     }),
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live theme pane UI store state and setters.
+   */
   getStore(): ThemeUiStoreState {
     return this.store.getState();
   }

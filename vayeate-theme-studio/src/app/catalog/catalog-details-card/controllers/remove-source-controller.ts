@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_REMOVED } from '../../../../model/undo-action-types';
 
+/**
+ * Removes a remote source row from the selected catalog version.
+ */
 @singleton()
 export class RemoveSourceController {
   constructor(
@@ -31,6 +34,10 @@ export class RemoveSourceController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Deletes the source at the given index after validation.
+   * @param sourceIndex - Zero-based index in the catalog sources array.
+   */
   run(sourceIndex: number): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

@@ -3,13 +3,19 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-/** Theme Studio package root (contains data/, electron/). */
+/**
+ * Theme Studio package root (contains data/, electron/).
+ */
 export const PROJECT_ROOT = resolve(join(__dirname, '..'));
 
-/** Repository-relative data directory: vayeate-theme-studio/data */
+/**
+ * Repository-relative data directory: vayeate-theme-studio/data
+ */
 export const DATA_DIR = join(__dirname, '..', 'data');
 
-/** App icon path (repo root images/icon.png) for window and dock/taskbar. */
+/**
+ * App icon path (repo root images/icon.png) for window and dock/taskbar.
+ */
 export const APP_ICON_PATH = join(__dirname, '..', '..', 'images', 'icon.png');
 
 export function resolveSafeProjectRelativePath(rel: string, kind: 'file' | 'dir'): string {
@@ -47,7 +53,9 @@ export function resolveSafeProjectRelativePath(rel: string, kind: 'file' | 'dir'
   return resolved;
 }
 
-/** Repo-root `themes/` (extension output); used when renderer saves `exthemes/...` via FileSystemService. */
+/**
+ * Repo-root `themes/` (extension output); used when renderer saves `exthemes/...` via FileSystemService.
+ */
 export function resolveExthemesExportFile(rel: string): string {
   const prefix = 'exthemes/';
   if (!rel.startsWith(prefix)) {

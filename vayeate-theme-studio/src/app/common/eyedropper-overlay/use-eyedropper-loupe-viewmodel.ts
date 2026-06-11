@@ -9,11 +9,20 @@ import { EYEDROPPER_LOUPE_SIZE, loupeFixedPosition } from './eyedropper-utils';
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 const windowStore = container.resolve(WindowStore);
 
+/**
+ * Presentation state for the eyedropper magnifier loupe.
+ */
 export interface EyedropperLoupeViewModel {
   pointer: EyedropperPointerSample | null;
   loupePosition: { left: number; top: number } | null;
 }
 
+/**
+ * Derives loupe screen position from the current pointer sample and app viewport.
+ * @param isOpen Whether the eyedropper overlay is open.
+ * @param errorMessage Snapshot error message, or null when the canvas is usable.
+ * @returns View model for the eyedropper loupe component.
+ */
 export function useEyedropperLoupeViewModel(
   isOpen: boolean,
   errorMessage: string | null,

@@ -20,6 +20,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_CATALOGS_ALL_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_DETAILS_UPDATE_ALL_BUTTON_ON_CLICK by refreshing linked catalogs.
+ */
 @singleton()
 export class UpdateAllCatalogsController {
   constructor(
@@ -36,6 +39,10 @@ export class UpdateAllCatalogsController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Bumps the template version and reloads every linked catalog to the latest version.
+   * @returns Resolves when catalog refresh and template persist finish.
+   */
   async run(): Promise<void> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     const catalogRefs = this.getCatalogRefs.execute();

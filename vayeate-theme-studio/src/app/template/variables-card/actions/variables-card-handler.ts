@@ -8,6 +8,9 @@ import { UpdateVariableGroupRefController } from "../controllers/update-variable
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { VariablesCardActions, VariablesCardActionType } from "./variables-card-action-type";
 
+/**
+ * Routes template variables card actions to their controllers.
+ */
 @singleton()
 export class VariablesCardHandler {
   private readonly log: Logger;
@@ -24,6 +27,11 @@ export class VariablesCardHandler {
     this.log = loggerFactory.create(VariablesCardHandler.name);
   }
 
+  /**
+   * Dispatches a variables card action to its controller.
+   * @param action Typed card action from the action queue.
+   * @returns Resolves when the controller finishes.
+   */
   async handle(action: VariablesCardActions): Promise<void> {
     switch (action.type) {
       case VariablesCardActionType.VariablesSearchTextOnChange:

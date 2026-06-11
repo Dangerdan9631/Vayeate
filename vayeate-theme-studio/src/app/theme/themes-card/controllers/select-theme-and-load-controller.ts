@@ -9,6 +9,9 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 
+/**
+ * Orchestrates select theme and load work for the theme UI.
+ */
 @singleton()
 export class SelectThemeAndLoadController {
   constructor(
@@ -22,6 +25,12 @@ export class SelectThemeAndLoadController {
     private readonly setCurrentUndoStackId?: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param name Input for this call.
+ * @param version Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(name: string, version: string): Promise<void> {
     const themeRef = { name, version };
     this.setSelectedThemeRef.execute(themeRef);

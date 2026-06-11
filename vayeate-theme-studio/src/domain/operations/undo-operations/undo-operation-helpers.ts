@@ -8,6 +8,14 @@ import {
 import { emptyUndoMenuSnapshot, type UndoMenuSnapshot } from '../../state/undo-stack/undo-stack-state';
 import type { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 
+/**
+ * Returns a not-available history transition result with a user-facing message.
+ * @param mode Undo or redo mode that was requested.
+ * @param contextKey Active undo stack id, if any.
+ * @param message Reason the transition could not run.
+ * @returns History transition payload marked not-available.
+ */
+
 export function unavailableResult(
   mode: HistoryTransitionResult['mode'],
   contextKey: string | null,
@@ -22,12 +30,26 @@ export function unavailableResult(
   };
 }
 
+/**
+ * Orders undo menu frames with newest actions first and the baseline entry last.
+ * @param recentActions Recent undo frames from the active stack.
+ * @param baselineEntry Synthetic baseline frame shown at the bottom of the menu.
+ * @returns Frame list for undo menu rendering.
+ */
+
 export function buildUndoMenuFrames(
   recentActions: readonly UndoHistoryListEntry[],
   baselineEntry: UndoHistoryListEntry,
 ): UndoHistoryListEntry[] {
   return [...recentActions].reverse().concat(baselineEntry);
 }
+
+/**
+ * Resolves the currently selected undo stack from store state.
+ * @param undoStackStore Store holding the active undo stack id.
+ * @param processor Undo processor used when hydrating a stack instance.
+ * @returns Active stack id and stack, or null when none is selected.
+ */
 
 export async function getActiveUndoStack(
   undoStackStore: UndoStackStore,
@@ -38,6 +60,13 @@ export async function getActiveUndoStack(
   const stack = await undoManagerV2.getOrCreate(stackId, { processor });
   return { stackId, stack };
 }
+
+/**
+ * Recomputes undo menu availability and frame list after a stack mutation.
+ * @param undoStackStore Store receiving the updated undo menu snapshot.
+ * @param stack Active undo stack, or null to clear menu state.
+ * @returns Nothing; writes undo menu snapshot and list version to the store.
+ */
 
 export function refreshUndoSummary(undoStackStore: UndoStackStore, stack: UndoStack | null): void {
   const store = undoStackStore.getStore();

@@ -561,6 +561,9 @@ function ContrastAssignmentsGroupSubsection({
   );
 }
 
+/**
+ * Renders the Theme Variables Card UI for the theme editor.
+ */
 export function ThemeVariablesCard() {
   const {
     themeTemplateRef,

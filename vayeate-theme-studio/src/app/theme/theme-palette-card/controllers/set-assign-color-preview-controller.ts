@@ -3,6 +3,9 @@ import { SetAssignColorPreviewOperation } from '../../../../domain/operations/th
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../../domain/utils/color-hex';
 
+/**
+ * Orchestrates set assign color preview work for the theme UI.
+ */
 @singleton()
 export class SetAssignColorPreviewController {
   constructor(
@@ -10,6 +13,11 @@ export class SetAssignColorPreviewController {
     private readonly setAssignColorPreview: SetAssignColorPreviewOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param hex Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   run(hex: string): void {
     const normalized = normalizeHexSafe(hex);
     if (!normalized) return;

@@ -13,6 +13,9 @@ interface CreateCatalogDialogStoreState {
   closeCreateCatalogDialog: (result: DialogResultOkCancel) => void;
 }
 
+/**
+ * Zustand store for create-catalog dialog visibility, draft fields, and errors.
+ */
 @singleton()
 export class CreateCatalogDialogStore {
   private store = createStore<CreateCatalogDialogStoreState>()(
@@ -48,10 +51,17 @@ export class CreateCatalogDialogStore {
     }))
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live create-catalog dialog store state and setters.
+   */
   getStore(): CreateCatalogDialogStoreState {
     return this.store.getState();
   }

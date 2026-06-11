@@ -5,6 +5,9 @@ import { CloseCatalogCreateDialogController } from "../controllers/close-catalog
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { singleton } from "tsyringe";
 
+/**
+ * Routes create-catalog dialog actions to dialog field and close controllers.
+ */
 @singleton()
 export class CatalogCreateDialogHandler {
   private readonly log: Logger;
@@ -18,6 +21,10 @@ export class CatalogCreateDialogHandler {
     this.log = loggerFactory.create(CatalogCreateDialogHandler.name);
   }
 
+  /**
+   * Dispatches a create-catalog dialog action to the matching controller.
+   * @param action - Create-catalog dialog action from the queue.
+   */
   handle(action: CatalogCreateDialogActions): void {
     switch (action.type) {
       case CatalogCreateDialogActionType.NameTextOnChange:

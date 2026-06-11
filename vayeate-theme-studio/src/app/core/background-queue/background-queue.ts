@@ -10,6 +10,9 @@ import { MainBackgroundQueue } from './main-background-queue';
 import { WorkerBackgroundQueue } from './worker-background-queue';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
+/**
+ * Facade that routes background work to the `main`, `worker`, or `data_io` queue implementation.
+ */
 @singleton()
 export class BackgroundQueue extends BackgroundQueuePort {
   private readonly log: Logger;

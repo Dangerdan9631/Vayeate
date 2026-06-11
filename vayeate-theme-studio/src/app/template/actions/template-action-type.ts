@@ -16,6 +16,9 @@ import { isGroupsCardAction, tryCoalesceGroupsCardAction } from '../groups-card/
 import { isVariablesCardAction, tryCoalesceVariablesCardAction } from '../variables-card/actions/variables-card-action-type';
 import { isTemplateCreateDialogAction, tryCoalesceTemplateCreateDialogAction } from '../create-template-dialog/actions/template-create-dialog-action-type';
 
+/**
+ * Union of all template-domain actions dispatched from the Templates UI.
+ */
 export type TemplateActions =
   | TemplatePageActions
   | TemplatesCardActions
@@ -27,6 +30,11 @@ export type TemplateActions =
   | VariablesCardActions;
 
 
+/**
+ * Narrows an app action to a template action when its type belongs to this domain.
+ * @param a Action from the shared action queue.
+ * @returns True when the action is handled by the template action handler.
+ */
 export function isTemplateAction(a: AppAction): a is TemplateActions {
   return (
     isTemplatePageAction(a) ||
@@ -40,6 +48,12 @@ export function isTemplateAction(a: AppAction): a is TemplateActions {
   );
 }
 
+/**
+ * Merges a pending and incoming template action when a feature coalescer applies.
+ * @param pending Action already queued for the same control.
+ * @param incoming New action replacing or updating the pending one.
+ * @returns Coalesced template action, or null when no coalescing rule matches.
+ */
 export function tryCoalesceTemplateAction(pending: AppAction, incoming: AppAction): TemplateActions | null {
   if (isTemplateCreateDialogAction(pending) && isTemplateCreateDialogAction(incoming)) {
     return tryCoalesceTemplateCreateDialogAction(pending, incoming);

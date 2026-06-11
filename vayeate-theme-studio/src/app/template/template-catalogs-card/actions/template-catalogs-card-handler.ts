@@ -5,6 +5,9 @@ import { UpdateAllCatalogsController } from "../controllers/update-all-catalogs-
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { TemplateCatalogsCardActions, TemplateCatalogsCardActionType } from "./template-catalogs-card-action-type";
 
+/**
+ * Routes template catalogs card actions to their controllers.
+ */
 @singleton()
 export class TemplateCatalogsCardHandler {
   private readonly log: Logger;
@@ -18,6 +21,11 @@ export class TemplateCatalogsCardHandler {
     this.log = loggerFactory.create(TemplateCatalogsCardHandler.name);
   }
 
+  /**
+   * Dispatches a template catalogs card action to its controller.
+   * @param action Typed card action from the action queue.
+   * @returns Resolves when the controller finishes.
+   */
   async handle(action: TemplateCatalogsCardActions): Promise<void> {
     switch (action.type) {
       case TemplateCatalogsCardActionType.UpdateAllButtonOnClick:

@@ -18,6 +18,9 @@ import { isCatalogsCardAction } from '../catalogs-card/actions/catalogs-card-act
 import { isTokensCardAction, tryCoalesceTokensCardAction } from '../tokens-card/actions/tokens-card-action-type';
 import { isCatalogPageAction } from '../catalog-page/actions/catalog-page-action-type';
 
+/**
+ * Union of every action handled by the catalog UI domain.
+ */
 export type CatalogActions =
   | CatalogPageActions
   | CatalogCreateDialogActions
@@ -27,6 +30,11 @@ export type CatalogActions =
   | TokensCardActions;
 
 
+/**
+ * Narrows a queued app action to the catalog action union when its type is catalog-scoped.
+ * @param a - Action from the global action queue.
+ * @returns True when the action belongs to a catalog feature handler.
+ */
 export function isCatalogAction(a: AppAction): a is CatalogActions {
   return isCatalogPageAction(a)
     || isCatalogBulkAddDialogAction(a)
@@ -36,6 +44,12 @@ export function isCatalogAction(a: AppAction): a is CatalogActions {
     || isTokensCardAction(a);
 }
 
+/**
+ * Attempts to merge a pending catalog action with a same-type incoming action before enqueue.
+ * @param pending - Action already waiting in the queue tail.
+ * @param incoming - New action being enqueued.
+ * @returns Coalesced catalog action, or null when no catalog coalescer applies.
+ */
 export function tryCoalesceCatalogAction(pending: AppAction, incoming: AppAction): CatalogActions | null {
   if (isCatalogBulkAddDialogAction(pending) && isCatalogBulkAddDialogAction(incoming)) {
     return tryCoalesceCatalogBulkAddDialogAction(pending, incoming);

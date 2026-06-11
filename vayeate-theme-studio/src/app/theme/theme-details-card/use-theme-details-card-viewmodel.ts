@@ -11,6 +11,9 @@ import { ThemeDetailsCardActionType } from './actions/theme-details-card-action-
 const templatesStore = container.resolve(TemplatesStore);
 const themeUiStore = container.resolve(ThemeUiStore);
 
+/**
+ * Read model returned by useThemeDetailsCardViewModel.
+ */
 export interface ThemeDetailsCardViewModel {
   theme: Theme | null;
   templateNamesList: string[];
@@ -27,6 +30,10 @@ export interface ThemeDetailsCardViewModel {
   onTemplateVersionChange: (version: string) => void;
 }
 
+/**
+ * Exposes Theme Details Card state and dispatches user or lifecycle actions.
+ * @returns View-model state and action callbacks for the component.
+ */
 export function useThemeDetailsCardViewModel(): ThemeDetailsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);

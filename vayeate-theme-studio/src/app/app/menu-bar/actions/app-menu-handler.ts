@@ -11,6 +11,9 @@ import { ToggleMenuOpenController } from '../controllers/toggle-menu-open-contro
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { AppMenuActions, AppMenuActionType } from './app-menu-action-type';
 
+/**
+ * Routes menu bar actions to menu, undo, history, and view controllers.
+ */
 @singleton()
 export class AppMenuHandler {
   private readonly log: Logger;
@@ -30,6 +33,10 @@ export class AppMenuHandler {
     this.log = loggerFactory.create(AppMenuHandler.name);
   }
 
+  /**
+   * Dispatches one menu bar action to its controller entry point.
+   * @param action Menu action to handle; must be a member of {@link AppMenuActions}.
+   */
   async handle(action: AppMenuActions): Promise<void> {
     switch (action.type) {
       case AppMenuActionType.FileMenuTriggerButtonOnClick:

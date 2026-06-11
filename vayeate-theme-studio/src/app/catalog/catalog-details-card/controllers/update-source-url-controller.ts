@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_SOURCE_URL_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Updates the URL of an existing remote source on the selected catalog.
+ */
 @singleton()
 export class UpdateSourceUrlController {
   constructor(
@@ -31,6 +34,11 @@ export class UpdateSourceUrlController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Commits a new URL for the source at the given index.
+   * @param sourceIndex - Zero-based index in the catalog sources array.
+   * @param value - Committed URL text from the source row input.
+   */
   run(sourceIndex: number, value: string): void {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

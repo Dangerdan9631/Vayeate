@@ -13,6 +13,9 @@ interface ThemePreviewStoreState {
   setLoadedTemplate: (template: Template | null) => void;
 }
 
+/**
+ * Zustand store for theme preview pane selection and preview content.
+ */
 @singleton()
 export class ThemePreviewStore {
   private store = createStore<ThemePreviewStoreState>()(
@@ -33,10 +36,17 @@ export class ThemePreviewStore {
     }))
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live theme preview store state and setters.
+   */
   getStore(): ThemePreviewStoreState {
     return this.store.getState();
   }

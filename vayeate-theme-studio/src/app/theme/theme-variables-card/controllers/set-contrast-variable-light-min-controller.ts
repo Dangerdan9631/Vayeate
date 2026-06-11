@@ -10,6 +10,9 @@ import { parseContrastValue, updateContrastAssignment } from '../../../../domain
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_CONTRAST_VARIABLE_LIGHT_MIN_SET } from '../../../../model/undo-action-types';
 
+/**
+ * Orchestrates set contrast variable light min work for the theme UI.
+ */
 @singleton()
 export class SetContrastVariableLightMinController {
   constructor(
@@ -20,6 +23,12 @@ export class SetContrastVariableLightMinController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param ref Input for this call.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(ref: ContrastVariableKey | undefined, value: string): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme || ref == null) return;

@@ -8,12 +8,20 @@ import {
 } from './record-undo-entry-operation';
 import { undoValuesEqual } from './undo-values-equal';
 
+/**
+ * Input or state shape for record catalog undo diff input.
+ */
+
 export interface RecordCatalogUndoDiffInput {
   actionType: CatalogUndoActionType | string;
   target: string;
   before: unknown;
   after: unknown;
 }
+
+/**
+ * Input or state shape for record catalog undo input.
+ */
 
 export interface RecordCatalogUndoInput {
   description: string;
@@ -24,12 +32,22 @@ export interface RecordCatalogUndoInput {
   extraDiffs?: readonly RecordCatalogUndoDiffInput[];
 }
 
+/**
+ * Records an undo entry after catalog undo completes.
+ */
+
 @singleton()
 export class RecordCatalogUndoOperation {
   constructor(
     private readonly recordUndoEntry: RecordUndoEntryOperation,
     private readonly buildUniversalUndoProcessor: BuildUniversalUndoProcessorOperation,
   ) {}
+
+  /**
+   * Runs the record catalog undo mutation.
+   * @param input Input (RecordCatalogUndoInput).
+   * @returns Promise resolving to RecordUndoEntryResult.
+   */
 
   async execute(input: RecordCatalogUndoInput): Promise<RecordUndoEntryResult> {
     const diffs: UndoDiff[] = [

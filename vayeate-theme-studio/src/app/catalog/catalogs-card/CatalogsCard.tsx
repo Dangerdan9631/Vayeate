@@ -1,6 +1,9 @@
 import type { ChangeEvent } from 'react';
 import { useCatalogsCardViewModel } from './use-catalogs-card-viewmodel';
 
+/**
+ * Catalog name and version pickers with entry to create a new catalog.
+ */
 export function CatalogsCard() {
   const {
     selectedName,

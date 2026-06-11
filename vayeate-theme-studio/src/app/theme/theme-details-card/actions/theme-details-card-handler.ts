@@ -7,6 +7,9 @@ import { SetThemeTemplateController } from '../controllers/set-theme-template-co
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemeDetailsCardActions, ThemeDetailsCardActionType } from './theme-details-card-action-type';
 
+/**
+ * Routes Theme Details Card actions to their controllers.
+ */
 @singleton()
 export class ThemeDetailsCardHandler {
   private readonly log: Logger;
@@ -22,6 +25,11 @@ export class ThemeDetailsCardHandler {
     this.log = loggerFactory.create(ThemeDetailsCardHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: ThemeDetailsCardActions): Promise<void> {
     switch (action.type) {
       case ThemeDetailsCardActionType.TemplateListOnCommit:

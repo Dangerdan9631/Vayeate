@@ -13,6 +13,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_COLOR_VARIABLE_ADDED } from '../../../../model/undo-action-types';
 
+/**
+ * Adds a color variable to the selected template with optional group assignment.
+ */
 @singleton()
 export class AddColorVariableController {
   constructor(
@@ -28,6 +31,12 @@ export class AddColorVariableController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Bumps the template version, adds the color variable, persists, and records undo.
+   * @param key Color variable key to add.
+   * @param groupRef Optional group ref to assign on creation.
+   * @returns Resolves when the variable is added and undo is recorded.
+   */
   async run(key: string, groupRef?: string | null): Promise<void> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;

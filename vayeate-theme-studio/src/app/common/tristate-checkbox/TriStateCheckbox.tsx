@@ -17,6 +17,9 @@ function getNextState(current: TriState): boolean {
   return current === 'some' ? true : current !== 'all';
 }
 
+/**
+ * Tri-state value for bulk-selection checkboxes: fully selected, partially selected, or none.
+ */
 export type TriState = 'all' | 'none' | 'some';
 
 interface TriStateCheckboxProps {
@@ -26,6 +29,14 @@ interface TriStateCheckboxProps {
   className?: string;
 }
 
+/**
+ * Renders an accessible tri-state checkbox that cycles between none, all, and some on activation.
+ * @param props.state Current tri-state visual and ARIA checked value.
+ * @param props.onChange Called with the next boolean checked value after a click or keyboard toggle.
+ * @param props.ariaLabel Accessible name for the control.
+ * @param props.className Optional extra CSS class names.
+ * @returns The tri-state checkbox button element.
+ */
 export function TriStateCheckbox({
   state,
   ariaLabel,

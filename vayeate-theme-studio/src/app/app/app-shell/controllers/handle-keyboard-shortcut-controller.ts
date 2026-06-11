@@ -3,6 +3,9 @@ import type { KeyboardShortcutEvent } from '../../../../domain/operations/app-op
 import { RedoOperation } from '../../../../domain/operations/undo-operations/redo-operation';
 import { UndoOperation } from '../../../../domain/operations/undo-operations/undo-operation';
 
+/**
+ * Handles global keyboard shortcuts registered through the window service.
+ */
 @singleton()
 export class HandleKeyboardShortcutController {
   constructor(
@@ -10,6 +13,10 @@ export class HandleKeyboardShortcutController {
     private readonly performRedo: RedoOperation,
   ) {}
 
+  /**
+   * Maps Ctrl/Cmd shortcuts to undo and redo operations.
+   * @param e Normalized keyboard event from the window callback port.
+   */
   async run(e: KeyboardShortcutEvent): Promise<void> {
     if (!(e.ctrlKey || e.metaKey)) return;
 

@@ -21,6 +21,9 @@ import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemeVariablesCardActions, ThemeVariablesCardActionType } from './theme-variables-card-action-type';
 import { EyedropperCommitTargetType } from '../../../../model/eyedropper';
 
+/**
+ * Routes Theme Variables Card actions to their controllers.
+ */
 @singleton()
 export class ThemeVariablesCardHandler {
   private readonly log: Logger;
@@ -49,6 +52,11 @@ export class ThemeVariablesCardHandler {
     this.log = loggerFactory.create(ThemeVariablesCardHandler.name);
   }
 
+  /**
+ * Dispatches the action to the matching controller.
+ * @param action Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async handle(action: ThemeVariablesCardActions): Promise<void> {
     switch (action.type) {
       case ThemeVariablesCardActionType.SearchTextOnChange:

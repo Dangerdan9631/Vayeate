@@ -4,7 +4,14 @@ import type { Template } from '../../model/schema/template-schemas';
 import { computeOrphanKeys, type SemanticCatalogInfo } from './compute-orphan-keys';
 
 /**
- * Matches template mappings-card orphan UX: no refs ⇒ not orphan; missing catalog snapshots ⇒ not orphan (conservative).
+ * Reports whether a mapping token is orphaned for the template mappings-card UX.
+ * Returns false when catalog refs are empty or any referenced catalog snapshot is missing.
+ *
+ * @param template - Template whose catalog refs define the valid token universe.
+ * @param tokenKey - Token key of the mapping under test.
+ * @param tokenType - Token type discriminant for the mapping.
+ * @param catalogs - Loaded catalog entities referenced by the template.
+ * @returns True when the token is absent from loaded catalogs and semantic metadata.
  */
 export function isMappingOrphanForTemplate(
   template: Template,

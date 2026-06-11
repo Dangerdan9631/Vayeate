@@ -15,11 +15,17 @@ import {
   type ScopeColorMap,
 } from '../../../domain/utils/scope-resolver';
 
+/**
+ * Resolved preview lines and cache key for one editor preview sample.
+ */
 export interface ResolvedPreview {
   previewKey: string;
   lines: ResolvedPreviewLine[];
 }
 
+/**
+ * Hook used by the Editor Previews Card to derive presentation state.
+ */
 export function useResolvedEditorPreviews(params: {
   previews: readonly TokenizedPreview[];
   mappings: readonly Mapping[];

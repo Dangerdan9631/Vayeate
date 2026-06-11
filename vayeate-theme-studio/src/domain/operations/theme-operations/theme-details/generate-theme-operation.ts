@@ -14,6 +14,10 @@ import { toSafeFileName } from '../../../utils/to-safe-theme-file-name';
 
 const EXTENSION_THEMES_EXPORT_PREFIX = 'exthemes';
 
+/**
+ * Generates theme and stores the result.
+ */
+
 @singleton()
 export class GenerateThemeOperation {
   constructor(
@@ -25,6 +29,11 @@ export class GenerateThemeOperation {
     private readonly fileSystemService: FileSystemService,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) { }
+
+  /**
+   * Runs the generate theme mutation.
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(): void {
     const { theme } = this.themeUiStore.getStore().state;

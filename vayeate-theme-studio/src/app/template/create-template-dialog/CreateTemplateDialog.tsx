@@ -1,6 +1,10 @@
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useCreateTemplateDialogViewModel } from './use-create-template-dialog-viewmodel';
 
+/**
+ * Renders the modal form for naming and creating a new template.
+ * @returns Create-template dialog UI wired to its viewmodel.
+ */
 export function CreateTemplateDialog() {
   const {
     name,

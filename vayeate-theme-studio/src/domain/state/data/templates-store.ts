@@ -6,6 +6,9 @@ import type { Template } from '../../../model/schema/template-schemas';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import { initialTemplatesState, type TemplateMap, type TemplatesState } from './templates-state';
 
+/**
+ * Templates cache snapshot plus mutation methods exposed from the store.
+ */
 export interface TemplatesStoreState {
   state: TemplatesState;
   updateTemplateRefs: (refs: TemplateReference[]) => void;
@@ -13,6 +16,13 @@ export interface TemplatesStoreState {
   updateTemplates: (templates: Template[]) => void;
 }
 
+/**
+ * Resolves the loaded template for the selected reference, if any.
+ *
+ * @param templateMap Templates grouped by name and version.
+ * @param selectedRef Currently selected template reference, or null.
+ * @returns The loaded template, or null when none is selected or loaded.
+ */
 export function getCurrentTemplate(templateMap: TemplateMap, selectedRef: TemplateReference | null): Template | null {
   if (!selectedRef) return null;
   const template = templateMap[selectedRef.name]?.[selectedRef.version];
@@ -20,6 +30,12 @@ export function getCurrentTemplate(templateMap: TemplateMap, selectedRef: Templa
   return template.template;
 }
 
+/**
+ * Collects sorted template references from every entry in the template map.
+ *
+ * @param templateMap Templates grouped by name and version.
+ * @returns Stable-sorted list of name/version pairs present in the map.
+ */
 export function getCurrentTemplateRefs(templateMap: TemplateMap): TemplateReference[] {
   const refs: TemplateReference[] = [];
   for (const name of Object.keys(templateMap).sort()) {
@@ -30,6 +46,12 @@ export function getCurrentTemplateRefs(templateMap: TemplateMap): TemplateRefere
   return refs;
 }
 
+/**
+ * Returns every template that is currently loaded across all name/version slots.
+ *
+ * @param templateMap Templates grouped by name and version.
+ * @returns All loaded template entities in map iteration order.
+ */
 export function getAllLoadedTemplates(templateMap: TemplateMap): Template[] {
   const templates: Template[] = [];
   for (const name of Object.keys(templateMap)) {
@@ -68,6 +90,9 @@ function upsertTemplate(templateMap: TemplateMap, template: Template): void {
   };
 }
 
+/**
+ * Zustand store for the in-memory template entity cache.
+ */
 @singleton()
 export class TemplatesStore {
   private store = createStore<TemplatesStoreState>()(
@@ -92,10 +117,17 @@ export class TemplatesStore {
     }))
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live templates store state and setters.
+   */
   getStore(): TemplatesStoreState {
     return this.store.getState();
   }

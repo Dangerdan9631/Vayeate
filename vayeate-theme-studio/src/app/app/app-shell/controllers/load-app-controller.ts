@@ -4,6 +4,9 @@ import { ClearPersistedUndoOperation } from '../../../../domain/operations/undo-
 import { LoadUndoHistoryOperation } from '../../../../domain/operations/undo-operations/load-undo-history-operation';
 import { InitializeWindowCallbacksController } from '../../window/controllers/initialize-window-callbacks-controller';
 
+/**
+ * Initializes app services and window callbacks when the shell mounts.
+ */
 @singleton()
 export class LoadAppController {
   constructor(
@@ -13,6 +16,9 @@ export class LoadAppController {
     private readonly loadUndoHistory: LoadUndoHistoryOperation
   ) { }
 
+  /**
+   * Runs startup operations in order: window hooks, undo hydration, and config load.
+   */
   run(): void {
     this.initializeWindowService.run();
     this.clearPersistedUndo.execute().then('Loading undo history', () => {

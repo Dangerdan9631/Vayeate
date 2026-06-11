@@ -39,6 +39,9 @@ async function loadCatalogData(
   return catalogData;
 }
 
+/**
+ * Handles TEMPLATE_DETAILS_CATALOG_CHECKBOX_ON_TOGGLE by including or excluding a catalog.
+ */
 @singleton()
 export class ToggleCatalogController {
   constructor(
@@ -55,6 +58,11 @@ export class ToggleCatalogController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Toggles catalog inclusion for the selected template and records undo.
+   * @param catalogName Catalog name from the checkbox toggle.
+   * @returns Resolves when the template update and persist finish.
+   */
   async run(catalogName: string): Promise<void> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     const catalogRefs = this.getCatalogRefs.execute();

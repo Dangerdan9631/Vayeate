@@ -14,6 +14,9 @@ const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
 const EMPTY_DISPLAYS: EyedropperDisplaySnapshotEntry[] = [];
 
+/**
+ * Presentation state and callbacks for the eyedropper snapshot canvas.
+ */
 export interface EyedropperCanvasViewModel {
   canvasSize: Size;
   snapshotBounds: Rect;
@@ -22,6 +25,10 @@ export interface EyedropperCanvasViewModel {
   onCanvasClick: (hex: HexColor) => void;
 }
 
+/**
+ * Subscribes to eyedropper UI state and exposes canvas sizing plus pointer/commit callbacks.
+ * @returns View model for the eyedropper canvas component.
+ */
 export function useEyedropperCanvasViewModel(): EyedropperCanvasViewModel {
   const dispatch = useAppDispatch();
 

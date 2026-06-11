@@ -9,6 +9,9 @@ import type { HexColor } from '../../../../model/schema/primitives';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { recordPaletteColorAssignUndo } from './record-palette-color-assign-undo';
 
+/**
+ * Orchestrates commit assign color eye dropper work for the theme UI.
+ */
 @singleton()
 export class CommitAssignColorEyeDropperController {
   constructor(
@@ -20,6 +23,11 @@ export class CommitAssignColorEyeDropperController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param value Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(value: HexColor): Promise<void> {
     const theme = this.themeUiStore.getStore().state.theme;
     if (!theme) return;

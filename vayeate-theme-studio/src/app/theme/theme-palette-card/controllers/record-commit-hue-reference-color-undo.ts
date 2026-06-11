@@ -4,6 +4,12 @@ import {
   THEME_PALETTE_HUE_REFERENCE_SET,
 } from '../../../../model/undo-action-types';
 
+/**
+ * Records an undo entry after commit hue reference color undo.
+ * @param recordThemeUndo Undo recording operation to invoke.
+ * @param input Undo entry payload.
+ * @returns Promise resolved after the undo entry is stored.
+ */
 export async function recordCommitHueReferenceColorUndo(
   recordThemeUndo: RecordThemeUndoOperation,
   input: {

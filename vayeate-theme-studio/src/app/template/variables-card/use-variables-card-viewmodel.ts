@@ -17,6 +17,9 @@ import type { ColorVariable, ContrastVariable, Template } from '../../../model/s
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+/**
+ * Read model and action callbacks for the template variables card.
+ */
 export interface VariablesCardViewModel {
   template: Template | null;
   colorVariables: readonly ColorVariable[];
@@ -45,6 +48,10 @@ function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean 
   return schema.safeParse(value).success;
 }
 
+/**
+ * Subscribes to template variables and exposes search and edit callbacks.
+ * @returns Variables card state and dispatch-backed handlers.
+ */
 export function useVariablesCardViewModel(): VariablesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);

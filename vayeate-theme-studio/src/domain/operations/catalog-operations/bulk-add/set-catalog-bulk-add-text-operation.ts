@@ -4,6 +4,10 @@ import { parseThemeJson } from '../../../../model/theme-import';
 import { BulkAddDialogStore } from '../../../state/ui/bulk-add-dialog-store';
 import { CatalogUiStore } from '../../../state/ui/catalog-ui-store';
 
+/**
+ * Updates catalog bulk add text in the domain or UI store.
+ */
+
 @singleton()
 export class SetCatalogBulkAddTextOperation {
   constructor(
@@ -11,6 +15,12 @@ export class SetCatalogBulkAddTextOperation {
     private readonly catalogUiStore: CatalogUiStore,
     private readonly bulkAddDialogStore: BulkAddDialogStore,
   ) {}
+
+  /**
+   * Runs the set catalog bulk add text mutation.
+   * @param value Value (string).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(value: string): void {
     const preview = this.computePreview(value);

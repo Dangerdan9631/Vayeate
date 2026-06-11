@@ -7,6 +7,9 @@ import { ThemePaletteCard } from '../theme-palette-card/ThemePaletteCard';
 import { ThemeVariablesCard } from '../theme-variables-card/ThemeVariablesCard';
 import { ThemesCard } from '../themes-card/ThemesCard';
 
+/**
+ * Renders the Themes Page UI for the theme editor.
+ */
 export function ThemesPage() {
   const { isPageLoading, isThemeLoading, isThemeLoaded } = useThemeViewModel();
   const { saveError, createDialogOpen, onDismissSaveErrorClick } = useThemesPageChromeViewModel();

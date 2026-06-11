@@ -9,6 +9,9 @@ const COMPARISON_OPTIONS: { value: ContrastComparisonMethod; label: string }[] =
   { value: 'greaterThan', label: '> Greater than' },
 ];
 
+/**
+ * Props consumed by the Contrast Assignment Row component.
+ */
 export interface ContrastAssignmentRowProps {
   assignment: ContrastAssignment;
   variable: ContrastVariable | null;
@@ -287,4 +290,7 @@ function ContrastAssignmentRowComponent({
   );
 }
 
+/**
+ * Memoized Contrast Assignment Row component for the theme UI.
+ */
 export const ContrastAssignmentRow = memo(ContrastAssignmentRowComponent);

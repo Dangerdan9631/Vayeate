@@ -14,6 +14,14 @@ interface EyedropperLoupeProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
 }
 
+/**
+ * Renders a magnified canvas loupe with crosshairs at the current pointer position.
+ * @param props.loupeCanvasRef Ref to the loupe canvas element for pixel sampling.
+ * @param props.isOpen Whether the eyedropper overlay is open.
+ * @param props.errorMessage Snapshot error message, or null when the canvas is usable.
+ * @param props.canvasRef Ref to the main eyedropper snapshot canvas.
+ * @returns The loupe canvas element, or null when position is unavailable.
+ */
 export function EyedropperLoupe({
   loupeCanvasRef,
   isOpen,

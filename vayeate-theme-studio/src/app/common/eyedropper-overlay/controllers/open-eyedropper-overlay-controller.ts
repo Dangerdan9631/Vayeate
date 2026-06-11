@@ -3,6 +3,9 @@ import { LoadEyedropperSnapshotOperation } from '../../../../domain/operations/e
 import { OpenEyedropperOperation } from '../../../../domain/operations/eyedropper-operations/open-eyedropper-operation';
 import type { EyedropperCommitTarget } from '../../../../model/eyedropper';
 
+/**
+ * Opens the eyedropper overlay and starts loading the display snapshot.
+ */
 @singleton()
 export class OpenEyedropperOverlayController {
   constructor(
@@ -10,6 +13,11 @@ export class OpenEyedropperOverlayController {
     private readonly loadEyedropperSnapshot: LoadEyedropperSnapshotOperation,
   ) {}
 
+  /**
+   * Records the commit target, opens overlay UI state, and enqueues snapshot capture.
+   * @param commitTarget Feature-specific target that receives the picked color on commit.
+   * @returns Nothing.
+   */
   run(commitTarget: EyedropperCommitTarget): void {
     this.openEyedropper.execute(commitTarget);
     this.loadEyedropperSnapshot.execute();

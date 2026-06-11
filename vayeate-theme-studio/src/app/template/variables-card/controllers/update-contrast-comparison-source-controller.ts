@@ -14,6 +14,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { TEMPLATE_CONTRAST_COMPARISON_SOURCE_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_VARIABLES_CONTRAST_SOURCE_LIST_ON_COMMIT by setting a contrast comparison source.
+ */
 @singleton()
 export class UpdateContrastComparisonSourceController {
   constructor(
@@ -29,6 +32,12 @@ export class UpdateContrastComparisonSourceController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Updates the color source used by a contrast variable and records undo.
+   * @param contrastVariableKey Contrast variable whose source list committed.
+   * @param comparisonSourceRef Color variable ref chosen as the comparison source.
+   * @returns Resolves when the template update and undo recording finish.
+   */
   async run(
     contrastVariableKey: string,
     comparisonSourceRef: ColorVariableKey | null,

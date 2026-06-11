@@ -7,6 +7,10 @@ import { TemplateDetailsCard } from '../template-details-card/TemplateDetailsCar
 import { TemplatesCard } from '../templates-card/TemplatesCard';
 import { VariablesCard } from '../variables-card/VariablesCard';
 
+/**
+ * Renders the Templates editor page and its feature cards.
+ * @returns Templates page layout or loading placeholders.
+ */
 export function TemplatesPage() {
   const {
     isPageLoading,

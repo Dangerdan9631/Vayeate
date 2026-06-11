@@ -2,23 +2,69 @@ import type { Source, Token } from '../../model/schema/catalog';
 import type { TokenType } from '../../model/schema/primitives';
 import { parseSemanticSelector } from '../../model/parse-semantic-selector';
 
+/**
+ * Matches backtick-wrapped token candidates in default source text.
+ */
 const BACKTICK_RE = /`([^`]+)`/g;
+/**
+ * Matches `<code>` tag contents in default source text.
+ */
 const CODE_TAG_RE = /<code>([^<]+)<\/code>/gi;
+/**
+ * Matches `registerColor('id')` calls in color registry TypeScript.
+ */
 const REGISTER_COLOR_RE = /registerColor\s*\(\s*['"]([^'"]+)['"]/g;
+/** Matches `export * from 'path'` re-exports in registry set manifests. */
 const EXPORT_STAR_FROM_RE = /export\s*\*\s*from\s*['"]([^'"]+)['"]/g;
+/**
+ * Matches `registerTokenType('id')` in semantic token registry sources.
+ */
 const REGISTER_TOKEN_TYPE_RE = /registerTokenType\s*\(\s*['"]([^'"]+)['"]/g;
+/**
+ * Matches `registerTokenModifier('id')` in semantic token registry sources.
+ */
 const REGISTER_TOKEN_MODIFIER_RE = /registerTokenModifier\s*\(\s*['"]([^'"]+)['"]/g;
+/**
+ * Matches `registerTokenStyleDefault('selector')` in semantic token registry sources.
+ */
 const REGISTER_TOKEN_STYLE_DEFAULT_RE = /registerTokenStyleDefault\s*\(\s*['"]([^'"]+)['"]/g;
+/**
+ * Source types that must use theme token type when syncing.
+ */
 const THEME_ONLY_SOURCE_TYPES = ['color-registry', 'color-registry-set'] as const;
+/**
+ * Source types that must use semantic token type when syncing.
+ */
 const SEMANTIC_ONLY_SOURCE_TYPES = ['semantic-token-registry'] as const;
+/**
+ * Source types that must use textmate token type when syncing.
+ */
 const TEXTMATE_ONLY_SOURCE_TYPES = ['textmate-xml', 'textmate-json'] as const;
+/**
+ * Extracts root `scopeName` from a TextMate plist grammar.
+ */
 const TMLANGUAGE_SCOPE_NAME_RE = /<key>scopeName<\/key>\s*<string>([^<]+)<\/string>/;
+/**
+ * Extracts rule `name` scope strings from a TextMate plist grammar.
+ */
 const TMLANGUAGE_NAME_RE = /<key>name<\/key>\s*<string>([^<]+)<\/string>/g;
+/**
+ * Validates dot-separated theme color identifiers.
+ */
 const THEME_COLOR_RE = /^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$/;
+/**
+ * Validates TextMate scope selector strings.
+ */
 const TEXTMATE_SCOPE_RE = /^([a-zA-Z][a-zA-Z0-9_-]*|\*)(\.([a-zA-Z][a-zA-Z0-9_-]*|\*))+$/;
 
+/**
+ * Fetched source body keyed by absolute URL.
+ */
 type SourceTextByUrl = Readonly<Record<string, string>>;
 
+/**
+ * Parsed token list and semantic registry metadata from a catalog sync.
+ */
 export type SyncCatalogResult = {
   tokens: Token[];
   semanticTokenTypes: string[];
@@ -26,6 +72,12 @@ export type SyncCatalogResult = {
   semanticTokenLanguages: string[];
 };
 
+/**
+ * Returns whether a string parses as a valid semantic token selector.
+ *
+ * @param candidate - Raw selector text from a source.
+ * @returns True when the selector parses and type rules pass.
+ */
 function isValidSemanticSelector(candidate: string): boolean {
   try {
     const parsed = parseSemanticSelector(candidate);
@@ -38,6 +90,13 @@ function isValidSemanticSelector(candidate: string): boolean {
   }
 }
 
+/**
+ * Applies token-type-specific shape rules to a candidate key.
+ *
+ * @param candidate - Token key extracted from source text.
+ * @param tokenType - Expected catalog token type for the source.
+ * @returns True when the candidate matches that type's constraints.
+ */
 function filterByTokenType(candidate: string, tokenType: TokenType): boolean {
   switch (tokenType) {
     case 'theme':
@@ -56,6 +115,12 @@ function filterByTokenType(candidate: string, tokenType: TokenType): boolean {
   }
 }
 
+/**
+ * Pulls token key candidates from backticks and `<code>` tags in markdown-like text.
+ *
+ * @param text - Default source body.
+ * @returns Trimmed candidate strings in discovery order.
+ */
 function extractCandidates(text: string): string[] {
   const candidates: string[] = [];
   let match: RegExpExecArray | null;
@@ -68,11 +133,25 @@ function extractCandidates(text: string): string[] {
   return candidates;
 }
 
+/**
+ * Builds tokens from markdown-style default sources.
+ *
+ * @param text - Default source body.
+ * @param tokenType - Token type declared on the source.
+ * @returns Deduped, sorted tokens passing type filters.
+ */
 function parseDefaultSource(text: string, tokenType: TokenType): Token[] {
   const filtered = extractCandidates(text).filter((candidate) => filterByTokenType(candidate, tokenType));
   return [...new Set(filtered)].sort().map((key) => ({ key, type: tokenType }));
 }
 
+/**
+ * Builds tokens from `registerColor` calls in registry TypeScript.
+ *
+ * @param text - Color registry source body.
+ * @param tokenType - Token type declared on the source.
+ * @returns Deduped, sorted theme tokens from registerColor ids.
+ */
 function parseColorRegistrySource(text: string, tokenType: TokenType): Token[] {
   const keys: string[] = [];
   let match: RegExpExecArray | null;
@@ -86,6 +165,12 @@ function parseColorRegistrySource(text: string, tokenType: TokenType): Token[] {
   return [...new Set(keys)].sort().map((key) => ({ key, type: tokenType }));
 }
 
+/**
+ * Builds textmate tokens from a plist TextMate grammar XML file.
+ *
+ * @param xmlText - Raw `.tmLanguage` XML content.
+ * @returns Deduped, sorted scopes from scopeName and rule names.
+ */
 function parseTextmateGrammarSource(xmlText: string): Token[] {
   const scopes = new Set<string>();
   const scopeNameMatch = xmlText.match(TMLANGUAGE_SCOPE_NAME_RE);
@@ -110,6 +195,13 @@ function parseTextmateGrammarSource(xmlText: string): Token[] {
     .map((key) => ({ key, type: 'textmate token' }));
 }
 
+/**
+ * Recursively collects `scopeName` and `name` fields from a grammar JSON tree.
+ *
+ * @param value - Current JSON node while walking the grammar.
+ * @param scopes - Accumulator for discovered scope strings.
+ * @returns Nothing; mutates `scopes`.
+ */
 function collectScopeNamesFromJson(value: unknown, scopes: Set<string>): void {
   if (value === null || typeof value !== 'object') {
     return;
@@ -140,6 +232,12 @@ function collectScopeNamesFromJson(value: unknown, scopes: Set<string>): void {
   }
 }
 
+/**
+ * Builds textmate tokens from a JSON TextMate grammar file.
+ *
+ * @param jsonText - Raw `.tmLanguage.json` content.
+ * @returns Deduped, sorted scopes, or an empty list when JSON is invalid.
+ */
 function parseTextmateJsonSource(jsonText: string): Token[] {
   const scopes = new Set<string>();
   try {
@@ -153,6 +251,12 @@ function parseTextmateJsonSource(jsonText: string): Token[] {
     .map((key) => ({ key, type: 'textmate token' }));
 }
 
+/**
+ * Lists relative module paths from `export * from` lines in a registry set manifest.
+ *
+ * @param manifestText - Color registry set index TypeScript.
+ * @returns Deduped relative export paths.
+ */
 function parseExportStarFromPaths(manifestText: string): string[] {
   const paths: string[] = [];
   let match: RegExpExecArray | null;
@@ -166,10 +270,23 @@ function parseExportStarFromPaths(manifestText: string): string[] {
   return [...new Set(paths)];
 }
 
+/**
+ * Resolves a manifest-relative export path to an absolute fetch URL.
+ *
+ * @param relativePath - Path from an `export * from` statement.
+ * @param manifestUrl - Absolute URL of the registry set manifest.
+ * @returns Absolute URL with `.js` extensions normalized to `.ts`.
+ */
 export function resolveExportUrl(relativePath: string, manifestUrl: string): string {
   return new URL(relativePath, manifestUrl).href.replace(/\.js$/i, '.ts');
 }
 
+/**
+ * Extracts semantic types, modifiers, and languages from a VS Code semantic registry file.
+ *
+ * @param text - Semantic token registry TypeScript body.
+ * @returns Sorted unique registry ids and languages.
+ */
 function parseSemanticTokenRegistrySource(text: string): { types: string[]; modifiers: string[]; languages: string[] } {
   const types = new Set<string>();
   const modifiers = new Set<string>();
@@ -221,6 +338,13 @@ function parseSemanticTokenRegistrySource(text: string): { types: string[]; modi
   };
 }
 
+/**
+ * Converts fetched catalog sources into deduped tokens and semantic registry metadata.
+ *
+ * @param sources - Catalog source descriptors in sync order.
+ * @param sourceTextByUrl - Response bodies keyed by each source URL.
+ * @returns Merged tokens plus semantic type, modifier, and language lists.
+ */
 export function parseSyncedCatalogTokens(
   sources: readonly Source[],
   sourceTextByUrl: SourceTextByUrl,

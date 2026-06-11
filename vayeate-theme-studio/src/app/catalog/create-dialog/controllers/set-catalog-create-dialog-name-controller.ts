@@ -5,6 +5,9 @@ import { SetCatalogCreateDialogErrorOperation } from '../../../../domain/operati
 import { ValidateCatalogNameIsUnique } from '../../../../domain/catalog/validations/validate-catalog-name-is-unique';
 import { Validator } from '../../../../domain/validations/validator';
 
+/**
+ * Updates the create-dialog name field and validates uniqueness and format.
+ */
 @singleton()
 export class SetCatalogCreateDialogNameController {
   private readonly validateNameCanBeUsed: Validator<string>;
@@ -20,6 +23,10 @@ export class SetCatalogCreateDialogNameController {
     ]);
   }
 
+  /**
+   * Stores the typed name and sets dialog error state when validation fails.
+   * @param value - Name text from the dialog input.
+   */
   run(value: string): void {
     this.setCatalogCreateDialogData.execute({ name: value });
 

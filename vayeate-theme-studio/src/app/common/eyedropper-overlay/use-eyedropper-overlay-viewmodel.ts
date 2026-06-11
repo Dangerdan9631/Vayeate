@@ -15,6 +15,9 @@ import {
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 
+/**
+ * Presentation state and callbacks for the full-screen eyedropper overlay shell.
+ */
 export interface EyedropperOverlayViewModel {
   isOpen: boolean;
   isLoaded: boolean;
@@ -31,6 +34,10 @@ export interface EyedropperOverlayViewModel {
   onOverlayViewportSizeChange: (size: Size) => void;
 }
 
+/**
+ * Subscribes to eyedropper UI state and derives zoom layout plus overlay interaction callbacks.
+ * @returns View model for the eyedropper overlay component.
+ */
 export function useEyedropperOverlayViewModel(): EyedropperOverlayViewModel {
   const dispatch = useAppDispatch();
   const isOpen = useStore(eyedropperUiStore.api, (state) => state.state.isOpen);

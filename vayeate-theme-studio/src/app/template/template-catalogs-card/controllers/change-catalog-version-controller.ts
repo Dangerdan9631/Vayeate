@@ -37,6 +37,9 @@ async function loadCatalogData(
   return catalogData;
 }
 
+/**
+ * Handles TEMPLATE_DETAILS_CATALOG_VERSION_LIST_ON_COMMIT by pinning a catalog version.
+ */
 @singleton()
 export class ChangeCatalogVersionController {
   constructor(
@@ -52,6 +55,12 @@ export class ChangeCatalogVersionController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Updates the pinned catalog version on the selected template.
+   * @param catalogName Catalog whose version list committed.
+   * @param newVersion Version chosen in the catalog version list.
+   * @returns Resolves when the template update and persist finish.
+   */
   async run(catalogName: string, newVersion: string): Promise<void> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;

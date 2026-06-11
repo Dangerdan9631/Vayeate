@@ -1,11 +1,20 @@
 import type { UndoAction, UndoProcessor } from './undo-stack-types';
 
+/**
+ * Applies or reverts one undo diff type identified by `actionType`.
+ */
 export interface UndoDiffHandler {
   actionType: string;
   apply(action: UndoAction): Promise<void> | void;
   revert(action: UndoAction): Promise<void> | void;
 }
 
+/**
+ * Builds an undo processor that dispatches each diff to its registered handler.
+ *
+ * @param handlers Handler list keyed by `actionType`; defaults to an empty list.
+ * @returns A processor suitable for stack undo, redo, and go-to transitions.
+ */
 export function createUndoProcessor(handlers: UndoDiffHandler[] = []): UndoProcessor {
   const handlersByType = new Map(handlers.map((handler) => [handler.actionType, handler]));
 

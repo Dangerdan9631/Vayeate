@@ -11,14 +11,26 @@ import { useStore } from 'zustand';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const catalogUiStore = container.resolve(CatalogUiStore);
+/**
+ * Allowed token types from the primitives schema for source row selects.
+ */
 const TOKEN_TYPE_OPTIONS = tokenTypeSchema.options;
+/**
+ * Allowed source fetch types from the primitives schema for source row selects.
+ */
 const SOURCE_TYPE_OPTIONS = sourceTypeSchema.options;
 
+/**
+ * Label/value pair for source type and token type select options.
+ */
 export interface CatalogDetailsCardOption<TValue extends string> {
   value: TValue;
   label: string;
 }
 
+/**
+ * Presentation row for one remote source in the details card table.
+ */
 export interface CatalogDetailsCardSourceRowViewModel {
   sourceIndex: number;
   url: string;
@@ -29,6 +41,9 @@ export interface CatalogDetailsCardSourceRowViewModel {
   sourceTypeOptions: CatalogDetailsCardOption<SourceType>[];
 }
 
+/**
+ * Catalog metadata, source rows, and action callbacks for the details card.
+ */
 export interface CatalogDetailsCardViewModel {
   catalog: Catalog | null;
   themeTokenCount: number;
@@ -61,10 +76,16 @@ export interface CatalogDetailsCardViewModel {
   onNewSourceAddClick: () => void;
 }
 
+/**
+ * Returns the display label for a token type select option.
+ */
 function getTokenTypeLabel(value: TokenType): string {
   return value === 'theme' ? 'Theme Tokens' : value === 'textmate token' ? 'Textmate Tokens' : 'Semantic Tokens';
 }
 
+/**
+ * Builds a select option for the given token type.
+ */
 function getTokenTypeOption(value: TokenType): CatalogDetailsCardOption<TokenType> {
   return {
     value,
@@ -72,6 +93,9 @@ function getTokenTypeOption(value: TokenType): CatalogDetailsCardOption<TokenTyp
   };
 }
 
+/**
+ * Builds a select option for the given source fetch type.
+ */
 function getSourceTypeOption(value: SourceType): CatalogDetailsCardOption<SourceType> {
   return {
     value,
@@ -79,6 +103,9 @@ function getSourceTypeOption(value: SourceType): CatalogDetailsCardOption<Source
   };
 }
 
+/**
+ * Lists source types compatible with the given token type.
+ */
 function getSourceTypeOptions(tokenType: TokenType): CatalogDetailsCardOption<SourceType>[] {
   return SOURCE_TYPE_OPTIONS
     .filter((sourceType) => {
@@ -91,6 +118,9 @@ function getSourceTypeOptions(tokenType: TokenType): CatalogDetailsCardOption<So
     .map(getSourceTypeOption);
 }
 
+/**
+ * Lists token types compatible with the given source fetch type.
+ */
 function getTokenTypeOptions(sourceType: SourceType): CatalogDetailsCardOption<TokenType>[] {
   return TOKEN_TYPE_OPTIONS
     .filter((tokenType) => {
@@ -103,19 +133,32 @@ function getTokenTypeOptions(sourceType: SourceType): CatalogDetailsCardOption<T
     .map(getTokenTypeOption);
 }
 
+/**
+ * Parses a data-attribute source index string into a number, or null when invalid.
+ */
 function parseSourceIndex(value: string | undefined): number | null {
   const sourceIndex = Number(value);
   return Number.isNaN(sourceIndex) ? null : sourceIndex;
 }
 
+/**
+ * Parses a select value into a token type enum member, or null when unknown.
+ */
 function parseTokenType(value: string): TokenType | null {
   return TOKEN_TYPE_OPTIONS.includes(value as TokenType) ? value as TokenType : null;
 }
 
+/**
+ * Parses a select value into a source type enum member, or null when unknown.
+ */
 function parseSourceType(value: string): SourceType | null {
   return SOURCE_TYPE_OPTIONS.includes(value as SourceType) ? value as SourceType : null;
 }
 
+/**
+ * Derives editability from catalog version and type; dispatches details card actions.
+ * @returns View model for `CatalogDetailsCard`.
+ */
 export function useCatalogDetailsCardViewModel(): CatalogDetailsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);

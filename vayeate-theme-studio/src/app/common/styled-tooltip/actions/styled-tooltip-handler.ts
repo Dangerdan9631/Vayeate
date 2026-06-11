@@ -5,6 +5,9 @@ import { RepositionStyledTooltipController } from '../controllers/reposition-sty
 import { ShowStyledTooltipController } from '../controllers/show-styled-tooltip-controller';
 import { AppStyledTooltipActions, StyledTooltipActionType } from './styled-tooltip-action-type';
 
+/**
+ * Routes styled tooltip actions to their dedicated controllers.
+ */
 @singleton()
 export class StyledTooltipHandler {
   private readonly log: Logger;
@@ -18,6 +21,11 @@ export class StyledTooltipHandler {
     this.log = loggerFactory.create(StyledTooltipHandler.name);
   }
 
+  /**
+   * Dispatches one styled tooltip action to the matching controller entry point.
+   * @param action Typed styled tooltip action from the queue.
+   * @returns A promise that settles when the controller run completes.
+   */
   async handle(action: AppStyledTooltipActions): Promise<void> {
     switch (action.type) {
       case StyledTooltipActionType.TooltipSourceOnMouseOver:

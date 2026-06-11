@@ -7,6 +7,9 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 
+/**
+ * Switches the active primary tab and aligns the undo stack context.
+ */
 @singleton()
 export class SetActiveTabController {
   constructor(
@@ -17,6 +20,10 @@ export class SetActiveTabController {
     private readonly setCurrentUndoStackId?: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Updates UI active tab state and reloads undo history for the tab context.
+   * @param tabId Target tab; must be a valid primary {@link TabId}.
+   */
   run(tabId: TabId): void {
     this.setUiActiveTab.execute(tabId);
     const theme = this.themeUiStore?.getStore().state.theme ?? null;

@@ -4,6 +4,9 @@ import { OpenMenuOperation } from '../../../../domain/operations/app-operations/
 import { UiStore } from '../../../../domain/state/ui/ui-store';
 import { CloseMenusOperation } from '../../../../domain/operations/app-operations/close-menus-operation';
 
+/**
+ * Opens or closes a header dropdown menu when its trigger is clicked.
+ */
 @singleton()
 export class ToggleMenuOpenController {
   constructor(
@@ -12,6 +15,10 @@ export class ToggleMenuOpenController {
     private readonly closeMenus: CloseMenusOperation,
   ) {}
 
+  /**
+   * Toggles the requested menu open, or closes it when already active.
+   * @param menuId Menu to open or close; must be a valid {@link MenuId}.
+   */
   run(menuId: MenuId): void {
     const openMenu = this.uiStore.getStore().state.openMenu;
 

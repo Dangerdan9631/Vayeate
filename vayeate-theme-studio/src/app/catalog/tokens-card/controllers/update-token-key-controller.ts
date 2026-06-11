@@ -15,6 +15,9 @@ import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed'
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { CATALOG_TOKEN_KEY_UPDATED } from '../../../../model/undo-action-types';
 
+/**
+ * Renames an existing token key on the selected manual catalog version.
+ */
 @singleton()
 export class UpdateTokenKeyController {
   constructor(
@@ -30,6 +33,13 @@ export class UpdateTokenKeyController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Commits a token key rename when the new key is valid and distinct.
+   * @param oldKey - Existing token key being renamed.
+   * @param newKey - Committed replacement key text.
+   * @param tokenType - Token type group containing the key.
+   * @returns Promise that settles when persist and undo recording complete.
+   */
   async run(oldKey: string, newKey: string, tokenType: TokenType): Promise<void> {
     const store = this.catalogsStore.getStore();
     const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);

@@ -17,6 +17,9 @@ interface CatalogUiStoreState {
   setNewSemanticTokenSelectorText: (value: string) => void;
 }
 
+/**
+ * Zustand store for catalog editor pane UI state and in-progress edits.
+ */
 @singleton()
 export class CatalogUiStore {
   private store = createStore<CatalogUiStoreState>()(
@@ -53,10 +56,17 @@ export class CatalogUiStore {
     }))
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live catalog pane UI store state and setters.
+   */
   getStore(): CatalogUiStoreState {
     return this.store.getState();
   }

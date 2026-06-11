@@ -8,6 +8,10 @@ import { SetSelectedTemplateRefOperation } from '../template-operations/template
 import { SetTemplateOperation } from '../template-operations/template-details/set-template-operation';
 import { ApplyTemplateUndoStateOperation } from './apply-template-undo-state-operation';
 
+/**
+ * Applies template lifecycle undo to the store as part of undo or theme replay.
+ */
+
 @singleton()
 export class ApplyTemplateLifecycleUndoOperation {
   constructor(
@@ -18,6 +22,13 @@ export class ApplyTemplateLifecycleUndoOperation {
     private readonly loadTemplate: LoadTemplateOperation,
     private readonly setTemplate: SetTemplateOperation,
   ) {}
+
+  /**
+   * Runs apply version deleted for apply template lifecycle undo.
+   * @param before Before (TemplateLifecycleUndoSnapshot).
+   * @param after After (TemplateLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   applyVersionDeleted(before: TemplateLifecycleUndoSnapshot, after: TemplateLifecycleUndoSnapshot): void {
     const template = before.template;
@@ -30,15 +41,34 @@ export class ApplyTemplateLifecycleUndoOperation {
       });
   }
 
+  /**
+   * Runs revert version deleted for apply template lifecycle undo.
+   * @param before Before (TemplateLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   revertVersionDeleted(before: TemplateLifecycleUndoSnapshot): void {
     if (!before.template) return;
     this.applyTemplateUndoState.execute(before.template);
   }
 
+  /**
+   * Runs apply created for apply template lifecycle undo.
+   * @param after After (TemplateLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
+
   applyCreated(after: TemplateLifecycleUndoSnapshot): void {
     if (!after.template) return;
     this.applyTemplateUndoState.execute(after.template);
   }
+
+  /**
+   * Runs revert created for apply template lifecycle undo.
+   * @param before Before (TemplateLifecycleUndoSnapshot).
+   * @param after After (TemplateLifecycleUndoSnapshot).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   revertCreated(before: TemplateLifecycleUndoSnapshot, after: TemplateLifecycleUndoSnapshot): void {
     const template = after.template;

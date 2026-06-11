@@ -10,6 +10,9 @@ import { recordThemePaneSelectionUndo } from './record-theme-pane-selection-undo
 
 const UNGROUPED_KEY = '__ungrouped__';
 
+/**
+ * Orchestrates set variables select by group work for the theme UI.
+ */
 @singleton()
 export class SetVariablesSelectByGroupController {
   constructor(
@@ -22,6 +25,12 @@ export class SetVariablesSelectByGroupController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+ * Validates input and invokes the domain operations for this interaction.
+ * @param checked Input for this call.
+ * @param groupId Input for this call.
+ * @returns Promise resolved when orchestration completes.
+   */
   async run(checked?: boolean, groupId?: string): Promise<void> {
     const state = this.themeUiStore.getStore().state;
     const theme = state.theme;

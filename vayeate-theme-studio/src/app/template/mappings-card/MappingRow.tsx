@@ -2,6 +2,9 @@ import { memo, type ChangeEvent } from 'react';
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 
+/**
+ * Props for a single non-semantic token mapping row.
+ */
 export interface MappingRowProps {
   mapping: Mapping;
   isOrphan: boolean;
@@ -98,4 +101,7 @@ function MappingRowComponent({
   );
 }
 
+/**
+ * Memoized row component for editing one theme or textmate token mapping.
+ */
 export const MappingRow = memo(MappingRowComponent);

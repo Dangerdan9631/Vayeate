@@ -1,6 +1,10 @@
 import type { ChangeEvent } from 'react';
 import { useTemplatesCardViewModel } from './use-templates-card-viewmodel';
 
+/**
+ * Renders the template name/version picker and create button.
+ * @returns Templates list card UI wired to its viewmodel.
+ */
 export function TemplatesCard() {
   const {
     templateNames,

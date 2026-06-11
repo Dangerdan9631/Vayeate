@@ -12,6 +12,9 @@ import type {
   BackgroundQueueKey,
 } from '../../../model/background-queue';
 
+/**
+ * Background queue that processes one job at a time in FIFO order.
+ */
 @injectable()
 export class SerialQueue implements IBackgroundQueue {
   private readonly log: Logger;

@@ -1,5 +1,9 @@
 import type { Theme } from '../../../model/schema/theme-schemas';
 
+/**
+ * Input or state shape for restore theme state params.
+ */
+
 export interface RestoreThemeStateParams {
   theme?: Theme | null;
   checkedColorRefs?: string[];

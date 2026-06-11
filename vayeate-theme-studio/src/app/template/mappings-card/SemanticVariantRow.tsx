@@ -12,9 +12,14 @@ import { SEMANTIC_WILDCARD_TYPE } from '../../../model/semantic-token-constants'
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 
-/** Placeholder modifier prefix for empty variant rows; filter out for display and when updating. */
+/**
+ * Placeholder modifier prefix for empty variant rows; filter out for display and when updating.
+ */
 const EMPTY_VARIANT_MODIFIER_PREFIX = 'empty-';
 
+/**
+ * Props for one semantic token variant mapping row.
+ */
 export interface SemanticVariantRowProps {
   mapping: Mapping;
   isOrphan: boolean;
@@ -344,4 +349,7 @@ function SemanticVariantRowComponent({
   );
 }
 
+/**
+ * Memoized row component for editing one semantic token variant mapping.
+ */
 export const SemanticVariantRow = memo(SemanticVariantRowComponent);

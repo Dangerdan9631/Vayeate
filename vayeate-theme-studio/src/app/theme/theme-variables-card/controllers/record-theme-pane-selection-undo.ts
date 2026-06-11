@@ -6,6 +6,9 @@ import type { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { THEME_PANE_SELECTIONS_SET } from '../../../../model/undo-action-types';
 import { deriveUndoContext } from '../../../../model/undo-history';
 
+/**
+ * Shape used by the Theme Variables Card for theme pane selections undo value.
+ */
 export interface ThemePaneSelectionsUndoValue {
   checkedColorRefs: string[];
   checkedContrastRefs: string[];
@@ -27,6 +30,12 @@ function selectionDescription(scope: string): string {
   return `${scope.charAt(0).toUpperCase()}${scope.slice(1).replace(/-/g, ' ')} selection changed`;
 }
 
+/**
+ * Records an undo entry after theme pane selection undo.
+ * @param recordThemeUndo Undo recording operation to invoke.
+ * @param input Undo entry payload.
+ * @returns Promise resolved after the undo entry is stored.
+ */
 export async function recordThemePaneSelectionUndo(
   recordThemeUndo: RecordThemeUndoOperation,
   setCurrentUndoStackId: SetCurrentUndoStackIdOperation,

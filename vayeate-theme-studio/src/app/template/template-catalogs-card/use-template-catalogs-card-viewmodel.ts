@@ -15,6 +15,9 @@ const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+/**
+ * Presentation model for one catalog row in the template catalogs card.
+ */
 export interface TemplateCatalogRowViewModel {
   name: string;
   isIncluded: boolean;
@@ -23,6 +26,9 @@ export interface TemplateCatalogRowViewModel {
   hasUpdate: boolean;
 }
 
+/**
+ * Read model and action callbacks for the template catalogs card.
+ */
 export interface TemplateCatalogsCardViewModel {
   template: Template | null;
   catalogRows: TemplateCatalogRowViewModel[];
@@ -32,6 +38,10 @@ export interface TemplateCatalogsCardViewModel {
   onCatalogVersionChange: (catalogName: string, newVersion: string) => void;
 }
 
+/**
+ * Subscribes to template catalog refs and builds per-catalog row view models.
+ * @returns Template catalogs card state and dispatch-backed handlers.
+ */
 export function useTemplateCatalogsCardViewModel(): TemplateCatalogsCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);

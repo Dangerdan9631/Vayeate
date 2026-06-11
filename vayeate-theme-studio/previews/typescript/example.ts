@@ -60,7 +60,9 @@ class MyClass implements IInterface {
         return value ? MyClass.TRUE : MyClass.FALSE;
     }
 
-    /** A readonly companion value. */
+    /**
+     * A readonly companion value.
+     */
     static readonly ONE_HUNDRED: number = 100;
 
     // These are const values.

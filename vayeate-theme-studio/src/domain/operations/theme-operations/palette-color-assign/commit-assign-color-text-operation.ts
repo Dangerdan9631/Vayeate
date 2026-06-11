@@ -7,11 +7,19 @@ import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
+/**
+ * Input or state shape for theme palette assign color edit result.
+ */
+
 export interface ThemePaletteAssignColorEditResult {
   before: Theme;
   after: Theme;
   changed: boolean;
 }
+
+/**
+ * Input or state shape for theme palette assign color base state.
+ */
 
 export interface ThemePaletteAssignColorBaseState {
   theme: Theme | null;
@@ -19,7 +27,9 @@ export interface ThemePaletteAssignColorBaseState {
   hueAdjustment: number;
 }
 
-/** Applies bulk color text from picker/eyedropper to checked color refs and persists. */
+/**
+ * Applies bulk color text from picker/eyedropper to checked color refs and persists.
+ */
 @singleton()
 export class CommitAssignColorTextOperation {
   constructor(
@@ -28,6 +38,13 @@ export class CommitAssignColorTextOperation {
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
     private readonly themeGateway: ThemeGateway,
   ) {}
+
+  /**
+   * Runs the commit assign color text mutation.
+   * @param value Value (string).
+   * @param baseState Base state (ThemePaletteAssignColorBaseState).
+   * @returns ThemePaletteAssignColorEditResult | null result.
+   */
 
   execute(value: string, baseState?: ThemePaletteAssignColorBaseState): ThemePaletteAssignColorEditResult | null {
     const normalized = normalizeHexSafe(value);
@@ -64,6 +81,12 @@ export class CommitAssignColorTextOperation {
       changed: JSON.stringify(theme.colorAssignments) !== JSON.stringify(nextTheme.colorAssignments),
     };
   }
+
+  /**
+   * Runs restore for commit assign color text.
+   * @param theme Theme (Theme).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   restore(theme: Theme): void {
     this.themeUiStore.getStore().setHueAdjustment(0);

@@ -8,6 +8,9 @@ import type { AppAction } from '../../../core/action-queue/app-action';
 import { ThemePaletteCardActionType } from '../../../theme/theme-palette-card/actions/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../../../theme/theme-variables-card/actions/theme-variables-card-action-type';
 
+/**
+ * Closes the eyedropper overlay and optionally enqueues a commit action for the stored target.
+ */
 @singleton()
 export class CloseEyedropperOverlayController {
   constructor(
@@ -16,6 +19,11 @@ export class CloseEyedropperOverlayController {
     private readonly eyedropperUiStore: EyedropperUiStore,
   ) {}
 
+  /**
+   * Tears down overlay UI state and routes a picked color back to the originating feature action.
+   * @param result Committed hex color, or null when the user cancelled.
+   * @returns A promise that settles after close and any follow-up enqueue.
+   */
   async run(result: HexColor | null): Promise<void> {
     const commitTarget = this.eyedropperUiStore.getStore().state.commitTarget;
     this.closeEyedropper.execute();

@@ -4,6 +4,10 @@ import { clientToCanvasPixel, getCanvasColor, loadSnapshotToCanvas } from './eye
 import type { EyedropperPointerSample } from '../../../model/eyedropper';
 import type { Point } from '../../../model/point';
 
+/**
+ * Draws the captured display snapshot and samples colors under the pointer.
+ * @returns A forward-ref canvas element wired to eyedropper pointer actions.
+ */
 export const EyedropperCanvas = forwardRef<HTMLCanvasElement>((_, canvasRef) => {
   const internalCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const pendingPointerRef = useRef<EyedropperPointerSample | null>(null);

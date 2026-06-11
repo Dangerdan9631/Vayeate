@@ -7,9 +7,19 @@ import { WindowService } from '../../../gateway/services/window-service';
  */
 export type SetWindowStateTarget = 'close' | 'minimize' | 'maximize' | 'restore';
 
+/**
+ * Updates window state in the domain or UI store.
+ */
+
 @singleton()
 export class SetWindowStateOperation {
   constructor(private readonly windowService: WindowService) {}
+
+  /**
+   * Runs the set window state mutation.
+   * @param state State (SetWindowStateTarget).
+   * @returns Nothing; updates store or invokes a gateway side effect.
+   */
 
   execute(state: SetWindowStateTarget): void {
     switch (state) {

@@ -18,6 +18,9 @@ import {
   TEMPLATE_CONTRAST_VARIABLE_REMOVED,
 } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK by removing a variable.
+ */
 @singleton()
 export class RemoveVariableController {
   constructor(
@@ -35,6 +38,11 @@ export class RemoveVariableController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Removes a color or contrast variable from the selected template.
+   * @param key Variable key from the remove button.
+   * @returns Nothing; template state updates happen in domain operations.
+   */
   run(key: string): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template || !this.validateCanRemove.test(template, key)) return;

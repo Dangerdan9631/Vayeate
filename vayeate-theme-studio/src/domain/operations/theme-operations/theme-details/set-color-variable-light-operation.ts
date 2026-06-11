@@ -8,6 +8,10 @@ import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import type { ThemeColorVariableEditResult } from './theme-color-variable-edit-result';
 
+/**
+ * Updates color variable light in the domain or UI store.
+ */
+
 @singleton()
 export class SetColorVariableLightOperation {
   constructor(
@@ -16,6 +20,13 @@ export class SetColorVariableLightOperation {
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
     private readonly themeGateway: ThemeGateway,
   ) {}
+
+  /**
+   * Runs the set color variable light mutation.
+   * @param ref Ref (ColorVariableKey | string | undefined).
+   * @param value Value (string).
+   * @returns ThemeColorVariableEditResult | null result.
+   */
 
   execute(ref: ColorVariableKey | string | undefined, value: string): ThemeColorVariableEditResult | null {
     const theme = this.themeUiStore.getStore().state.theme;

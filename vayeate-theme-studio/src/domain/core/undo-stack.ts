@@ -33,6 +33,12 @@ function transitionResult(
   return { status, mode, contextKey, entryId, message };
 }
 
+/**
+ * Builds an in-memory undo stack that applies and reverts diffs through the supplied processor.
+ *
+ * @param options Stack identity, processor, optional change hook, and disk snapshot cap.
+ * @returns An undo stack ready for push, undo, redo, and go-to transitions.
+ */
 export function createStack(options: UndoStackOptions): UndoStack {
   const diskMaxFrames = options.diskMaxFrames ?? DEFAULT_DISK_MAX_FRAMES;
   let processor = options.processor;

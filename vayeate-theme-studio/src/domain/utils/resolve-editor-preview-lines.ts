@@ -5,26 +5,40 @@ import { contrastRatio } from './color-wcag';
 import type { ScopeColorMap, ScopeColorMapEntry } from './scope-resolver';
 import { resolveTokenColor, resolveTokenEntry } from './scope-resolver';
 
+/**
+ * Assignment and variable data needed to build a preview token contrast tooltip.
+ */
 export interface PreviewTokenTooltipContext {
   colorAssignments: readonly ColorAssignment[];
   contrastAssignments: readonly ContrastAssignment[];
   contrastVariables: readonly ContrastVariable[];
 }
 
+/**
+ * Scope label and resolved mapping entry shown in a preview token tooltip.
+ */
 export interface PreviewTokenTooltipData {
   scopeLabel: string;
   entry: ScopeColorMapEntry;
 }
 
+/**
+ * A preview token with resolved dark/light colors and optional tooltip payload.
+ */
 export interface ResolvedPreviewToken {
   text: string;
   darkColor: string;
   lightColor: string;
-  /** Scope-only label when no mapping entry; otherwise contrast tooltip built on hover. */
+  /**
+   * Scope-only label when no mapping entry; otherwise contrast tooltip built on hover.
+   */
   scopeLabel: string;
   tooltipData: PreviewTokenTooltipData | null;
 }
 
+/**
+ * One tokenized preview line with resolved colors per token.
+ */
 export type ResolvedPreviewLine = { tokens: ResolvedPreviewToken[] };
 
 function colorForRef(
@@ -57,6 +71,14 @@ function contrastParamsForRef(
   };
 }
 
+/**
+ * Builds the multiline tooltip title for a resolved preview token in the given mode.
+ *
+ * @param mode - Preview mode (`dark` or `light`) used for assignment and contrast values.
+ * @param data - Scope label and mapping entry for the hovered token.
+ * @param context - Theme assignments and contrast variables for ratio calculations.
+ * @returns Newline-separated tooltip lines for display on hover.
+ */
 export function buildPreviewTokenTooltipTitle(
   mode: 'dark' | 'light',
   data: PreviewTokenTooltipData,
@@ -107,10 +129,25 @@ export function buildPreviewTokenTooltipTitle(
   return lines.join('\n');
 }
 
+/**
+ * Produces a stable string key for a tokenized preview line (text plus scopes).
+ *
+ * @param line - Tokenized preview line from the editor preview source.
+ * @returns Fingerprint string used for line-level memoization or equality checks.
+ */
 export function previewLineFingerprint(line: TokenizedPreviewLine): string {
   return line.tokens.map((token) => `${token.text}\0${token.scopes.join('\x1f')}`).join('\n');
 }
 
+/**
+ * Resolves dark/light colors and tooltip data for each token on a preview line.
+ *
+ * @param line - Tokenized preview line to resolve against the scope color map.
+ * @param scopeColorMap - Prebuilt scope-to-color map from template mappings.
+ * @param defaultEditorFgDark - Fallback foreground hex when no mapping matches (dark).
+ * @param defaultEditorFgLight - Fallback foreground hex when no mapping matches (light).
+ * @returns Line with per-token resolved colors and optional tooltip context.
+ */
 export function resolvePreviewLine(
   line: TokenizedPreviewLine,
   scopeColorMap: ScopeColorMap,

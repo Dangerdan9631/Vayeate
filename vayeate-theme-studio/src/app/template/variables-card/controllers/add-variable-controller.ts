@@ -18,6 +18,9 @@ import {
   TEMPLATE_CONTRAST_VARIABLE_ADDED,
 } from '../../../../model/undo-action-types';
 
+/**
+ * Handles TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK by adding a color or contrast variable.
+ */
 @singleton()
 export class AddVariableController {
   constructor(
@@ -35,6 +38,12 @@ export class AddVariableController {
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
 
+  /**
+   * Adds a variable of the requested kind using the current add-variable name.
+   * @param groupRef Group ref chosen when adding the variable.
+   * @param variableKind Whether to add a color or contrast variable.
+   * @returns Resolves when the variable is added and undo is recorded.
+   */
   async run(groupRef: string | null, variableKind: 'color' | 'contrast'): Promise<void> {
     const key = this.templateUiStore.getStore().state.addVariableName.trim();
     if (!key) return;

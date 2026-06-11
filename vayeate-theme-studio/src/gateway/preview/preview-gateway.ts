@@ -5,15 +5,28 @@ import type { TokenizedPreview } from '../../model/preview-types';
 import { FileSystemService } from '../services/file-system-service';
 import { TextmateTokenizerService } from '../services/textmate-tokenizer-service';
 
-/** WASM loader for {@link initOniguruma} in the Electron renderer (bundled by Vite). */
+/**
+ * Builds a WASM loader for Oniguruma in the Electron renderer (bundled by Vite).
+ *
+ * @returns Async function that fetches the bundled `onig.wasm` bytes.
+ */
 function createPreviewOnigWasmLoader(): () => Promise<ArrayBuffer> {
   return () => fetch(onigWasmUrl).then((r) => r.arrayBuffer());
 }
 
+/**
+ * Package-relative root for bundled language preview samples.
+ */
 const PREVIEWS_RELATIVE_DIR = 'previews';
 
+/**
+ * Matches TextMate grammar JSON files within a language preview folder.
+ */
 const GRAMMAR_GLOB = /.+\.tmLanguage\.json$/i;
 
+/**
+ * Loads and tokenizes bundled preview samples for the theme editor.
+ */
 @singleton()
 export class PreviewGateway {
   constructor(
@@ -22,8 +35,9 @@ export class PreviewGateway {
   ) {}
 
   /**
-   * Scan `previews/<language>/`, load each `*.tmLanguage.json` grammar and sample files,
-   * tokenize with TextMate, and return structured previews for the theme editor.
+   * Scans `previews/<language>/`, tokenizes sample files, and returns structured previews.
+   *
+   * @returns Tokenized previews for each language and example file, or an empty list on failure.
    */
   async loadPreviews(): Promise<TokenizedPreview[]> {
     await this.textmateTokenizerService.init({ loadWasm: createPreviewOnigWasmLoader() });
@@ -44,6 +58,12 @@ export class PreviewGateway {
     return langPreviews.flat();
   }
 
+  /**
+   * Loads grammar and example files for one language folder under `previews/`.
+   *
+   * @param lang - Language subdirectory name.
+   * @returns Tokenized previews for that language's example files.
+   */
   private async loadLanguagePreviews(lang: string): Promise<TokenizedPreview[]> {
     const langRel = `${PREVIEWS_RELATIVE_DIR}/${lang}`;
     let files: string[];

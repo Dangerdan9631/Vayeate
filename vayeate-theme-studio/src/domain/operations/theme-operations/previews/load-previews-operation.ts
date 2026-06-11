@@ -4,6 +4,10 @@ import { ThemePreviewStore } from '../../../state/ui/theme-preview-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
 
+/**
+ * Loads previews from persistence into the store.
+ */
+
 @singleton()
 export class LoadPreviewsOperation {
   constructor(
@@ -11,6 +15,11 @@ export class LoadPreviewsOperation {
     private readonly previewGateway: PreviewGateway,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
   ) {}
+
+  /**
+   * Runs the load previews mutation.
+   * @returns Background-queue continuation for chained async work.
+   */
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(

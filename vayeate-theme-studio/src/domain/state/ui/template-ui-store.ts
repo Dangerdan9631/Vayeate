@@ -19,6 +19,9 @@ interface TemplateUiStoreState {
   setAddVariableName: (value: string) => void;
 }
 
+/**
+ * Zustand store for template editor pane UI state and in-progress edits.
+ */
 @singleton()
 export class TemplateUiStore {
   private store = createStore<TemplateUiStoreState>()(
@@ -67,10 +70,17 @@ export class TemplateUiStore {
     }))
   );
 
+  /**
+   * Zustand store API for React subscriptions via viewmodels.
+   */
   get api() {
     return this.store;
   }
 
+  /**
+   * Returns the current snapshot and mutation methods for domain operations.
+   * @returns Live template pane UI store state and setters.
+   */
   getStore(): TemplateUiStoreState {
     return this.store.getState();
   }
