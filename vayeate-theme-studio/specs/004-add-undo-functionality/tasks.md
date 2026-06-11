@@ -240,7 +240,7 @@ stacks.
 excluded; sync architecture exceptions and directives.
 
 - [X] T079 [P] Add universal controller coverage enforcement in `test/architecture/undo-controller-coverage.test.ts` backed by `test/architecture/undo-controller-exclusions.ts`
-- [X] T080 [P] Restore and extend operation-to-operation `execute` exceptions for undo apply-state, lifecycle, and record facades in `test/architecture/architecture.test.ts` and `.cursor/rules/app-architecture.mdc`
+- [X] T080 [P] Restore and extend operation-to-operation `execute` exceptions for undo apply-state, lifecycle, and record facades in `test/architecture/architecture.test.ts` and `AGENTS.md#app-architecture.mdc`
 - [X] T081 Verify legacy cleanup: no `RestoreTemplateStateController`, `RestoreThemeStateController`, `CatalogUndoPush`, `TemplateUndoPush`, or unwired duplicate controllers from plan C4/D7 remain referenced in `src/`
 - [X] T082 [P] Update universal coverage language in `specs/004-add-undo-functionality/spec.md`, `specs/004-add-undo-functionality/tasks.md`, and `specs/004-add-undo-functionality/contracts/undo-workflow-integration.md`
 - [X] T083 [P] Refresh `AGENTS.md` SPECKIT directive for universal coverage with documented exclusions

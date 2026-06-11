@@ -1,7 +1,7 @@
 // @vitest-environment node
 /**
- * Static convention tests (Vitest + TypeScript AST). Rules are defined in Cursor rule files under
- * `.cursor/rules/`; each `describe` below names the file(s) that define the same requirement.
+ * Static convention tests (Vitest + TypeScript AST). Rules are embedded in AGENTS.md under
+ * AGENTS.md rule sections; each `describe` below names the section that defines the same requirement.
  *
  * **Keep in sync:** When you change a rule’s file naming, export shape, or exceptions, update the
  * matching `describe` here (and the cross-reference in the rule file). When you change a test’s
@@ -9,25 +9,25 @@
  *
  * | `describe(...)` | Rule file(s) |
  * |---|---|
- * | `kebab-case filenames for non-test .ts sources` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files (kebab-case modules) |
- * | `*-controller.ts: one exported class ending with Controller` | [controller.mdc](../../../.cursor/rules/controller.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
- * | `*-controller.ts: declares a run method` | [controller.mdc](../../../.cursor/rules/controller.mdc) |
- * | `*-operation.ts: one exported class ending with Operation` | [operation.mdc](../../../.cursor/rules/operation.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
- * | `validate-*.ts: one exported class starting with Validate` | [validation.mdc](../../../.cursor/rules/validation.mdc), [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) |
- * | `*-gateway.ts: one exported class ending with Gateway` | [gateway.mdc](../../../.cursor/rules/gateway.mdc), [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) |
- * | `*-service.ts: one exported class ending with Service` | [service.mdc](../../../.cursor/rules/service.mdc), [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) |
- * | `*-handler.ts: one exported class ending with Handler` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure / Actions (handlers) |
- * | `use-*-viewmodel.ts: at least one exported function...` | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure (`viewmodel/`) |
- * | `components/*.tsx: exported function name matches filename stem` | [component.mdc](../../../.cursor/rules/component.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files (filename ↔ export) |
- * | `PascalCase filenames for .tsx under src/app` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc), [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx`) |
- * | `domain *-operation.ts: no disallowed this.<OtherOperation>.execute` | [operation.mdc](../../../.cursor/rules/operation.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
- * | `domain *-controller.ts: no this.<OtherController>.run` | [controller.mdc](../../../.cursor/rules/controller.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow |
- * | `actions/*-handler.ts: no imports from domain operations/validations/state` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — handlers |
- * | `actions/*-action-type.ts: exported is*Action guard` | [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure / Actions (guards) |
- * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../../.cursor/rules/layer-electron.mdc) — no domain in main |
- * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../../.cursor/rules/viewmodel.mdc), [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) |
- * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § Actions (payloads) |
- * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) — Web Worker offload (plan C1) |
+ * | `kebab-case filenames for non-test .ts sources` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files (kebab-case modules) |
+ * | `*-controller.ts: one exported class ending with Controller` | [controller.mdc](../../AGENTS.md#controller.mdc), [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) |
+ * | `*-controller.ts: declares a run method` | [controller.mdc](../../AGENTS.md#controller.mdc) |
+ * | `*-operation.ts: one exported class ending with Operation` | [operation.mdc](../../AGENTS.md#operation.mdc), [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) |
+ * | `validate-*.ts: one exported class starting with Validate` | [validation.mdc](../../AGENTS.md#validation.mdc), [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) |
+ * | `*-gateway.ts: one exported class ending with Gateway` | [gateway.mdc](../../AGENTS.md#gateway.mdc), [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) |
+ * | `*-service.ts: one exported class ending with Service` | [service.mdc](../../AGENTS.md#service.mdc), [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) |
+ * | `*-handler.ts: one exported class ending with Handler` | [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure / Actions (handlers) |
+ * | `use-*-viewmodel.ts: at least one exported function...` | [viewmodel.mdc](../../AGENTS.md#viewmodel.mdc), [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure (`viewmodel/`) |
+ * | `components/*.tsx: exported function name matches filename stem` | [component.mdc](../../AGENTS.md#component.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files (filename ↔ export) |
+ * | `PascalCase filenames for .tsx under src/app` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc), [component.mdc](../../AGENTS.md#component.mdc) — § Contract (PascalCase `*.tsx`) |
+ * | `domain *-operation.ts: no disallowed this.<OtherOperation>.execute` | [operation.mdc](../../AGENTS.md#operation.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow |
+ * | `domain *-controller.ts: no this.<OtherController>.run` | [controller.mdc](../../AGENTS.md#controller.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow |
+ * | `actions/*-handler.ts: no imports from domain operations/validations/state` | [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — handlers |
+ * | `actions/*-action-type.ts: exported is*Action guard` | [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure / Actions (guards) |
+ * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../AGENTS.md#layer-electron.mdc) — no domain in main |
+ * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../AGENTS.md#viewmodel.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) |
+ * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § Actions (payloads) |
+ * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (plan C1) |
  */
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -98,7 +98,7 @@ function pointsAtRendererSrcModule(spec: string): boolean {
   return /^(\.\.\/)+src(\/|$)/.test(n);
 }
 
-/** @see ../../../.cursor/rules/app-architecture.mdc — § DI and files (kebab-case for non-`*.tsx` modules). Sync exclusions with that section and with [model.mdc](../../../.cursor/rules/model.mdc) § Files. */
+/** @see ../../AGENTS.md#app-architecture.mdc — § DI and files (kebab-case for non-`*.tsx` modules). Sync exclusions with that section and with [model.mdc](../../AGENTS.md#model.mdc) § Files. */
 describe('kebab-case filenames for non-test .ts sources', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -114,7 +114,7 @@ describe('kebab-case filenames for non-test .ts sources', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/app-architecture.mdc — § DI and files; [component.mdc](../../../.cursor/rules/component.mdc) — § Contract (PascalCase `*.tsx` under `src/app/`). */
+/** @see ../../AGENTS.md#app-architecture.mdc — § DI and files; [component.mdc](../../AGENTS.md#component.mdc) — § Contract (PascalCase `*.tsx` under `src/app/`). */
 describe('PascalCase filenames for .tsx under src/app', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
@@ -128,7 +128,7 @@ describe('PascalCase filenames for .tsx under src/app', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/controller.mdc — § Contract / Naming; [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) — § Structure (`controllers/`). */
+/** @see ../../AGENTS.md#controller.mdc — § Contract / Naming; [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`controllers/`). */
 describe('*-controller.ts: one exported class ending with Controller', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -144,7 +144,7 @@ describe('*-controller.ts: one exported class ending with Controller', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/controller.mdc — § Contract (`run` returns void or Promise). */
+/** @see ../../AGENTS.md#controller.mdc — § Contract (`run` returns void or Promise). */
 describe('*-controller.ts: declares a run method', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -161,7 +161,7 @@ describe('*-controller.ts: declares a run method', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/operation.mdc — § Contract; [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) — § Structure (`operations/`). */
+/** @see ../../AGENTS.md#operation.mdc — § Contract; [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`operations/`). */
 describe('*-operation.ts: one exported class ending with Operation', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -177,7 +177,7 @@ describe('*-operation.ts: one exported class ending with Operation', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/validation.mdc — § Contract (`Validate*`); [layer-domain.mdc](../../../.cursor/rules/layer-domain.mdc) — § Structure (`validations/`). */
+/** @see ../../AGENTS.md#validation.mdc — § Contract (`Validate*`); [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Structure (`validations/`). */
 describe('validate-*.ts: one exported class starting with Validate', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -193,7 +193,7 @@ describe('validate-*.ts: one exported class starting with Validate', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/gateway.mdc — DI / role; [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) — § Gateways / Callers. */
+/** @see ../../AGENTS.md#gateway.mdc — DI / role; [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Gateways / Callers. */
 describe('*-gateway.ts: one exported class ending with Gateway', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -209,7 +209,7 @@ describe('*-gateway.ts: one exported class ending with Gateway', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/service.mdc — § Role / DI; [layer-gateway.mdc](../../../.cursor/rules/layer-gateway.mdc) — § Services. */
+/** @see ../../AGENTS.md#service.mdc — § Role / DI; [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Services. */
 describe('*-service.ts: one exported class ending with Service', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -225,7 +225,7 @@ describe('*-service.ts: one exported class ending with Service', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/layer-app.mdc — § Structure (`actions/` handlers) / § Actions. */
+/** @see ../../AGENTS.md#layer-app.mdc — § Structure (`actions/` handlers) / § Actions. */
 describe('*-handler.ts: one exported class ending with Handler', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -242,7 +242,7 @@ describe('*-handler.ts: one exported class ending with Handler', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/viewmodel.mdc — § Contract (hooks); [layer-app.mdc](../../../.cursor/rules/layer-app.mdc) — § Structure (`viewmodel/`). */
+/** @see ../../AGENTS.md#viewmodel.mdc — § Contract (hooks); [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure (`viewmodel/`). */
 describe('use-*-viewmodel.ts: at least one exported function whose name starts with use', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -258,7 +258,7 @@ describe('use-*-viewmodel.ts: at least one exported function whose name starts w
   });
 });
 
-/** @see ../../../.cursor/rules/component.mdc — § Contract (filename ↔ component); [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — § DI and files. */
+/** @see ../../AGENTS.md#component.mdc — § Contract (filename ↔ component); [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files. */
 describe('components/*.tsx: exported function name matches filename stem', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
@@ -355,7 +355,7 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
   return false;
 }
 
-/** @see ../../../.cursor/rules/operation.mdc — no disallowed `Operation.execute` chaining; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) — mutation flow. */
+/** @see ../../AGENTS.md#operation.mdc — no disallowed `Operation.execute` chaining; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow. */
 describe('domain *-operation.ts: operations do not call disallowed operation .execute', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -376,7 +376,7 @@ describe('domain *-operation.ts: operations do not call disallowed operation .ex
   });
 });
 
-/** @see ../../../.cursor/rules/controller.mdc — controllers do not call other controllers; [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc). */
+/** @see ../../AGENTS.md#controller.mdc — controllers do not call other controllers; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc). */
 describe('domain *-controller.ts: controllers do not call other controllers .run', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -401,7 +401,7 @@ describe('domain *-controller.ts: controllers do not call other controllers .run
   });
 });
 
-/** @see ../../../.cursor/rules/layer-app.mdc — handlers route to controllers only. */
+/** @see ../../AGENTS.md#layer-app.mdc — handlers route to controllers only. */
 describe('actions/*-handler.ts: no imports from domain operations, validations, or state', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -416,7 +416,7 @@ describe('actions/*-handler.ts: no imports from domain operations, validations, 
   });
 });
 
-/** @see ../../../.cursor/rules/layer-app.mdc — action guards in action type modules. */
+/** @see ../../AGENTS.md#layer-app.mdc — action guards in action type modules. */
 describe('actions/*-action-type.ts: at least one exported is*Action guard', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -432,7 +432,7 @@ describe('actions/*-action-type.ts: at least one exported is*Action guard', () =
   });
 });
 
-/** @see ../../../.cursor/rules/layer-electron.mdc — Electron must not depend on renderer `src/`. */
+/** @see ../../AGENTS.md#layer-electron.mdc — Electron must not depend on renderer `src/`. */
 describe('electron/*.ts: no imports from renderer src/', () => {
   const files = listElectronSourceFiles();
 
@@ -447,7 +447,7 @@ describe('electron/*.ts: no imports from renderer src/', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/viewmodel.mdc — [app-architecture.mdc](../../../.cursor/rules/app-architecture.mdc) (useContextSelector in viewmodels, not components). */
+/** @see ../../AGENTS.md#viewmodel.mdc — [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) (useContextSelector in viewmodels, not components). */
 describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
@@ -461,7 +461,7 @@ describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
   });
 });
 
-/** @see ../../../.cursor/rules/layer-gateway.mdc — Web Worker offload (plan C1). */
+/** @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (plan C1). */
 describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
@@ -492,7 +492,7 @@ describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', 
   });
 });
 
-/** @see ../../../.cursor/rules/app-architecture.mdc — § Actions (payloads: user input / ids, not state snapshots). */
+/** @see ../../AGENTS.md#app-architecture.mdc — § Actions (payloads: user input / ids, not state snapshots). */
 describe('actions/*-action-type.ts: no imports from domain/state', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
