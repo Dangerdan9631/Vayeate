@@ -1,4 +1,5 @@
 import type { ThemeName } from '../../../../model/schema/primitives';
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum CreateThemeDialogActionType {
@@ -17,4 +18,16 @@ const createThemeDialogTypes = new Set<string>(Object.values(CreateThemeDialogAc
 
 export function isCreateThemeDialogAction(a: AppAction): a is CreateThemeDialogActions {
   return createThemeDialogTypes.has(a.type);
+}
+
+const createThemeDialogCoalescers: Partial<Record<CreateThemeDialogActionType, ActionCoalesceFn>> = {
+  [CreateThemeDialogActionType.NameTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceCreateThemeDialogAction(
+  pending: CreateThemeDialogActions,
+  incoming: CreateThemeDialogActions,
+): CreateThemeDialogActions | null {
+  const coalesce = createThemeDialogCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as CreateThemeDialogActions) : null;
 }

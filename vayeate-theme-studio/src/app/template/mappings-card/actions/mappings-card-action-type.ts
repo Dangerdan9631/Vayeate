@@ -1,4 +1,5 @@
 import { ColorVariableKey, ContrastVariableKey, TokenType } from "../../../../model/schema/primitives";
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
 export enum MappingsCardActionType {
@@ -31,4 +32,16 @@ const mappingsCardTypes = new Set<string>(Object.values(MappingsCardActionType))
 
 export function isMappingsCardAction(a: AppAction): a is MappingsCardActions {
   return mappingsCardTypes.has(a.type);
+}
+
+const mappingsCardCoalescers: Partial<Record<MappingsCardActionType, ActionCoalesceFn>> = {
+  [MappingsCardActionType.MappingSearchTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceMappingsCardAction(
+  pending: MappingsCardActions,
+  incoming: MappingsCardActions,
+): MappingsCardActions | null {
+  const coalesce = mappingsCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as MappingsCardActions) : null;
 }

@@ -39,7 +39,9 @@ export class ActionQueue implements IActionQueue {
     // The currently-processing action (already shifted out) is never touched,
     // preserving at-least-once delivery of the final value.
     for (let i = this.queue.length - 1; i >= 0; i--) {
-      const merged = tryCoalesce(this.queue[i], action);
+      const pending = this.queue[i];
+      if (pending.type !== action.type) continue;
+      const merged = tryCoalesce(pending, action);
       if (merged !== null) {
         this.queue[i] = merged;
         void this.process();

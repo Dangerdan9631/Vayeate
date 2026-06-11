@@ -1,5 +1,6 @@
 import type { HexColor } from '../../../../model/schema/primitives';
 import type { ThemePaneState } from '../../../../model/theme-pane-state';
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum ThemePaletteCardActionType {
@@ -46,4 +47,18 @@ const themePaletteCardTypes = new Set<string>(Object.values(ThemePaletteCardActi
 
 export function isThemePaletteCardAction(a: AppAction): a is ThemePaletteCardActions {
   return themePaletteCardTypes.has(a.type);
+}
+
+const themePaletteCardCoalescers: Partial<Record<ThemePaletteCardActionType, ActionCoalesceFn>> = {
+  [ThemePaletteCardActionType.AssignColorPickerOnSelect]: coalesceLatest,
+  [ThemePaletteCardActionType.HueSliderOnDelta]: coalesceLatest,
+  [ThemePaletteCardActionType.ClusterCountSliderOnDelta]: coalesceLatest,
+};
+
+export function tryCoalesceThemePaletteCardAction(
+  pending: ThemePaletteCardActions,
+  incoming: ThemePaletteCardActions,
+): ThemePaletteCardActions | null {
+  const coalesce = themePaletteCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as ThemePaletteCardActions) : null;
 }

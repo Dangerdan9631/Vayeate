@@ -1,4 +1,5 @@
 import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, ContrastVariableKey, HexColor } from '../../../../model/schema/primitives';
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum ThemeVariablesCardActionType {
@@ -65,4 +66,16 @@ const themeVariablesCardTypes = new Set<string>(Object.values(ThemeVariablesCard
 
 export function isThemeVariablesCardAction(a: AppAction): a is ThemeVariablesCardActions {
   return themeVariablesCardTypes.has(a.type);
+}
+
+const themeVariablesCardCoalescers: Partial<Record<ThemeVariablesCardActionType, ActionCoalesceFn>> = {
+  [ThemeVariablesCardActionType.SearchTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceThemeVariablesCardAction(
+  pending: ThemeVariablesCardActions,
+  incoming: ThemeVariablesCardActions,
+): ThemeVariablesCardActions | null {
+  const coalesce = themeVariablesCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as ThemeVariablesCardActions) : null;
 }

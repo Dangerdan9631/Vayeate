@@ -1,3 +1,4 @@
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
 export enum CatalogBulkAddDialogActionType {
@@ -16,4 +17,16 @@ const catalogBulkAddDialogTypes = new Set<string>(Object.values(CatalogBulkAddDi
 
 export function isCatalogBulkAddDialogAction(a: AppAction): a is CatalogBulkAddDialogActions {
   return catalogBulkAddDialogTypes.has(a.type);
+}
+
+const catalogBulkAddDialogCoalescers: Partial<Record<CatalogBulkAddDialogActionType, ActionCoalesceFn>> = {
+  [CatalogBulkAddDialogActionType.TextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceCatalogBulkAddDialogAction(
+  pending: CatalogBulkAddDialogActions,
+  incoming: CatalogBulkAddDialogActions,
+): CatalogBulkAddDialogActions | null {
+  const coalesce = catalogBulkAddDialogCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as CatalogBulkAddDialogActions) : null;
 }

@@ -1,4 +1,5 @@
 import { SourceType, TokenType } from "../../../../model/schema/primitives";
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
 export enum CatalogDetailsCardActionType {
@@ -35,4 +36,16 @@ const catalogDetailsCardTypes = new Set<string>(Object.values(CatalogDetailsCard
 
 export function isCatalogDetailsCardAction(a: AppAction): a is CatalogDetailsCardActions {
   return catalogDetailsCardTypes.has(a.type);
+}
+
+const catalogDetailsCardCoalescers: Partial<Record<CatalogDetailsCardActionType, ActionCoalesceFn>> = {
+  [CatalogDetailsCardActionType.NewSourceUrlTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceCatalogDetailsCardAction(
+  pending: CatalogDetailsCardActions,
+  incoming: CatalogDetailsCardActions,
+): CatalogDetailsCardActions | null {
+  const coalesce = catalogDetailsCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as CatalogDetailsCardActions) : null;
 }

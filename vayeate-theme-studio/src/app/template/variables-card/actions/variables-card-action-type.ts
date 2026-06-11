@@ -1,4 +1,5 @@
 import { ColorVariableKey, ContrastVariableKey } from "../../../../model/schema/primitives";
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
 export enum VariablesCardActionType {
@@ -23,4 +24,17 @@ const variablesCardTypes = new Set<string>(Object.values(VariablesCardActionType
 
 export function isVariablesCardAction(a: AppAction): a is VariablesCardActions {
   return variablesCardTypes.has(a.type);
+}
+
+const variablesCardCoalescers: Partial<Record<VariablesCardActionType, ActionCoalesceFn>> = {
+  [VariablesCardActionType.VariablesSearchTextOnChange]: coalesceLatest,
+  [VariablesCardActionType.VariablesAddVariableNameTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceVariablesCardAction(
+  pending: VariablesCardActions,
+  incoming: VariablesCardActions,
+): VariablesCardActions | null {
+  const coalesce = variablesCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as VariablesCardActions) : null;
 }

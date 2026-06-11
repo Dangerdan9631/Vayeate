@@ -1,6 +1,7 @@
 import type { EyedropperPointerSample } from '../../../../model/eyedropper';
 import type { Size } from '../../../../model/point';
 import type { HexColor } from '../../../../model/schema/primitives';
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum EyedropperOverlayActionType {
@@ -22,4 +23,17 @@ const appEyedropperOverlayTypes = new Set<string>(Object.values(EyedropperOverla
 
 export function isAppEyedropperOverlayAction(a: AppAction): a is AppEyedropperOverlayActions {
   return appEyedropperOverlayTypes.has(a.type);
+}
+
+const appEyedropperOverlayCoalescers: Partial<Record<EyedropperOverlayActionType, ActionCoalesceFn>> = {
+  [EyedropperOverlayActionType.OverlayMouseMove]: coalesceLatest,
+  [EyedropperOverlayActionType.OverlayViewportSizeChange]: coalesceLatest,
+};
+
+export function tryCoalesceAppEyedropperOverlayAction(
+  pending: AppEyedropperOverlayActions,
+  incoming: AppEyedropperOverlayActions,
+): AppEyedropperOverlayActions | null {
+  const coalesce = appEyedropperOverlayCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as AppEyedropperOverlayActions) : null;
 }

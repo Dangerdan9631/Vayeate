@@ -1,3 +1,4 @@
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
 export enum TemplateCreateDialogActionType {
@@ -16,4 +17,16 @@ const templateCreateDialogTypes = new Set<string>(Object.values(TemplateCreateDi
 
 export function isTemplateCreateDialogAction(a: AppAction): a is TemplateCreateDialogActions {
   return templateCreateDialogTypes.has(a.type);
+}
+
+const templateCreateDialogCoalescers: Partial<Record<TemplateCreateDialogActionType, ActionCoalesceFn>> = {
+  [TemplateCreateDialogActionType.NameTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceTemplateCreateDialogAction(
+  pending: TemplateCreateDialogActions,
+  incoming: TemplateCreateDialogActions,
+): TemplateCreateDialogActions | null {
+  const coalesce = templateCreateDialogCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as TemplateCreateDialogActions) : null;
 }

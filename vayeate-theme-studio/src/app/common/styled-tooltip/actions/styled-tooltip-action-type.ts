@@ -1,4 +1,5 @@
 import type { StyledTooltipState } from '../../../../model/styled-tooltip';
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
 export enum StyledTooltipActionType {
@@ -16,4 +17,16 @@ const styledTooltipTypes = new Set<string>(Object.values(StyledTooltipActionType
 
 export function isAppStyledTooltipAction(a: AppAction): a is AppStyledTooltipActions {
   return styledTooltipTypes.has(a.type);
+}
+
+const styledTooltipCoalescers: Partial<Record<StyledTooltipActionType, ActionCoalesceFn>> = {
+  [StyledTooltipActionType.TooltipOnPositionChange]: coalesceLatest,
+};
+
+export function tryCoalesceAppStyledTooltipAction(
+  pending: AppStyledTooltipActions,
+  incoming: AppStyledTooltipActions,
+): AppStyledTooltipActions | null {
+  const coalesce = styledTooltipCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as AppStyledTooltipActions) : null;
 }

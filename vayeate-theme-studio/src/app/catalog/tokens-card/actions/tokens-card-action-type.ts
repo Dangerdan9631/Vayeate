@@ -1,4 +1,5 @@
 import type { SemanticTokenRegistryListKind, TokenKey, TokenType } from "../../../../model/schema/primitives";
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from "../../../core/action-queue/app-action";
 
 export enum TokensCardActionType {
@@ -40,4 +41,18 @@ const tokensCardTypes = new Set<string>(Object.values(TokensCardActionType));
 
 export function isTokensCardAction(a: AppAction): a is TokensCardActions {
   return tokensCardTypes.has(a.type);
+}
+
+const tokensCardCoalescers: Partial<Record<TokensCardActionType, ActionCoalesceFn>> = {
+  [TokensCardActionType.SearchTextOnChange]: coalesceLatest,
+  [TokensCardActionType.NewTokenKeyTextOnChange]: coalesceLatest,
+  [TokensCardActionType.NewSemanticTokenSelectorTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceTokensCardAction(
+  pending: TokensCardActions,
+  incoming: TokensCardActions,
+): TokensCardActions | null {
+  const coalesce = tokensCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as TokensCardActions) : null;
 }

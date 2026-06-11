@@ -9,12 +9,12 @@ import { VariablesCardActions } from "../variables-card/actions/variables-card-a
 import type { AppAction } from '../../core/action-queue/app-action';
 import { isTemplatePageAction } from '../template-page/actions/template-page-action-type';
 import { isTemplatesCardAction } from '../templates-card/actions/templates-card-action-type';
-import { isTemplateCreateDialogAction } from '../create-template-dialog/actions/template-create-dialog-action-type';
 import { isTemplateDetailsCardAction } from '../template-details-card/actions/template-details-card-action-type';
 import { isTemplateCatalogsCardAction } from '../template-catalogs-card/actions/template-catalogs-card-action-type';
-import { isMappingsCardAction } from '../mappings-card/actions/mappings-card-action-type';
-import { isGroupsCardAction } from '../groups-card/actions/groups-card-action-type';
-import { isVariablesCardAction } from '../variables-card/actions/variables-card-action-type';
+import { isMappingsCardAction, tryCoalesceMappingsCardAction } from '../mappings-card/actions/mappings-card-action-type';
+import { isGroupsCardAction, tryCoalesceGroupsCardAction } from '../groups-card/actions/groups-card-action-type';
+import { isVariablesCardAction, tryCoalesceVariablesCardAction } from '../variables-card/actions/variables-card-action-type';
+import { isTemplateCreateDialogAction, tryCoalesceTemplateCreateDialogAction } from '../create-template-dialog/actions/template-create-dialog-action-type';
 
 export type TemplateActions =
   | TemplatePageActions
@@ -38,4 +38,20 @@ export function isTemplateAction(a: AppAction): a is TemplateActions {
     isGroupsCardAction(a) ||
     isVariablesCardAction(a)
   );
+}
+
+export function tryCoalesceTemplateAction(pending: AppAction, incoming: AppAction): TemplateActions | null {
+  if (isTemplateCreateDialogAction(pending) && isTemplateCreateDialogAction(incoming)) {
+    return tryCoalesceTemplateCreateDialogAction(pending, incoming);
+  }
+  if (isMappingsCardAction(pending) && isMappingsCardAction(incoming)) {
+    return tryCoalesceMappingsCardAction(pending, incoming);
+  }
+  if (isGroupsCardAction(pending) && isGroupsCardAction(incoming)) {
+    return tryCoalesceGroupsCardAction(pending, incoming);
+  }
+  if (isVariablesCardAction(pending) && isVariablesCardAction(incoming)) {
+    return tryCoalesceVariablesCardAction(pending, incoming);
+  }
+  return null;
 }

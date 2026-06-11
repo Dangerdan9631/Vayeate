@@ -1,3 +1,4 @@
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
 export enum GroupsCardActionType {
@@ -16,4 +17,16 @@ const groupsCardTypes = new Set<string>(Object.values(GroupsCardActionType));
 
 export function isGroupsCardAction(a: AppAction): a is GroupsCardActions {
   return groupsCardTypes.has(a.type);
+}
+
+const groupsCardCoalescers: Partial<Record<GroupsCardActionType, ActionCoalesceFn>> = {
+  [GroupsCardActionType.GroupAddTextOnChange]: coalesceLatest,
+};
+
+export function tryCoalesceGroupsCardAction(
+  pending: GroupsCardActions,
+  incoming: GroupsCardActions,
+): GroupsCardActions | null {
+  const coalesce = groupsCardCoalescers[pending.type];
+  return coalesce ? (coalesce(pending, incoming) as GroupsCardActions) : null;
 }
