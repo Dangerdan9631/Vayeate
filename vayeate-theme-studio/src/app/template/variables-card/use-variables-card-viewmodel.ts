@@ -17,6 +17,63 @@ import type { ColorVariable, ContrastVariable, Template } from '../../../model/s
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
+const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
+const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_GROUPS: readonly string[] = [];
+const UNGROUPED_KEY = '__ungrouped__';
+const EMPTY_GROUP_SECTIONS: readonly VariableGroupSection<never>[] = [];
+
+/**
+ * One grouped subsection of variables ready for list rendering.
+ */
+export interface VariableGroupSection<T> {
+  groupKey: string;
+  groupLabel: string;
+  groupRef: string | null;
+  variables: readonly T[];
+}
+
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
+function buildByGroup<T extends { groupRef?: string | null }>(
+  items: readonly T[],
+): Map<string, T[]> {
+  const byGroup = new Map<string, T[]>();
+  for (const v of items) {
+    const groupKey = v.groupRef ?? UNGROUPED_KEY;
+    let list = byGroup.get(groupKey);
+    if (!list) {
+      list = [];
+      byGroup.set(groupKey, list);
+    }
+    list.push(v);
+  }
+  return byGroup;
+}
+
+function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
+  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
+  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
+  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
+}
+
+function buildVariableGroupSections<T extends { groupRef?: string | null }>(
+  items: readonly T[],
+): VariableGroupSection<T>[] {
+  const byGroup = buildByGroup(items);
+  const groupKeysInOrder = sortedGroupKeys(byGroup);
+  const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
+  return keysToRender.map((groupKey) => ({
+    groupKey,
+    groupLabel: groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey,
+    groupRef: groupKey === UNGROUPED_KEY ? null : groupKey,
+    variables: byGroup.get(groupKey) ?? [],
+  }));
+}
+
 /**
  * Read model and action callbacks for the template variables card.
  */
@@ -25,6 +82,12 @@ export interface VariablesCardViewModel {
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
   groups: readonly string[];
+  sortedGroups: readonly string[];
+  filteredColorVariables: readonly ColorVariable[];
+  filteredContrastVariables: readonly ContrastVariable[];
+  sortedColorVariables: readonly ColorVariable[];
+  colorVariableGroupSections: readonly VariableGroupSection<ColorVariable>[];
+  contrastVariableGroupSections: readonly VariableGroupSection<ContrastVariable>[];
   variablesSearchText: string;
   addVariableName: string;
   canEdit: boolean;
@@ -59,6 +122,52 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
   const template = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
   const variablesSearchText = useStore(templateUiStore.api, (state) => state.state.variablesSearchText);
   const addVariableName = useStore(templateUiStore.api, (state) => state.state.addVariableName);
+
+  const colorVariables = useMemo(
+    () => template?.colorVariables ?? EMPTY_COLOR_VARIABLES,
+    [template?.colorVariables],
+  );
+  const contrastVariables = useMemo(
+    () => template?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES,
+    [template?.contrastVariables],
+  );
+  const groups = useMemo(() => template?.groups ?? EMPTY_GROUPS, [template?.groups]);
+
+  const sortedGroups = useMemo(
+    () => [...groups].sort((a, b) => a.localeCompare(b)),
+    [groups],
+  );
+
+  const filteredColorVariables = useMemo(
+    () =>
+      colorVariables
+        .filter((v) => matchesSearch(v.key, variablesSearchText))
+        .sort((a, b) => a.key.localeCompare(b.key)),
+    [colorVariables, variablesSearchText],
+  );
+
+  const filteredContrastVariables = useMemo(
+    () =>
+      contrastVariables
+        .filter((v) => matchesSearch(v.key, variablesSearchText))
+        .sort((a, b) => a.key.localeCompare(b.key)),
+    [contrastVariables, variablesSearchText],
+  );
+
+  const sortedColorVariables = useMemo(
+    () => [...colorVariables].sort((a, b) => a.key.localeCompare(b.key)),
+    [colorVariables],
+  );
+
+  const colorVariableGroupSections = useMemo(
+    () => (template ? buildVariableGroupSections(filteredColorVariables) : EMPTY_GROUP_SECTIONS),
+    [template, filteredColorVariables],
+  );
+
+  const contrastVariableGroupSections = useMemo(
+    () => (template ? buildVariableGroupSections(filteredContrastVariables) : EMPTY_GROUP_SECTIONS),
+    [template, filteredContrastVariables],
+  );
 
   const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
   const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
@@ -192,9 +301,15 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
 
   return {
     template,
-    colorVariables: template?.colorVariables ?? [],
-    contrastVariables: template?.contrastVariables ?? [],
-    groups: template?.groups ?? [],
+    colorVariables,
+    contrastVariables,
+    groups,
+    sortedGroups,
+    filteredColorVariables,
+    filteredContrastVariables,
+    sortedColorVariables,
+    colorVariableGroupSections,
+    contrastVariableGroupSections,
     variablesSearchText,
     addVariableName,
     canAddColorVariable,

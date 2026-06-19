@@ -131,8 +131,12 @@ export function ThemePaletteCard() {
   const isHueDraggingRef = useRef(false);
   const hueSliderStyleRef = useRef<HTMLStyleElement | null>(null);
 
-  const hueSliderGradientValue = hueSliderGradientFromRefHex(
-    validRefHexForGradient(hueRefInputValue) ?? hueReferenceHex,
+  const hueSliderGradientValue = useMemo(
+    () =>
+      hueSliderGradientFromRefHex(
+        validRefHexForGradient(hueRefInputValue) ?? hueReferenceHex,
+      ),
+    [hueRefInputValue, hueReferenceHex],
   );
 
   useEffect(() => {

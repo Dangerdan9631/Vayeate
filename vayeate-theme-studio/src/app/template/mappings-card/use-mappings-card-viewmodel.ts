@@ -21,6 +21,63 @@ const EMPTY_GROUPS: readonly string[] = [];
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
 const EMPTY_STRINGS: readonly string[] = [];
+const UNGROUPED_KEY = '__ungrouped__';
+const DISPLAYED_TOKEN_TYPES: TokenType[] = ['theme', 'textmate token', 'semantic token'];
+
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
+function filterMappings(
+  mappings: Mapping[],
+  searchQuery: string,
+  selectedColorKeys: readonly string[],
+  selectedContrastKeys: readonly string[],
+): Mapping[] {
+  return mappings.filter((m) => {
+    if (!matchesSearch(m.token.key, searchQuery)) return false;
+    if (selectedColorKeys.length > 0) {
+      if (!m.colorVariableRef || !selectedColorKeys.includes(m.colorVariableRef)) return false;
+    }
+    if (selectedContrastKeys.length > 0) {
+      if (!m.contrastVariableRef || !selectedContrastKeys.includes(m.contrastVariableRef))
+        return false;
+    }
+    return true;
+  });
+}
+
+function buildByGroup(
+  filteredMappingsByType: Record<TokenType, Mapping[]>,
+): Map<string, Record<TokenType, Mapping[]>> {
+  const byGroup = new Map<string, Record<TokenType, Mapping[]>>();
+
+  function ensureGroup(key: string): Record<TokenType, Mapping[]> {
+    let rec = byGroup.get(key);
+    if (!rec) {
+      rec = { theme: [], 'textmate token': [], 'semantic token': [] };
+      byGroup.set(key, rec);
+    }
+    return rec;
+  }
+
+  for (const tt of DISPLAYED_TOKEN_TYPES) {
+    for (const m of filteredMappingsByType[tt]) {
+      const groupKey = m.groupRef ?? UNGROUPED_KEY;
+      const rec = ensureGroup(groupKey);
+      rec[tt].push(m);
+    }
+  }
+
+  return byGroup;
+}
+
+function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): string[] {
+  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
+  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
+  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
+}
 
 /**
  * Subscribes to template mappings, catalogs, and filter state for the mappings card.
@@ -246,18 +303,61 @@ export function useMappingsCardViewModel() {
     [template?.semanticTokenLanguages],
   );
 
-  const semanticVariant =
-    template === null
-      ? undefined
-      : {
-          onAddSemanticVariant: addSemanticVariantMapping,
-          onCommitSemanticTokenModifiers: commitSemanticTokenModifiers,
-          onCommitSemanticTokenLanguage: commitSemanticTokenLanguage,
-        };
+  const semanticVariant = useMemo(
+    () =>
+      template === null
+        ? undefined
+        : {
+            onAddSemanticVariant: addSemanticVariantMapping,
+            onCommitSemanticTokenModifiers: commitSemanticTokenModifiers,
+            onCommitSemanticTokenLanguage: commitSemanticTokenLanguage,
+          },
+    [
+      template,
+      addSemanticVariantMapping,
+      commitSemanticTokenModifiers,
+      commitSemanticTokenLanguage,
+    ],
+  );
+
+  const filteredMappingsByType = useMemo(() => {
+    return Object.fromEntries(
+      DISPLAYED_TOKEN_TYPES.map((tt) => [
+        tt,
+        filterMappings(
+          mappingsByType[tt],
+          mappingSearchText,
+          mappingColorVariableFilter,
+          mappingContrastVariableFilter,
+        ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
+      ]),
+    ) as Record<TokenType, Mapping[]>;
+  }, [
+    mappingsByType,
+    mappingSearchText,
+    mappingColorVariableFilter,
+    mappingContrastVariableFilter,
+  ]);
+
+  const mappingsByGroup = useMemo(() => {
+    const byGroup = buildByGroup(filteredMappingsByType);
+    if (template !== null && !byGroup.has(UNGROUPED_KEY)) {
+      byGroup.set(UNGROUPED_KEY, {
+        theme: [],
+        'textmate token': [],
+        'semantic token': [],
+      });
+    }
+    return byGroup;
+  }, [filteredMappingsByType, template]);
+
+  const groupKeysInOrder = useMemo(() => sortedGroupKeys(mappingsByGroup), [mappingsByGroup]);
 
   return {
     template,
     mappingsByType,
+    mappingsByGroup,
+    groupKeysInOrder,
     sortedGroups,
     sortedColorVariables,
     sortedContrastVariables,

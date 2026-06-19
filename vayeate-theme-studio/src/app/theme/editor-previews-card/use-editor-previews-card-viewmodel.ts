@@ -13,6 +13,8 @@ import { ThemeDetailsCardActionType } from '../theme-details-card/actions/theme-
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
 
+const EMPTY_CONTRAST_ASSIGNMENTS: readonly ContrastAssignment[] = [];
+
 /**
  * Read model returned by useEditorPreviewsCardViewModel.
  */
@@ -68,6 +70,11 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   const contrastVariablesFromTemplate = useMemo(
     () => loadedTemplate?.contrastVariables ?? [],
     [loadedTemplate],
+  );
+
+  const contrastAssignments = useMemo(
+    () => theme?.contrastAssignments ?? EMPTY_CONTRAST_ASSIGNMENTS,
+    [theme?.contrastAssignments],
   );
 
   const dispatchPreviewTokenRef = useCallback(
@@ -138,7 +145,7 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     theme,
     editorPreviews,
     colorAssignments: panePreviewColorAssignments,
-    contrastAssignments: theme?.contrastAssignments ?? [],
+    contrastAssignments,
     contrastVariables: contrastVariablesFromTemplate,
     mappings: templateMappings,
     idePrimaryTokenRef: theme?.idePrimaryTokenRef ?? null,

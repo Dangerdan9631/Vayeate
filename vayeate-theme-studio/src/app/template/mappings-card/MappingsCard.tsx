@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type ChangeEvent,
@@ -341,7 +342,10 @@ function MappingTypeSection({
     tokenType === 'semantic token' && semanticVariant !== undefined;
   const toggleCollapsed = () => setCollapsed((v) => !v);
 
-  const semanticBlocks = isSemanticWithVariants ? buildSemanticBlocks(mappings) : null;
+  const semanticBlocks = useMemo(
+    () => (isSemanticWithVariants ? buildSemanticBlocks(mappings) : null),
+    [isSemanticWithVariants, mappings],
+  );
 
   return (
     <div className="tree-section">
@@ -639,61 +643,6 @@ function SemanticBlockRows({
   );
 }
 
-function matchesSearch(key: string, searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  return !q || key.toLowerCase().includes(q);
-}
-
-function filterMappings(
-  mappings: Mapping[],
-  searchQuery: string,
-  selectedColorKeys: string[],
-  selectedContrastKeys: string[],
-): Mapping[] {
-  return mappings.filter((m) => {
-    if (!matchesSearch(m.token.key, searchQuery)) return false;
-    if (selectedColorKeys.length > 0) {
-      if (!m.colorVariableRef || !selectedColorKeys.includes(m.colorVariableRef)) return false;
-    }
-    if (selectedContrastKeys.length > 0) {
-      if (!m.contrastVariableRef || !selectedContrastKeys.includes(m.contrastVariableRef))
-        return false;
-    }
-    return true;
-  });
-}
-
-function buildByGroup(
-  filteredMappingsByType: Record<TokenType, Mapping[]>,
-): Map<string, Record<TokenType, Mapping[]>> {
-  const byGroup = new Map<string, Record<TokenType, Mapping[]>>();
-
-  function ensureGroup(key: string): Record<TokenType, Mapping[]> {
-    let rec = byGroup.get(key);
-    if (!rec) {
-      rec = { theme: [], 'textmate token': [], 'semantic token': [] };
-      byGroup.set(key, rec);
-    }
-    return rec;
-  }
-
-  for (const tt of DISPLAYED_TOKEN_TYPES) {
-    for (const m of filteredMappingsByType[tt]) {
-      const groupKey = m.groupRef ?? UNGROUPED_KEY;
-      const rec = ensureGroup(groupKey);
-      rec[tt].push(m);
-    }
-  }
-
-  return byGroup;
-}
-
-function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): string[] {
-  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
-  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
-  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
-}
-
 /**
  * Renders token mapping rows, filters, and semantic variant editors.
  * @returns Mappings card UI wired to its viewmodel.
@@ -701,7 +650,8 @@ function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): st
 export function MappingsCard() {
   const {
     template,
-    mappingsByType,
+    mappingsByGroup,
+    groupKeysInOrder,
     sortedGroups,
     sortedColorVariables,
     sortedContrastVariables,
@@ -784,28 +734,6 @@ export function MappingsCard() {
   }, [toggleContrastKey]);
 
   if (!template) return null;
-
-  const filteredMappingsByType: Record<TokenType, Mapping[]> = Object.fromEntries(
-    DISPLAYED_TOKEN_TYPES.map((tt) => [
-      tt,
-      filterMappings(
-        mappingsByType[tt],
-        searchQuery,
-        selectedColorKeys,
-        selectedContrastKeys,
-      ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
-    ])
-  ) as Record<TokenType, Mapping[]>;
-
-  const byGroup = buildByGroup(filteredMappingsByType);
-  if (semanticVariant && !byGroup.has(UNGROUPED_KEY)) {
-    byGroup.set(UNGROUPED_KEY, {
-      theme: [],
-      'textmate token': [],
-      'semantic token': [],
-    } as Record<TokenType, Mapping[]>);
-  }
-  const groupKeysInOrder = sortedGroupKeys(byGroup);
 
   const handleSearchTextChange = (value: string) => {
     setMappingSearchText(value);
@@ -919,7 +847,7 @@ export function MappingsCard() {
         </div>
       </div>
       {groupKeysInOrder.map((groupKey) => {
-        const byType = byGroup.get(groupKey)!;
+        const byType = mappingsByGroup.get(groupKey)!;
         const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
         return (
           <GroupSection

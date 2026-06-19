@@ -1,36 +1,16 @@
 import { useState, type ChangeEvent } from 'react';
-import { useVariablesCardViewModel } from './use-variables-card-viewmodel';
+import {
+  useVariablesCardViewModel,
+  type VariableGroupSection,
+} from './use-variables-card-viewmodel';
 import type { ColorVariableKey } from '../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
-const UNGROUPED_KEY = '__ungrouped__';
-
-function buildByGroup<T extends { groupRef?: string | null }>(
-  items: readonly T[],
-): Map<string, T[]> {
-  const byGroup = new Map<string, T[]>();
-  for (const v of items) {
-    const groupKey = v.groupRef ?? UNGROUPED_KEY;
-    let list = byGroup.get(groupKey);
-    if (!list) {
-      list = [];
-      byGroup.set(groupKey, list);
-    }
-    list.push(v);
-  }
-  return byGroup;
-}
-
-function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
-  const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
-  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
-  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
-}
 
 function ColorGroupSubsection({
   groupLabel,
   groupRef,
   colorVariables,
-  groups,
+  sortedGroups,
   referencedKeys,
   canEdit,
   canAddColorVariable,
@@ -43,7 +23,7 @@ function ColorGroupSubsection({
   groupLabel: string;
   groupRef: string | null;
   colorVariables: readonly ColorVariable[];
-  groups: readonly string[];
+  sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
   canAddColorVariable: boolean;
@@ -119,7 +99,7 @@ function ColorGroupSubsection({
                 title="Group"
               >
                 <option value="">Ungrouped</option>
-                {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
+                {sortedGroups.map((g) => (
                   <option key={g} value={g}>
                     {g}
                   </option>
@@ -147,8 +127,9 @@ function ColorGroupSubsection({
 }
 
 function ColorVariablesSection({
-  colorVariables,
-  groups,
+  colorVariableGroupSections,
+  totalColorVariableCount,
+  sortedGroups,
   referencedKeys,
   canEdit,
   canAddColorVariable,
@@ -158,8 +139,9 @@ function ColorVariablesSection({
   onRemove,
   onUpdateGroupRef,
 }: {
-  colorVariables: readonly ColorVariable[];
-  groups: readonly string[];
+  colorVariableGroupSections: readonly VariableGroupSection<ColorVariable>[];
+  totalColorVariableCount: number;
+  sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
   canAddColorVariable: boolean;
@@ -170,9 +152,6 @@ function ColorVariablesSection({
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const byGroup = buildByGroup(colorVariables);
-  const groupKeysInOrder = sortedGroupKeys(byGroup);
-  const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
 
   function onColorVariablesSectionHeaderClick() {
     setCollapsed((c) => !c);
@@ -189,33 +168,28 @@ function ColorVariablesSection({
           {collapsed ? 'chevron_right' : 'expand_more'}
         </span>
         <span className="tree-label">Color Variables</span>
-        <span className="tree-count">({colorVariables.length})</span>
+        <span className="tree-count">({totalColorVariableCount})</span>
       </button>
 
       {!collapsed && (
         <div className="tree-children">
-          {keysToRender.map((groupKey) => {
-            const vars = byGroup.get(groupKey) ?? [];
-            const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
-            const groupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
-            return (
-              <ColorGroupSubsection
-                key={groupKey}
-                groupLabel={groupLabel}
-                groupRef={groupRef}
-                colorVariables={vars}
-                groups={groups}
-                referencedKeys={referencedKeys}
-                canEdit={canEdit}
-                canAddColorVariable={canAddColorVariable}
-                addVariableName={addVariableName}
-                onAddVariableNameChange={onAddVariableNameChange}
-                onAdd={onAdd}
-                onRemove={onRemove}
-                onUpdateGroupRef={onUpdateGroupRef}
-              />
-            );
-          })}
+          {colorVariableGroupSections.map(({ groupKey, groupLabel, groupRef, variables }) => (
+            <ColorGroupSubsection
+              key={groupKey}
+              groupLabel={groupLabel}
+              groupRef={groupRef}
+              colorVariables={variables}
+              sortedGroups={sortedGroups}
+              referencedKeys={referencedKeys}
+              canEdit={canEdit}
+              canAddColorVariable={canAddColorVariable}
+              addVariableName={addVariableName}
+              onAddVariableNameChange={onAddVariableNameChange}
+              onAdd={onAdd}
+              onRemove={onRemove}
+              onUpdateGroupRef={onUpdateGroupRef}
+            />
+          ))}
         </div>
       )}
     </div>
@@ -227,7 +201,7 @@ function ContrastGroupSubsection({
   groupRef,
   contrastVariables,
   colorVariables,
-  groups,
+  sortedGroups,
   referencedKeys,
   canEdit,
   canAddContrastVariable,
@@ -242,7 +216,7 @@ function ContrastGroupSubsection({
   groupRef: string | null;
   contrastVariables: readonly ContrastVariable[];
   colorVariables: readonly ColorVariable[];
-  groups: readonly string[];
+  sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
   canAddContrastVariable: boolean;
@@ -322,7 +296,7 @@ function ContrastGroupSubsection({
                 title="Group"
               >
                 <option value="">Ungrouped</option>
-                {[...groups].sort((a, b) => a.localeCompare(b)).map((g) => (
+                {sortedGroups.map((g) => (
                   <option key={g} value={g}>
                     {g}
                   </option>
@@ -363,9 +337,10 @@ function ContrastGroupSubsection({
 }
 
 function ContrastVariablesSection({
-  contrastVariables,
+  contrastVariableGroupSections,
+  totalContrastVariableCount,
   colorVariables,
-  groups,
+  sortedGroups,
   referencedKeys,
   canEdit,
   canAddContrastVariable,
@@ -376,9 +351,10 @@ function ContrastVariablesSection({
   onUpdateGroupRef,
   onUpdateComparisonSource,
 }: {
-  contrastVariables: readonly ContrastVariable[];
+  contrastVariableGroupSections: readonly VariableGroupSection<ContrastVariable>[];
+  totalContrastVariableCount: number;
   colorVariables: readonly ColorVariable[];
-  groups: readonly string[];
+  sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
   canAddContrastVariable: boolean;
@@ -390,9 +366,6 @@ function ContrastVariablesSection({
   onUpdateComparisonSource: (key: string, ref: ColorVariableKey | null) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const byGroup = buildByGroup(contrastVariables);
-  const groupKeysInOrder = sortedGroupKeys(byGroup);
-  const keysToRender = groupKeysInOrder.length > 0 ? groupKeysInOrder : [UNGROUPED_KEY];
 
   function onContrastVariablesSectionHeaderClick() {
     setCollapsed((c) => !c);
@@ -409,44 +382,34 @@ function ContrastVariablesSection({
           {collapsed ? 'chevron_right' : 'expand_more'}
         </span>
         <span className="tree-label">Contrast Variables</span>
-        <span className="tree-count">({contrastVariables.length})</span>
+        <span className="tree-count">({totalContrastVariableCount})</span>
       </button>
 
       {!collapsed && (
         <div className="tree-children">
-          {keysToRender.map((groupKey) => {
-            const vars = byGroup.get(groupKey) ?? [];
-            const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
-            const groupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
-            return (
-              <ContrastGroupSubsection
-                key={groupKey}
-                groupLabel={groupLabel}
-                groupRef={groupRef}
-                contrastVariables={vars}
-                colorVariables={colorVariables}
-                groups={groups}
-                referencedKeys={referencedKeys}
-                canEdit={canEdit}
-                canAddContrastVariable={canAddContrastVariable}
-                addVariableName={addVariableName}
-                onAddVariableNameChange={onAddVariableNameChange}
-                onAdd={onAdd}
-                onRemove={onRemove}
-                onUpdateGroupRef={onUpdateGroupRef}
-                onUpdateComparisonSource={onUpdateComparisonSource}
-              />
-            );
-          })}
+          {contrastVariableGroupSections.map(({ groupKey, groupLabel, groupRef, variables }) => (
+            <ContrastGroupSubsection
+              key={groupKey}
+              groupLabel={groupLabel}
+              groupRef={groupRef}
+              contrastVariables={variables}
+              colorVariables={colorVariables}
+              sortedGroups={sortedGroups}
+              referencedKeys={referencedKeys}
+              canEdit={canEdit}
+              canAddContrastVariable={canAddContrastVariable}
+              addVariableName={addVariableName}
+              onAddVariableNameChange={onAddVariableNameChange}
+              onAdd={onAdd}
+              onRemove={onRemove}
+              onUpdateGroupRef={onUpdateGroupRef}
+              onUpdateComparisonSource={onUpdateComparisonSource}
+            />
+          ))}
         </div>
       )}
     </div>
   );
-}
-
-function matchesSearch(key: string, searchQuery: string): boolean {
-  const q = searchQuery.trim().toLowerCase();
-  return !q || key.toLowerCase().includes(q);
 }
 
 /**
@@ -456,9 +419,12 @@ function matchesSearch(key: string, searchQuery: string): boolean {
 export function VariablesCard() {
   const {
     template,
-    colorVariables,
-    contrastVariables,
-    groups,
+    sortedGroups,
+    filteredColorVariables,
+    filteredContrastVariables,
+    sortedColorVariables,
+    colorVariableGroupSections,
+    contrastVariableGroupSections,
     referencedColorVarKeys,
     referencedContrastVarKeys,
     canEdit,
@@ -478,16 +444,6 @@ export function VariablesCard() {
   } = useVariablesCardViewModel();
 
   if (!template) return null;
-
-  const filteredColorVariables = colorVariables
-    .filter((v: ColorVariable) => matchesSearch(v.key, variablesSearchText))
-    .sort((a: ColorVariable, b: ColorVariable) => a.key.localeCompare(b.key));
-  const filteredContrastVariables = contrastVariables
-    .filter((v: ContrastVariable) => matchesSearch(v.key, variablesSearchText))
-    .sort((a: ContrastVariable, b: ContrastVariable) => a.key.localeCompare(b.key));
-  const sortedColorVariables = [...colorVariables].sort(
-    (a: ColorVariable, b: ColorVariable) => a.key.localeCompare(b.key),
-  );
 
   function onVariablesSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
     onVariablesSearchChange(e.target.value);
@@ -533,8 +489,9 @@ export function VariablesCard() {
         aria-label="Search variables"
       />
       <ColorVariablesSection
-        colorVariables={filteredColorVariables}
-        groups={groups}
+        colorVariableGroupSections={colorVariableGroupSections}
+        totalColorVariableCount={filteredColorVariables.length}
+        sortedGroups={sortedGroups}
         referencedKeys={referencedColorVarKeys}
         canEdit={canEdit}
         canAddColorVariable={canAddColorVariable}
@@ -545,9 +502,10 @@ export function VariablesCard() {
         onUpdateGroupRef={onColorVariablesSectionUpdateGroupRef}
       />
       <ContrastVariablesSection
-        contrastVariables={filteredContrastVariables}
+        contrastVariableGroupSections={contrastVariableGroupSections}
+        totalContrastVariableCount={filteredContrastVariables.length}
         colorVariables={sortedColorVariables}
-        groups={groups}
+        sortedGroups={sortedGroups}
         referencedKeys={referencedContrastVarKeys}
         canEdit={canEdit}
         canAddContrastVariable={canAddContrastVariable}
