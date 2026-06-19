@@ -5,11 +5,11 @@ import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { Catalog, Token } from '../../../model/schema/catalog';
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
-import type { CatalogReference, ColorVariable, ContrastVariable, Mapping, Template } from '../../../model/schema/template-schemas';
+import type { CatalogReference, ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 import { MappingsCardActionType } from './actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
-import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import { container } from 'tsyringe';
 
@@ -21,6 +21,8 @@ const EMPTY_GROUPS: readonly string[] = [];
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
 const EMPTY_STRINGS: readonly string[] = [];
+const EMPTY_CATALOG_REFS: readonly CatalogReference[] = [];
+const EMPTY_VERSION_KEYS: readonly string[] = [];
 const UNGROUPED_KEY = '__ungrouped__';
 const DISPLAYED_TOKEN_TYPES: TokenType[] = ['theme', 'textmate token', 'semantic token'];
 
@@ -87,8 +89,31 @@ export function useMappingsCardViewModel() {
   const orphanKeysStashRef = useRef<Set<string>>(new Set());
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
-  const template: Template | null = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
+  const selectedName = selectedRef?.name ?? null;
+  const selectedVersion = selectedRef?.version ?? null;
+  const template = useStore(
+    templatesStore.api,
+    (state) => getCurrentTemplate(state.state.templates, selectedRef),
+  );
+  const templateCatalogRefs = useMemo(
+    () => template?.catalogRefs ?? EMPTY_CATALOG_REFS,
+    [template?.catalogRefs],
+  );
+  const referencedCatalogSlots = useStore(
+    catalogsStore.api,
+    useShallow((state) =>
+      templateCatalogRefs.map((ref: CatalogReference) =>
+        state.state.catalogs[ref.name]?.[ref.version] ?? null,
+      ),
+    ),
+  );
+  const versionKeysForSelectedName = useStore(
+    templatesStore.api,
+    useShallow((state) => {
+      if (!selectedName) return EMPTY_VERSION_KEYS;
+      return Object.keys(state.state.templates[selectedName] ?? {}).sort();
+    }),
+  );
   const mappingSearchText = useStore(templateUiStore.api, (state) => state.state.mappingSearchText);
   const mappingColorVariableFilter = useStore(
     templateUiStore.api,
@@ -99,16 +124,13 @@ export function useMappingsCardViewModel() {
     useShallow((state) => state.state.mappingContrastVariableFilter),
   );
 
-  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogs);
-
   const loadedCatalogsForTemplateRefs = useMemo(() => {
-    if (!template || template.catalogRefs.length === 0) return [];
-    return template.catalogRefs.map((ref: CatalogReference) => {
-      const catalogEntry = catalogMap[ref.name]?.[ref.version];
-      if (!catalogEntry || !catalogEntry.isLoaded) return null;
-      return catalogEntry.catalog;
+    if (referencedCatalogSlots.length === 0) return [];
+    return referencedCatalogSlots.map((entry) => {
+      if (!entry || !entry.isLoaded) return null;
+      return entry.catalog;
     });
-  }, [template, catalogMap]);
+  }, [referencedCatalogSlots]);
 
   const orphanKeys = useMemo(() => {
     if (!template || loadedCatalogsForTemplateRefs.length === 0) {
@@ -146,19 +168,14 @@ export function useMappingsCardViewModel() {
     return computed;
   }, [template, loadedCatalogsForTemplateRefs]);
 
-  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
-  const selectedName = selectedRef?.name ?? null;
-
   const isLatestVersion = useMemo(() => {
-    if (!selectedRef || !selectedName) return false;
-    const best = templateRefs
-      .filter((r) => r.name === selectedName)
-      .reduce(
-        (acc, r) => (!acc || compareVersions(r.version, acc.version) > 0 ? r : acc),
-        null as (typeof templateRefs)[number] | null,
-      );
-    return best !== null && best.version === selectedRef.version;
-  }, [templateRefs, selectedRef, selectedName]);
+    if (!selectedRef || !selectedName || !selectedVersion) return false;
+    const bestVersion = versionKeysForSelectedName.reduce(
+      (acc, version) => (!acc || compareVersions(version, acc) > 0 ? version : acc),
+      null as string | null,
+    );
+    return bestVersion !== null && bestVersion === selectedVersion;
+  }, [versionKeysForSelectedName, selectedRef, selectedName, selectedVersion]);
 
   const canEdit = template !== null && isLatestVersion;
 

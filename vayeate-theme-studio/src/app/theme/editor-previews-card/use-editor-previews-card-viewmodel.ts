@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import type { TokenKey } from '../../../model/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, Theme, ThemePreviewTokenRefField } from '../../../model/schema/theme-schemas';
@@ -14,12 +15,14 @@ const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
 
 const EMPTY_CONTRAST_ASSIGNMENTS: readonly ContrastAssignment[] = [];
+const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_MAPPINGS: readonly Mapping[] = [];
 
 /**
  * Read model returned by useEditorPreviewsCardViewModel.
  */
 export interface EditorPreviewsCardViewModel {
-  theme: Theme | null;
+  theme: Pick<Theme, 'templateRef'> | null;
   editorPreviews: TokenizedPreview[];
   colorAssignments: readonly ColorAssignment[];
   contrastAssignments: readonly ContrastAssignment[];
@@ -61,20 +64,69 @@ export interface EditorPreviewsCardViewModel {
  */
 export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   const dispatch = useAppDispatch();
-  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
-  const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
+  const themeTemplateRef = useStore(themeUiStore.api, (state) => state.state.theme?.templateRef ?? null);
+  const contrastAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.theme?.contrastAssignments ?? EMPTY_CONTRAST_ASSIGNMENTS),
+  );
+  const idePrimaryTokenRef = useStore(themeUiStore.api, (state) => state.state.theme?.idePrimaryTokenRef ?? null);
+  const ideForegroundTokenRef = useStore(themeUiStore.api, (state) => state.state.theme?.ideForegroundTokenRef ?? null);
+  const themeBackgroundTokenRef = useStore(themeUiStore.api, (state) => state.state.theme?.themeBackgroundTokenRef ?? null);
+  const themeForegroundTokenRef = useStore(themeUiStore.api, (state) => state.state.theme?.themeForegroundTokenRef ?? null);
+  const lineNumberBackgroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.lineNumberBackgroundTokenRef ?? null,
+  );
+  const lineNumberForegroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.lineNumberForegroundTokenRef ?? null,
+  );
+  const ideTabTokenRef = useStore(themeUiStore.api, (state) => state.state.theme?.ideTabTokenRef ?? null);
+  const ideTabBarBackgroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.ideTabBarBackgroundTokenRef ?? null,
+  );
+  const ideTabBarForegroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.ideTabBarForegroundTokenRef ?? null,
+  );
+  const editorPreviewScrollbarBackgroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.editorPreviewScrollbarBackgroundTokenRef ?? null,
+  );
+  const editorPreviewScrollbarForegroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.editorPreviewScrollbarForegroundTokenRef ?? null,
+  );
+  const editorPreviewSelectionBackgroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.editorPreviewSelectionBackgroundTokenRef ?? null,
+  );
+  const editorPreviewMenuForegroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.editorPreviewMenuForegroundTokenRef ?? null,
+  );
+  const editorPreviewMenuBackgroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.editorPreviewMenuBackgroundTokenRef ?? null,
+  );
   const editorPreviews = useStore(themePreviewStore.api, (state) => state.state.editorPreviews);
-  const panePreviewColorAssignments = useStore(themeUiStore.api, (state) => state.state.panePreviewColorAssignments);
-
-  const templateMappings = useMemo(() => loadedTemplate?.mappings ?? [], [loadedTemplate]);
-  const contrastVariablesFromTemplate = useMemo(
-    () => loadedTemplate?.contrastVariables ?? [],
-    [loadedTemplate],
+  const panePreviewColorAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.panePreviewColorAssignments),
+  );
+  const templateMappings = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.mappings ?? EMPTY_MAPPINGS),
+  );
+  const contrastVariablesFromTemplate = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES),
   );
 
-  const contrastAssignments = useMemo(
-    () => theme?.contrastAssignments ?? EMPTY_CONTRAST_ASSIGNMENTS,
-    [theme?.contrastAssignments],
+  const theme: Pick<Theme, 'templateRef'> | null = useMemo(
+    () => (themeTemplateRef ? { templateRef: themeTemplateRef } : null),
+    [themeTemplateRef],
   );
 
   const dispatchPreviewTokenRef = useCallback(
@@ -148,34 +200,33 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     contrastAssignments,
     contrastVariables: contrastVariablesFromTemplate,
     mappings: templateMappings,
-    idePrimaryTokenRef: theme?.idePrimaryTokenRef ?? null,
+    idePrimaryTokenRef,
     onChangeIdePrimaryTokenRef: changeIdePrimaryTokenRef,
-    ideForegroundTokenRef: theme?.ideForegroundTokenRef ?? null,
+    ideForegroundTokenRef,
     onChangeIdeForegroundTokenRef: changeIdeForegroundTokenRef,
-    themeBackgroundTokenRef: theme?.themeBackgroundTokenRef ?? null,
+    themeBackgroundTokenRef,
     onChangeThemeBackgroundTokenRef: changeThemeBackgroundTokenRef,
-    themeForegroundTokenRef: theme?.themeForegroundTokenRef ?? null,
+    themeForegroundTokenRef,
     onChangeThemeForegroundTokenRef: changeThemeForegroundTokenRef,
-    lineNumberBackgroundTokenRef: theme?.lineNumberBackgroundTokenRef ?? null,
+    lineNumberBackgroundTokenRef,
     onChangeLineNumberBackgroundTokenRef: changeLineNumberBackgroundTokenRef,
-    lineNumberForegroundTokenRef: theme?.lineNumberForegroundTokenRef ?? null,
+    lineNumberForegroundTokenRef,
     onChangeLineNumberForegroundTokenRef: changeLineNumberForegroundTokenRef,
-    ideTabTokenRef: theme?.ideTabTokenRef ?? null,
+    ideTabTokenRef,
     onChangeIdeTabTokenRef: changeIdeTabTokenRef,
-    ideTabBarBackgroundTokenRef: theme?.ideTabBarBackgroundTokenRef ?? null,
+    ideTabBarBackgroundTokenRef,
     onChangeIdeTabBarBackgroundTokenRef: changeIdeTabBarBackgroundTokenRef,
-    ideTabBarForegroundTokenRef: theme?.ideTabBarForegroundTokenRef ?? null,
+    ideTabBarForegroundTokenRef,
     onChangeIdeTabBarForegroundTokenRef: changeIdeTabBarForegroundTokenRef,
-    editorPreviewScrollbarBackgroundTokenRef: theme?.editorPreviewScrollbarBackgroundTokenRef ?? null,
+    editorPreviewScrollbarBackgroundTokenRef,
     onChangeEditorPreviewScrollbarBackgroundTokenRef: changeEditorPreviewScrollbarBackgroundTokenRef,
-    editorPreviewScrollbarForegroundTokenRef: theme?.editorPreviewScrollbarForegroundTokenRef ?? null,
+    editorPreviewScrollbarForegroundTokenRef,
     onChangeEditorPreviewScrollbarForegroundTokenRef: changeEditorPreviewScrollbarForegroundTokenRef,
-    editorPreviewSelectionBackgroundTokenRef: theme?.editorPreviewSelectionBackgroundTokenRef ?? null,
+    editorPreviewSelectionBackgroundTokenRef,
     onChangeEditorPreviewSelectionBackgroundTokenRef: changeEditorPreviewSelectionBackgroundTokenRef,
-    editorPreviewMenuForegroundTokenRef: theme?.editorPreviewMenuForegroundTokenRef ?? null,
+    editorPreviewMenuForegroundTokenRef,
     onChangeEditorPreviewMenuForegroundTokenRef: changeEditorPreviewMenuForegroundTokenRef,
-    editorPreviewMenuBackgroundTokenRef: theme?.editorPreviewMenuBackgroundTokenRef ?? null,
+    editorPreviewMenuBackgroundTokenRef,
     onChangeEditorPreviewMenuBackgroundTokenRef: changeEditorPreviewMenuBackgroundTokenRef,
   };
 }
-

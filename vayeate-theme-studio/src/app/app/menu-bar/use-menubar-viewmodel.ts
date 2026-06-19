@@ -6,6 +6,7 @@ import { AppMenuActionType } from './actions/app-menu-action-type';
 import { UiStore } from '../../../domain/state/ui/ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { AppConfigStore } from '../../../domain/state/data/app-config-store';
 import { WindowStore } from '../../../domain/state/ui/window-store';
 import { UndoStackStore } from '../../../domain/state/undo-stack/undo-stack-store';
@@ -74,10 +75,20 @@ export interface MenuBarViewModel {
 export function useMenuBarViewModel(): MenuBarViewModel {
   const dispatch = useAppDispatch();
   const isMaximized = useStore(windowStore.api, (state) => state.state.isMaximized);
-  const undoMenu = useStore(undoStackStore.api, (state) => state.state.undoMenu);
+  const frames = useStore(undoStackStore.api, useShallow((state) => state.state.undoMenu.frames));
+  const currentId = useStore(undoStackStore.api, (state) => state.state.undoMenu.currentId);
+  const canUndo = useStore(undoStackStore.api, (state) => state.state.undoMenu.canUndo);
+  const canRedo = useStore(undoStackStore.api, (state) => state.state.undoMenu.canRedo);
+  const nextUndoDescription = useStore(
+    undoStackStore.api,
+    (state) => state.state.undoMenu.nextUndoDescription,
+  );
+  const nextRedoDescription = useStore(
+    undoStackStore.api,
+    (state) => state.state.undoMenu.nextRedoDescription,
+  );
   const theme = useStore(appConfigStore.api, (state) => state.config.colorScheme);
   const openMenu = useStore(uiStore.api, (state) => state.state.openMenu);
-  const { frames, currentId, canUndo, canRedo, nextUndoDescription, nextRedoDescription } = undoMenu;
 
   const fileRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);

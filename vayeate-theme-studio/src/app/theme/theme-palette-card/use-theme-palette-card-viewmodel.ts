@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { buildThemePaneSnapshot } from '../../../domain/utils/theme-pane-utils';
 import { ThemePreviewStore } from '../../../domain/state/ui/theme-preview-store';
@@ -10,9 +11,18 @@ import { resolveColorForThemeTokenKey } from '../../../domain/utils/scope-resolv
 import { ThemePaletteCardActionType } from './actions/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../theme-variables-card/actions/theme-variables-card-action-type';
 import { normalizeThemeHex } from '../../../domain/utils/normalize-theme-hex';
+import type { ColorAssignment, ContrastAssignment, Theme } from '../../../model/schema/theme-schemas';
+import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
+
+const EMPTY_COLOR_ASSIGNMENTS: readonly ColorAssignment[] = [];
+const EMPTY_CONTRAST_ASSIGNMENTS: readonly ContrastAssignment[] = [];
+const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
+const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_GROUPS: readonly string[] = [];
+const EMPTY_MAPPINGS: readonly Mapping[] = [];
 
 /**
  * Exposes Theme Palette Card state and dispatches user or lifecycle actions.
@@ -20,70 +30,125 @@ const themePreviewStore = container.resolve(ThemePreviewStore);
 export function useThemePaletteCardViewModel() {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(themeUiStore.api, (state) => state.state.selectedRef);
-  const theme = useStore(themeUiStore.api, (state) => state.state.theme);
-  const checkedColorRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedColorRefs);
-  const checkedContrastRefsArray = useStore(themeUiStore.api, (state) => state.state.checkedContrastRefs);
+  const themeTemplateRef = useStore(themeUiStore.api, (state) => state.state.theme?.templateRef ?? null);
+  const themeColorAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.theme?.colorAssignments ?? EMPTY_COLOR_ASSIGNMENTS),
+  );
+  const themeContrastAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.theme?.contrastAssignments ?? EMPTY_CONTRAST_ASSIGNMENTS),
+  );
+  const applyPaletteToDark = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.applyPaletteToDark ?? true,
+  );
+  const applyPaletteToLight = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.applyPaletteToLight ?? true,
+  );
+  const themePaletteClusterCountK = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.paletteClusterCountK ?? 5,
+  );
+  const themeBackgroundTokenRef = useStore(
+    themeUiStore.api,
+    (state) => state.state.theme?.themeBackgroundTokenRef ?? null,
+  );
+  const hasTheme = useStore(themeUiStore.api, (state) => state.state.theme !== null);
+  const checkedColorRefsArray = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.checkedColorRefs),
+  );
+  const checkedContrastRefsArray = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.checkedContrastRefs),
+  );
   const hueAdjustment = useStore(themeUiStore.api, (state) => state.state.hueAdjustment);
   const hueReferenceHex = useStore(themeUiStore.api, (state) => state.state.hueReferenceHex);
   const previewClusterCountK = useStore(themeUiStore.api, (state) => state.state.previewClusterCountK);
   const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
-  const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
+  const colorVariablesFromTemplate = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.colorVariables ?? EMPTY_COLOR_VARIABLES),
+  );
+  const groupsFromTemplate = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.groups ?? EMPTY_GROUPS),
+  );
+  const loadedTemplateContrastVariables = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES),
+  );
+  const loadedTemplateMappings = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.mappings ?? EMPTY_MAPPINGS),
+  );
+  const paneDisplayColorAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.paneDisplayColorAssignments),
+  );
   const paneSelectedColorsDisplay = useStore(themeUiStore.api, (state) => state.state.paneSelectedColorsDisplay);
   const paletteClustersByGroup = useStore(themeUiStore.api, (state) => state.state.paletteClustersByGroup);
   const paletteClusterByDark = useStore(themeUiStore.api, (state) => state.state.paletteClusterByDark);
   const checkedColorRefs = useMemo(() => new Set<string>(checkedColorRefsArray), [checkedColorRefsArray]);
 
-  const applyHueToDark = theme?.applyPaletteToDark ?? true;
-  const applyHueToLight = theme?.applyPaletteToLight ?? true;
-  const hueDragStartRef = useRef<{ theme: NonNullable<typeof theme>; hueAdjustment: number } | null>(null);
+  const theme: Pick<Theme, 'templateRef'> | null = useMemo(
+    () => (themeTemplateRef ? { templateRef: themeTemplateRef } : null),
+    [themeTemplateRef],
+  );
+
+  const hueDragStartRef = useRef<{ theme: Theme; hueAdjustment: number } | null>(null);
   const pendingHueValueRef = useRef<number | null>(null);
   const hueFrameRef = useRef<number | null>(null);
 
   const lastSelectedRefForHueRef = useRef<{ name: string; version: string } | null>(null);
   useEffect(() => {
-    if (!theme || !loadedTemplate || !selectedRef) return;
-    if (theme.templateRef?.name !== loadedTemplate.name || theme.templateRef?.version !== loadedTemplate.version)
+    if (!hasTheme || !loadedTemplate || !selectedRef || !themeTemplateRef) return;
+    if (themeTemplateRef.name !== loadedTemplate.name || themeTemplateRef.version !== loadedTemplate.version)
       return;
     const currentKey = { name: selectedRef.name, version: selectedRef.version };
     const prev = lastSelectedRefForHueRef.current;
     if (prev && prev.name === currentKey.name && prev.version === currentKey.version) return;
     lastSelectedRefForHueRef.current = currentKey;
-    const tokenRef = theme.themeBackgroundTokenRef ?? null;
-    const mappings = loadedTemplate.mappings ?? [];
     const resolved = resolveColorForThemeTokenKey(
-      tokenRef,
-      mappings,
-      theme.colorAssignments,
-      theme.contrastAssignments,
-      loadedTemplate.contrastVariables,
+      themeBackgroundTokenRef,
+      loadedTemplateMappings,
+      themeColorAssignments,
+      themeContrastAssignments,
+      loadedTemplateContrastVariables,
       'dark',
       '#1e1e1e',
     );
     const normalized = resolved.startsWith('#') ? resolved : `#${resolved}`;
     void dispatch({ type: ThemePaletteCardActionType.HueReferenceCommit, value: normalized });
-  }, [theme, loadedTemplate, selectedRef, dispatch]);
+  }, [
+    hasTheme,
+    loadedTemplate,
+    selectedRef,
+    themeTemplateRef,
+    themeBackgroundTokenRef,
+    themeColorAssignments,
+    themeContrastAssignments,
+    loadedTemplateMappings,
+    loadedTemplateContrastVariables,
+    dispatch,
+  ]);
 
-  const colorVariablesFromTemplate = useMemo(
-    () => loadedTemplate?.colorVariables ?? [],
-    [loadedTemplate],
-  );
-
-  const groupsFromTemplate = useMemo(() => loadedTemplate?.groups ?? [], [loadedTemplate]);
-
-  const clusterCountK = previewClusterCountK ?? theme?.paletteClusterCountK ?? 5;
+  const clusterCountK = previewClusterCountK ?? themePaletteClusterCountK;
 
   useEffect(() => {
-    if (!theme?.templateRef) return;
+    if (!themeTemplateRef) return;
     void dispatch({ type: ThemePaletteCardActionType.RecomputeClusters });
   }, [
-    theme?.colorAssignments,
-    theme?.applyPaletteToDark,
-    theme?.applyPaletteToLight,
+    themeColorAssignments,
+    applyPaletteToDark,
+    applyPaletteToLight,
     checkedColorRefsArray,
     colorVariablesFromTemplate,
     clusterCountK,
     paletteClusterByDark,
-    theme?.templateRef,
+    themeTemplateRef,
     dispatch,
   ]);
 
@@ -166,9 +231,10 @@ export function useThemePaletteCardViewModel() {
   );
 
   const startHueDrag = useCallback(() => {
-    if (!theme) return;
-    hueDragStartRef.current = { theme: { ...theme }, hueAdjustment };
-  }, [theme, hueAdjustment]);
+    const currentTheme = themeUiStore.getStore().state.theme;
+    if (!currentTheme) return;
+    hueDragStartRef.current = { theme: { ...currentTheme }, hueAdjustment };
+  }, [hueAdjustment]);
 
   const endHueDrag = useCallback(
     (value: number) => {
@@ -195,25 +261,26 @@ export function useThemePaletteCardViewModel() {
 
   const setColorRefsChecked = useCallback(
     (refs: string[], checked: boolean) => {
-      if (!theme || refs.length === 0) return;
+      if (!themeUiStore.getStore().state.theme || refs.length === 0) return;
       void dispatch({
         type: ThemePaletteCardActionType.ColorRefsSelectionCommit,
         refs,
         checked,
       });
     },
-    [theme, dispatch],
+    [dispatch],
   );
 
   const openColorPicker = useCallback((): ThemePaneState => {
+    const currentTheme = themeUiStore.getStore().state.theme;
     return buildThemePaneSnapshot(
-      theme,
+      currentTheme,
       checkedColorRefsArray,
       checkedContrastRefsArray,
       hueAdjustment,
       hueReferenceHex,
     );
-  }, [theme, checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex]);
+  }, [checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex]);
 
   const setSelectedColorsPreview = useCallback(
     (hex: string) => {
@@ -265,8 +332,8 @@ export function useThemePaletteCardViewModel() {
     onRecenter: recenterHue,
     onHueDragStart: startHueDrag,
     onHueDragEnd: endHueDrag,
-    applyToDark: applyHueToDark,
-    applyToLight: applyHueToLight,
+    applyToDark: applyPaletteToDark,
+    applyToLight: applyPaletteToLight,
     onApplyToDarkChange: setApplyHueToDark,
     onApplyToLightChange: setApplyHueToLight,
     clusterCountK,
@@ -290,4 +357,3 @@ export function useThemePaletteCardViewModel() {
     onAssignEyedropperClick,
   };
 }
-

@@ -2,8 +2,9 @@ import { useMemo } from 'react';
 import { BackgroundQueueUiStore } from '../../../domain/state/ui/background-queue-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { ActionQueueUiStore } from '../../../domain/state/ui/action-queue-ui-store';
-import { QueueMap } from '../../../domain/state/ui/background-queue-ui-state';
+import type { QueueMap } from '../../../domain/state/ui/background-queue-ui-state';
 
 /**
  * Resolved action queue UI store for foreground queue status.
@@ -28,13 +29,15 @@ export interface StatusBarViewModel {
  * @returns Progress visibility, summary text, and running action descriptions.
  */
 export function useStatusBarViewModel(): StatusBarViewModel {
-  const actionQueueStatus = useStore(actionQueueStore.api, (state) => state.state);
-  const {
-    queueLength: actionQueueLength,
-    currentActionDescription,
-  } = actionQueueStatus;
-
-  const backgroundQueues: QueueMap = useStore(backgroundQueueStore.api, (state) => state.state.queues);
+  const actionQueueLength = useStore(actionQueueStore.api, (state) => state.state.queueLength);
+  const currentActionDescription = useStore(
+    actionQueueStore.api,
+    (state) => state.state.currentActionDescription,
+  );
+  const backgroundQueues: QueueMap = useStore(
+    backgroundQueueStore.api,
+    useShallow((state) => state.state.queues),
+  );
 
   const { actionText, runningActionDescriptions } = useMemo(
     () => {

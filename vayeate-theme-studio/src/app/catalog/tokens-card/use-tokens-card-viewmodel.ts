@@ -6,12 +6,15 @@ import type { Catalog, Token } from '../../../model/schema/catalog';
 import { tokenKeySchema, tokenTypeSchema, type SemanticTokenRegistryListKind, type TokenKey, type TokenType } from '../../../model/schema/primitives';
 import { TokensCardActionType } from './actions/tokens-card-action-type';
 import { container } from 'tsyringe';
-import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogsStore, getCurrentCatalog } from '../../../domain/catalog/state/catalogs-store';
 import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const catalogUiStore = container.resolve(CatalogUiStore);
+
+const EMPTY_VERSION_KEYS: readonly string[] = [];
 
 /**
  * Token types shown as collapsible sections in `TokensCard` (excludes semantic token list).
@@ -81,27 +84,31 @@ export interface TokensCardViewModel {
 export function useTokensCardViewModel(): TokensCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);
+  const selectedName = selectedRef?.name ?? null;
+  const selectedVersion = selectedRef?.version ?? null;
   const tokensSearchText = useStore(catalogUiStore.api, (state) => state.state.tokensSearchText);
   const newTokenKey = useStore(catalogUiStore.api, (state) => state.state.newTokenKey);
   const newSemanticTokenSelectorText = useStore(catalogUiStore.api, (state) => state.state.newSemanticTokenSelectorText);
-  const catalogMap = useStore(catalogsStore.api, (state) => state.state.catalogs);
-  const catalogRefs = useMemo(() => getCurrentCatalogRefs(catalogMap), [catalogMap]);
-  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
-
-  const catalog: Catalog | null = useMemo(() => {
-    return getCurrentCatalog(catalogMap, selectedRef);
-  }, [catalogMap, selectedRef]);
+  const catalog = useStore(
+    catalogsStore.api,
+    (state) => getCurrentCatalog(state.state.catalogs, selectedRef),
+  );
+  const versionKeysForSelectedName = useStore(
+    catalogsStore.api,
+    useShallow((state) => {
+      if (!selectedName) return EMPTY_VERSION_KEYS;
+      return Object.keys(state.state.catalogs[selectedName] ?? {}).sort();
+    }),
+  );
 
   const isLatestVersion = useMemo(() => {
-    if (!selectedRef || !selectedName) return false;
-    const best = catalogRefs
-      .filter((r) => r.name === selectedName)
-      .reduce(
-        (acc, r) => (!acc || compareVersions(r.version, acc.version) > 0 ? r : acc),
-        null as (typeof catalogRefs)[number] | null,
-      );
-    return best !== null && best.version === selectedRef.version;
-  }, [catalogRefs, selectedRef, selectedName]);
+    if (!selectedRef || !selectedName || !selectedVersion) return false;
+    const bestVersion = versionKeysForSelectedName.reduce(
+      (acc, version) => (!acc || compareVersions(version, acc) > 0 ? version : acc),
+      null as string | null,
+    );
+    return bestVersion !== null && bestVersion === selectedVersion;
+  }, [versionKeysForSelectedName, selectedRef, selectedName, selectedVersion]);
 
   const tokensByType = useMemo(() => {
     const groups: Record<TokenType, Token[]> = { theme: [], 'textmate token': [], 'semantic token': [] };

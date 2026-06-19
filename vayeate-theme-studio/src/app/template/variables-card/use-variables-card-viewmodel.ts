@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import {
@@ -10,7 +11,7 @@ import {
 } from '../../../model/schema/primitives';
 import { VariablesCardActionType } from './actions/variables-card-action-type';
 import { container } from 'tsyringe';
-import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { ColorVariable, ContrastVariable, Template } from '../../../model/schema/template-schemas';
 
@@ -20,6 +21,7 @@ const templateUiStore = container.resolve(TemplateUiStore);
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
 const EMPTY_GROUPS: readonly string[] = [];
+const EMPTY_VERSION_KEYS: readonly string[] = [];
 const UNGROUPED_KEY = '__ungrouped__';
 const EMPTY_GROUP_SECTIONS: readonly VariableGroupSection<never>[] = [];
 
@@ -118,8 +120,19 @@ function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean 
 export function useVariablesCardViewModel(): VariablesCardViewModel {
   const dispatch = useAppDispatch();
   const selectedRef = useStore(templateUiStore.api, (state) => state.state.selectedRef);
-  const templateMap = useStore(templatesStore.api, (state) => state.state.templates);
-  const template = useMemo(() => getCurrentTemplate(templateMap, selectedRef), [templateMap, selectedRef]);
+  const selectedName = selectedRef?.name ?? null;
+  const selectedVersion = selectedRef?.version ?? null;
+  const template = useStore(
+    templatesStore.api,
+    (state) => getCurrentTemplate(state.state.templates, selectedRef),
+  );
+  const versionKeysForSelectedName = useStore(
+    templatesStore.api,
+    useShallow((state) => {
+      if (!selectedName) return EMPTY_VERSION_KEYS;
+      return Object.keys(state.state.templates[selectedName] ?? {}).sort();
+    }),
+  );
   const variablesSearchText = useStore(templateUiStore.api, (state) => state.state.variablesSearchText);
   const addVariableName = useStore(templateUiStore.api, (state) => state.state.addVariableName);
 
@@ -169,19 +182,14 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     [template, filteredContrastVariables],
   );
 
-  const templateRefs = useMemo(() => getCurrentTemplateRefs(templateMap), [templateMap]);
-  const selectedName = useMemo(() => selectedRef?.name ?? null, [selectedRef]);
-
   const isLatestVersion = useMemo(() => {
-    if (!selectedRef || !selectedName) return false;
-    const best = templateRefs
-      .filter((r) => r.name === selectedName)
-      .reduce(
-        (acc, r) => (!acc || compareVersions(r.version, acc.version) > 0 ? r : acc),
-        null as (typeof templateRefs)[number] | null,
-      );
-    return best !== null && best.version === selectedRef.version;
-  }, [templateRefs, selectedRef, selectedName]);
+    if (!selectedRef || !selectedName || !selectedVersion) return false;
+    const bestVersion = versionKeysForSelectedName.reduce(
+      (acc, version) => (!acc || compareVersions(version, acc) > 0 ? version : acc),
+      null as string | null,
+    );
+    return bestVersion !== null && bestVersion === selectedVersion;
+  }, [versionKeysForSelectedName, selectedRef, selectedName, selectedVersion]);
 
   const canEdit = useMemo(() => template !== null && isLatestVersion, [template, isLatestVersion]);
   const canAddColorVariable = useMemo(
