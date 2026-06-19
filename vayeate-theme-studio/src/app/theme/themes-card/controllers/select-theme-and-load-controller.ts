@@ -44,7 +44,10 @@ export class SelectThemeAndLoadController {
     .then('Loading theme', async () => {
       const theme = this.themeUiStore.getStore().state.theme;
       if (!theme) return;
-      this.setThemePaneSelections.execute([], []);
+      this.setThemePaneSelections.execute(
+        theme.colorAssignments.map((assignment) => assignment.colorRef),
+        theme.contrastAssignments.map((assignment) => assignment.contrastVariableRef),
+      );
       if (theme) this.applyThemeState.execute(theme);
       await this.setCurrentUndoStackId?.executeAndLoadForContext(deriveUndoContext({
         tabId: 'themes',

@@ -38,7 +38,10 @@ export class SelectThemeByNameController {
       .then('Loading theme', async () => {
         const theme = this.themeUiStore.getStore().state.theme;
         if (!theme) return;
-        this.setThemePaneSelections.execute([], []);
+        this.setThemePaneSelections.execute(
+          theme.colorAssignments.map((assignment) => assignment.colorRef),
+          theme.contrastAssignments.map((assignment) => assignment.contrastVariableRef),
+        );
         const template =
           theme?.templateRef != null
             ? await this.loadTemplateSnapshot.execute(theme.templateRef.name, theme.templateRef.version)

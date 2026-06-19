@@ -49,6 +49,7 @@ import { DeleteThemeVersionController } from './theme-details-card/controllers/d
 import { CreateThemeController } from './create-theme-dialog/controllers/create-theme-controller';
 import { AssignColorFromPickerController } from './theme-palette-card/controllers/assign-color-from-picker-controller';
 import { SelectThemeAndLoadController } from './themes-card/controllers/select-theme-and-load-controller';
+import { SelectThemeByNameController } from './themes-card/controllers/select-theme-by-name-controller';
 import { deriveUndoContext, UNDO_BASELINE_FRAME_ID } from '../../model/undo-history';
 import { themeSchema } from '../../model/schema/theme-schemas';
 import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
@@ -825,6 +826,8 @@ describe('theme renderer workflows', () => {
             name: 'theme-b',
             version: '3.0.0',
             templateRef: { name: 'theme-template', version: '1.0.0' },
+            colorAssignments: [{ colorRef: 'editorFg' }, { colorRef: 'editorBg' }],
+            contrastAssignments: [{ contrastVariableRef: 'editorContrast' }],
           },
         },
       }),
@@ -834,11 +837,12 @@ describe('theme renderer workflows', () => {
     });
     const loadThemeWithLinkedTemplate = { execute: vi.fn(() => ({ then: loadThemeThen })) };
     const setCurrentUndoStackId = { executeAndLoadForContext: vi.fn() };
+    const setThemePaneSelections = { execute: vi.fn() };
     const controller = new SelectThemeAndLoadController(
       themeUiStore as never,
       { execute: vi.fn() } as never,
       loadThemeWithLinkedTemplate as never,
-      { execute: vi.fn() } as never,
+      setThemePaneSelections as never,
       { execute: vi.fn() } as never,
       { getStore: () => ({ state: { selectedRef: { name: 'catalog-a', version: '2.0.0' } } }) } as never,
       { getStore: () => ({ state: { selectedRef: { name: 'template-a', version: '1.0.0' } } }) } as never,
@@ -853,6 +857,42 @@ describe('theme renderer workflows', () => {
     expect(setCurrentUndoStackId.executeAndLoadForContext).toHaveBeenNthCalledWith(2, expect.objectContaining({
       contextKey: 'tab=themes|template=theme-template@1.0.0|catalog=catalog-a@2.0.0|theme=theme-a@3.0.0',
     }));
+    expect(setThemePaneSelections.execute).toHaveBeenCalledWith(
+      ['editorFg', 'editorBg'],
+      ['editorContrast'],
+    );
+  });
+
+  it('selects all variables when a theme is selected by name', async () => {
+    const theme = {
+      name: 'theme-a',
+      version: '1.0.0',
+      templateRef: null,
+      colorAssignments: [{ colorRef: 'editorFg' }, { colorRef: 'editorBg' }],
+      contrastAssignments: [{ contrastVariableRef: 'editorContrast' }],
+    };
+    const themeUiStore = { getStore: () => ({ state: { theme } }) };
+    const loadThemeThen = vi.fn(async (_label: string, onLoaded: () => Promise<void>) => {
+      await onLoaded();
+    });
+    const setThemePaneSelections = { execute: vi.fn() };
+    const controller = new SelectThemeByNameController(
+      themeUiStore as never,
+      { execute: vi.fn(() => [{ name: 'theme-a', version: '1.0.0' }]) } as never,
+      { execute: vi.fn() } as never,
+      { execute: vi.fn(() => ({ then: loadThemeThen })) } as never,
+      setThemePaneSelections as never,
+      { execute: vi.fn() } as never,
+      { execute: vi.fn() } as never,
+      { execute: vi.fn() } as never,
+    );
+
+    await controller.run('theme-a');
+
+    expect(setThemePaneSelections.execute).toHaveBeenCalledWith(
+      ['editorFg', 'editorBg'],
+      ['editorContrast'],
+    );
   });
 
   it('records palette color assignments and skips rejected palette commits', async () => {
