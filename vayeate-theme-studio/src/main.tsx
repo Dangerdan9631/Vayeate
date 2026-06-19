@@ -7,7 +7,7 @@ import { BootstrapAppController } from './app/core/bootstrap/bootstrap-app-contr
 import { BackgroundQueue } from './app/core/background-queue/background-queue';
 import { DataIoBackgroundQueue } from './app/core/background-queue/data-io-background-queue';
 import { MainBackgroundQueue } from './app/core/background-queue/main-background-queue';
-import { WorkerBackgroundQueue } from './app/core/background-queue/worker-background-queue';
+import { DeferredBackgroundQueue } from './app/core/background-queue/deferred-background-queue';
 import { WindowService } from './gateway/services/window-service';
 import { UndoGateway } from './gateway/undo/undo-gateway';
 import { WindowCallbacksPort } from './domain/operations/app-operations/window-callbacks-port';
@@ -19,7 +19,7 @@ export function registerRendererQueues(registry: DependencyContainer): void {
   registry.register(WindowCallbacksPort, { useClass: WindowService });
   registry.register(UndoPersistencePort, { useClass: UndoGateway });
   registry.register(MainBackgroundQueue, { useClass: MainBackgroundQueue });
-  registry.register(WorkerBackgroundQueue, { useClass: WorkerBackgroundQueue });
+  registry.register(DeferredBackgroundQueue, { useClass: DeferredBackgroundQueue });
   registry.register(DataIoBackgroundQueue, { useClass: DataIoBackgroundQueue });
 }
 

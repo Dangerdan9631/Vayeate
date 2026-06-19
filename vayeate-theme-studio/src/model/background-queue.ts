@@ -1,7 +1,7 @@
 /**
  * Identifies which background queue handles a unit of async work.
  */
-export type BackgroundQueueKey = 'main' | 'worker' | 'data_io';
+export type BackgroundQueueKey = 'main' | 'deferred' | 'data_io';
 
 /**
  * Read or write access mode used to order `data_io` tasks per file key.

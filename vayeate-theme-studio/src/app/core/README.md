@@ -5,7 +5,7 @@ The `core` folder holds shared app-layer plumbing that serializes UI-originated 
 ## Purpose
 
 - **Action queue** — FIFO processing of typed `AppAction` signals from the renderer, with optional coalescing for high-frequency interactions.
-- **Background queue** — Off-main-thread and deferred work (`main`, `worker`, `data_io`) with status observability and continuation chaining.
+- **Background queue** — Deferred main-thread work (`main`, `deferred`, `data_io`) with status observability and continuation chaining. The `deferred` queue is **not** a Web Worker; CPU-bound work must use real workers under `src/gateway/services/*-worker.ts`.
 - **Bootstrap** — One-time app initialization invoked before the action pipeline is ready.
 - **Undo controllers** — Shared entry points for undo, redo, and history navigation that close menus after a transition.
 
@@ -30,7 +30,7 @@ Domain operations enqueue background work through `BackgroundQueuePort`. The fac
 | Queue key | Implementation | Concurrency |
 |-----------|----------------|-------------|
 | `main` | `MainBackgroundQueue` (serial) | One job at a time |
-| `worker` | `WorkerBackgroundQueue` (pooled) | Up to 16 parallel workers |
+| `deferred` | `DeferredBackgroundQueue` (pooled) | Up to 16 parallel deferred jobs on the renderer thread |
 | `data_io` | `DataIoBackgroundQueue` (keyed) | Serial per key; reads pooled globally; writes exclusive per key |
 
 Keyed `data_io` enqueues require `options.key` and `options.access` (`read` or `write`). Reads for the same key may run in parallel up to the read semaphore limit; writes for a key are strictly serial.

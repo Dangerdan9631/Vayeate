@@ -14,14 +14,14 @@ export interface QueueMap {
 }
 
 /**
- * Observable status for all background worker queues shown in the shell.
+ * Observable status for all background queues shown in the shell.
  */
 export interface BackgroundQueueUiState {
     queues: QueueMap;
 }
 
 /**
- * Default background queue observability state for main, worker, and data I/O queues.
+ * Default background queue observability state for main, deferred, and data I/O queues.
  */
 export const initialBackgroundQueueUiState: BackgroundQueueUiState = {
     queues: {
@@ -29,7 +29,7 @@ export const initialBackgroundQueueUiState: BackgroundQueueUiState = {
             queueLength: 0,
             queueDescriptions: []
         },
-        worker: {
+        deferred: {
             queueLength: 0,
             queueDescriptions: []
         },

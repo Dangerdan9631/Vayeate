@@ -2,6 +2,7 @@ import { singleton } from 'tsyringe';
 import { ScreenshotService } from '../../../gateway/services/screenshot-service';
 import type { EyedropperDisplaySnapshotEntry } from '../../../model/eyedropper';
 import { EyedropperUiStore } from '../../state/ui/eyedropper-ui-store';
+import { yieldToEventLoop } from '../../core/scheduler';
 import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
 
 /**
@@ -23,7 +24,7 @@ export class LoadEyedropperSnapshotOperation {
 
   execute(): void {
     this.enqueueBackgroundQueue.execute(
-      'worker',
+      'deferred',
       'Capturing desktop snapshot for eyedropper',
       async () => {
         try {
@@ -32,6 +33,10 @@ export class LoadEyedropperSnapshotOperation {
           const fullBounds = raw.fullBounds;
           const displays: EyedropperDisplaySnapshotEntry[] = [];
           for (const d of raw.displays) {
+            if (displays.length > 0) {
+              await yieldToEventLoop();
+            }
+
             const bytes = new Uint8Array(d.png);
             if (bytes.byteLength === 0) continue;
 

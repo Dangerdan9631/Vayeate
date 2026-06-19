@@ -27,7 +27,7 @@
  * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../AGENTS.md#layer-electron.mdc) — no domain in main |
  * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../AGENTS.md#viewmodel.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) |
  * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § Actions (payloads) |
- * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (plan C1) |
+ * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (distinct from `deferred` background queue) |
  */
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -492,7 +492,7 @@ describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
 });
 
 /**
- * @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (plan C1).
+ * @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (distinct from `deferred` background queue).
  */
 describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {

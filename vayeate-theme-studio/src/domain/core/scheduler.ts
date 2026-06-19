@@ -1,4 +1,10 @@
 /**
+ * Default interval for cooperative yielding in long deferred-queue CPU loops.
+ * Keeps synchronous stretches under one frame budget when used with {@link yieldEvery}.
+ */
+export const DEFERRED_WORK_YIELD_INTERVAL = 20;
+
+/**
  * Resolves on the next macrotask so the event loop (and paint) can run.
  * Uses MessageChannel rather than requestAnimationFrame so yielding continues
  * when the window is hidden or minimized.

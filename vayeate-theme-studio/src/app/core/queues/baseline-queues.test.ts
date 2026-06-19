@@ -51,21 +51,21 @@ describe('queue baselines', () => {
 
   it('routes background work to the selected queue type', () => {
     const mainQueue = { enqueue: vi.fn() };
-    const workerQueue = { enqueue: vi.fn() };
+    const deferredQueue = { enqueue: vi.fn() };
     const dataIoQueue = { enqueue: vi.fn() };
 
     const queue = new BackgroundQueue(
       mainQueue as never,
-      workerQueue as never,
+      deferredQueue as never,
       dataIoQueue as never,
       createLoggerFactory(),
     );
 
-    queue.enqueue('worker', 'tokenize', () => {});
+    queue.enqueue('deferred', 'tokenize', () => {});
     queue.enqueue('data_io', 'persist', () => {});
     queue.enqueue('main', 'hydrate', () => {});
 
-    expect(workerQueue.enqueue).toHaveBeenCalledWith('tokenize', expect.any(Function), undefined);
+    expect(deferredQueue.enqueue).toHaveBeenCalledWith('tokenize', expect.any(Function), undefined);
     expect(dataIoQueue.enqueue).toHaveBeenCalledWith('persist', expect.any(Function), undefined);
     expect(mainQueue.enqueue).toHaveBeenCalledWith('hydrate', expect.any(Function), undefined);
   });
@@ -106,7 +106,7 @@ describe('pooled queue', () => {
   function createPooledQueue(concurrencyLimit = 2) {
     const signalComplete = { run: vi.fn() };
     const queue = new PooledQueue(
-      'worker',
+      'deferred',
       concurrencyLimit,
       { run: vi.fn() } as never,
       { run: vi.fn() } as never,

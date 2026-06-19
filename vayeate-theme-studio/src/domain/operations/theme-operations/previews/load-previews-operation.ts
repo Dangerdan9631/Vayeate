@@ -23,7 +23,7 @@ export class LoadPreviewsOperation {
 
   execute(): ContinuationHandler {
     return this.enqueueBackgroundAction.execute(
-      'worker',
+      'deferred',
       'Loading previews',
       async () => {
         try {

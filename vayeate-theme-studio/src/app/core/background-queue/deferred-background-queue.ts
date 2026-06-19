@@ -6,15 +6,16 @@ import { UpdateBackgroundQueueStatusController } from './controllers/update-back
 import { PooledQueue } from './pooled-queue';
 
 /**
- * Maximum number of concurrent jobs on the `worker` background queue.
+ * Maximum number of concurrent jobs on the `deferred` background queue.
  */
-export const DEFAULT_BACKGROUND_WORKER_CONCURRENCY_LIMIT = 16;
+export const DEFAULT_BACKGROUND_DEFERRED_CONCURRENCY_LIMIT = 16;
 
 /**
- * Pooled `worker` background queue for CPU-bound or off-main-thread work.
+ * Pooled `deferred` background queue for main-thread work scheduled off the action queue.
+ * This is not a Web Worker — jobs still run on the renderer thread.
  */
 @singleton()
-export class WorkerBackgroundQueue extends PooledQueue {
+export class DeferredBackgroundQueue extends PooledQueue {
   constructor(
     enqueueBackgroundQueue: EnqueueBackgroundQueueActionOperation,
     updateBackgroundQueueStatus: UpdateBackgroundQueueStatusController,
@@ -22,8 +23,8 @@ export class WorkerBackgroundQueue extends PooledQueue {
     loggerFactory: LoggerFactory,
   ) {
     super(
-      'worker',
-      DEFAULT_BACKGROUND_WORKER_CONCURRENCY_LIMIT,
+      'deferred',
+      DEFAULT_BACKGROUND_DEFERRED_CONCURRENCY_LIMIT,
       enqueueBackgroundQueue,
       updateBackgroundQueueStatus,
       signalBackgroundQueueProcessingComplete,

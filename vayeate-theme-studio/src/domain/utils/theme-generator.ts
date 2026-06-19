@@ -4,6 +4,7 @@
  */
 
 import { adjustColorToMeetContrast } from './color-adjust-contrast';
+import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery, yieldToEventLoop } from '../core/scheduler';
 import type { Mapping, Template } from '../../model/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
 
@@ -130,42 +131,95 @@ function themeDisplayName(themeName: string, mode: Mode): string {
  * @returns Complete {@link GeneratedTheme} ready for export serialization.
  */
 export function generateTheme(theme: Theme, template: Template, mode: Mode): GeneratedTheme {
+  return buildGeneratedTheme(theme, template, mode);
+}
+
+/**
+ * Generates one VS Code theme JSON object with cooperative yielding between mapping batches.
+ *
+ * @param theme - Theme with color and contrast assignments.
+ * @param template - Template with mappings and variable definitions.
+ * @param mode - `dark` or `light` theme type to build.
+ * @param yieldGate - Optional yield gate invoked once per mapping iteration.
+ * @returns Complete {@link GeneratedTheme} ready for export serialization.
+ */
+export async function generateThemeAsync(
+  theme: Theme,
+  template: Template,
+  mode: Mode,
+  yieldGate: () => Promise<void> = yieldEvery(DEFERRED_WORK_YIELD_INTERVAL),
+): Promise<GeneratedTheme> {
   const colors: Record<string, string> = {};
   const tokenGroupsByColorRef = new Map<string, { scopes: string[]; color: string | null }>();
   const semanticTokenColors: Record<string, string | SemanticTokenValue> = {};
 
   for (const m of template.mappings) {
-    const resolved = resolveColor(theme, template, m, mode);
-    const key = m.token.key;
-    const tokenType = m.token.type;
-
-    if (tokenType === 'theme') {
-      if (resolved) colors[key] = resolved;
-      continue;
-    }
-
-    if (tokenType === 'textmate token') {
-      const colorRef = m.colorVariableRef;
-      if (!colorRef) continue;
-      const existing = tokenGroupsByColorRef.get(colorRef);
-      if (existing) {
-        existing.scopes.push(key);
-        if (resolved && existing.color === null) existing.color = resolved;
-      } else {
-        tokenGroupsByColorRef.set(colorRef, { scopes: [key], color: resolved ?? null });
-      }
-      continue;
-    }
-
-    if (tokenType === 'semantic token') {
-      if (key === '*.deprecated') {
-        semanticTokenColors[key] = { strikethrough: true };
-        continue;
-      }
-      if (resolved) semanticTokenColors[key] = resolved;
-    }
+    await yieldGate();
+    applyMappingToGeneratedTheme(theme, template, m, mode, colors, tokenGroupsByColorRef, semanticTokenColors);
   }
 
+  return finalizeGeneratedTheme(theme.name, mode, colors, tokenGroupsByColorRef, semanticTokenColors);
+}
+
+function buildGeneratedTheme(theme: Theme, template: Template, mode: Mode): GeneratedTheme {
+  const colors: Record<string, string> = {};
+  const tokenGroupsByColorRef = new Map<string, { scopes: string[]; color: string | null }>();
+  const semanticTokenColors: Record<string, string | SemanticTokenValue> = {};
+
+  for (const m of template.mappings) {
+    applyMappingToGeneratedTheme(theme, template, m, mode, colors, tokenGroupsByColorRef, semanticTokenColors);
+  }
+
+  return finalizeGeneratedTheme(theme.name, mode, colors, tokenGroupsByColorRef, semanticTokenColors);
+}
+
+function applyMappingToGeneratedTheme(
+  theme: Theme,
+  template: Template,
+  mapping: Mapping,
+  mode: Mode,
+  colors: Record<string, string>,
+  tokenGroupsByColorRef: Map<string, { scopes: string[]; color: string | null }>,
+  semanticTokenColors: Record<string, string | SemanticTokenValue>,
+): void {
+  const resolved = resolveColor(theme, template, mapping, mode);
+  const key = mapping.token.key;
+  const tokenType = mapping.token.type;
+
+  if (tokenType === 'theme') {
+    if (resolved) colors[key] = resolved;
+    return;
+  }
+
+  if (tokenType === 'textmate token') {
+    const colorRef = mapping.colorVariableRef;
+    if (!colorRef) return;
+    const existing = tokenGroupsByColorRef.get(colorRef);
+    if (existing) {
+      existing.scopes.push(key);
+      if (resolved && existing.color === null) existing.color = resolved;
+    } else {
+      tokenGroupsByColorRef.set(colorRef, { scopes: [key], color: resolved ?? null });
+    }
+    return;
+  }
+
+  if (tokenType === 'semantic token') {
+    if (key === '*.deprecated') {
+      semanticTokenColors[key] = { strikethrough: true };
+      return;
+    }
+    if (resolved) semanticTokenColors[key] = resolved;
+  }
+}
+
+function finalizeGeneratedTheme(
+  themeName: string,
+  mode: Mode,
+  colors: Record<string, string>,
+  tokenGroupsByColorRef: Map<string, { scopes: string[]; color: string | null }>,
+  semanticTokenColors: Record<string, string | SemanticTokenValue>,
+): GeneratedTheme {
   const tokenColors: TokenColorRule[] = [];
   for (const [colorRef, { scopes, color }] of tokenGroupsByColorRef) {
     if (color && scopes.length > 0) {
@@ -178,7 +232,7 @@ export function generateTheme(theme: Theme, template: Template, mode: Mode): Gen
   }
 
   return {
-    name: themeDisplayName(theme.name, mode),
+    name: themeDisplayName(themeName, mode),
     type: mode,
     semanticHighlighting: true,
     colors,
@@ -202,4 +256,23 @@ export function generateThemePair(
     dark: generateTheme(theme, template, 'dark'),
     light: generateTheme(theme, template, 'light'),
   };
+}
+
+/**
+ * Generates paired dark and light themes with cooperative yielding between mapping batches.
+ *
+ * @param theme - Theme with color and contrast assignments.
+ * @param template - Template with mappings and variable definitions.
+ * @param yieldGate - Optional yield gate invoked once per mapping iteration.
+ * @returns Object with `dark` and `light` {@link GeneratedTheme} instances.
+ */
+export async function generateThemePairAsync(
+  theme: Theme,
+  template: Template,
+  yieldGate: () => Promise<void> = yieldEvery(DEFERRED_WORK_YIELD_INTERVAL),
+): Promise<{ dark: GeneratedTheme; light: GeneratedTheme }> {
+  const dark = await generateThemeAsync(theme, template, 'dark', yieldGate);
+  await yieldToEventLoop();
+  const light = await generateThemeAsync(theme, template, 'light', yieldGate);
+  return { dark, light };
 }

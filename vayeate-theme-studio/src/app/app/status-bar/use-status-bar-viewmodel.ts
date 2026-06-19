@@ -10,7 +10,7 @@ import { QueueMap } from '../../../domain/state/ui/background-queue-ui-state';
  */
 const actionQueueStore = container.resolve(ActionQueueUiStore);
 /**
- * Resolved background queue UI store for worker queue status.
+ * Resolved background queue UI store for deferred queue status.
  */
 const backgroundQueueStore = container.resolve(BackgroundQueueUiStore);
 

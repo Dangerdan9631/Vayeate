@@ -7,11 +7,11 @@ import type {
 } from '../../../model/background-queue';
 import { DataIoBackgroundQueue } from './data-io-background-queue';
 import { MainBackgroundQueue } from './main-background-queue';
-import { WorkerBackgroundQueue } from './worker-background-queue';
+import { DeferredBackgroundQueue } from './deferred-background-queue';
 import { Logger, LoggerFactory } from '../../../domain/utils/logger';
 
 /**
- * Facade that routes background work to the `main`, `worker`, or `data_io` queue implementation.
+ * Facade that routes background work to the `main`, `deferred`, or `data_io` queue implementation.
  */
 @singleton()
 export class BackgroundQueue extends BackgroundQueuePort {
@@ -20,8 +20,8 @@ export class BackgroundQueue extends BackgroundQueuePort {
   constructor(
     @inject(delay(() => MainBackgroundQueue))
     private readonly mainQueue: MainBackgroundQueue,
-    @inject(delay(() => WorkerBackgroundQueue))
-    private readonly workerQueue: WorkerBackgroundQueue,
+    @inject(delay(() => DeferredBackgroundQueue))
+    private readonly deferredQueue: DeferredBackgroundQueue,
     @inject(delay(() => DataIoBackgroundQueue))
     private readonly dataIoQueue: DataIoBackgroundQueue,
     loggerFactory: LoggerFactory,
@@ -39,8 +39,8 @@ export class BackgroundQueue extends BackgroundQueuePort {
     switch (queue) {
       case 'main':
         return this.mainQueue.enqueue(description, run, options);
-      case 'worker':
-        return this.workerQueue.enqueue(description, run, options);
+      case 'deferred':
+        return this.deferredQueue.enqueue(description, run, options);
       case 'data_io':
         return this.dataIoQueue.enqueue(description, run, options);
       default: {

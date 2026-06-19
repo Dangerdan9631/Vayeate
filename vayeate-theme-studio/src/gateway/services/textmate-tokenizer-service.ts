@@ -3,7 +3,7 @@ import { createOnigScanner, createOnigString, loadWASM } from 'vscode-oniguruma'
 import { Registry } from 'vscode-textmate';
 import type { IRawGrammar } from 'vscode-textmate';
 import type { TokenizedLine, TokenizedToken } from '../../model/preview-types';
-
+import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery } from '../../domain/core/scheduler';
 /**
  * Oniguruma bindings passed to the TextMate registry after WASM load.
  */
@@ -80,8 +80,10 @@ export class TextmateTokenizerService {
     const lines = sourceCode.split(/\r?\n/);
     const result: TokenizedLine[] = [];
     let ruleStack = null;
+    const yieldGate = yieldEvery(DEFERRED_WORK_YIELD_INTERVAL);
 
     for (const lineText of lines) {
+      await yieldGate();
       const tokenizedLine = grammar.tokenizeLine(lineText, ruleStack);
       ruleStack = tokenizedLine.ruleStack;
       const tokens: TokenizedToken[] = tokenizedLine.tokens.map((token) => ({
