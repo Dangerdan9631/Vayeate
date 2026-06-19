@@ -86,13 +86,21 @@ export async function waitForUndoRecorded(undoStackStore: UndoStackStore): Promi
 export interface TestUniversalUndoProcessorDeps {
   applyCatalogUndoState: ApplyCatalogUndoStateOperation;
   applyCatalogLifecycleUndo?: ApplyCatalogLifecycleUndoOperation;
+  applyCatalogSourceUrlUndo?: { execute: (patch: unknown) => void };
   applyTemplateLifecycleUndo?: ApplyTemplateLifecycleUndoOperation;
   applyTemplateUndoState: ApplyTemplateUndoStateOperation;
   applyThemeLifecycleUndo?: ApplyThemeLifecycleUndoOperation;
   applyThemeUndoState: ApplyThemeUndoStateOperation;
-  commitAssignColorText?: { restore: (theme: never) => void };
+  restorePaletteAssignUndo?: { execute: (patch: unknown) => void };
   setColorVariableLight?: { execute: (ref: string | undefined, value: string) => unknown };
   setColorVariableDark?: { execute: (ref: string | undefined, value: string) => unknown };
+  setContrastVariableField?: { execute: (...args: unknown[]) => unknown };
+  setContrastUseDarkForLight?: { execute: (ref: string | undefined, checked: boolean) => unknown };
+  setColorUseDarkForLight?: { execute: (ref: string | undefined, checked: boolean) => unknown };
+  setApplyPaletteToLight?: { execute: (checked: boolean) => unknown };
+  setApplyPaletteToDark?: { execute: (checked: boolean) => unknown };
+  setPaletteClusterCount?: { execute: (value: number) => unknown };
+  setPreviewTokenRefField?: { execute: (field: string, value: string | null) => unknown };
   setHueAdjustment?: { execute: (value: number) => void };
   setHueReferenceHex?: { execute: (value: string) => void };
   setThemePaneSelections?: { execute: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void };
@@ -122,6 +130,7 @@ export function createTestBuildUniversalUndoProcessor(
       applyRevertedToVersion: () => undefined,
       revertRevertedToVersion: () => undefined,
     }) as never,
+    (deps.applyCatalogSourceUrlUndo ?? { execute: () => undefined }) as never,
     (deps.applyTemplateLifecycleUndo ?? {
       applyVersionDeleted: () => undefined,
       revertVersionDeleted: () => undefined,
@@ -138,9 +147,16 @@ export function createTestBuildUniversalUndoProcessor(
       revertCreated: () => undefined,
     }) as never,
     deps.applyThemeUndoState,
-    (deps.commitAssignColorText ?? { restore: () => undefined }) as never,
+    (deps.restorePaletteAssignUndo ?? { execute: () => undefined }) as never,
     (deps.setColorVariableLight ?? { execute: () => null }) as never,
     (deps.setColorVariableDark ?? { execute: () => null }) as never,
+    (deps.setContrastVariableField ?? { execute: () => null }) as never,
+    (deps.setContrastUseDarkForLight ?? { execute: () => null }) as never,
+    (deps.setColorUseDarkForLight ?? { execute: () => null }) as never,
+    (deps.setApplyPaletteToLight ?? { execute: () => null }) as never,
+    (deps.setApplyPaletteToDark ?? { execute: () => null }) as never,
+    (deps.setPaletteClusterCount ?? { execute: () => null }) as never,
+    (deps.setPreviewTokenRefField ?? { execute: () => null }) as never,
     (deps.setHueAdjustment ?? { execute: () => undefined }) as never,
     (deps.setHueReferenceHex ?? { execute: () => undefined }) as never,
     (deps.setThemePaneSelections ?? { execute: () => undefined }) as never,

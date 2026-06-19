@@ -5,7 +5,7 @@ import { undoManagerV2 } from '../../core/undo-manager-v2';
 import { undoEntrySchema, type UndoDiff } from '../../../model/undo-history';
 import { UndoStackStore } from '../../state/undo-stack/undo-stack-store';
 import { refreshUndoSummary } from './undo-operation-helpers';
-import { undoValuesEqual } from './undo-values-equal';
+import { undoDiffValuesEqual } from './undo-values-equal';
 
 /**
  * Input or state shape for record undo entry input.
@@ -81,7 +81,7 @@ export class RecordUndoEntryOperation {
             ...diff,
             after: next.diffs[index].after,
           }));
-          if (diffs.every((diff) => undoValuesEqual(diff.before, diff.after))) return null;
+          if (diffs.every((diff) => undoDiffValuesEqual(diff))) return null;
           return {
             ...existing,
             description: next.description,

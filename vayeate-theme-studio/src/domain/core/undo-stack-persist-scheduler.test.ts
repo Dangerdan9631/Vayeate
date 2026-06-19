@@ -18,6 +18,22 @@ function createAdapter() {
 }
 
 describe('undo stack persist scheduler', () => {
+  it('serializes payload inside the persist job instead of when scheduling', async () => {
+    const adapter = createAdapter();
+    const getPayload = vi.fn(() => 'payload-1');
+    const pendingRuns: Array<() => void | Promise<void>> = [];
+    const scheduler = createUndoStackPersistScheduler((_description, run) => {
+      pendingRuns.push(run);
+    });
+
+    scheduler.schedulePersist('stack-a', adapter, getPayload);
+    expect(getPayload).not.toHaveBeenCalled();
+
+    await pendingRuns[0]!();
+    expect(getPayload).toHaveBeenCalled();
+    expect(adapter.saved.get('stack-a')).toBe('payload-1');
+  });
+
   it('coalesces multiple schedulePersist calls before the job runs into one enqueue and latest payload', async () => {
     const adapter = createAdapter();
     const pendingRuns: Array<() => void | Promise<void>> = [];
@@ -25,9 +41,9 @@ describe('undo stack persist scheduler', () => {
       pendingRuns.push(run);
     });
 
-    scheduler.schedulePersist('stack-a', adapter, 'payload-1');
-    scheduler.schedulePersist('stack-a', adapter, 'payload-2');
-    scheduler.schedulePersist('stack-a', adapter, 'payload-3');
+    scheduler.schedulePersist('stack-a', adapter, () => 'payload-1');
+    scheduler.schedulePersist('stack-a', adapter, () => 'payload-2');
+    scheduler.schedulePersist('stack-a', adapter, () => 'payload-3');
 
     expect(pendingRuns).toHaveLength(1);
     expect(adapter.saveStack).not.toHaveBeenCalled();
@@ -55,9 +71,9 @@ describe('undo stack persist scheduler', () => {
       pendingRuns.push(run);
     });
 
-    scheduler.schedulePersist('stack-a', adapter, 'payload-1');
+    scheduler.schedulePersist('stack-a', adapter, () => 'payload-1');
     const jobPromise = pendingRuns[0]!();
-    scheduler.schedulePersist('stack-a', adapter, 'payload-2');
+    scheduler.schedulePersist('stack-a', adapter, () => 'payload-2');
 
     releaseSave();
     await jobPromise;
@@ -84,7 +100,7 @@ describe('undo stack persist scheduler', () => {
       pendingRuns.push(run);
     });
 
-    scheduler.schedulePersist('stack-a', adapter, 'payload-1');
+    scheduler.schedulePersist('stack-a', adapter, () => 'payload-1');
     const jobPromise = pendingRuns[0]!();
     const flushPromise = scheduler.flushPersist('stack-a');
 
@@ -131,8 +147,8 @@ describe('undo stack persist scheduler', () => {
       pendingRuns.push(run);
     });
 
-    scheduler.schedulePersist('stack-a', adapterA, 'payload-a');
-    scheduler.schedulePersist('stack-b', adapterB, 'payload-b');
+    scheduler.schedulePersist('stack-a', adapterA, () => 'payload-a');
+    scheduler.schedulePersist('stack-b', adapterB, () => 'payload-b');
     const jobs = pendingRuns.map((run) => run());
     const flushPromise = scheduler.flushAll();
 

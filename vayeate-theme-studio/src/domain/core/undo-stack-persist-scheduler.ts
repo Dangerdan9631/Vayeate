@@ -11,8 +11,10 @@ export type PersistEnqueueFn = (
   run: () => void | Promise<void>,
 ) => void;
 
+export type PersistPayloadProvider = () => string;
+
 interface PendingPersist {
-  payload: string;
+  getPayload: PersistPayloadProvider;
   cancelled: boolean;
   job: Promise<void>;
 }
@@ -21,7 +23,7 @@ interface PendingPersist {
  * Coalesces per-stack persist writes and exposes flush and cancel for release and shutdown.
  */
 export interface UndoStackPersistScheduler {
-  schedulePersist(stackId: string, adapter: UndoPersistenceAdapter, payload: string): void;
+  schedulePersist(stackId: string, adapter: UndoPersistenceAdapter, getPayload: PersistPayloadProvider): void;
   flushPersist(stackId: string): Promise<void>;
   flushAll(): Promise<void>;
   cancelAll(): void;
@@ -42,22 +44,23 @@ export function createUndoStackPersistScheduler(enqueue: PersistEnqueueFn): Undo
         return;
       }
 
-      const payloadToWrite = entry.payload;
+      const payloadToWrite = entry.getPayload();
       await adapter.saveStack(stackId, payloadToWrite);
 
       if (entry.cancelled) {
         return;
       }
-      if (entry.payload === payloadToWrite) {
+      const latestPayload = entry.getPayload();
+      if (latestPayload === payloadToWrite) {
         return;
       }
     }
   }
 
-  function ensurePending(stackId: string, payload: string, adapter: UndoPersistenceAdapter): void {
+  function ensurePending(stackId: string, getPayload: PersistPayloadProvider, adapter: UndoPersistenceAdapter): void {
     const existing = pendingByStackId.get(stackId);
     if (existing) {
-      existing.payload = payload;
+      existing.getPayload = getPayload;
       return;
     }
 
@@ -69,7 +72,7 @@ export function createUndoStackPersistScheduler(enqueue: PersistEnqueueFn): Undo
     });
 
     const entry: PendingPersist = {
-      payload,
+      getPayload,
       cancelled: false,
       job,
     };
@@ -89,8 +92,8 @@ export function createUndoStackPersistScheduler(enqueue: PersistEnqueueFn): Undo
   }
 
   return {
-    schedulePersist(stackId, adapter, payload) {
-      ensurePending(stackId, payload, adapter);
+    schedulePersist(stackId, adapter, getPayload) {
+      ensurePending(stackId, getPayload, adapter);
     },
 
     async flushPersist(stackId) {

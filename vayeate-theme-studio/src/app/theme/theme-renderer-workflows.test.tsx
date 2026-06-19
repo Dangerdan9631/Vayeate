@@ -15,10 +15,14 @@ import { SetAssignColorPreviewOperation } from '../../domain/operations/theme-op
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { ApplyThemeStateOperation } from '../../domain/operations/theme-operations/theme-details/apply-theme-state-operation';
 import { SetColorVariableDarkOperation } from '../../domain/operations/theme-operations/theme-details/set-color-variable-dark-operation';
+import { SetColorUseDarkForLightOperation } from '../../domain/operations/theme-operations/theme-details/set-color-use-dark-for-light-operation';
+import { SetContrastUseDarkForLightOperation } from '../../domain/operations/theme-operations/theme-details/set-contrast-use-dark-for-light-operation';
+import { SetContrastVariableFieldOperation } from '../../domain/operations/theme-operations/theme-details/set-contrast-variable-field-operation';
 import { SetThemeOperation } from '../../domain/operations/theme-operations/theme-details/set-theme-operation';
 import { SetThemePaneSelectionsOperation } from '../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
 import { ApplyThemeUndoStateOperation } from '../../domain/operations/undo-operations/apply-theme-undo-state-operation';
 import { ApplyThemeLifecycleUndoOperation } from '../../domain/operations/undo-operations/apply-theme-lifecycle-undo-operation';
+import { RestoreThemePaletteAssignUndoOperation } from '../../domain/operations/undo-operations/restore-theme-palette-assign-undo-operation';
 import { SetThemeHueAdjustmentOperation } from '../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import { RecordThemeUndoOperation } from '../../domain/operations/undo-operations/record-theme-undo-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
@@ -880,6 +884,12 @@ describe('theme renderer workflows', () => {
       debouncedThemePersist as never,
       themeGateway as never,
     );
+    const restorePaletteAssignUndo = new RestoreThemePaletteAssignUndoOperation(
+      themeUiStore,
+      themesStore,
+      debouncedThemePersist as never,
+      themeGateway as never,
+    );
     const testUndo = createTestUndoOperations(
       undoStackStore,
       createTestBuildUniversalUndoProcessor({
@@ -894,7 +904,7 @@ describe('theme renderer workflows', () => {
             themeUiStore,
           ),
         ),
-        commitAssignColorText,
+        restorePaletteAssignUndo: restorePaletteAssignUndo as never,
       }),
     );
     const controller = new AssignColorFromPickerController(
@@ -1010,7 +1020,25 @@ describe('theme renderer workflows', () => {
         debouncedThemePersist as never,
         themeGateway as never,
       );
-      const commitAssignColorText = new CommitAssignColorTextOperation(
+      const setContrastVariableField = new SetContrastVariableFieldOperation(
+        themeUiStore,
+        themesStore,
+        debouncedThemePersist as never,
+        themeGateway as never,
+      );
+      const setContrastUseDarkForLight = new SetContrastUseDarkForLightOperation(
+        themeUiStore,
+        themesStore,
+        debouncedThemePersist as never,
+        themeGateway as never,
+      );
+      const setColorUseDarkForLight = new SetColorUseDarkForLightOperation(
+        themeUiStore,
+        themesStore,
+        debouncedThemePersist as never,
+        themeGateway as never,
+      );
+      const restorePaletteAssignUndo = new RestoreThemePaletteAssignUndoOperation(
         themeUiStore,
         themesStore,
         debouncedThemePersist as never,
@@ -1021,8 +1049,11 @@ describe('theme renderer workflows', () => {
         applyTemplateUndoState: { execute: vi.fn() } as never,
         applyThemeUndoState,
         applyThemeLifecycleUndo,
-        commitAssignColorText,
+        restorePaletteAssignUndo: restorePaletteAssignUndo as never,
         setColorVariableDark,
+        setContrastVariableField: setContrastVariableField as never,
+        setContrastUseDarkForLight: setContrastUseDarkForLight as never,
+        setColorUseDarkForLight: setColorUseDarkForLight as never,
         setHueAdjustment: new SetThemeHueAdjustmentOperation(themeUiStore),
         setThemePaneSelections: new SetThemePaneSelectionsOperation(themeUiStore),
       });
@@ -1031,7 +1062,17 @@ describe('theme renderer workflows', () => {
         new RecordUndoEntryOperation(undoStackStore),
         buildUniversalUndoProcessor,
       );
-      return { undoStackStore, testUndo, recordThemeUndo, debouncedThemePersist, themeGateway, setTheme };
+      return {
+        undoStackStore,
+        testUndo,
+        recordThemeUndo,
+        debouncedThemePersist,
+        themeGateway,
+        setTheme,
+        setContrastVariableField,
+        setContrastUseDarkForLight,
+        setColorUseDarkForLight,
+      };
     }
 
     function seedTheme(themeUiStore: ThemeUiStore, themesStore: ThemesStore, darkHex = '#ff0000') {
@@ -1091,17 +1132,11 @@ describe('theme renderer workflows', () => {
       await undoManagerV2.clearPersisted();
       const themeUiStore = new ThemeUiStore();
       const themesStore = new ThemesStore();
-      const { testUndo, recordThemeUndo } = createThemeUndoHarness(themeUiStore, themesStore);
+      const { testUndo, recordThemeUndo, setContrastVariableField } = createThemeUndoHarness(themeUiStore, themesStore);
       seedTheme(themeUiStore, themesStore);
       const controller = new SetContrastVariableDarkValueController(
         themeUiStore,
-        new SetThemeOperation(themesStore, themeUiStore),
-        new ApplyThemeStateAndSchedulePersistOperation(
-          new ApplyThemeStateOperation(themeUiStore),
-          { schedule: vi.fn((fn) => void fn()) } as never,
-          { saveTheme: vi.fn() } as never,
-          themeUiStore,
-        ),
+        setContrastVariableField,
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
       );
@@ -1120,17 +1155,11 @@ describe('theme renderer workflows', () => {
       await undoManagerV2.clearPersisted();
       const themeUiStore = new ThemeUiStore();
       const themesStore = new ThemesStore();
-      const { testUndo, recordThemeUndo } = createThemeUndoHarness(themeUiStore, themesStore);
+      const { testUndo, recordThemeUndo, setContrastUseDarkForLight } = createThemeUndoHarness(themeUiStore, themesStore);
       seedTheme(themeUiStore, themesStore);
       const controller = new SetContrastUseDarkForLightController(
         themeUiStore,
-        new SetThemeOperation(themesStore, themeUiStore),
-        new ApplyThemeStateAndSchedulePersistOperation(
-          new ApplyThemeStateOperation(themeUiStore),
-          { schedule: vi.fn((fn) => void fn()) } as never,
-          { saveTheme: vi.fn() } as never,
-          themeUiStore,
-        ),
+        setContrastUseDarkForLight,
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
       );
@@ -1149,17 +1178,11 @@ describe('theme renderer workflows', () => {
       await undoManagerV2.clearPersisted();
       const themeUiStore = new ThemeUiStore();
       const themesStore = new ThemesStore();
-      const { testUndo, recordThemeUndo } = createThemeUndoHarness(themeUiStore, themesStore);
+      const { testUndo, recordThemeUndo, setColorUseDarkForLight } = createThemeUndoHarness(themeUiStore, themesStore);
       seedTheme(themeUiStore, themesStore);
       const controller = new SetColorUseDarkForLightController(
         themeUiStore,
-        new SetThemeOperation(themesStore, themeUiStore),
-        new ApplyThemeStateAndSchedulePersistOperation(
-          new ApplyThemeStateOperation(themeUiStore),
-          { schedule: vi.fn((fn) => void fn()) } as never,
-          { saveTheme: vi.fn() } as never,
-          themeUiStore,
-        ),
+        setColorUseDarkForLight,
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
       );
@@ -1373,12 +1396,11 @@ describe('theme renderer workflows', () => {
       }));
       const controller = new SetContrastVariableDarkValueController(
         themeUiStore,
-        new SetThemeOperation(themesStore, themeUiStore),
-        new ApplyThemeStateAndSchedulePersistOperation(
-          new ApplyThemeStateOperation(themeUiStore),
+        new SetContrastVariableFieldOperation(
+          themeUiStore,
+          themesStore,
           { schedule: vi.fn() } as never,
           { saveTheme: vi.fn() } as never,
-          themeUiStore,
         ),
         new RecordThemeUndoOperation(
           new RecordUndoEntryOperation(undoStackStore),

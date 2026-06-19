@@ -1,19 +1,21 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
+import type { ThemePaletteAssignUndoValue } from '../../../../model/theme-palette-assign-undo';
 import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounced-theme-persist-gateway';
 import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../../state/data/themes-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
 import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
+import { buildThemePaletteAssignUndoValue, themePaletteAssignUndoValuesEqual } from '../../../utils/theme-palette-assign-undo-utils';
 
 /**
  * Input or state shape for theme palette assign color edit result.
  */
 
 export interface ThemePaletteAssignColorEditResult {
-  before: Theme;
-  after: Theme;
+  before: ThemePaletteAssignUndoValue;
+  after: ThemePaletteAssignUndoValue;
   changed: boolean;
 }
 
@@ -75,10 +77,12 @@ export class CommitAssignColorTextOperation {
     const base = { ...theme };
     const nextTheme: Theme = { ...base, colorAssignments: newAssignments };
     this.restore(nextTheme);
+    const beforePatch = buildThemePaletteAssignUndoValue(theme, checkedColorRefs);
+    const afterPatch = buildThemePaletteAssignUndoValue(nextTheme, checkedColorRefs);
     return {
-      before: theme,
-      after: nextTheme,
-      changed: JSON.stringify(theme.colorAssignments) !== JSON.stringify(nextTheme.colorAssignments),
+      before: beforePatch,
+      after: afterPatch,
+      changed: !themePaletteAssignUndoValuesEqual(beforePatch, afterPatch),
     };
   }
 

@@ -1,10 +1,8 @@
 import { singleton } from 'tsyringe';
-import type { Theme } from '../../../../model/schema/theme-schemas';
 import type { ThemePreviewTokenRefField } from '../../../../model/schema/theme-schemas';
-import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import { SetThemeHueReferenceHexOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
-import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
+import { SetThemePreviewTokenRefFieldOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-preview-token-ref-field-operation';
 import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
@@ -26,8 +24,7 @@ import {
 export class SetThemePreviewTokenRefController {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
-    private readonly setTheme: SetThemeOperation,
-    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
+    private readonly setPreviewTokenRefField: SetThemePreviewTokenRefFieldOperation,
     private readonly setThemeHueReferenceHex: SetThemeHueReferenceHexOperation,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
@@ -54,10 +51,9 @@ export class SetThemePreviewTokenRefController {
       themeRef: { name: theme.name, version: theme.version },
     }));
 
-    const before = theme;
-    const next: Theme = { ...theme, [tokenRefField]: value };
-    this.setTheme.execute(next);
-    this.applyThemeStateAndSchedulePersist.execute(next);
+    const edit = this.setPreviewTokenRefField.execute(tokenRefField, value);
+    if (!edit?.changed) return;
+
     const nextRefHex = applyHueShift(beforeHueReferenceHex, beforeHueAdjustment / 100);
     this.setThemeHueReferenceHex.execute(nextRefHex);
     this.setThemeHueAdjustment.execute(0);
@@ -67,8 +63,8 @@ export class SetThemePreviewTokenRefController {
       description: 'Set preview token ref',
       actionType: THEME_PREVIEW_TOKEN_REF_SET,
       target,
-      before,
-      after: next,
+      before: edit.before,
+      after: edit.after,
       extraDiffs: [
         {
           actionType: THEME_PALETTE_HUE_REFERENCE_SET,

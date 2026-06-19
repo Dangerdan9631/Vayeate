@@ -309,6 +309,9 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
     return true;
   }
 
+  if (rel === 'domain/operations/undo-operations/apply-catalog-source-url-undo-operation.ts') {
+    return operationType === 'ApplyCatalogUndoStateOperation';
+  }
   if (rel === 'domain/operations/undo-operations/apply-catalog-undo-state-operation.ts') {
     return operationType === 'SaveCatalogOperation' || operationType === 'RefreshCatalogRefsAndSelectOperation';
   }

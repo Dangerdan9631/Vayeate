@@ -6,7 +6,7 @@ import {
   RecordUndoEntryOperation,
   type RecordUndoEntryResult,
 } from './record-undo-entry-operation';
-import { undoValuesEqual } from './undo-values-equal';
+import { undoDiffValuesEqual } from './undo-values-equal';
 
 /**
  * Input or state shape for record theme undo diff input.
@@ -66,7 +66,7 @@ export class RecordThemeUndoOperation {
       })),
     ];
 
-    if (diffs.every((diff) => undoValuesEqual(diff.before, diff.after))) {
+    if (diffs.every((diff) => undoDiffValuesEqual(diff))) {
       return { status: 'not-recorded', entryId: null };
     }
 

@@ -67,8 +67,9 @@ export function createUndoManagerV2(initialOptions?: UndoManagerOptions): UndoMa
 
   function schedulePersist(stackId: string, stack: UndoStack): void {
     if (!state.persistenceAdapter) return;
-    const payload = JSON.stringify(stack.getPersistedState());
-    state.scheduler!.schedulePersist(stackId, state.persistenceAdapter, payload);
+    state.scheduler!.schedulePersist(stackId, state.persistenceAdapter, () =>
+      JSON.stringify(stack.getPersistedState()),
+    );
   }
 
   function configure(options: UndoManagerOptions): void {
