@@ -175,6 +175,9 @@ export function EditorPreviewsCard() {
     onChangeEditorPreviewMenuForegroundTokenRef,
     editorPreviewMenuBackgroundTokenRef,
     onChangeEditorPreviewMenuBackgroundTokenRef,
+    scopeThemeInputsGeneration,
+    scopeTemplateInputsGeneration,
+    editorPreviewsGeneration,
   } = vm;
 
   const loadError: string | null = null;
@@ -263,6 +266,9 @@ export function EditorPreviewsCard() {
     defaultEditorFgDark,
     defaultEditorFgLight,
     visibleIndices,
+    scopeThemeInputsGeneration,
+    scopeTemplateInputsGeneration,
+    editorPreviewsGeneration,
   });
 
   /**

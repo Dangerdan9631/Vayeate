@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   areScopeColorMapInputsEqual,
   buildScopeColorMap,
+  buildScopeColorMapFromInputs,
   hashScopeColorMapInputs,
   selectScopeColorMapInputs,
 } from './scope-resolver';
@@ -56,5 +57,12 @@ describe('selectScopeColorMapInputs', () => {
         [],
       ).entries[0].darkColor,
     ).toBe('#222222');
+  });
+
+  it('buildScopeColorMapFromInputs matches buildScopeColorMap for the same inputs', () => {
+    const inputs = selectScopeColorMapInputs(mappings, colorAssignments, [], []);
+    expect(buildScopeColorMapFromInputs(inputs).entries[0].darkColor).toBe(
+      buildScopeColorMap(mappings, colorAssignments, [], []).entries[0].darkColor,
+    );
   });
 });

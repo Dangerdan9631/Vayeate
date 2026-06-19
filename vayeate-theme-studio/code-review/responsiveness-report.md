@@ -298,7 +298,7 @@ time per committed edit drops measurably.
 
 ---
 
-### [ ] P2-1 — Move scope-map / contrast resolution into a real Web Worker
+### [x] P2-1 — Move scope-map / contrast resolution into a real Web Worker
 
 **Problem.** `buildScopeColorMap` (`src/domain/utils/scope-resolver.ts:211`) over
 ~338 mappings, each possibly running `adjustColorToMeetContrast` (≤64 iterations

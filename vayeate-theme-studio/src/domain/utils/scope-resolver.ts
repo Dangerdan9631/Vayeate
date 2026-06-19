@@ -178,6 +178,17 @@ function colorForRef(
   return a.useDarkForLight ? a.dark?.value ?? null : a.light?.value ?? null;
 }
 
+function colorForRefFromInputs(
+  colorAssignments: ScopeColorMapInputs['colorAssignments'],
+  colorRef: string,
+  mode: 'dark' | 'light',
+): string | null {
+  const a = colorAssignments.find((x) => x.colorRef === colorRef);
+  if (!a) return null;
+  if (mode === 'dark') return a.dark;
+  return a.useDarkForLight ? a.dark : a.light;
+}
+
 /**
  * Get contrast assignment value for a contrast variable and mode, or null if not assigned.
  */
@@ -198,34 +209,38 @@ function contrastValueForRef(
   };
 }
 
+function contrastValueForRefFromInputs(
+  contrastAssignments: ScopeColorMapInputs['contrastAssignments'],
+  contrastVariableRef: string,
+  mode: 'dark' | 'light',
+): { value: number; comparisonMethod: 'lessThan' | 'equalTo' | 'greaterThan'; min: number | null; max: number | null } | null {
+  const a = contrastAssignments.find((x) => x.contrastVariableRef === contrastVariableRef);
+  if (!a) return null;
+  const val = mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
+  if (!val) return null;
+  return val;
+}
+
 /**
- * Builds a scope-to-color map from template mappings and theme color assignments.
+ * Builds a scope-to-color map from normalized scope-map inputs.
  * When contrast data is provided, token colors are adjusted to meet contrast constraints.
  *
- * @param mappings - Template token mappings with color and contrast variable refs.
- * @param colorAssignments - Theme color assignments for resolved hex values.
- * @param contrastAssignments - Optional theme contrast assignment values.
- * @param contrastVariables - Optional template contrast variable definitions.
+ * @param inputs - Normalized scope color map inputs.
  * @returns Scope color map with entries sorted by specificity (longest token key first).
  */
-export function buildScopeColorMap(
-  mappings: readonly Mapping[],
-  colorAssignments: readonly ColorAssignment[],
-  contrastAssignments?: readonly ContrastAssignment[],
-  contrastVariables?: readonly ContrastVariable[],
-): ScopeColorMap {
+export function buildScopeColorMapFromInputs(inputs: ScopeColorMapInputs): ScopeColorMap {
+  const { mappings, colorAssignments, contrastAssignments, contrastVariables } = inputs;
+
   const colorByRef = new Map<string, { dark: string | null; light: string | null }>();
   for (const a of colorAssignments) {
-    const dark = a.dark?.value ?? null;
-    const light = a.useDarkForLight ? a.dark?.value ?? null : a.light?.value ?? null;
+    const dark = a.dark;
+    const light = a.useDarkForLight ? a.dark : a.light;
     colorByRef.set(a.colorRef, { dark, light });
   }
 
   const contrastVarByRef =
-    (contrastVariables?.length ?? 0) > 0
-      ? new Map(contrastVariables!.map((v) => [v.key, v]))
-      : null;
-  const hasContrast = (contrastAssignments?.length ?? 0) > 0 && contrastVarByRef !== null;
+    contrastVariables.length > 0 ? new Map(contrastVariables.map((v) => [v.key, v])) : null;
+  const hasContrast = contrastAssignments.length > 0 && contrastVarByRef !== null;
 
   const entries: ScopeColorMapEntry[] = [];
   for (const m of mappings) {
@@ -243,10 +258,18 @@ export function buildScopeColorMap(
       const cv = contrastVarByRef!.get(m.contrastVariableRef);
       const sourceRef = cv?.comparisonSourceRef ?? null;
       if (sourceRef) {
-        const darkSource = colorForRef(colorAssignments, sourceRef, 'dark');
-        const lightSource = colorForRef(colorAssignments, sourceRef, 'light');
-        const darkContrast = contrastValueForRef(contrastAssignments!, m.contrastVariableRef, 'dark');
-        const lightContrast = contrastValueForRef(contrastAssignments!, m.contrastVariableRef, 'light');
+        const darkSource = colorForRefFromInputs(colorAssignments, sourceRef, 'dark');
+        const lightSource = colorForRefFromInputs(colorAssignments, sourceRef, 'light');
+        const darkContrast = contrastValueForRefFromInputs(
+          contrastAssignments,
+          m.contrastVariableRef,
+          'dark',
+        );
+        const lightContrast = contrastValueForRefFromInputs(
+          contrastAssignments,
+          m.contrastVariableRef,
+          'light',
+        );
 
         if (darkColor && darkSource && darkContrast) {
           darkColor = adjustColorToMeetContrast(darkColor, darkSource, {
@@ -267,7 +290,7 @@ export function buildScopeColorMap(
       }
     }
 
-    const segments = toSegments(m.token.key);
+    const segments = toSegments(m.tokenKey);
     entries.push({
       segments,
       darkColor,
@@ -281,6 +304,27 @@ export function buildScopeColorMap(
 
   entries.sort((a, b) => b.segments.length - a.segments.length);
   return { entries };
+}
+
+/**
+ * Builds a scope-to-color map from template mappings and theme color assignments.
+ * When contrast data is provided, token colors are adjusted to meet contrast constraints.
+ *
+ * @param mappings - Template token mappings with color and contrast variable refs.
+ * @param colorAssignments - Theme color assignments for resolved hex values.
+ * @param contrastAssignments - Optional theme contrast assignment values.
+ * @param contrastVariables - Optional template contrast variable definitions.
+ * @returns Scope color map with entries sorted by specificity (longest token key first).
+ */
+export function buildScopeColorMap(
+  mappings: readonly Mapping[],
+  colorAssignments: readonly ColorAssignment[],
+  contrastAssignments?: readonly ContrastAssignment[],
+  contrastVariables?: readonly ContrastVariable[],
+): ScopeColorMap {
+  return buildScopeColorMapFromInputs(
+    selectScopeColorMapInputs(mappings, colorAssignments, contrastAssignments, contrastVariables),
+  );
 }
 
 /**

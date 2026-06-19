@@ -56,6 +56,9 @@ export interface EditorPreviewsCardViewModel {
   onChangeEditorPreviewMenuForegroundTokenRef: (tokenKey: TokenKey | null) => void;
   editorPreviewMenuBackgroundTokenRef: TokenKey | null;
   onChangeEditorPreviewMenuBackgroundTokenRef: (tokenKey: TokenKey | null) => void;
+  scopeThemeInputsGeneration: number;
+  scopeTemplateInputsGeneration: number;
+  editorPreviewsGeneration: number;
 }
 
 /**
@@ -111,6 +114,18 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     (state) => state.state.theme?.editorPreviewMenuBackgroundTokenRef ?? null,
   );
   const editorPreviews = useStore(themePreviewStore.api, (state) => state.state.editorPreviews);
+  const scopeThemeInputsGeneration = useStore(
+    themeUiStore.api,
+    (state) => state.state.scopeThemeInputsGeneration,
+  );
+  const scopeTemplateInputsGeneration = useStore(
+    themePreviewStore.api,
+    (state) => state.state.scopeTemplateInputsGeneration,
+  );
+  const editorPreviewsGeneration = useStore(
+    themePreviewStore.api,
+    (state) => state.state.editorPreviewsGeneration,
+  );
   const panePreviewColorAssignments = useStore(
     themeUiStore.api,
     useShallow((state) => state.state.panePreviewColorAssignments),
@@ -228,5 +243,8 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     onChangeEditorPreviewMenuForegroundTokenRef: changeEditorPreviewMenuForegroundTokenRef,
     editorPreviewMenuBackgroundTokenRef,
     onChangeEditorPreviewMenuBackgroundTokenRef: changeEditorPreviewMenuBackgroundTokenRef,
+    scopeThemeInputsGeneration,
+    scopeTemplateInputsGeneration,
+    editorPreviewsGeneration,
   };
 }

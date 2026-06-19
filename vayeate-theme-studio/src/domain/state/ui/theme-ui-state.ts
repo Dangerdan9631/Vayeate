@@ -54,6 +54,11 @@ export interface ThemeUiState {
    * When true, cluster swatches from dark assignments; otherwise light.
    */
   paletteClusterByDark: boolean;
+  /**
+   * Monotonic generation bumped when theme-side scope-map inputs change
+   * (preview color assignments, contrast assignments, preview token refs).
+   */
+  scopeThemeInputsGeneration: number;
 }
 
 /**
@@ -83,4 +88,5 @@ export const initialThemeUiState: ThemeUiState = {
   paletteClustersByGroup: null,
   paletteClustersPending: false,
   paletteClusterByDark: true,
+  scopeThemeInputsGeneration: 0,
 };

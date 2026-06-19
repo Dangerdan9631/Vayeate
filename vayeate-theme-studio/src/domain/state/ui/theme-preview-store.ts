@@ -29,9 +29,11 @@ export class ThemePreviewStore {
       }),
       setEditorPreviews: (previews: TokenizedPreview[]) => set((storeState) => {
         storeState.state.editorPreviews = previews;
+        storeState.state.editorPreviewsGeneration += 1;
       }),
       setLoadedTemplate: (template: Template | null) => set((storeState) => {
         (storeState.state as ThemePreviewState).loadedTemplateForTheme = template;
+        storeState.state.scopeTemplateInputsGeneration += 1;
       }),
     }))
   );

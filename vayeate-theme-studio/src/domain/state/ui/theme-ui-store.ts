@@ -8,6 +8,10 @@ import {
   deriveThemePaneFields,
   selectThemePaneDerivationInputs,
 } from '../../utils/derive-theme-pane-fields';
+import {
+  areScopeThemeGenerationInputsEqual,
+  selectScopeThemeGenerationInputs,
+} from '../../utils/scope-theme-generation-inputs';
 import type { ClusterResult } from '../../utils/color-clustering';
 import { initialThemeUiState, type GenerateResult, type LoadState, type ThemeUiState } from './theme-ui-state';
 
@@ -42,15 +46,26 @@ export interface ThemeUiStoreState {
 export class ThemeUiStore {
   private store = createStore<ThemeUiStoreState>()(
     immer((set): ThemeUiStoreState => {
-      const setThemesState = (updater: (state: ThemeUiState) => ThemeUiState) => {
+      const setThemesState = (
+        updater: (state: ThemeUiState) => ThemeUiState,
+        options?: { forceScopeThemeGenerationBump?: boolean },
+      ) => {
         set((storeState) => {
+          const beforeScope = selectScopeThemeGenerationInputs(storeState.state);
           const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
           const nextState = updater(storeState.state);
           const afterInputs = selectThemePaneDerivationInputs(nextState);
+          const derived = areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
+            ? nextState
+            : deriveThemePaneFields(nextState);
+          const afterScope = selectScopeThemeGenerationInputs(derived);
+          const shouldBump =
+            options?.forceScopeThemeGenerationBump === true ||
+            !areScopeThemeGenerationInputsEqual(beforeScope, afterScope);
           storeState.state = castDraft(
-            areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
-              ? nextState
-              : deriveThemePaneFields(nextState),
+            shouldBump
+              ? { ...derived, scopeThemeInputsGeneration: derived.scopeThemeInputsGeneration + 1 }
+              : derived,
           );
         });
       };
@@ -62,14 +77,17 @@ export class ThemeUiStore {
         setThemeLoadState: (loadState: LoadState) =>
           setThemesState((state) => ({ ...state, themeLoadState: loadState })),
         setSelectedRef: (ref: ThemeReference | null) =>
-          setThemesState((state) => ({
-            ...state,
-            selectedRef: ref,
-            hueAdjustment: 0,
-            previewClusterCountK: null,
-            paletteClustersByGroup: null,
-            paletteClustersPending: false,
-          })),
+          setThemesState(
+            (state) => ({
+              ...state,
+              selectedRef: ref,
+              hueAdjustment: 0,
+              previewClusterCountK: null,
+              paletteClustersByGroup: null,
+              paletteClustersPending: false,
+            }),
+            { forceScopeThemeGenerationBump: true },
+          ),
         setTheme: (theme: Theme | null, preserveHue?: boolean) =>
           setThemesState((state) => ({
             ...state,
@@ -83,14 +101,21 @@ export class ThemeUiStore {
           setThemesState((state) => ({ ...state, checkedColorRefs, checkedContrastRefs })),
         setHueAdjustment: (value: number, options?: { deferPreview?: boolean }) => {
           set((storeState) => {
+            const beforeScope = selectScopeThemeGenerationInputs(storeState.state);
             const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
             const nextState = { ...storeState.state, hueAdjustment: value };
             const afterInputs = selectThemePaneDerivationInputs(nextState);
             const deferPreview = options?.deferPreview ?? false;
+            const derived = !deferPreview || !areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
+              ? deriveThemePaneFields(nextState, { deferPreview })
+              : nextState;
+            const afterScope = selectScopeThemeGenerationInputs(derived);
+            const shouldBump =
+              !deferPreview && !areScopeThemeGenerationInputsEqual(beforeScope, afterScope);
             storeState.state = castDraft(
-              !deferPreview || !areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
-                ? deriveThemePaneFields(nextState, { deferPreview })
-                : nextState,
+              shouldBump
+                ? { ...derived, scopeThemeInputsGeneration: derived.scopeThemeInputsGeneration + 1 }
+                : derived,
             );
           });
         },

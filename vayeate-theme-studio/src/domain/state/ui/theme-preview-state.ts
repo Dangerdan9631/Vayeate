@@ -9,6 +9,14 @@ export interface ThemePreviewState {
   selectedSampleKey: string;
   editorPreviews: TokenizedPreview[];
   loadedTemplateForTheme: Template | null;
+  /**
+   * Monotonic generation bumped when template mappings or contrast variables change.
+   */
+  scopeTemplateInputsGeneration: number;
+  /**
+   * Monotonic generation bumped when editor preview sample content changes.
+   */
+  editorPreviewsGeneration: number;
 }
 
 /**
@@ -19,4 +27,6 @@ export const initialThemePreviewState: ThemePreviewState = {
   selectedSampleKey: '',
   editorPreviews: [],
   loadedTemplateForTheme: null,
+  scopeTemplateInputsGeneration: 0,
+  editorPreviewsGeneration: 0,
 };

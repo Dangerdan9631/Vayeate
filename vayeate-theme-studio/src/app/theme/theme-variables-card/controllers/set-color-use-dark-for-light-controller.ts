@@ -1,49 +1,98 @@
-import { singleton } from 'tsyringe';
-import type { ColorVariableKey } from '../../../../model/schema/primitives';
-import { SetColorUseDarkForLightOperation } from '../../../../domain/operations/theme-operations/theme-details/set-color-use-dark-for-light-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
-import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/undo-history';
-import { THEME_COLOR_USE_DARK_FOR_LIGHT_SET } from '../../../../model/undo-action-types';
-
-/**
- * Orchestrates set color use dark for light work for the theme UI.
- */
-@singleton()
-export class SetColorUseDarkForLightController {
-  constructor(
-    private readonly themeUiStore: ThemeUiStore,
-    private readonly setColorUseDarkForLight: SetColorUseDarkForLightOperation,
-    private readonly recordThemeUndo: RecordThemeUndoOperation,
-    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
-  ) {}
-
-  /**
- * Validates input and invokes the domain operations for this interaction.
- * @param ref Input for this call.
- * @param checked Input for this call.
- * @returns Promise resolved when orchestration completes.
-   */
-  async run(ref: ColorVariableKey | undefined, checked: boolean | undefined): Promise<void> {
-    const theme = this.themeUiStore.getStore().state.theme;
-    if (!theme || ref == null) return;
-
-    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
-      tabId: 'themes',
-      templateRef: theme.templateRef,
-      themeRef: { name: theme.name, version: theme.version },
-    }));
-
-    const edit = this.setColorUseDarkForLight.execute(ref, checked === true);
-    if (!edit?.changed) return;
-
-    await this.recordThemeUndo.execute({
-      description: 'Toggle color use dark for light',
-      actionType: THEME_COLOR_USE_DARK_FOR_LIGHT_SET,
-      target: ref,
-      before: edit.before,
-      after: edit.after,
-    });
-  }
-}
+import { singleton } from 'tsyringe';
+
+import type { ColorVariableKey } from '../../../../model/schema/primitives';
+
+import { SetColorUseDarkForLightOperation } from '../../../../domain/operations/theme-operations/theme-details/set-color-use-dark-for-light-operation';
+
+import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
+
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+
+import { deriveUndoContext } from '../../../../model/undo-history';
+
+import { THEME_COLOR_USE_DARK_FOR_LIGHT_SET } from '../../../../model/undo-action-types';
+
+
+
+/**
+
+ * Orchestrates set color use dark for light work for the theme UI.
+
+ */
+
+@singleton()
+
+export class SetColorUseDarkForLightController {
+
+  constructor(
+
+    private readonly themeUiStore: ThemeUiStore,
+
+    private readonly setColorUseDarkForLight: SetColorUseDarkForLightOperation,
+
+    private readonly recordThemeUndo: RecordThemeUndoOperation,
+
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
+
+  ) {}
+
+
+
+  /**
+
+ * Validates input and invokes the domain operations for this interaction.
+
+ * @param ref Input for this call.
+
+ * @param checked Input for this call.
+
+ * @returns Promise resolved when orchestration completes.
+
+   */
+
+  async run(ref: ColorVariableKey | undefined, checked: boolean | undefined): Promise<void> {
+
+    const theme = this.themeUiStore.getStore().state.theme;
+
+    if (!theme || ref == null) return;
+
+
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+
+      tabId: 'themes',
+
+      templateRef: theme.templateRef,
+
+      themeRef: { name: theme.name, version: theme.version },
+
+    }));
+
+
+
+    const edit = this.setColorUseDarkForLight.execute(ref, checked === true);
+
+    if (!edit?.changed) return;
+
+
+
+    await this.recordThemeUndo.execute({
+
+      description: 'Toggle color use dark for light',
+
+      actionType: THEME_COLOR_USE_DARK_FOR_LIGHT_SET,
+
+      target: ref,
+
+      before: edit.before,
+
+      after: edit.after,
+
+    });
+
+  }
+
+}
+
