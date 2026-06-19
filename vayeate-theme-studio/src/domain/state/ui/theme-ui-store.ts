@@ -21,7 +21,7 @@ export interface ThemeUiStoreState {
   setSelectedRef: (ref: ThemeReference | null) => void;
   setTheme: (theme: Theme | null, preserveHue?: boolean) => void;
   setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void;
-  setHueAdjustment: (value: number) => void;
+  setHueAdjustment: (value: number, options?: { deferPreview?: boolean }) => void;
   setHueReferenceHex: (value: string) => void;
   setPreviewClusterCountK: (value: number | null) => void;
   setGenerateResult: (result: GenerateResult | null) => void;
@@ -81,7 +81,19 @@ export class ThemeUiStore {
           })),
         setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) =>
           setThemesState((state) => ({ ...state, checkedColorRefs, checkedContrastRefs })),
-        setHueAdjustment: (value: number) => setThemesState((state) => ({ ...state, hueAdjustment: value })),
+        setHueAdjustment: (value: number, options?: { deferPreview?: boolean }) => {
+          set((storeState) => {
+            const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
+            const nextState = { ...storeState.state, hueAdjustment: value };
+            const afterInputs = selectThemePaneDerivationInputs(nextState);
+            const deferPreview = options?.deferPreview ?? false;
+            storeState.state = castDraft(
+              !deferPreview || !areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
+                ? deriveThemePaneFields(nextState, { deferPreview })
+                : nextState,
+            );
+          });
+        },
         setHueReferenceHex: (value: string) =>
           setThemesState((state) => ({ ...state, hueReferenceHex: value })),
         setPreviewClusterCountK: (value: number | null) =>

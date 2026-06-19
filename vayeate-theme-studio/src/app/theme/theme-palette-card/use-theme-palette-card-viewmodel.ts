@@ -36,6 +36,8 @@ export function useThemePaletteCardViewModel() {
   const applyHueToDark = theme?.applyPaletteToDark ?? true;
   const applyHueToLight = theme?.applyPaletteToLight ?? true;
   const hueDragStartRef = useRef<{ theme: NonNullable<typeof theme>; hueAdjustment: number } | null>(null);
+  const pendingHueValueRef = useRef<number | null>(null);
+  const hueFrameRef = useRef<number | null>(null);
 
   const lastSelectedRefForHueRef = useRef<{ name: string; version: string } | null>(null);
   useEffect(() => {
@@ -74,7 +76,10 @@ export function useThemePaletteCardViewModel() {
     if (!theme?.templateRef) return;
     void dispatch({ type: ThemePaletteCardActionType.RecomputeClusters });
   }, [
-    paneDisplayColorAssignments,
+    theme?.colorAssignments,
+    theme?.applyPaletteToDark,
+    theme?.applyPaletteToLight,
+    checkedColorRefsArray,
     colorVariablesFromTemplate,
     clusterCountK,
     paletteClusterByDark,
@@ -82,9 +87,37 @@ export function useThemePaletteCardViewModel() {
     dispatch,
   ]);
 
+  useEffect(() => () => {
+    if (hueFrameRef.current !== null) {
+      cancelAnimationFrame(hueFrameRef.current);
+    }
+  }, []);
+
   const setHueAdjustment = useCallback(
     (value: number) => {
-      void dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value });
+      pendingHueValueRef.current = value;
+      if (hueFrameRef.current !== null) return;
+
+      hueFrameRef.current = requestAnimationFrame(() => {
+        hueFrameRef.current = null;
+        const nextValue = pendingHueValueRef.current;
+        pendingHueValueRef.current = null;
+        if (nextValue === null) return;
+        void dispatch({ type: ThemePaletteCardActionType.HueSliderOnDelta, value: nextValue });
+      });
+    },
+    [dispatch],
+  );
+
+  const commitHueAdjustment = useCallback(
+    (value: number) => {
+      if (hueFrameRef.current !== null) {
+        cancelAnimationFrame(hueFrameRef.current);
+        hueFrameRef.current = null;
+      }
+      const latestValue = pendingHueValueRef.current ?? value;
+      pendingHueValueRef.current = null;
+      void dispatch({ type: ThemePaletteCardActionType.HueSliderOnCommit, value: latestValue });
     },
     [dispatch],
   );
@@ -137,9 +170,13 @@ export function useThemePaletteCardViewModel() {
     hueDragStartRef.current = { theme: { ...theme }, hueAdjustment };
   }, [theme, hueAdjustment]);
 
-  const endHueDrag = useCallback(() => {
-    hueDragStartRef.current = null;
-  }, []);
+  const endHueDrag = useCallback(
+    (value: number) => {
+      commitHueAdjustment(value);
+      hueDragStartRef.current = null;
+    },
+    [commitHueAdjustment],
+  );
 
   const recenterHue = useCallback(() => {
     void dispatch({ type: ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick });
@@ -223,6 +260,7 @@ export function useThemePaletteCardViewModel() {
     hueAdjustment,
     hueReferenceHex,
     onHueChange: setHueAdjustment,
+    onHueCommit: commitHueAdjustment,
     onHueReferenceChange: setHueReferenceHex,
     onRecenter: recenterHue,
     onHueDragStart: startHueDrag,

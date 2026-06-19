@@ -57,12 +57,27 @@ export function areThemePaneDerivationInputsEqual(
 }
 
 /**
+ * Options controlling which derived pane fields are updated.
+ */
+export interface DeriveThemePaneFieldsOptions {
+  /**
+   * When true, live palette assignments update but preview/cluster assignments are preserved.
+   */
+  deferPreview?: boolean;
+}
+
+/**
  * Recomputes palette and editor preview display fields from theme pane inputs.
  *
  * @param themes - Theme UI state snapshot to derive from.
+ * @param options - When {@link DeriveThemePaneFieldsOptions.deferPreview} is true, keeps
+ *   {@link ThemeUiState.panePreviewColorAssignments} unchanged for stable previews during hue drag.
  * @returns Updated state with display assignments, selection summary, and orphan key lists.
  */
-export function deriveThemePaneFields(themes: ThemeUiState): ThemeUiState {
+export function deriveThemePaneFields(
+  themes: ThemeUiState,
+  options?: DeriveThemePaneFieldsOptions,
+): ThemeUiState {
   const inputs = selectThemePaneDerivationInputs(themes);
   const theme = themes.theme;
   const checkedColorRefs = new Set(inputs.checkedColorRefs);
@@ -83,6 +98,9 @@ export function deriveThemePaneFields(themes: ThemeUiState): ThemeUiState {
   return {
     ...themes,
     paneDisplayColorAssignments,
+    panePreviewColorAssignments: options?.deferPreview
+      ? themes.panePreviewColorAssignments
+      : paneDisplayColorAssignments,
     paneSelectedColorsDisplay,
     orphanColorKeys: [...computeOrphanColorKeys(theme)].sort(),
     orphanContrastKeys: [...computeOrphanContrastKeys(theme)].sort(),

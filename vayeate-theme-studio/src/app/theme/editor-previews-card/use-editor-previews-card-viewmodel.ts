@@ -62,7 +62,7 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   const theme = useStore(themeUiStore.api, (state) => state.state.theme);
   const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
   const editorPreviews = useStore(themePreviewStore.api, (state) => state.state.editorPreviews);
-  const paneDisplayColorAssignments = useStore(themeUiStore.api, (state) => state.state.paneDisplayColorAssignments);
+  const panePreviewColorAssignments = useStore(themeUiStore.api, (state) => state.state.panePreviewColorAssignments);
 
   const templateMappings = useMemo(() => loadedTemplate?.mappings ?? [], [loadedTemplate]);
   const contrastVariablesFromTemplate = useMemo(
@@ -137,7 +137,7 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
   return {
     theme,
     editorPreviews,
-    colorAssignments: paneDisplayColorAssignments,
+    colorAssignments: panePreviewColorAssignments,
     contrastAssignments: theme?.contrastAssignments ?? [],
     contrastVariables: contrastVariablesFromTemplate,
     mappings: templateMappings,

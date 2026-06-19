@@ -38,6 +38,10 @@ export interface ThemeUiState {
   openPickerContext: string | null;
   variableDraftTexts: Record<string, string>;
   paneDisplayColorAssignments: ColorAssignment[];
+  /**
+   * Hue-committed assignments for editor previews and palette clustering; stable during hue drag.
+   */
+  panePreviewColorAssignments: ColorAssignment[];
   paneSelectedColorsDisplay: SelectedColorsDisplay;
   orphanColorKeys: string[];
   orphanContrastKeys: string[];
@@ -72,6 +76,7 @@ export const initialThemeUiState: ThemeUiState = {
   openPickerContext: null,
   variableDraftTexts: {},
   paneDisplayColorAssignments: [],
+  panePreviewColorAssignments: [],
   paneSelectedColorsDisplay: { kind: 'none' },
   orphanColorKeys: [],
   orphanContrastKeys: [],

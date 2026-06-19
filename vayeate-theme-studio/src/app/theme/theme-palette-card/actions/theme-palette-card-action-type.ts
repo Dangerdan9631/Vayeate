@@ -19,6 +19,7 @@ export enum ThemePaletteCardActionType {
   HueReferenceColorEyedropperButtonOnClick = 'THEME_PALETTE_HUE_REFERENCE_COLOR_EYEDROPPER_BUTTON_ON_CLICK',
   HueReferenceEyeDropperOnCommit = 'THEME_PALETTE_HUE_REFERENCE_EYE_DROPPER_ON_COMMIT',
   HueSliderOnDelta = 'THEME_PALETTE_HUE_SLIDER_ON_DELTA',
+  HueSliderOnCommit = 'THEME_PALETTE_HUE_SLIDER_ON_COMMIT',
   ClusterCountSliderOnDelta = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_DELTA',
   ClusterCountSliderOnCommit = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_COMMIT',
   ClusterVariantCheckboxOnToggle = 'THEME_PALETTE_CLUSTER_VARIANT_CHECKBOX_ON_TOGGLE',
@@ -42,6 +43,7 @@ export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.HueReferenceColorEyedropperButtonOnClick }
   | { type: ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit; value: HexColor }
   | { type: ThemePaletteCardActionType.HueSliderOnDelta; value: number }
+  | { type: ThemePaletteCardActionType.HueSliderOnCommit; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnCommit; value: number }
   | { type: ThemePaletteCardActionType.ClusterVariantCheckboxOnToggle; checked: boolean }

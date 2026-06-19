@@ -13,7 +13,7 @@ export class SetThemeHueAdjustmentController {
  * @param value Input for this call.
  * @returns Promise resolved when orchestration completes.
    */
-  run(value: number): void {
-    this.setThemeHueAdjustment.execute(value);
+  run(value: number, options?: { deferPreview?: boolean }): void {
+    this.setThemeHueAdjustment.execute(value, options);
   }
 }

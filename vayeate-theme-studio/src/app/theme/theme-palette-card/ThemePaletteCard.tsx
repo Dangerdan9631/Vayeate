@@ -97,6 +97,7 @@ export function ThemePaletteCard() {
     hueAdjustment,
     hueReferenceHex,
     onHueChange,
+    onHueCommit,
     onHueReferenceChange,
     onRecenter,
     onHueDragStart,
@@ -163,8 +164,16 @@ export function ThemePaletteCard() {
   const handleHuePointerUp = useCallback(() => {
     if (!isHueDraggingRef.current) return;
     isHueDraggingRef.current = false;
-    onHueDragEnd?.();
-  }, [onHueDragEnd]);
+    onHueDragEnd?.(hueAdjustment);
+  }, [onHueDragEnd, hueAdjustment]);
+
+  const handleHueDragRelease = useCallback(() => {
+    handleHuePointerUp();
+  }, [handleHuePointerUp]);
+
+  const handleHueCommitCurrent = useCallback(() => {
+    onHueCommit?.(hueAdjustment);
+  }, [onHueCommit, hueAdjustment]);
 
   useEffect(() => {
     if (!onHueDragEnd) return;
@@ -524,6 +533,9 @@ export function ThemePaletteCard() {
           value={hueAdjustment}
           onChange={onHueSliderChange}
           onPointerDown={handleHuePointerDown}
+          onPointerUp={handleHueDragRelease}
+          onMouseUp={handleHueDragRelease}
+          onBlur={handleHueCommitCurrent}
           aria-label="Hue adjustment"
           aria-valuemin={-100}
           aria-valuemax={100}

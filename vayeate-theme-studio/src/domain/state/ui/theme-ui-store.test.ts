@@ -95,4 +95,33 @@ describe('ThemeUiStore', () => {
     expect(store.getStore().state.previewClusterCountK).toBeNull();
     expect(store.getStore().state.theme?.paletteClusterCountK).toBe(7);
   });
+
+  it('keeps preview assignments stable during deferred hue drag deltas', () => {
+    const store = new ThemeUiStore();
+    store.getStore().setTheme(theme);
+    store.getStore().setThemePaneSelections(['editorForeground'], []);
+    const previewBefore = store.getStore().state.panePreviewColorAssignments;
+    const displayBefore = store.getStore().state.paneDisplayColorAssignments;
+
+    store.getStore().setHueAdjustment(25, { deferPreview: true });
+
+    expect(store.getStore().state.hueAdjustment).toBe(25);
+    expect(store.getStore().state.panePreviewColorAssignments).toBe(previewBefore);
+    expect(store.getStore().state.paneDisplayColorAssignments).not.toBe(displayBefore);
+  });
+
+  it('syncs preview assignments when hue drag is committed', () => {
+    const store = new ThemeUiStore();
+    store.getStore().setTheme(theme);
+    store.getStore().setThemePaneSelections(['editorForeground'], []);
+    store.getStore().setHueAdjustment(25, { deferPreview: true });
+    const previewBefore = store.getStore().state.panePreviewColorAssignments;
+
+    store.getStore().setHueAdjustment(25, { deferPreview: false });
+
+    expect(store.getStore().state.panePreviewColorAssignments).not.toBe(previewBefore);
+    expect(store.getStore().state.panePreviewColorAssignments).toEqual(
+      store.getStore().state.paneDisplayColorAssignments,
+    );
+  });
 });

@@ -45,7 +45,7 @@ export class ComputePaletteClustersOperation {
     const variant = uiState.paletteClusterByDark ? 'dark' : 'light';
     const clusterCountK = uiState.previewClusterCountK ?? theme.paletteClusterCountK ?? 5;
     const groups = buildPaletteClusterGroupInputs(
-      uiState.paneDisplayColorAssignments,
+      uiState.panePreviewColorAssignments,
       template.colorVariables ?? [],
       variant,
       clusterCountK,

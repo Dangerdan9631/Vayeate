@@ -15,8 +15,8 @@ export class SetThemeHueAdjustmentOperation {
    * @returns Nothing; updates store or invokes a gateway side effect.
    */
 
-  execute(value: number): void {
-    this.themeUiStore.getStore().setHueAdjustment(value);
+  execute(value: number, options?: { deferPreview?: boolean }): void {
+    this.themeUiStore.getStore().setHueAdjustment(value, options);
   }
 }
 

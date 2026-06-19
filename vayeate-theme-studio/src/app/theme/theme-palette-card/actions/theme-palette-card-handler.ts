@@ -76,7 +76,10 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit:
         return this.commitHueReferenceEyeDropperColor.run(action.value);
       case ThemePaletteCardActionType.HueSliderOnDelta:
-        return this.setThemeHueAdjustment.run(action.value);
+        return this.setThemeHueAdjustment.run(action.value, { deferPreview: true });
+      case ThemePaletteCardActionType.HueSliderOnCommit:
+        await this.setThemeHueAdjustment.run(action.value, { deferPreview: false });
+        return this.computePaletteClusters.run();
       case ThemePaletteCardActionType.ClusterCountSliderOnDelta:
         await this.setPaletteClusterCountKPreview.run(action.value);
         return this.computePaletteClusters.run();

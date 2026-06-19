@@ -389,6 +389,12 @@ describe('coalescing policy — pure functions', () => {
     const incoming = { type: ThemePaletteCardActionType.HueSliderOnDelta, value: 35 } as unknown as AppAction;
     expect(tryCoalesce(pending, incoming)).toBe(incoming);
   });
+
+  it('tryCoalesce does not coalesce hue slider commit actions', () => {
+    const pending = { type: ThemePaletteCardActionType.HueSliderOnCommit, value: 30 } as unknown as AppAction;
+    const incoming = { type: ThemePaletteCardActionType.HueSliderOnCommit, value: 35 } as unknown as AppAction;
+    expect(tryCoalesce(pending, incoming)).toBeNull();
+  });
 });
 
 describe('action queue coalescing — integration', () => {
