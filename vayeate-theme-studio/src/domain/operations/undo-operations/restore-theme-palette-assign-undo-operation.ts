@@ -1,7 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { ThemePaletteAssignUndoValue } from '../../../model/theme-palette-assign-undo';
 import { DebouncedThemePersistGateway } from '../../../gateway/theme/debounced-theme-persist-gateway';
-import { ThemeGateway } from '../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../state/data/themes-store';
 import { ThemeUiStore } from '../../state/ui/theme-ui-store';
 import { applyThemePaletteAssignUndoValue } from '../../utils/theme-palette-assign-undo-utils';
@@ -15,7 +14,6 @@ export class RestoreThemePaletteAssignUndoOperation {
     private readonly themeUiStore: ThemeUiStore,
     private readonly themesStore: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
-    private readonly themeGateway: ThemeGateway,
   ) {}
 
   /**
@@ -32,7 +30,7 @@ export class RestoreThemePaletteAssignUndoOperation {
     this.themeUiStore.getStore().setTheme(nextTheme, true);
     this.themesStore.getStore().updateTheme(nextTheme);
     this.themeUiStore.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(() => this.themeGateway.saveTheme(nextTheme), (message) => {
+    this.debouncedThemePersist.schedule(nextTheme, (message) => {
       this.themeUiStore.getStore().setSaveError(message);
     });
   }

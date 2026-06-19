@@ -13,6 +13,13 @@ const sampleTheme: GeneratedTheme = {
 };
 
 describe('stringifyThemeAsync', () => {
+  it('keeps generated exports pretty with a trailing newline', () => {
+    const result = stringifyTheme(sampleTheme);
+
+    expect(result).toContain('\n    "name": "Baseline"');
+    expect(result.endsWith('\n')).toBe(true);
+  });
+
   it('matches synchronous serialization output', async () => {
     const sync = stringifyTheme(sampleTheme);
     const asyncResult = await stringifyThemeAsync(sampleTheme);

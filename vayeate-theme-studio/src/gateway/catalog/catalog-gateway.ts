@@ -73,7 +73,7 @@ export class CatalogGateway {
       throw new Error('Invalid catalog: ' + parsed.error.message);
     }
     const rel = catalogRelativeFilePath(catalog.name, catalog.version);
-    await this.fileSystemService.saveFile(rel, JSON.stringify(parsed.data, null, 2));
+    await this.fileSystemService.saveFile(rel, JSON.stringify(parsed.data));
   }
 
   /**

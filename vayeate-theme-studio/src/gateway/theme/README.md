@@ -7,18 +7,18 @@ Persists themes under `data/themes/` and debounces rapid save requests so file w
 | File | Role |
 |------|------|
 | `theme-gateway.ts` | Save, load, delete, and list themes as `<name>-<version>.theme.json`; validates with `themeSchema`. |
-| `debounced-theme-persist-gateway.ts` | Schedules theme persist callbacks after a short delay; cancels superseded pending writes. |
+| `debounced-theme-persist-gateway.ts` | Debounces theme saves, then enqueues the latest theme on keyed `data_io`; cancels superseded pending writes. |
 
 ## Call flow
 
 ```
-Operation → ThemeGateway → FileSystemService → Electron IPC
-Operation → DebouncedThemePersistGateway (timer) → caller-supplied persist callback
+Operation → ThemeGateway → compact serialization → FileSystemService → Electron IPC
+Operation → DebouncedThemePersistGateway (timer) → keyed data_io job → ThemeGateway
 ```
 
 ## Boundaries
 
-- **In scope:** path conventions, JSON serialization, zod parsing, debounced persist scheduling.
+- **In scope:** path conventions, compact internal JSON serialization, zod parsing, and debounced keyed persist scheduling.
 - **Out of scope:** theme edit rules, color resolution, undo — see `src/domain/theme/` and related operations.
 
 For gateway-layer conventions see the parent [README](../README.md).

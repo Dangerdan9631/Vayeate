@@ -1,4 +1,8 @@
 import { singleton } from 'tsyringe';
+import { BackgroundQueuePort } from '../../domain/operations/background-queue/background-queue-port';
+import { themeDataFileKey } from '../../model/data-path-keys';
+import type { Theme } from '../../model/schema/theme-schemas';
+import { ThemeGateway } from './theme-gateway';
 
 /**
  * Delay before flushing a scheduled theme persist to disk.
@@ -6,21 +10,26 @@ import { singleton } from 'tsyringe';
 const SAVE_THEME_DEBOUNCE_MS = 400;
 
 /**
- * Callback bundle held until the debounce timer fires.
+ * Theme payload held until the debounce timer fires.
  */
 interface PendingThemePersist {
-  persist: () => Promise<void>;
+  theme: Theme;
   onError?: (message: string) => void;
 }
 
 /**
- * Debounces theme save callbacks so rapid edits coalesce into one persist.
+ * Debounces theme payloads so rapid edits coalesce into one keyed persist job.
  */
 @singleton()
 export class DebouncedThemePersistGateway {
   private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   private pendingPersist: PendingThemePersist | null = null;
+
+  constructor(
+    private readonly backgroundQueue: BackgroundQueuePort,
+    private readonly themeGateway: ThemeGateway,
+  ) {}
 
   /**
    * Clears any pending debounced persist without writing.
@@ -37,14 +46,14 @@ export class DebouncedThemePersistGateway {
   }
 
   /**
-   * Replaces any pending persist and schedules the callback after the debounce window.
+   * Replaces any pending persist and schedules a keyed write after the debounce window.
    *
-   * @param persist - Async write to run when the timer elapses.
+   * @param theme - Latest complete theme to persist after the debounce window.
    * @param onError - Optional handler when persist rejects.
    * @returns Nothing.
    */
-  schedule(persist: () => Promise<void>, onError?: (message: string) => void): void {
-    this.pendingPersist = { persist, onError };
+  schedule(theme: Theme, onError?: (message: string) => void): void {
+    this.pendingPersist = { theme, onError };
     if (this.timeoutId !== null) {
       clearTimeout(this.timeoutId);
     }
@@ -57,10 +66,20 @@ export class DebouncedThemePersistGateway {
         return;
       }
 
-      pendingPersist.persist().catch((err) => {
-        const message = err instanceof Error ? err.message : String(err);
-        pendingPersist.onError?.(message);
-      });
+      const { theme, onError } = pendingPersist;
+      this.backgroundQueue.enqueue(
+        'data_io',
+        `Saving theme ${theme.name} ${theme.version}`,
+        async () => {
+          try {
+            await this.themeGateway.saveTheme(theme);
+          } catch (err) {
+            const message = err instanceof Error ? err.message : String(err);
+            onError?.(message);
+          }
+        },
+        { key: themeDataFileKey(theme.name, theme.version), access: 'write' },
+      );
     }, SAVE_THEME_DEBOUNCE_MS);
   }
 }

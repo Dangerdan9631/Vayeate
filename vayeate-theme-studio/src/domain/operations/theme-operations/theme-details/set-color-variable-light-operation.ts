@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
 import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounced-theme-persist-gateway';
-import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import type { ColorVariableKey } from '../../../../model/schema/primitives';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemesStore } from '../../../state/data/themes-store';
@@ -18,7 +17,6 @@ export class SetColorVariableLightOperation {
     private readonly themeUiStore: ThemeUiStore,
     private readonly themesStore: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
-    private readonly themeGateway: ThemeGateway,
   ) {}
 
   /**
@@ -45,7 +43,7 @@ export class SetColorVariableLightOperation {
       this.themeUiStore.getStore().setThemeLoadState('loaded');
     }
     this.themeUiStore.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(() => this.themeGateway.saveTheme(next), (message) => {
+    this.debouncedThemePersist.schedule(next, (message) => {
       this.themeUiStore.getStore().setSaveError(message);
     });
     return { ref, before, after, changed: before !== after };

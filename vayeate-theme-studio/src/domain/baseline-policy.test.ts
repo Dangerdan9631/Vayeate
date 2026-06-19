@@ -199,17 +199,12 @@ describe('baseline domain policy', () => {
     themeUiStore.getStore().setTheme(theme);
     themeUiStore.getStore().setSaveError('stale error');
 
-    const scheduled: Array<{ run: () => Promise<void>; fail: (message: string) => void }> = [];
     const debouncedThemePersist = {
-      schedule: vi.fn((run: () => Promise<void>, fail: (message: string) => void) => {
-        scheduled.push({ run, fail });
-      }),
+      schedule: vi.fn(),
     };
-    const themeGateway = { saveTheme: vi.fn(async () => {}) };
     const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
       new ApplyThemeStateOperation(themeUiStore),
       debouncedThemePersist as never,
-      themeGateway as never,
       themeUiStore,
     );
     const setThemeLoadedTemplate = new SetThemeLoadedTemplateOperation(themePreviewStore);
@@ -278,11 +273,9 @@ describe('baseline domain policy', () => {
     const themeUiStore = new ThemeUiStore();
     const themePreviewStore = new ThemePreviewStore();
     const debouncedThemePersist = { schedule: vi.fn() };
-    const themeGateway = { saveTheme: vi.fn(async () => {}) };
     const applyThemeStateAndSchedulePersist = new ApplyThemeStateAndSchedulePersistOperation(
       new ApplyThemeStateOperation(themeUiStore),
       debouncedThemePersist as never,
-      themeGateway as never,
       themeUiStore,
     );
     const setThemeLoadedTemplate = new SetThemeLoadedTemplateOperation(themePreviewStore);

@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
 import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounced-theme-persist-gateway';
-import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemesStore } from '../../../state/data/themes-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
@@ -15,7 +14,6 @@ export class SetThemeApplyPaletteToDarkOperation {
     private readonly themeUiStore: ThemeUiStore,
     private readonly themesStore: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
-    private readonly themeGateway: ThemeGateway,
   ) {}
 
   execute(checked: boolean): ThemeBooleanFieldEditResult | null {
@@ -37,7 +35,7 @@ export class SetThemeApplyPaletteToDarkOperation {
     this.themeUiStore.getStore().setTheme(next);
     this.themesStore.getStore().updateTheme(next);
     this.themeUiStore.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(() => this.themeGateway.saveTheme(next), (message) => {
+    this.debouncedThemePersist.schedule(next, (message) => {
       this.themeUiStore.getStore().setSaveError(message);
     });
   }

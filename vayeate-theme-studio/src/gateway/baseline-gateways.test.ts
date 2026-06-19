@@ -88,6 +88,16 @@ describe('gateway baselines', () => {
     });
     await configGateway.save({ colorScheme: 'light' });
 
+    for (const path of [
+      'data/catalogs/catalog-a-1.0.0.json',
+      'data/templates/template-a-1.0.0.template.json',
+      'data/themes/theme-a-1.0.0.theme.json',
+    ]) {
+      const contents = saved.get(path)!;
+      expect(contents).toBe(JSON.stringify(JSON.parse(contents)));
+      expect(contents).not.toContain('\n');
+    }
+
     expect(await catalogGateway.listCatalogs()).toEqual([{ name: 'catalog-a', version: '1.0.0' }]);
     expect(await templateGateway.listTemplates()).toEqual([{ name: 'template-a', version: '1.0.0' }]);
     expect(await themeGateway.listThemes()).toEqual([{ name: 'theme-a', version: '1.0.0' }]);

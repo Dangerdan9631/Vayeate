@@ -71,7 +71,7 @@ export class ThemeGateway {
       throw new Error('Invalid theme: ' + parsed.error.message);
     }
     const rel = themeRelativeFilePath(parsed.data.name, parsed.data.version);
-    await this.fileSystemService.saveFile(rel, JSON.stringify(parsed.data, null, 2));
+    await this.fileSystemService.saveFile(rel, JSON.stringify(parsed.data));
   }
 
   /**

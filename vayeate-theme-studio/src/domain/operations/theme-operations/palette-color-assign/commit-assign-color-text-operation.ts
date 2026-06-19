@@ -2,7 +2,6 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import type { ThemePaletteAssignUndoValue } from '../../../../model/theme-palette-assign-undo';
 import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounced-theme-persist-gateway';
-import { ThemeGateway } from '../../../../gateway/theme/theme-gateway';
 import { ThemesStore } from '../../../state/data/themes-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
@@ -38,7 +37,6 @@ export class CommitAssignColorTextOperation {
     private readonly themeUiStore: ThemeUiStore,
     private readonly themesStore: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
-    private readonly themeGateway: ThemeGateway,
   ) {}
 
   /**
@@ -97,7 +95,7 @@ export class CommitAssignColorTextOperation {
     this.themeUiStore.getStore().setTheme(theme, true);
     this.themesStore.getStore().updateTheme(theme);
     this.themeUiStore.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(() => this.themeGateway.saveTheme(theme), (message) => {
+    this.debouncedThemePersist.schedule(theme, (message) => {
       this.themeUiStore.getStore().setSaveError(message);
     });
   }
