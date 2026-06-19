@@ -463,12 +463,10 @@ describe('action queue coalescing — integration', () => {
     }
     await vi.waitFor(() => expect(signalComplete.run).toHaveBeenCalled());
 
-    // #aaaaaa was already shifted when later enqueues ran, so it processes as-is.
-    // #bbbbbb and #cccccc were both pending; #cccccc coalesced into #bbbbbb's slot.
-    // NON_COALESCING_COMMIT stays between them.
+    // Interactive coalesced actions drain before the normal-lane commit action.
     expect(processed).toHaveLength(3);
     expect((processed[0] as any).value).toBe('#aaaaaa');
-    expect((processed[1] as any).committed).toBe(true);
-    expect((processed[2] as any).value).toBe('#cccccc');
+    expect((processed[1] as any).value).toBe('#cccccc');
+    expect((processed[2] as any).committed).toBe(true);
   });
 });
