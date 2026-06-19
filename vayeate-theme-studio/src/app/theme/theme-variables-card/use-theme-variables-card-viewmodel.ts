@@ -224,24 +224,28 @@ export function useThemeVariablesCardViewModel() {
 
   const toggleColorChecked = useCallback(
     (ref: string) => {
+      const { checkedColorRefs } = themeUiStore.getStore().state;
+      const isChecked = checkedColorRefs.includes(ref);
       void dispatch({
         type: ThemeVariablesCardActionType.VariableSelectionCheckboxOnToggle,
         ref,
-        checked: !checkedColorRefs.has(ref),
+        checked: !isChecked,
       });
     },
-    [dispatch, checkedColorRefs],
+    [dispatch],
   );
 
   const toggleContrastChecked = useCallback(
     (ref: string) => {
+      const { checkedContrastRefs } = themeUiStore.getStore().state;
+      const isChecked = checkedContrastRefs.includes(ref);
       void dispatch({
         type: ThemeVariablesCardActionType.VariableSelectionCheckboxOnToggle,
         ref,
-        checked: !checkedContrastRefs.has(ref),
+        checked: !isChecked,
       });
     },
-    [dispatch, checkedContrastRefs],
+    [dispatch],
   );
 
   const setAllColorChecked = useCallback(

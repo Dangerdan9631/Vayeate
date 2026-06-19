@@ -326,7 +326,7 @@ the scope map; preview colors update from worker results without dropped frames.
 
 ---
 
-### [ ] P2-2 — Virtualize remaining long lists and stabilize row callbacks
+### [x] P2-2 — Virtualize remaining long lists and stabilize row callbacks
 
 **Problem.** `TokensCard.tsx:67` and `VariablesCard.tsx` render every row with
 `.map()` (no virtualization), unlike mappings/theme-variables/previews which use

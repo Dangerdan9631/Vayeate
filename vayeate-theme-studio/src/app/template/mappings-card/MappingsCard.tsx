@@ -1,18 +1,16 @@
 import {
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type ChangeEvent,
   type MouseEvent as ReactMouseEvent,
-  type ReactNode,
 } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import { useMappingsCardViewModel } from './use-mappings-card-viewmodel';
+import { VirtualizedRowList } from '../../common/virtualized-row-list/VirtualizedRowList';
 import { MappingRow } from './MappingRow';
-import { SemanticVariantRow } from './SemanticVariantRow';
+import { SemanticVariantListRow } from './SemanticVariantListRow';
 import { formatSemanticSelector } from '../../../model/format-semantic-selector';
 import { parseSemanticSelector } from '../../../model/parse-semantic-selector';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../model/semantic-token-constants';
@@ -20,129 +18,6 @@ import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../
 import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 
 const UNGROUPED_KEY = '__ungrouped__';
-const VIRTUALIZE_MIN_COUNT = 10;
-const VIRTUAL_OVERSCAN = 8;
-const VIRTUAL_FALLBACK_MAX = 15;
-
-function findScrollParent(el: HTMLElement | null): HTMLElement | null {
-  let node = el?.parentElement ?? null;
-  while (node) {
-    const { overflowY } = getComputedStyle(node);
-    if (overflowY === 'auto' || overflowY === 'scroll') return node;
-    node = node.parentElement;
-  }
-  return null;
-}
-
-function scrollMarginFor(listEl: HTMLElement, scrollEl: HTMLElement): number {
-  return listEl.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
-}
-
-interface VirtualizedRowListProps<T> {
-  items: readonly T[];
-  getItemKey: (item: T, index: number) => string;
-  estimateSize: () => number;
-  renderItem: (item: T, index: number) => ReactNode;
-  emptyHint?: string;
-}
-
-function VirtualizedRowList<T>({
-  items,
-  getItemKey,
-  estimateSize,
-  renderItem,
-  emptyHint,
-}: VirtualizedRowListProps<T>) {
-  const listRef = useRef<HTMLDivElement>(null);
-  const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
-  const [scrollMargin, setScrollMargin] = useState(0);
-  const shouldVirtualize = items.length >= VIRTUALIZE_MIN_COUNT;
-
-  const updateScrollMetrics = useCallback(() => {
-    const listEl = listRef.current;
-    if (!listEl) return;
-    const scrollEl = findScrollParent(listEl);
-    setScrollElement(scrollEl);
-    setScrollMargin(scrollEl ? scrollMarginFor(listEl, scrollEl) : 0);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!shouldVirtualize) return;
-    updateScrollMetrics();
-    const listEl = listRef.current;
-    if (!listEl) return;
-    const ro = new ResizeObserver(updateScrollMetrics);
-    ro.observe(listEl);
-    const scrollEl = findScrollParent(listEl);
-    if (scrollEl) ro.observe(scrollEl);
-    window.addEventListener('resize', updateScrollMetrics);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener('resize', updateScrollMetrics);
-    };
-  }, [shouldVirtualize, items.length, updateScrollMetrics]);
-
-  const virtualizer = useVirtualizer({
-    count: shouldVirtualize ? items.length : 0,
-    getScrollElement: () => scrollElement,
-    estimateSize,
-    overscan: VIRTUAL_OVERSCAN,
-    scrollMargin,
-  });
-
-  if (items.length === 0) {
-    return emptyHint ? <p className="empty-hint">{emptyHint}</p> : null;
-  }
-
-  if (!shouldVirtualize) {
-    return (
-      <>
-        {items.map((item, index) => (
-          <div key={getItemKey(item, index)}>{renderItem(item, index)}</div>
-        ))}
-      </>
-    );
-  }
-
-  const virtualItems = virtualizer.getVirtualItems();
-  const totalSize = virtualizer.getTotalSize();
-  const fallbackIndices =
-    items.length > 0 && virtualItems.length === 0
-      ? items.map((_, i) => i).slice(0, Math.min(items.length, VIRTUAL_FALLBACK_MAX))
-      : null;
-
-  return (
-    <div ref={listRef} className="virtual-row-list">
-      {fallbackIndices ? (
-        fallbackIndices.map((index) => (
-          <div key={getItemKey(items[index], index)}>{renderItem(items[index], index)}</div>
-        ))
-      ) : (
-        <div style={{ height: totalSize, position: 'relative', width: '100%' }}>
-          {virtualItems.map((virtualItem) => {
-            const item = items[virtualItem.index];
-            return (
-              <div
-                key={getItemKey(item, virtualItem.index)}
-                data-index={virtualItem.index}
-                ref={(el) => { if (el) virtualizer.measureElement(el); }}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  transform: `translateY(${virtualItem.start}px)`,
-                }}
-              >
-                {renderItem(item, virtualItem.index)}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
 
 /** Virtual base for "*" (display-only; never persisted). */
 const VIRTUAL_STAR_BASE: Mapping = {
@@ -453,6 +328,12 @@ function SemanticBlockRows({
   const type = base.token.key;
 
   const [openModifierKey, setOpenModifierKey] = useState<string | null>(null);
+  const onOpenModifierDropdownForKey = useCallback((tokenKey: string) => {
+    setOpenModifierKey(tokenKey);
+  }, []);
+  const onCloseModifierDropdown = useCallback(() => {
+    setOpenModifierKey(null);
+  }, []);
   const commitModifiersWithOpenState = useCallback(
     (oldKey: string, modifiers: string[]) => {
       try {
@@ -607,37 +488,29 @@ function SemanticBlockRows({
       </div>
       <VirtualizedRowList
         items={variants}
-        getItemKey={(_m, idx) => `${base.token.key}::v::${idx}`}
+        getItemKey={(m) => `${base.token.key}::v::${m.token.key}`}
         estimateSize={() => 40}
-        renderItem={(m) => {
-          function onOpenModifierDropdown() {
-            setOpenModifierKey(m.token.key);
-          }
-          function onCloseModifierDropdown() {
-            setOpenModifierKey(null);
-          }
-          return (
-            <SemanticVariantRow
-              mapping={m}
-              isOrphan={orphanKeys.has(`${m.token.type}::${m.token.key}`)}
-              canEdit={canEdit}
-              sortedGroups={sortedGroups}
-              sortedColorVariables={sortedColorVariables}
-              sortedContrastVariables={sortedContrastVariables}
-              sortedSemanticTokenModifiers={sortedSemanticTokenModifiers}
-              sortedSemanticTokenLanguages={sortedSemanticTokenLanguages}
-              onUpdateGroupRef={onUpdateGroupRef}
-              commitSemanticModifiers={commitModifiersWithOpenState}
-              commitSemanticLanguage={commitLanguageWithOpenState}
-              isModifierOpen={openModifierKey === m.token.key}
-              onOpenModifierDropdown={onOpenModifierDropdown}
-              onCloseModifierDropdown={onCloseModifierDropdown}
-              onUpdateColorRef={onUpdateColorRef}
-              onUpdateContrastRef={onUpdateContrastRef}
-              onRemoveMapping={onRemoveMapping}
-            />
-          );
-        }}
+        renderItem={(m) => (
+          <SemanticVariantListRow
+            mapping={m}
+            isOrphan={orphanKeys.has(`${m.token.type}::${m.token.key}`)}
+            canEdit={canEdit}
+            sortedGroups={sortedGroups}
+            sortedColorVariables={sortedColorVariables}
+            sortedContrastVariables={sortedContrastVariables}
+            sortedSemanticTokenModifiers={sortedSemanticTokenModifiers}
+            sortedSemanticTokenLanguages={sortedSemanticTokenLanguages}
+            onUpdateGroupRef={onUpdateGroupRef}
+            commitSemanticModifiers={commitModifiersWithOpenState}
+            commitSemanticLanguage={commitLanguageWithOpenState}
+            isModifierOpen={openModifierKey === m.token.key}
+            onOpenModifierDropdownForKey={onOpenModifierDropdownForKey}
+            onCloseModifierDropdown={onCloseModifierDropdown}
+            onUpdateColorRef={onUpdateColorRef}
+            onUpdateContrastRef={onUpdateContrastRef}
+            onRemoveMapping={onRemoveMapping}
+          />
+        )}
       />
     </div>
   );

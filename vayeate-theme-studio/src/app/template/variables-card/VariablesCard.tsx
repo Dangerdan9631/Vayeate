@@ -5,6 +5,9 @@ import {
 } from './use-variables-card-viewmodel';
 import type { ColorVariableKey } from '../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
+import { VirtualizedRowList } from '../../common/virtualized-row-list/VirtualizedRowList';
+import { ColorVariableRow } from './ColorVariableRow';
+import { ContrastVariableRow } from './ContrastVariableRow';
 
 function ColorGroupSubsection({
   groupLabel,
@@ -82,44 +85,21 @@ function ColorGroupSubsection({
               </button>
             </div>
           )}
-          {colorVariables.map((v) => {
-            function onColorVariableGroupRefChange(e: ChangeEvent<HTMLSelectElement>) {
-              onUpdateGroupRef(v.key, e.target.value || null);
-            }
-            function onRemoveColorVariableClick() {
-              onRemove(v.key);
-            }
-            return (
-            <div key={v.key} className="variable-row">
-              <select
-                className="field-select mapping-var-select"
-                value={v.groupRef ?? ''}
-                disabled={!canEdit}
-                onChange={onColorVariableGroupRefChange}
-                title="Group"
-              >
-                <option value="">Ungrouped</option>
-                {sortedGroups.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-              <span className="variable-name">{v.key}</span>
-              {canEdit && (
-                <button
-                  type="button"
-                  className="btn-icon btn-danger-icon"
-                  title={referencedKeys.has(v.key) ? 'Cannot remove: variable is referenced' : 'Remove'}
-                  disabled={referencedKeys.has(v.key)}
-                  onClick={onRemoveColorVariableClick}
-                >
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              )}
-            </div>
-            );
-          })}
+          <VirtualizedRowList
+            items={colorVariables}
+            getItemKey={(v) => v.key}
+            estimateSize={() => 36}
+            renderItem={(v) => (
+              <ColorVariableRow
+                variable={v}
+                sortedGroups={sortedGroups}
+                isReferenced={referencedKeys.has(v.key)}
+                canEdit={canEdit}
+                onUpdateGroupRef={onUpdateGroupRef}
+                onRemove={onRemove}
+              />
+            )}
+          />
         </div>
       )}
     </div>
@@ -276,60 +256,23 @@ function ContrastGroupSubsection({
               </button>
             </div>
           )}
-          {contrastVariables.map((v) => {
-            function onContrastVariableGroupRefChange(e: ChangeEvent<HTMLSelectElement>) {
-              onUpdateGroupRef(v.key, e.target.value || null);
-            }
-            function onComparisonSourceChange(e: ChangeEvent<HTMLSelectElement>) {
-              onUpdateComparisonSource(v.key, e.target.value || null);
-            }
-            function onRemoveContrastVariableClick() {
-              onRemove(v.key);
-            }
-            return (
-            <div key={v.key} className="variable-row">
-              <select
-                className="field-select mapping-var-select"
-                value={v.groupRef ?? ''}
-                disabled={!canEdit}
-                onChange={onContrastVariableGroupRefChange}
-                title="Group"
-              >
-                <option value="">Ungrouped</option>
-                {sortedGroups.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-              <span className="variable-name">{v.key}</span>
-              <select
-                className="field-select variable-comparison-select"
-                value={v.comparisonSourceRef ?? ''}
-                disabled={!canEdit}
-                onChange={onComparisonSourceChange}
-              >
-                <option value="">— source —</option>
-                {colorVariables.map((cv) => (
-                  <option key={cv.key} value={cv.key}>
-                    {cv.key}
-                  </option>
-                ))}
-              </select>
-              {canEdit && (
-                <button
-                  type="button"
-                  className="btn-icon btn-danger-icon"
-                  title={referencedKeys.has(v.key) ? 'Cannot remove: variable is referenced' : 'Remove'}
-                  disabled={referencedKeys.has(v.key)}
-                  onClick={onRemoveContrastVariableClick}
-                >
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              )}
-            </div>
-            );
-          })}
+          <VirtualizedRowList
+            items={contrastVariables}
+            getItemKey={(v) => v.key}
+            estimateSize={() => 36}
+            renderItem={(v) => (
+              <ContrastVariableRow
+                variable={v}
+                colorVariables={colorVariables}
+                sortedGroups={sortedGroups}
+                isReferenced={referencedKeys.has(v.key)}
+                canEdit={canEdit}
+                onUpdateGroupRef={onUpdateGroupRef}
+                onUpdateComparisonSource={onUpdateComparisonSource}
+                onRemove={onRemove}
+              />
+            )}
+          />
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import { CATALOG_TOKEN_LIST_SECTIONS, useTokensCardViewModel } from './use-tokens-card-viewmodel';
 import type { Catalog, Token } from '../../../model/schema/catalog';
 import type { SemanticTokenRegistryListKind, TokenType } from '../../../model/schema/primitives';
+import { VirtualizedRowList } from '../../common/virtualized-row-list/VirtualizedRowList';
 import { TokenRow } from './TokenRow';
 import { SemanticTokenRegistryRow } from './SemanticTokenRegistryRow';
 
@@ -64,16 +65,20 @@ function TokenTypeSection({
 
       {!collapsed && (
         <div className="tree-children">
-          {tokens.map((t) => (
-            <TokenRow
-              key={t.key}
-              token={t}
-              isManual={isManual}
-              tokenType={tokenType}
-              onUpdateKey={onUpdateKey}
-              onRemove={onRemove}
-            />
-          ))}
+          <VirtualizedRowList
+            items={tokens}
+            getItemKey={(t) => t.key}
+            estimateSize={() => 36}
+            renderItem={(t) => (
+              <TokenRow
+                token={t}
+                isManual={isManual}
+                tokenType={tokenType}
+                onUpdateKey={onUpdateKey}
+                onRemove={onRemove}
+              />
+            )}
+          />
 
           {isManual && (
             <div className="token-row token-add-row">
