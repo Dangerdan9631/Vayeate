@@ -1,5 +1,6 @@
 import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
+import type { TemplateMappingId } from '../../../model/template-mapping-assignment';
 
 /**
  * Load phase for template page or selected template content.
@@ -17,6 +18,7 @@ export interface TemplateUiState {
   mappingColorVariableFilter: ColorVariableKey[];
   mappingContrastVariableFilter: ContrastVariableKey[];
   mappingTokenGroupSelection: string;
+  selectedMappingIds: TemplateMappingId[];
   variablesSearchText: string;
   addGroupName: string;
   addVariableName: string;
@@ -33,6 +35,7 @@ export const initialTemplateUiState: TemplateUiState = {
   mappingColorVariableFilter: [],
   mappingContrastVariableFilter: [],
   mappingTokenGroupSelection: '',
+  selectedMappingIds: [],
   variablesSearchText: '',
   addGroupName: '',
   addVariableName: '',

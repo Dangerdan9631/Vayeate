@@ -1,9 +1,8 @@
 import { singleton } from 'tsyringe';
 import type { ThemePaletteAssignUndoValue } from '../../../model/theme-palette-assign-undo';
-import { DebouncedThemePersistGateway } from '../../../gateway/theme/debounced-theme-persist-gateway';
-import { ThemesStore } from '../../state/data/themes-store';
 import { ThemeUiStore } from '../../state/ui/theme-ui-store';
 import { applyThemePaletteAssignUndoValue } from '../../utils/theme-palette-assign-undo-utils';
+import { ApplyThemeUndoStateOperation } from './apply-theme-undo-state-operation';
 
 /**
  * Restores palette assignment undo patches through the standard theme persist path.
@@ -12,8 +11,7 @@ import { applyThemePaletteAssignUndoValue } from '../../utils/theme-palette-assi
 export class RestoreThemePaletteAssignUndoOperation {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
-    private readonly themesStore: ThemesStore,
-    private readonly debouncedThemePersist: DebouncedThemePersistGateway,
+    private readonly applyThemeUndoState: ApplyThemeUndoStateOperation,
   ) {}
 
   /**
@@ -26,12 +24,6 @@ export class RestoreThemePaletteAssignUndoOperation {
     if (!theme) return;
 
     const nextTheme = applyThemePaletteAssignUndoValue(theme, patch);
-    this.themeUiStore.getStore().setHueAdjustment(0);
-    this.themeUiStore.getStore().setTheme(nextTheme, true);
-    this.themesStore.getStore().updateTheme(nextTheme);
-    this.themeUiStore.getStore().setSaveError(null);
-    this.debouncedThemePersist.schedule(nextTheme, (message) => {
-      this.themeUiStore.getStore().setSaveError(message);
-    });
+    this.applyThemeUndoState.execute(nextTheme);
   }
 }

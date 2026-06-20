@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
-export const VIRTUALIZE_MIN_COUNT = 10;
+const VIRTUALIZE_MIN_COUNT = 10;
 const VIRTUAL_OVERSCAN = 8;
 
 function findScrollParent(el: HTMLElement | null): HTMLElement | null {

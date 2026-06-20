@@ -10,6 +10,9 @@ import { SetMappingSearchTextController } from "../controllers/set-mapping-searc
 import { UpdateSemanticVariantKeyController } from "../controllers/update-semantic-variant-key-controller";
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { MappingsCardActions, MappingsCardActionType } from "./mappings-card-action-type";
+import { ApplySelectedMappingAssignmentController } from '../controllers/apply-selected-mapping-assignment-controller';
+import { ClearSelectedMappingsController } from '../controllers/clear-selected-mappings-controller';
+import { ToggleSelectedMappingController } from '../controllers/toggle-selected-mapping-controller';
 
 /**
  * Routes template mappings card actions to their controllers.
@@ -28,6 +31,9 @@ export class MappingsCardHandler {
     private readonly setMappingGroupRef: SetMappingGroupRefController,
     private readonly setMappingSearchText: SetMappingSearchTextController,
     private readonly updateSemanticVariantKey: UpdateSemanticVariantKeyController,
+    private readonly applySelectedMappingAssignment: ApplySelectedMappingAssignmentController,
+    private readonly clearSelectedMappings: ClearSelectedMappingsController,
+    private readonly toggleSelectedMapping: ToggleSelectedMappingController,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create(MappingsCardHandler.name);
@@ -68,6 +74,12 @@ export class MappingsCardHandler {
         });
       case MappingsCardActionType.MappingSemanticTokenVariantRemoveButtonOnClick:
         return this.removeMapping.run(action.tokenKey, action.tokenType);
+      case MappingsCardActionType.MappingSelectionOnToggle:
+        return this.toggleSelectedMapping.run(action.mappingId);
+      case MappingsCardActionType.MappingSelectionOnClear:
+        return this.clearSelectedMappings.run();
+      case MappingsCardActionType.MappingSelectedAssignmentOnCommit:
+        return this.applySelectedMappingAssignment.run(action.assignment);
     }
 
     const _exhaustive: never = action;

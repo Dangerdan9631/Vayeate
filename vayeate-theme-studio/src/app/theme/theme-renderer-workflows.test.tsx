@@ -908,24 +908,24 @@ describe('theme renderer workflows', () => {
       themesStore,
       debouncedThemePersist as never,
     );
+    const applyThemeUndoState = new ApplyThemeUndoStateOperation(
+      new SetThemeOperation(themesStore, themeUiStore),
+      new ApplyThemeStateAndSchedulePersistOperation(
+        new ApplyThemeStateOperation(themeUiStore),
+        debouncedThemePersist as never,
+        themeUiStore,
+      ),
+    );
     const restorePaletteAssignUndo = new RestoreThemePaletteAssignUndoOperation(
       themeUiStore,
-      themesStore,
-      debouncedThemePersist as never,
+      applyThemeUndoState,
     );
     const testUndo = createTestUndoOperations(
       undoStackStore,
       createTestBuildUniversalUndoProcessor({
         applyCatalogUndoState: { execute: vi.fn() } as never,
         applyTemplateUndoState: { execute: vi.fn() } as never,
-        applyThemeUndoState: new ApplyThemeUndoStateOperation(
-          new SetThemeOperation(themesStore, themeUiStore),
-          new ApplyThemeStateAndSchedulePersistOperation(
-            new ApplyThemeStateOperation(themeUiStore),
-            debouncedThemePersist as never,
-            themeUiStore,
-          ),
-        ),
+        applyThemeUndoState,
         restorePaletteAssignUndo: restorePaletteAssignUndo as never,
       }),
     );
@@ -1056,8 +1056,7 @@ describe('theme renderer workflows', () => {
       );
       const restorePaletteAssignUndo = new RestoreThemePaletteAssignUndoOperation(
         themeUiStore,
-        themesStore,
-        debouncedThemePersist as never,
+        applyThemeUndoState,
       );
       const buildUniversalUndoProcessor = createTestBuildUniversalUndoProcessor({
         applyCatalogUndoState: { execute: vi.fn() } as never,

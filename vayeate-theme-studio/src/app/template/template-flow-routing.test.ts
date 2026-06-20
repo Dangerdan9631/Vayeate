@@ -154,6 +154,9 @@ describe('template flow routing', () => {
       setMappingGroupRef: { run: vi.fn(async () => {}) },
       setMappingSearchText: { run: vi.fn(async () => {}) },
       updateSemanticVariantKey: { run: vi.fn(async () => {}) },
+      applySelectedMappingAssignment: { run: vi.fn(async () => {}) },
+      clearSelectedMappings: { run: vi.fn() },
+      toggleSelectedMapping: { run: vi.fn() },
     };
     const mappingsHandler = new MappingsCardHandler(
       mappingDeps.addSemanticVariant as never,
@@ -165,6 +168,9 @@ describe('template flow routing', () => {
       mappingDeps.setMappingGroupRef as never,
       mappingDeps.setMappingSearchText as never,
       mappingDeps.updateSemanticVariantKey as never,
+      mappingDeps.applySelectedMappingAssignment as never,
+      mappingDeps.clearSelectedMappings as never,
+      mappingDeps.toggleSelectedMapping as never,
       createLoggerFactory(),
     );
     await mappingsHandler.handle({ type: MappingsCardActionType.MappingSearchTextOnChange, value: 'editor' });
@@ -175,6 +181,14 @@ describe('template flow routing', () => {
       value: 'editorFg',
     });
     await mappingsHandler.handle({
+      type: MappingsCardActionType.MappingSelectionOnToggle,
+      mappingId: { tokenKey: 'editor.foreground', tokenType: 'theme' },
+    });
+    await mappingsHandler.handle({
+      type: MappingsCardActionType.MappingSelectedAssignmentOnCommit,
+      assignment: { kind: 'group', value: 'core' },
+    });
+    await mappingsHandler.handle({
       type: MappingsCardActionType.MappingSemanticTokenAddVariantButtonOnClick,
       semanticType: 'variable',
       defaultGroupRef: 'core',
@@ -182,6 +196,14 @@ describe('template flow routing', () => {
     expect(mappingDeps.setMappingSearchText.run).toHaveBeenCalledWith('editor');
     expect(mappingDeps.setMappingColorRef.run).toHaveBeenCalledWith('editor.foreground', 'theme', 'editorFg');
     expect(mappingDeps.addSemanticVariant.run).toHaveBeenCalledWith('variable', 'core');
+    expect(mappingDeps.toggleSelectedMapping.run).toHaveBeenCalledWith({
+      tokenKey: 'editor.foreground',
+      tokenType: 'theme',
+    });
+    expect(mappingDeps.applySelectedMappingAssignment.run).toHaveBeenCalledWith({
+      kind: 'group',
+      value: 'core',
+    });
   });
 
   it('dispatches top-level template actions to the matching sub-handler', async () => {

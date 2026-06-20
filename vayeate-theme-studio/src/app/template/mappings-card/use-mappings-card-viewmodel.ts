@@ -12,6 +12,8 @@ import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
 import { getCurrentTemplate, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import { container } from 'tsyringe';
+import type { TemplateMappingAssignment, TemplateMappingId } from '../../../model/template-mapping-assignment';
+import { templateMappingIdKey } from '../../../model/template-mapping-assignment';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
@@ -122,6 +124,14 @@ export function useMappingsCardViewModel() {
   const mappingContrastVariableFilter = useStore(
     templateUiStore.api,
     useShallow((state) => state.state.mappingContrastVariableFilter),
+  );
+  const selectedMappingIds = useStore(
+    templateUiStore.api,
+    useShallow((state) => state.state.selectedMappingIds),
+  );
+  const selectedMappingKeys = useMemo(
+    () => new Set<string>(selectedMappingIds.map((id: TemplateMappingId) => templateMappingIdKey(id))),
+    [selectedMappingIds],
   );
 
   const loadedCatalogsForTemplateRefs = useMemo(() => {
@@ -295,6 +305,30 @@ export function useMappingsCardViewModel() {
     [dispatch],
   );
 
+  const toggleMappingSelection = useCallback(
+    (mappingId: TemplateMappingId) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingSelectionOnToggle,
+        mappingId,
+      });
+    },
+    [dispatch],
+  );
+
+  const clearMappingSelection = useCallback(() => {
+    void dispatch({ type: MappingsCardActionType.MappingSelectionOnClear });
+  }, [dispatch]);
+
+  const applySelectedMappingAssignment = useCallback(
+    (assignment: TemplateMappingAssignment) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingSelectedAssignmentOnCommit,
+        assignment,
+      });
+    },
+    [dispatch],
+  );
+
   const sortedGroups = useMemo(
     () => [...(template?.groups ?? EMPTY_GROUPS)].sort((a, b) => a.localeCompare(b)),
     [template?.groups],
@@ -385,6 +419,8 @@ export function useMappingsCardViewModel() {
     mappingSearchText,
     mappingColorVariableFilter,
     mappingContrastVariableFilter,
+    selectedMappingIds,
+    selectedMappingKeys,
     onUpdateGroupRef: updateMappingGroupRef,
     onUpdateColorRef: updateMappingColorRef,
     onUpdateContrastRef: updateMappingContrastRef,
@@ -393,5 +429,8 @@ export function useMappingsCardViewModel() {
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
+    toggleMappingSelection,
+    clearMappingSelection,
+    applySelectedMappingAssignment,
   };
 }

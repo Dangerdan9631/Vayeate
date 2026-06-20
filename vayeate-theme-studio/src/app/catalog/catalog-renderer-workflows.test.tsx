@@ -30,6 +30,7 @@ import { ValidateSyncCatalog } from '../../domain/catalog/validations/validate-s
 import { CreateCatalogDialogStore } from '../../domain/state/ui/create-catalog-dialog-store';
 import { ApplyCatalogLifecycleUndoOperation } from '../../domain/operations/undo-operations/apply-catalog-lifecycle-undo-operation';
 import { ApplyCatalogUndoStateOperation } from '../../domain/operations/undo-operations/apply-catalog-undo-state-operation';
+import { ApplyCatalogSourceUrlUndoOperation } from '../../domain/operations/undo-operations/apply-catalog-source-url-undo-operation';
 import { RecordCatalogUndoOperation } from '../../domain/operations/undo-operations/record-catalog-undo-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
 import { undoManagerV2 } from '../../domain/core/undo-manager-v2';
@@ -630,6 +631,11 @@ describe('catalog renderer workflows', () => {
       const buildUniversalUndoProcessor = createTestBuildUniversalUndoProcessor({
         applyCatalogUndoState,
         applyCatalogLifecycleUndo,
+        applyCatalogSourceUrlUndo: new ApplyCatalogSourceUrlUndoOperation(
+          catalogsStore,
+          catalogUiStore,
+          applyCatalogUndoState,
+        ),
         applyTemplateUndoState: { execute: vi.fn() } as never,
         applyThemeUndoState: { execute: vi.fn() } as never,
       });

@@ -6,6 +6,7 @@ import type { ThemesStore } from '../../src/domain/state/data/themes-store';
 import type { UndoStackStore } from '../../src/domain/state/undo-stack/undo-stack-store';
 import { ApplyCatalogLifecycleUndoOperation } from '../../src/domain/operations/undo-operations/apply-catalog-lifecycle-undo-operation';
 import { ApplyCatalogUndoStateOperation } from '../../src/domain/operations/undo-operations/apply-catalog-undo-state-operation';
+import { ApplyCatalogSourceUrlUndoOperation } from '../../src/domain/operations/undo-operations/apply-catalog-source-url-undo-operation';
 import { ApplyTemplateLifecycleUndoOperation } from '../../src/domain/operations/undo-operations/apply-template-lifecycle-undo-operation';
 import { ApplyTemplateUndoStateOperation } from '../../src/domain/operations/undo-operations/apply-template-undo-state-operation';
 import { ApplyThemeLifecycleUndoOperation } from '../../src/domain/operations/undo-operations/apply-theme-lifecycle-undo-operation';
@@ -14,6 +15,7 @@ import { BuildUniversalUndoProcessorOperation } from '../../src/domain/operation
 import { HistoryGoToOperation } from '../../src/domain/operations/undo-operations/history-go-to-operation';
 import { LoadUndoHistoryOperation } from '../../src/domain/operations/undo-operations/load-undo-history-operation';
 import { RedoOperation } from '../../src/domain/operations/undo-operations/redo-operation';
+import { RestoreThemePaletteAssignUndoOperation } from '../../src/domain/operations/undo-operations/restore-theme-palette-assign-undo-operation';
 import { EnqueueBackgroundQueueActionOperation } from '../../src/domain/operations/background-queue/enqueue-background-queue-action-operation';
 import { SetCurrentUndoStackIdOperation } from '../../src/domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { UndoOperation } from '../../src/domain/operations/undo-operations/undo-operation';
@@ -86,12 +88,12 @@ export async function waitForUndoRecorded(undoStackStore: UndoStackStore): Promi
 export interface TestUniversalUndoProcessorDeps {
   applyCatalogUndoState: ApplyCatalogUndoStateOperation;
   applyCatalogLifecycleUndo?: ApplyCatalogLifecycleUndoOperation;
-  applyCatalogSourceUrlUndo?: { execute: (patch: unknown) => void };
+  applyCatalogSourceUrlUndo?: ApplyCatalogSourceUrlUndoOperation;
   applyTemplateLifecycleUndo?: ApplyTemplateLifecycleUndoOperation;
   applyTemplateUndoState: ApplyTemplateUndoStateOperation;
   applyThemeLifecycleUndo?: ApplyThemeLifecycleUndoOperation;
   applyThemeUndoState: ApplyThemeUndoStateOperation;
-  restorePaletteAssignUndo?: { execute: (patch: unknown) => void };
+  restorePaletteAssignUndo?: RestoreThemePaletteAssignUndoOperation;
   setColorVariableLight?: { execute: (ref: string | undefined, value: string) => unknown };
   setColorVariableDark?: { execute: (ref: string | undefined, value: string) => unknown };
   setContrastVariableField?: { execute: (...args: unknown[]) => unknown };

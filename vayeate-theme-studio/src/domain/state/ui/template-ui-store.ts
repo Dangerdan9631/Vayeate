@@ -3,6 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
+import type { TemplateMappingId } from '../../../model/template-mapping-assignment';
 import { initialTemplateUiState, type LoadState, type TemplateUiState } from './template-ui-state';
 
 interface TemplateUiStoreState {
@@ -14,6 +15,7 @@ interface TemplateUiStoreState {
   setMappingColorVariableFilter: (values: ColorVariableKey[]) => void;
   setMappingContrastVariableFilter: (values: ContrastVariableKey[]) => void;
   setMappingTokenGroupSelection: (value: string) => void;
+  setSelectedMappingIds: (values: TemplateMappingId[]) => void;
   setVariablesSearchText: (value: string) => void;
   setAddGroupName: (value: string) => void;
   setAddVariableName: (value: string) => void;
@@ -54,6 +56,10 @@ export class TemplateUiStore {
       setMappingTokenGroupSelection: (value: string) =>
         set((storeState) => {
           storeState.state.mappingTokenGroupSelection = value;
+        }),
+      setSelectedMappingIds: (values: TemplateMappingId[]) =>
+        set((storeState) => {
+          storeState.state.selectedMappingIds = values;
         }),
       setVariablesSearchText: (value: string) =>
         set((storeState) => {

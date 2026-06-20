@@ -15,6 +15,8 @@ export interface MappingRowProps {
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+  isSelected: boolean;
+  onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }
 
 function MappingRowComponent({
@@ -27,6 +29,8 @@ function MappingRowComponent({
   onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
+  isSelected,
+  onToggleSelection,
 }: MappingRowProps) {
   const isBlockingLock = !mapping.colorVariableRef;
 
@@ -42,9 +46,13 @@ function MappingRowComponent({
     onUpdateContrastRef(mapping.token.key, mapping.token.type, e.target.value || null);
   }
 
+  function onMappingSelectionClick() {
+    onToggleSelection(mapping.token.key, mapping.token.type);
+  }
+
   return (
     <div
-      className={`mapping-row ${isOrphan ? 'mapping-orphan' : ''} ${isBlockingLock ? 'mapping-blocking-lock' : ''}`}
+      className={`mapping-row ${isSelected ? 'mapping-row-selected ' : ''}${isOrphan ? 'mapping-orphan' : ''} ${isBlockingLock ? 'mapping-blocking-lock' : ''}`}
     >
       <select
         className="field-select mapping-var-select"
@@ -61,6 +69,20 @@ function MappingRowComponent({
         ))}
       </select>
       <span className="mapping-token-name" title={mapping.token.key}>
+        {canEdit && (
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={isSelected}
+            aria-label={`Select mapping ${mapping.token.key}`}
+            className="checkbox-icon-btn mapping-selection-btn"
+            onClick={onMappingSelectionClick}
+          >
+            <span className="material-symbols-outlined" aria-hidden>
+              {isSelected ? 'check_box' : 'check_box_outline_blank'}
+            </span>
+          </button>
+        )}
         {mapping.token.key}
       </span>
       {isOrphan && (

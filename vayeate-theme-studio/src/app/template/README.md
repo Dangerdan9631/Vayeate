@@ -25,6 +25,12 @@ The template app domain is the renderer-side UI boundary for authoring and manag
 
 Each feature folder follows the standard app-layer shape: `actions/` (types + handler), `controllers/`, optional `use-*-viewmodel.ts`, and a PascalCase `*.tsx` component.
 
+The mappings card supports transient multi-selection of real mappings across
+groups and token types. Its bulk controls apply one group, color-variable, or
+contrast-variable assignment to the complete selected set as a single undoable
+template edit. Search, filters, collapsing, and virtualization do not change the
+selection; changing template context clears it.
+
 ## Mutation flow
 
 Template UI signals enter through viewmodels, join the shared action queue as `TemplateActions`, and fan out by feature guard in `TemplateActionHandler`.

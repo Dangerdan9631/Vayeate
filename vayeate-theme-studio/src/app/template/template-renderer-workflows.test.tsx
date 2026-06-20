@@ -13,6 +13,7 @@ import { SelectTemplateAndLoadController } from './templates-card/controllers/se
 import { AddColorVariableController } from './variables-card/controllers/add-color-variable-controller';
 import { AddGroupController } from './groups-card/controllers/add-group-controller';
 import { SetMappingGroupRefController } from './mappings-card/controllers/set-mapping-group-ref-controller';
+import { ApplySelectedMappingAssignmentController } from './mappings-card/controllers/apply-selected-mapping-assignment-controller';
 import { RemoveGroupController } from './groups-card/controllers/remove-group-controller';
 import { ToggleCatalogController } from './template-catalogs-card/controllers/toggle-catalog-controller';
 import { CreateTemplateController } from './create-template-dialog/controllers/create-template-controller';
@@ -22,11 +23,13 @@ import { CatalogUiStore } from '../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
 import { TemplatesStore } from '../../domain/state/data/templates-store';
+import { CatalogsStore } from '../../domain/catalog/state/catalogs-store';
 import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
 import { BumpTemplateVersionForEditOperation } from '../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { AddColorVariableOperation } from '../../domain/operations/template-operations/variables-color/add-color-variable-operation';
 import { AddGroupToTemplateOperation } from '../../domain/operations/template-operations/groups/add-group-to-template-operation';
 import { SetMappingGroupRefOperation } from '../../domain/operations/template-operations/mappings/set-mapping-group-ref-operation';
+import { ApplyMappingAssignmentOperation } from '../../domain/operations/template-operations/mappings/apply-mapping-assignment-operation';
 import { RemoveGroupFromTemplateOperation } from '../../domain/operations/template-operations/groups/remove-group-from-template-operation';
 import { SetSelectedTemplateRefOperation } from '../../domain/operations/template-operations/template-list/set-selected-template-ref-operation';
 import { SetTemplateOperation } from '../../domain/operations/template-operations/template-details/set-template-operation';
@@ -144,6 +147,12 @@ describe('template renderer workflows', () => {
       colorVariables: [],
       contrastVariables: [],
       groups: [],
+      sortedGroups: [],
+      filteredColorVariables: [],
+      filteredContrastVariables: [],
+      sortedColorVariables: [],
+      colorVariableGroupSections: [],
+      contrastVariableGroupSections: [],
       variablesSearchText: '',
       addVariableName: '',
       canEdit: false,
@@ -164,6 +173,8 @@ describe('template renderer workflows', () => {
     viewModelMocks.useMappingsCardViewModel.mockReturnValue({
       template: null,
       mappingsByType: { theme: [], 'textmate token': [], 'semantic token': [] },
+      mappingsByGroup: new Map(),
+      groupKeysInOrder: [],
       sortedGroups: [],
       sortedColorVariables: [],
       sortedContrastVariables: [],
@@ -174,6 +185,8 @@ describe('template renderer workflows', () => {
       mappingSearchText: '',
       mappingColorVariableFilter: [],
       mappingContrastVariableFilter: [],
+      selectedMappingIds: [],
+      selectedMappingKeys: new Set<string>(),
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
@@ -182,11 +195,14 @@ describe('template renderer workflows', () => {
       setMappingSearchText: vi.fn(),
       setMappingColorVariableFilter: vi.fn(),
       setMappingContrastVariableFilter: vi.fn(),
+      toggleMappingSelection: vi.fn(),
+      clearMappingSelection: vi.fn(),
+      applySelectedMappingAssignment: vi.fn(),
     });
   });
 
   it('renders template page loading and loaded states', () => {
-    viewModelMocks.useTemplateViewModel.mockReturnValueOnce({
+    viewModelMocks.useTemplateViewModel.mockReturnValue({
       isPageLoading: true,
       isTemplateLoading: false,
       isTemplateLoaded: false,
@@ -196,7 +212,7 @@ describe('template renderer workflows', () => {
     const view = render(<TemplatesPage />);
     expect(view.getByText('Loading templates...')).toBeInTheDocument();
 
-    viewModelMocks.useTemplateViewModel.mockReturnValueOnce({
+    viewModelMocks.useTemplateViewModel.mockReturnValue({
       isPageLoading: false,
       isTemplateLoading: true,
       isTemplateLoaded: false,
@@ -218,13 +234,13 @@ describe('template renderer workflows', () => {
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
     };
-    viewModelMocks.useTemplateViewModel.mockReturnValueOnce({
+    viewModelMocks.useTemplateViewModel.mockReturnValue({
       isPageLoading: false,
       isTemplateLoading: false,
       isTemplateLoaded: true,
       isCreateDialogOpen: true,
     });
-    viewModelMocks.useTemplateDetailsCardViewModel.mockReturnValueOnce({
+    viewModelMocks.useTemplateDetailsCardViewModel.mockReturnValue({
       template,
       canLock: false,
       canShowLockButton: false,
@@ -232,7 +248,7 @@ describe('template renderer workflows', () => {
       onDeleteVersionClick: vi.fn(),
       onLockClick: vi.fn(),
     });
-    viewModelMocks.useTemplateCatalogsCardViewModel.mockReturnValueOnce({
+    viewModelMocks.useTemplateCatalogsCardViewModel.mockReturnValue({
       template,
       catalogRows: [],
       shouldShowUpdateAllCatalogsButton: false,
@@ -240,7 +256,7 @@ describe('template renderer workflows', () => {
       onToggleCatalogClick: vi.fn(),
       onCatalogVersionChange: vi.fn(),
     });
-    viewModelMocks.useGroupsCardViewModel.mockReturnValueOnce({
+    viewModelMocks.useGroupsCardViewModel.mockReturnValue({
       template,
       groupRows: [],
       canEdit: false,
@@ -250,11 +266,17 @@ describe('template renderer workflows', () => {
       onAddGroupNameChange: vi.fn(),
       onAddGroupClick: vi.fn(),
     });
-    viewModelMocks.useVariablesCardViewModel.mockReturnValueOnce({
+    viewModelMocks.useVariablesCardViewModel.mockReturnValue({
       template,
       colorVariables: [],
       contrastVariables: [],
       groups: [],
+      sortedGroups: [],
+      filteredColorVariables: [],
+      filteredContrastVariables: [],
+      sortedColorVariables: [],
+      colorVariableGroupSections: [],
+      contrastVariableGroupSections: [],
       variablesSearchText: '',
       addVariableName: '',
       canEdit: false,
@@ -272,9 +294,11 @@ describe('template renderer workflows', () => {
       onUpdateContrastComparisonSource: vi.fn(),
       onVariablesSearchChange: vi.fn(),
     });
-    viewModelMocks.useMappingsCardViewModel.mockReturnValueOnce({
+    viewModelMocks.useMappingsCardViewModel.mockReturnValue({
       template,
       mappingsByType: { theme: [], 'textmate token': [], 'semantic token': [] },
+      mappingsByGroup: new Map(),
+      groupKeysInOrder: [],
       sortedGroups: [],
       sortedColorVariables: [],
       sortedContrastVariables: [],
@@ -285,6 +309,8 @@ describe('template renderer workflows', () => {
       mappingSearchText: '',
       mappingColorVariableFilter: [],
       mappingContrastVariableFilter: [],
+      selectedMappingIds: [],
+      selectedMappingKeys: new Set<string>(),
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
@@ -293,6 +319,9 @@ describe('template renderer workflows', () => {
       setMappingSearchText: vi.fn(),
       setMappingColorVariableFilter: vi.fn(),
       setMappingContrastVariableFilter: vi.fn(),
+      toggleMappingSelection: vi.fn(),
+      clearMappingSelection: vi.fn(),
+      applySelectedMappingAssignment: vi.fn(),
     });
     view.rerender(<TemplatesPage />);
     expect(view.getByRole('heading', { name: 'Template Details' })).toBeInTheDocument();
@@ -477,6 +506,9 @@ describe('template renderer workflows', () => {
       setMappingSearchText: vi.fn(),
       setMappingColorVariableFilter: vi.fn(),
       setMappingContrastVariableFilter: vi.fn(),
+      toggleMappingSelection: vi.fn(),
+      clearMappingSelection: vi.fn(),
+      applySelectedMappingAssignment: vi.fn(),
       semanticVariant: {
         onAddSemanticVariant: vi.fn(),
         onCommitSemanticTokenModifiers: vi.fn(),
@@ -512,6 +544,22 @@ describe('template renderer workflows', () => {
       colorVariables: template.colorVariables,
       contrastVariables: template.contrastVariables,
       groups: template.groups,
+      sortedGroups: template.groups,
+      filteredColorVariables: template.colorVariables,
+      filteredContrastVariables: template.contrastVariables,
+      sortedColorVariables: template.colorVariables,
+      colorVariableGroupSections: [{
+        groupKey: 'core',
+        groupLabel: 'core',
+        groupRef: 'core',
+        variables: template.colorVariables,
+      }],
+      contrastVariableGroupSections: [{
+        groupKey: '__ungrouped__',
+        groupLabel: 'Ungrouped',
+        groupRef: null,
+        variables: template.contrastVariables,
+      }],
       variablesSearchText: '',
       addVariableName: 'accent',
       canEdit: true,
@@ -528,6 +576,19 @@ describe('template renderer workflows', () => {
         'textmate token': [template.mappings[1]],
         'semantic token': [template.mappings[2]],
       },
+      mappingsByGroup: new Map([
+        ['core', {
+          theme: [template.mappings[0]],
+          'textmate token': [],
+          'semantic token': [template.mappings[2]],
+        }],
+        ['__ungrouped__', {
+          theme: [],
+          'textmate token': [template.mappings[1]],
+          'semantic token': [],
+        }],
+      ]),
+      groupKeysInOrder: ['core', '__ungrouped__'],
       sortedGroups: template.groups,
       sortedColorVariables: template.colorVariables,
       sortedContrastVariables: template.contrastVariables,
@@ -538,6 +599,8 @@ describe('template renderer workflows', () => {
       mappingSearchText: 'editor',
       mappingColorVariableFilter: [],
       mappingContrastVariableFilter: [],
+      selectedMappingIds: [],
+      selectedMappingKeys: new Set<string>(),
       ...mappingCallbacks,
     });
 
@@ -641,6 +704,79 @@ describe('template renderer workflows', () => {
 
     await testUndo.redo.execute();
     expect(templatesStore.getStore().state.templates['template-a']?.['1.0.0']?.template?.groups).toEqual(['core']);
+  });
+
+  it('undoes and redoes a multi-mapping assignment as one history entry', async () => {
+    await undoManagerV2.clearPersisted();
+    const templatesStore = new TemplatesStore();
+    const templateUiStore = new TemplateUiStore();
+    const undoStackStore = new UndoStackStore();
+    const template = templateSchema.parse({
+      name: 'template-a',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      groups: ['core'],
+      colorVariables: [{ key: 'editorFg' }],
+      contrastVariables: [],
+      mappings: [
+        { token: { key: 'one', type: 'theme' }, groupRef: null, colorVariableRef: null, contrastVariableRef: null },
+        { token: { key: 'two', type: 'textmate token' }, groupRef: null, colorVariableRef: null, contrastVariableRef: null },
+      ],
+    });
+    templatesStore.getStore().updateTemplate(template);
+    templateUiStore.getStore().selectTemplate({ name: template.name, version: template.version });
+    templateUiStore.getStore().setSelectedMappingIds([
+      { tokenKey: 'one', tokenType: 'theme' },
+      { tokenKey: 'two', tokenType: 'textmate token' },
+    ]);
+    const saveTemplate = { execute: vi.fn() };
+    const refreshTemplateRefsAndSelect = {
+      execute: vi.fn((_name: string, _version: string, next: typeof template) => {
+        templatesStore.getStore().updateTemplate(next);
+      }),
+    };
+    const buildUniversalUndoProcessor = createTestBuildUniversalUndoProcessor({
+      applyCatalogUndoState: { execute: vi.fn() } as never,
+      applyTemplateUndoState: new ApplyTemplateUndoStateOperation(
+        templatesStore,
+        templateUiStore,
+        saveTemplate as never,
+        refreshTemplateRefsAndSelect as never,
+      ),
+      applyThemeUndoState: { execute: vi.fn() } as never,
+    });
+    const testUndo = createTestUndoOperations(undoStackStore, buildUniversalUndoProcessor);
+    const controller = new ApplySelectedMappingAssignmentController(
+      templatesStore,
+      templateUiStore,
+      new CatalogsStore(),
+      new CatalogUiStore(),
+      new ThemeUiStore(),
+      new ApplyMappingAssignmentOperation(),
+      new BumpTemplateVersionForEditOperation(),
+      saveTemplate as never,
+      refreshTemplateRefsAndSelect as never,
+      new RecordTemplateUndoOperation(
+        new RecordUndoEntryOperation(undoStackStore),
+        buildUniversalUndoProcessor,
+      ),
+      testUndo.setCurrentUndoStackId,
+    );
+
+    await controller.run({ kind: 'color', value: 'editorFg' });
+    const currentMappings = () => templatesStore.getStore().state
+      .templates['template-a']?.['1.0.0']?.template?.mappings;
+    expect(currentMappings()?.map((mapping) => mapping.colorVariableRef))
+      .toEqual(['editorFg', 'editorFg']);
+    expect(undoStackStore.getStore().state.undoMenu.frames).toHaveLength(2);
+
+    await testUndo.undo.execute();
+    expect(currentMappings()?.map((mapping) => mapping.colorVariableRef)).toEqual([null, null]);
+
+    await testUndo.redo.execute();
+    expect(currentMappings()?.map((mapping) => mapping.colorVariableRef))
+      .toEqual(['editorFg', 'editorFg']);
   });
 
   it('does not record template undo entries for rejected variable or group edits', async () => {

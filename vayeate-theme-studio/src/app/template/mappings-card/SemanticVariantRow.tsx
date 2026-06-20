@@ -38,6 +38,8 @@ export interface SemanticVariantRowProps {
   isModifierOpen: boolean;
   onOpenModifierDropdown: () => void;
   onCloseModifierDropdown: () => void;
+  isSelected: boolean;
+  onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }
 
 function SemanticVariantRowComponent({
@@ -58,6 +60,8 @@ function SemanticVariantRowComponent({
   isModifierOpen,
   onOpenModifierDropdown,
   onCloseModifierDropdown,
+  isSelected,
+  onToggleSelection,
 }: SemanticVariantRowProps) {
   const isBlockingLock = !mapping.colorVariableRef;
   let parsed: { type: string; modifiers: string[]; language: string | null };
@@ -151,6 +155,10 @@ function SemanticVariantRowComponent({
     onRemoveMapping(mapping.token.key, mapping.token.type);
   }
 
+  function onMappingSelectionClick() {
+    onToggleSelection(mapping.token.key, mapping.token.type);
+  }
+
   function onVariantGroupSelectChange(e: ChangeEvent<HTMLSelectElement>) {
     onUpdateGroupRef(mapping.token.key, mapping.token.type, e.target.value || null);
   }
@@ -189,9 +197,23 @@ function SemanticVariantRowComponent({
 
   return (
     <div
-      className={`mapping-variant-wrapper ${isStarVariant ? 'mapping-variant-wrapper-star ' : ''}${isOrphan ? 'mapping-orphan' : ''} ${isBlockingLock ? 'mapping-blocking-lock' : ''}`}
+      className={`mapping-variant-wrapper ${isSelected ? 'mapping-row-selected ' : ''}${isStarVariant ? 'mapping-variant-wrapper-star ' : ''}${isOrphan ? 'mapping-orphan' : ''} ${isBlockingLock ? 'mapping-blocking-lock' : ''}`}
     >
       <div className="mapping-variant-label" title={mapping.token.key}>
+        {canEdit && (
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={isSelected}
+            aria-label={`Select mapping ${mapping.token.key}`}
+            className="checkbox-icon-btn mapping-selection-btn"
+            onClick={onMappingSelectionClick}
+          >
+            <span className="material-symbols-outlined" aria-hidden>
+              {isSelected ? 'check_box' : 'check_box_outline_blank'}
+            </span>
+          </button>
+        )}
         {mapping.token.key}
       </div>
       <div className="mapping-variant-controls-row">

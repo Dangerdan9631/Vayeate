@@ -18,6 +18,8 @@ import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../
 import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
 
 const UNGROUPED_KEY = '__ungrouped__';
+const MAPPING_ROW_ESTIMATED_HEIGHT = 30;
+const BULK_CLEAR_VALUE = '__clear_assignment__';
 
 /** Virtual base for "*" (display-only; never persisted). */
 const VIRTUAL_STAR_BASE: Mapping = {
@@ -109,6 +111,8 @@ function GroupSection({
   onUpdateContrastRef,
   semanticVariant,
   onRemoveMapping,
+  selectedMappingKeys,
+  onToggleSelection,
 }: {
   groupKey: string;
   groupLabel: string;
@@ -125,6 +129,8 @@ function GroupSection({
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
+  selectedMappingKeys: ReadonlySet<string>;
+  onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }) {
   const sectionGroupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
   const [collapsed, setCollapsed] = useState(false);
@@ -169,6 +175,8 @@ function GroupSection({
                 onUpdateContrastRef={onUpdateContrastRef}
                 semanticVariant={semanticVariant}
                 onRemoveMapping={onRemoveMapping}
+                selectedMappingKeys={selectedMappingKeys}
+                onToggleSelection={onToggleSelection}
               />
             );
           })}
@@ -194,6 +202,8 @@ function MappingTypeSection({
   onUpdateContrastRef,
   semanticVariant,
   onRemoveMapping,
+  selectedMappingKeys,
+  onToggleSelection,
 }: {
   tokenType: TokenType;
   mappings: Mapping[];
@@ -210,6 +220,8 @@ function MappingTypeSection({
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
+  selectedMappingKeys: ReadonlySet<string>;
+  onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const label = tokenTypeLabel(tokenType);
@@ -257,13 +269,15 @@ function MappingTypeSection({
                 onUpdateColorRef={onUpdateColorRef}
                 onUpdateContrastRef={onUpdateContrastRef}
                 onRemoveMapping={onRemoveMapping ?? noopRemoveMapping}
+                selectedMappingKeys={selectedMappingKeys}
+                onToggleSelection={onToggleSelection}
               />
             ))
           ) : (
             <VirtualizedRowList
               items={mappings}
               getItemKey={(m) => `${m.token.type}::${m.token.key}`}
-              estimateSize={() => 36}
+              estimateSize={() => MAPPING_ROW_ESTIMATED_HEIGHT}
               renderItem={(m) => {
                 const mKey = `${m.token.type}::${m.token.key}`;
                 return (
@@ -277,6 +291,8 @@ function MappingTypeSection({
                     onUpdateGroupRef={onUpdateGroupRef}
                     onUpdateColorRef={onUpdateColorRef}
                     onUpdateContrastRef={onUpdateContrastRef}
+                    isSelected={selectedMappingKeys.has(mKey)}
+                    onToggleSelection={onToggleSelection}
                   />
                 );
               }}
@@ -304,6 +320,8 @@ function SemanticBlockRows({
   onUpdateColorRef,
   onUpdateContrastRef,
   onRemoveMapping,
+  selectedMappingKeys,
+  onToggleSelection,
 }: {
   base: Mapping;
   variants: Mapping[];
@@ -320,11 +338,14 @@ function SemanticBlockRows({
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
   onRemoveMapping: (tokenKey: string, tokenType: TokenType) => void;
+  selectedMappingKeys: ReadonlySet<string>;
+  onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }) {
   const baseKey = `${base.token.type}::${base.token.key}`;
   const isVirtualStarBase = base.token.key === SEMANTIC_WILDCARD_TYPE;
   const isBaseOrphan = !isVirtualStarBase && orphanKeys.has(baseKey);
   const isBaseBlockingLock = !isVirtualStarBase && !base.colorVariableRef;
+  const isBaseSelected = selectedMappingKeys.has(baseKey);
   const type = base.token.key;
 
   const [openModifierKey, setOpenModifierKey] = useState<string | null>(null);
@@ -379,6 +400,10 @@ function SemanticBlockRows({
     handleBaseContrastChange(e.target.value);
   }
 
+  function onBaseSelectionClick() {
+    onToggleSelection(base.token.key, base.token.type);
+  }
+
   const handleAddVariant = () =>
     semanticVariant.onAddSemanticVariant(
       type,
@@ -388,7 +413,7 @@ function SemanticBlockRows({
   return (
     <div className="mapping-semantic-block">
       <div
-        className={`mapping-row mapping-row-base ${isVirtualStarBase ? 'mapping-row-virtual-star ' : ''}${isBaseOrphan ? 'mapping-orphan' : ''} ${isBaseBlockingLock ? 'mapping-blocking-lock' : ''}`}
+        className={`mapping-row mapping-row-base ${isBaseSelected ? 'mapping-row-selected ' : ''}${isVirtualStarBase ? 'mapping-row-virtual-star ' : ''}${isBaseOrphan ? 'mapping-orphan' : ''} ${isBaseBlockingLock ? 'mapping-blocking-lock' : ''}`}
       >
         {isVirtualStarBase ? (
           <select
@@ -422,6 +447,20 @@ function SemanticBlockRows({
           </select>
         )}
         <div className="mapping-col-name">
+          {canEdit && !isVirtualStarBase && (
+            <button
+              type="button"
+              role="checkbox"
+              aria-checked={isBaseSelected}
+              aria-label={`Select mapping ${base.token.key}`}
+              className="checkbox-icon-btn mapping-selection-btn"
+              onClick={onBaseSelectionClick}
+            >
+              <span className="material-symbols-outlined" aria-hidden>
+                {isBaseSelected ? 'check_box' : 'check_box_outline_blank'}
+              </span>
+            </button>
+          )}
           <span
             className={`mapping-token-name${isVirtualStarBase ? ' mapping-token-name-virtual' : ''}`}
             title={base.token.key}
@@ -509,6 +548,8 @@ function SemanticBlockRows({
             onUpdateColorRef={onUpdateColorRef}
             onUpdateContrastRef={onUpdateContrastRef}
             onRemoveMapping={onRemoveMapping}
+            isSelected={selectedMappingKeys.has(`${m.token.type}::${m.token.key}`)}
+            onToggleSelection={onToggleSelection}
           />
         )}
       />
@@ -543,6 +584,11 @@ export function MappingsCard() {
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
+    selectedMappingIds,
+    selectedMappingKeys,
+    toggleMappingSelection,
+    clearMappingSelection,
+    applySelectedMappingAssignment,
   } = useMappingsCardViewModel();
 
   const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | null>(null);
@@ -614,6 +660,34 @@ export function MappingsCard() {
 
   function onMappingSearchInputChange(e: ChangeEvent<HTMLInputElement>) {
     handleSearchTextChange(e.target.value);
+  }
+
+  function onToggleMappingSelection(tokenKey: string, tokenType: TokenType) {
+    toggleMappingSelection({ tokenKey, tokenType });
+  }
+
+  function onBulkGroupChange(e: ChangeEvent<HTMLSelectElement>) {
+    if (!e.target.value) return;
+    applySelectedMappingAssignment({
+      kind: 'group',
+      value: e.target.value === BULK_CLEAR_VALUE ? null : e.target.value,
+    });
+  }
+
+  function onBulkColorChange(e: ChangeEvent<HTMLSelectElement>) {
+    if (!e.target.value) return;
+    applySelectedMappingAssignment({
+      kind: 'color',
+      value: e.target.value === BULK_CLEAR_VALUE ? null : e.target.value as ColorVariableKey,
+    });
+  }
+
+  function onBulkContrastChange(e: ChangeEvent<HTMLSelectElement>) {
+    if (!e.target.value) return;
+    applySelectedMappingAssignment({
+      kind: 'contrast',
+      value: e.target.value === BULK_CLEAR_VALUE ? null : e.target.value as ContrastVariableKey,
+    });
   }
 
   const handleToggleColorFilterDropdown = () => setOpenFilter((v) => (v === 'color' ? null : 'color'));
@@ -719,6 +793,48 @@ export function MappingsCard() {
           )}
         </div>
       </div>
+      {selectedMappingIds.length > 0 && (
+        <div className="mappings-filter-row mappings-bulk-actions" aria-label="Bulk mapping assignments">
+          <span className="mappings-selected-count">{selectedMappingIds.length} selected</span>
+          <select
+            className="field-select mapping-var-select"
+            value=""
+            onChange={onBulkGroupChange}
+            aria-label="Assign group to selected mappings"
+          >
+            <option value="">Set group…</option>
+            <option value={BULK_CLEAR_VALUE}>Ungroup</option>
+            {sortedGroups.map((group) => <option key={group} value={group}>{group}</option>)}
+          </select>
+          <select
+            className="field-select mapping-var-select"
+            value=""
+            onChange={onBulkColorChange}
+            aria-label="Assign color variable to selected mappings"
+          >
+            <option value="">Set color…</option>
+            <option value={BULK_CLEAR_VALUE}>Clear color</option>
+            {sortedColorVariables.map((variable) => (
+              <option key={variable.key} value={variable.key}>{variable.key}</option>
+            ))}
+          </select>
+          <select
+            className="field-select mapping-var-select"
+            value=""
+            onChange={onBulkContrastChange}
+            aria-label="Assign contrast variable to selected mappings"
+          >
+            <option value="">Set contrast…</option>
+            <option value={BULK_CLEAR_VALUE}>Clear contrast</option>
+            {sortedContrastVariables.map((variable) => (
+              <option key={variable.key} value={variable.key}>{variable.key}</option>
+            ))}
+          </select>
+          <button type="button" className="btn-secondary" onClick={clearMappingSelection}>
+            Clear selection
+          </button>
+        </div>
+      )}
       {groupKeysInOrder.map((groupKey) => {
         const byType = mappingsByGroup.get(groupKey)!;
         const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
@@ -740,6 +856,8 @@ export function MappingsCard() {
             onUpdateContrastRef={onUpdateContrastRef}
             semanticVariant={semanticVariant}
             onRemoveMapping={onRemoveMapping}
+            selectedMappingKeys={selectedMappingKeys}
+            onToggleSelection={onToggleMappingSelection}
           />
         );
       })}

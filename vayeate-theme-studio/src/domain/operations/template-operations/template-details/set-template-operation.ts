@@ -22,6 +22,7 @@ export class SetTemplateOperation {
 
   execute(template: Template | null): void {
     if (!template) {
+      this.templateUiStore.getStore().setSelectedMappingIds([]);
       this.templateUiStore.getStore().selectTemplate(null);
       this.templateUiStore.getStore().setTemplateLoadState('unloaded');
       return;

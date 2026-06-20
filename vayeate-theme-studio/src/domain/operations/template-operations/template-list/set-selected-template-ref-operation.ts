@@ -21,6 +21,10 @@ export class SetSelectedTemplateRefOperation {
    */
 
   execute(ref: TemplateReference | null): void {
+    const currentRef = this.templateUiStore.getStore().state.selectedRef;
+    if (currentRef?.name !== ref?.name || currentRef?.version !== ref?.version) {
+      this.templateUiStore.getStore().setSelectedMappingIds([]);
+    }
     this.templateUiStore.getStore().selectTemplate(ref);
     this.templateUiStore.getStore().setTemplateLoadState(ref ? 'loading' : 'unloaded');
 

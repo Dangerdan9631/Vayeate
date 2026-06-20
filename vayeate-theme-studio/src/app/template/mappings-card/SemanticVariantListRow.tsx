@@ -24,6 +24,8 @@ export interface SemanticVariantListRowProps {
   isModifierOpen: boolean;
   onOpenModifierDropdownForKey: (tokenKey: string) => void;
   onCloseModifierDropdown: () => void;
+  isSelected: boolean;
+  onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }
 
 function SemanticVariantListRowComponent({
@@ -44,6 +46,8 @@ function SemanticVariantListRowComponent({
   isModifierOpen,
   onOpenModifierDropdownForKey,
   onCloseModifierDropdown,
+  isSelected,
+  onToggleSelection,
 }: SemanticVariantListRowProps) {
   function onOpenModifierDropdown() {
     onOpenModifierDropdownForKey(mapping.token.key);
@@ -68,6 +72,8 @@ function SemanticVariantListRowComponent({
       onUpdateColorRef={onUpdateColorRef}
       onUpdateContrastRef={onUpdateContrastRef}
       onRemoveMapping={onRemoveMapping}
+      isSelected={isSelected}
+      onToggleSelection={onToggleSelection}
     />
   );
 }

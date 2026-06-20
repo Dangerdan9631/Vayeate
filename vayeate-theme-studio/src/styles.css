@@ -1237,6 +1237,26 @@ body {
   padding: 3px 0;
 }
 
+.mapping-row-selected {
+  background: color-mix(in srgb, var(--accent-color, #6ea8fe) 18%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--accent-color, #6ea8fe) 55%, transparent);
+}
+
+.mapping-selection-btn {
+  flex: 0 0 auto;
+  margin-right: 0.25rem;
+}
+
+.mappings-bulk-actions {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mappings-selected-count {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
 .mapping-token-name {
   flex: 1;
   min-width: 0;
