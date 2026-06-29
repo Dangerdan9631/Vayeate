@@ -37,7 +37,7 @@ export class VariablesCardHandler {
       case VariablesCardActionType.VariablesSearchTextOnChange:
         return this.setVariablesSearchText.run(action.value);
       case VariablesCardActionType.VariablesAddVariableNameTextOnChange:
-        return this.setTemplateAddVariableName.run(action.value);
+        return this.setTemplateAddVariableName.run(action.variableKind, action.groupRef, action.value);
       case VariablesCardActionType.VariablesAddVariableButtonOnClick:
         return this.addVariable.run(action.groupRef, action.variableKind);
       case VariablesCardActionType.VariablesGroupListOnCommit:

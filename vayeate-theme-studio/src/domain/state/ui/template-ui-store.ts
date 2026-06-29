@@ -18,7 +18,7 @@ interface TemplateUiStoreState {
   setSelectedMappingIds: (values: TemplateMappingId[]) => void;
   setVariablesSearchText: (value: string) => void;
   setAddGroupName: (value: string) => void;
-  setAddVariableName: (value: string) => void;
+  setAddVariableName: (draftKey: string, value: string) => void;
 }
 
 /**
@@ -69,9 +69,13 @@ export class TemplateUiStore {
         set((storeState) => {
           storeState.state.addGroupName = value;
         }),
-      setAddVariableName: (value: string) =>
+      setAddVariableName: (draftKey: string, value: string) =>
         set((storeState) => {
-          storeState.state.addVariableName = value;
+          if (value) {
+            storeState.state.addVariableNames[draftKey] = value;
+          } else {
+            delete storeState.state.addVariableNames[draftKey];
+          }
         }),
     }))
   );

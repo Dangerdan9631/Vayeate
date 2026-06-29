@@ -7,6 +7,7 @@ import { BumpTemplateVersionForEditOperation } from '../../../../domain/operatio
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { SetTemplateAddVariableNameOperation } from '../../../../domain/operations/template-operations/variables/set-template-add-variable-name-operation';
+import { getTemplateAddVariableDraftKey, type TemplateVariableKind } from '../../../../domain/state/ui/template-ui-state';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
@@ -44,8 +45,9 @@ export class AddVariableController {
    * @param variableKind Whether to add a color or contrast variable.
    * @returns Resolves when the variable is added and undo is recorded.
    */
-  async run(groupRef: string | null, variableKind: 'color' | 'contrast'): Promise<void> {
-    const key = this.templateUiStore.getStore().state.addVariableName.trim();
+  async run(groupRef: string | null, variableKind: TemplateVariableKind): Promise<void> {
+    const draftKey = getTemplateAddVariableDraftKey(variableKind, groupRef);
+    const key = (this.templateUiStore.getStore().state.addVariableNames[draftKey] ?? '').trim();
     if (!key) return;
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
@@ -75,7 +77,7 @@ export class AddVariableController {
     this.templateUiStore.getStore().selectTemplate({ name: next.name, version: next.version });
     this.saveTemplate.execute(next);
     this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
-    this.setTemplateAddVariableName.execute('');
+    this.setTemplateAddVariableName.execute(variableKind, groupRef, '');
 
     await this.recordTemplateUndo.execute({
       description: `Add ${key} ${variableKind} variable`,

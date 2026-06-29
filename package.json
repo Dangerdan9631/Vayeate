@@ -126,6 +126,21 @@
                 "label": "Deathscythe Light",
                 "uiTheme": "vs",
                 "path": "./themes/deathscythe-light-color-theme.json"
+            },
+            {
+                "label": "Test",
+                "uiTheme": "vs-dark",
+                "path": "./themes/test-color-theme.json"
+            },
+            {
+                "label": "Vayeate-V0-Dark",
+                "uiTheme": "vs-dark",
+                "path": "./themes/vayeate-v0-color-theme.json"
+            },
+            {
+                "label": "Vayeate-V0-Light",
+                "uiTheme": "vs",
+                "path": "./themes/vayeate-v0-light-color-theme.json"
             }
         ]
     },

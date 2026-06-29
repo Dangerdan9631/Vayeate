@@ -7,6 +7,17 @@ import type { TemplateMappingId } from '../../../model/template-mapping-assignme
  */
 export type LoadState = 'unloaded' | 'loading' | 'loaded';
 
+export type TemplateVariableKind = 'color' | 'contrast';
+
+const UNGROUPED_ADD_VARIABLE_DRAFT_KEY = '__ungrouped__';
+
+export function getTemplateAddVariableDraftKey(
+  variableKind: TemplateVariableKind,
+  groupRef: string | null,
+): string {
+  return `${variableKind}:${groupRef ?? UNGROUPED_ADD_VARIABLE_DRAFT_KEY}`;
+}
+
 /**
  * Template editor pane UI state including selection, mapping filters, and add-token drafts.
  */
@@ -21,7 +32,7 @@ export interface TemplateUiState {
   selectedMappingIds: TemplateMappingId[];
   variablesSearchText: string;
   addGroupName: string;
-  addVariableName: string;
+  addVariableNames: Record<string, string>;
 }
 
 /**
@@ -38,5 +49,5 @@ export const initialTemplateUiState: TemplateUiState = {
   selectedMappingIds: [],
   variablesSearchText: '',
   addGroupName: '',
-  addVariableName: '',
+  addVariableNames: {},
 };

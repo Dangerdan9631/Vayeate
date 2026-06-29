@@ -13,6 +13,10 @@ import { VariablesCardActionType } from './actions/variables-card-action-type';
 import { container } from 'tsyringe';
 import { getCurrentTemplate, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
+import {
+  getTemplateAddVariableDraftKey,
+  type TemplateVariableKind,
+} from '../../../domain/state/ui/template-ui-state';
 import type { ColorVariable, ContrastVariable, Template } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
@@ -58,8 +62,7 @@ function buildByGroup<T extends { groupRef?: string | null }>(
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
   const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
-  const hasUngrouped = byGroup.has(UNGROUPED_KEY);
-  return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
+  return [...named, UNGROUPED_KEY];
 }
 
 function buildVariableGroupSections<T extends { groupRef?: string | null }>(
@@ -91,13 +94,13 @@ export interface VariablesCardViewModel {
   colorVariableGroupSections: readonly VariableGroupSection<ColorVariable>[];
   contrastVariableGroupSections: readonly VariableGroupSection<ContrastVariable>[];
   variablesSearchText: string;
-  addVariableName: string;
+  addVariableNames: Readonly<Record<string, string>>;
   canEdit: boolean;
-  canAddColorVariable: boolean;
-  canAddContrastVariable: boolean;
   referencedColorVarKeys: Set<string>;
   referencedContrastVarKeys: Set<string>;
-  onAddVariableNameChange: (value: string) => void;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
   onAddColorVariableClick: (groupRef: string | null) => void;
   onRemoveColorVariableClick: (key: string) => void;
   onAddContrastVariableClick: (groupRef: string | null) => void;
@@ -134,7 +137,7 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     }),
   );
   const variablesSearchText = useStore(templateUiStore.api, (state) => state.state.variablesSearchText);
-  const addVariableName = useStore(templateUiStore.api, (state) => state.state.addVariableName);
+  const addVariableNames = useStore(templateUiStore.api, (state) => state.state.addVariableNames);
 
   const colorVariables = useMemo(
     () => template?.colorVariables ?? EMPTY_COLOR_VARIABLES,
@@ -192,13 +195,16 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
   }, [versionKeysForSelectedName, selectedRef, selectedName, selectedVersion]);
 
   const canEdit = useMemo(() => template !== null && isLatestVersion, [template, isLatestVersion]);
-  const canAddColorVariable = useMemo(
-    () => canEdit && isValidVariableKey(addVariableName.trim(), 'color'),
-    [addVariableName, canEdit],
+  const getAddVariableName = useCallback(
+    (variableKind: TemplateVariableKind, groupRef: string | null) =>
+      addVariableNames[getTemplateAddVariableDraftKey(variableKind, groupRef)] ?? '',
+    [addVariableNames],
   );
-  const canAddContrastVariable = useMemo(
-    () => canEdit && isValidVariableKey(addVariableName.trim(), 'contrast'),
-    [addVariableName, canEdit],
+
+  const canAddVariable = useCallback(
+    (variableKind: TemplateVariableKind, groupRef: string | null) =>
+      canEdit && isValidVariableKey(getAddVariableName(variableKind, groupRef).trim(), variableKind),
+    [canEdit, getAddVariableName],
   );
 
   const referencedColorVarKeys = useMemo(() => {
@@ -230,22 +236,27 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
   );
 
   const onAddVariableNameChange = useCallback(
-    (value: string) => {
-      void dispatch({ type: VariablesCardActionType.VariablesAddVariableNameTextOnChange, value });
+    (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => {
+      void dispatch({
+        type: VariablesCardActionType.VariablesAddVariableNameTextOnChange,
+        value,
+        groupRef,
+        variableKind,
+      });
     },
     [dispatch],
   );
 
   const addColorVariable = useCallback(
     (groupRef?: string | null) => {
-      if (!canAddColorVariable) return;
+      if (!canAddVariable('color', groupRef ?? null)) return;
       void dispatch({
         type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
         groupRef: groupRef ?? null,
         variableKind: 'color',
       });
     },
-    [canAddColorVariable, dispatch],
+    [canAddVariable, dispatch],
   );
 
   const removeColorVariable = useCallback(
@@ -257,14 +268,14 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
 
   const addContrastVariable = useCallback(
     (groupRef?: string | null) => {
-      if (!canAddContrastVariable) return;
+      if (!canAddVariable('contrast', groupRef ?? null)) return;
       void dispatch({
         type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
         groupRef: groupRef ?? null,
         variableKind: 'contrast',
       });
     },
-    [canAddContrastVariable, dispatch],
+    [canAddVariable, dispatch],
   );
 
   const removeContrastVariable = useCallback(
@@ -319,9 +330,9 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     colorVariableGroupSections,
     contrastVariableGroupSections,
     variablesSearchText,
-    addVariableName,
-    canAddColorVariable,
-    canAddContrastVariable,
+    addVariableNames,
+    getAddVariableName,
+    canAddVariable,
     onAddVariableNameChange,
     referencedColorVarKeys,
     referencedContrastVarKeys,

@@ -4,6 +4,7 @@ import {
   type VariableGroupSection,
 } from './use-variables-card-viewmodel';
 import type { ColorVariableKey } from '../../../model/schema/primitives';
+import type { TemplateVariableKind } from '../../../domain/state/ui/template-ui-state';
 import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
 import { VirtualizedRowList } from '../../common/virtualized-row-list/VirtualizedRowList';
 import { ColorVariableRow } from './ColorVariableRow';
@@ -16,8 +17,8 @@ function ColorGroupSubsection({
   sortedGroups,
   referencedKeys,
   canEdit,
-  canAddColorVariable,
-  addVariableName,
+  getAddVariableName,
+  canAddVariable,
   onAddVariableNameChange,
   onAdd,
   onRemove,
@@ -29,9 +30,9 @@ function ColorGroupSubsection({
   sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  canAddColorVariable: boolean;
-  addVariableName: string;
-  onAddVariableNameChange: (value: string) => void;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
   onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
@@ -43,7 +44,7 @@ function ColorGroupSubsection({
   }
 
   function onAddVariableNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    onAddVariableNameChange(e.target.value);
+    onAddVariableNameChange('color', groupRef, e.target.value);
   }
 
   function onAddColorVariableButtonClick() {
@@ -71,14 +72,14 @@ function ColorGroupSubsection({
                 className="token-input"
                 type="text"
                 placeholder="new variable…"
-                value={addVariableName}
+                value={getAddVariableName('color', groupRef)}
                 onChange={onAddVariableNameInputChange}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
-                disabled={!canAddColorVariable}
+                disabled={!canAddVariable('color', groupRef)}
                 onClick={onAddColorVariableButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
@@ -112,8 +113,8 @@ function ColorVariablesSection({
   sortedGroups,
   referencedKeys,
   canEdit,
-  canAddColorVariable,
-  addVariableName,
+  getAddVariableName,
+  canAddVariable,
   onAddVariableNameChange,
   onAdd,
   onRemove,
@@ -124,9 +125,9 @@ function ColorVariablesSection({
   sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  canAddColorVariable: boolean;
-  addVariableName: string;
-  onAddVariableNameChange: (value: string) => void;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
   onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
@@ -162,8 +163,8 @@ function ColorVariablesSection({
               sortedGroups={sortedGroups}
               referencedKeys={referencedKeys}
               canEdit={canEdit}
-              canAddColorVariable={canAddColorVariable}
-              addVariableName={addVariableName}
+              getAddVariableName={getAddVariableName}
+              canAddVariable={canAddVariable}
               onAddVariableNameChange={onAddVariableNameChange}
               onAdd={onAdd}
               onRemove={onRemove}
@@ -184,8 +185,8 @@ function ContrastGroupSubsection({
   sortedGroups,
   referencedKeys,
   canEdit,
-  canAddContrastVariable,
-  addVariableName,
+  getAddVariableName,
+  canAddVariable,
   onAddVariableNameChange,
   onAdd,
   onRemove,
@@ -199,9 +200,9 @@ function ContrastGroupSubsection({
   sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  canAddContrastVariable: boolean;
-  addVariableName: string;
-  onAddVariableNameChange: (value: string) => void;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
   onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
@@ -214,7 +215,7 @@ function ContrastGroupSubsection({
   }
 
   function onContrastAddVariableNameInputChange(e: ChangeEvent<HTMLInputElement>) {
-    onAddVariableNameChange(e.target.value);
+    onAddVariableNameChange('contrast', groupRef, e.target.value);
   }
 
   function onAddContrastVariableButtonClick() {
@@ -242,14 +243,14 @@ function ContrastGroupSubsection({
                 className="token-input"
                 type="text"
                 placeholder="new variable…"
-                value={addVariableName}
+                value={getAddVariableName('contrast', groupRef)}
                 onChange={onContrastAddVariableNameInputChange}
               />
               <button
                 type="button"
                 className="btn-icon btn-add-icon"
                 title="Add"
-                disabled={!canAddContrastVariable}
+                disabled={!canAddVariable('contrast', groupRef)}
                 onClick={onAddContrastVariableButtonClick}
               >
                 <span className="material-symbols-outlined">add</span>
@@ -286,8 +287,8 @@ function ContrastVariablesSection({
   sortedGroups,
   referencedKeys,
   canEdit,
-  canAddContrastVariable,
-  addVariableName,
+  getAddVariableName,
+  canAddVariable,
   onAddVariableNameChange,
   onAdd,
   onRemove,
@@ -300,9 +301,9 @@ function ContrastVariablesSection({
   sortedGroups: readonly string[];
   referencedKeys: Set<string>;
   canEdit: boolean;
-  canAddContrastVariable: boolean;
-  addVariableName: string;
-  onAddVariableNameChange: (value: string) => void;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
   onAdd: (groupRef: string | null) => void;
   onRemove: (key: string) => void;
   onUpdateGroupRef: (key: string, groupRef: string | null) => void;
@@ -340,8 +341,8 @@ function ContrastVariablesSection({
               sortedGroups={sortedGroups}
               referencedKeys={referencedKeys}
               canEdit={canEdit}
-              canAddContrastVariable={canAddContrastVariable}
-              addVariableName={addVariableName}
+              getAddVariableName={getAddVariableName}
+              canAddVariable={canAddVariable}
               onAddVariableNameChange={onAddVariableNameChange}
               onAdd={onAdd}
               onRemove={onRemove}
@@ -371,10 +372,9 @@ export function VariablesCard() {
     referencedColorVarKeys,
     referencedContrastVarKeys,
     canEdit,
-    canAddColorVariable,
-    canAddContrastVariable,
     variablesSearchText,
-    addVariableName,
+    getAddVariableName,
+    canAddVariable,
     onAddVariableNameChange,
     onAddColorVariableClick,
     onRemoveColorVariableClick,
@@ -437,8 +437,8 @@ export function VariablesCard() {
         sortedGroups={sortedGroups}
         referencedKeys={referencedColorVarKeys}
         canEdit={canEdit}
-        canAddColorVariable={canAddColorVariable}
-        addVariableName={addVariableName}
+        getAddVariableName={getAddVariableName}
+        canAddVariable={canAddVariable}
         onAddVariableNameChange={onAddVariableNameChange}
         onAdd={onColorVariablesSectionAdd}
         onRemove={onColorVariablesSectionRemove}
@@ -451,8 +451,8 @@ export function VariablesCard() {
         sortedGroups={sortedGroups}
         referencedKeys={referencedContrastVarKeys}
         canEdit={canEdit}
-        canAddContrastVariable={canAddContrastVariable}
-        addVariableName={addVariableName}
+        getAddVariableName={getAddVariableName}
+        canAddVariable={canAddVariable}
         onAddVariableNameChange={onAddVariableNameChange}
         onAdd={onContrastVariablesSectionAdd}
         onRemove={onContrastVariablesSectionRemove}

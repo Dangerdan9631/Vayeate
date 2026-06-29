@@ -1,5 +1,7 @@
 import { singleton } from 'tsyringe';
 import { TemplateUiStore } from '../../../state/ui/template-ui-store';
+import type { TemplateVariableKind } from '../../../state/ui/template-ui-state';
+import { getTemplateAddVariableDraftKey } from '../../../state/ui/template-ui-state';
 
 /**
  * Store draft value for the "add variable" name input.
@@ -10,12 +12,17 @@ export class SetTemplateAddVariableNameOperation {
 
   /**
    * Runs the set template add variable name mutation.
+   * @param variableKind Variable kind for the targeted add input.
+   * @param groupRef Group ref for the targeted add input.
    * @param value Value (string).
    * @returns Nothing; updates store or invokes a gateway side effect.
    */
 
-  execute(value: string): void {
-    this.templateUiStore.getStore().setAddVariableName(value);
+  execute(variableKind: TemplateVariableKind, groupRef: string | null, value: string): void {
+    this.templateUiStore.getStore().setAddVariableName(
+      getTemplateAddVariableDraftKey(variableKind, groupRef),
+      value,
+    );
   }
 }
 

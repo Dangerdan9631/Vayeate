@@ -1,4 +1,5 @@
-import { ColorVariableKey, ContrastVariableKey } from "../../../../model/schema/primitives";
+import type { TemplateVariableKind } from "../../../../domain/state/ui/template-ui-state";
+import type { ColorVariableKey, ContrastVariableKey } from "../../../../model/schema/primitives";
 import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
@@ -19,8 +20,13 @@ export enum VariablesCardActionType {
  */
 export type VariablesCardActions =
   | { type: VariablesCardActionType.VariablesSearchTextOnChange; value: string }
-  | { type: VariablesCardActionType.VariablesAddVariableNameTextOnChange; value: string }
-  | { type: VariablesCardActionType.VariablesAddVariableButtonOnClick; groupRef: string | null; variableKind: 'color' | 'contrast' }
+  | {
+      type: VariablesCardActionType.VariablesAddVariableNameTextOnChange;
+      value: string;
+      groupRef: string | null;
+      variableKind: TemplateVariableKind;
+    }
+  | { type: VariablesCardActionType.VariablesAddVariableButtonOnClick; groupRef: string | null; variableKind: TemplateVariableKind }
   | { type: VariablesCardActionType.VariablesGroupListOnCommit; value: string; variableKey: string }
   | { type: VariablesCardActionType.VariablesRemoveButtonOnClick; key: ColorVariableKey | ContrastVariableKey }
   | { type: VariablesCardActionType.VariablesContrastSourceListOnCommit; value: ColorVariableKey | null; contrastVariableKey: ContrastVariableKey };
@@ -39,7 +45,6 @@ export function isVariablesCardAction(a: AppAction): a is VariablesCardActions {
 
 const variablesCardCoalescers: Partial<Record<VariablesCardActionType, ActionCoalesceFn>> = {
   [VariablesCardActionType.VariablesSearchTextOnChange]: coalesceLatest,
-  [VariablesCardActionType.VariablesAddVariableNameTextOnChange]: coalesceLatest,
 };
 
 /**

@@ -131,6 +131,12 @@ describe('template flow routing', () => {
     );
     await variablesHandler.handle({ type: VariablesCardActionType.VariablesSearchTextOnChange, value: 'editor' });
     await variablesHandler.handle({
+      type: VariablesCardActionType.VariablesAddVariableNameTextOnChange,
+      groupRef: 'core',
+      variableKind: 'color',
+      value: 'accent',
+    });
+    await variablesHandler.handle({
       type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
       groupRef: 'core',
       variableKind: 'color',
@@ -141,6 +147,7 @@ describe('template flow routing', () => {
       value: 'editorFg',
     });
     expect(variableDeps.setVariablesSearchText.run).toHaveBeenCalledWith('editor');
+    expect(variableDeps.setTemplateAddVariableName.run).toHaveBeenCalledWith('color', 'core', 'accent');
     expect(variableDeps.addVariable.run).toHaveBeenCalledWith('core', 'color');
     expect(variableDeps.updateContrastComparisonSource.run).toHaveBeenCalledWith('contrastMain', 'editorFg');
 

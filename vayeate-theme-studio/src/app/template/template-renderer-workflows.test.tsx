@@ -154,10 +154,10 @@ describe('template renderer workflows', () => {
       colorVariableGroupSections: [],
       contrastVariableGroupSections: [],
       variablesSearchText: '',
-      addVariableName: '',
+      addVariableNames: {},
       canEdit: false,
-      canAddColorVariable: false,
-      canAddContrastVariable: false,
+      getAddVariableName: vi.fn(() => ''),
+      canAddVariable: vi.fn(() => false),
       referencedColorVarKeys: new Set<string>(),
       referencedContrastVarKeys: new Set<string>(),
       onAddVariableNameChange: vi.fn(),
@@ -186,7 +186,9 @@ describe('template renderer workflows', () => {
       mappingColorVariableFilter: [],
       mappingContrastVariableFilter: [],
       selectedMappingIds: [],
+      selectedVisibleMappingIds: [],
       selectedMappingKeys: new Set<string>(),
+      groupSelectionStates: new Map(),
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
@@ -278,10 +280,10 @@ describe('template renderer workflows', () => {
       colorVariableGroupSections: [],
       contrastVariableGroupSections: [],
       variablesSearchText: '',
-      addVariableName: '',
+      addVariableNames: {},
       canEdit: false,
-      canAddColorVariable: false,
-      canAddContrastVariable: false,
+      getAddVariableName: vi.fn(() => ''),
+      canAddVariable: vi.fn(() => false),
       referencedColorVarKeys: new Set<string>(),
       referencedContrastVarKeys: new Set<string>(),
       onAddVariableNameChange: vi.fn(),
@@ -310,7 +312,9 @@ describe('template renderer workflows', () => {
       mappingColorVariableFilter: [],
       mappingContrastVariableFilter: [],
       selectedMappingIds: [],
+      selectedVisibleMappingIds: [],
       selectedMappingKeys: new Set<string>(),
+      groupSelectionStates: new Map(),
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
@@ -553,6 +557,11 @@ describe('template renderer workflows', () => {
         groupLabel: 'core',
         groupRef: 'core',
         variables: template.colorVariables,
+      }, {
+        groupKey: '__ungrouped__',
+        groupLabel: 'Ungrouped',
+        groupRef: null,
+        variables: [],
       }],
       contrastVariableGroupSections: [{
         groupKey: '__ungrouped__',
@@ -561,10 +570,12 @@ describe('template renderer workflows', () => {
         variables: template.contrastVariables,
       }],
       variablesSearchText: '',
-      addVariableName: 'accent',
+      addVariableNames: { 'color:core': 'accent', 'contrast:__ungrouped__': 'accentContrast' },
       canEdit: true,
-      canAddColorVariable: true,
-      canAddContrastVariable: true,
+      getAddVariableName: vi.fn((kind: string, groupRef: string | null) =>
+        kind === 'color' && groupRef === 'core' ? 'accent' : kind === 'contrast' && groupRef === null ? 'accentContrast' : '',
+      ),
+      canAddVariable: vi.fn(() => true),
       referencedColorVarKeys: new Set<string>(['editorFg']),
       referencedContrastVarKeys: new Set<string>(['contrastMain']),
       ...variableCallbacks,
@@ -600,7 +611,9 @@ describe('template renderer workflows', () => {
       mappingColorVariableFilter: [],
       mappingContrastVariableFilter: [],
       selectedMappingIds: [],
+      selectedVisibleMappingIds: [],
       selectedMappingKeys: new Set<string>(),
+      groupSelectionStates: new Map(),
       ...mappingCallbacks,
     });
 
@@ -613,6 +626,16 @@ describe('template renderer workflows', () => {
     const variablesView = render(<VariablesCard />);
     await user.type(variablesView.getByRole('textbox', { name: 'Search variables' }), 'x');
     expect(variableCallbacks.onVariablesSearchChange).toHaveBeenCalled();
+    const addInputs = variablesView.getAllByPlaceholderText('new variable…');
+    expect(addInputs).toHaveLength(3);
+    expect(variablesView.getByRole('button', { name: /Ungrouped\(0\)/ })).toBeInTheDocument();
+    expect(variablesView.getByRole('button', { name: /Ungrouped\(1\)/ })).toBeInTheDocument();
+    await user.type(addInputs[0], 'x');
+    expect(variableCallbacks.onAddVariableNameChange).toHaveBeenLastCalledWith('color', 'core', 'accentx');
+    await user.type(addInputs[1], 'y');
+    expect(variableCallbacks.onAddVariableNameChange).toHaveBeenLastCalledWith('color', null, 'y');
+    await user.type(addInputs[2], 'z');
+    expect(variableCallbacks.onAddVariableNameChange).toHaveBeenLastCalledWith('contrast', null, 'accentContrastz');
     const addButtons = variablesView.getAllByTitle('Add');
     await user.click(addButtons[0]);
     expect(variableCallbacks.onAddColorVariableClick).toHaveBeenCalledWith('core');
