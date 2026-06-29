@@ -51,6 +51,10 @@ function tokenTypeLabel(tokenType: TokenType): string {
 
 function noopRemoveMapping(): void {}
 
+function tokenTypeSelectionStateKey(groupKey: string, tokenType: TokenType): string {
+  return `${groupKey}::${tokenType}`;
+}
+
 /**
  * Groups one semantic base mapping with its variant rows for display.
  */
@@ -114,8 +118,10 @@ function GroupSection({
   onRemoveMapping,
   selectedMappingKeys,
   groupSelectionState,
+  tokenTypeSelectionStates,
   onToggleSelection,
   onSetGroupSelection,
+  onSetTokenTypeSelection,
 }: {
   groupKey: string;
   groupLabel: string;
@@ -134,8 +140,10 @@ function GroupSection({
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
   selectedMappingKeys: ReadonlySet<string>;
   groupSelectionState: TriState;
+  tokenTypeSelectionStates: ReadonlyMap<string, TriState>;
   onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
   onSetGroupSelection: (groupRef: string | null, checked: boolean) => void;
+  onSetTokenTypeSelection: (groupRef: string | null, tokenType: TokenType, checked: boolean) => void;
 }) {
   const sectionGroupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
   const [collapsed, setCollapsed] = useState(false);
@@ -182,6 +190,7 @@ function GroupSection({
                 key={tt}
                 tokenType={tt}
                 mappings={byType[tt]}
+                groupLabel={groupLabel}
                 sectionGroupRef={sectionGroupRef}
                 sortedGroups={sortedGroups}
                 sortedColorVariables={sortedColorVariables}
@@ -196,7 +205,9 @@ function GroupSection({
                 semanticVariant={semanticVariant}
                 onRemoveMapping={onRemoveMapping}
                 selectedMappingKeys={selectedMappingKeys}
+                selectionState={tokenTypeSelectionStates.get(tokenTypeSelectionStateKey(groupKey, tt)) ?? 'none'}
                 onToggleSelection={onToggleSelection}
+                onSetTokenTypeSelection={onSetTokenTypeSelection}
               />
             );
           })}
@@ -209,6 +220,7 @@ function GroupSection({
 function MappingTypeSection({
   tokenType,
   mappings,
+  groupLabel,
   sectionGroupRef,
   sortedGroups,
   sortedColorVariables,
@@ -223,10 +235,13 @@ function MappingTypeSection({
   semanticVariant,
   onRemoveMapping,
   selectedMappingKeys,
+  selectionState,
   onToggleSelection,
+  onSetTokenTypeSelection,
 }: {
   tokenType: TokenType;
   mappings: Mapping[];
+  groupLabel: string;
   sectionGroupRef: string | null;
   sortedGroups: readonly string[];
   sortedColorVariables: readonly ColorVariable[];
@@ -241,7 +256,9 @@ function MappingTypeSection({
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
   selectedMappingKeys: ReadonlySet<string>;
+  selectionState: TriState;
   onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
+  onSetTokenTypeSelection: (groupRef: string | null, tokenType: TokenType, checked: boolean) => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const label = tokenTypeLabel(tokenType);
@@ -254,19 +271,34 @@ function MappingTypeSection({
     [isSemanticWithVariants, mappings],
   );
 
+  function onTokenTypeSelectionChange(checked: boolean) {
+    onSetTokenTypeSelection(sectionGroupRef, tokenType, checked);
+  }
+
   return (
     <div className="tree-section">
-      <button
-        type="button"
-        className="tree-header"
-        onClick={toggleCollapsed}
-      >
-        <span className="material-symbols-outlined tree-chevron">
-          {collapsed ? 'chevron_right' : 'expand_more'}
-        </span>
-        <span className="tree-label">{label}</span>
-        <span className="tree-count">({mappings.length})</span>
-      </button>
+      <div className="tree-header tree-header-with-checkbox">
+        {canEdit && mappings.length > 0 && (
+          <TriStateCheckbox
+            state={selectionState}
+            ariaLabel={`Select ${label} mappings in ${groupLabel}`}
+            className="mapping-selection-btn"
+            onChange={onTokenTypeSelectionChange}
+          />
+        )}
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={toggleCollapsed}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">{label}</span>
+          <span className="tree-count">({mappings.length})</span>
+        </button>
+      </div>
 
       {!collapsed && (
         <div className="tree-children">
@@ -604,11 +636,14 @@ export function MappingsCard() {
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
-    selectedVisibleMappingIds,
+    selectedMappingIds,
     selectedMappingKeys,
     groupSelectionStates,
+    tokenTypeSelectionStates,
+    selectedMappingAssignmentValues,
     toggleMappingSelection,
     setMappingGroupSelection,
+    setMappingTokenTypeSelection,
     clearMappingSelection,
     applySelectedMappingAssignment,
   } = useMappingsCardViewModel();
@@ -692,6 +727,23 @@ export function MappingsCard() {
     setMappingGroupSelection(groupRef, checked);
   }
 
+  function onSetTokenTypeSelection(groupRef: string | null, tokenType: TokenType, checked: boolean) {
+    setMappingTokenTypeSelection(groupRef, tokenType, checked);
+  }
+
+  const bulkGroupValue =
+    selectedMappingAssignmentValues.group === undefined
+      ? ''
+      : selectedMappingAssignmentValues.group ?? BULK_CLEAR_VALUE;
+  const bulkColorValue =
+    selectedMappingAssignmentValues.color === undefined
+      ? ''
+      : selectedMappingAssignmentValues.color ?? BULK_CLEAR_VALUE;
+  const bulkContrastValue =
+    selectedMappingAssignmentValues.contrast === undefined
+      ? ''
+      : selectedMappingAssignmentValues.contrast ?? BULK_CLEAR_VALUE;
+
   function onBulkGroupChange(e: ChangeEvent<HTMLSelectElement>) {
     if (!e.target.value) return;
     applySelectedMappingAssignment({
@@ -723,6 +775,7 @@ export function MappingsCard() {
   return (
     <div className="tokens-card placeholder">
       <h2>Mappings</h2>
+      <div className="mappings-toolbar">
       <div className="mappings-filter-row">
         <input
           type="text"
@@ -819,12 +872,12 @@ export function MappingsCard() {
           )}
         </div>
       </div>
-      {selectedVisibleMappingIds.length > 0 && (
+      {selectedMappingIds.length > 0 && (
         <div className="mappings-filter-row mappings-bulk-actions" aria-label="Bulk mapping assignments">
-          <span className="mappings-selected-count">{selectedVisibleMappingIds.length} selected</span>
+          <span className="mappings-selected-count">{selectedMappingIds.length} selected</span>
           <select
             className="field-select mapping-var-select"
-            value=""
+            value={bulkGroupValue}
             onChange={onBulkGroupChange}
             aria-label="Assign group to selected mappings"
           >
@@ -834,7 +887,7 @@ export function MappingsCard() {
           </select>
           <select
             className="field-select mapping-var-select"
-            value=""
+            value={bulkColorValue}
             onChange={onBulkColorChange}
             aria-label="Assign color variable to selected mappings"
           >
@@ -846,7 +899,7 @@ export function MappingsCard() {
           </select>
           <select
             className="field-select mapping-var-select"
-            value=""
+            value={bulkContrastValue}
             onChange={onBulkContrastChange}
             aria-label="Assign contrast variable to selected mappings"
           >
@@ -861,6 +914,7 @@ export function MappingsCard() {
           </button>
         </div>
       )}
+      </div>
       {groupKeysInOrder.map((groupKey) => {
         const byType = mappingsByGroup.get(groupKey)!;
         const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
@@ -884,8 +938,10 @@ export function MappingsCard() {
             onRemoveMapping={onRemoveMapping}
             selectedMappingKeys={selectedMappingKeys}
             groupSelectionState={groupSelectionStates.get(groupKey) ?? 'none'}
+            tokenTypeSelectionStates={tokenTypeSelectionStates}
             onToggleSelection={onToggleMappingSelection}
             onSetGroupSelection={onSetGroupSelection}
+            onSetTokenTypeSelection={onSetTokenTypeSelection}
           />
         );
       })}

@@ -43,7 +43,7 @@ export const CATALOG_LIFECYCLE_EXCLUDED_CONTROLLERS = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// Phase C6 — Template: non-state-changing (13)
+// Phase C6 — Template: non-state-changing (15)
 // ---------------------------------------------------------------------------
 
 /**
@@ -58,6 +58,8 @@ export const TEMPLATE_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/template/mappings-card/controllers/set-mapping-contrast-variable-filter-controller.ts',
   'src/app/template/mappings-card/controllers/clear-selected-mappings-controller.ts',
   'src/app/template/mappings-card/controllers/toggle-selected-mapping-controller.ts',
+  'src/app/template/mappings-card/controllers/set-mapping-group-selection-controller.ts',
+  'src/app/template/mappings-card/controllers/set-mapping-token-type-selection-controller.ts',
   'src/app/template/create-template-dialog/controllers/set-create-form-name-controller.ts',
   'src/app/template/templates-card/controllers/open-create-dialog-controller.ts',
   'src/app/template/create-template-dialog/controllers/close-create-dialog-controller.ts',

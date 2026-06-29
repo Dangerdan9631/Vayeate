@@ -91,6 +91,15 @@ function sortedGroupKeys(byGroup: Map<string, Record<TokenType, Mapping[]>>): st
   return hasUngrouped ? [...named, UNGROUPED_KEY] : named;
 }
 
+function getUniformValue<T>(
+  mappings: readonly Mapping[],
+  selector: (mapping: Mapping) => T,
+): T | undefined {
+  if (mappings.length === 0) return undefined;
+  const first = selector(mappings[0]);
+  return mappings.every((mapping) => Object.is(selector(mapping), first)) ? first : undefined;
+}
+
 /**
  * Subscribes to template mappings, catalogs, and filter state for the mappings card.
  * @returns Mappings card state and dispatch-backed handlers.
@@ -338,6 +347,18 @@ export function useMappingsCardViewModel() {
     [dispatch],
   );
 
+  const setMappingTokenTypeSelection = useCallback(
+    (groupRef: string | null, tokenType: TokenType, checked: boolean) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingTokenTypeSelectionOnChange,
+        groupRef,
+        tokenType,
+        checked,
+      });
+    },
+    [dispatch],
+  );
+
   const applySelectedMappingAssignment = useCallback(
     (assignment: TemplateMappingAssignment) => {
       void dispatch({
@@ -458,6 +479,49 @@ export function useMappingsCardViewModel() {
     return states;
   }, [mappingsByType, selectedMappingKeys, template]);
 
+  const tokenTypeSelectionStates = useMemo(() => {
+    const states = new Map<string, TriState>();
+    if (!template) return states;
+
+    const allByGroup = buildByGroup(mappingsByType);
+    if (!allByGroup.has(UNGROUPED_KEY)) {
+      allByGroup.set(UNGROUPED_KEY, {
+        theme: [],
+        'textmate token': [],
+        'semantic token': [],
+      });
+    }
+
+    for (const [groupKey, byType] of allByGroup) {
+      for (const tt of DISPLAYED_TOKEN_TYPES) {
+        const ids = byType[tt].map(mappingIdFromMapping);
+        const selectedCount = ids.filter((id) => selectedMappingKeys.has(templateMappingIdKey(id))).length;
+        const state: TriState = selectedCount === 0
+          ? 'none'
+          : selectedCount === ids.length
+            ? 'all'
+            : 'some';
+        states.set(`${groupKey}::${tt}`, ids.length === 0 ? 'none' : state);
+      }
+    }
+
+    return states;
+  }, [mappingsByType, selectedMappingKeys, template]);
+
+  const selectedMappings = useMemo(() => {
+    if (!template) return [];
+    return template.mappings.filter((mapping) => selectedMappingKeys.has(templateMappingIdKey(mappingIdFromMapping(mapping))));
+  }, [selectedMappingKeys, template]);
+
+  const selectedMappingAssignmentValues = useMemo(
+    () => ({
+      group: getUniformValue(selectedMappings, (mapping) => mapping.groupRef ?? null),
+      color: getUniformValue(selectedMappings, (mapping) => mapping.colorVariableRef ?? null),
+      contrast: getUniformValue(selectedMappings, (mapping) => mapping.contrastVariableRef ?? null),
+    }),
+    [selectedMappings],
+  );
+
   return {
     template,
     mappingsByType,
@@ -477,6 +541,8 @@ export function useMappingsCardViewModel() {
     selectedVisibleMappingIds,
     selectedMappingKeys,
     groupSelectionStates,
+    tokenTypeSelectionStates,
+    selectedMappingAssignmentValues,
     onUpdateGroupRef: updateMappingGroupRef,
     onUpdateColorRef: updateMappingColorRef,
     onUpdateContrastRef: updateMappingContrastRef,
@@ -487,6 +553,7 @@ export function useMappingsCardViewModel() {
     setMappingContrastVariableFilter,
     toggleMappingSelection,
     setMappingGroupSelection,
+    setMappingTokenTypeSelection,
     clearMappingSelection,
     applySelectedMappingAssignment,
   };

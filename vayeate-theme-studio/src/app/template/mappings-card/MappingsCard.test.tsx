@@ -33,6 +33,7 @@ function createViewModel(selected: boolean) {
   const toggleMappingSelection = vi.fn();
   const clearMappingSelection = vi.fn();
   const applySelectedMappingAssignment = vi.fn();
+  const setMappingTokenTypeSelection = vi.fn();
   return {
     value: {
       template,
@@ -61,6 +62,14 @@ function createViewModel(selected: boolean) {
       groupSelectionStates: new Map([
         ['__ungrouped__', selected ? 'all' as const : 'none' as const],
       ]),
+      tokenTypeSelectionStates: new Map([
+        ['__ungrouped__::theme', selected ? 'all' as const : 'none' as const],
+      ]),
+      selectedMappingAssignmentValues: {
+        group: (selected ? null : undefined) as string | null | undefined,
+        color: (selected ? null : undefined) as string | null | undefined,
+        contrast: (selected ? null : undefined) as string | null | undefined,
+      },
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
@@ -71,12 +80,14 @@ function createViewModel(selected: boolean) {
       setMappingContrastVariableFilter: vi.fn(),
       toggleMappingSelection,
       setMappingGroupSelection: vi.fn(),
+      setMappingTokenTypeSelection,
       clearMappingSelection,
       applySelectedMappingAssignment,
     },
     toggleMappingSelection,
     clearMappingSelection,
     applySelectedMappingAssignment,
+    setMappingTokenTypeSelection,
   };
 }
 
@@ -107,6 +118,31 @@ describe('MappingsCard multi-selection', () => {
     await userEvent.click(view.getByRole('checkbox', { name: 'Select mappings in Ungrouped' }));
 
     expect(vm.value.setMappingGroupSelection).toHaveBeenCalledWith(null, true);
+  });
+
+  it('sets token type selection from the section heading checkbox', async () => {
+    const vm = createViewModel(false);
+    vi.mocked(useMappingsCardViewModel).mockReturnValue(vm.value);
+    const view = render(<MappingsCard />);
+
+    await userEvent.click(view.getByRole('checkbox', { name: 'Select Theme Tokens mappings in Ungrouped' }));
+
+    expect(vm.setMappingTokenTypeSelection).toHaveBeenCalledWith(null, 'theme', true);
+  });
+
+  it('shows shared selected assignment values in bulk dropdowns', () => {
+    const vm = createViewModel(true);
+    vm.value.selectedMappingAssignmentValues = {
+      group: 'base',
+      color: 'foreground',
+      contrast: 'mainContrast',
+    };
+    vi.mocked(useMappingsCardViewModel).mockReturnValue(vm.value);
+    const view = render(<MappingsCard />);
+
+    expect(view.getByLabelText('Assign group to selected mappings')).toHaveValue('base');
+    expect(view.getByLabelText('Assign color variable to selected mappings')).toHaveValue('foreground');
+    expect(view.getByLabelText('Assign contrast variable to selected mappings')).toHaveValue('mainContrast');
   });
 
   it('applies each supported assignment to the selected set and clears selection', async () => {

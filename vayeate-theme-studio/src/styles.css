@@ -832,6 +832,14 @@ body {
   margin-bottom: 12px;
 }
 
+.mappings-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  padding-top: 1px;
+  background: var(--card-bg);
+}
+
 .mappings-filter-search {
   flex: 1;
   min-width: 0;

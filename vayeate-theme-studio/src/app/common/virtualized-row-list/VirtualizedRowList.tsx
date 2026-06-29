@@ -46,6 +46,7 @@ export function VirtualizedRowList<T>({
   emptyHint,
 }: VirtualizedRowListProps<T>) {
   const listRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
   const [scrollElement, setScrollElement] = useState<HTMLElement | null>(null);
   const [scrollMargin, setScrollMargin] = useState(0);
   const shouldVirtualize = items.length >= VIRTUALIZE_MIN_COUNT;
@@ -58,6 +59,14 @@ export function VirtualizedRowList<T>({
     setScrollMargin(scrollEl ? scrollMarginFor(listEl, scrollEl) : 0);
   }, []);
 
+  const scheduleScrollMetricsUpdate = useCallback(() => {
+    if (frameRef.current !== null) return;
+    frameRef.current = window.requestAnimationFrame(() => {
+      frameRef.current = null;
+      updateScrollMetrics();
+    });
+  }, [updateScrollMetrics]);
+
   useLayoutEffect(() => {
     if (!shouldVirtualize) return;
     updateScrollMetrics();
@@ -66,13 +75,26 @@ export function VirtualizedRowList<T>({
     const ro = new ResizeObserver(updateScrollMetrics);
     ro.observe(listEl);
     const scrollEl = findScrollParent(listEl);
-    if (scrollEl) ro.observe(scrollEl);
-    window.addEventListener('resize', updateScrollMetrics);
+    const mo = scrollEl
+      ? new MutationObserver(scheduleScrollMetricsUpdate)
+      : null;
+    if (scrollEl) {
+      ro.observe(scrollEl);
+      scrollEl.addEventListener('scroll', scheduleScrollMetricsUpdate, { passive: true });
+      mo?.observe(scrollEl, { childList: true, subtree: true });
+    }
+    window.addEventListener('resize', scheduleScrollMetricsUpdate);
     return () => {
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = null;
+      }
       ro.disconnect();
-      window.removeEventListener('resize', updateScrollMetrics);
+      mo?.disconnect();
+      scrollEl?.removeEventListener('scroll', scheduleScrollMetricsUpdate);
+      window.removeEventListener('resize', scheduleScrollMetricsUpdate);
     };
-  }, [shouldVirtualize, items.length, updateScrollMetrics]);
+  }, [shouldVirtualize, items.length, scheduleScrollMetricsUpdate, updateScrollMetrics]);
 
   const virtualizer = useVirtualizer({
     count: shouldVirtualize ? items.length : 0,
@@ -81,6 +103,11 @@ export function VirtualizedRowList<T>({
     overscan: VIRTUAL_OVERSCAN,
     scrollMargin,
   });
+
+  useLayoutEffect(() => {
+    if (!shouldVirtualize) return;
+    virtualizer.measure();
+  }, [shouldVirtualize, scrollElement, scrollMargin, items.length, virtualizer]);
 
   if (items.length === 0) {
     return emptyHint ? <p className="empty-hint">{emptyHint}</p> : null;

@@ -19,6 +19,7 @@ export enum MappingsCardActionType {
   MappingSemanticTokenVariantRemoveButtonOnClick = 'TEMPLATE_MAPPING_SEMANTIC_TOKEN_VARIANT_REMOVE_BUTTON_ON_CLICK',
   MappingSelectionOnToggle = 'TEMPLATE_MAPPING_SELECTION_ON_TOGGLE',
   MappingGroupSelectionOnChange = 'TEMPLATE_MAPPING_GROUP_SELECTION_ON_CHANGE',
+  MappingTokenTypeSelectionOnChange = 'TEMPLATE_MAPPING_TOKEN_TYPE_SELECTION_ON_CHANGE',
   MappingSelectionOnClear = 'TEMPLATE_MAPPING_SELECTION_ON_CLEAR',
   MappingSelectedAssignmentOnCommit = 'TEMPLATE_MAPPING_SELECTED_ASSIGNMENT_ON_COMMIT',
 }
@@ -39,6 +40,7 @@ export type MappingsCardActions =
   | { type: MappingsCardActionType.MappingSemanticTokenVariantRemoveButtonOnClick; tokenKey: string; tokenType: TokenType }
   | { type: MappingsCardActionType.MappingSelectionOnToggle; mappingId: TemplateMappingId }
   | { type: MappingsCardActionType.MappingGroupSelectionOnChange; groupRef: string | null; checked: boolean }
+  | { type: MappingsCardActionType.MappingTokenTypeSelectionOnChange; groupRef: string | null; tokenType: TokenType; checked: boolean }
   | { type: MappingsCardActionType.MappingSelectionOnClear }
   | { type: MappingsCardActionType.MappingSelectedAssignmentOnCommit; assignment: TemplateMappingAssignment };
 
