@@ -12,6 +12,7 @@ import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { MappingsCardActions, MappingsCardActionType } from "./mappings-card-action-type";
 import { ApplySelectedMappingAssignmentController } from '../controllers/apply-selected-mapping-assignment-controller';
 import { ClearSelectedMappingsController } from '../controllers/clear-selected-mappings-controller';
+import { SetMappingGroupSelectionController } from '../controllers/set-mapping-group-selection-controller';
 import { ToggleSelectedMappingController } from '../controllers/toggle-selected-mapping-controller';
 
 /**
@@ -33,6 +34,7 @@ export class MappingsCardHandler {
     private readonly updateSemanticVariantKey: UpdateSemanticVariantKeyController,
     private readonly applySelectedMappingAssignment: ApplySelectedMappingAssignmentController,
     private readonly clearSelectedMappings: ClearSelectedMappingsController,
+    private readonly setMappingGroupSelection: SetMappingGroupSelectionController,
     private readonly toggleSelectedMapping: ToggleSelectedMappingController,
     loggerFactory: LoggerFactory,
   ) {
@@ -76,6 +78,8 @@ export class MappingsCardHandler {
         return this.removeMapping.run(action.tokenKey, action.tokenType);
       case MappingsCardActionType.MappingSelectionOnToggle:
         return this.toggleSelectedMapping.run(action.mappingId);
+      case MappingsCardActionType.MappingGroupSelectionOnChange:
+        return this.setMappingGroupSelection.run(action.groupRef, action.checked);
       case MappingsCardActionType.MappingSelectionOnClear:
         return this.clearSelectedMappings.run();
       case MappingsCardActionType.MappingSelectedAssignmentOnCommit:

@@ -54,7 +54,13 @@ function createViewModel(selected: boolean) {
       selectedMappingIds: selected
         ? [{ tokenKey: mapping.token.key, tokenType: mapping.token.type }]
         : [],
+      selectedVisibleMappingIds: selected
+        ? [{ tokenKey: mapping.token.key, tokenType: mapping.token.type }]
+        : [],
       selectedMappingKeys: new Set(selected ? ['theme::editor.foreground'] : []),
+      groupSelectionStates: new Map([
+        ['__ungrouped__', selected ? 'all' as const : 'none' as const],
+      ]),
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
@@ -64,6 +70,7 @@ function createViewModel(selected: boolean) {
       setMappingColorVariableFilter: vi.fn(),
       setMappingContrastVariableFilter: vi.fn(),
       toggleMappingSelection,
+      setMappingGroupSelection: vi.fn(),
       clearMappingSelection,
       applySelectedMappingAssignment,
     },
@@ -90,6 +97,16 @@ describe('MappingsCard multi-selection', () => {
       tokenType: 'theme',
     });
     expect(view.queryByLabelText('Bulk mapping assignments')).not.toBeInTheDocument();
+  });
+
+  it('sets group selection from the heading checkbox', async () => {
+    const vm = createViewModel(false);
+    vi.mocked(useMappingsCardViewModel).mockReturnValue(vm.value);
+    const view = render(<MappingsCard />);
+
+    await userEvent.click(view.getByRole('checkbox', { name: 'Select mappings in Ungrouped' }));
+
+    expect(vm.value.setMappingGroupSelection).toHaveBeenCalledWith(null, true);
   });
 
   it('applies each supported assignment to the selected set and clears selection', async () => {

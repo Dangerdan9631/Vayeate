@@ -16,6 +16,7 @@ import { parseSemanticSelector } from '../../../model/parse-semantic-selector';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../model/semantic-token-constants';
 import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
 import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
+import { TriStateCheckbox, type TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
 
 const UNGROUPED_KEY = '__ungrouped__';
 const MAPPING_ROW_ESTIMATED_HEIGHT = 30;
@@ -112,7 +113,9 @@ function GroupSection({
   semanticVariant,
   onRemoveMapping,
   selectedMappingKeys,
+  groupSelectionState,
   onToggleSelection,
+  onSetGroupSelection,
 }: {
   groupKey: string;
   groupLabel: string;
@@ -130,26 +133,43 @@ function GroupSection({
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
   selectedMappingKeys: ReadonlySet<string>;
+  groupSelectionState: TriState;
   onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
+  onSetGroupSelection: (groupRef: string | null, checked: boolean) => void;
 }) {
   const sectionGroupRef = groupKey === UNGROUPED_KEY ? null : groupKey;
   const [collapsed, setCollapsed] = useState(false);
   const totalInGroup = DISPLAYED_TOKEN_TYPES.reduce((sum, tt) => sum + byType[tt].length, 0);
   const toggleCollapsed = () => setCollapsed((v) => !v);
 
+  function onGroupSelectionChange(checked: boolean) {
+    onSetGroupSelection(sectionGroupRef, checked);
+  }
+
   return (
     <div className="tree-section">
-      <button
-        type="button"
-        className="tree-header"
-        onClick={toggleCollapsed}
-      >
-        <span className="material-symbols-outlined tree-chevron">
-          {collapsed ? 'chevron_right' : 'expand_more'}
-        </span>
-        <span className="tree-label">{groupLabel}</span>
-        <span className="tree-count">({totalInGroup})</span>
-      </button>
+      <div className="tree-header tree-header-with-checkbox">
+        {canEdit && (
+          <TriStateCheckbox
+            state={groupSelectionState}
+            ariaLabel={`Select mappings in ${groupLabel}`}
+            className="mapping-selection-btn"
+            onChange={onGroupSelectionChange}
+          />
+        )}
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={toggleCollapsed}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">{groupLabel}</span>
+          <span className="tree-count">({totalInGroup})</span>
+        </button>
+      </div>
       {!collapsed && (
         <div className="tree-children">
           {DISPLAYED_TOKEN_TYPES.map((tt) => {
@@ -584,9 +604,11 @@ export function MappingsCard() {
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
-    selectedMappingIds,
+    selectedVisibleMappingIds,
     selectedMappingKeys,
+    groupSelectionStates,
     toggleMappingSelection,
+    setMappingGroupSelection,
     clearMappingSelection,
     applySelectedMappingAssignment,
   } = useMappingsCardViewModel();
@@ -664,6 +686,10 @@ export function MappingsCard() {
 
   function onToggleMappingSelection(tokenKey: string, tokenType: TokenType) {
     toggleMappingSelection({ tokenKey, tokenType });
+  }
+
+  function onSetGroupSelection(groupRef: string | null, checked: boolean) {
+    setMappingGroupSelection(groupRef, checked);
   }
 
   function onBulkGroupChange(e: ChangeEvent<HTMLSelectElement>) {
@@ -793,9 +819,9 @@ export function MappingsCard() {
           )}
         </div>
       </div>
-      {selectedMappingIds.length > 0 && (
+      {selectedVisibleMappingIds.length > 0 && (
         <div className="mappings-filter-row mappings-bulk-actions" aria-label="Bulk mapping assignments">
-          <span className="mappings-selected-count">{selectedMappingIds.length} selected</span>
+          <span className="mappings-selected-count">{selectedVisibleMappingIds.length} selected</span>
           <select
             className="field-select mapping-var-select"
             value=""
@@ -857,7 +883,9 @@ export function MappingsCard() {
             semanticVariant={semanticVariant}
             onRemoveMapping={onRemoveMapping}
             selectedMappingKeys={selectedMappingKeys}
+            groupSelectionState={groupSelectionStates.get(groupKey) ?? 'none'}
             onToggleSelection={onToggleMappingSelection}
+            onSetGroupSelection={onSetGroupSelection}
           />
         );
       })}

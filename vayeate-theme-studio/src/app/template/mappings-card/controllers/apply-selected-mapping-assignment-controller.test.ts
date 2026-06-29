@@ -53,6 +53,7 @@ function setup() {
     refreshTemplateRefsAndSelect,
     recordTemplateUndo,
     setCurrentUndoStackId,
+    templateUiStore,
   };
 }
 
@@ -83,5 +84,19 @@ describe('ApplySelectedMappingAssignmentController', () => {
     expect(context.refreshTemplateRefsAndSelect.execute).not.toHaveBeenCalled();
     expect(context.recordTemplateUndo.execute).not.toHaveBeenCalled();
     expect(context.setCurrentUndoStackId.executeForContext).not.toHaveBeenCalled();
+  });
+
+  it('applies bulk assignment only to selected mappings matching current filters', async () => {
+    const context = setup();
+    context.templateUiStore.getStore().setMappingSearchText('one');
+
+    await context.controller.run({ kind: 'color', value: 'foreground' });
+
+    const next = context.saveTemplate.execute.mock.calls[0]?.[0];
+    expect(next.mappings.map((mapping: { colorVariableRef: string | null }) => mapping.colorVariableRef))
+      .toEqual(['foreground', null]);
+    expect(context.recordTemplateUndo.execute).toHaveBeenCalledWith(expect.objectContaining({
+      description: 'Set 1 mapping color assignments',
+    }));
   });
 });

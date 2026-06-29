@@ -14,6 +14,7 @@ import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import { container } from 'tsyringe';
 import type { TemplateMappingAssignment, TemplateMappingId } from '../../../model/template-mapping-assignment';
 import { templateMappingIdKey } from '../../../model/template-mapping-assignment';
+import type { TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
 
 const catalogsStore = container.resolve(CatalogsStore);
 const templatesStore = container.resolve(TemplatesStore);
@@ -50,6 +51,13 @@ function filterMappings(
     }
     return true;
   });
+}
+
+function mappingIdFromMapping(mapping: Mapping): TemplateMappingId {
+  return {
+    tokenKey: mapping.token.key,
+    tokenType: mapping.token.type,
+  };
 }
 
 function buildByGroup(
@@ -319,6 +327,17 @@ export function useMappingsCardViewModel() {
     void dispatch({ type: MappingsCardActionType.MappingSelectionOnClear });
   }, [dispatch]);
 
+  const setMappingGroupSelection = useCallback(
+    (groupRef: string | null, checked: boolean) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingGroupSelectionOnChange,
+        groupRef,
+        checked,
+      });
+    },
+    [dispatch],
+  );
+
   const applySelectedMappingAssignment = useCallback(
     (assignment: TemplateMappingAssignment) => {
       void dispatch({
@@ -404,6 +423,41 @@ export function useMappingsCardViewModel() {
 
   const groupKeysInOrder = useMemo(() => sortedGroupKeys(mappingsByGroup), [mappingsByGroup]);
 
+  const selectedVisibleMappingIds = useMemo(() => {
+    return DISPLAYED_TOKEN_TYPES.flatMap((tt) =>
+      filteredMappingsByType[tt]
+        .map(mappingIdFromMapping)
+        .filter((id) => selectedMappingKeys.has(templateMappingIdKey(id))),
+    );
+  }, [filteredMappingsByType, selectedMappingKeys]);
+
+  const groupSelectionStates = useMemo(() => {
+    const states = new Map<string, TriState>();
+    if (!template) return states;
+
+    const allByGroup = buildByGroup(mappingsByType);
+    if (!allByGroup.has(UNGROUPED_KEY)) {
+      allByGroup.set(UNGROUPED_KEY, {
+        theme: [],
+        'textmate token': [],
+        'semantic token': [],
+      });
+    }
+
+    for (const [groupKey, byType] of allByGroup) {
+      const ids = DISPLAYED_TOKEN_TYPES.flatMap((tt) => byType[tt].map(mappingIdFromMapping));
+      const selectedCount = ids.filter((id) => selectedMappingKeys.has(templateMappingIdKey(id))).length;
+      const state: TriState = selectedCount === 0
+        ? 'none'
+        : selectedCount === ids.length
+          ? 'all'
+          : 'some';
+      states.set(groupKey, ids.length === 0 ? 'none' : state);
+    }
+
+    return states;
+  }, [mappingsByType, selectedMappingKeys, template]);
+
   return {
     template,
     mappingsByType,
@@ -420,7 +474,9 @@ export function useMappingsCardViewModel() {
     mappingColorVariableFilter,
     mappingContrastVariableFilter,
     selectedMappingIds,
+    selectedVisibleMappingIds,
     selectedMappingKeys,
+    groupSelectionStates,
     onUpdateGroupRef: updateMappingGroupRef,
     onUpdateColorRef: updateMappingColorRef,
     onUpdateContrastRef: updateMappingContrastRef,
@@ -430,6 +486,7 @@ export function useMappingsCardViewModel() {
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
     toggleMappingSelection,
+    setMappingGroupSelection,
     clearMappingSelection,
     applySelectedMappingAssignment,
   };

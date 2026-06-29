@@ -4,6 +4,7 @@ import { ClearTemplateMappingSelectionOperation } from './clear-template-mapping
 import { SetTemplateMappingColorVariableFilterOperation } from './set-template-mapping-color-variable-filter-operation';
 import { SetTemplateMappingContrastVariableFilterOperation } from './set-template-mapping-contrast-variable-filter-operation';
 import { SetTemplateMappingSearchTextOperation } from './set-template-mapping-search-text-operation';
+import { SetTemplateMappingSelectionBatchOperation } from './set-template-mapping-selection-batch-operation';
 import { ToggleTemplateMappingSelectionOperation } from './toggle-template-mapping-selection-operation';
 
 describe('template mapping selection operations', () => {
@@ -32,5 +33,19 @@ describe('template mapping selection operations', () => {
     new SetTemplateMappingContrastVariableFilterOperation(store).execute(['mainContrast']);
 
     expect(store.getStore().state.selectedMappingIds).toEqual([id]);
+  });
+
+  it('sets batch selection without duplicating existing identities', () => {
+    const store = new TemplateUiStore();
+    const batch = new SetTemplateMappingSelectionBatchOperation(store);
+    const one = { tokenKey: 'one', tokenType: 'theme' as const };
+    const two = { tokenKey: 'two', tokenType: 'textmate token' as const };
+
+    store.getStore().setSelectedMappingIds([one]);
+    batch.execute([one, two], true);
+    expect(store.getStore().state.selectedMappingIds).toEqual([one, two]);
+
+    batch.execute([one], false);
+    expect(store.getStore().state.selectedMappingIds).toEqual([two]);
   });
 });

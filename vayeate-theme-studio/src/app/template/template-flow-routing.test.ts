@@ -156,6 +156,7 @@ describe('template flow routing', () => {
       updateSemanticVariantKey: { run: vi.fn(async () => {}) },
       applySelectedMappingAssignment: { run: vi.fn(async () => {}) },
       clearSelectedMappings: { run: vi.fn() },
+      setMappingGroupSelection: { run: vi.fn() },
       toggleSelectedMapping: { run: vi.fn() },
     };
     const mappingsHandler = new MappingsCardHandler(
@@ -170,6 +171,7 @@ describe('template flow routing', () => {
       mappingDeps.updateSemanticVariantKey as never,
       mappingDeps.applySelectedMappingAssignment as never,
       mappingDeps.clearSelectedMappings as never,
+      mappingDeps.setMappingGroupSelection as never,
       mappingDeps.toggleSelectedMapping as never,
       createLoggerFactory(),
     );
@@ -189,6 +191,11 @@ describe('template flow routing', () => {
       assignment: { kind: 'group', value: 'core' },
     });
     await mappingsHandler.handle({
+      type: MappingsCardActionType.MappingGroupSelectionOnChange,
+      groupRef: 'core',
+      checked: true,
+    });
+    await mappingsHandler.handle({
       type: MappingsCardActionType.MappingSemanticTokenAddVariantButtonOnClick,
       semanticType: 'variable',
       defaultGroupRef: 'core',
@@ -204,6 +211,7 @@ describe('template flow routing', () => {
       kind: 'group',
       value: 'core',
     });
+    expect(mappingDeps.setMappingGroupSelection.run).toHaveBeenCalledWith('core', true);
   });
 
   it('dispatches top-level template actions to the matching sub-handler', async () => {
