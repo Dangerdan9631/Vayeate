@@ -1,0 +1,69 @@
+import { singleton } from 'tsyringe';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
+import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/data/templates-store';
+import { AddGroupToTemplateOperation } from '../../../../domain/operations/template-operations/groups/add-group-to-template-operation';
+import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
+import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
+import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
+import { SetTemplateAddGroupNameOperation } from '../../../../domain/operations/template-operations/variables/set-template-add-group-name-operation';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { TEMPLATE_GROUP_ADDED } from '../../../../model/undo-action-types';
+
+/**
+ * Handles TEMPLATE_GROUP_ADD_BUTTON_ON_CLICK by adding a group and clearing the input.
+ */
+@singleton()
+export class AddGroupAndClearInputController {
+  constructor(
+    private readonly templatesStore: TemplatesStore,
+    private readonly templateUiStore: TemplateUiStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly themeUiStore: ThemeUiStore,
+    private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
+    private readonly addGroupToTemplate: AddGroupToTemplateOperation,
+    private readonly saveTemplate: SaveTemplateOperation,
+    private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
+    private readonly setTemplateAddGroupName: SetTemplateAddGroupNameOperation,
+    private readonly recordTemplateUndo: RecordTemplateUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
+  ) {}
+
+  /**
+   * Reads the add-group name from UI state, adds the group, then clears the input.
+   * @returns Resolves when add-group completes or is skipped for an empty name.
+   */
+  async run(): Promise<void> {
+    const name = this.templateUiStore.getStore().state.addGroupName.trim();
+    if (!name) return;
+    const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
+    if (!template) return;
+    const base = this.bumpTemplateVersionForEdit.execute(template);
+    const next = this.addGroupToTemplate.execute(base, name);
+    if (!next) return;
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'templates',
+      templateRef: { name: template.name, version: template.version },
+      catalogRef: this.catalogUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+    this.templatesStore.getStore().updateTemplate(next);
+    this.templateUiStore.getStore().selectTemplate({ name: next.name, version: next.version });
+    this.saveTemplate.execute(next);
+    this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
+    this.setTemplateAddGroupName.execute('');
+
+    await this.recordTemplateUndo.execute({
+      description: `Add ${name} template group`,
+      actionType: TEMPLATE_GROUP_ADDED,
+      target: `${template.name}@${template.version}:group:${name}`,
+      before: template,
+      after: next,
+    });
+  }
+}

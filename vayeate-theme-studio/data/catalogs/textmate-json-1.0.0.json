@@ -1,0 +1,98 @@
+{
+  "name": "textmate-json",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/json.tmbundle/refs/heads/master/Syntaxes/JSON.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "constant.character.escape.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.expected-array-separator.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.expected-dictionary-separator.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.unrecognized-string-escape.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.array.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.dictionary.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.dictionary.value.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.array.begin.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.array.end.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.dictionary.begin.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.dictionary.end.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.array.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.dictionary.key-value.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.dictionary.pair.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.json",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.json",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

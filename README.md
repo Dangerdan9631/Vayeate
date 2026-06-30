@@ -16,6 +16,16 @@ A custom extension and settings for Visual Studio Code.
 * Mercurius
 * Aries
 * Virgo
+* Tallgeese
+* Tallgeese Light
+* Epyon
+* Epyon Light
+* Sandrock
+* Sandrock Light
+* Heavyarms
+* Heavyarms Light
+* Deathscythe
+* Deathscythe Light
 
 ## What's in the repo?
 
@@ -72,3 +82,8 @@ Run the install-extension script
 ```shell
 npm run install-extension
 ```
+
+Diff Editor
+Editor Chrome
+Editor Window
+Terminal

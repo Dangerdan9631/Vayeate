@@ -23,9 +23,19 @@
                 "path": "./themes/vayeate-color-theme.json"
             },
             {
+                "label": "Vayeate Light",
+                "uiTheme": "vs",
+                "path": "./themes/vayeate-light-color-theme.json"
+            },
+            {
                 "label": "Leo",
                 "uiTheme": "vs-dark",
                 "path": "./themes/leo-color-theme.json"
+            },
+            {
+                "label": "Leo Light",
+                "uiTheme": "vs",
+                "path": "./themes/leo-light-color-theme.json"
             },
             {
                 "label": "Mercurius",
@@ -33,18 +43,99 @@
                 "path": "./themes/mercurius-color-theme.json"
             },
             {
+                "label": "Mercurius Light",
+                "uiTheme": "vs",
+                "path": "./themes/mercurius-light-color-theme.json"
+            },
+            {
                 "label": "Aries",
                 "uiTheme": "vs-dark",
                 "path": "./themes/aries-color-theme.json"
             },
             {
+                "label": "Aries Light",
+                "uiTheme": "vs",
+                "path": "./themes/aries-light-color-theme.json"
+            },
+            {
                 "label": "Virgo",
                 "uiTheme": "vs-dark",
                 "path": "./themes/virgo-color-theme.json"
+            },
+            {
+                "label": "Virgo Light",
+                "uiTheme": "vs",
+                "path": "./themes/virgo-light-color-theme.json"
+            },
+            {
+                "label": "Tallgeese",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tallgeese-color-theme.json"
+            },
+            {
+                "label": "Tallgeese Light",
+                "uiTheme": "vs",
+                "path": "./themes/tallgeese-light-color-theme.json"
+            },
+            {
+                "label": "Epyon",
+                "uiTheme": "vs-dark",
+                "path": "./themes/epyon-color-theme.json"
+            },
+            {
+                "label": "Epyon Light",
+                "uiTheme": "vs",
+                "path": "./themes/epyon-light-color-theme.json"
+            },
+            {
+                "label": "Sandrock",
+                "uiTheme": "vs-dark",
+                "path": "./themes/sandrock-color-theme.json"
+            },
+            {
+                "label": "Sandrock Light",
+                "uiTheme": "vs",
+                "path": "./themes/sandrock-light-color-theme.json"
+            },
+            {
+                "label": "Heavyarms",
+                "uiTheme": "vs-dark",
+                "path": "./themes/heavyarms-color-theme.json"
+            },
+            {
+                "label": "Heavyarms Light",
+                "uiTheme": "vs",
+                "path": "./themes/heavyarms-light-color-theme.json"
+            },
+            {
+                "label": "Deathscythe",
+                "uiTheme": "vs-dark",
+                "path": "./themes/deathscythe-color-theme.json"
+            },
+            {
+                "label": "Deathscythe Light",
+                "uiTheme": "vs",
+                "path": "./themes/deathscythe-light-color-theme.json"
+            },
+            {
+                "label": "Test",
+                "uiTheme": "vs-dark",
+                "path": "./themes/test-color-theme.json"
+            },
+            {
+                "label": "Vayeate-V0-Dark",
+                "uiTheme": "vs-dark",
+                "path": "./themes/vayeate-v0-color-theme.json"
+            },
+            {
+                "label": "Vayeate-V0-Light",
+                "uiTheme": "vs",
+                "path": "./themes/vayeate-v0-light-color-theme.json"
             }
         ]
     },
     "scripts": {
-        "install-extension": "vsce package && code --install-extension vayeate-1.2.2.vsix"
+        "install-extension": "vsce package && code --install-extension vayeate-1.3.0.vsix",
+        "install-extension:cursor": "vsce package && cursor --install-extension vayeate-1.3.0.vsix"
     }
 }

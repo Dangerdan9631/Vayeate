@@ -1,0 +1,266 @@
+import { useCallback, useMemo } from 'react';
+import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
+import { compareVersions } from '../../../domain/utils/compare-versions';
+import { mergeSemanticSelectorInto } from '../../../model/merge-semantic-selector-into';
+import type { Catalog, Token } from '../../../model/schema/catalog';
+import { tokenKeySchema, tokenTypeSchema, type SemanticTokenRegistryListKind, type TokenKey, type TokenType } from '../../../model/schema/primitives';
+import { TokensCardActionType } from './actions/tokens-card-action-type';
+import { container } from 'tsyringe';
+import { CatalogsStore, getCurrentCatalog } from '../../../domain/catalog/state/catalogs-store';
+import { CatalogUiStore } from '../../../domain/state/ui/catalog-ui-store';
+import { useStore } from 'zustand';
+import { useShallow } from 'zustand/react/shallow';
+
+const catalogsStore = container.resolve(CatalogsStore);
+const catalogUiStore = container.resolve(CatalogUiStore);
+
+const EMPTY_VERSION_KEYS: readonly string[] = [];
+
+/**
+ * Token types shown as collapsible sections in `TokensCard` (excludes semantic token list).
+ */
+export const CATALOG_TOKEN_LIST_SECTIONS: TokenType[] = tokenTypeSchema.options.filter((tokenType) => tokenType !== 'semantic token');
+
+/**
+ * Returns whether a token key matches the trimmed, case-insensitive search query.
+ */
+function matchesSearch(key: string, searchQuery: string): boolean {
+  const q = searchQuery.trim().toLowerCase();
+  return !q || key.toLowerCase().includes(q);
+}
+
+/**
+ * Returns whether the string satisfies the token key schema.
+ */
+function isValidTokenKey(value: string): boolean {
+  return tokenKeySchema.safeParse(value).success;
+}
+
+/**
+ * Returns whether the selector parses and would change the catalog semantic registry.
+ */
+function canAddSemanticSelector(selector: string, catalog: Catalog | null): boolean {
+  if (!catalog) return false;
+  const trimmed = selector.trim();
+  if (!trimmed) return false;
+  const current = {
+    types: catalog.semanticTokenTypes ?? [],
+    modifiers: catalog.semanticTokenModifiers ?? [],
+    languages: catalog.semanticTokenLanguages ?? [],
+  };
+  return mergeSemanticSelectorInto(trimmed, current) !== null;
+}
+
+/**
+ * Filtered token groups, edit flags, and callbacks for the tokens card.
+ */
+export interface TokensCardViewModel {
+  catalog: Catalog | null;
+  tokensSearchText: string;
+  newTokenKey: string;
+  newSemanticTokenSelectorText: string;
+  filteredTokensByType: Record<TokenType, Token[]>;
+  canEdit: boolean;
+  canAddNewTokenKey: boolean;
+  canAddSemanticTokenSelector: boolean;
+  shouldShowSemanticTokenSection: boolean;
+  semanticRegistryItemCount: number;
+  onBulkAddClick: () => void;
+  onSearchChange: (value: string) => void;
+  onNewTokenAddClick: (tokenType: TokenType) => void;
+  onTokenRemoveClick: (tokenType: TokenType, key: string | undefined) => void;
+  onTokenKeyCommit: (tokenType: TokenType, oldKey: string | undefined, value: string) => void;
+  onNewTokenKeyChange: (value: string) => void;
+  onNewSemanticTokenSelectorTextChange: (value: string) => void;
+  onNewSemanticTokenSelectorAddClick: () => void;
+  onSemanticRegistryTextCommit: (registryList: SemanticTokenRegistryListKind, index: number, value: string) => void;
+  onSemanticRegistryRemoveClick: (registryList: SemanticTokenRegistryListKind, index: number) => void;
+}
+
+/**
+ * Derives token editability and search results for the selected catalog.
+ * @returns View model for `TokensCard`.
+ */
+export function useTokensCardViewModel(): TokensCardViewModel {
+  const dispatch = useAppDispatch();
+  const selectedRef = useStore(catalogUiStore.api, (state) => state.state.selectedRef);
+  const selectedName = selectedRef?.name ?? null;
+  const selectedVersion = selectedRef?.version ?? null;
+  const tokensSearchText = useStore(catalogUiStore.api, (state) => state.state.tokensSearchText);
+  const newTokenKey = useStore(catalogUiStore.api, (state) => state.state.newTokenKey);
+  const newSemanticTokenSelectorText = useStore(catalogUiStore.api, (state) => state.state.newSemanticTokenSelectorText);
+  const catalog = useStore(
+    catalogsStore.api,
+    (state) => getCurrentCatalog(state.state.catalogs, selectedRef),
+  );
+  const versionKeysForSelectedName = useStore(
+    catalogsStore.api,
+    useShallow((state) => {
+      if (!selectedName) return EMPTY_VERSION_KEYS;
+      return Object.keys(state.state.catalogs[selectedName] ?? {}).sort();
+    }),
+  );
+
+  const isLatestVersion = useMemo(() => {
+    if (!selectedRef || !selectedName || !selectedVersion) return false;
+    const bestVersion = versionKeysForSelectedName.reduce(
+      (acc, version) => (!acc || compareVersions(version, acc) > 0 ? version : acc),
+      null as string | null,
+    );
+    return bestVersion !== null && bestVersion === selectedVersion;
+  }, [versionKeysForSelectedName, selectedRef, selectedName, selectedVersion]);
+
+  const tokensByType = useMemo(() => {
+    const groups: Record<TokenType, Token[]> = { theme: [], 'textmate token': [], 'semantic token': [] };
+    if (!catalog) return groups;
+    for (const t of catalog.tokens) {
+      groups[t.type].push(t);
+    }
+    return groups;
+  }, [catalog]);
+
+  const canEdit = useMemo(() => catalog !== null && catalog.type === 'manual' && isLatestVersion, [catalog, isLatestVersion]);
+  const canAddNewTokenKey = useMemo(() => canEdit && isValidTokenKey(newTokenKey.trim()), [canEdit, newTokenKey]);
+  const canAddSemanticTokenSelector = useMemo(
+    () => canEdit && canAddSemanticSelector(newSemanticTokenSelectorText, catalog),
+    [canEdit, catalog, newSemanticTokenSelectorText],
+  );
+  const semanticRegistryItemCount = useMemo(() => {
+    if (!catalog) return 0;
+    return (catalog.semanticTokenTypes ?? []).length
+      + (catalog.semanticTokenModifiers ?? []).length
+      + (catalog.semanticTokenLanguages ?? []).length;
+  }, [catalog]);
+  const shouldShowSemanticTokenSection = useMemo(
+    () => canEdit || semanticRegistryItemCount > 0,
+    [canEdit, semanticRegistryItemCount],
+  );
+
+  const filteredTokensByType = useMemo(
+    () =>
+      Object.fromEntries(
+        CATALOG_TOKEN_LIST_SECTIONS.map((tt) => [
+          tt,
+          tokensByType[tt]
+            .filter((t) => matchesSearch(t.key, tokensSearchText))
+            .sort((a, b) => a.key.localeCompare(b.key)),
+        ]),
+      ) as Record<TokenType, Token[]>,
+    [tokensByType, tokensSearchText],
+  );
+
+  const onBulkAddClick = useCallback(() => {
+    void dispatch({ type: TokensCardActionType.BulkAddButtonOnClick });
+  }, [dispatch]);
+
+  const onSearchChange = useCallback(
+    (value: string) => {
+      void dispatch({ type: TokensCardActionType.SearchTextOnChange, value });
+    },
+    [dispatch],
+  );
+
+  const onNewTokenAddClick = useCallback(
+    (tokenType: TokenType) => {
+      const key = newTokenKey.trim();
+      if (!isValidTokenKey(key)) return;
+      void dispatch({
+        type: TokensCardActionType.NewTokenAddButtonOnClick,
+        tokenType,
+        key,
+      });
+    },
+    [dispatch, newTokenKey],
+  );
+
+  const onTokenRemoveClick = useCallback(
+    (tokenType: TokenType, key: string | undefined) => {
+      if (!key) return;
+      void dispatch({
+        type: TokensCardActionType.TokenRemoveButtonOnClick,
+        key: key as TokenKey,
+        tokenType,
+      });
+    },
+    [dispatch],
+  );
+
+  const onTokenKeyCommit = useCallback(
+    (tokenType: TokenType, oldKey: string | undefined, value: string) => {
+      const newKey = value.trim();
+      if (!oldKey || !newKey || newKey === oldKey || !isValidTokenKey(newKey)) return;
+      void dispatch({
+        type: TokensCardActionType.ExistingTokenKeyTextOnCommit,
+        value: newKey,
+        key: oldKey as TokenKey,
+        tokenType,
+      });
+    },
+    [dispatch],
+  );
+
+  const onNewTokenKeyChange = useCallback(
+    (value: string) => {
+      void dispatch({ type: TokensCardActionType.NewTokenKeyTextOnChange, value });
+    },
+    [dispatch],
+  );
+
+  const onNewSemanticTokenSelectorTextChange = useCallback(
+    (value: string) => {
+      void dispatch({ type: TokensCardActionType.NewSemanticTokenSelectorTextOnChange, value });
+    },
+    [dispatch],
+  );
+
+  const onNewSemanticTokenSelectorAddClick = useCallback(() => {
+    if (!canAddSemanticTokenSelector) return;
+    void dispatch({ type: TokensCardActionType.NewSemanticTokenSelectorAddButtonOnClick });
+  }, [canAddSemanticTokenSelector, dispatch]);
+
+  const onSemanticRegistryTextCommit = useCallback(
+    (registryList: SemanticTokenRegistryListKind, index: number, value: string) => {
+      void dispatch({
+        type: TokensCardActionType.ExistingSemanticTokenTextOnCommit,
+        registryList,
+        index,
+        value,
+      });
+    },
+    [dispatch],
+  );
+
+  const onSemanticRegistryRemoveClick = useCallback(
+    (registryList: SemanticTokenRegistryListKind, index: number) => {
+      void dispatch({
+        type: TokensCardActionType.ExistingSemanticTokenRemoveButtonOnClick,
+        registryList,
+        index,
+      });
+    },
+    [dispatch],
+  );
+
+  return {
+    catalog,
+    tokensSearchText,
+    newTokenKey,
+    newSemanticTokenSelectorText,
+    filteredTokensByType,
+    canEdit,
+    canAddNewTokenKey,
+    canAddSemanticTokenSelector,
+    shouldShowSemanticTokenSection,
+    semanticRegistryItemCount,
+    onBulkAddClick,
+    onSearchChange,
+    onNewTokenAddClick,
+    onTokenRemoveClick,
+    onTokenKeyCommit,
+    onNewTokenKeyChange,
+    onNewSemanticTokenSelectorTextChange,
+    onNewSemanticTokenSelectorAddClick,
+    onSemanticRegistryTextCommit,
+    onSemanticRegistryRemoveClick,
+  };
+}

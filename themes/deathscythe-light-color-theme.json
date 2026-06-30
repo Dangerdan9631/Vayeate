@@ -1,0 +1,830 @@
+{
+    "name": "Deathscythe Light",
+    "type": "light",
+    "semanticHighlighting": true,
+    "colors": {
+        "titleBar.activeBackground": "#222222",
+        "titleBar.activeForeground": "#aaaaaa",
+        "titleBar.border": "#111111",
+        "titleBar.inactiveBackground": "#1c1c1c",
+        "titleBar.inactiveForeground": "#848484",
+        "focusBorder": "#555555",
+        "menu.background": "#252525",
+        "menu.foreground": "#aaaaaa",
+        "menu.separatorBackground": "#444444",
+        "menu.selectionForeground": "#cccccc",
+        "menu.selectionBackground": "#3a3a3a",
+        "menubar.selectionForeground": "#cccccc",
+        "menubar.selectionBackground": "#3a3a3a",
+        "activityBar.foreground": "#aaaaaa",
+        "activityBar.background": "#181818",
+        "activityBar.activeBorder": "#888888",
+        "activityBar.dropBorder": "#cccccc",
+        "activityBar.inactiveForeground": "#818181",
+        "statusBar.background": "#252525",
+        "statusBar.foreground": "#aaaaaa",
+        "statusBar.debuggingBackground": "#333333",
+        "statusBar.debuggingForeground": "#aaaaaa",
+        "statusBarItem.remoteForeground": "#8c8c8c",
+        "statusBar.noFolderBackground": "#333333",
+        "statusBar.noFolderForeground": "#bbbbbb",
+        "statusBarItem.activeBackground": "#cccccc2e",
+        "statusBarItem.errorBackground": "#3a2020",
+        "statusBarItem.errorForeground": "#cccccc",
+        "statusBarItem.hoverBackground": "#cccccc2e",
+        "progressBar.background": "#888888",
+        "notifications.foreground": "#aaaaaa",
+        "notifications.background": "#202020",
+        "notifications.border": "#333333",
+        "notificationToast.border": "#333333",
+        "notificationCenterHeader.foreground": "#aaaaaa",
+        "notificationCenterHeader.background": "#2a2a2a",
+        "notificationCenter.border": "#333333",
+        "notificationsInfoIcon.foreground": "#7a9aaa",
+        "notificationsWarningIcon.foreground": "#aa8855",
+        "notificationsErrorIcon.foreground": "#c07262",
+        "notificationLink.foreground": "#888888",
+        "extensionButton.prominentBackground": "#333333",
+        "extensionButton.prominentForeground": "#cccccc",
+        "extensionButton.prominentHoverBackground": "#444444",
+        "activityBarBadge.foreground": "#cccccc",
+        "activityBarBadge.background": "#444444",
+        "badge.foreground": "#cccccc",
+        "badge.background": "#444444",
+        "extensionBadge.remoteForeground": "#cccccc",
+        "extensionBadge.remoteBackground": "#444444",
+        "editorGutter.background": "#0c100c",
+        "editorGutter.addedBackground": "#406040",
+        "editorGutter.deletedBackground": "#806040",
+        "editorGutter.modifiedBackground": "#4a605066",
+        "editorGroupHeader.tabsBackground": "#0c100c",
+        "tab.activeBackground": "#1e1e1e",
+        "tab.activeForeground": "#bbbbbb",
+        "tab.border": "#111111",
+        "tab.inactiveBackground": "#252525",
+        "tab.inactiveForeground": "#8c8c8c",
+        "panel.border": "#111111",
+        "panelTitle.activeForeground": "#aaaaaa",
+        "panelTitle.activeBorder": "#666666",
+        "panelTitle.inactiveForeground": "#858585",
+        "panel.background": "#1e1e1e",
+        "panel.dropBorder": "#333333",
+        "panelSection.border": "#333333",
+        "panelSection.dropBackground": "#1e1e1e",
+        "panelSectionHeader.background": "#252525",
+        "sideBarSectionHeader.background": "#1e1e1e",
+        "sideBarSectionHeader.foreground": "#888888",
+        "editorLineNumber.foreground": "#5f8368",
+        "editorLineNumber.activeForeground": "#608368",
+        "breadcrumb.foreground": "#818181",
+        "breadcrumb.background": "#181818",
+        "breadcrumb.focusForeground": "#cccccc",
+        "breadcrumb.activeSelectionForeground": "#aaaaaa",
+        "breadcrumbPicker.background": "#181818",
+        "terminal.ansiBlack": "#0a100a",
+        "terminal.ansiBlue": "#60a860",
+        "terminal.ansiBrightBlack": "#486050",
+        "terminal.ansiBrightBlue": "#70b870",
+        "terminal.ansiBrightCyan": "#609860",
+        "terminal.ansiBrightGreen": "#609870",
+        "terminal.ansiBrightMagenta": "#98c898",
+        "terminal.ansiBrightRed": "#a0b880",
+        "terminal.ansiBrightWhite": "#c0d0c0",
+        "terminal.ansiBrightYellow": "#98c888",
+        "terminal.ansiCyan": "#4a7858",
+        "terminal.ansiGreen": "#4a7040",
+        "terminal.ansiMagenta": "#78a878",
+        "terminal.ansiRed": "#806040",
+        "terminal.ansiWhite": "#acbcac",
+        "terminal.ansiYellow": "#80a878",
+        "terminal.border": "#202820",
+        "terminal.foreground": "#b0c0b0",
+        "terminal.background": "#0c100c",
+        "foreground": "#a8b8a8",
+        "sideBar.background": "#b6bdb6",
+        "sideBar.foreground": "#4b4b4b",
+        "sideBarTitle.foreground": "#4b4b4b",
+        "sideBar.dropBackground": "#cddfd099",
+        "sideBar.border": "#c3cbc4",
+        "editor.foreground": "#414f41",
+        "editor.background": "#b5bdb5",
+        "editorCursor.foreground": "#2e6a38",
+        "editor.lineHighlightBackground": "#96a69944",
+        "editor.selectionBackground": "#cddfd099",
+        "editorIndentGuide.background": "#d4d9d5",
+        "editorIndentGuide.activeBackground": "#a7b4a9",
+        "editorInlayHint.foreground": "#3c5043",
+        "editorInlayHint.background": "#b6bdb6",
+        "editor.findMatchBackground": "#cddfd0",
+        "editor.findMatchHighlightBackground": "#cddfd066",
+        "editor.findRangeHighlightBackground": "#cddfd022",
+        "editorLink.activeForeground": "#2a542a",
+        "editorCodeLens.foreground": "#536b5966",
+        "editorBracketMatch.background": "#cddfd055",
+        "editorBracketMatch.border": "#c3cbc466",
+        "editorRuler.foreground": "#c3cbc4",
+        "editorGroup.emptyBackground": "#b5bdb5",
+        "gitDecoration.conflictingResourceForeground": "#5f472f",
+        "gitDecoration.deletedResourceForeground": "#5f472f",
+        "gitDecoration.ignoredResourceForeground": "#3a5140",
+        "gitDecoration.modifiedResourceForeground": "#2e542e",
+        "gitDecoration.untrackedResourceForeground": "#32523c",
+        "diffEditor.insertedTextBackground": "#202e2033",
+        "diffEditor.removedTextBackground": "#30503033",
+        "textPreformat.foreground": "#414f41",
+        "editorWidget.foreground": "#4b4b4b",
+        "editorWidget.background": "#b6bdb6",
+        "editorWidget.border": "#c3cbc4",
+        "widget.shadow": "#939f9566",
+        "panelSectionHeader.foreground": "#aaaaaa",
+        "list.activeSelectionBackground": "#cddfd0cc",
+        "list.activeSelectionForeground": "#606060",
+        "list.focusBackground": "#cddfd0cc",
+        "list.focusForeground": "#606060",
+        "list.highlightForeground": "#4b4b4b",
+        "list.hoverBackground": "#cddfd0cc",
+        "list.hoverForeground": "#606060",
+        "list.inactiveSelectionBackground": "#cddfd0aa",
+        "list.inactiveSelectionForeground": "#606060",
+        "list.invalidItemForeground": "#6d4121",
+        "button.background": "#dfe2df",
+        "button.foreground": "#646464",
+        "button.hoverBackground": "#d8dcd9",
+        "button.secondaryBackground": "#b6bdb6",
+        "button.secondaryForeground": "#4b4b4b",
+        "button.secondaryHoverBackground": "#e4e7e5",
+        "dropdown.background": "#b5bdb5",
+        "dropdown.border": "#c3cbc4",
+        "dropdown.foreground": "#4b4b4b",
+        "dropdown.listBackground": "#b6bdb6",
+        "scrollbar.shadow": "#78877a66",
+        "scrollbarSlider.activeBackground": "#a0aba266",
+        "scrollbarSlider.background": "#a0aba233",
+        "scrollbarSlider.hoverBackground": "#a0aba255",
+        "input.background": "#5e6a60",
+        "input.border": "#c3cbc4",
+        "input.foreground": "#eceeed",
+        "input.placeholderForeground": "#aab1ab",
+        "inputOption.activeForeground": "#eceeed",
+        "inputOption.activeBorder": "#2e6a38",
+        "inputValidation.errorBackground": "#3a2020",
+        "inputValidation.errorForeground": "#cccccc",
+        "inputValidation.infoBackground": "#1e2030",
+        "inputValidation.infoForeground": "#dddddd",
+        "inputValidation.warningBackground": "#3a2a10",
+        "inputValidation.warningForeground": "#cccccc"
+    },
+    "tokenColors": [
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source"
+            ],
+            "settings": {
+                "foreground": "#506c54"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.name",
+                "meta.use.rust",
+                "punctuation.accessor",
+                "punctuation.brackets",
+                "punctuation.comma",
+                "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
+                "punctuation.parenthesis",
+                "punctuation.squarebracket",
+                "punctuation.section",
+                "punctuation.semi",
+                "punctuation.separator",
+                "punctuation.terminator",
+                "source"
+            ],
+            "settings": {
+                "foreground": "#576a57"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "comment",
+                "punctuation.definition.comment"
+            ],
+            "settings": {
+                "foreground": "#546354"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "string",
+                "punctuation.definition.string"
+            ],
+            "settings": {
+                "foreground": "#3b5a3b"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "constant.character.escape",
+                "punctuation.definition.interpolation"
+            ],
+            "settings": {
+                "foreground": "#456f4d"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "meta.attribute",
+                "meta.attribute keyword",
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation"
+            ],
+            "settings": {
+                "foreground": "#2c4b34"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "keyword",
+                "constant.language",
+                "storage.modifier",
+                "variable.language"
+            ],
+            "settings": {
+                "foreground": "#7a2929"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.name.type.class",
+                "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.name.type.struct",
+                "entity.other.inherited-class",
+                "storage.type",
+                "variable.other.object"
+            ],
+            "settings": {
+                "foreground": "#344a34"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.name.type.interface"
+            ],
+            "settings": {
+                "foreground": "#496e49"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum"
+            ],
+            "settings": {
+                "foreground": "#526b58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.name.variable.field",
+                "variable.other",
+                "source.powershell support.variable"
+            ],
+            "settings": {
+                "foreground": "#496e49"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.name.function",
+                "entity.name.variable.property",
+                "variable.other.object.property",
+                "source.powershell support.function"
+            ],
+            "settings": {
+                "foreground": "#4f6d4f"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "variable.parameter",
+                "entity.name.variable.parameter",
+                "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
+            ],
+            "settings": {
+                "foreground": "#2c4b34"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "constant.numeric"
+            ],
+            "settings": {
+                "foreground": "#506c58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "punctuation.definition.tag",
+                "keyword.other.documentation",
+                "entity.name.tag"
+            ],
+            "settings": {
+                "foreground": "#374937"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#536b59"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "comment.block.documentation",
+                "comment.block.javadoc",
+                "comment.line.documentation"
+            ],
+            "settings": {
+                "foreground": "#1e6e1e"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "comment.block.documentation string.quoted.double",
+                "comment.block.documentation punctuation.definition.string"
+            ],
+            "settings": {
+                "foreground": "#476947"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "text.xml punctuation.definition.tag",
+                "text.xml meta.tag"
+            ],
+            "settings": {
+                "foreground": "#456f4d"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "text.xml entity.name.tag"
+            ],
+            "settings": {
+                "foreground": "#446e52"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "text.xml entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#496e49"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.yaml punctuation.definition",
+                "source.json punctuation.definition",
+                "source.yaml punctuation.separator",
+                "source.json punctuation.separator",
+                "source.yaml entity.other"
+            ],
+            "settings": {
+                "foreground": "#576a57"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.yaml entity.name.tag",
+                "source.json support.type"
+            ],
+            "settings": {
+                "foreground": "#476f47"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.yaml constant.language",
+                "source.json constant.language"
+            ],
+            "settings": {
+                "foreground": "#526b58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "heading.1 entity.name.section",
+                "punctuation.definition.heading"
+            ],
+            "settings": {
+                "foreground": "#446f4a"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "heading.2 entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#4f6d4f"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "heading.3 entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#31723c"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#486e4d"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "constant.other.reference.link"
+            ],
+            "settings": {
+                "foreground": "#446f4a"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "markup.underline.link"
+            ],
+            "settings": {
+                "foreground": "#31723c"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "fenced_code.block.language",
+                "markup.inline",
+                "string.other.link",
+                "text.html.markdown punctuation.definition",
+                "text.html.markdown punctuation.definition.string",
+                "text.html.markdown meta.separator"
+            ],
+            "settings": {
+                "foreground": "#415847"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.ini keyword"
+            ],
+            "settings": {
+                "foreground": "#36493b"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.ini entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#31723c"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.ini"
+            ],
+            "settings": {
+                "foreground": "#526b58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.ini punctuation",
+                "source.ini punctuation.separator"
+            ],
+            "settings": {
+                "foreground": "#506c58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.toml keyword"
+            ],
+            "settings": {
+                "foreground": "#36493b"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.toml entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#31723c"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.toml"
+            ],
+            "settings": {
+                "foreground": "#526b58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.toml punctuation",
+                "source.toml punctuation.separator"
+            ],
+            "settings": {
+                "foreground": "#506c58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian"
+            ],
+            "settings": {
+                "foreground": "#2e4b32"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
+            ],
+            "settings": {
+                "foreground": "#304b2b"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian"
+            ],
+            "settings": {
+                "foreground": "#354a2d"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian"
+            ],
+            "settings": {
+                "foreground": "#506c58"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian"
+            ],
+            "settings": {
+                "foreground": "#446f4a"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp"
+            ],
+            "settings": {
+                "fontStyle": "bold"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
+            ],
+            "settings": {
+                "foreground": "#415847"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian"
+            ],
+            "settings": {
+                "foreground": "#375b3d"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
+            ],
+            "settings": {
+                "foreground": "#415847"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian"
+            ],
+            "settings": {
+                "foreground": "#3a5a3a"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian"
+            ],
+            "settings": {
+                "foreground": "#3b5a42"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian"
+            ],
+            "settings": {
+                "foreground": "#2e4b32"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
+            ],
+            "settings": {
+                "foreground": "#304b2b"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
+            ],
+            "settings": {
+                "foreground": "#37493c"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian"
+            ],
+            "settings": {
+                "foreground": "#36493b"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
+            ],
+            "settings": {
+                "foreground": "#364939"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian"
+            ],
+            "settings": {
+                "foreground": "#2c4b34"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian"
+            ],
+            "settings": {
+                "foreground": "#37493c"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian"
+            ],
+            "settings": {
+                "foreground": "#3a4838"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian"
+            ],
+            "settings": {
+                "foreground": "#596a59"
+            }
+        },
+        {
+            "name": "Deathscythe",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian"
+            ],
+            "settings": {
+                "foreground": "#805f40"
+            }
+        }
+    ],
+    "semanticTokenColors": {
+        "local": "#576a57",
+        "namespace": "#576a57",
+        "operator": "#576a57",
+        "punctuation": "#576a57",
+        "variable": "#576a57",
+        "comment": "#546354",
+        "comment.documentation": "#1e6e1e",
+        "string": "#3b5a3b",
+        "regexp": "#3b5a42",
+        "stringEscapeCharacter": "#385a3e",
+        "keyword": "#7a2929",
+        "controlKeyword": "#7a2929",
+        "plainKeyword": "#7a2929",
+        "class": "#4e6d4e",
+        "enum": "#4e6d4e",
+        "struct": "#4e6d4e",
+        "interface": "#496e49",
+        "delegate": "#496e49",
+        "constant": "#526b58",
+        "enumMember": "#526b58",
+        "variable.static.readonly": "#526b58",
+        "property.static.readonly": "#526b58",
+        "field.static": "#526b58",
+        "field": "#496e49",
+        "property:java": "#496e49",
+        "method": "#4f6d4f",
+        "property": "#4f6d4f",
+        "parameter": "#426f4c",
+        "typeParameter": "#426f4c",
+        "number": "#506c58",
+        "xmlDocCommentAttributeName": "#536b59",
+        "xmlDocCommentName": "#536b59",
+        "xmlDocCommentAttributeQuotes": "#546b54",
+        "xmlDocCommentDelimiter": "#546b54",
+        "xmlDocCommentText": "#1f751f",
+        "*.deprecated": {
+            "strikethrough": true
+        }
+    }
+}

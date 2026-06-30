@@ -1,0 +1,830 @@
+{
+    "name": "Sandrock Light",
+    "type": "light",
+    "semanticHighlighting": true,
+    "colors": {
+        "titleBar.activeBackground": "#4a4030",
+        "titleBar.activeForeground": "#d4c8aa",
+        "titleBar.border": "#4a4030",
+        "titleBar.inactiveBackground": "#302a20",
+        "titleBar.inactiveForeground": "#a18f6d",
+        "focusBorder": "#4a4030",
+        "menu.background": "#302a20",
+        "menu.foreground": "#d4c8aa",
+        "menu.separatorBackground": "#685a44",
+        "menu.selectionForeground": "#d8ceb4",
+        "menu.selectionBackground": "#503a28",
+        "menubar.selectionForeground": "#d8ceb4",
+        "menubar.selectionBackground": "#503a28",
+        "activityBar.foreground": "#c8983a",
+        "activityBar.background": "#221f18",
+        "activityBar.activeBorder": "#c8983a",
+        "activityBar.dropBorder": "#d4c8aa",
+        "activityBar.inactiveForeground": "#988363",
+        "statusBar.background": "#302a20",
+        "statusBar.foreground": "#d4c8aa",
+        "statusBar.debuggingBackground": "#4a4030",
+        "statusBar.debuggingForeground": "#d4c8aa",
+        "statusBarItem.remoteForeground": "#d5785c",
+        "statusBar.noFolderBackground": "#654218",
+        "statusBar.noFolderForeground": "#e5e2cf",
+        "statusBarItem.activeBackground": "#d4c8aa2e",
+        "statusBarItem.errorBackground": "#654218",
+        "statusBarItem.errorForeground": "#e5e2cf",
+        "statusBarItem.hoverBackground": "#d4ceb02e",
+        "progressBar.background": "#c8983a",
+        "notifications.foreground": "#d4c8aa",
+        "notifications.background": "#282420",
+        "notifications.border": "#4a4030",
+        "notificationToast.border": "#4a4030",
+        "notificationCenterHeader.foreground": "#d4c8aa",
+        "notificationCenterHeader.background": "#302a20",
+        "notificationCenter.border": "#4a4030",
+        "notificationsInfoIcon.foreground": "#b8a870",
+        "notificationsWarningIcon.foreground": "#d27051",
+        "notificationsErrorIcon.foreground": "#d27051",
+        "notificationLink.foreground": "#c8983a",
+        "extensionButton.prominentBackground": "#503a28",
+        "extensionButton.prominentForeground": "#d8ceb4",
+        "extensionButton.prominentHoverBackground": "#5e4a34",
+        "activityBarBadge.foreground": "#dfd7c1",
+        "activityBarBadge.background": "#5f4513",
+        "badge.foreground": "#dfd7c1",
+        "badge.background": "#5f4513",
+        "extensionBadge.remoteForeground": "#dfd7c1",
+        "extensionBadge.remoteBackground": "#5f4513",
+        "editorGutter.background": "#1a1710",
+        "editorGutter.addedBackground": "#706040",
+        "editorGutter.deletedBackground": "#b85030",
+        "editorGutter.modifiedBackground": "#80726066",
+        "editorGroupHeader.tabsBackground": "#1a1710",
+        "tab.activeBackground": "#282420",
+        "tab.activeForeground": "#d8cdb0",
+        "tab.border": "#4a4030",
+        "tab.inactiveBackground": "#302a20",
+        "tab.inactiveForeground": "#a18f6d",
+        "panel.border": "#4a4030",
+        "panelTitle.activeForeground": "#d4c8aa",
+        "panelTitle.activeBorder": "#c8983a",
+        "panelTitle.inactiveForeground": "#9c8965",
+        "panel.background": "#282420",
+        "panel.dropBorder": "#4a4030",
+        "panelSection.border": "#4a4030",
+        "panelSection.dropBackground": "#282420",
+        "panelSectionHeader.background": "#302a20",
+        "sideBarSectionHeader.background": "#282420",
+        "sideBarSectionHeader.foreground": "#c8983a",
+        "editorLineNumber.foreground": "#917c67",
+        "editorLineNumber.activeForeground": "#907e5d",
+        "breadcrumb.foreground": "#978461",
+        "breadcrumb.background": "#221f18",
+        "breadcrumb.focusForeground": "#d4c8aa",
+        "breadcrumb.activeSelectionForeground": "#c8983a",
+        "breadcrumbPicker.background": "#221f18",
+        "terminal.ansiBlack": "#14110a",
+        "terminal.ansiBlue": "#a09060",
+        "terminal.ansiBrightBlack": "#806860",
+        "terminal.ansiBrightBlue": "#b0a070",
+        "terminal.ansiBrightCyan": "#a09060",
+        "terminal.ansiBrightGreen": "#a08860",
+        "terminal.ansiBrightMagenta": "#c0b080",
+        "terminal.ansiBrightRed": "#c07840",
+        "terminal.ansiBrightWhite": "#dcd4b8",
+        "terminal.ansiBrightYellow": "#c0a848",
+        "terminal.ansiCyan": "#8a7850",
+        "terminal.ansiGreen": "#8a7048",
+        "terminal.ansiMagenta": "#b0a070",
+        "terminal.ansiRed": "#b85030",
+        "terminal.ansiWhite": "#d4c8aa",
+        "terminal.ansiYellow": "#b09858",
+        "terminal.border": "#4a4030",
+        "terminal.foreground": "#d8cdb0",
+        "terminal.background": "#1a1710",
+        "foreground": "#d0c4a4",
+        "sideBar.background": "#c4c1be",
+        "sideBar.foreground": "#5a4f2f",
+        "sideBarTitle.foreground": "#5a4f2f",
+        "sideBar.dropBackground": "#dfd9cd99",
+        "sideBar.border": "#cbc8c3",
+        "editor.foreground": "#5b4f2f",
+        "editor.background": "#c7c0c0",
+        "editorCursor.foreground": "#c8983a",
+        "editor.lineHighlightBackground": "#a6a19644",
+        "editor.selectionBackground": "#dfd9cd99",
+        "editorIndentGuide.background": "#d9d7d4",
+        "editorIndentGuide.activeBackground": "#b4b0a7",
+        "editorInlayHint.foreground": "#5e4c46",
+        "editorInlayHint.background": "#c4c1be",
+        "editor.findMatchBackground": "#dfd9cd",
+        "editor.findMatchHighlightBackground": "#dfd9cd66",
+        "editor.findRangeHighlightBackground": "#dfd9cd22",
+        "editorLink.activeForeground": "#5a4f31",
+        "editorCodeLens.foreground": "#75685866",
+        "editorBracketMatch.background": "#dfd9cd55",
+        "editorBracketMatch.border": "#cbc8c366",
+        "editorRuler.foreground": "#cbc8c3",
+        "editorGroup.emptyBackground": "#c7c0c0",
+        "gitDecoration.conflictingResourceForeground": "#843922",
+        "gitDecoration.deletedResourceForeground": "#843922",
+        "gitDecoration.ignoredResourceForeground": "#5a4e40",
+        "gitDecoration.modifiedResourceForeground": "#584f35",
+        "gitDecoration.untrackedResourceForeground": "#594f37",
+        "diffEditor.insertedTextBackground": "#3a302033",
+        "diffEditor.removedTextBackground": "#7a482033",
+        "textPreformat.foreground": "#5b4f2f",
+        "editorWidget.foreground": "#5b4f2e",
+        "editorWidget.background": "#c4c1be",
+        "editorWidget.border": "#cbc8c3",
+        "widget.shadow": "#9f9b9366",
+        "panelSectionHeader.foreground": "#d4c8aa",
+        "list.activeSelectionBackground": "#dfd9cdcc",
+        "list.activeSelectionForeground": "#6b5f35",
+        "list.focusBackground": "#dfd9cdcc",
+        "list.focusForeground": "#6e5e36",
+        "list.highlightForeground": "#5a4f2c",
+        "list.hoverBackground": "#dfd9cdcc",
+        "list.hoverForeground": "#6e5e36",
+        "list.inactiveSelectionBackground": "#dfd9cdaa",
+        "list.inactiveSelectionForeground": "#6b5e45",
+        "list.invalidItemForeground": "#843922",
+        "button.background": "#e2e1df",
+        "button.foreground": "#72633c",
+        "button.hoverBackground": "#dcdbd8",
+        "button.secondaryBackground": "#c4c1be",
+        "button.secondaryForeground": "#5b4f2e",
+        "button.secondaryHoverBackground": "#e7e6e4",
+        "dropdown.background": "#c7c0c0",
+        "dropdown.border": "#cbc8c3",
+        "dropdown.foreground": "#5b4f2f",
+        "dropdown.listBackground": "#c4c1be",
+        "scrollbar.shadow": "#87827866",
+        "scrollbarSlider.activeBackground": "#aba7a066",
+        "scrollbarSlider.background": "#aba7a033",
+        "scrollbarSlider.hoverBackground": "#aba7a055",
+        "input.background": "#716d65",
+        "input.border": "#cbc8c3",
+        "input.foreground": "#eeedec",
+        "input.placeholderForeground": "#b1aeaa",
+        "inputOption.activeForeground": "#eeedec",
+        "inputOption.activeBorder": "#c8983a",
+        "inputValidation.errorBackground": "#8a5a20",
+        "inputValidation.errorForeground": "#e5e2cf",
+        "inputValidation.infoBackground": "#7a5818",
+        "inputValidation.infoForeground": "#dfd7bd",
+        "inputValidation.warningBackground": "#b85030",
+        "inputValidation.warningForeground": "#f5f4ec"
+    },
+    "tokenColors": [
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source"
+            ],
+            "settings": {
+                "foreground": "#786945"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.name",
+                "meta.use.rust",
+                "punctuation.accessor",
+                "punctuation.brackets",
+                "punctuation.comma",
+                "punctuation.curlybrace",
+                "punctuation.definition.typeparameters",
+                "punctuation.definition.parameters",
+                "punctuation.parenthesis",
+                "punctuation.squarebracket",
+                "punctuation.section",
+                "punctuation.semi",
+                "punctuation.separator",
+                "punctuation.terminator",
+                "source"
+            ],
+            "settings": {
+                "foreground": "#79693f"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "comment",
+                "punctuation.definition.comment"
+            ],
+            "settings": {
+                "foreground": "#73623f"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "string",
+                "punctuation.definition.string"
+            ],
+            "settings": {
+                "foreground": "#764f24"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "constant.character.escape",
+                "punctuation.definition.interpolation"
+            ],
+            "settings": {
+                "foreground": "#906029"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "meta.attribute",
+                "meta.attribute keyword",
+                "meta.attribute punctuation.brackets",
+                "punctuation.definition.annotation",
+                "storage.type.annotation"
+            ],
+            "settings": {
+                "foreground": "#514930"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "keyword",
+                "constant.language",
+                "storage.modifier",
+                "variable.language"
+            ],
+            "settings": {
+                "foreground": "#524924"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.name.type.class",
+                "entity.name.type.kotlin",
+                "entity.name.type.enum",
+                "entity.name.type.struct",
+                "entity.other.inherited-class",
+                "storage.type",
+                "variable.other.object"
+            ],
+            "settings": {
+                "foreground": "#504928"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.name.type.interface"
+            ],
+            "settings": {
+                "foreground": "#726a4c"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "variable.other.constant",
+                "source.powershell support.constant.variable",
+                "constant.other.enum"
+            ],
+            "settings": {
+                "foreground": "#776a3b"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.name.variable.field",
+                "variable.other",
+                "source.powershell support.variable"
+            ],
+            "settings": {
+                "foreground": "#836536"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.name.function",
+                "entity.name.variable.property",
+                "variable.other.object.property",
+                "source.powershell support.function"
+            ],
+            "settings": {
+                "foreground": "#766943"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "variable.parameter",
+                "entity.name.variable.parameter",
+                "entity.name.type.type-parameter",
+                "storage.type.generic",
+                "source.java punctuation.bracket.angle"
+            ],
+            "settings": {
+                "foreground": "#514930"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "constant.numeric"
+            ],
+            "settings": {
+                "foreground": "#766a41"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "punctuation.definition.tag",
+                "keyword.other.documentation",
+                "entity.name.tag"
+            ],
+            "settings": {
+                "foreground": "#56472d"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#756858"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "comment.block.documentation",
+                "comment.block.javadoc",
+                "comment.line.documentation"
+            ],
+            "settings": {
+                "foreground": "#736148"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "comment.block.documentation string.quoted.double",
+                "comment.block.documentation punctuation.definition.string"
+            ],
+            "settings": {
+                "foreground": "#a07038"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "text.xml punctuation.definition.tag",
+                "text.xml meta.tag"
+            ],
+            "settings": {
+                "foreground": "#906029"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "text.xml entity.name.tag"
+            ],
+            "settings": {
+                "foreground": "#8c622a"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "text.xml entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#726a4c"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.yaml punctuation.definition",
+                "source.json punctuation.definition",
+                "source.yaml punctuation.separator",
+                "source.json punctuation.separator",
+                "source.yaml entity.other"
+            ],
+            "settings": {
+                "foreground": "#79693f"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.yaml entity.name.tag",
+                "source.json support.type"
+            ],
+            "settings": {
+                "foreground": "#7f6646"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.yaml constant.language",
+                "source.json constant.language"
+            ],
+            "settings": {
+                "foreground": "#776a3b"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "heading.1 entity.name.section",
+                "punctuation.definition.heading"
+            ],
+            "settings": {
+                "foreground": "#776a35"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "heading.2 entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#766943"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "heading.3 entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#866525"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#726b43"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "constant.other.reference.link"
+            ],
+            "settings": {
+                "foreground": "#776a35"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "markup.underline.link"
+            ],
+            "settings": {
+                "foreground": "#866525"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "fenced_code.block.language",
+                "markup.inline",
+                "string.other.link",
+                "text.html.markdown punctuation.definition",
+                "text.html.markdown punctuation.definition.string",
+                "text.html.markdown meta.separator"
+            ],
+            "settings": {
+                "foreground": "#615735"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.ini keyword"
+            ],
+            "settings": {
+                "foreground": "#51492d"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.ini entity.name.section"
+            ],
+            "settings": {
+                "foreground": "#866525"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.ini"
+            ],
+            "settings": {
+                "foreground": "#776a3b"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.ini punctuation",
+                "source.ini punctuation.separator"
+            ],
+            "settings": {
+                "foreground": "#766a41"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.toml keyword"
+            ],
+            "settings": {
+                "foreground": "#51492d"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.toml entity.other.attribute-name"
+            ],
+            "settings": {
+                "foreground": "#866525"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.toml"
+            ],
+            "settings": {
+                "foreground": "#776a3b"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.toml punctuation",
+                "source.toml punctuation.separator"
+            ],
+            "settings": {
+                "foreground": "#766a41"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.other.filetype.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.rule.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.include.obsidian"
+            ],
+            "settings": {
+                "foreground": "#524924"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
+                "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.margin.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4f4a2a"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.template.obsidian"
+            ],
+            "settings": {
+                "foreground": "#65411c"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.rule.obsidian",
+                "source.regex-pipeline.obsidian entity.name.include.obsidian"
+            ],
+            "settings": {
+                "foreground": "#766a41"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian"
+            ],
+            "settings": {
+                "foreground": "#776a35"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp"
+            ],
+            "settings": {
+                "fontStyle": "bold"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
+            ],
+            "settings": {
+                "foreground": "#615735"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.control.obsidian"
+            ],
+            "settings": {
+                "foreground": "#63572b"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
+            ],
+            "settings": {
+                "foreground": "#615735"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.pattern.obsidian"
+            ],
+            "settings": {
+                "foreground": "#764f24"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian string.regexp.replace.obsidian"
+            ],
+            "settings": {
+                "foreground": "#794e1e"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.multiline.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.subrule.obsidian"
+            ],
+            "settings": {
+                "foreground": "#524924"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.global.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
+            ],
+            "settings": {
+                "foreground": "#4f4a2a"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
+            ],
+            "settings": {
+                "foreground": "#524929"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.indices.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.allowPatternWhitespace.obsidian",
+                "source.regex-pipeline.obsidian keyword.operator.options.replace.allowPatternWhitespace.obsidian"
+            ],
+            "settings": {
+                "foreground": "#51492d"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
+            ],
+            "settings": {
+                "foreground": "#534830"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian"
+            ],
+            "settings": {
+                "foreground": "#514930"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian"
+            ],
+            "settings": {
+                "foreground": "#51483d"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian"
+            ],
+            "settings": {
+                "foreground": "#53473b"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.double-colon.obsidian"
+            ],
+            "settings": {
+                "foreground": "#7b6843"
+            }
+        },
+        {
+            "name": "Sandrock",
+            "scope": [
+                "source.regex-pipeline.obsidian comment.line.text.obsidian"
+            ],
+            "settings": {
+                "foreground": "#af4c2d"
+            }
+        }
+    ],
+    "semanticTokenColors": {
+        "local": "#79693f",
+        "namespace": "#79693f",
+        "operator": "#79693f",
+        "punctuation": "#79693f",
+        "variable": "#79693f",
+        "comment": "#73623f",
+        "comment.documentation": "#736148",
+        "string": "#764f24",
+        "regexp": "#794e1e",
+        "stringEscapeCharacter": "#774f22",
+        "keyword": "#524924",
+        "controlKeyword": "#524924",
+        "plainKeyword": "#524924",
+        "class": "#746b3b",
+        "enum": "#746b3b",
+        "struct": "#746b3b",
+        "interface": "#726a4c",
+        "delegate": "#726a4c",
+        "constant": "#776a3b",
+        "enumMember": "#776a3b",
+        "variable.static.readonly": "#776a3b",
+        "property.static.readonly": "#776a3b",
+        "field.static": "#776a3b",
+        "field": "#836536",
+        "property:java": "#836536",
+        "method": "#766943",
+        "property": "#766943",
+        "parameter": "#756a46",
+        "typeParameter": "#756a46",
+        "number": "#766a41",
+        "xmlDocCommentAttributeName": "#756858",
+        "xmlDocCommentName": "#756858",
+        "xmlDocCommentAttributeQuotes": "#7d6742",
+        "xmlDocCommentDelimiter": "#7d6742",
+        "xmlDocCommentText": "#7c674d",
+        "*.deprecated": {
+            "strikethrough": true
+        }
+    }
+}

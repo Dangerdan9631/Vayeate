@@ -1,0 +1,214 @@
+{
+  "name": "shaders-hlsl",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/tgjones/shaders-tmLanguage/refs/heads/master/grammars/hlsl.json",
+      "type": "textmate-json",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.line.block.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.decimal.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.fx.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.preprocessor.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.typealias.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object-literal.key.fx.blendstate.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object-literal.key.fx.depthstencilstate.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object-literal.key.fx.rasterizerstate.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.object-literal.key.fx.samplerstate.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.float.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.geometryshader.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.interpolation.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.postfix.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.basic.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.fx.technique.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.structured.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.blend.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.blendop.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.comparisonfunc.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.cullmode.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.depthwritemask.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.fillmode.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.filter.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.stencilop.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.property-value.fx.textureaddressmode.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.fx.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.object.geometryshader.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.object.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.object.rasterizerordered.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.object.rw.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.other.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.sampler.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.sampler.legacy.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.texture.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.texture.legacy.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.semantic.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.semantic.sm4.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.semantic.sm5_1.hlsl",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.semantic.sm5.hlsl",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

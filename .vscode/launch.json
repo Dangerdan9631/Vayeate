@@ -12,6 +12,29 @@
             "args": [
                 "--extensionDevelopmentPath=${workspaceFolder}"
             ]
+        },
+        {
+            "name": "Attach Electron Main",
+            "type": "node",
+            "request": "attach",
+            "address": "localhost",
+            "port": 9229,
+            "restart": true,
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/vayeate-theme-studio/dist-electron/**/*.js"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "name": "Attach Electron Renderer",
+            "type": "chrome",
+            "request": "attach",
+            "address": "localhost",
+            "port": 9222,
+            "webRoot": "${workspaceFolder}/vayeate-theme-studio/src"
         }
     ]
 }

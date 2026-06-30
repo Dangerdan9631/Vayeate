@@ -1,0 +1,602 @@
+{
+  "name": "textmate-python",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/python.tmbundle/refs/heads/master/Syntaxes/Python.tmLanguage",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.number-sign.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.backslash.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.backspace.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.bell.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.double-quote.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.formfeed.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.hex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.linefeed.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.newline.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.octal.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.quote.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.return.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.single-quote.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.tab.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.unicode.name.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.vertical-tab.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.complex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.float.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.binary.long.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.binary.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.decimal.long.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.decimal.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.hexadecimal.long.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.hexadecimal.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.octal.long.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.integer.octal.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.allcaps.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.placeholder.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.deprecated.function.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.deprecated.operator.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.missing-inheritance.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.missing-parameters.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.missing-section-begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.name.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.unclosed-string.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.unexpected-text.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.flow.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.augmented.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.comparison.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logical.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.print.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.old-style.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.dot.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.empty-dictionary.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.empty-list.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.empty-tuple.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function-call.generic.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function-call.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.decorator.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.inline.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.identifier.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.item-access.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.dictionary.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.list.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.structure.tuple.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.arguments.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.arguments.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.decorator.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.dictionary.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.dictionary.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.inheritance.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.inheritance.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.list.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.list.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters-group.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters-group.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tuple.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.tuple.end.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.class.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.function.begin.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.annotation.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.annotation.result.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.continuation.line.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.dictionary.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.inheritance.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.list.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.parameters.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.valuepair.dictionary.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.async.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.class.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.function.inline.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.function.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.string.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.bytes-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.bytes-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.bytes.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.unicode-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.unicode-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.block.unicode.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.bytes-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.bytes-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.bytes.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.sql.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.unicode-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.unicode-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.single-line.unicode.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.bytes-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.bytes-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.bytes.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.unicode-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.unicode-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.block.unicode.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.bytes-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.bytes-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.bytes.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.unicode-raw-regex.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.unicode-raw.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.single-line.unicode.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.builtin.call.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.builtin.name.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.magic.call.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.magic.name.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.ellipsis.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.exception.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.variable.magic.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.function.keyword.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.function.language.python",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.function.python",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

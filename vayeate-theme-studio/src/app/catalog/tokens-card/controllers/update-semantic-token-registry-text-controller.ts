@@ -1,0 +1,67 @@
+import type { SemanticTokenRegistryListKind } from '../../../../model/schema/primitives';
+import { singleton } from 'tsyringe';
+import { CatalogsStore } from '../../../../domain/catalog/state/catalogs-store';
+import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { SaveCatalogOperation } from '../../../../domain/operations/catalog-operations/catalog-details/save-catalog-operation';
+import { UpdateSemanticTokenRegistryEntryOperation } from '../../../../domain/operations/catalog-operations/tokens/update-semantic-token-registry-entry-operation';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/delete/refresh-catalog-refs-and-select-operation';
+import { getCurrentCatalog } from '../../../../domain/catalog/state/catalogs-store';
+import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/entity-refs-changed';
+import { deriveUndoContext } from '../../../../model/undo-history';
+import { CATALOG_SEMANTIC_REGISTRY_TEXT_UPDATED } from '../../../../model/undo-action-types';
+
+/**
+ * Updates one semantic registry list entry on the selected catalog.
+ */
+@singleton()
+export class UpdateSemanticTokenRegistryTextController {
+  constructor(
+    private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly templateUiStore: TemplateUiStore,
+    private readonly themeUiStore: ThemeUiStore,
+    private readonly saveCatalog: SaveCatalogOperation,
+    private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
+    private readonly updateSemanticTokenRegistryEntry: UpdateSemanticTokenRegistryEntryOperation,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly recordCatalogUndo: RecordCatalogUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
+  ) {}
+
+  /**
+   * Commits edited text for a semantic registry row.
+   * @param kind - Registry list being edited (types, modifiers, or languages).
+   * @param index - Zero-based index within that list.
+   * @param value - Committed text from the row input.
+   */
+  run(kind: SemanticTokenRegistryListKind, index: number, value: string): void {
+    const store = this.catalogsStore.getStore();
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    if (!catalog) return;
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'catalogs',
+      catalogRef: { name: catalog.name, version: catalog.version },
+      templateRef: this.templateUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
+    const base = this.bumpCatalogVersionForEdit.execute(catalog);
+    const updated = this.updateSemanticTokenRegistryEntry.execute(base, kind, index, value);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
+
+    void this.recordCatalogUndo.execute({
+      description: `Update semantic ${kind} entry`,
+      actionType: CATALOG_SEMANTIC_REGISTRY_TEXT_UPDATED,
+      target: `${catalog.name}@${catalog.version}:${kind}:${index}`,
+      before: catalog,
+      after: updated,
+    });
+  }
+}

@@ -1,0 +1,382 @@
+{
+  "name": "textmate-javascript-plist",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/javascript.tmbundle/refs/heads/master/Syntaxes/JavaScript.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.documentation.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.number-sign.shebang.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.newline.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.binary.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.octal.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.attribute-name.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.type.class.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.other.inherited-class.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.deprecated.dom.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.deprecated.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.character-not-allowed-here.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.export.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.arithmetic.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.compound.bitwise.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.compound.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.assignment.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.bitwise.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.comparison.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.decrement.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.increment.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.logical.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.rest-parameters.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.spread.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.ternary.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.documentation.js.jsdoc",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.other.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.brace.curly.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.brace.square.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.class.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.control.yield.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.delimiter.object.comma.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.embedded.line.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.export.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function-call.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.variable.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.import.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.method.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.ternary-if.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.function-call.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.function-call.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.modules.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.modules.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.embedded.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.embedded.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.scope.begin.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.scope.end.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.object.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.terminator.statement.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.comment.leading.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.static.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.arrow.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.class.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.function.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.var.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.other.template.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.regexp.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.dom.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.class.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.dom.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.constant.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.dom.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.default.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.import-all.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.language.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.module-alias.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.module.js",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.function.js",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}

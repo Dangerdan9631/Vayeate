@@ -1,0 +1,278 @@
+{
+  "name": "textmate-c",
+  "version": "1.0.0",
+  "type": "remote",
+  "locked": true,
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/textmate/c.tmbundle/refs/heads/master/Syntaxes/C.plist",
+      "type": "textmate-xml",
+      "tokenType": "textmate token"
+    }
+  ],
+  "tokens": [
+    {
+      "key": "comment.block.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.preprocessor.if-branch",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.preprocessor.if-branch.in-block",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.preprocessor.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.placeholder.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.other.variable.mac-classic.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.preprocessor.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.stray-comment-end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "invalid.illegal.unknown-escape.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.define.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.else.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.error.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.if.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.include.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.import.pragma.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.sizeof.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.block.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function-call.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.function.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.initialization.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.parens.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.preprocessor.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.preprocessor.c.include",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.preprocessor.diagnostic.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.preprocessor.macro.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.section",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.toc-list.banner.block.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.toc-list.banner.line.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.toc-list.pragma-mark.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.comment.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.parameters.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.block.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.block.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.parens.begin.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.section.parens.end.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.continuation.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.parameters.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.separator.variable-access.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.function-call.leading.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.whitespace.function.leading.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "source.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.include.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.other.lt-gt.include.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.single.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.function.any-method.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.posix-reserved.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.dot-access.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.readwrite.global.mac-classic.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.readwrite.static.mac-classic.c",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.parameter.preprocessor.c",
+      "type": "textmate token"
+    }
+  ],
+  "semanticTokenTypes": [],
+  "semanticTokenModifiers": [],
+  "semanticTokenLanguages": []
+}
