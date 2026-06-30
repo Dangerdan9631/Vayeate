@@ -16,8 +16,8 @@ import {
   PALETTE_UNGROUPED_KEY,
   sortedPaletteGroupKeys,
 } from '../../../domain/utils/palette-cluster-inputs';
-import { hexToHue, hslToRgb } from '../../../domain/utils/color-hsl';
-import { rgbToHex } from '../../../domain/utils/color-hex';
+import { hexToHue, hslToRgb, hsvToRgb, rgbToHsv } from '../../../domain/utils/color-hsl';
+import { hexToRgb, rgbToHex } from '../../../domain/utils/color-hex';
 import type { ThemePaneState } from '../../../model/theme-pane-state';
 import { useThemePaletteCardViewModel } from './use-theme-palette-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
@@ -37,6 +37,22 @@ function hueSliderGradientFromRefHex(refHex: string): string {
     stops.push(`${hex} ${pos}%`);
   }
   return `linear-gradient(to right, ${stops.join(', ')})`;
+}
+
+function saturationSliderGradientFromRefHex(refHex: string): string {
+  try {
+    const hsv = rgbToHsv(hexToRgb(refHex));
+    const left = rgbToHex(hsvToRgb({ ...hsv, s: 0 }));
+    const right = rgbToHex(hsvToRgb({ ...hsv, s: 1 }));
+    return `linear-gradient(to right, ${left} 0%, ${right} 100%)`;
+  } catch {
+    return 'linear-gradient(to right, #808080 0%, #ff0000 100%)';
+  }
+}
+
+function valueSliderGradientFromRefHex(refHex: string): string {
+  const normalized = validRefHexForGradient(refHex) ?? '#ff0000';
+  return `linear-gradient(to right, #000000 0%, ${normalized} 50%, #ffffff 100%)`;
 }
 
 const CLUSTER_K_MIN = 1;
@@ -95,9 +111,15 @@ export function ThemePaletteCard() {
   const vm = useThemePaletteCardViewModel();
   const {
     hueAdjustment,
+    saturationAdjustment,
+    valueAdjustment,
     hueReferenceHex,
     onHueChange,
     onHueCommit,
+    onSaturationChange,
+    onSaturationCommit,
+    onValueChange,
+    onValueCommit,
     onHueReferenceChange,
     onRecenter,
     onHueDragStart,
@@ -129,11 +151,27 @@ export function ThemePaletteCard() {
 
   const [hueRefInputValue, setHueRefInputValue] = useState(hueReferenceHex);
   const isHueDraggingRef = useRef(false);
+  const isSaturationDraggingRef = useRef(false);
+  const isValueDraggingRef = useRef(false);
   const hueSliderStyleRef = useRef<HTMLStyleElement | null>(null);
 
   const hueSliderGradientValue = useMemo(
     () =>
       hueSliderGradientFromRefHex(
+        validRefHexForGradient(hueRefInputValue) ?? hueReferenceHex,
+      ),
+    [hueRefInputValue, hueReferenceHex],
+  );
+  const saturationSliderGradientValue = useMemo(
+    () =>
+      saturationSliderGradientFromRefHex(
+        validRefHexForGradient(hueRefInputValue) ?? hueReferenceHex,
+      ),
+    [hueRefInputValue, hueReferenceHex],
+  );
+  const valueSliderGradientValue = useMemo(
+    () =>
+      valueSliderGradientFromRefHex(
         validRefHexForGradient(hueRefInputValue) ?? hueReferenceHex,
       ),
     [hueRefInputValue, hueReferenceHex],
@@ -146,7 +184,7 @@ export function ThemePaletteCard() {
   useEffect(() => {
     const styleEl = hueSliderStyleRef.current;
     if (styleEl) {
-      styleEl.textContent = `.theme-palette-slider-wrap{background:${hueSliderGradientValue} !important}#theme-palette-hue-slider::-webkit-slider-runnable-track{background:${hueSliderGradientValue} !important}#theme-palette-hue-slider::-moz-range-track{background:${hueSliderGradientValue} !important}`;
+      styleEl.textContent = `.theme-palette-hue-slider-wrap{background:${hueSliderGradientValue} !important}#theme-palette-hue-slider::-webkit-slider-runnable-track{background:${hueSliderGradientValue} !important}#theme-palette-hue-slider::-moz-range-track{background:${hueSliderGradientValue} !important}`;
     }
   }, [hueSliderGradientValue]);
 
@@ -171,6 +209,18 @@ export function ThemePaletteCard() {
     onHueDragEnd?.(hueAdjustment);
   }, [onHueDragEnd, hueAdjustment]);
 
+  const handleSaturationPointerUp = useCallback(() => {
+    if (!isSaturationDraggingRef.current) return;
+    isSaturationDraggingRef.current = false;
+    onSaturationCommit?.(saturationAdjustment);
+  }, [onSaturationCommit, saturationAdjustment]);
+
+  const handleValuePointerUp = useCallback(() => {
+    if (!isValueDraggingRef.current) return;
+    isValueDraggingRef.current = false;
+    onValueCommit?.(valueAdjustment);
+  }, [onValueCommit, valueAdjustment]);
+
   const handleHueDragRelease = useCallback(() => {
     handleHuePointerUp();
   }, [handleHuePointerUp]);
@@ -179,15 +229,36 @@ export function ThemePaletteCard() {
     onHueCommit?.(hueAdjustment);
   }, [onHueCommit, hueAdjustment]);
 
+  const handleSaturationCommitCurrent = useCallback(() => {
+    onSaturationCommit?.(saturationAdjustment);
+  }, [onSaturationCommit, saturationAdjustment]);
+
+  const handleValueCommitCurrent = useCallback(() => {
+    onValueCommit?.(valueAdjustment);
+  }, [onValueCommit, valueAdjustment]);
+
   useEffect(() => {
     if (!onHueDragEnd) return;
     window.addEventListener('pointerup', handleHuePointerUp);
     window.addEventListener('pointercancel', handleHuePointerUp);
+    window.addEventListener('pointerup', handleSaturationPointerUp);
+    window.addEventListener('pointercancel', handleSaturationPointerUp);
+    window.addEventListener('pointerup', handleValuePointerUp);
+    window.addEventListener('pointercancel', handleValuePointerUp);
     return () => {
       window.removeEventListener('pointerup', handleHuePointerUp);
       window.removeEventListener('pointercancel', handleHuePointerUp);
+      window.removeEventListener('pointerup', handleSaturationPointerUp);
+      window.removeEventListener('pointercancel', handleSaturationPointerUp);
+      window.removeEventListener('pointerup', handleValuePointerUp);
+      window.removeEventListener('pointercancel', handleValuePointerUp);
     };
-  }, [onHueDragEnd, handleHuePointerUp]);
+  }, [
+    onHueDragEnd,
+    handleHuePointerUp,
+    handleSaturationPointerUp,
+    handleValuePointerUp,
+  ]);
   const [copiedHex, setCopiedHex] = useState<string | null>(null);
   const [colorPickerValue, setColorPickerValue] = useState('#808080');
   const [pendingHex, setPendingHex] = useState<string | null>(null);
@@ -257,9 +328,17 @@ export function ThemePaletteCard() {
   const handleApplyToLightChangeChecked = (checked: boolean) => onApplyToLightChange(checked);
   const handleHueRefInputValueChange = (value: string) => setHueRefInputValue(value);
   const handleHueChangeValue = (value: string) => onHueChange(Number(value));
+  const handleSaturationChangeValue = (value: string) => onSaturationChange(Number(value));
+  const handleValueChangeValue = (value: string) => onValueChange(Number(value));
   const handleHuePointerDown = () => {
     isHueDraggingRef.current = true;
     onHueDragStart?.();
+  };
+  const handleSaturationPointerDown = () => {
+    isSaturationDraggingRef.current = true;
+  };
+  const handleValuePointerDown = () => {
+    isValueDraggingRef.current = true;
   };
   const handleClusterCountDeltaValue = (value: string) => onClusterCountDelta(Number(value));
   const handleClusterCountCommitCurrent = () => onClusterCountCommit(clusterCountK);
@@ -368,6 +447,14 @@ export function ThemePaletteCard() {
 
   function onHueSliderChange(e: ChangeEvent<HTMLInputElement>) {
     handleHueChangeValue(e.target.value);
+  }
+
+  function onSaturationSliderChange(e: ChangeEvent<HTMLInputElement>) {
+    handleSaturationChangeValue(e.target.value);
+  }
+
+  function onValueSliderChange(e: ChangeEvent<HTMLInputElement>) {
+    handleValueChangeValue(e.target.value);
   }
 
   function onClusterCountSliderChange(e: ChangeEvent<HTMLInputElement>) {
@@ -499,7 +586,12 @@ export function ThemePaletteCard() {
           Hue Adjustment
         </label>
         <div className="theme-palette-actions">
-          <button type="button" className="theme-palette-btn" onClick={onRecenter} aria-label="Recenter hue slider to 0">
+          <button
+            type="button"
+            className="theme-palette-btn"
+            onClick={onRecenter}
+            aria-label="Recenter palette adjustment sliders to 0"
+          >
             Recenter
           </button>
           <input
@@ -525,7 +617,7 @@ export function ThemePaletteCard() {
           </button>
         </div>
       </div>
-      <div className="theme-palette-slider-wrap">
+      <div className="theme-palette-slider-wrap theme-palette-hue-slider-wrap">
         <style ref={hueSliderStyleRef} />
         <input
           id="theme-palette-hue-slider"
@@ -544,6 +636,66 @@ export function ThemePaletteCard() {
           aria-valuemin={-100}
           aria-valuemax={100}
           aria-valuenow={hueAdjustment}
+        />
+      </div>
+
+      <div className="theme-palette-adjustment-row">
+        <label htmlFor="theme-palette-saturation-slider" className="theme-palette-adjustment-label">
+          Saturation
+        </label>
+        <span className="theme-palette-adjustment-value" aria-hidden>{saturationAdjustment}</span>
+      </div>
+      <div
+        className="theme-palette-slider-wrap theme-palette-saturation-slider-wrap"
+        style={{ background: saturationSliderGradientValue }}
+      >
+        <input
+          id="theme-palette-saturation-slider"
+          type="range"
+          className="theme-palette-hue-slider"
+          min={-100}
+          max={100}
+          step={1}
+          value={saturationAdjustment}
+          onChange={onSaturationSliderChange}
+          onPointerDown={handleSaturationPointerDown}
+          onPointerUp={handleSaturationPointerUp}
+          onMouseUp={handleSaturationPointerUp}
+          onBlur={handleSaturationCommitCurrent}
+          aria-label="Saturation adjustment"
+          aria-valuemin={-100}
+          aria-valuemax={100}
+          aria-valuenow={saturationAdjustment}
+        />
+      </div>
+
+      <div className="theme-palette-adjustment-row">
+        <label htmlFor="theme-palette-value-slider" className="theme-palette-adjustment-label">
+          Value
+        </label>
+        <span className="theme-palette-adjustment-value" aria-hidden>{valueAdjustment}</span>
+      </div>
+      <div
+        className="theme-palette-slider-wrap theme-palette-value-slider-wrap"
+        style={{ background: valueSliderGradientValue }}
+      >
+        <input
+          id="theme-palette-value-slider"
+          type="range"
+          className="theme-palette-hue-slider"
+          min={-100}
+          max={100}
+          step={1}
+          value={valueAdjustment}
+          onChange={onValueSliderChange}
+          onPointerDown={handleValuePointerDown}
+          onPointerUp={handleValuePointerUp}
+          onMouseUp={handleValuePointerUp}
+          onBlur={handleValueCommitCurrent}
+          aria-label="Value adjustment"
+          aria-valuemin={-100}
+          aria-valuemax={100}
+          aria-valuenow={valueAdjustment}
         />
       </div>
 

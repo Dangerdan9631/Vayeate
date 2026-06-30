@@ -26,6 +26,8 @@ export interface ThemeUiStoreState {
   setTheme: (theme: Theme | null, preserveHue?: boolean) => void;
   setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void;
   setHueAdjustment: (value: number, options?: { deferPreview?: boolean }) => void;
+  setSaturationAdjustment: (value: number, options?: { deferPreview?: boolean }) => void;
+  setValueAdjustment: (value: number, options?: { deferPreview?: boolean }) => void;
   setHueReferenceHex: (value: string) => void;
   setPreviewClusterCountK: (value: number | null) => void;
   setGenerateResult: (result: GenerateResult | null) => void;
@@ -82,6 +84,8 @@ export class ThemeUiStore {
               ...state,
               selectedRef: ref,
               hueAdjustment: 0,
+              saturationAdjustment: 0,
+              valueAdjustment: 0,
               previewClusterCountK: null,
               paletteClustersByGroup: null,
               paletteClustersPending: false,
@@ -95,7 +99,9 @@ export class ThemeUiStore {
             previewClusterCountK: null,
             paletteClustersByGroup: null,
             paletteClustersPending: false,
-            ...(preserveHue === true ? {} : { hueAdjustment: 0 }),
+            ...(preserveHue === true
+              ? {}
+              : { hueAdjustment: 0, saturationAdjustment: 0, valueAdjustment: 0 }),
           })),
         setThemePaneSelections: (checkedColorRefs: string[], checkedContrastRefs: string[]) =>
           setThemesState((state) => ({ ...state, checkedColorRefs, checkedContrastRefs })),
@@ -104,6 +110,46 @@ export class ThemeUiStore {
             const beforeScope = selectScopeThemeGenerationInputs(storeState.state);
             const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
             const nextState = { ...storeState.state, hueAdjustment: value };
+            const afterInputs = selectThemePaneDerivationInputs(nextState);
+            const deferPreview = options?.deferPreview ?? false;
+            const derived = !deferPreview || !areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
+              ? deriveThemePaneFields(nextState, { deferPreview })
+              : nextState;
+            const afterScope = selectScopeThemeGenerationInputs(derived);
+            const shouldBump =
+              !deferPreview && !areScopeThemeGenerationInputsEqual(beforeScope, afterScope);
+            storeState.state = castDraft(
+              shouldBump
+                ? { ...derived, scopeThemeInputsGeneration: derived.scopeThemeInputsGeneration + 1 }
+                : derived,
+            );
+          });
+        },
+        setSaturationAdjustment: (value: number, options?: { deferPreview?: boolean }) => {
+          set((storeState) => {
+            const beforeScope = selectScopeThemeGenerationInputs(storeState.state);
+            const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
+            const nextState = { ...storeState.state, saturationAdjustment: value };
+            const afterInputs = selectThemePaneDerivationInputs(nextState);
+            const deferPreview = options?.deferPreview ?? false;
+            const derived = !deferPreview || !areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)
+              ? deriveThemePaneFields(nextState, { deferPreview })
+              : nextState;
+            const afterScope = selectScopeThemeGenerationInputs(derived);
+            const shouldBump =
+              !deferPreview && !areScopeThemeGenerationInputsEqual(beforeScope, afterScope);
+            storeState.state = castDraft(
+              shouldBump
+                ? { ...derived, scopeThemeInputsGeneration: derived.scopeThemeInputsGeneration + 1 }
+                : derived,
+            );
+          });
+        },
+        setValueAdjustment: (value: number, options?: { deferPreview?: boolean }) => {
+          set((storeState) => {
+            const beforeScope = selectScopeThemeGenerationInputs(storeState.state);
+            const beforeInputs = selectThemePaneDerivationInputs(storeState.state);
+            const nextState = { ...storeState.state, valueAdjustment: value };
             const afterInputs = selectThemePaneDerivationInputs(nextState);
             const deferPreview = options?.deferPreview ?? false;
             const derived = !deferPreview || !areThemePaneDerivationInputsEqual(beforeInputs, afterInputs)

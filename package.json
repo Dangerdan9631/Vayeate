@@ -28,16 +28,6 @@
                 "path": "./themes/vayeate-light-color-theme.json"
             },
             {
-                "label": "Vayeate V2",
-                "uiTheme": "vs-dark",
-                "path": "./themes/vayeate-v2-color-theme.json"
-            },
-            {
-                "label": "Vayeate Light V2",
-                "uiTheme": "vs",
-                "path": "./themes/vayeate-v2-light-color-theme.json"
-            },
-            {
                 "label": "Leo",
                 "uiTheme": "vs-dark",
                 "path": "./themes/leo-color-theme.json"

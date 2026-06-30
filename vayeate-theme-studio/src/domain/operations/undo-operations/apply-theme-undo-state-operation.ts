@@ -20,7 +20,7 @@ export class ApplyThemeUndoStateOperation {
    */
 
   execute(theme: Theme): void {
-    this.setTheme.execute(theme);
+    this.setTheme.execute(theme, true);
     this.applyThemeStateAndSchedulePersist.execute(theme);
   }
 }

@@ -10,6 +10,7 @@ import { SetThemeIsCreatingOperation } from '../../../../domain/operations/theme
 import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
+import { ThemeCreateDialogStore } from '../../../../domain/state/ui/theme-create-dialog-store';
 import { deriveUndoContext } from '../../../../model/undo-history';
 import { THEME_CREATED } from '../../../../model/undo-action-types';
 
@@ -28,6 +29,7 @@ export class CreateThemeController {
     private readonly setThemeCreateDialogOpen: SetThemeCreateDialogOpenOperation,
     private readonly setThemeIsCreating: SetThemeIsCreatingOperation,
     private readonly themeUiStore: ThemeUiStore,
+    private readonly themeCreateDialogStore: ThemeCreateDialogStore,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
   ) {}
@@ -39,6 +41,8 @@ export class CreateThemeController {
    */
   async run(params: { name: string }): Promise<void> {
     const priorSelectedRef = this.themeUiStore.getStore().state.selectedRef;
+    const dialogMode = this.themeCreateDialogStore.getStore().state.mode;
+    const sourceTheme = dialogMode === 'duplicate' ? this.themeUiStore.getStore().state.theme : null;
 
     this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
       tabId: 'themes',
@@ -50,7 +54,7 @@ export class CreateThemeController {
     this.setThemeCreateDialogOpen.execute(false);
     this.setThemeCreateFormName.execute('');
     try {
-      const newTheme = await this.createTheme.execute(params);
+      const newTheme = await this.createTheme.execute({ ...params, sourceTheme });
       this.loadThemeRefs.execute();
       this.setTheme.execute(newTheme);
       const ref = { name: newTheme.name, version: newTheme.version };
@@ -61,7 +65,7 @@ export class CreateThemeController {
       );
 
       await this.recordThemeUndo.execute({
-        description: `Create theme ${params.name}`,
+        description: `${dialogMode === 'duplicate' ? 'Duplicate' : 'Create'} theme ${params.name}`,
         actionType: THEME_CREATED,
         target: `${params.name}@${newTheme.version}`,
         before: { theme: null, selectedRef: priorSelectedRef },

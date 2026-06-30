@@ -124,4 +124,37 @@ describe('ThemeUiStore', () => {
       store.getStore().state.paneDisplayColorAssignments,
     );
   });
+
+  it('keeps preview assignments stable during deferred saturation and value drag deltas', () => {
+    const store = new ThemeUiStore();
+    store.getStore().setTheme(theme);
+    store.getStore().setThemePaneSelections(['editorForeground'], []);
+    const previewBefore = store.getStore().state.panePreviewColorAssignments;
+    const displayBefore = store.getStore().state.paneDisplayColorAssignments;
+
+    store.getStore().setSaturationAdjustment(25, { deferPreview: true });
+    store.getStore().setValueAdjustment(-15, { deferPreview: true });
+
+    expect(store.getStore().state.saturationAdjustment).toBe(25);
+    expect(store.getStore().state.valueAdjustment).toBe(-15);
+    expect(store.getStore().state.panePreviewColorAssignments).toBe(previewBefore);
+    expect(store.getStore().state.paneDisplayColorAssignments).not.toBe(displayBefore);
+  });
+
+  it('syncs preview assignments when saturation and value drags are committed', () => {
+    const store = new ThemeUiStore();
+    store.getStore().setTheme(theme);
+    store.getStore().setThemePaneSelections(['editorForeground'], []);
+    store.getStore().setSaturationAdjustment(25, { deferPreview: true });
+    store.getStore().setValueAdjustment(-15, { deferPreview: true });
+    const previewBefore = store.getStore().state.panePreviewColorAssignments;
+
+    store.getStore().setSaturationAdjustment(25, { deferPreview: false });
+    store.getStore().setValueAdjustment(-15, { deferPreview: false });
+
+    expect(store.getStore().state.panePreviewColorAssignments).not.toBe(previewBefore);
+    expect(store.getStore().state.panePreviewColorAssignments).toEqual(
+      store.getStore().state.paneDisplayColorAssignments,
+    );
+  });
 });

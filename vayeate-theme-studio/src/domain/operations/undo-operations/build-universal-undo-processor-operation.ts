@@ -6,6 +6,10 @@ import type { UndoProcessor } from '../../core/undo-stack-types';
 
 import { SetThemeHueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 
+import { SetThemeSaturationAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
+
+import { SetThemeValueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-value-adjustment-operation';
+
 import { SetThemeHueReferenceHexOperation } from '../theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
 
 import { SetThemePaneSelectionsOperation } from '../theme-operations/pickers/set-theme-pane-selections-operation';
@@ -106,6 +110,10 @@ export class BuildUniversalUndoProcessorOperation {
 
     private readonly setHueAdjustment: SetThemeHueAdjustmentOperation,
 
+    private readonly setSaturationAdjustment: SetThemeSaturationAdjustmentOperation,
+
+    private readonly setValueAdjustment: SetThemeValueAdjustmentOperation,
+
     private readonly setHueReferenceHex: SetThemeHueReferenceHexOperation,
 
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
@@ -181,6 +189,10 @@ export class BuildUniversalUndoProcessorOperation {
         setPreviewTokenRefField: this.setPreviewTokenRefField,
 
         setHueAdjustment: this.setHueAdjustment,
+
+        setSaturationAdjustment: this.setSaturationAdjustment,
+
+        setValueAdjustment: this.setValueAdjustment,
 
         setHueReferenceHex: this.setHueReferenceHex,
 

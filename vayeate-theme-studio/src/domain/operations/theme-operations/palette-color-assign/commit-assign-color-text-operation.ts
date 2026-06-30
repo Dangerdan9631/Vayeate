@@ -5,7 +5,7 @@ import { DebouncedThemePersistGateway } from '../../../../gateway/theme/debounce
 import { ThemesStore } from '../../../state/data/themes-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { normalizeHexSafe } from '../../../utils/color-hex';
-import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 import { buildThemePaletteAssignUndoValue, themePaletteAssignUndoValuesEqual } from '../../../utils/theme-palette-assign-undo-utils';
 
 /**
@@ -26,6 +26,8 @@ export interface ThemePaletteAssignColorBaseState {
   theme: Theme | null;
   checkedColorRefs: readonly string[];
   hueAdjustment: number;
+  saturationAdjustment: number;
+  valueAdjustment: number;
 }
 
 /**
@@ -56,11 +58,13 @@ export class CommitAssignColorTextOperation {
     const applyToDark = theme.applyPaletteToDark ?? true;
     const applyToLight = theme.applyPaletteToLight ?? true;
     const hueAdjustment = baseState?.hueAdjustment ?? state.hueAdjustment;
+    const saturationAdjustment = baseState?.saturationAdjustment ?? state.saturationAdjustment;
+    const valueAdjustment = baseState?.valueAdjustment ?? state.valueAdjustment;
     let workingAssignments = theme.colorAssignments;
-    if (hueAdjustment !== 0) {
-      workingAssignments = applyHueToAssignmentsFiltered(
+    if (hueAdjustment !== 0 || saturationAdjustment !== 0 || valueAdjustment !== 0) {
+      workingAssignments = applyPaletteAdjustmentsToAssignmentsFiltered(
         theme.colorAssignments,
-        hueAdjustment / 100,
+        { hueAdjustment, saturationAdjustment, valueAdjustment },
         checkedColorRefs,
         { applyToDark, applyToLight },
       );
@@ -92,6 +96,8 @@ export class CommitAssignColorTextOperation {
 
   restore(theme: Theme): void {
     this.themeUiStore.getStore().setHueAdjustment(0);
+    this.themeUiStore.getStore().setSaturationAdjustment(0);
+    this.themeUiStore.getStore().setValueAdjustment(0);
     this.themeUiStore.getStore().setTheme(theme, true);
     this.themesStore.getStore().updateTheme(theme);
     this.themeUiStore.getStore().setSaveError(null);

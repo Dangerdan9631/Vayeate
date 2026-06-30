@@ -1,10 +1,11 @@
-import type { Theme } from '../schema/theme-schemas';
+import { themeSchema, type Theme } from '../schema/theme-schemas';
 
 /**
  * User-supplied fields required to construct a new theme draft.
  */
 export interface CreateThemeParams {
   name: string;
+  sourceTheme?: Theme | null;
 }
 
 /**
@@ -14,6 +15,14 @@ export interface CreateThemeParams {
  * @returns A theme at version `1.0.0` with empty token refs and palette defaults.
  */
 export function createThemeWithParams(params: CreateThemeParams): Theme {
+  if (params.sourceTheme) {
+    return themeSchema.parse({
+      ...params.sourceTheme,
+      name: params.name,
+      version: '1.0.0',
+    });
+  }
+
   return {
     name: params.name,
     version: '1.0.0',

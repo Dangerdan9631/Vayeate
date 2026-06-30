@@ -12,6 +12,7 @@ const themeCreateDialogStore = container.resolve(ThemeCreateDialogStore);
  * Read model returned by useCreateThemeDialogViewModel.
  */
 export interface CreateThemeDialogViewModel {
+  title: string;
   name: string;
   canSubmit: boolean;
   showNameError: boolean;
@@ -27,8 +28,10 @@ export interface CreateThemeDialogViewModel {
 export function useCreateThemeDialogViewModel(): CreateThemeDialogViewModel {
   const dispatch = useAppDispatch();
   const name = useStore(themeCreateDialogStore.api, (state): string => state.state.name);
+  const mode = useStore(themeCreateDialogStore.api, (state) => state.state.mode);
   const nameValid = useMemo(() => name.length > 0 && NAME_REGEX.test(name), [name]);
   const canSubmit = useMemo(() => nameValid, [nameValid]);
+  const title = useMemo(() => (mode === 'duplicate' ? 'Duplicate Theme' : 'Create New Theme'), [mode]);
 
   const onOkClick = useCallback(() => {
     if (!canSubmit) return;
@@ -46,6 +49,7 @@ export function useCreateThemeDialogViewModel(): CreateThemeDialogViewModel {
   const showNameError = useMemo(() => name.length > 0 && !nameValid, [name, nameValid]);
 
   return {
+    title,
     name,
     canSubmit,
     showNameError,

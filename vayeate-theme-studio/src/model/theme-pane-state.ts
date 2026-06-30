@@ -8,6 +8,8 @@ export interface ThemePaneState {
   checkedColorRefs: string[];
   checkedContrastRefs: string[];
   hueAdjustment: number;
+  saturationAdjustment: number;
+  valueAdjustment: number;
   hueReferenceHex: string;
 }
 

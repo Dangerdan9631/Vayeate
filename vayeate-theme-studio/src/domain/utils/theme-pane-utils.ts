@@ -8,6 +8,8 @@ import type { Theme } from '../../model/schema/theme-schemas';
  * @param checkedColorRefs - Color variable keys currently checked in the palette.
  * @param checkedContrastRefs - Contrast variable keys currently checked.
  * @param hueAdjustment - Palette hue slider value in UI units.
+ * @param saturationAdjustment - Palette saturation slider value in UI units.
+ * @param valueAdjustment - Palette value slider value in UI units.
  * @param hueReferenceHex - Reference hex driving hue shift display.
  * @returns {@link ThemePaneState} snapshot for undo recording or comparison.
  */
@@ -16,7 +18,17 @@ export function buildThemePaneSnapshot(
   checkedColorRefs: string[],
   checkedContrastRefs: string[],
   hueAdjustment: number,
+  saturationAdjustment: number,
+  valueAdjustment: number,
   hueReferenceHex: string,
 ): ThemePaneState {
-  return { theme, checkedColorRefs, checkedContrastRefs, hueAdjustment, hueReferenceHex };
+  return {
+    theme,
+    checkedColorRefs,
+    checkedContrastRefs,
+    hueAdjustment,
+    saturationAdjustment,
+    valueAdjustment,
+    hueReferenceHex,
+  };
 }

@@ -44,6 +44,10 @@ import {
 
   THEME_PALETTE_HUE_REFERENCE_SET,
 
+  THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+
+  THEME_PALETTE_VALUE_ADJUSTMENT_SET,
+
   THEME_PANE_SELECTIONS_SET,
 
   THEME_UNDO_ACTION_TYPES,
@@ -134,6 +138,10 @@ function buildProcessor() {
 
   const setHueAdjustment = { execute: vi.fn() };
 
+  const setSaturationAdjustment = { execute: vi.fn() };
+
+  const setValueAdjustment = { execute: vi.fn() };
+
   const setHueReferenceHex = { execute: vi.fn() };
 
   const setThemePaneSelections = { execute: vi.fn() };
@@ -180,6 +188,10 @@ function buildProcessor() {
 
     setHueAdjustment as never,
 
+    setSaturationAdjustment as never,
+
+    setValueAdjustment as never,
+
     setHueReferenceHex as never,
 
     setThemePaneSelections as never,
@@ -219,6 +231,10 @@ function buildProcessor() {
     setContrastVariableField,
 
     setHueAdjustment,
+
+    setSaturationAdjustment,
+
+    setValueAdjustment,
 
     setHueReferenceHex,
 
@@ -697,6 +713,44 @@ describe('build universal undo processor operation', () => {
 
 
     expect(setHueAdjustment.execute).toHaveBeenCalledWith(12);
+
+  });
+
+  it('replays theme saturation and value adjustment diffs through UI operations', async () => {
+
+    const { processor, setSaturationAdjustment, setValueAdjustment } = buildProcessor();
+
+
+
+    await processor.revertProcessor({
+
+      actionType: THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+
+      target: 'theme-a@1.0.0:saturation-adjustment',
+
+      before: 16,
+
+      after: 0,
+
+    });
+
+    await processor.revertProcessor({
+
+      actionType: THEME_PALETTE_VALUE_ADJUSTMENT_SET,
+
+      target: 'theme-a@1.0.0:value-adjustment',
+
+      before: -8,
+
+      after: 0,
+
+    });
+
+
+
+    expect(setSaturationAdjustment.execute).toHaveBeenCalledWith(16);
+
+    expect(setValueAdjustment.execute).toHaveBeenCalledWith(-8);
 
   });
 

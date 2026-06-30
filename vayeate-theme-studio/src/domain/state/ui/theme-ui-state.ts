@@ -26,6 +26,8 @@ export interface ThemeUiState {
   checkedColorRefs: string[];
   checkedContrastRefs: string[];
   hueAdjustment: number;
+  saturationAdjustment: number;
+  valueAdjustment: number;
   hueReferenceHex: string;
   /**
    * Slider drag preview; null uses theme.paletteClusterCountK.
@@ -72,6 +74,8 @@ export const initialThemeUiState: ThemeUiState = {
   checkedColorRefs: [],
   checkedContrastRefs: [],
   hueAdjustment: 0,
+  saturationAdjustment: 0,
+  valueAdjustment: 0,
   hueReferenceHex: '#FF0000',
   previewClusterCountK: null,
   generateResult: null,

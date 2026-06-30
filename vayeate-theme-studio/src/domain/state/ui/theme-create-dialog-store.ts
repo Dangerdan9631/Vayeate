@@ -1,11 +1,12 @@
 import { singleton } from 'tsyringe';
 import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
-import { initialThemeCreateDialogState, type ThemeCreateDialogState } from './theme-create-dialog-state';
+import { initialThemeCreateDialogState, type ThemeCreateDialogMode, type ThemeCreateDialogState } from './theme-create-dialog-state';
 
 interface ThemeCreateDialogStoreState {
   state: ThemeCreateDialogState;
   setIsCreating: (value: boolean) => void;
+  setMode: (value: ThemeCreateDialogMode) => void;
   setOpen: (value: boolean) => void;
   setName: (value: string) => void;
 }
@@ -20,6 +21,9 @@ export class ThemeCreateDialogStore {
       state: initialThemeCreateDialogState,
       setIsCreating: (value: boolean) => set((storeState) => {
         storeState.state.isCreating = value;
+      }),
+      setMode: (value: ThemeCreateDialogMode) => set((storeState) => {
+        storeState.state.mode = value;
       }),
       setOpen: (value: boolean) => set((storeState) => {
         storeState.state.isOpen = value;

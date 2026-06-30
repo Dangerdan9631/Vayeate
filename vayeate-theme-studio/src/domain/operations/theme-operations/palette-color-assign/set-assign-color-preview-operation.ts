@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../model/schema/theme-schemas';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
-import { applyHueToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../utils/theme-assignment-utils';
 
 /**
  * Live palette preview for assign-color (checked refs only); does not persist.
@@ -17,6 +17,8 @@ export class SetAssignColorPreviewOperation {
       theme: Theme;
       checkedColorRefs: ReadonlySet<string>;
       hueAdjustment: number;
+      saturationAdjustment: number;
+      valueAdjustment: number;
     }).
    * @returns Nothing; updates store or invokes a gateway side effect.
    */
@@ -26,15 +28,17 @@ export class SetAssignColorPreviewOperation {
     theme: Theme;
     checkedColorRefs: ReadonlySet<string>;
     hueAdjustment: number;
+    saturationAdjustment: number;
+    valueAdjustment: number;
   }): void {
-    const { normalizedHex, theme, checkedColorRefs, hueAdjustment } = args;
+    const { normalizedHex, theme, checkedColorRefs, hueAdjustment, saturationAdjustment, valueAdjustment } = args;
     const applyToDark = theme.applyPaletteToDark ?? true;
     const applyToLight = theme.applyPaletteToLight ?? true;
     let workingAssignments = theme.colorAssignments;
-    if (hueAdjustment !== 0) {
-      workingAssignments = applyHueToAssignmentsFiltered(
+    if (hueAdjustment !== 0 || saturationAdjustment !== 0 || valueAdjustment !== 0) {
+      workingAssignments = applyPaletteAdjustmentsToAssignmentsFiltered(
         theme.colorAssignments,
-        hueAdjustment / 100,
+        { hueAdjustment, saturationAdjustment, valueAdjustment },
         checkedColorRefs,
         { applyToDark, applyToLight },
       );

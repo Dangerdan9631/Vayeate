@@ -14,6 +14,8 @@ export interface ThemePaneDerivationInputs {
   applyHueToDark: boolean;
   applyHueToLight: boolean;
   hueAdjustment: number;
+  saturationAdjustment: number;
+  valueAdjustment: number;
   checkedColorRefs: readonly string[];
 }
 
@@ -31,6 +33,8 @@ export function selectThemePaneDerivationInputs(state: ThemeUiState): ThemePaneD
     applyHueToDark: theme?.applyPaletteToDark ?? true,
     applyHueToLight: theme?.applyPaletteToLight ?? true,
     hueAdjustment: state.hueAdjustment,
+    saturationAdjustment: state.saturationAdjustment,
+    valueAdjustment: state.valueAdjustment,
     checkedColorRefs: state.checkedColorRefs,
   };
 }
@@ -52,6 +56,8 @@ export function areThemePaneDerivationInputsEqual(
     before.applyHueToDark === after.applyHueToDark &&
     before.applyHueToLight === after.applyHueToLight &&
     before.hueAdjustment === after.hueAdjustment &&
+    before.saturationAdjustment === after.saturationAdjustment &&
+    before.valueAdjustment === after.valueAdjustment &&
     before.checkedColorRefs === after.checkedColorRefs
   );
 }
@@ -84,6 +90,8 @@ export function deriveThemePaneFields(
   const paneDisplayColorAssignments: ColorAssignment[] = computeDisplayColorAssignments(
     theme,
     inputs.hueAdjustment,
+    inputs.saturationAdjustment,
+    inputs.valueAdjustment,
     checkedColorRefs,
     inputs.applyHueToDark,
     inputs.applyHueToLight,

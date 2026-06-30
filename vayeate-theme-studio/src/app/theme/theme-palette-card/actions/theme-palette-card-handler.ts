@@ -5,6 +5,8 @@ import { SetAssignColorPreviewController } from '../controllers/set-assign-color
 import { CommitHueReferenceColorController } from '../controllers/commit-hue-reference-color-controller';
 import { RecenterHueReferenceController } from '../controllers/recenter-hue-reference-controller';
 import { SetThemeHueAdjustmentController } from '../controllers/set-theme-hue-adjustment-controller';
+import { SetThemeSaturationAdjustmentController } from '../controllers/set-theme-saturation-adjustment-controller';
+import { SetThemeValueAdjustmentController } from '../controllers/set-theme-value-adjustment-controller';
 import { SetApplyPaletteToDarkController } from '../controllers/set-apply-palette-to-dark-controller';
 import { SetApplyPaletteToLightController } from '../controllers/set-apply-palette-to-light-controller';
 import { ComputePaletteClustersController } from '../controllers/compute-palette-clusters-controller';
@@ -40,6 +42,8 @@ export class ThemePaletteCardHandler {
     private readonly computePaletteClusters: ComputePaletteClustersController,
     private readonly commitHueReferenceColor: CommitHueReferenceColorController,
     private readonly setThemeHueAdjustment: SetThemeHueAdjustmentController,
+    private readonly setThemeSaturationAdjustment: SetThemeSaturationAdjustmentController,
+    private readonly setThemeValueAdjustment: SetThemeValueAdjustmentController,
     private readonly setColorRefsSelectionBatch: SetColorRefsSelectionBatchController,
     loggerFactory: LoggerFactory,
   ) {
@@ -79,6 +83,16 @@ export class ThemePaletteCardHandler {
         return this.setThemeHueAdjustment.run(action.value, { deferPreview: true });
       case ThemePaletteCardActionType.HueSliderOnCommit:
         await this.setThemeHueAdjustment.run(action.value, { deferPreview: false });
+        return this.computePaletteClusters.run();
+      case ThemePaletteCardActionType.SaturationSliderOnDelta:
+        return this.setThemeSaturationAdjustment.run(action.value, { deferPreview: true });
+      case ThemePaletteCardActionType.SaturationSliderOnCommit:
+        await this.setThemeSaturationAdjustment.run(action.value, { deferPreview: false });
+        return this.computePaletteClusters.run();
+      case ThemePaletteCardActionType.ValueSliderOnDelta:
+        return this.setThemeValueAdjustment.run(action.value, { deferPreview: true });
+      case ThemePaletteCardActionType.ValueSliderOnCommit:
+        await this.setThemeValueAdjustment.run(action.value, { deferPreview: false });
         return this.computePaletteClusters.run();
       case ThemePaletteCardActionType.ClusterCountSliderOnDelta:
         await this.setPaletteClusterCountKPreview.run(action.value);

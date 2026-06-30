@@ -394,6 +394,16 @@ describe('coalescing policy — pure functions', () => {
     expect(tryCoalesce(pending, incoming)).toBe(incoming);
   });
 
+  it('tryCoalesce coalesces saturation and value slider delta actions', () => {
+    const saturationPending = { type: ThemePaletteCardActionType.SaturationSliderOnDelta, value: 30 } as unknown as AppAction;
+    const saturationIncoming = { type: ThemePaletteCardActionType.SaturationSliderOnDelta, value: 35 } as unknown as AppAction;
+    const valuePending = { type: ThemePaletteCardActionType.ValueSliderOnDelta, value: -30 } as unknown as AppAction;
+    const valueIncoming = { type: ThemePaletteCardActionType.ValueSliderOnDelta, value: -35 } as unknown as AppAction;
+
+    expect(tryCoalesce(saturationPending, saturationIncoming)).toBe(saturationIncoming);
+    expect(tryCoalesce(valuePending, valueIncoming)).toBe(valueIncoming);
+  });
+
   it('tryCoalesce does not coalesce hue slider commit actions', () => {
     const pending = { type: ThemePaletteCardActionType.HueSliderOnCommit, value: 30 } as unknown as AppAction;
     const incoming = { type: ThemePaletteCardActionType.HueSliderOnCommit, value: 35 } as unknown as AppAction;

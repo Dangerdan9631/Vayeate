@@ -9,6 +9,8 @@ export interface RestoreThemeStateParams {
   checkedColorRefs?: string[];
   checkedContrastRefs?: string[];
   hueAdjustment?: number;
+  saturationAdjustment?: number;
+  valueAdjustment?: number;
   hueReferenceHex?: string;
   deleteThemeVersionOnRestore?: Pick<Theme, 'name' | 'version'>;
 }

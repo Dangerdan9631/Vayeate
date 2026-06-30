@@ -115,11 +115,25 @@ describe('gateway baselines', () => {
 
   it('loads preview samples through the preview gateway seam', async () => {
     const fileSystemService = {
-      listDirEntries: vi.fn(async () => [{ name: 'typescript', isDirectory: true }]),
-      listFiles: vi.fn(async () => ['TypeScript.tmLanguage.json', 'example.ts', '.ignored.txt']),
+      listDirEntries: vi.fn(async () => [
+        { name: 'typescript', isDirectory: true },
+        { name: 'csharp', isDirectory: true },
+      ]),
+      listFiles: vi.fn(async (relativeDirPath: string) => {
+        if (relativeDirPath.endsWith('/csharp')) {
+          return ['csharp.tmLanguage.json', 'example.cs'];
+        }
+        return ['TypeScript.tmLanguage.json', 'example.ts', '.ignored.txt'];
+      }),
       loadFile: vi.fn(async (relativePath: string) => {
-        if (relativePath.endsWith('.tmLanguage.json')) {
+        if (relativePath.endsWith('csharp.tmLanguage.json')) {
+          return JSON.stringify({ scopeName: 'source.cs' });
+        }
+        if (relativePath.endsWith('TypeScript.tmLanguage.json')) {
           return JSON.stringify({ scopeName: 'source.ts' });
+        }
+        if (relativePath.endsWith('example.cs')) {
+          return 'public async Task<string> LoadAsync() => "ready";';
         }
         if (relativePath.endsWith('example.ts')) {
           return 'const value = 1;';
@@ -129,19 +143,34 @@ describe('gateway baselines', () => {
     };
     const tokenizer = {
       init: vi.fn(async () => {}),
-      tokenizeFile: vi.fn(async () => [{ tokens: [{ text: 'const', scopes: ['keyword'] }] }]),
+      tokenizeFile: vi.fn(async (grammar: { scopeName: string }, sourceCode: string) => {
+        if (grammar.scopeName === 'source.cs') {
+          expect(sourceCode).toContain('public async Task<string>');
+          return [{ tokens: [{ text: 'public', scopes: ['keyword.other.cs'] }] }];
+        }
+        return [{ tokens: [{ text: 'const', scopes: ['keyword'] }] }];
+      }),
     };
 
     const gateway = new PreviewGateway(fileSystemService as never, tokenizer as never);
     const previews = await gateway.loadPreviews();
 
     expect(tokenizer.init).toHaveBeenCalledTimes(1);
-    expect(tokenizer.tokenizeFile).toHaveBeenCalledTimes(1);
+    expect(tokenizer.tokenizeFile).toHaveBeenCalledTimes(2);
+    expect(tokenizer.tokenizeFile).toHaveBeenCalledWith(
+      { scopeName: 'source.cs' },
+      'public async Task<string> LoadAsync() => "ready";',
+    );
     expect(previews).toEqual([
       {
         language: 'typescript',
         fileName: 'example.ts',
         lines: [{ tokens: [{ text: 'const', scopes: ['keyword'] }] }],
+      },
+      {
+        language: 'csharp',
+        fileName: 'example.cs',
+        lines: [{ tokens: [{ text: 'public', scopes: ['keyword.other.cs'] }] }],
       },
     ]);
   });

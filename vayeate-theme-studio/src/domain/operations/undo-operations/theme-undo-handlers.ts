@@ -17,6 +17,8 @@ import {
   THEME_PALETTE_COLOR_ASSIGNED,
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
+  THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+  THEME_PALETTE_VALUE_ADJUSTMENT_SET,
   THEME_PANE_SELECTIONS_SET,
   THEME_PREVIEW_TOKEN_REF_SET,
   THEME_UNDO_ACTION_TYPES,
@@ -27,6 +29,8 @@ import type { UndoAction } from '../../core/undo-stack-types';
 import type { UndoDiffHandler } from '../../core/undo-processor';
 import { resolveThemeContrastActionField, THEME_CONTRAST_FIELD_ACTION_TYPES } from '../../utils/theme-contrast-undo-utils';
 import type { SetThemeHueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import type { SetThemeSaturationAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
+import type { SetThemeValueAdjustmentOperation } from '../theme-operations/palette-hue/set-theme-value-adjustment-operation';
 import type { SetThemeHueReferenceHexOperation } from '../theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
 import type { SetThemePaneSelectionsOperation } from '../theme-operations/pickers/set-theme-pane-selections-operation';
 import type { SetColorUseDarkForLightOperation } from '../theme-operations/theme-details/set-color-use-dark-for-light-operation';
@@ -61,6 +65,8 @@ const FIELD_LEVEL_ACTION_TYPES = new Set<string>([
   THEME_COLOR_VARIABLE_LIGHT_SET,
   THEME_COLOR_VARIABLE_DARK_SET,
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
+  THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+  THEME_PALETTE_VALUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
   THEME_PANE_SELECTIONS_SET,
   THEME_LOADED_TEMPLATE_SET,
@@ -83,6 +89,8 @@ export interface ThemeUndoHandlerDeps {
   setPaletteClusterCount: SetThemePaletteClusterCountOperation;
   setPreviewTokenRefField: SetThemePreviewTokenRefFieldOperation;
   setHueAdjustment: SetThemeHueAdjustmentOperation;
+  setSaturationAdjustment: SetThemeSaturationAdjustmentOperation;
+  setValueAdjustment: SetThemeValueAdjustmentOperation;
   setHueReferenceHex: SetThemeHueReferenceHexOperation;
   setThemePaneSelections: SetThemePaneSelectionsOperation;
   setLoadedTemplate: SetThemeLoadedTemplateOperation;
@@ -248,6 +256,16 @@ export function buildThemeUndoHandlers(deps: ThemeUndoHandlerDeps): UndoDiffHand
       actionType: THEME_PALETTE_HUE_ADJUSTMENT_SET,
       apply: (action) => deps.setHueAdjustment.execute(Number(action.after ?? 0)),
       revert: (action) => deps.setHueAdjustment.execute(Number(action.before ?? 0)),
+    },
+    {
+      actionType: THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+      apply: (action) => deps.setSaturationAdjustment.execute(Number(action.after ?? 0)),
+      revert: (action) => deps.setSaturationAdjustment.execute(Number(action.before ?? 0)),
+    },
+    {
+      actionType: THEME_PALETTE_VALUE_ADJUSTMENT_SET,
+      apply: (action) => deps.setValueAdjustment.execute(Number(action.after ?? 0)),
+      revert: (action) => deps.setValueAdjustment.execute(Number(action.before ?? 0)),
     },
     {
       actionType: THEME_PALETTE_HUE_REFERENCE_SET,

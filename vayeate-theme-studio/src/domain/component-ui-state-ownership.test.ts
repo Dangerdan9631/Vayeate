@@ -61,6 +61,8 @@ describe('component ui state ownership', () => {
       checkedColorRefs: ['editorFg'],
       checkedContrastRefs: ['contrastMain'],
       hueAdjustment: 5,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
       hueReferenceHex: '#ff0000',
     };
 
@@ -83,6 +85,8 @@ describe('component ui state ownership', () => {
       checkedColorRefs: ['editorFg'],
       checkedContrastRefs: ['contrastMain'],
       hueAdjustment: 5,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
       hueReferenceHex: '#ff0000',
     });
     expect(store.getStore().state.loadedTemplateForTheme).toEqual(

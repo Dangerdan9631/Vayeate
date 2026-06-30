@@ -43,6 +43,8 @@ const INTERACTIVE_ACTION_TYPES = new Set<string>([
   ...Object.values(StyledTooltipActionType),
   ThemePaletteCardActionType.AssignColorPickerOnSelect,
   ThemePaletteCardActionType.HueSliderOnDelta,
+  ThemePaletteCardActionType.SaturationSliderOnDelta,
+  ThemePaletteCardActionType.ValueSliderOnDelta,
   ThemePaletteCardActionType.ClusterCountSliderOnDelta,
   ThemePaletteCardActionType.ColorRefsSelectionCommit,
 ]);

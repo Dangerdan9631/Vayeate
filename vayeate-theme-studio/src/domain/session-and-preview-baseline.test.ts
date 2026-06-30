@@ -196,6 +196,8 @@ describe('session and preview baselines', () => {
         colorAssignments: theme.colorAssignments,
       } as never,
       0,
+      0,
+      0,
       new Set<string>(['editorFg']),
       true,
       true,

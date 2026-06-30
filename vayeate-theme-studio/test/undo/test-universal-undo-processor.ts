@@ -104,6 +104,8 @@ export interface TestUniversalUndoProcessorDeps {
   setPaletteClusterCount?: { execute: (value: number) => unknown };
   setPreviewTokenRefField?: { execute: (field: string, value: string | null) => unknown };
   setHueAdjustment?: { execute: (value: number) => void };
+  setSaturationAdjustment?: { execute: (value: number) => void };
+  setValueAdjustment?: { execute: (value: number) => void };
   setHueReferenceHex?: { execute: (value: string) => void };
   setThemePaneSelections?: { execute: (checkedColorRefs: string[], checkedContrastRefs: string[]) => void };
   setLoadedTemplate?: { execute: (template: unknown) => void };
@@ -160,6 +162,8 @@ export function createTestBuildUniversalUndoProcessor(
     (deps.setPaletteClusterCount ?? { execute: () => null }) as never,
     (deps.setPreviewTokenRefField ?? { execute: () => null }) as never,
     (deps.setHueAdjustment ?? { execute: () => undefined }) as never,
+    (deps.setSaturationAdjustment ?? { execute: () => undefined }) as never,
+    (deps.setValueAdjustment ?? { execute: () => undefined }) as never,
     (deps.setHueReferenceHex ?? { execute: () => undefined }) as never,
     (deps.setThemePaneSelections ?? { execute: () => undefined }) as never,
     (deps.setLoadedTemplate ?? { execute: () => undefined }) as never,

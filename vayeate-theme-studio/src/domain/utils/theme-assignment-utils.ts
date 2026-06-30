@@ -1,5 +1,26 @@
 import type { ColorAssignment } from '../../model/schema/theme-schemas';
-import { applyHueShift } from './color-hsl';
+import { applyHueShift, applySaturationValueAdjustment } from './color-hsl';
+
+export interface PaletteColorAdjustments {
+  hueAdjustment: number;
+  saturationAdjustment: number;
+  valueAdjustment: number;
+}
+
+function applyPaletteAdjustments(hex: string, adjustments: PaletteColorAdjustments): string {
+  const hueAdjusted =
+    adjustments.hueAdjustment === 0
+      ? hex
+      : applyHueShift(hex, adjustments.hueAdjustment / 100);
+  if (adjustments.saturationAdjustment === 0 && adjustments.valueAdjustment === 0) {
+    return hueAdjusted;
+  }
+  return applySaturationValueAdjustment(
+    hueAdjusted,
+    adjustments.saturationAdjustment / 100,
+    adjustments.valueAdjustment / 100,
+  );
+}
 
 /**
  * Applies a hue shift to checked color assignments for selected dark/light variants.
@@ -26,6 +47,38 @@ export function applyHueToAssignmentsFiltered(
       light:
         applyToLight && !a.useDarkForLight && a.light
           ? { value: applyHueShift(a.light.value, shift) }
+          : a.light,
+    };
+  });
+}
+
+/**
+ * Applies hue, saturation, and value slider adjustments to checked color assignments.
+ *
+ * @param assignments - Source color assignments from the theme.
+ * @param adjustments - Palette slider adjustments in UI units.
+ * @param checkedRefs - Color variable keys eligible for adjustment.
+ * @param options - Flags selecting whether dark and/or light values are adjusted.
+ * @returns New assignments array with adjusted hex values where applicable.
+ */
+export function applyPaletteAdjustmentsToAssignmentsFiltered(
+  assignments: readonly ColorAssignment[],
+  adjustments: PaletteColorAdjustments,
+  checkedRefs: ReadonlySet<string>,
+  options: { applyToDark: boolean; applyToLight: boolean },
+): ColorAssignment[] {
+  const { applyToDark, applyToLight } = options;
+  return assignments.map((a) => {
+    if (!checkedRefs.has(a.colorRef)) return a;
+    return {
+      ...a,
+      dark:
+        applyToDark && a.dark
+          ? { value: applyPaletteAdjustments(a.dark.value, adjustments) }
+          : a.dark,
+      light:
+        applyToLight && !a.useDarkForLight && a.light
+          ? { value: applyPaletteAdjustments(a.light.value, adjustments) }
           : a.light,
     };
   });

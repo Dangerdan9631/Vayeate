@@ -30,6 +30,8 @@ export class SetAssignColorPreviewController {
       theme,
       checkedColorRefs,
       hueAdjustment: state.hueAdjustment,
+      saturationAdjustment: state.saturationAdjustment,
+      valueAdjustment: state.valueAdjustment,
     });
   }
 }

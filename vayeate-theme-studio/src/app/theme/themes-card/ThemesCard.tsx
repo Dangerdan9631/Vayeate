@@ -13,7 +13,9 @@ export function ThemesCard() {
     onSelectName,
     onSelectVersion,
     onCreateClick,
+    onDuplicateClick,
     isCreating,
+    canDuplicate,
   } = useThemesCardViewModel();
 
   function onNameSelectChange(e: ChangeEvent<HTMLSelectElement>) {
@@ -71,6 +73,17 @@ export function ThemesCard() {
       >
         {isCreating ? 'Creating…' : 'Create new theme'}
       </button>
+
+      {canDuplicate && (
+        <button
+          type="button"
+          className="create-catalog-btn"
+          disabled={isCreating}
+          onClick={onDuplicateClick}
+        >
+          {isCreating ? 'Creating…' : 'Duplicate theme'}
+        </button>
+      )}
     </div>
   );
 }

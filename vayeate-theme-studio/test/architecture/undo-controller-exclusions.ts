@@ -91,6 +91,8 @@ export const THEME_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/theme/theme-palette-card/controllers/set-assign-color-preview-controller.ts',
   'src/app/theme/theme-palette-card/controllers/set-palette-cluster-count-k-preview-controller.ts',
   'src/app/theme/theme-palette-card/controllers/set-theme-hue-adjustment-controller.ts',
+  'src/app/theme/theme-palette-card/controllers/set-theme-saturation-adjustment-controller.ts',
+  'src/app/theme/theme-palette-card/controllers/set-theme-value-adjustment-controller.ts',
   'src/app/theme/theme-palette-card/controllers/compute-palette-clusters-controller.ts',
   'src/app/theme/theme-palette-card/controllers/set-palette-cluster-by-dark-controller.ts',
 ] as const;

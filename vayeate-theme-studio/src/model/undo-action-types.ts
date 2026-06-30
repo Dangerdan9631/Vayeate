@@ -308,6 +308,14 @@ export const THEME_PALETTE_HUE_RECENTERED = 'THEME_PALETTE_HUE_RECENTERED' as co
  */
 export const THEME_PALETTE_HUE_ADJUSTMENT_SET = 'THEME_PALETTE_HUE_ADJUSTMENT_SET' as const;
 /**
+ * Undo diff action type for setting theme palette saturation adjustment.
+ */
+export const THEME_PALETTE_SATURATION_ADJUSTMENT_SET = 'THEME_PALETTE_SATURATION_ADJUSTMENT_SET' as const;
+/**
+ * Undo diff action type for setting theme palette value adjustment.
+ */
+export const THEME_PALETTE_VALUE_ADJUSTMENT_SET = 'THEME_PALETTE_VALUE_ADJUSTMENT_SET' as const;
+/**
  * Undo diff action type for setting theme palette hue reference.
  */
 export const THEME_PALETTE_HUE_REFERENCE_SET = 'THEME_PALETTE_HUE_REFERENCE_SET' as const;
@@ -364,6 +372,8 @@ export const THEME_UNDO_ACTION_TYPES = [
   THEME_PALETTE_CLUSTER_COUNT_SET,
   THEME_PALETTE_HUE_RECENTERED,
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
+  THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+  THEME_PALETTE_VALUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
   THEME_PANE_SELECTIONS_SET,
   THEME_TEMPLATE_SET,

@@ -18,11 +18,11 @@ export class CreateThemeOperation {
 
   /**
    * Runs the create theme mutation.
-   * @param params Params ({ name: string }).
+   * @param params Params ({ name: string, sourceTheme?: Theme | null }).
    * @returns Theme result.
    */
 
-  execute(params: { name: string }): Theme {
+  execute(params: { name: string; sourceTheme?: Theme | null }): Theme {
     const theme = createThemeWithParams(params);
     this.enqueueBackgroundQueue.execute(
       'data_io',

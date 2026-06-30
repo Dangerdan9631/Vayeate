@@ -17,6 +17,15 @@ export interface Hsl {
 }
 
 /**
+ * HSV color with hue in [0, 1] and saturation/value in [0, 1].
+ */
+export interface Hsv {
+  h: number;
+  s: number;
+  v: number;
+}
+
+/**
  * Comparison operator used when adjusting a color to meet a contrast target.
  */
 export type ContrastComparisonMethod = 'lessThan' | 'equalTo' | 'greaterThan';

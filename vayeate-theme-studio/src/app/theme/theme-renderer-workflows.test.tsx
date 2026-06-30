@@ -24,6 +24,8 @@ import { ApplyThemeUndoStateOperation } from '../../domain/operations/undo-opera
 import { ApplyThemeLifecycleUndoOperation } from '../../domain/operations/undo-operations/apply-theme-lifecycle-undo-operation';
 import { RestoreThemePaletteAssignUndoOperation } from '../../domain/operations/undo-operations/restore-theme-palette-assign-undo-operation';
 import { SetThemeHueAdjustmentOperation } from '../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SetThemeSaturationAdjustmentOperation } from '../../domain/operations/theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
+import { SetThemeValueAdjustmentOperation } from '../../domain/operations/theme-operations/palette-hue/set-theme-value-adjustment-operation';
 import { RecordThemeUndoOperation } from '../../domain/operations/undo-operations/record-theme-undo-operation';
 import { RecordUndoEntryOperation } from '../../domain/operations/undo-operations/record-undo-entry-operation';
 import {
@@ -36,6 +38,7 @@ import {
 } from '../../../test/undo/test-universal-undo-processor';
 import { ThemesStore } from '../../domain/state/data/themes-store';
 import { ThemeUiStore } from '../../domain/state/ui/theme-ui-store';
+import { ThemeCreateDialogStore } from '../../domain/state/ui/theme-create-dialog-store';
 import { UndoStackStore } from '../../domain/state/undo-stack/undo-stack-store';
 import { SetColorVariableDarkController } from './theme-variables-card/controllers/set-color-variable-dark-controller';
 import { SetContrastVariableDarkValueController } from './theme-variables-card/controllers/set-contrast-variable-dark-value-controller';
@@ -139,6 +142,7 @@ describe('theme renderer workflows', () => {
       onDismissSaveErrorClick: vi.fn(),
     });
     viewModelMocks.useCreateThemeDialogViewModel.mockReturnValue({
+      title: 'Create New Theme',
       name: '',
       canSubmit: false,
       showNameError: false,
@@ -154,7 +158,9 @@ describe('theme renderer workflows', () => {
       onSelectName: vi.fn(),
       onSelectVersion: vi.fn(),
       onCreateClick: vi.fn(),
+      onDuplicateClick: vi.fn(),
       isCreating: false,
+      canDuplicate: false,
     });
     viewModelMocks.useThemeDetailsCardViewModel.mockReturnValue({
       theme: null,
@@ -174,8 +180,15 @@ describe('theme renderer workflows', () => {
     viewModelMocks.useThemePaletteCardViewModel.mockReturnValue({
       theme: null,
       hueAdjustment: 0,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
       hueReferenceHex: '#ff0000',
       onHueChange: vi.fn(),
+      onHueCommit: vi.fn(),
+      onSaturationChange: vi.fn(),
+      onSaturationCommit: vi.fn(),
+      onValueChange: vi.fn(),
+      onValueCommit: vi.fn(),
       onHueReferenceChange: vi.fn(),
       onRecenter: vi.fn(),
       onHueDragStart: vi.fn(),
@@ -316,6 +329,7 @@ describe('theme renderer workflows', () => {
       onSelectName: vi.fn(),
       onSelectVersion: vi.fn(),
       onCreateClick: vi.fn(),
+      onDuplicateClick: vi.fn(),
     };
     const detailCallbacks = {
       onDeleteVersionClick: vi.fn(),
@@ -326,6 +340,7 @@ describe('theme renderer workflows', () => {
     };
 
     viewModelMocks.useCreateThemeDialogViewModel.mockReturnValue({
+      title: 'Create New Theme',
       name: 'starter',
       canSubmit: false,
       showNameError: true,
@@ -337,6 +352,7 @@ describe('theme renderer workflows', () => {
       versionsForSelectedName: [{ version: '1.0.0' }, { version: '1.0.1' }],
       selectedRef: { version: '1.0.1' },
       isCreating: false,
+      canDuplicate: true,
       ...themesCallbacks,
     });
     viewModelMocks.useThemeDetailsCardViewModel.mockReturnValue({
@@ -369,9 +385,11 @@ describe('theme renderer workflows', () => {
     await user.selectOptions(selects[0], 'theme-b');
     await user.selectOptions(selects[1], '1.0.0');
     await user.click(card.getByRole('button', { name: 'Create new theme' }));
+    await user.click(card.getByRole('button', { name: 'Duplicate theme' }));
     expect(themesCallbacks.onSelectName).toHaveBeenCalledWith('theme-b');
     expect(themesCallbacks.onSelectVersion).toHaveBeenCalledWith('1.0.0');
     expect(themesCallbacks.onCreateClick).toHaveBeenCalledTimes(1);
+    expect(themesCallbacks.onDuplicateClick).toHaveBeenCalledTimes(1);
     card.unmount();
 
     const details = render(<ThemeDetailsCard />);
@@ -395,6 +413,11 @@ describe('theme renderer workflows', () => {
     const colorPickerSnapshot = { kind: 'dark' };
     const paletteCallbacks = {
       onHueChange: vi.fn(),
+      onHueCommit: vi.fn(),
+      onSaturationChange: vi.fn(),
+      onSaturationCommit: vi.fn(),
+      onValueChange: vi.fn(),
+      onValueCommit: vi.fn(),
       onHueReferenceChange: vi.fn(),
       onRecenter: vi.fn(),
       onHueDragStart: vi.fn(),
@@ -450,6 +473,8 @@ describe('theme renderer workflows', () => {
     viewModelMocks.useThemePaletteCardViewModel.mockReturnValue({
       theme: { templateRef: { name: 'template-a', version: '1.0.0' } },
       hueAdjustment: 5,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
       hueReferenceHex: '#ff0000',
       applyToDark: true,
       applyToLight: false,
@@ -523,7 +548,7 @@ describe('theme renderer workflows', () => {
     const paletteCheckboxes = palette.getAllByRole('checkbox');
     await user.click(paletteCheckboxes[0]);
     await user.click(paletteCheckboxes[1]);
-    await user.click(palette.getByRole('button', { name: 'Recenter hue slider to 0' }));
+    await user.click(palette.getByRole('button', { name: 'Recenter palette adjustment sliders to 0' }));
     const hueRefInput = palette.getByRole('textbox', { name: 'Hue reference color (hex)' });
     await user.clear(hueRefInput);
     await user.type(hueRefInput, '#00ff00');
@@ -970,6 +995,8 @@ describe('theme renderer workflows', () => {
       theme: beforePickerPreview!,
       checkedColorRefs: new Set(['editorFg']),
       hueAdjustment: 0,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
     });
     expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe('#333333');
 
@@ -978,6 +1005,8 @@ describe('theme renderer workflows', () => {
       checkedColorRefs: ['editorFg'],
       checkedContrastRefs: [],
       hueAdjustment: 0,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
       hueReferenceHex: '#FF0000',
     });
     const savedTheme = themesStore.getStore().state.themeMap['theme-a']?.['1.0.0']?.theme;
@@ -989,6 +1018,8 @@ describe('theme renderer workflows', () => {
       checkedColorRefs: ['editorFg'],
       checkedContrastRefs: [],
       hueAdjustment: 0,
+      saturationAdjustment: 0,
+      valueAdjustment: 0,
       hueReferenceHex: '#FF0000',
     });
     expect(undoStackStore.getStore().state.undoMenu.nextUndoDescription).toBe('Assign palette color: #444444');
@@ -1069,6 +1100,8 @@ describe('theme renderer workflows', () => {
         setContrastUseDarkForLight: setContrastUseDarkForLight as never,
         setColorUseDarkForLight: setColorUseDarkForLight as never,
         setHueAdjustment: new SetThemeHueAdjustmentOperation(themeUiStore),
+        setSaturationAdjustment: new SetThemeSaturationAdjustmentOperation(themeUiStore),
+        setValueAdjustment: new SetThemeValueAdjustmentOperation(themeUiStore),
         setThemePaneSelections: new SetThemePaneSelectionsOperation(themeUiStore),
       });
       const testUndo = createTestUndoOperations(undoStackStore, buildUniversalUndoProcessor);
@@ -1217,11 +1250,15 @@ describe('theme renderer workflows', () => {
       const { testUndo, recordThemeUndo, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
       seedTheme(themeUiStore, themesStore);
       themeUiStore.getStore().setHueAdjustment(25);
+      themeUiStore.getStore().setSaturationAdjustment(20);
+      themeUiStore.getStore().setValueAdjustment(-15);
       themeUiStore.getStore().setThemePaneSelections(['editorFg'], []);
       const controller = new RecenterHueReferenceController(
         themeUiStore,
         new SetThemeOperation(themesStore, themeUiStore),
         new SetThemeHueAdjustmentOperation(themeUiStore),
+        new SetThemeSaturationAdjustmentOperation(themeUiStore),
+        new SetThemeValueAdjustmentOperation(themeUiStore),
         new ApplyThemeStateAndSchedulePersistOperation(
           new ApplyThemeStateOperation(themeUiStore),
           { schedule: vi.fn() } as never,
@@ -1234,14 +1271,21 @@ describe('theme renderer workflows', () => {
       const beforeDark = themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value;
       await controller.run();
       expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
       expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).not.toBe(beforeDark);
 
       await waitForUndoRecorded(undoStackStore);
       await testUndo.undo.execute();
       expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe(beforeDark);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(25);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(20);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(-15);
 
       await testUndo.redo.execute();
       expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
     });
 
     it('records, undoes, and redoes an eyedropper palette color assignment', async () => {
@@ -1347,13 +1391,14 @@ describe('theme renderer workflows', () => {
       await undoManagerV2.clearPersisted();
       const themeUiStore = new ThemeUiStore();
       const themesStore = new ThemesStore();
+      const themeCreateDialogStore = new ThemeCreateDialogStore();
       const { testUndo, recordThemeUndo, setTheme, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
       const createTheme = {
-        execute: vi.fn(async ({ name }: { name: string }) => themeSchema.parse({
+        execute: vi.fn(async ({ name, sourceTheme }: { name: string; sourceTheme?: unknown }) => themeSchema.parse({
           name,
           version: '1.0.0',
-          templateRef: { name: 'template-a', version: '1.0.0' },
-          colorAssignments: [],
+          templateRef: sourceTheme ? { name: 'copied-template', version: '1.0.0' } : { name: 'template-a', version: '1.0.0' },
+          colorAssignments: sourceTheme ? [{ colorRef: 'copiedColor', dark: { value: '#111111' }, light: null, useDarkForLight: true }] : [],
           contrastAssignments: [],
         })),
       };
@@ -1367,6 +1412,7 @@ describe('theme renderer workflows', () => {
         { execute: vi.fn() } as never,
         { execute: vi.fn() } as never,
         themeUiStore,
+        themeCreateDialogStore,
         recordThemeUndo,
         testUndo.setCurrentUndoStackId,
       );
@@ -1382,6 +1428,24 @@ describe('theme renderer workflows', () => {
 
       await testUndo.redo.execute();
       expect(themesStore.getStore().state.themeMap['new-theme']?.['1.0.0']?.theme?.name).toBe('new-theme');
+
+      const sourceTheme = themeSchema.parse({
+        name: 'source-theme',
+        version: '2.3.4',
+        templateRef: { name: 'copied-template', version: '1.0.0' },
+        colorAssignments: [{ colorRef: 'copiedColor', dark: { value: '#111111' }, light: null, useDarkForLight: true }],
+        contrastAssignments: [],
+      });
+      themeUiStore.getStore().setTheme(sourceTheme);
+      themeCreateDialogStore.getStore().setMode('duplicate');
+
+      await controller.run({ name: 'copied-theme' });
+      expect(createTheme.execute).toHaveBeenLastCalledWith({ name: 'copied-theme', sourceTheme });
+      expect(themesStore.getStore().state.themeMap['copied-theme']?.['1.0.0']?.theme?.templateRef).toEqual({
+        name: 'copied-template',
+        version: '1.0.0',
+      });
+      expect(themesStore.getStore().state.themeMap['copied-theme']?.['1.0.0']?.theme?.colorAssignments).toHaveLength(1);
     });
   });
 

@@ -2167,6 +2167,38 @@ body {
   background: #808080;
 }
 
+.theme-palette-saturation-slider-wrap {
+  margin-top: 6px;
+  background: linear-gradient(to right, #808080 0%, #ff0000 50%, #ffffff 100%);
+}
+
+.theme-palette-value-slider-wrap {
+  margin-top: 6px;
+  background: linear-gradient(to right, #000000 0%, #808080 50%, #ffffff 100%);
+}
+
+.theme-palette-adjustment-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.theme-palette-adjustment-label {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.theme-palette-adjustment-value {
+  margin-left: auto;
+  min-width: 34px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
 .theme-palette-hue-slider {
   position: absolute;
   inset: 0;

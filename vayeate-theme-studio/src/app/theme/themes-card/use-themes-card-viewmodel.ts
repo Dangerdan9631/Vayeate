@@ -23,9 +23,11 @@ export interface ThemesCardViewModel {
   versionsForSelectedName: ThemeReference[];
   selectedRef: ThemeReference | null;
   isCreating: boolean;
+  canDuplicate: boolean;
   onSelectName: (name: string) => void;
   onSelectVersion: (version: string) => void;
   onCreateClick: () => void;
+  onDuplicateClick: () => void;
 }
 
 /**
@@ -72,6 +74,10 @@ export function useThemesCardViewModel(): ThemesCardViewModel {
     void dispatch({ type: ThemesCardActionType.CreateButtonOnClick });
   }, [dispatch]);
 
+  const openDuplicateDialog = useCallback(() => {
+    void dispatch({ type: ThemesCardActionType.DuplicateButtonOnClick });
+  }, [dispatch]);
+
   const onSelectVersion = useCallback(
     (version: string) => {
       if (selectedName) selectTheme(selectedName, version);
@@ -87,6 +93,8 @@ export function useThemesCardViewModel(): ThemesCardViewModel {
     onSelectName: selectName,
     onSelectVersion,
     onCreateClick: openCreateDialog,
+    onDuplicateClick: openDuplicateDialog,
     isCreating,
+    canDuplicate: selectedRef !== null,
   };
 }

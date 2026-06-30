@@ -4,10 +4,10 @@ import { SetThemeCreateDialogOpenOperation } from '../../../../domain/operations
 import { SetThemeCreateFormNameOperation } from '../../../../domain/operations/theme-operations/theme-list/set-theme-create-form-name-operation';
 
 /**
- * Orchestrates open theme create dialog work for the theme UI.
+ * Orchestrates open theme duplicate dialog work for the theme UI.
  */
 @singleton()
-export class OpenThemeCreateDialogController {
+export class OpenThemeDuplicateDialogController {
   constructor(
     private readonly setThemeCreateDialogMode: SetThemeCreateDialogModeOperation,
     private readonly setThemeCreateDialogOpen: SetThemeCreateDialogOpenOperation,
@@ -15,11 +15,11 @@ export class OpenThemeCreateDialogController {
   ) {}
 
   /**
- * Validates input and invokes the domain operations for this interaction.
- * @returns Promise resolved when orchestration completes.
+   * Validates input and invokes the domain operations for this interaction.
+   * @returns Promise resolved when orchestration completes.
    */
   run(): void {
-    this.setThemeCreateDialogMode.execute('create');
+    this.setThemeCreateDialogMode.execute('duplicate');
     this.setThemeCreateFormName.execute('');
     this.setThemeCreateDialogOpen.execute(true);
   }

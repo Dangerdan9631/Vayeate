@@ -65,6 +65,8 @@ export function useThemePaletteCardViewModel() {
     useShallow((state) => state.state.checkedContrastRefs),
   );
   const hueAdjustment = useStore(themeUiStore.api, (state) => state.state.hueAdjustment);
+  const saturationAdjustment = useStore(themeUiStore.api, (state) => state.state.saturationAdjustment);
+  const valueAdjustment = useStore(themeUiStore.api, (state) => state.state.valueAdjustment);
   const hueReferenceHex = useStore(themeUiStore.api, (state) => state.state.hueReferenceHex);
   const previewClusterCountK = useStore(themeUiStore.api, (state) => state.state.previewClusterCountK);
   const loadedTemplate = useStore(themePreviewStore.api, (state) => state.state.loadedTemplateForTheme);
@@ -100,7 +102,12 @@ export function useThemePaletteCardViewModel() {
 
   const hueDragStartRef = useRef<{ theme: Theme; hueAdjustment: number } | null>(null);
   const pendingHueValueRef = useRef<number | null>(null);
+  const pendingSaturationValueRef = useRef<number | null>(null);
+  const pendingValueValueRef = useRef<number | null>(null);
   const hueFrameRef = useRef<number | null>(null);
+  const saturationFrameRef = useRef<number | null>(null);
+  const valueFrameRef = useRef<number | null>(null);
+  const lastCheckedColorRefsArrayRef = useRef(checkedColorRefsArray);
 
   const lastSelectedRefForHueRef = useRef<{ name: string; version: string } | null>(null);
   useEffect(() => {
@@ -156,6 +163,12 @@ export function useThemePaletteCardViewModel() {
     if (hueFrameRef.current !== null) {
       cancelAnimationFrame(hueFrameRef.current);
     }
+    if (saturationFrameRef.current !== null) {
+      cancelAnimationFrame(saturationFrameRef.current);
+    }
+    if (valueFrameRef.current !== null) {
+      cancelAnimationFrame(valueFrameRef.current);
+    }
   }, []);
 
   const setHueAdjustment = useCallback(
@@ -186,6 +199,80 @@ export function useThemePaletteCardViewModel() {
     },
     [dispatch],
   );
+
+  const setSaturationAdjustment = useCallback(
+    (value: number) => {
+      pendingSaturationValueRef.current = value;
+      if (saturationFrameRef.current !== null) return;
+
+      saturationFrameRef.current = requestAnimationFrame(() => {
+        saturationFrameRef.current = null;
+        const nextValue = pendingSaturationValueRef.current;
+        pendingSaturationValueRef.current = null;
+        if (nextValue === null) return;
+        void dispatch({ type: ThemePaletteCardActionType.SaturationSliderOnDelta, value: nextValue });
+      });
+    },
+    [dispatch],
+  );
+
+  const commitSaturationAdjustment = useCallback(
+    (value: number) => {
+      if (saturationFrameRef.current !== null) {
+        cancelAnimationFrame(saturationFrameRef.current);
+        saturationFrameRef.current = null;
+      }
+      const latestValue = pendingSaturationValueRef.current ?? value;
+      pendingSaturationValueRef.current = null;
+      void dispatch({ type: ThemePaletteCardActionType.SaturationSliderOnCommit, value: latestValue });
+    },
+    [dispatch],
+  );
+
+  const setValueAdjustment = useCallback(
+    (value: number) => {
+      pendingValueValueRef.current = value;
+      if (valueFrameRef.current !== null) return;
+
+      valueFrameRef.current = requestAnimationFrame(() => {
+        valueFrameRef.current = null;
+        const nextValue = pendingValueValueRef.current;
+        pendingValueValueRef.current = null;
+        if (nextValue === null) return;
+        void dispatch({ type: ThemePaletteCardActionType.ValueSliderOnDelta, value: nextValue });
+      });
+    },
+    [dispatch],
+  );
+
+  const commitValueAdjustment = useCallback(
+    (value: number) => {
+      if (valueFrameRef.current !== null) {
+        cancelAnimationFrame(valueFrameRef.current);
+        valueFrameRef.current = null;
+      }
+      const latestValue = pendingValueValueRef.current ?? value;
+      pendingValueValueRef.current = null;
+      void dispatch({ type: ThemePaletteCardActionType.ValueSliderOnCommit, value: latestValue });
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    if (lastCheckedColorRefsArrayRef.current === checkedColorRefsArray) return;
+    lastCheckedColorRefsArrayRef.current = checkedColorRefsArray;
+    if (hueAdjustment !== 0) commitHueAdjustment(hueAdjustment);
+    if (saturationAdjustment !== 0) commitSaturationAdjustment(saturationAdjustment);
+    if (valueAdjustment !== 0) commitValueAdjustment(valueAdjustment);
+  }, [
+    checkedColorRefsArray,
+    hueAdjustment,
+    saturationAdjustment,
+    valueAdjustment,
+    commitHueAdjustment,
+    commitSaturationAdjustment,
+    commitValueAdjustment,
+  ]);
 
   const setApplyHueToDark = useCallback(
     (checked: boolean) => {
@@ -278,9 +365,18 @@ export function useThemePaletteCardViewModel() {
       checkedColorRefsArray,
       checkedContrastRefsArray,
       hueAdjustment,
+      saturationAdjustment,
+      valueAdjustment,
       hueReferenceHex,
     );
-  }, [checkedColorRefsArray, checkedContrastRefsArray, hueAdjustment, hueReferenceHex]);
+  }, [
+    checkedColorRefsArray,
+    checkedContrastRefsArray,
+    hueAdjustment,
+    saturationAdjustment,
+    valueAdjustment,
+    hueReferenceHex,
+  ]);
 
   const setSelectedColorsPreview = useCallback(
     (hex: string) => {
@@ -325,9 +421,15 @@ export function useThemePaletteCardViewModel() {
   return {
     theme,
     hueAdjustment,
+    saturationAdjustment,
+    valueAdjustment,
     hueReferenceHex,
     onHueChange: setHueAdjustment,
     onHueCommit: commitHueAdjustment,
+    onSaturationChange: setSaturationAdjustment,
+    onSaturationCommit: commitSaturationAdjustment,
+    onValueChange: setValueAdjustment,
+    onValueCommit: commitValueAdjustment,
     onHueReferenceChange: setHueReferenceHex,
     onRecenter: recenterHue,
     onHueDragStart: startHueDrag,

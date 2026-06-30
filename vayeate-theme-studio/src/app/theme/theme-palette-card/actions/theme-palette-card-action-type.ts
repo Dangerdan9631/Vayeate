@@ -20,6 +20,10 @@ export enum ThemePaletteCardActionType {
   HueReferenceEyeDropperOnCommit = 'THEME_PALETTE_HUE_REFERENCE_EYE_DROPPER_ON_COMMIT',
   HueSliderOnDelta = 'THEME_PALETTE_HUE_SLIDER_ON_DELTA',
   HueSliderOnCommit = 'THEME_PALETTE_HUE_SLIDER_ON_COMMIT',
+  SaturationSliderOnDelta = 'THEME_PALETTE_SATURATION_SLIDER_ON_DELTA',
+  SaturationSliderOnCommit = 'THEME_PALETTE_SATURATION_SLIDER_ON_COMMIT',
+  ValueSliderOnDelta = 'THEME_PALETTE_VALUE_SLIDER_ON_DELTA',
+  ValueSliderOnCommit = 'THEME_PALETTE_VALUE_SLIDER_ON_COMMIT',
   ClusterCountSliderOnDelta = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_DELTA',
   ClusterCountSliderOnCommit = 'THEME_PALETTE_CLUSTER_COUNT_SLIDER_ON_COMMIT',
   ClusterVariantCheckboxOnToggle = 'THEME_PALETTE_CLUSTER_VARIANT_CHECKBOX_ON_TOGGLE',
@@ -44,6 +48,10 @@ export type ThemePaletteCardActions =
   | { type: ThemePaletteCardActionType.HueReferenceEyeDropperOnCommit; value: HexColor }
   | { type: ThemePaletteCardActionType.HueSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.HueSliderOnCommit; value: number }
+  | { type: ThemePaletteCardActionType.SaturationSliderOnDelta; value: number }
+  | { type: ThemePaletteCardActionType.SaturationSliderOnCommit; value: number }
+  | { type: ThemePaletteCardActionType.ValueSliderOnDelta; value: number }
+  | { type: ThemePaletteCardActionType.ValueSliderOnCommit; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnDelta; value: number }
   | { type: ThemePaletteCardActionType.ClusterCountSliderOnCommit; value: number }
   | { type: ThemePaletteCardActionType.ClusterVariantCheckboxOnToggle; checked: boolean }
@@ -64,6 +72,8 @@ export function isThemePaletteCardAction(a: AppAction): a is ThemePaletteCardAct
 const themePaletteCardCoalescers: Partial<Record<ThemePaletteCardActionType, ActionCoalesceFn>> = {
   [ThemePaletteCardActionType.AssignColorPickerOnSelect]: coalesceLatest,
   [ThemePaletteCardActionType.HueSliderOnDelta]: coalesceLatest,
+  [ThemePaletteCardActionType.SaturationSliderOnDelta]: coalesceLatest,
+  [ThemePaletteCardActionType.ValueSliderOnDelta]: coalesceLatest,
   [ThemePaletteCardActionType.ClusterCountSliderOnDelta]: coalesceLatest,
 };
 
