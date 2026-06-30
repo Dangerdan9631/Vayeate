@@ -6,6 +6,7 @@ import { TemplateCatalogsCard } from '../template-catalogs-card/TemplateCatalogs
 import { TemplateDetailsCard } from '../template-details-card/TemplateDetailsCard';
 import { TemplatesCard } from '../templates-card/TemplatesCard';
 import { VariablesCard } from '../variables-card/VariablesCard';
+import { ResizableColumns } from '../../common/resizable-columns/ResizableColumns';
 
 /**
  * Renders the Templates editor page and its feature cards.
@@ -27,7 +28,11 @@ export function TemplatesPage() {
           <p>Loading templates...</p>
         </div>
       ) : (
-        <div className="templates-page-grid">
+        <ResizableColumns
+          className="templates-page-grid"
+          defaultColumns="minmax(0, 1fr) minmax(0, 2fr) minmax(0, 2fr)"
+          storageKey="vayeate.templates-page-columns"
+        >
           <div className="templates-left-col">
             <TemplatesCard />
             {isTemplateLoading && (
@@ -44,17 +49,17 @@ export function TemplatesPage() {
             )}
           </div>
           {isTemplateLoaded && (
-            <>
-              <div className="templates-center-col">
-                <MappingsCard />
-              </div>
-              <div className="templates-right-col">
-                <GroupsCard />
-                <VariablesCard />
-              </div>
-            </>
+            <div className="templates-center-col">
+              <MappingsCard />
+            </div>
           )}
-        </div>
+          {isTemplateLoaded && (
+            <div className="templates-right-col">
+              <GroupsCard />
+              <VariablesCard />
+            </div>
+          )}
+        </ResizableColumns>
       )}
       {isCreateDialogOpen && <CreateTemplateDialog />}
     </>

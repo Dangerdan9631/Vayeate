@@ -5,8 +5,6 @@ import { contrastRatio, luminance } from './color-wcag';
 
 const WCAG_RATIO_MAX = 21;
 
-const BLACK = '#000000';
-
 /**
  * Adjust foreground to have at least target contrast vs background.
  */
@@ -61,14 +59,23 @@ function adjustBrightnessExact(foreground: string, background: string, target: n
   const hsl = rgbToHsl(hexToRgb(fg));
   let lo = goLighter ? hsl.l : 0;
   let hi = goLighter ? 1 : hsl.l;
+  const loRatio = contrastRatio(rgbToHex(hslToRgb({ ...hsl, l: lo })), bg);
+  const hiRatio = contrastRatio(rgbToHex(hslToRgb({ ...hsl, l: hi })), bg);
+  const ratioIncreasesWithLightness = hiRatio > loRatio;
   let best = fg;
+  let bestDistance = Math.abs(current - target);
 
   for (let i = 0; i < 64; i += 1) {
     const mid = (lo + hi) / 2;
     const candidate = rgbToHex(hslToRgb({ ...hsl, l: mid }));
     const ratio = contrastRatio(candidate, bg);
-    best = candidate;
-    if (goLighter) {
+    const distance = Math.abs(ratio - target);
+    if (distance < bestDistance) {
+      best = candidate;
+      bestDistance = distance;
+    }
+
+    if (ratioIncreasesWithLightness) {
       if (ratio < target) lo = mid;
       else hi = mid;
     } else {
@@ -164,28 +171,23 @@ function adjustBrightnessToRange(
   return best;
 }
 
-/**
- * Clamp color so that its contrast vs black is within [minContrast, maxContrast].
- * Min and max in contrast variables represent the allowed range for the color's contrast compared to black.
- */
-function clampContrastVsBlack(
-  color: string,
-  minContrast: number,
-  maxContrast: number,
-): string {
-  const c = normalizeHex(color);
-  const ratioVsBlack = contrastRatio(c, BLACK);
-  if (ratioVsBlack >= minContrast && ratioVsBlack <= maxContrast) return c;
-  return adjustBrightnessToRange(c, BLACK, minContrast, maxContrast);
+function alphaSuffix(hex: string): string {
+  const normalized = normalizeHex(hex);
+  return normalized.length === 9 ? normalized.slice(7) : '';
+}
+
+function withAlpha(hex: string, alpha: string): string {
+  const normalized = normalizeHex(hex);
+  return `${normalized.slice(0, 7)}${alpha}`;
 }
 
 /**
  * Adjusts a token color so contrast against a source color meets the given constraint.
- * Optionally clamps the result so contrast versus black stays within min/max bounds.
+ * Optionally clamps the result so contrast versus the same source color stays within min/max bounds.
  *
  * @param tokenColor - Token foreground hex to adjust.
  * @param sourceColor - Comparison source background hex.
- * @param options - Comparison method, target value, and optional black-contrast bounds.
+ * @param options - Comparison method, target value, and optional source-contrast bounds.
  * @returns Adjusted hex color in sRGB gamut.
  */
 export function adjustColorToMeetContrast(
@@ -196,6 +198,7 @@ export function adjustColorToMeetContrast(
   const { comparisonMethod, value, min, max } = options;
   const token = normalizeHex(tokenColor);
   const source = normalizeHex(sourceColor);
+  const tokenAlpha = alphaSuffix(token);
 
   let result: string;
 
@@ -208,8 +211,9 @@ export function adjustColorToMeetContrast(
   }
 
   if (min != null || max != null) {
-    result = clampContrastVsBlack(
+    result = adjustBrightnessToRange(
       result,
+      source,
       min ?? 1,
       max ?? WCAG_RATIO_MAX,
     );
@@ -218,12 +222,12 @@ export function adjustColorToMeetContrast(
   /* Ensure result stays in sRGB; contrast math can push values outside [0,1]. */
   try {
     const rgb = hexToRgb(result);
-    return rgbToHex({
+    return withAlpha(rgbToHex({
       r: Math.max(0, Math.min(1, Number.isFinite(rgb.r) ? rgb.r : 0)),
       g: Math.max(0, Math.min(1, Number.isFinite(rgb.g) ? rgb.g : 0)),
       b: Math.max(0, Math.min(1, Number.isFinite(rgb.b) ? rgb.b : 0)),
-    });
+    }), tokenAlpha);
   } catch {
-    return result;
+    return withAlpha(result, tokenAlpha);
   }
 }

@@ -109,14 +109,11 @@ export function buildPreviewTokenTooltipTitle(
       lines.push(`Contrast params: value: ${params.value}, method: ${params.comparisonMethod}${minMax}`);
     }
     const hasMinMax = params && (params.min != null || params.max != null);
-    const BLACK = '#000000';
     if (comparisonSourceColor) {
       const evaluated = assigned ? contrastRatio(assigned, comparisonSourceColor) : null;
       const resolvedRatio = resolved ? contrastRatio(resolved, comparisonSourceColor) : null;
-      const evaluatedVsBlack = assigned ? contrastRatio(assigned, BLACK) : null;
-      const resolvedVsBlack = resolved ? contrastRatio(resolved, BLACK) : null;
-      const evalSuffix = hasMinMax && evaluatedVsBlack != null ? ` (vs black: ${evaluatedVsBlack.toFixed(2)})` : '';
-      const resolvedSuffix = hasMinMax && resolvedVsBlack != null ? ` (vs black: ${resolvedVsBlack.toFixed(2)})` : '';
+      const evalSuffix = hasMinMax && evaluated != null ? ` (vs source: ${evaluated.toFixed(2)})` : '';
+      const resolvedSuffix = hasMinMax && resolvedRatio != null ? ` (vs source: ${resolvedRatio.toFixed(2)})` : '';
       lines.push(
         `Evaluated contrast: ${evaluated != null ? evaluated.toFixed(2) : '—'}${evalSuffix}`,
         `Resolved contrast: ${resolvedRatio != null ? resolvedRatio.toFixed(2) : '—'}${resolvedSuffix}`,

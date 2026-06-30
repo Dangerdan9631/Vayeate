@@ -6,6 +6,7 @@ import { ThemeDetailsCard } from '../theme-details-card/ThemeDetailsCard';
 import { ThemePaletteCard } from '../theme-palette-card/ThemePaletteCard';
 import { ThemeVariablesCard } from '../theme-variables-card/ThemeVariablesCard';
 import { ThemesCard } from '../themes-card/ThemesCard';
+import { ResizableColumns } from '../../common/resizable-columns/ResizableColumns';
 
 /**
  * Renders the Themes Page UI for the theme editor.
@@ -35,7 +36,11 @@ export function ThemesPage() {
           <p>Loading themes...</p>
         </div>
       ) : (
-        <div className="themes-page-grid">
+        <ResizableColumns
+          className="themes-page-grid"
+          defaultColumns="minmax(0, 1fr) minmax(0, 2fr)"
+          storageKey="vayeate.themes-page-columns"
+        >
           <div className="themes-left-col">
             <ThemesCard />
             {isThemeLoading && (
@@ -57,7 +62,7 @@ export function ThemesPage() {
               <LazyEditorPreviewsCard />
             </div>
           )}
-        </div>
+        </ResizableColumns>
       )}
       {createDialogOpen && <CreateThemeDialog />}
     </>

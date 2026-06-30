@@ -475,6 +475,52 @@ body {
   font-size: 20px;
 }
 
+/* ── Resizable page columns ────────────────────────────────── */
+
+.resizable-columns {
+  position: relative;
+}
+
+.column-resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  width: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: col-resize;
+}
+
+.column-resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 4px;
+  width: 2px;
+  border-radius: 2px;
+  background: transparent;
+}
+
+.column-resize-handle:hover::before,
+.column-resize-handle:focus-visible::before,
+.is-resizing-columns .column-resize-handle::before {
+  background: var(--accent-border);
+}
+
+.column-resize-handle:focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 2px;
+}
+
+.is-resizing-columns {
+  cursor: col-resize;
+  user-select: none;
+}
+
 /* ── Catalogs page grid ────────────────────────────────────── */
 
 .catalogs-page-grid {
