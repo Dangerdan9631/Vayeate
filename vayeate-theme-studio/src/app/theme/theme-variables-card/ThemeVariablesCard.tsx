@@ -1,14 +1,16 @@
 import { useMemo, useState, type ChangeEvent } from 'react';
 import type { ContrastComparisonMethod } from '../../../model/schema/primitives';
-import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
-import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
+import type { ColorVariable, ContrastVariable, StyleVariable } from '../../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue, StyleAssignment, StyleAssignmentValue } from '../../../model/schema/theme-schemas';
 import { useThemeVariablesCardViewModel } from './use-theme-variables-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
 import { VirtualizedRowList } from '../../common/virtualized-row-list/VirtualizedRowList';
 import { ColorAssignmentRow } from './ColorAssignmentRow';
 import { ContrastAssignmentRow } from './ContrastAssignmentRow';
+import { StyleAssignmentRow } from './StyleAssignmentRow';
 
 const UNGROUPED_KEY = '__ungrouped__';
+const EMPTY_STYLE_ASSIGNMENTS: readonly StyleAssignment[] = [];
 
 function sortedGroupKeys(byGroup: Map<string, unknown[]>): string[] {
   const named = [...byGroup.keys()].filter((k) => k !== UNGROUPED_KEY).sort();
@@ -43,6 +45,25 @@ function buildContrastAssignmentsByGroup(
   const byGroup = new Map<string, ContrastAssignment[]>();
   for (const a of assignments) {
     const groupRef = varMap.get(a.contrastVariableRef)?.groupRef ?? null;
+    const groupKey = groupRef ?? UNGROUPED_KEY;
+    let list = byGroup.get(groupKey);
+    if (!list) {
+      list = [];
+      byGroup.set(groupKey, list);
+    }
+    list.push(a);
+  }
+  return byGroup;
+}
+
+function buildStyleAssignmentsByGroup(
+  assignments: readonly StyleAssignment[],
+  styleVariables: readonly StyleVariable[],
+): Map<string, StyleAssignment[]> {
+  const varMap = new Map((styleVariables ?? []).map((v) => [v.key, v]));
+  const byGroup = new Map<string, StyleAssignment[]>();
+  for (const a of assignments ?? []) {
+    const groupRef = varMap.get(a.styleVariableRef)?.groupRef ?? null;
     const groupKey = groupRef ?? UNGROUPED_KEY;
     let list = byGroup.get(groupKey);
     if (!list) {
@@ -430,6 +451,81 @@ function ContrastAssignmentsGroupSubsection({
   );
 }
 
+function StyleAssignmentsSection({
+  assignments,
+  styleVariables,
+  onUpdateField,
+  onUpdateUseDark,
+}: {
+  assignments: readonly StyleAssignment[];
+  styleVariables: readonly StyleVariable[];
+  onUpdateField: (styleRef: string, side: 'light' | 'dark', field: keyof StyleAssignmentValue, checked: boolean) => void;
+  onUpdateUseDark: (styleRef: string, useDark: boolean) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+  const assignmentsSafe = assignments ?? EMPTY_STYLE_ASSIGNMENTS;
+  const byGroup = useMemo(
+    () => buildStyleAssignmentsByGroup(assignmentsSafe, styleVariables),
+    [assignmentsSafe, styleVariables],
+  );
+  const groupKeysInOrder = useMemo(() => sortedGroupKeys(byGroup), [byGroup]);
+
+  function onStyleAssignmentsSectionHeaderToggleClick() {
+    setCollapsed((c) => !c);
+  }
+
+  return (
+    <div className="tree-section">
+      <div className="tree-header tree-header-with-checkbox">
+        <button
+          type="button"
+          className="tree-header-toggle"
+          onClick={onStyleAssignmentsSectionHeaderToggleClick}
+          aria-expanded={!collapsed}
+        >
+          <span className="material-symbols-outlined tree-chevron">
+            {collapsed ? 'chevron_right' : 'expand_more'}
+          </span>
+          <span className="tree-label">Style Variables</span>
+          <span className="tree-count">({assignmentsSafe.length})</span>
+        </button>
+      </div>
+
+      {!collapsed && (
+        <div className="tree-children">
+          {groupKeysInOrder.map((groupKey) => {
+            const groupAssignments = byGroup.get(groupKey) ?? [];
+            const groupLabel = groupKey === UNGROUPED_KEY ? 'Ungrouped' : groupKey;
+            return (
+              <div className="tree-section" key={groupKey}>
+                <div className="tree-header">
+                  <span className="tree-label">{groupLabel}</span>
+                  <span className="tree-count">({groupAssignments.length})</span>
+                </div>
+                <div className="tree-children">
+                  <VirtualizedRowList
+                    items={groupAssignments}
+                    getItemKey={(a) => a.styleVariableRef}
+                    estimateSize={() => 88}
+                    emptyHint="No style variables"
+                    renderItem={(a) => (
+                      <StyleAssignmentRow
+                        assignment={a}
+                        onUpdateField={onUpdateField}
+                        onUpdateUseDark={onUpdateUseDark}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /**
  * Renders the Theme Variables Card UI for the theme editor.
  */
@@ -438,8 +534,10 @@ export function ThemeVariablesCard() {
     themeTemplateRef,
     colorAssignments,
     contrastAssignments,
+    styleAssignments,
     colorVariables,
     contrastVariables,
+    styleVariables,
     orphanColorKeys,
     orphanContrastKeys,
     checkedColorRefs,
@@ -460,6 +558,8 @@ export function ThemeVariablesCard() {
     onUpdateContrastDark,
     onUpdateContrastLight,
     onUpdateContrastUseDark,
+    onUpdateStyleField,
+    onUpdateStyleUseDark,
     onColorDarkEyedropperClick,
     onColorLightEyedropperClick,
     searchValue: searchQuery,
@@ -518,6 +618,12 @@ export function ThemeVariablesCard() {
         onUpdateDark={onUpdateContrastDark}
         onUpdateLight={onUpdateContrastLight}
         onUpdateUseDark={onUpdateContrastUseDark}
+      />
+      <StyleAssignmentsSection
+        assignments={styleAssignments}
+        styleVariables={styleVariables}
+        onUpdateField={onUpdateStyleField}
+        onUpdateUseDark={onUpdateStyleUseDark}
       />
     </div>
   );

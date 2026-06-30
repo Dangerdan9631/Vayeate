@@ -33,6 +33,9 @@ export function TemplateDetailsCard() {
         <span className="detail-label">Contrast variables</span>
         <span className="detail-value">{template.contrastVariables.length}</span>
 
+        <span className="detail-label">Style variables</span>
+        <span className="detail-value">{(template.styleVariables ?? []).length}</span>
+
         <span className="detail-label">Mappings</span>
         <span className="detail-value">{template.mappings.length}</span>
       </div>

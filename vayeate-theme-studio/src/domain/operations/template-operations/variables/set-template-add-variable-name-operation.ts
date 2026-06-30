@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { TemplateUiStore } from '../../../state/ui/template-ui-store';
-import type { TemplateVariableKind } from '../../../state/ui/template-ui-state';
+import type { TemplateVariableKind } from '../../../../model/template-variable-kind';
 import { getTemplateAddVariableDraftKey } from '../../../state/ui/template-ui-state';
 
 /**

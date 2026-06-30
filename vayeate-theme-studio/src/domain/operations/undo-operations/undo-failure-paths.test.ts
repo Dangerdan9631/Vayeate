@@ -113,6 +113,7 @@ describe('undo failure paths', () => {
       new BumpTemplateVersionForEditOperation(),
       new RemoveColorVariableOperation(),
       new RemoveContrastVariableOperation(),
+      { execute: vi.fn() } as never,
       saveTemplate as never,
       refreshTemplateRefsAndSelect as never,
       new RecordTemplateUndoOperation(

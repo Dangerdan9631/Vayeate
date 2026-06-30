@@ -54,10 +54,10 @@ export function mergeMappingsFromCatalogData(
   for (const m of existingMappings) {
     const key = `${m.token.type}::${m.token.key}`;
     const inCatalog = catalogTokenKeys.has(key);
-    const hasColorAssignment = m.colorVariableRef !== null;
+    const hasVariableAssignment = m.colorVariableRef !== null || m.styleVariableRef != null;
     if (inCatalog) {
       newMappings.push(m);
-    } else if (hasColorAssignment) {
+    } else if (hasVariableAssignment || m.ignored === true) {
       newMappings.push(m);
     }
   }

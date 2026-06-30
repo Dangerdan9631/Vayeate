@@ -1,5 +1,5 @@
-import type { TemplateVariableKind } from "../../../../domain/state/ui/template-ui-state";
-import type { ColorVariableKey, ContrastVariableKey } from "../../../../model/schema/primitives";
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey } from "../../../../model/schema/primitives";
+import type { TemplateVariableKind } from "../../../../model/template-variable-kind";
 import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import { AppAction } from "../../../core/action-queue/app-action";
 
@@ -28,7 +28,7 @@ export type VariablesCardActions =
     }
   | { type: VariablesCardActionType.VariablesAddVariableButtonOnClick; groupRef: string | null; variableKind: TemplateVariableKind }
   | { type: VariablesCardActionType.VariablesGroupListOnCommit; value: string; variableKey: string }
-  | { type: VariablesCardActionType.VariablesRemoveButtonOnClick; key: ColorVariableKey | ContrastVariableKey }
+  | { type: VariablesCardActionType.VariablesRemoveButtonOnClick; key: ColorVariableKey | ContrastVariableKey | StyleVariableKey }
   | { type: VariablesCardActionType.VariablesContrastSourceListOnCommit; value: ColorVariableKey | null; contrastVariableKey: ContrastVariableKey };
 
 

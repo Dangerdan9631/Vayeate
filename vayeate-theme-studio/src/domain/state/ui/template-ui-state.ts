@@ -1,13 +1,12 @@
-import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey } from '../../../model/schema/primitives';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import type { TemplateMappingId } from '../../../model/template-mapping-assignment';
+import type { TemplateVariableKind } from '../../../model/template-variable-kind';
 
 /**
  * Load phase for template page or selected template content.
  */
 export type LoadState = 'unloaded' | 'loading' | 'loaded';
-
-export type TemplateVariableKind = 'color' | 'contrast';
 
 const UNGROUPED_ADD_VARIABLE_DRAFT_KEY = '__ungrouped__';
 
@@ -28,6 +27,7 @@ export interface TemplateUiState {
   mappingSearchText: string;
   mappingColorVariableFilter: ColorVariableKey[];
   mappingContrastVariableFilter: ContrastVariableKey[];
+  mappingStyleVariableFilter: StyleVariableKey[];
   mappingTokenGroupSelection: string;
   selectedMappingIds: TemplateMappingId[];
   variablesSearchText: string;
@@ -45,6 +45,7 @@ export const initialTemplateUiState: TemplateUiState = {
   mappingSearchText: '',
   mappingColorVariableFilter: [],
   mappingContrastVariableFilter: [],
+  mappingStyleVariableFilter: [],
   mappingTokenGroupSelection: '',
   selectedMappingIds: [],
   variablesSearchText: '',

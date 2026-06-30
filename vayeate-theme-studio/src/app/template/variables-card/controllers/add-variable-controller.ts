@@ -3,11 +3,13 @@ import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/data/templates-store';
 import { AddColorVariableOperation as AddColorVariableOp } from '../../../../domain/operations/template-operations/variables-color/add-color-variable-operation';
 import { AddContrastVariableOperation as AddContrastVariableOp } from '../../../../domain/operations/template-operations/variables-contrast/add-contrast-variable-operation';
+import { AddStyleVariableOperation as AddStyleVariableOp } from '../../../../domain/operations/template-operations/variables-style/add-style-variable-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { SetTemplateAddVariableNameOperation } from '../../../../domain/operations/template-operations/variables/set-template-add-variable-name-operation';
-import { getTemplateAddVariableDraftKey, type TemplateVariableKind } from '../../../../domain/state/ui/template-ui-state';
+import { getTemplateAddVariableDraftKey } from '../../../../domain/state/ui/template-ui-state';
+import type { TemplateVariableKind } from '../../../../model/template-variable-kind';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
 import { RecordTemplateUndoOperation } from '../../../../domain/operations/undo-operations/record-template-undo-operation';
@@ -17,6 +19,7 @@ import { deriveUndoContext } from '../../../../model/undo-history';
 import {
   TEMPLATE_COLOR_VARIABLE_ADDED,
   TEMPLATE_CONTRAST_VARIABLE_ADDED,
+  TEMPLATE_STYLE_VARIABLE_ADDED,
 } from '../../../../model/undo-action-types';
 
 /**
@@ -32,6 +35,7 @@ export class AddVariableController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly addColorVariableToTemplate: AddColorVariableOp,
     private readonly addContrastVariableToTemplate: AddContrastVariableOp,
+    private readonly addStyleVariableToTemplate: AddStyleVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
     private readonly setTemplateAddVariableName: SetTemplateAddVariableNameOperation,
@@ -53,7 +57,9 @@ export class AddVariableController {
     if (!template) return;
     const existingKeys = variableKind === 'contrast'
       ? template.contrastVariables.map((variable) => variable.key)
-      : template.colorVariables.map((variable) => variable.key);
+      : variableKind === 'style'
+        ? (template.styleVariables ?? []).map((variable) => variable.key)
+        : template.colorVariables.map((variable) => variable.key);
     if (existingKeys.includes(key)) return;
 
     this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
@@ -69,6 +75,9 @@ export class AddVariableController {
     if (variableKind === 'contrast') {
       next = this.addContrastVariableToTemplate.execute(base, key, groupRef);
       actionType = TEMPLATE_CONTRAST_VARIABLE_ADDED;
+    } else if (variableKind === 'style') {
+      next = this.addStyleVariableToTemplate.execute(base, key, groupRef);
+      actionType = TEMPLATE_STYLE_VARIABLE_ADDED;
     } else {
       next = this.addColorVariableToTemplate.execute(base, key, groupRef);
       actionType = TEMPLATE_COLOR_VARIABLE_ADDED;

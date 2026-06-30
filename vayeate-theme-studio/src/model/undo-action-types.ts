@@ -104,6 +104,10 @@ export const TEMPLATE_COLOR_VARIABLE_ADDED = 'TEMPLATE_COLOR_VARIABLE_ADDED' as 
  */
 export const TEMPLATE_CONTRAST_VARIABLE_ADDED = 'TEMPLATE_CONTRAST_VARIABLE_ADDED' as const;
 /**
+ * Undo diff action type for adding a template style variable.
+ */
+export const TEMPLATE_STYLE_VARIABLE_ADDED = 'TEMPLATE_STYLE_VARIABLE_ADDED' as const;
+/**
  * Undo diff action type for adding a template variable group.
  */
 export const TEMPLATE_GROUP_ADDED = 'TEMPLATE_GROUP_ADDED' as const;
@@ -115,6 +119,10 @@ export const TEMPLATE_COLOR_VARIABLE_REMOVED = 'TEMPLATE_COLOR_VARIABLE_REMOVED'
  * Undo diff action type for removing a template contrast variable.
  */
 export const TEMPLATE_CONTRAST_VARIABLE_REMOVED = 'TEMPLATE_CONTRAST_VARIABLE_REMOVED' as const;
+/**
+ * Undo diff action type for removing a template style variable.
+ */
+export const TEMPLATE_STYLE_VARIABLE_REMOVED = 'TEMPLATE_STYLE_VARIABLE_REMOVED' as const;
 /**
  * Undo diff action type for updating a template variable group reference.
  */
@@ -148,9 +156,17 @@ export const TEMPLATE_MAPPING_COLOR_REF_SET = 'TEMPLATE_MAPPING_COLOR_REF_SET' a
  */
 export const TEMPLATE_MAPPING_CONTRAST_REF_SET = 'TEMPLATE_MAPPING_CONTRAST_REF_SET' as const;
 /**
+ * Undo diff action type for setting a template mapping style reference.
+ */
+export const TEMPLATE_MAPPING_STYLE_REF_SET = 'TEMPLATE_MAPPING_STYLE_REF_SET' as const;
+/**
  * Undo diff action type for setting a template mapping group reference.
  */
 export const TEMPLATE_MAPPING_GROUP_REF_SET = 'TEMPLATE_MAPPING_GROUP_REF_SET' as const;
+/**
+ * Undo diff action type for setting whether a template mapping is ignored.
+ */
+export const TEMPLATE_MAPPING_IGNORED_SET = 'TEMPLATE_MAPPING_IGNORED_SET' as const;
 /**
  * Undo diff action type for toggling a template catalog attachment.
  */
@@ -182,9 +198,11 @@ export const TEMPLATE_VERSION_DELETED = 'TEMPLATE_VERSION_DELETED' as const;
 export const TEMPLATE_UNDO_ACTION_TYPES = [
   TEMPLATE_COLOR_VARIABLE_ADDED,
   TEMPLATE_CONTRAST_VARIABLE_ADDED,
+  TEMPLATE_STYLE_VARIABLE_ADDED,
   TEMPLATE_GROUP_ADDED,
   TEMPLATE_COLOR_VARIABLE_REMOVED,
   TEMPLATE_CONTRAST_VARIABLE_REMOVED,
+  TEMPLATE_STYLE_VARIABLE_REMOVED,
   TEMPLATE_VARIABLE_GROUP_REF_UPDATED,
   TEMPLATE_CONTRAST_COMPARISON_SOURCE_UPDATED,
   TEMPLATE_GROUP_REMOVED,
@@ -193,7 +211,9 @@ export const TEMPLATE_UNDO_ACTION_TYPES = [
   TEMPLATE_SEMANTIC_VARIANT_KEY_UPDATED,
   TEMPLATE_MAPPING_COLOR_REF_SET,
   TEMPLATE_MAPPING_CONTRAST_REF_SET,
+  TEMPLATE_MAPPING_STYLE_REF_SET,
   TEMPLATE_MAPPING_GROUP_REF_SET,
+  TEMPLATE_MAPPING_IGNORED_SET,
   TEMPLATE_CATALOG_TOGGLED,
   TEMPLATE_CATALOG_VERSION_CHANGED,
   TEMPLATE_LOCKED,
@@ -259,6 +279,14 @@ export const THEME_CONTRAST_USE_DARK_FOR_LIGHT_SET = 'THEME_CONTRAST_USE_DARK_FO
  * Undo diff action type for enabling use-dark-for-light on a theme color variable.
  */
 export const THEME_COLOR_USE_DARK_FOR_LIGHT_SET = 'THEME_COLOR_USE_DARK_FOR_LIGHT_SET' as const;
+/**
+ * Undo diff action type for setting a theme style variable flag.
+ */
+export const THEME_STYLE_VARIABLE_FIELD_SET = 'THEME_STYLE_VARIABLE_FIELD_SET' as const;
+/**
+ * Undo diff action type for enabling use-dark-for-light on a theme style variable.
+ */
+export const THEME_STYLE_USE_DARK_FOR_LIGHT_SET = 'THEME_STYLE_USE_DARK_FOR_LIGHT_SET' as const;
 /**
  * Undo diff action type for setting theme palette apply-to-light.
  */
@@ -329,6 +357,8 @@ export const THEME_UNDO_ACTION_TYPES = [
   THEME_CONTRAST_VARIABLE_DARK_METHOD_SET,
   THEME_CONTRAST_USE_DARK_FOR_LIGHT_SET,
   THEME_COLOR_USE_DARK_FOR_LIGHT_SET,
+  THEME_STYLE_VARIABLE_FIELD_SET,
+  THEME_STYLE_USE_DARK_FOR_LIGHT_SET,
   THEME_PALETTE_APPLY_TO_LIGHT_SET,
   THEME_PALETTE_APPLY_TO_DARK_SET,
   THEME_PALETTE_CLUSTER_COUNT_SET,

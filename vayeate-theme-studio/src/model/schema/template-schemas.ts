@@ -3,6 +3,7 @@ import {
   catalogNameSchema,
   colorVariableKeySchema,
   contrastVariableKeySchema,
+  styleVariableKeySchema,
   templateNameSchema,
   versionSchema,
 } from './primitives';
@@ -73,6 +74,26 @@ export const contrastVariableSchema = z
 export type ContrastVariable = z.infer<typeof contrastVariableSchema>;
 
 /**
+ * Zod schema for a template style variable definition.
+ */
+export const styleVariableSchema = z
+  .object({
+    /**
+     * Variable key validated against `styleVariableKeySchema`.
+     */
+    key: styleVariableKeySchema,
+    /**
+     * Optional group id for UI grouping; null when ungrouped.
+     */
+    groupRef: z.string().nullable().optional().default(null),
+  })
+  .readonly();
+/**
+ * Template style variable with optional group membership.
+ */
+export type StyleVariable = z.infer<typeof styleVariableSchema>;
+
+/**
  * Zod schema for mapping one catalog token to template variables.
  */
 export const mappingSchema = z
@@ -89,6 +110,14 @@ export const mappingSchema = z
      * Linked contrast variable key, or null when unmapped.
      */
     contrastVariableRef: contrastVariableKeySchema.nullable(),
+    /**
+     * Linked style variable key, or null when unmapped.
+     */
+    styleVariableRef: styleVariableKeySchema.nullable().optional(),
+    /**
+     * When true, this catalog token is intentionally ignored by the template.
+     */
+    ignored: z.boolean().optional(),
     /**
      * Optional group id for UI grouping; null when ungrouped.
      */
@@ -133,6 +162,10 @@ export const templateSchema = z
      * Declared contrast variables; read-only array.
      */
     contrastVariables: z.array(contrastVariableSchema).readonly(),
+    /**
+     * Declared style variables; read-only array.
+     */
+    styleVariables: z.array(styleVariableSchema).readonly().optional(),
     /**
      * Group ids used for organizing variables and mappings; defaults to empty.
      */

@@ -7,16 +7,18 @@ import { ThemePreviewStore } from '../../../domain/state/ui/theme-preview-store'
 import { ThemeUiStore } from '../../../domain/state/ui/theme-ui-store';
 import { ThemeVariablesCardActionType } from './actions/theme-variables-card-action-type';
 import type { ContrastComparisonMethod, ContrastValue } from '../../../model/schema/primitives';
-import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
-import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue } from '../../../model/schema/theme-schemas';
+import type { ColorVariable, ContrastVariable, StyleVariable } from '../../../model/schema/template-schemas';
+import type { ColorAssignment, ContrastAssignment, ContrastAssignmentValue, StyleAssignment, StyleAssignmentValue } from '../../../model/schema/theme-schemas';
 
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
 
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_STYLE_VARIABLES: readonly StyleVariable[] = [];
 const EMPTY_COLOR_ASSIGNMENTS: readonly ColorAssignment[] = [];
 const EMPTY_CONTRAST_ASSIGNMENTS: readonly ContrastAssignment[] = [];
+const EMPTY_STYLE_ASSIGNMENTS: readonly StyleAssignment[] = [];
 
 function matchesSearch(key: string, searchQuery: string): boolean {
   const q = searchQuery.trim().toLowerCase();
@@ -37,6 +39,10 @@ export function useThemeVariablesCardViewModel() {
     themeUiStore.api,
     useShallow((state) => state.state.theme?.contrastAssignments ?? EMPTY_CONTRAST_ASSIGNMENTS),
   );
+  const themeStyleAssignments = useStore(
+    themeUiStore.api,
+    useShallow((state) => state.state.theme?.styleAssignments ?? EMPTY_STYLE_ASSIGNMENTS),
+  );
   const checkedColorRefsArray = useStore(
     themeUiStore.api,
     useShallow((state) => state.state.checkedColorRefs),
@@ -53,6 +59,10 @@ export function useThemeVariablesCardViewModel() {
   const contrastVariablesFromTemplate = useStore(
     themePreviewStore.api,
     useShallow((state) => state.state.loadedTemplateForTheme?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES),
+  );
+  const styleVariablesFromTemplate = useStore(
+    themePreviewStore.api,
+    useShallow((state) => state.state.loadedTemplateForTheme?.styleVariables ?? EMPTY_STYLE_VARIABLES),
   );
   const paneDisplayColorAssignments = useStore(
     themeUiStore.api,
@@ -84,6 +94,14 @@ export function useThemeVariablesCardViewModel() {
       .sort((a: ContrastAssignment, b: ContrastAssignment) =>
         a.contrastVariableRef.localeCompare(b.contrastVariableRef)),
     [themeContrastAssignments, themeVariablesSearchText],
+  );
+
+  const filteredStyleAssignments = useMemo(
+    () => themeStyleAssignments
+      .filter((a: StyleAssignment) => matchesSearch(a.styleVariableRef, themeVariablesSearchText))
+      .sort((a: StyleAssignment, b: StyleAssignment) =>
+        a.styleVariableRef.localeCompare(b.styleVariableRef)),
+    [themeStyleAssignments, themeVariablesSearchText],
   );
 
   const colorSectionState = useMemo(() => {
@@ -222,6 +240,30 @@ export function useThemeVariablesCardViewModel() {
     [dispatch],
   );
 
+  const updateStyleAssignmentField = useCallback(
+    (styleRef: string, side: 'light' | 'dark', field: keyof StyleAssignmentValue, checked: boolean) => {
+      void dispatch({
+        type: ThemeVariablesCardActionType.StyleFieldCheckboxOnToggle,
+        ref: styleRef,
+        side,
+        field,
+        checked,
+      });
+    },
+    [dispatch],
+  );
+
+  const updateStyleAssignmentUseDarkForLight = useCallback(
+    (styleRef: string, useDark: boolean) => {
+      void dispatch({
+        type: ThemeVariablesCardActionType.StyleUseDarkForLightCheckboxOnToggle,
+        ref: styleRef,
+        checked: useDark,
+      });
+    },
+    [dispatch],
+  );
+
   const toggleColorChecked = useCallback(
     (ref: string) => {
       const { checkedColorRefs } = themeUiStore.getStore().state;
@@ -330,8 +372,10 @@ export function useThemeVariablesCardViewModel() {
     themeTemplateRef,
     colorAssignments: filteredColorAssignments,
     contrastAssignments: filteredContrastAssignments,
+    styleAssignments: filteredStyleAssignments,
     colorVariables: colorVariablesFromTemplate,
     contrastVariables: contrastVariablesFromTemplate,
+    styleVariables: styleVariablesFromTemplate,
     orphanColorKeys,
     orphanContrastKeys,
     checkedColorRefs: checkedColorRefs as ReadonlySet<string>,
@@ -354,6 +398,8 @@ export function useThemeVariablesCardViewModel() {
     onUpdateContrastDark: updateContrastAssignmentDark,
     onUpdateContrastLight: updateContrastAssignmentLight,
     onUpdateContrastUseDark: updateContrastAssignmentUseDarkForLight,
+    onUpdateStyleField: updateStyleAssignmentField,
+    onUpdateStyleUseDark: updateStyleAssignmentUseDarkForLight,
     onColorDarkEyedropperClick,
     onColorLightEyedropperClick,
   };

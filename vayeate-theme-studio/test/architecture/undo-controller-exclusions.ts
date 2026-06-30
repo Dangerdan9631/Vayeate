@@ -56,6 +56,7 @@ export const TEMPLATE_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/template/mappings-card/controllers/set-mapping-search-text-controller.ts',
   'src/app/template/mappings-card/controllers/set-mapping-color-variable-filter-controller.ts',
   'src/app/template/mappings-card/controllers/set-mapping-contrast-variable-filter-controller.ts',
+  'src/app/template/mappings-card/controllers/set-mapping-style-variable-filter-controller.ts',
   'src/app/template/mappings-card/controllers/clear-selected-mappings-controller.ts',
   'src/app/template/mappings-card/controllers/toggle-selected-mapping-controller.ts',
   'src/app/template/mappings-card/controllers/set-mapping-group-selection-controller.ts',

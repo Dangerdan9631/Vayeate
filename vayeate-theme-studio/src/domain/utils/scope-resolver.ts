@@ -81,11 +81,13 @@ export function selectScopeColorMapInputs(
   contrastVariables?: readonly ContrastVariable[],
 ): ScopeColorMapInputs {
   return {
-    mappings: mappings.map((m) => ({
-      tokenKey: m.token.key,
-      colorVariableRef: m.colorVariableRef,
-      contrastVariableRef: m.contrastVariableRef,
-    })),
+    mappings: mappings
+      .filter((m) => m.ignored !== true)
+      .map((m) => ({
+        tokenKey: m.token.key,
+        colorVariableRef: m.colorVariableRef,
+        contrastVariableRef: m.contrastVariableRef,
+      })),
     colorAssignments: colorAssignments.map((a) => ({
       colorRef: a.colorRef,
       dark: a.dark?.value ?? null,
@@ -401,7 +403,11 @@ export function resolveColorForThemeTokenKey(
 ): string {
   if (!tokenKey) return fallback;
   const m = mappings.find(
-    (x) => x.token.key === tokenKey && x.token.type === 'theme' && x.colorVariableRef != null,
+    (x) =>
+      x.ignored !== true &&
+      x.token.key === tokenKey &&
+      x.token.type === 'theme' &&
+      x.colorVariableRef != null,
   );
   if (!m) return fallback;
 

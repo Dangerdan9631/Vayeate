@@ -56,11 +56,13 @@ const template: Template = {
       token: { key: '*.deprecated', type: 'semantic token' },
       colorVariableRef: null,
       contrastVariableRef: null,
+      styleVariableRef: 'emphasis',
       groupRef: null,
     },
   ],
   colorVariables: [{ key: 'editorForeground', groupRef: null }],
   contrastVariables: [],
+  styleVariables: [{ key: 'emphasis', groupRef: null }],
   groups: [],
   semanticTokenModifiers: ['deprecated'],
   semanticTokenLanguages: ['typescript'],
@@ -114,6 +116,26 @@ describe('baseline domain policy', () => {
 
     expect(canLockTemplate.test(template)).toBe(true);
     expect(canLockTemplate.test({ ...template, locked: true })).toBe(false);
+    expect(canLockTemplate.test({
+      ...template,
+      mappings: [{
+        token: { key: 'editor.fontStyle', type: 'textmate token' },
+        colorVariableRef: null,
+        contrastVariableRef: null,
+        styleVariableRef: 'emphasis',
+        groupRef: null,
+      }],
+    })).toBe(true);
+    expect(canLockTemplate.test({
+      ...template,
+      mappings: [{
+        token: { key: 'editor.contrastOnly', type: 'textmate token' },
+        colorVariableRef: null,
+        contrastVariableRef: 'contrastMain',
+        styleVariableRef: null,
+        groupRef: null,
+      }],
+    })).toBe(false);
   });
 
   it('compares semantic versions and finds the nearest remaining version', () => {

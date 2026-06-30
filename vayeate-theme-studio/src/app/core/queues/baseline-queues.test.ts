@@ -9,6 +9,10 @@ import { ThemePaletteCardActionType } from '../../theme/theme-palette-card/actio
 import type { LoggerFactory } from '../../../domain/utils/logger';
 import type { AppAction } from '../action-queue/app-action';
 
+type ActionWithValue<T> = AppAction & { value: T };
+type ActionWithLabel = AppAction & { label: string };
+type ActionWithCommit = AppAction & { committed: boolean };
+
 function createLoggerFactory(): LoggerFactory {
   return {
     create: () => ({
@@ -361,7 +365,7 @@ describe('coalescing policy — pure functions', () => {
     const incoming = { type: 'T', value: 5, label: 'new' } as unknown as AppAction & { value: number };
     const result = coalesceSumValue(pending, incoming);
     expect(result.value).toBe(8);
-    expect((result as any).label).toBe('new');
+    expect((result as ActionWithLabel).label).toBe('new');
   });
 
   it('tryCoalesce returns null when no domain coalescer matches (e.g. mismatched types passed directly)', () => {
@@ -433,8 +437,8 @@ describe('action queue coalescing — integration', () => {
     await vi.waitFor(() => expect(signalComplete.run).toHaveBeenCalled());
 
     expect(processed).toHaveLength(2);
-    expect((processed[0] as any).value).toBe('#111111');
-    expect((processed[1] as any).value).toBe('#333333');
+    expect((processed[0] as ActionWithValue<string>).value).toBe('#111111');
+    expect((processed[1] as ActionWithValue<string>).value).toBe('#333333');
   });
 
   it('non-listed types are never coalesced: both actions are processed in order', async () => {
@@ -449,8 +453,8 @@ describe('action queue coalescing — integration', () => {
     await vi.waitFor(() => expect(signalComplete.run).toHaveBeenCalled());
 
     expect(processed).toHaveLength(2);
-    expect((processed[0] as any).value).toBe(1);
-    expect((processed[1] as any).value).toBe(2);
+    expect((processed[0] as ActionWithValue<number>).value).toBe(1);
+    expect((processed[1] as ActionWithValue<number>).value).toBe(2);
   });
 
   it('ordering preserved: coalesces into the most-recent match; non-coalescing action keeps its queue position', async () => {
@@ -471,8 +475,8 @@ describe('action queue coalescing — integration', () => {
 
     // Interactive coalesced actions drain before the normal-lane commit action.
     expect(processed).toHaveLength(3);
-    expect((processed[0] as any).value).toBe('#aaaaaa');
-    expect((processed[1] as any).value).toBe('#cccccc');
-    expect((processed[2] as any).committed).toBe(true);
+    expect((processed[0] as ActionWithValue<string>).value).toBe('#aaaaaa');
+    expect((processed[1] as ActionWithValue<string>).value).toBe('#cccccc');
+    expect((processed[2] as ActionWithCommit).committed).toBe(true);
   });
 });

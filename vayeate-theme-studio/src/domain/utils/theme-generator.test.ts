@@ -80,4 +80,23 @@ describe('theme-generator async yielding', () => {
     await generateThemePairAsync(theme, template, yieldGate);
     expect(yieldGate).toHaveBeenCalledTimes(template.mappings.length * 2);
   });
+
+  it('omits ignored template mappings from generated themes', () => {
+    const ignoredTemplate: Template = {
+      ...template,
+      mappings: template.mappings.map((mapping) => ({
+        ...mapping,
+        ignored: true,
+      })),
+    };
+
+    const generated = generateThemePair(theme, ignoredTemplate);
+
+    expect(generated.dark.colors).toEqual({});
+    expect(generated.dark.tokenColors).toEqual([]);
+    expect(generated.dark.semanticTokenColors).toEqual({});
+    expect(generated.light.colors).toEqual({});
+    expect(generated.light.tokenColors).toEqual([]);
+    expect(generated.light.semanticTokenColors).toEqual({});
+  });
 });

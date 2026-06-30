@@ -8,6 +8,7 @@ import { ThemePreviewStore } from '../../../state/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../state/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../background-queue/enqueue-background-queue-action-operation';
 import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/background-queue';
+import { mergeAssignmentsFromTemplate } from '../../../utils/theme-template-merge';
 
 /**
  * Loads theme with linked template from persistence into the store.
@@ -46,15 +47,6 @@ export class LoadThemeWithLinkedTemplateOperation {
             : Promise.resolve(null as Template | null),
         ]);
 
-        this.themeUiStore.getStore().setTheme(loaded);
-        if (loaded) {
-          this.themesStore.getStore().updateTheme(loaded);
-        }
-        const selectedRef = this.themeUiStore.getStore().state.selectedRef;
-        if (selectedRef?.name === name && selectedRef.version === version) {
-          this.themeUiStore.getStore().setThemeLoadState(loaded ? 'loaded' : 'unloaded');
-        }
-
         let template = cachedTemplate;
         const templateRef = loaded?.templateRef ?? null;
         if (templateRef) {
@@ -67,6 +59,16 @@ export class LoadThemeWithLinkedTemplateOperation {
           }
         } else {
           template = null;
+        }
+
+        const theme = loaded && template ? mergeAssignmentsFromTemplate(loaded, template) : loaded;
+        this.themeUiStore.getStore().setTheme(theme);
+        if (theme) {
+          this.themesStore.getStore().updateTheme(theme);
+        }
+        const selectedRef = this.themeUiStore.getStore().state.selectedRef;
+        if (selectedRef?.name === name && selectedRef.version === version) {
+          this.themeUiStore.getStore().setThemeLoadState(theme ? 'loaded' : 'unloaded');
         }
 
         this.themePreviewStore.getStore().setLoadedTemplate(template);

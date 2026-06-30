@@ -34,6 +34,7 @@ export function createThemeWithParams(params: CreateThemeParams): Theme {
     editorPreviewMenuBackgroundTokenRef: null,
     colorAssignments: [],
     contrastAssignments: [],
+    styleAssignments: [],
     applyPaletteToDark: true,
     applyPaletteToLight: true,
     paletteClusterCountK: 5,

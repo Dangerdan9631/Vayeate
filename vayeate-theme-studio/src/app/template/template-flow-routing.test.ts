@@ -159,7 +159,10 @@ describe('template flow routing', () => {
       setMappingContrastRef: { run: vi.fn(async () => {}) },
       setMappingContrastVariableFilter: { run: vi.fn(async () => {}) },
       setMappingGroupRef: { run: vi.fn(async () => {}) },
+      setMappingIgnored: { run: vi.fn(async () => {}) },
       setMappingSearchText: { run: vi.fn(async () => {}) },
+      setMappingStyleRef: { run: vi.fn(async () => {}) },
+      setMappingStyleVariableFilter: { run: vi.fn(async () => {}) },
       updateSemanticVariantKey: { run: vi.fn(async () => {}) },
       applySelectedMappingAssignment: { run: vi.fn(async () => {}) },
       clearSelectedMappings: { run: vi.fn() },
@@ -175,7 +178,10 @@ describe('template flow routing', () => {
       mappingDeps.setMappingContrastRef as never,
       mappingDeps.setMappingContrastVariableFilter as never,
       mappingDeps.setMappingGroupRef as never,
+      mappingDeps.setMappingIgnored as never,
       mappingDeps.setMappingSearchText as never,
+      mappingDeps.setMappingStyleRef as never,
+      mappingDeps.setMappingStyleVariableFilter as never,
       mappingDeps.updateSemanticVariantKey as never,
       mappingDeps.applySelectedMappingAssignment as never,
       mappingDeps.clearSelectedMappings as never,
@@ -194,6 +200,12 @@ describe('template flow routing', () => {
     await mappingsHandler.handle({
       type: MappingsCardActionType.MappingSelectionOnToggle,
       mappingId: { tokenKey: 'editor.foreground', tokenType: 'theme' },
+    });
+    await mappingsHandler.handle({
+      type: MappingsCardActionType.MappingExistingTokenIgnoredCheckboxOnToggle,
+      tokenKey: 'editor.foreground',
+      tokenType: 'theme',
+      value: true,
     });
     await mappingsHandler.handle({
       type: MappingsCardActionType.MappingSelectedAssignmentOnCommit,
@@ -217,6 +229,7 @@ describe('template flow routing', () => {
     });
     expect(mappingDeps.setMappingSearchText.run).toHaveBeenCalledWith('editor');
     expect(mappingDeps.setMappingColorRef.run).toHaveBeenCalledWith('editor.foreground', 'theme', 'editorFg');
+    expect(mappingDeps.setMappingIgnored.run).toHaveBeenCalledWith('editor.foreground', 'theme', true);
     expect(mappingDeps.addSemanticVariant.run).toHaveBeenCalledWith('variable', 'core');
     expect(mappingDeps.toggleSelectedMapping.run).toHaveBeenCalledWith({
       tokenKey: 'editor.foreground',

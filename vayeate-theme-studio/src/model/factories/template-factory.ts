@@ -22,6 +22,7 @@ export function createTemplateWithParams(params: CreateTemplateParams): Template
     mappings: [],
     colorVariables: [],
     contrastVariables: [],
+    styleVariables: [],
     groups: [],
     semanticTokenModifiers: [],
     semanticTokenLanguages: [],

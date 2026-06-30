@@ -6,7 +6,10 @@ import { SetMappingColorVariableFilterController } from "../controllers/set-mapp
 import { SetMappingContrastRefController } from "../controllers/set-mapping-contrast-ref-controller";
 import { SetMappingContrastVariableFilterController } from "../controllers/set-mapping-contrast-variable-filter-controller";
 import { SetMappingGroupRefController } from "../controllers/set-mapping-group-ref-controller";
+import { SetMappingIgnoredController } from '../controllers/set-mapping-ignored-controller';
 import { SetMappingSearchTextController } from "../controllers/set-mapping-search-text-controller";
+import { SetMappingStyleRefController } from "../controllers/set-mapping-style-ref-controller";
+import { SetMappingStyleVariableFilterController } from "../controllers/set-mapping-style-variable-filter-controller";
 import { UpdateSemanticVariantKeyController } from "../controllers/update-semantic-variant-key-controller";
 import { Logger, LoggerFactory } from "../../../../domain/utils/logger";
 import { MappingsCardActions, MappingsCardActionType } from "./mappings-card-action-type";
@@ -31,7 +34,10 @@ export class MappingsCardHandler {
     private readonly setMappingContrastRef: SetMappingContrastRefController,
     private readonly setMappingContrastVariableFilter: SetMappingContrastVariableFilterController,
     private readonly setMappingGroupRef: SetMappingGroupRefController,
+    private readonly setMappingIgnored: SetMappingIgnoredController,
     private readonly setMappingSearchText: SetMappingSearchTextController,
+    private readonly setMappingStyleRef: SetMappingStyleRefController,
+    private readonly setMappingStyleVariableFilter: SetMappingStyleVariableFilterController,
     private readonly updateSemanticVariantKey: UpdateSemanticVariantKeyController,
     private readonly applySelectedMappingAssignment: ApplySelectedMappingAssignmentController,
     private readonly clearSelectedMappings: ClearSelectedMappingsController,
@@ -56,12 +62,18 @@ export class MappingsCardHandler {
         return this.setMappingColorVariableFilter.run(action.values);
       case MappingsCardActionType.MappingContrastVariableFilterListOnSelect:
         return this.setMappingContrastVariableFilter.run(action.values);
+      case MappingsCardActionType.MappingStyleVariableFilterListOnSelect:
+        return this.setMappingStyleVariableFilter.run(action.values);
       case MappingsCardActionType.MappingExistingTokenGroupListOnCommit:
         return this.setMappingGroupRef.run(action.tokenKey, action.tokenType, action.value || null);
       case MappingsCardActionType.MappingExistingTokenColorVariableListOnCommit:
         return this.setMappingColorRef.run(action.tokenKey, action.tokenType, action.value || null);
       case MappingsCardActionType.MappingExistingTokenContrastVariableListOnCommit:
         return this.setMappingContrastRef.run(action.tokenKey, action.tokenType, action.value);
+      case MappingsCardActionType.MappingExistingTokenStyleVariableListOnCommit:
+        return this.setMappingStyleRef.run(action.tokenKey, action.tokenType, action.value);
+      case MappingsCardActionType.MappingExistingTokenIgnoredCheckboxOnToggle:
+        return this.setMappingIgnored.run(action.tokenKey, action.tokenType, action.value);
       case MappingsCardActionType.MappingSemanticTokenAddVariantButtonOnClick:
         return this.addSemanticVariant.run(action.semanticType, action.defaultGroupRef);
       case MappingsCardActionType.MappingSemanticTokenModifierListOnCommit:

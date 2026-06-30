@@ -102,6 +102,15 @@ export const contrastVariableKeySchema = z.string().regex(VARIABLE_KEY_REGEX);
 export type ContrastVariableKey = z.infer<typeof contrastVariableKeySchema>;
 
 /**
+ * Zod schema for style variable keys matching `VARIABLE_KEY_REGEX`.
+ */
+export const styleVariableKeySchema = z.string().regex(VARIABLE_KEY_REGEX);
+/**
+ * Style variable key: letter-first identifier of letters and digits.
+ */
+export type StyleVariableKey = z.infer<typeof styleVariableKeySchema>;
+
+/**
  * Zod schema for VS Code-style token keys matching `TOKEN_KEY_REGEX`.
  */
 export const tokenKeySchema = z.string().regex(TOKEN_KEY_REGEX);

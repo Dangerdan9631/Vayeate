@@ -17,6 +17,8 @@ import { SetContrastVariableLightMaxController } from '../controllers/set-contra
 import { SetContrastVariableLightMethodController } from '../controllers/set-contrast-variable-light-method-controller';
 import { SetContrastVariableLightMinController } from '../controllers/set-contrast-variable-light-min-controller';
 import { SetContrastVariableLightValueController } from '../controllers/set-contrast-variable-light-value-controller';
+import { SetStyleUseDarkForLightController } from '../controllers/set-style-use-dark-for-light-controller';
+import { SetStyleVariableFieldController } from '../controllers/set-style-variable-field-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/logger';
 import { ThemeVariablesCardActions, ThemeVariablesCardActionType } from './theme-variables-card-action-type';
 import { EyedropperCommitTargetType } from '../../../../model/eyedropper';
@@ -42,6 +44,8 @@ export class ThemeVariablesCardHandler {
     private readonly setContrastVariableLightMethod: SetContrastVariableLightMethodController,
     private readonly setContrastVariableLightMin: SetContrastVariableLightMinController,
     private readonly setContrastVariableLightValue: SetContrastVariableLightValueController,
+    private readonly setStyleUseDarkForLight: SetStyleUseDarkForLightController,
+    private readonly setStyleVariableField: SetStyleVariableFieldController,
     private readonly setThemeVariablesSearchText: SetThemeVariablesSearchTextController,
     private readonly setVariablesSelectAll: SetVariablesSelectAllController,
     private readonly setVariablesSelectByGroup: SetVariablesSelectByGroupController,
@@ -101,6 +105,10 @@ export class ThemeVariablesCardHandler {
         return this.setContrastVariableLightMax.run(action.ref, action.value);
       case ThemeVariablesCardActionType.ContrastUseDarkForLightCheckboxOnToggle:
         return this.setContrastUseDarkForLight.run(action.ref, action.checked);
+      case ThemeVariablesCardActionType.StyleFieldCheckboxOnToggle:
+        return this.setStyleVariableField.run(action.ref, action.side, action.field, action.checked);
+      case ThemeVariablesCardActionType.StyleUseDarkForLightCheckboxOnToggle:
+        return this.setStyleUseDarkForLight.run(action.ref, action.checked);
     }
 
     const _exhaustive: never = action;

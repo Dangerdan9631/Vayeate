@@ -4,11 +4,12 @@ import {
   type VariableGroupSection,
 } from './use-variables-card-viewmodel';
 import type { ColorVariableKey } from '../../../model/schema/primitives';
-import type { TemplateVariableKind } from '../../../domain/state/ui/template-ui-state';
-import type { ColorVariable, ContrastVariable } from '../../../model/schema/template-schemas';
+import type { TemplateVariableKind } from '../../../model/template-variable-kind';
+import type { ColorVariable, ContrastVariable, StyleVariable } from '../../../model/schema/template-schemas';
 import { VirtualizedRowList } from '../../common/virtualized-row-list/VirtualizedRowList';
 import { ColorVariableRow } from './ColorVariableRow';
 import { ContrastVariableRow } from './ContrastVariableRow';
+import { StyleVariableRow } from './StyleVariableRow';
 
 function ColorGroupSubsection({
   groupLabel,
@@ -356,6 +357,173 @@ function ContrastVariablesSection({
   );
 }
 
+function StyleGroupSubsection({
+  groupLabel,
+  groupRef,
+  styleVariables,
+  sortedGroups,
+  referencedKeys,
+  canEdit,
+  getAddVariableName,
+  canAddVariable,
+  onAddVariableNameChange,
+  onAdd,
+  onRemove,
+  onUpdateGroupRef,
+}: {
+  groupLabel: string;
+  groupRef: string | null;
+  styleVariables: readonly StyleVariable[];
+  sortedGroups: readonly string[];
+  referencedKeys: Set<string>;
+  canEdit: boolean;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
+  onAdd: (groupRef: string | null) => void;
+  onRemove: (key: string) => void;
+  onUpdateGroupRef: (key: string, groupRef: string | null) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  function onStyleGroupTreeHeaderClick() {
+    setCollapsed((c) => !c);
+  }
+
+  function onStyleAddVariableNameInputChange(e: ChangeEvent<HTMLInputElement>) {
+    onAddVariableNameChange('style', groupRef, e.target.value);
+  }
+
+  function onAddStyleVariableButtonClick() {
+    onAdd(groupRef);
+  }
+
+  return (
+    <div className="tree-section">
+      <button
+        type="button"
+        className="tree-header"
+        onClick={onStyleGroupTreeHeaderClick}
+      >
+        <span className="material-symbols-outlined tree-chevron">
+          {collapsed ? 'chevron_right' : 'expand_more'}
+        </span>
+        <span className="tree-label">{groupLabel}</span>
+        <span className="tree-count">({styleVariables.length})</span>
+      </button>
+      {!collapsed && (
+        <div className="tree-children">
+          {canEdit && (
+            <div className="variable-row variable-add-row">
+              <input
+                className="token-input"
+                type="text"
+                placeholder="new variable…"
+                value={getAddVariableName('style', groupRef)}
+                onChange={onStyleAddVariableNameInputChange}
+              />
+              <button
+                type="button"
+                className="btn-icon btn-add-icon"
+                title="Add"
+                disabled={!canAddVariable('style', groupRef)}
+                onClick={onAddStyleVariableButtonClick}
+              >
+                <span className="material-symbols-outlined">add</span>
+              </button>
+            </div>
+          )}
+          <VirtualizedRowList
+            items={styleVariables}
+            getItemKey={(v) => v.key}
+            estimateSize={() => 36}
+            renderItem={(v) => (
+              <StyleVariableRow
+                variable={v}
+                sortedGroups={sortedGroups}
+                isReferenced={referencedKeys.has(v.key)}
+                canEdit={canEdit}
+                onUpdateGroupRef={onUpdateGroupRef}
+                onRemove={onRemove}
+              />
+            )}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StyleVariablesSection({
+  styleVariableGroupSections,
+  totalStyleVariableCount,
+  sortedGroups,
+  referencedKeys,
+  canEdit,
+  getAddVariableName,
+  canAddVariable,
+  onAddVariableNameChange,
+  onAdd,
+  onRemove,
+  onUpdateGroupRef,
+}: {
+  styleVariableGroupSections: readonly VariableGroupSection<StyleVariable>[];
+  totalStyleVariableCount: number;
+  sortedGroups: readonly string[];
+  referencedKeys: Set<string>;
+  canEdit: boolean;
+  getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
+  canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
+  onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
+  onAdd: (groupRef: string | null) => void;
+  onRemove: (key: string) => void;
+  onUpdateGroupRef: (key: string, groupRef: string | null) => void;
+}) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  function onStyleVariablesSectionHeaderClick() {
+    setCollapsed((c) => !c);
+  }
+
+  return (
+    <div className="tree-section">
+      <button
+        type="button"
+        className="tree-header"
+        onClick={onStyleVariablesSectionHeaderClick}
+      >
+        <span className="material-symbols-outlined tree-chevron">
+          {collapsed ? 'chevron_right' : 'expand_more'}
+        </span>
+        <span className="tree-label">Style Variables</span>
+        <span className="tree-count">({totalStyleVariableCount})</span>
+      </button>
+
+      {!collapsed && (
+        <div className="tree-children">
+          {(styleVariableGroupSections ?? []).map(({ groupKey, groupLabel, groupRef, variables }) => (
+            <StyleGroupSubsection
+              key={groupKey}
+              groupLabel={groupLabel}
+              groupRef={groupRef}
+              styleVariables={variables}
+              sortedGroups={sortedGroups}
+              referencedKeys={referencedKeys}
+              canEdit={canEdit}
+              getAddVariableName={getAddVariableName}
+              canAddVariable={canAddVariable}
+              onAddVariableNameChange={onAddVariableNameChange}
+              onAdd={onAdd}
+              onRemove={onRemove}
+              onUpdateGroupRef={onUpdateGroupRef}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /**
  * Renders color and contrast variable lists with search and assignment controls.
  * @returns Variables card UI wired to its viewmodel.
@@ -366,11 +534,14 @@ export function VariablesCard() {
     sortedGroups,
     filteredColorVariables,
     filteredContrastVariables,
+    filteredStyleVariables,
     sortedColorVariables,
     colorVariableGroupSections,
     contrastVariableGroupSections,
+    styleVariableGroupSections,
     referencedColorVarKeys,
     referencedContrastVarKeys,
+    referencedStyleVarKeys,
     canEdit,
     variablesSearchText,
     getAddVariableName,
@@ -380,8 +551,11 @@ export function VariablesCard() {
     onRemoveColorVariableClick,
     onAddContrastVariableClick,
     onRemoveContrastVariableClick,
+    onAddStyleVariableClick,
+    onRemoveStyleVariableClick,
     onUpdateColorVariableGroupRef,
     onUpdateContrastVariableGroupRef,
+    onUpdateStyleVariableGroupRef,
     onUpdateContrastComparisonSource,
     onVariablesSearchChange,
   } = useVariablesCardViewModel();
@@ -418,6 +592,18 @@ export function VariablesCard() {
 
   function onContrastVariablesSectionUpdateComparisonSource(key: string, ref: ColorVariableKey | null) {
     onUpdateContrastComparisonSource(key, ref);
+  }
+
+  function onStyleVariablesSectionAdd(groupRef: string | null) {
+    onAddStyleVariableClick(groupRef);
+  }
+
+  function onStyleVariablesSectionRemove(key: string) {
+    onRemoveStyleVariableClick(key);
+  }
+
+  function onStyleVariablesSectionUpdateGroupRef(key: string, groupRef: string | null) {
+    onUpdateStyleVariableGroupRef(key, groupRef);
   }
 
   return (
@@ -458,6 +644,19 @@ export function VariablesCard() {
         onRemove={onContrastVariablesSectionRemove}
         onUpdateGroupRef={onContrastVariablesSectionUpdateGroupRef}
         onUpdateComparisonSource={onContrastVariablesSectionUpdateComparisonSource}
+      />
+      <StyleVariablesSection
+        styleVariableGroupSections={styleVariableGroupSections}
+        totalStyleVariableCount={(filteredStyleVariables ?? []).length}
+        sortedGroups={sortedGroups}
+        referencedKeys={referencedStyleVarKeys ?? new Set<string>()}
+        canEdit={canEdit}
+        getAddVariableName={getAddVariableName}
+        canAddVariable={canAddVariable}
+        onAddVariableNameChange={onAddVariableNameChange}
+        onAdd={onStyleVariablesSectionAdd}
+        onRemove={onStyleVariablesSectionRemove}
+        onUpdateGroupRef={onStyleVariablesSectionUpdateGroupRef}
       />
     </div>
   );

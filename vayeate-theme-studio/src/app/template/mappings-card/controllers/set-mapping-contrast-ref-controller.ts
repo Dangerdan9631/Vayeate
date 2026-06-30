@@ -46,6 +46,11 @@ export class SetMappingContrastRefController {
   ): Promise<void> {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
+    if (
+      template.mappings.some((m) =>
+        m.token.key === tokenKey && m.token.type === tokenType && m.ignored === true
+      )
+    ) return;
 
     this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
       tabId: 'templates',
@@ -56,6 +61,7 @@ export class SetMappingContrastRefController {
 
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = this.setMappingContrastRefOp.execute(base, tokenKey, tokenType, contrastVariableRef);
+    if (next === base) return;
     this.saveTemplate.execute(next);
     this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
 

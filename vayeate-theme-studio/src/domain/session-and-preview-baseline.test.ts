@@ -176,6 +176,21 @@ describe('session and preview baselines', () => {
       ),
     ).toBe('#ddeeff');
 
+    const ignoredMappings = mappings.map((mapping) => ({ ...mapping, ignored: true }));
+    const ignoredScopeMap = buildScopeColorMap(ignoredMappings, theme.colorAssignments);
+    expect(resolveTokenColor(['keyword.control.ts'], ignoredScopeMap, 'dark')).toBeNull();
+    expect(
+      resolveColorForThemeTokenKey(
+        'editor.foreground',
+        ignoredMappings,
+        theme.colorAssignments,
+        [],
+        [],
+        'light',
+        '#ffffff',
+      ),
+    ).toBe('#ffffff');
+
     const display = computeDisplayColorAssignments(
       {
         colorAssignments: theme.colorAssignments,

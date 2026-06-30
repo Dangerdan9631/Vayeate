@@ -14,19 +14,25 @@ import { SemanticVariantListRow } from './SemanticVariantListRow';
 import { formatSemanticSelector } from '../../../model/format-semantic-selector';
 import { parseSemanticSelector } from '../../../model/parse-semantic-selector';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../model/semantic-token-constants';
-import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
-import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../model/schema/template-schemas';
 import { TriStateCheckbox, type TriState } from '../../common/tristate-checkbox/TriStateCheckbox';
+import { isTemplateMappingBlockingLock } from '../../../domain/utils/is-template-mapping-complete';
 
 const UNGROUPED_KEY = '__ungrouped__';
 const MAPPING_ROW_ESTIMATED_HEIGHT = 30;
 const BULK_CLEAR_VALUE = '__clear_assignment__';
+const BULK_IGNORED_VALUE = '__ignored__';
+const BULK_USED_VALUE = '__used__';
+const EMPTY_SELECTED_STYLE_KEYS: readonly StyleVariableKey[] = [];
+const EMPTY_SORTED_STYLE_VARIABLES: readonly StyleVariable[] = [];
 
 /** Virtual base for "*" (display-only; never persisted). */
 const VIRTUAL_STAR_BASE: Mapping = {
   token: { key: SEMANTIC_WILDCARD_TYPE, type: 'semantic token' },
   colorVariableRef: null,
   contrastVariableRef: null,
+  styleVariableRef: null,
   groupRef: null,
 };
 
@@ -107,6 +113,7 @@ function GroupSection({
   sortedGroups,
   sortedColorVariables,
   sortedContrastVariables,
+  sortedStyleVariables,
   sortedSemanticTokenModifiers,
   sortedSemanticTokenLanguages,
   orphanKeys,
@@ -114,6 +121,8 @@ function GroupSection({
   onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
+  onUpdateStyleRef,
+  onUpdateIgnored,
   semanticVariant,
   onRemoveMapping,
   selectedMappingKeys,
@@ -129,6 +138,7 @@ function GroupSection({
   sortedGroups: readonly string[];
   sortedColorVariables: readonly ColorVariable[];
   sortedContrastVariables: readonly ContrastVariable[];
+  sortedStyleVariables: readonly StyleVariable[];
   sortedSemanticTokenModifiers: readonly string[];
   sortedSemanticTokenLanguages: readonly string[];
   orphanKeys: Set<string>;
@@ -136,6 +146,8 @@ function GroupSection({
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+  onUpdateStyleRef: (tokenKey: string, tokenType: TokenType, ref: StyleVariableKey | null) => void;
+  onUpdateIgnored: (tokenKey: string, tokenType: TokenType, ignored: boolean) => void;
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
   selectedMappingKeys: ReadonlySet<string>;
@@ -149,6 +161,7 @@ function GroupSection({
   const [collapsed, setCollapsed] = useState(false);
   const totalInGroup = DISPLAYED_TOKEN_TYPES.reduce((sum, tt) => sum + byType[tt].length, 0);
   const toggleCollapsed = () => setCollapsed((v) => !v);
+  const tokenTypeSelectionStatesSafe = tokenTypeSelectionStates ?? new Map<string, TriState>();
 
   function onGroupSelectionChange(checked: boolean) {
     onSetGroupSelection(sectionGroupRef, checked);
@@ -195,6 +208,7 @@ function GroupSection({
                 sortedGroups={sortedGroups}
                 sortedColorVariables={sortedColorVariables}
                 sortedContrastVariables={sortedContrastVariables}
+                sortedStyleVariables={sortedStyleVariables}
                 sortedSemanticTokenModifiers={sortedSemanticTokenModifiers}
                 sortedSemanticTokenLanguages={sortedSemanticTokenLanguages}
                 orphanKeys={orphanKeys}
@@ -202,10 +216,12 @@ function GroupSection({
                 onUpdateGroupRef={onUpdateGroupRef}
                 onUpdateColorRef={onUpdateColorRef}
                 onUpdateContrastRef={onUpdateContrastRef}
+                onUpdateStyleRef={onUpdateStyleRef}
+                onUpdateIgnored={onUpdateIgnored}
                 semanticVariant={semanticVariant}
                 onRemoveMapping={onRemoveMapping}
                 selectedMappingKeys={selectedMappingKeys}
-                selectionState={tokenTypeSelectionStates.get(tokenTypeSelectionStateKey(groupKey, tt)) ?? 'none'}
+                selectionState={tokenTypeSelectionStatesSafe.get(tokenTypeSelectionStateKey(groupKey, tt)) ?? 'none'}
                 onToggleSelection={onToggleSelection}
                 onSetTokenTypeSelection={onSetTokenTypeSelection}
               />
@@ -225,6 +241,7 @@ function MappingTypeSection({
   sortedGroups,
   sortedColorVariables,
   sortedContrastVariables,
+  sortedStyleVariables,
   sortedSemanticTokenModifiers,
   sortedSemanticTokenLanguages,
   orphanKeys,
@@ -232,6 +249,8 @@ function MappingTypeSection({
   onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
+  onUpdateStyleRef,
+  onUpdateIgnored,
   semanticVariant,
   onRemoveMapping,
   selectedMappingKeys,
@@ -246,6 +265,7 @@ function MappingTypeSection({
   sortedGroups: readonly string[];
   sortedColorVariables: readonly ColorVariable[];
   sortedContrastVariables: readonly ContrastVariable[];
+  sortedStyleVariables: readonly StyleVariable[];
   sortedSemanticTokenModifiers: readonly string[];
   sortedSemanticTokenLanguages: readonly string[];
   orphanKeys: Set<string>;
@@ -253,6 +273,8 @@ function MappingTypeSection({
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+  onUpdateStyleRef: (tokenKey: string, tokenType: TokenType, ref: StyleVariableKey | null) => void;
+  onUpdateIgnored: (tokenKey: string, tokenType: TokenType, ignored: boolean) => void;
   semanticVariant?: SemanticVariantProps;
   onRemoveMapping?: (tokenKey: string, tokenType: TokenType) => void;
   selectedMappingKeys: ReadonlySet<string>;
@@ -312,6 +334,7 @@ function MappingTypeSection({
                 sortedGroups={sortedGroups}
                 sortedColorVariables={sortedColorVariables}
                 sortedContrastVariables={sortedContrastVariables}
+                sortedStyleVariables={sortedStyleVariables}
                 sortedSemanticTokenModifiers={sortedSemanticTokenModifiers}
                 sortedSemanticTokenLanguages={sortedSemanticTokenLanguages}
                 orphanKeys={orphanKeys}
@@ -320,6 +343,8 @@ function MappingTypeSection({
                 onUpdateGroupRef={onUpdateGroupRef}
                 onUpdateColorRef={onUpdateColorRef}
                 onUpdateContrastRef={onUpdateContrastRef}
+                onUpdateStyleRef={onUpdateStyleRef}
+                onUpdateIgnored={onUpdateIgnored}
                 onRemoveMapping={onRemoveMapping ?? noopRemoveMapping}
                 selectedMappingKeys={selectedMappingKeys}
                 onToggleSelection={onToggleSelection}
@@ -340,9 +365,12 @@ function MappingTypeSection({
                     sortedGroups={sortedGroups}
                     sortedColorVariables={sortedColorVariables}
                     sortedContrastVariables={sortedContrastVariables}
+                    sortedStyleVariables={sortedStyleVariables}
                     onUpdateGroupRef={onUpdateGroupRef}
                     onUpdateColorRef={onUpdateColorRef}
                     onUpdateContrastRef={onUpdateContrastRef}
+                    onUpdateStyleRef={onUpdateStyleRef}
+                    onUpdateIgnored={onUpdateIgnored}
                     isSelected={selectedMappingKeys.has(mKey)}
                     onToggleSelection={onToggleSelection}
                   />
@@ -363,6 +391,7 @@ function SemanticBlockRows({
   sortedGroups,
   sortedColorVariables,
   sortedContrastVariables,
+  sortedStyleVariables,
   sortedSemanticTokenModifiers,
   sortedSemanticTokenLanguages,
   orphanKeys,
@@ -371,6 +400,8 @@ function SemanticBlockRows({
   onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
+  onUpdateStyleRef,
+  onUpdateIgnored,
   onRemoveMapping,
   selectedMappingKeys,
   onToggleSelection,
@@ -381,6 +412,7 @@ function SemanticBlockRows({
   sortedGroups: readonly string[];
   sortedColorVariables: readonly ColorVariable[];
   sortedContrastVariables: readonly ContrastVariable[];
+  sortedStyleVariables: readonly StyleVariable[];
   sortedSemanticTokenModifiers: readonly string[];
   sortedSemanticTokenLanguages: readonly string[];
   orphanKeys: Set<string>;
@@ -389,6 +421,8 @@ function SemanticBlockRows({
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+  onUpdateStyleRef: (tokenKey: string, tokenType: TokenType, ref: StyleVariableKey | null) => void;
+  onUpdateIgnored: (tokenKey: string, tokenType: TokenType, ignored: boolean) => void;
   onRemoveMapping: (tokenKey: string, tokenType: TokenType) => void;
   selectedMappingKeys: ReadonlySet<string>;
   onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
@@ -396,8 +430,9 @@ function SemanticBlockRows({
   const baseKey = `${base.token.type}::${base.token.key}`;
   const isVirtualStarBase = base.token.key === SEMANTIC_WILDCARD_TYPE;
   const isBaseOrphan = !isVirtualStarBase && orphanKeys.has(baseKey);
-  const isBaseBlockingLock = !isVirtualStarBase && !base.colorVariableRef;
+  const isBaseBlockingLock = !isVirtualStarBase && isTemplateMappingBlockingLock(base);
   const isBaseSelected = selectedMappingKeys.has(baseKey);
+  const isBaseIgnored = base.ignored === true;
   const type = base.token.key;
 
   const [openModifierKey, setOpenModifierKey] = useState<string | null>(null);
@@ -439,6 +474,8 @@ function SemanticBlockRows({
     onUpdateColorRef(base.token.key, base.token.type, value || null);
   const handleBaseContrastChange = (value: string) =>
     onUpdateContrastRef(base.token.key, base.token.type, value || null);
+  const handleBaseStyleChange = (value: string) =>
+    onUpdateStyleRef(base.token.key, base.token.type, value || null);
 
   function onBaseGroupSelectChange(e: ChangeEvent<HTMLSelectElement>) {
     handleBaseGroupChange(e.target.value);
@@ -452,8 +489,16 @@ function SemanticBlockRows({
     handleBaseContrastChange(e.target.value);
   }
 
+  function onBaseStyleSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    handleBaseStyleChange(e.target.value);
+  }
+
   function onBaseSelectionClick() {
     onToggleSelection(base.token.key, base.token.type);
+  }
+
+  function onBaseIgnoredClick() {
+    onUpdateIgnored(base.token.key, base.token.type, !isBaseIgnored);
   }
 
   const handleAddVariant = () =>
@@ -519,6 +564,21 @@ function SemanticBlockRows({
           >
             {base.token.key}
           </span>
+          {canEdit && !isVirtualStarBase && (
+            <button
+              type="button"
+              role="checkbox"
+              aria-checked={isBaseIgnored}
+              aria-label={`${isBaseIgnored ? 'Use' : 'Ignore'} mapping ${base.token.key}`}
+              className="checkbox-icon-btn mapping-ignored-btn"
+              onClick={onBaseIgnoredClick}
+              title={isBaseIgnored ? 'Ignored' : 'Use in theme'}
+            >
+              <span className="material-symbols-outlined" aria-hidden>
+                {isBaseIgnored ? 'visibility_off' : 'visibility'}
+              </span>
+            </button>
+          )}
           {isBaseOrphan && (
             <span
               className="material-symbols-outlined mapping-warning-icon"
@@ -532,13 +592,14 @@ function SemanticBlockRows({
           <>
             <div className="mapping-col-color" aria-hidden="true" />
             <div className="mapping-col-contrast" aria-hidden="true" />
+            <div aria-hidden="true" />
           </>
         ) : (
           <>
             <select
               className="field-select mapping-var-select mapping-col-color"
               value={base.colorVariableRef ?? ''}
-              disabled={!canEdit}
+              disabled={!canEdit || isBaseIgnored}
               onChange={onBaseColorSelectChange}
             >
               <option value="">— color —</option>
@@ -551,11 +612,24 @@ function SemanticBlockRows({
             <select
               className="field-select mapping-var-select mapping-col-contrast"
               value={base.contrastVariableRef ?? ''}
-              disabled={!canEdit}
+              disabled={!canEdit || isBaseIgnored}
               onChange={onBaseContrastSelectChange}
             >
               <option value="">— contrast —</option>
               {sortedContrastVariables.map((v) => (
+                <option key={v.key} value={v.key}>
+                  {v.key}
+                </option>
+              ))}
+            </select>
+            <select
+              className="field-select mapping-var-select"
+              value={base.styleVariableRef ?? ''}
+              disabled={!canEdit || isBaseIgnored}
+              onChange={onBaseStyleSelectChange}
+            >
+              <option value="">— style —</option>
+              {sortedStyleVariables.map((v) => (
                 <option key={v.key} value={v.key}>
                   {v.key}
                 </option>
@@ -589,6 +663,7 @@ function SemanticBlockRows({
             sortedGroups={sortedGroups}
             sortedColorVariables={sortedColorVariables}
             sortedContrastVariables={sortedContrastVariables}
+            sortedStyleVariables={sortedStyleVariables}
             sortedSemanticTokenModifiers={sortedSemanticTokenModifiers}
             sortedSemanticTokenLanguages={sortedSemanticTokenLanguages}
             onUpdateGroupRef={onUpdateGroupRef}
@@ -599,6 +674,8 @@ function SemanticBlockRows({
             onCloseModifierDropdown={onCloseModifierDropdown}
             onUpdateColorRef={onUpdateColorRef}
             onUpdateContrastRef={onUpdateContrastRef}
+            onUpdateStyleRef={onUpdateStyleRef}
+            onUpdateIgnored={onUpdateIgnored}
             onRemoveMapping={onRemoveMapping}
             isSelected={selectedMappingKeys.has(`${m.token.type}::${m.token.key}`)}
             onToggleSelection={onToggleSelection}
@@ -621,6 +698,7 @@ export function MappingsCard() {
     sortedGroups,
     sortedColorVariables,
     sortedContrastVariables,
+    sortedStyleVariables,
     sortedSemanticTokenModifiers,
     sortedSemanticTokenLanguages,
     orphanKeys,
@@ -628,14 +706,18 @@ export function MappingsCard() {
     mappingSearchText: searchQuery,
     mappingColorVariableFilter: selectedColorKeys,
     mappingContrastVariableFilter: selectedContrastKeys,
+    mappingStyleVariableFilter: selectedStyleKeys,
     onUpdateGroupRef,
     onUpdateColorRef,
     onUpdateContrastRef,
+    onUpdateStyleRef,
+    onUpdateIgnored,
     semanticVariant,
     onRemoveMapping,
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
+    setMappingStyleVariableFilter,
     selectedMappingIds,
     selectedMappingKeys,
     groupSelectionStates,
@@ -648,9 +730,12 @@ export function MappingsCard() {
     applySelectedMappingAssignment,
   } = useMappingsCardViewModel();
 
-  const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | null>(null);
+  const [openFilter, setOpenFilter] = useState<'color' | 'contrast' | 'style' | null>(null);
   const colorDropdownRef = useRef<HTMLDivElement>(null);
   const contrastDropdownRef = useRef<HTMLDivElement>(null);
+  const styleDropdownRef = useRef<HTMLDivElement>(null);
+  const selectedStyleKeysSafe = selectedStyleKeys ?? EMPTY_SELECTED_STYLE_KEYS;
+  const sortedStyleVariablesSafe = sortedStyleVariables ?? EMPTY_SORTED_STYLE_VARIABLES;
 
   useEffect(() => {
     if (openFilter === null) return;
@@ -658,6 +743,7 @@ export function MappingsCard() {
       const target = e.target as Node;
       const colorEl = colorDropdownRef.current;
       const contrastEl = contrastDropdownRef.current;
+      const styleEl = styleDropdownRef.current;
       if (
         openFilter === 'color' &&
         colorEl &&
@@ -669,6 +755,13 @@ export function MappingsCard() {
         openFilter === 'contrast' &&
         contrastEl &&
         !contrastEl.contains(target)
+      ) {
+        setOpenFilter(null);
+      }
+      if (
+        openFilter === 'style' &&
+        styleEl &&
+        !styleEl.contains(target)
       ) {
         setOpenFilter(null);
       }
@@ -697,6 +790,16 @@ export function MappingsCard() {
     [selectedContrastKeys, setMappingContrastVariableFilter],
   );
 
+  const toggleStyleKey = useCallback(
+    (key: string) => {
+      const next = selectedStyleKeysSafe.includes(key as StyleVariableKey)
+        ? selectedStyleKeysSafe.filter((k: StyleVariableKey) => k !== key)
+        : [...selectedStyleKeysSafe, key as StyleVariableKey];
+      setMappingStyleVariableFilter(next);
+    },
+    [selectedStyleKeysSafe, setMappingStyleVariableFilter],
+  );
+
   const handleColorFilterOptionClick = useCallback((e: ReactMouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const key = e.currentTarget.dataset.filterKey;
@@ -708,6 +811,12 @@ export function MappingsCard() {
     const key = e.currentTarget.dataset.filterKey;
     if (key) toggleContrastKey(key);
   }, [toggleContrastKey]);
+
+  const handleStyleFilterOptionClick = useCallback((e: ReactMouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const key = e.currentTarget.dataset.filterKey;
+    if (key) toggleStyleKey(key);
+  }, [toggleStyleKey]);
 
   if (!template) return null;
 
@@ -731,18 +840,27 @@ export function MappingsCard() {
     setMappingTokenTypeSelection(groupRef, tokenType, checked);
   }
 
+  const assignmentValues = selectedMappingAssignmentValues ?? {};
   const bulkGroupValue =
-    selectedMappingAssignmentValues.group === undefined
+    assignmentValues.group === undefined
       ? ''
-      : selectedMappingAssignmentValues.group ?? BULK_CLEAR_VALUE;
+      : assignmentValues.group ?? BULK_CLEAR_VALUE;
   const bulkColorValue =
-    selectedMappingAssignmentValues.color === undefined
+    assignmentValues.color === undefined
       ? ''
-      : selectedMappingAssignmentValues.color ?? BULK_CLEAR_VALUE;
+      : assignmentValues.color ?? BULK_CLEAR_VALUE;
   const bulkContrastValue =
-    selectedMappingAssignmentValues.contrast === undefined
+    assignmentValues.contrast === undefined
       ? ''
-      : selectedMappingAssignmentValues.contrast ?? BULK_CLEAR_VALUE;
+      : assignmentValues.contrast ?? BULK_CLEAR_VALUE;
+  const bulkStyleValue =
+    assignmentValues.style === undefined
+      ? ''
+      : assignmentValues.style ?? BULK_CLEAR_VALUE;
+  const bulkIgnoredValue =
+    assignmentValues.ignored === undefined
+      ? ''
+      : assignmentValues.ignored ? BULK_IGNORED_VALUE : BULK_USED_VALUE;
 
   function onBulkGroupChange(e: ChangeEvent<HTMLSelectElement>) {
     if (!e.target.value) return;
@@ -768,9 +886,27 @@ export function MappingsCard() {
     });
   }
 
+  function onBulkStyleChange(e: ChangeEvent<HTMLSelectElement>) {
+    if (!e.target.value) return;
+    applySelectedMappingAssignment({
+      kind: 'style',
+      value: e.target.value === BULK_CLEAR_VALUE ? null : e.target.value as StyleVariableKey,
+    });
+  }
+
+  function onBulkIgnoredChange(e: ChangeEvent<HTMLSelectElement>) {
+    if (!e.target.value) return;
+    applySelectedMappingAssignment({
+      kind: 'ignored',
+      value: e.target.value === BULK_IGNORED_VALUE,
+    });
+  }
+
   const handleToggleColorFilterDropdown = () => setOpenFilter((v) => (v === 'color' ? null : 'color'));
   const handleToggleContrastFilterDropdown = () =>
     setOpenFilter((v) => (v === 'contrast' ? null : 'contrast'));
+  const handleToggleStyleFilterDropdown = () =>
+    setOpenFilter((v) => (v === 'style' ? null : 'style'));
 
   return (
     <div className="tokens-card placeholder">
@@ -871,6 +1007,49 @@ export function MappingsCard() {
             </div>
           )}
         </div>
+        <div className="mappings-filter-dropdown-wrap" ref={styleDropdownRef}>
+          <button
+            type="button"
+            className={`mappings-filter-btn ${openFilter === 'style' ? 'mappings-filter-btn-open' : ''} ${selectedStyleKeysSafe.length > 0 ? 'mappings-filter-btn-active' : ''}`}
+            onClick={handleToggleStyleFilterDropdown}
+            aria-expanded={openFilter === 'style'}
+            aria-haspopup="true"
+            aria-label="Filter by style variable"
+          >
+            <span className="mappings-filter-btn-label">
+              Style{selectedStyleKeysSafe.length > 0 ? ` (${selectedStyleKeysSafe.length})` : ''}
+            </span>
+            <span className="material-symbols-outlined mappings-filter-chevron">
+              {openFilter === 'style' ? 'expand_less' : 'expand_more'}
+            </span>
+          </button>
+          {openFilter === 'style' && (
+            <div className="mappings-filter-dropdown">
+              {sortedStyleVariablesSafe.length === 0 ? (
+                <div className="mappings-filter-empty">No style variables</div>
+              ) : (
+                sortedStyleVariablesSafe.map((v) => (
+                  <label key={v.key} className="mappings-filter-check">
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selectedStyleKeysSafe.includes(v.key)}
+                      aria-label={`Filter by style variable ${v.key}`}
+                      className="checkbox-icon-btn"
+                      data-filter-key={v.key}
+                      onClick={handleStyleFilterOptionClick}
+                    >
+                      <span className="material-symbols-outlined" aria-hidden>
+                        {selectedStyleKeysSafe.includes(v.key) ? 'check_box' : 'check_box_outline_blank'}
+                      </span>
+                    </button>
+                    <span>{v.key}</span>
+                  </label>
+                ))
+              )}
+            </div>
+          )}
+        </div>
       </div>
       {selectedMappingIds.length > 0 && (
         <div className="mappings-filter-row mappings-bulk-actions" aria-label="Bulk mapping assignments">
@@ -909,6 +1088,28 @@ export function MappingsCard() {
               <option key={variable.key} value={variable.key}>{variable.key}</option>
             ))}
           </select>
+          <select
+            className="field-select mapping-var-select"
+            value={bulkStyleValue}
+            onChange={onBulkStyleChange}
+            aria-label="Assign style variable to selected mappings"
+          >
+            <option value="">Set style…</option>
+            <option value={BULK_CLEAR_VALUE}>Clear style</option>
+            {sortedStyleVariablesSafe.map((variable) => (
+              <option key={variable.key} value={variable.key}>{variable.key}</option>
+            ))}
+          </select>
+          <select
+            className="field-select mapping-var-select"
+            value={bulkIgnoredValue}
+            onChange={onBulkIgnoredChange}
+            aria-label="Set ignored state for selected mappings"
+          >
+            <option value="">Set usage...</option>
+            <option value={BULK_USED_VALUE}>Use in theme</option>
+            <option value={BULK_IGNORED_VALUE}>Ignore</option>
+          </select>
           <button type="button" className="btn-secondary" onClick={clearMappingSelection}>
             Clear selection
           </button>
@@ -927,6 +1128,7 @@ export function MappingsCard() {
             sortedGroups={sortedGroups}
             sortedColorVariables={sortedColorVariables}
             sortedContrastVariables={sortedContrastVariables}
+            sortedStyleVariables={sortedStyleVariablesSafe}
             sortedSemanticTokenModifiers={sortedSemanticTokenModifiers}
             sortedSemanticTokenLanguages={sortedSemanticTokenLanguages}
             orphanKeys={orphanKeys}
@@ -934,6 +1136,8 @@ export function MappingsCard() {
             onUpdateGroupRef={onUpdateGroupRef}
             onUpdateColorRef={onUpdateColorRef}
             onUpdateContrastRef={onUpdateContrastRef}
+            onUpdateStyleRef={onUpdateStyleRef}
+            onUpdateIgnored={onUpdateIgnored}
             semanticVariant={semanticVariant}
             onRemoveMapping={onRemoveMapping}
             selectedMappingKeys={selectedMappingKeys}

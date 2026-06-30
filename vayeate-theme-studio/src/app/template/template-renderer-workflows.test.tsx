@@ -437,6 +437,7 @@ describe('template renderer workflows', () => {
       mappings: [{ token: { key: 'editor.foreground', type: 'theme' }, colorVariableRef: null, contrastVariableRef: null, groupRef: null }],
       colorVariables: [],
       contrastVariables: [],
+      styleVariables: [{ key: 'emphasis', groupRef: null }],
       groups: [],
       semanticTokenModifiers: [],
       semanticTokenLanguages: [],
@@ -471,6 +472,7 @@ describe('template renderer workflows', () => {
 
     const detailsView = render(<TemplateDetailsCard />);
     expect(detailsView.getByText('template-a')).toBeInTheDocument();
+    expect(detailsView.container).toHaveTextContent('Style variables1');
     expect(detailsView.getByRole('button', { name: 'Lock' })).toBeDisabled();
     await user.click(detailsView.getByRole('button', { name: 'Delete version' }));
     expect(onDeleteVersionClick).toHaveBeenCalledTimes(1);
@@ -506,11 +508,16 @@ describe('template renderer workflows', () => {
       onUpdateGroupRef: vi.fn(),
       onUpdateColorRef: vi.fn(),
       onUpdateContrastRef: vi.fn(),
+      onUpdateStyleRef: vi.fn(),
+      onUpdateIgnored: vi.fn(),
       onRemoveMapping: vi.fn(),
       setMappingSearchText: vi.fn(),
       setMappingColorVariableFilter: vi.fn(),
       setMappingContrastVariableFilter: vi.fn(),
+      setMappingStyleVariableFilter: vi.fn(),
       toggleMappingSelection: vi.fn(),
+      setMappingGroupSelection: vi.fn(),
+      setMappingTokenTypeSelection: vi.fn(),
       clearMappingSelection: vi.fn(),
       applySelectedMappingAssignment: vi.fn(),
       semanticVariant: {
@@ -1189,6 +1196,7 @@ describe('template renderer workflows', () => {
         new BumpTemplateVersionForEditOperation(),
         new RemoveColorVariableOperation(),
         new RemoveContrastVariableOperation(),
+        { execute: vi.fn() } as never,
         { execute: vi.fn() } as never,
         { execute: vi.fn() } as never,
         new RecordTemplateUndoOperation(

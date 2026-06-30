@@ -51,13 +51,30 @@ export class ApplyMappingAssignmentOperation {
             ? [mapping]
             : [{ ...mapping, groupRef: input.assignment.value }];
         case 'color':
+          if (mapping.ignored === true) return [mapping];
           return mapping.colorVariableRef === input.assignment.value
             ? [mapping]
             : [{ ...mapping, colorVariableRef: input.assignment.value }];
         case 'contrast':
+          if (mapping.ignored === true) return [mapping];
           return mapping.contrastVariableRef === input.assignment.value
             ? [mapping]
             : [{ ...mapping, contrastVariableRef: input.assignment.value }];
+        case 'style':
+          if (mapping.ignored === true) return [mapping];
+          return mapping.styleVariableRef === input.assignment.value
+            ? [mapping]
+            : [{ ...mapping, styleVariableRef: input.assignment.value }];
+        case 'ignored':
+          return (mapping.ignored ?? false) === input.assignment.value
+            ? [mapping]
+            : [{
+                ...mapping,
+                ignored: input.assignment.value,
+                colorVariableRef: input.assignment.value ? null : mapping.colorVariableRef,
+                contrastVariableRef: input.assignment.value ? null : mapping.contrastVariableRef,
+                styleVariableRef: input.assignment.value ? null : mapping.styleVariableRef,
+              }];
       }
     });
 
@@ -70,12 +87,14 @@ export class ApplyMappingAssignmentOperation {
     template: Template,
     assignment: TemplateMappingAssignment,
   ): void {
-    if (assignment.value === null) return;
+    if (assignment.kind === 'ignored' || assignment.value === null) return;
     const exists = assignment.kind === 'group'
       ? template.groups.includes(assignment.value)
       : assignment.kind === 'color'
         ? template.colorVariables.some((variable) => variable.key === assignment.value)
-        : template.contrastVariables.some((variable) => variable.key === assignment.value);
+        : assignment.kind === 'contrast'
+          ? template.contrastVariables.some((variable) => variable.key === assignment.value)
+          : (template.styleVariables ?? []).some((variable) => variable.key === assignment.value);
     if (!exists) throw new Error(`Unknown template mapping ${assignment.kind} assignment`);
   }
 }

@@ -1,7 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import { immer } from 'zustand/middleware/immer';
 import { singleton } from 'tsyringe';
-import type { ColorVariableKey, ContrastVariableKey } from '../../../model/schema/primitives';
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey } from '../../../model/schema/primitives';
 import type { TemplateReference } from '../../../model/schema/theme-schemas';
 import type { TemplateMappingId } from '../../../model/template-mapping-assignment';
 import { initialTemplateUiState, type LoadState, type TemplateUiState } from './template-ui-state';
@@ -14,6 +14,7 @@ interface TemplateUiStoreState {
   setMappingSearchText: (value: string) => void;
   setMappingColorVariableFilter: (values: ColorVariableKey[]) => void;
   setMappingContrastVariableFilter: (values: ContrastVariableKey[]) => void;
+  setMappingStyleVariableFilter: (values: StyleVariableKey[]) => void;
   setMappingTokenGroupSelection: (value: string) => void;
   setSelectedMappingIds: (values: TemplateMappingId[]) => void;
   setVariablesSearchText: (value: string) => void;
@@ -52,6 +53,10 @@ export class TemplateUiStore {
       setMappingContrastVariableFilter: (values: ContrastVariableKey[]) =>
         set((storeState) => {
           storeState.state.mappingContrastVariableFilter = values;
+        }),
+      setMappingStyleVariableFilter: (values: StyleVariableKey[]) =>
+        set((storeState) => {
+          storeState.state.mappingStyleVariableFilter = values;
         }),
       setMappingTokenGroupSelection: (value: string) =>
         set((storeState) => {

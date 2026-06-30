@@ -7,6 +7,7 @@ import { container } from 'tsyringe';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../domain/state/data/templates-store';
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import type { Mapping, Template } from '../../../model/schema/template-schemas';
+import { isTemplateMappingComplete } from '../../../domain/utils/is-template-mapping-complete';
 
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
@@ -49,11 +50,11 @@ export function useTemplateDetailsCardViewModel(): TemplateDetailsCardViewModel 
 
   const canLock = useMemo(() => {
     if (!template || template.locked || !isLatestVersion) return false;
-    return template.mappings.every((m: Mapping) => m.colorVariableRef !== null);
+    return template.mappings.every((m: Mapping) => isTemplateMappingComplete(m));
   }, [template, isLatestVersion]);
   const canShowLockButton = useMemo(() => template !== null && !template.locked && isLatestVersion, [template, isLatestVersion]);
   const lockButtonTitle = useMemo(
-    () => canLock ? 'Lock this version' : 'All mappings must have a color variable assigned',
+    () => canLock ? 'Lock this version' : 'All mappings must have a color or style variable assigned, and contrast mappings must also have a color variable',
     [canLock],
   );
 

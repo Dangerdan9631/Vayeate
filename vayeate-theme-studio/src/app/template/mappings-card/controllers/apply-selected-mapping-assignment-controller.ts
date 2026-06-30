@@ -18,13 +18,16 @@ import {
   TEMPLATE_MAPPING_COLOR_REF_SET,
   TEMPLATE_MAPPING_CONTRAST_REF_SET,
   TEMPLATE_MAPPING_GROUP_REF_SET,
+  TEMPLATE_MAPPING_IGNORED_SET,
+  TEMPLATE_MAPPING_STYLE_REF_SET,
 } from '../../../../model/undo-action-types';
 
 function matchesSelectedFilters(
-  mapping: { token: { key: string }; colorVariableRef: string | null; contrastVariableRef: string | null },
+  mapping: { token: { key: string }; colorVariableRef: string | null; contrastVariableRef: string | null; styleVariableRef?: string | null },
   searchText: string,
   colorFilter: readonly string[],
   contrastFilter: readonly string[],
+  styleFilter: readonly string[],
 ): boolean {
   const searchQuery = searchText.trim().toLowerCase();
   if (searchQuery && !mapping.token.key.toLowerCase().includes(searchQuery)) return false;
@@ -35,6 +38,9 @@ function matchesSelectedFilters(
     contrastFilter.length > 0
     && (!mapping.contrastVariableRef || !contrastFilter.includes(mapping.contrastVariableRef))
   ) {
+    return false;
+  }
+  if (styleFilter.length > 0 && (!mapping.styleVariableRef || !styleFilter.includes(mapping.styleVariableRef))) {
     return false;
   }
   return true;
@@ -73,6 +79,7 @@ export class ApplySelectedMappingAssignmentController {
         uiState.mappingSearchText,
         uiState.mappingColorVariableFilter,
         uiState.mappingContrastVariableFilter,
+        uiState.mappingStyleVariableFilter,
       ))
       .map((mapping) => ({
         tokenKey: mapping.token.key,
@@ -107,7 +114,11 @@ export class ApplySelectedMappingAssignmentController {
       ? TEMPLATE_MAPPING_GROUP_REF_SET
       : assignment.kind === 'color'
         ? TEMPLATE_MAPPING_COLOR_REF_SET
-        : TEMPLATE_MAPPING_CONTRAST_REF_SET;
+        : assignment.kind === 'contrast'
+          ? TEMPLATE_MAPPING_CONTRAST_REF_SET
+          : assignment.kind === 'style'
+            ? TEMPLATE_MAPPING_STYLE_REF_SET
+            : TEMPLATE_MAPPING_IGNORED_SET;
     await this.recordTemplateUndo.execute({
       description: `Set ${selectedVisibleMappingIds.length} mapping ${assignment.kind} assignments`,
       actionType,

@@ -11,6 +11,9 @@ import { CatalogUiStore } from './state/ui/catalog-ui-store';
 import { ThemeUiStore } from './state/ui/theme-ui-store';
 import { BumpTemplateVersionForEditOperation } from './operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { AddGroupToTemplateOperation } from './operations/template-operations/groups/add-group-to-template-operation';
+import { referencedColorVarKeysFromTemplate } from './utils/referenced-color-var-keys-from-template';
+import { referencedContrastVarKeysFromTemplate } from './utils/referenced-contrast-var-keys-from-template';
+import { referencedStyleVarKeysFromTemplate } from './utils/referenced-style-var-keys-from-template';
 
 describe('template utility baselines', () => {
   it('parses and formats semantic selectors canonically', () => {
@@ -49,6 +52,14 @@ describe('template utility baselines', () => {
           token: { key: 'missing.token', type: 'theme' },
           colorVariableRef: 'keepMe',
           contrastVariableRef: null,
+          styleVariableRef: null,
+          groupRef: 'legacy',
+        },
+        {
+          token: { key: 'missing.styleOnly', type: 'textmate token' },
+          colorVariableRef: null,
+          contrastVariableRef: null,
+          styleVariableRef: 'emphasis',
           groupRef: 'legacy',
         },
       ],
@@ -71,6 +82,14 @@ describe('template utility baselines', () => {
       token: { key: 'missing.token', type: 'theme' },
       colorVariableRef: 'keepMe',
       contrastVariableRef: null,
+      styleVariableRef: null,
+      groupRef: 'legacy',
+    });
+    expect(result.mappings).toContainEqual({
+      token: { key: 'missing.styleOnly', type: 'textmate token' },
+      colorVariableRef: null,
+      contrastVariableRef: null,
+      styleVariableRef: 'emphasis',
       groupRef: 'legacy',
     });
     expect(result.semanticTokenModifiers).toEqual(['readonly']);
@@ -118,6 +137,52 @@ describe('template utility baselines', () => {
     expect(isMappingOrphanForTemplate(template, 'editor.foreground', 'theme', [catalog])).toBe(false);
     expect(isMappingOrphanForTemplate(template, 'missing.token', 'theme', [catalog])).toBe(true);
     expect(isMappingOrphanForTemplate(template, 'missing.token', 'theme', [])).toBe(false);
+  });
+
+  it('does not treat ignored mapping variable refs as referenced variables', () => {
+    const template = {
+      name: 'template-a',
+      version: '1.0.0',
+      locked: false,
+      catalogRefs: [],
+      mappings: [
+        {
+          token: { key: 'editor.foreground', type: 'theme' as const },
+          colorVariableRef: 'ignoredColor',
+          contrastVariableRef: 'ignoredContrast',
+          styleVariableRef: 'ignoredStyle',
+          groupRef: null,
+          ignored: true,
+        },
+        {
+          token: { key: 'editor.background', type: 'theme' as const },
+          colorVariableRef: 'usedColor',
+          contrastVariableRef: 'usedContrast',
+          styleVariableRef: 'usedStyle',
+          groupRef: null,
+        },
+      ],
+      colorVariables: [
+        { key: 'ignoredColor', groupRef: null },
+        { key: 'usedColor', groupRef: null },
+        { key: 'comparisonColor', groupRef: null },
+      ],
+      contrastVariables: [
+        { key: 'ignoredContrast', comparisonSourceRef: null, groupRef: null },
+        { key: 'usedContrast', comparisonSourceRef: 'comparisonColor', groupRef: null },
+      ],
+      styleVariables: [
+        { key: 'ignoredStyle', groupRef: null },
+        { key: 'usedStyle', groupRef: null },
+      ],
+      groups: [],
+      semanticTokenModifiers: [],
+      semanticTokenLanguages: [],
+    };
+
+    expect(referencedColorVarKeysFromTemplate(template)).toEqual(new Set(['usedColor', 'comparisonColor']));
+    expect(referencedContrastVarKeysFromTemplate(template)).toEqual(new Set(['usedContrast']));
+    expect(referencedStyleVarKeysFromTemplate(template)).toEqual(new Set(['usedStyle']));
   });
 
   it('supports template create dialog store transitions', () => {

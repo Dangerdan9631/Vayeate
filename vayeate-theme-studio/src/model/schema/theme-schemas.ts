@@ -9,6 +9,7 @@ import {
   versionSchema,
   colorVariableKeySchema,
   contrastVariableKeySchema,
+  styleVariableKeySchema,
 } from './primitives';
 import type { Mapping } from './template-schemas';
 
@@ -153,6 +154,62 @@ export const contrastAssignmentSchema = z
 export type ContrastAssignment = z.infer<typeof contrastAssignmentSchema>;
 
 /**
+ * Zod schema for text style flags on one color scheme side.
+ */
+export const styleAssignmentValueSchema = z
+  .object({
+    /**
+     * Whether generated tokens should use bold font weight.
+     */
+    bold: z.boolean(),
+    /**
+     * Whether generated tokens should use underline decoration.
+     */
+    underline: z.boolean(),
+    /**
+     * Whether generated tokens should use italic font style.
+     */
+    italic: z.boolean(),
+    /**
+     * Whether generated tokens should use strikethrough decoration.
+     */
+    strikethrough: z.boolean(),
+  })
+  .readonly();
+/**
+ * Text style flags for light or dark assignment.
+ */
+export type StyleAssignmentValue = z.infer<typeof styleAssignmentValueSchema>;
+
+/**
+ * Zod schema for style settings assigned to a template style variable.
+ */
+export const styleAssignmentSchema = z
+  .object({
+    /**
+     * Template style variable key receiving the assignment.
+     */
+    styleVariableRef: styleVariableKeySchema,
+    /**
+     * Light-scheme style settings, or null when unset.
+     */
+    light: styleAssignmentValueSchema.nullable(),
+    /**
+     * Dark-scheme style settings, or null when unset.
+     */
+    dark: styleAssignmentValueSchema.nullable(),
+    /**
+     * When true, dark values are reused for light in the UI and export.
+     */
+    useDarkForLight: z.boolean(),
+  })
+  .readonly();
+/**
+ * Per-variable light and dark style assignments.
+ */
+export type StyleAssignment = z.infer<typeof styleAssignmentSchema>;
+
+/**
  * Zod schema for a persisted theme artifact.
  */
 export const themeSchema = z
@@ -233,6 +290,10 @@ export const themeSchema = z
      * Contrast variable assignments; read-only array.
      */
     contrastAssignments: z.array(contrastAssignmentSchema).readonly(),
+    /**
+     * Style variable assignments; read-only array.
+     */
+    styleAssignments: z.array(styleAssignmentSchema).readonly().optional(),
     /**
      * When true, palette clustering applies to dark assignments; defaults to true.
      */

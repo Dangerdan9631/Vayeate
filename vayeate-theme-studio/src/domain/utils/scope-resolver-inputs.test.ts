@@ -65,4 +65,15 @@ describe('selectScopeColorMapInputs', () => {
       buildScopeColorMap(mappings, colorAssignments, [], []).entries[0].darkColor,
     );
   });
+
+  it('omits ignored mappings from scope map inputs and resolution', () => {
+    const ignoredMappings = [
+      { ...mappings[0], ignored: true },
+    ];
+
+    const inputs = selectScopeColorMapInputs(ignoredMappings, colorAssignments, [], []);
+
+    expect(inputs.mappings).toEqual([]);
+    expect(buildScopeColorMap(ignoredMappings, colorAssignments, [], []).entries).toEqual([]);
+  });
 });

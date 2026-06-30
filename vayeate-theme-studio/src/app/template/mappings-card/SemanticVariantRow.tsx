@@ -9,8 +9,9 @@ import {
 } from 'react';
 import { parseSemanticSelector } from '../../../model/parse-semantic-selector';
 import { SEMANTIC_WILDCARD_TYPE } from '../../../model/semantic-token-constants';
-import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
-import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../model/schema/template-schemas';
+import { isTemplateMappingBlockingLock } from '../../../domain/utils/is-template-mapping-complete';
 
 /**
  * Placeholder modifier prefix for empty variant rows; filter out for display and when updating.
@@ -27,11 +28,14 @@ export interface SemanticVariantRowProps {
   sortedGroups: readonly string[];
   sortedColorVariables: readonly ColorVariable[];
   sortedContrastVariables: readonly ContrastVariable[];
+  sortedStyleVariables: readonly StyleVariable[];
   sortedSemanticTokenModifiers: readonly string[];
   sortedSemanticTokenLanguages: readonly string[];
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+  onUpdateStyleRef: (tokenKey: string, tokenType: TokenType, ref: StyleVariableKey | null) => void;
+  onUpdateIgnored: (tokenKey: string, tokenType: TokenType, ignored: boolean) => void;
   onRemoveMapping: (tokenKey: string, tokenType: TokenType) => void;
   commitSemanticModifiers: (oldKey: string, modifiers: string[]) => void;
   commitSemanticLanguage: (oldKey: string, language: string | null) => void;
@@ -49,11 +53,14 @@ function SemanticVariantRowComponent({
   sortedGroups,
   sortedColorVariables,
   sortedContrastVariables,
+  sortedStyleVariables,
   sortedSemanticTokenModifiers,
   sortedSemanticTokenLanguages,
   onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
+  onUpdateStyleRef,
+  onUpdateIgnored,
   onRemoveMapping,
   commitSemanticModifiers,
   commitSemanticLanguage,
@@ -63,7 +70,8 @@ function SemanticVariantRowComponent({
   isSelected,
   onToggleSelection,
 }: SemanticVariantRowProps) {
-  const isBlockingLock = !mapping.colorVariableRef;
+  const isBlockingLock = isTemplateMappingBlockingLock(mapping);
+  const isIgnored = mapping.ignored === true;
   let parsed: { type: string; modifiers: string[]; language: string | null };
   try {
     parsed = parseSemanticSelector(mapping.token.key);
@@ -159,6 +167,10 @@ function SemanticVariantRowComponent({
     onToggleSelection(mapping.token.key, mapping.token.type);
   }
 
+  function onMappingIgnoredClick() {
+    onUpdateIgnored(mapping.token.key, mapping.token.type, !isIgnored);
+  }
+
   function onVariantGroupSelectChange(e: ChangeEvent<HTMLSelectElement>) {
     onUpdateGroupRef(mapping.token.key, mapping.token.type, e.target.value || null);
   }
@@ -169,6 +181,10 @@ function SemanticVariantRowComponent({
 
   function onVariantContrastSelectChange(e: ChangeEvent<HTMLSelectElement>) {
     onUpdateContrastRef(mapping.token.key, mapping.token.type, e.target.value || null);
+  }
+
+  function onVariantStyleSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onUpdateStyleRef(mapping.token.key, mapping.token.type, e.target.value || null);
   }
 
   const onModifierOptionClick = useCallback(
@@ -215,6 +231,21 @@ function SemanticVariantRowComponent({
           </button>
         )}
         {mapping.token.key}
+        {canEdit && (
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={isIgnored}
+            aria-label={`${isIgnored ? 'Use' : 'Ignore'} mapping ${mapping.token.key}`}
+            className="checkbox-icon-btn mapping-ignored-btn"
+            onClick={onMappingIgnoredClick}
+            title={isIgnored ? 'Ignored' : 'Use in theme'}
+          >
+            <span className="material-symbols-outlined" aria-hidden>
+              {isIgnored ? 'visibility_off' : 'visibility'}
+            </span>
+          </button>
+        )}
       </div>
       <div className="mapping-variant-controls-row">
         {isStarVariant && (
@@ -332,7 +363,7 @@ function SemanticVariantRowComponent({
         <select
           className="field-select mapping-var-select mapping-col-color"
           value={mapping.colorVariableRef ?? ''}
-          disabled={!canEdit}
+          disabled={!canEdit || isIgnored}
           onChange={onVariantColorSelectChange}
         >
           <option value="">— color —</option>
@@ -345,11 +376,24 @@ function SemanticVariantRowComponent({
         <select
           className="field-select mapping-var-select mapping-col-contrast"
           value={mapping.contrastVariableRef ?? ''}
-          disabled={!canEdit}
+          disabled={!canEdit || isIgnored}
           onChange={onVariantContrastSelectChange}
         >
           <option value="">— contrast —</option>
           {sortedContrastVariables.map((v) => (
+            <option key={v.key} value={v.key}>
+              {v.key}
+            </option>
+          ))}
+        </select>
+        <select
+          className="field-select mapping-var-select"
+          value={mapping.styleVariableRef ?? ''}
+          disabled={!canEdit || isIgnored}
+          onChange={onVariantStyleSelectChange}
+        >
+          <option value="">— style —</option>
+          {sortedStyleVariables.map((v) => (
             <option key={v.key} value={v.key}>
               {v.key}
             </option>

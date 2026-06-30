@@ -1255,6 +1255,17 @@ body {
   margin-right: 0.25rem;
 }
 
+.mapping-ignored-btn {
+  flex: 0 0 auto;
+  margin-left: 0.25rem;
+  color: var(--text-muted-2);
+}
+
+.mapping-ignored-btn[aria-checked="true"] {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+}
+
 .mappings-bulk-actions {
   align-items: center;
   flex-wrap: wrap;
@@ -1286,6 +1297,11 @@ body {
   border-radius: 4px;
   padding-left: 4px;
   padding-right: 4px;
+}
+
+.mapping-row:has(.mapping-ignored-btn[aria-checked="true"]),
+.mapping-variant-wrapper:has(.mapping-ignored-btn[aria-checked="true"]) {
+  opacity: 0.72;
 }
 
 /* Missing color blocks template lock; highlight with red font (warning icon is for catalog orphan only) */
@@ -2416,6 +2432,63 @@ body {
   border-radius: 4px;
   padding-left: 4px;
   padding-right: 4px;
+}
+
+/* ── Theme style assignment rows ───────────────────────────── */
+
+.theme-style-row {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1fr) minmax(172px, 1.4fr) minmax(172px, 1.4fr) auto;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+  min-width: 0;
+}
+
+.theme-style-var-name {
+  min-width: 0;
+}
+
+.theme-style-side-group {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.theme-style-side-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted-2);
+  text-align: right;
+}
+
+.theme-style-field-group {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(30px, 1fr));
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.theme-style-field-check {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+.theme-style-field-check:has(input:disabled),
+.theme-style-row .theme-use-dark-check:has(input:disabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.theme-style-field-check input[type="checkbox"]:disabled {
+  cursor: not-allowed;
 }
 
 /* ── Theme contrast assignment rows ────────────────────────── */

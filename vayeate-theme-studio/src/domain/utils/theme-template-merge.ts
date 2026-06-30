@@ -1,5 +1,5 @@
 import type { Template } from '../../model/schema/template-schemas';
-import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
+import type { ColorAssignment, ContrastAssignment, StyleAssignment, Theme } from '../../model/schema/theme-schemas';
 
 /**
  * Merges template color and contrast variables into a theme when the template changes.
@@ -33,9 +33,20 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     return { contrastVariableRef: v.key, light: null, dark: null, useDarkForLight: false };
   });
 
+  const existingStyleMap = new Map<string, StyleAssignment>();
+  for (const a of theme.styleAssignments ?? []) {
+    existingStyleMap.set(a.styleVariableRef, a);
+  }
+
+  const newStyleAssignments: StyleAssignment[] = (template.styleVariables ?? []).map((v) => {
+    const existing = existingStyleMap.get(v.key);
+    if (existing) return existing;
+    return { styleVariableRef: v.key, light: null, dark: null, useDarkForLight: false };
+  });
+
   const themeTokenKeys = [...new Set(
     template.mappings
-      .filter((m) => m.token.type === 'theme' && m.colorVariableRef != null)
+      .filter((m) => m.ignored !== true && m.token.type === 'theme' && m.colorVariableRef != null)
       .map((m) => m.token.key),
   )].sort();
   const validTokenRef = (tokenRef: string | null | undefined) =>
@@ -75,5 +86,6 @@ export function mergeAssignmentsFromTemplate(theme: Theme, template: Template): 
     editorPreviewMenuBackgroundTokenRef,
     colorAssignments: newColorAssignments,
     contrastAssignments: newContrastAssignments,
+    styleAssignments: newStyleAssignments,
   };
 }

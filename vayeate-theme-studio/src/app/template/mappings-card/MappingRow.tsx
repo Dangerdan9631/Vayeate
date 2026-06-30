@@ -1,6 +1,7 @@
 import { memo, type ChangeEvent } from 'react';
-import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
-import type { ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../model/schema/primitives';
+import type { ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../model/schema/template-schemas';
+import { isTemplateMappingBlockingLock } from '../../../domain/utils/is-template-mapping-complete';
 
 /**
  * Props for a single non-semantic token mapping row.
@@ -12,9 +13,12 @@ export interface MappingRowProps {
   sortedGroups: readonly string[];
   sortedColorVariables: readonly ColorVariable[];
   sortedContrastVariables: readonly ContrastVariable[];
+  sortedStyleVariables: readonly StyleVariable[];
   onUpdateGroupRef: (tokenKey: string, tokenType: TokenType, groupRef: string | null) => void;
   onUpdateColorRef: (tokenKey: string, tokenType: TokenType, ref: ColorVariableKey | null) => void;
   onUpdateContrastRef: (tokenKey: string, tokenType: TokenType, ref: ContrastVariableKey | null) => void;
+  onUpdateStyleRef: (tokenKey: string, tokenType: TokenType, ref: StyleVariableKey | null) => void;
+  onUpdateIgnored: (tokenKey: string, tokenType: TokenType, ignored: boolean) => void;
   isSelected: boolean;
   onToggleSelection: (tokenKey: string, tokenType: TokenType) => void;
 }
@@ -26,13 +30,17 @@ function MappingRowComponent({
   sortedGroups,
   sortedColorVariables,
   sortedContrastVariables,
+  sortedStyleVariables,
   onUpdateGroupRef,
   onUpdateColorRef,
   onUpdateContrastRef,
+  onUpdateStyleRef,
+  onUpdateIgnored,
   isSelected,
   onToggleSelection,
 }: MappingRowProps) {
-  const isBlockingLock = !mapping.colorVariableRef;
+  const isBlockingLock = isTemplateMappingBlockingLock(mapping);
+  const isIgnored = mapping.ignored === true;
 
   function onMappingGroupRefSelectChange(e: ChangeEvent<HTMLSelectElement>) {
     onUpdateGroupRef(mapping.token.key, mapping.token.type, e.target.value || null);
@@ -46,8 +54,16 @@ function MappingRowComponent({
     onUpdateContrastRef(mapping.token.key, mapping.token.type, e.target.value || null);
   }
 
+  function onMappingStyleRefSelectChange(e: ChangeEvent<HTMLSelectElement>) {
+    onUpdateStyleRef(mapping.token.key, mapping.token.type, e.target.value || null);
+  }
+
   function onMappingSelectionClick() {
     onToggleSelection(mapping.token.key, mapping.token.type);
+  }
+
+  function onMappingIgnoredClick() {
+    onUpdateIgnored(mapping.token.key, mapping.token.type, !isIgnored);
   }
 
   return (
@@ -85,6 +101,21 @@ function MappingRowComponent({
         )}
         {mapping.token.key}
       </span>
+      {canEdit && (
+        <button
+          type="button"
+          role="checkbox"
+          aria-checked={isIgnored}
+          aria-label={`${isIgnored ? 'Use' : 'Ignore'} mapping ${mapping.token.key}`}
+          className="checkbox-icon-btn mapping-ignored-btn"
+          onClick={onMappingIgnoredClick}
+          title={isIgnored ? 'Ignored' : 'Use in theme'}
+        >
+          <span className="material-symbols-outlined" aria-hidden>
+            {isIgnored ? 'visibility_off' : 'visibility'}
+          </span>
+        </button>
+      )}
       {isOrphan && (
         <span
           className="material-symbols-outlined mapping-warning-icon"
@@ -96,7 +127,7 @@ function MappingRowComponent({
       <select
         className="field-select mapping-var-select"
         value={mapping.colorVariableRef ?? ''}
-        disabled={!canEdit}
+        disabled={!canEdit || isIgnored}
         onChange={onMappingColorRefSelectChange}
       >
         <option value="">— color —</option>
@@ -109,11 +140,24 @@ function MappingRowComponent({
       <select
         className="field-select mapping-var-select"
         value={mapping.contrastVariableRef ?? ''}
-        disabled={!canEdit}
+        disabled={!canEdit || isIgnored}
         onChange={onMappingContrastRefSelectChange}
       >
         <option value="">— contrast —</option>
         {sortedContrastVariables.map((v) => (
+          <option key={v.key} value={v.key}>
+            {v.key}
+          </option>
+        ))}
+      </select>
+      <select
+        className="field-select mapping-var-select"
+        value={mapping.styleVariableRef ?? ''}
+        disabled={!canEdit || isIgnored}
+        onChange={onMappingStyleRefSelectChange}
+      >
+        <option value="">— style —</option>
+        {sortedStyleVariables.map((v) => (
           <option key={v.key} value={v.key}>
             {v.key}
           </option>

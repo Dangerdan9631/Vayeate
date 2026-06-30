@@ -6,6 +6,7 @@ import { compareVersions } from '../../../domain/utils/compare-versions';
 import {
   colorVariableKeySchema,
   contrastVariableKeySchema,
+  styleVariableKeySchema,
   type ColorVariableKey,
   type ContrastVariableKey,
 } from '../../../model/schema/primitives';
@@ -15,15 +16,19 @@ import { getCurrentTemplate, TemplatesStore } from '../../../domain/state/data/t
 import { TemplateUiStore } from '../../../domain/state/ui/template-ui-store';
 import {
   getTemplateAddVariableDraftKey,
-  type TemplateVariableKind,
 } from '../../../domain/state/ui/template-ui-state';
-import type { ColorVariable, ContrastVariable, Template } from '../../../model/schema/template-schemas';
+import { referencedColorVarKeysFromTemplate } from '../../../domain/utils/referenced-color-var-keys-from-template';
+import { referencedContrastVarKeysFromTemplate } from '../../../domain/utils/referenced-contrast-var-keys-from-template';
+import { referencedStyleVarKeysFromTemplate } from '../../../domain/utils/referenced-style-var-keys-from-template';
+import type { TemplateVariableKind } from '../../../model/template-variable-kind';
+import type { ColorVariable, ContrastVariable, StyleVariable, Template } from '../../../model/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
 
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_STYLE_VARIABLES: readonly StyleVariable[] = [];
 const EMPTY_GROUPS: readonly string[] = [];
 const EMPTY_VERSION_KEYS: readonly string[] = [];
 const UNGROUPED_KEY = '__ungrouped__';
@@ -86,18 +91,22 @@ export interface VariablesCardViewModel {
   template: Template | null;
   colorVariables: readonly ColorVariable[];
   contrastVariables: readonly ContrastVariable[];
+  styleVariables: readonly StyleVariable[];
   groups: readonly string[];
   sortedGroups: readonly string[];
   filteredColorVariables: readonly ColorVariable[];
   filteredContrastVariables: readonly ContrastVariable[];
+  filteredStyleVariables: readonly StyleVariable[];
   sortedColorVariables: readonly ColorVariable[];
   colorVariableGroupSections: readonly VariableGroupSection<ColorVariable>[];
   contrastVariableGroupSections: readonly VariableGroupSection<ContrastVariable>[];
+  styleVariableGroupSections: readonly VariableGroupSection<StyleVariable>[];
   variablesSearchText: string;
   addVariableNames: Readonly<Record<string, string>>;
   canEdit: boolean;
   referencedColorVarKeys: Set<string>;
   referencedContrastVarKeys: Set<string>;
+  referencedStyleVarKeys: Set<string>;
   getAddVariableName: (variableKind: TemplateVariableKind, groupRef: string | null) => string;
   canAddVariable: (variableKind: TemplateVariableKind, groupRef: string | null) => boolean;
   onAddVariableNameChange: (variableKind: TemplateVariableKind, groupRef: string | null, value: string) => void;
@@ -105,14 +114,21 @@ export interface VariablesCardViewModel {
   onRemoveColorVariableClick: (key: string) => void;
   onAddContrastVariableClick: (groupRef: string | null) => void;
   onRemoveContrastVariableClick: (key: string) => void;
+  onAddStyleVariableClick: (groupRef: string | null) => void;
+  onRemoveStyleVariableClick: (key: string) => void;
   onUpdateColorVariableGroupRef: (key: string, groupRef: string | null) => void;
   onUpdateContrastVariableGroupRef: (key: string, groupRef: string | null) => void;
+  onUpdateStyleVariableGroupRef: (key: string, groupRef: string | null) => void;
   onUpdateContrastComparisonSource: (key: string, ref: ColorVariableKey | null) => void;
   onVariablesSearchChange: (value: string) => void;
 }
 
-function isValidVariableKey(value: string, type: 'color' | 'contrast'): boolean {
-  const schema = type === 'color' ? colorVariableKeySchema : contrastVariableKeySchema;
+function isValidVariableKey(value: string, type: TemplateVariableKind): boolean {
+  const schema = type === 'color'
+    ? colorVariableKeySchema
+    : type === 'contrast'
+      ? contrastVariableKeySchema
+      : styleVariableKeySchema;
   return schema.safeParse(value).success;
 }
 
@@ -147,6 +163,10 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     () => template?.contrastVariables ?? EMPTY_CONTRAST_VARIABLES,
     [template?.contrastVariables],
   );
+  const styleVariables = useMemo(
+    () => template?.styleVariables ?? EMPTY_STYLE_VARIABLES,
+    [template?.styleVariables],
+  );
   const groups = useMemo(() => template?.groups ?? EMPTY_GROUPS, [template?.groups]);
 
   const sortedGroups = useMemo(
@@ -170,6 +190,14 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     [contrastVariables, variablesSearchText],
   );
 
+  const filteredStyleVariables = useMemo(
+    () =>
+      styleVariables
+        .filter((v) => matchesSearch(v.key, variablesSearchText))
+        .sort((a, b) => a.key.localeCompare(b.key)),
+    [styleVariables, variablesSearchText],
+  );
+
   const sortedColorVariables = useMemo(
     () => [...colorVariables].sort((a, b) => a.key.localeCompare(b.key)),
     [colorVariables],
@@ -183,6 +211,11 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
   const contrastVariableGroupSections = useMemo(
     () => (template ? buildVariableGroupSections(filteredContrastVariables) : EMPTY_GROUP_SECTIONS),
     [template, filteredContrastVariables],
+  );
+
+  const styleVariableGroupSections = useMemo(
+    () => (template ? buildVariableGroupSections(filteredStyleVariables) : EMPTY_GROUP_SECTIONS),
+    [template, filteredStyleVariables],
   );
 
   const isLatestVersion = useMemo(() => {
@@ -209,23 +242,17 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
 
   const referencedColorVarKeys = useMemo(() => {
     if (!template) return new Set<string>();
-    const s = new Set<string>();
-    for (const m of template.mappings) {
-      if (m.colorVariableRef) s.add(m.colorVariableRef);
-    }
-    for (const cv of template.contrastVariables) {
-      if (cv.comparisonSourceRef) s.add(cv.comparisonSourceRef);
-    }
-    return s;
+    return referencedColorVarKeysFromTemplate(template);
   }, [template]);
 
   const referencedContrastVarKeys = useMemo(() => {
     if (!template) return new Set<string>();
-    const s = new Set<string>();
-    for (const m of template.mappings) {
-      if (m.contrastVariableRef) s.add(m.contrastVariableRef);
-    }
-    return s;
+    return referencedContrastVarKeysFromTemplate(template);
+  }, [template]);
+
+  const referencedStyleVarKeys = useMemo(() => {
+    if (!template) return new Set<string>();
+    return referencedStyleVarKeysFromTemplate(template);
   }, [template]);
 
   const onVariablesSearchChange = useCallback(
@@ -278,7 +305,26 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     [canAddVariable, dispatch],
   );
 
+  const addStyleVariable = useCallback(
+    (groupRef?: string | null) => {
+      if (!canAddVariable('style', groupRef ?? null)) return;
+      void dispatch({
+        type: VariablesCardActionType.VariablesAddVariableButtonOnClick,
+        groupRef: groupRef ?? null,
+        variableKind: 'style',
+      });
+    },
+    [canAddVariable, dispatch],
+  );
+
   const removeContrastVariable = useCallback(
+    (key: string) => {
+      void dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
+    },
+    [dispatch],
+  );
+
+  const removeStyleVariable = useCallback(
     (key: string) => {
       void dispatch({ type: VariablesCardActionType.VariablesRemoveButtonOnClick, key });
     },
@@ -318,17 +364,31 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     [dispatch],
   );
 
+  const updateStyleVariableGroupRef = useCallback(
+    (key: string, groupRef: string | null) => {
+      void dispatch({
+        type: VariablesCardActionType.VariablesGroupListOnCommit,
+        value: groupRef ?? '',
+        variableKey: key,
+      });
+    },
+    [dispatch],
+  );
+
   return {
     template,
     colorVariables,
     contrastVariables,
+    styleVariables,
     groups,
     sortedGroups,
     filteredColorVariables,
     filteredContrastVariables,
+    filteredStyleVariables,
     sortedColorVariables,
     colorVariableGroupSections,
     contrastVariableGroupSections,
+    styleVariableGroupSections,
     variablesSearchText,
     addVariableNames,
     getAddVariableName,
@@ -336,13 +396,17 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
     onAddVariableNameChange,
     referencedColorVarKeys,
     referencedContrastVarKeys,
+    referencedStyleVarKeys,
     canEdit,
     onAddColorVariableClick: addColorVariable,
     onRemoveColorVariableClick: removeColorVariable,
     onAddContrastVariableClick: addContrastVariable,
     onRemoveContrastVariableClick: removeContrastVariable,
+    onAddStyleVariableClick: addStyleVariable,
+    onRemoveStyleVariableClick: removeStyleVariable,
     onUpdateColorVariableGroupRef: updateColorVariableGroupRef,
     onUpdateContrastVariableGroupRef: updateContrastVariableGroupRef,
+    onUpdateStyleVariableGroupRef: updateStyleVariableGroupRef,
     onUpdateContrastComparisonSource: updateContrastComparisonSource,
     onVariablesSearchChange,
   };

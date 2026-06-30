@@ -23,11 +23,12 @@ export class SetMappingContrastRefOperation {
     tokenType: TokenType,
     contrastVariableRef: string | null,
   ): Template {
-    return {
-      ...template,
-      mappings: template.mappings.map((m) =>
-        m.token.key === tokenKey && m.token.type === tokenType ? { ...m, contrastVariableRef } : m,
-      ),
-    };
+    const mappings = template.mappings.map((m) => {
+      if (m.token.key !== tokenKey || m.token.type !== tokenType) return m;
+      if (m.ignored === true) return m;
+      return m.contrastVariableRef === contrastVariableRef ? m : { ...m, contrastVariableRef };
+    });
+    const changed = mappings.some((mapping, index) => mapping !== template.mappings[index]);
+    return changed ? { ...template, mappings } : template;
   }
 }

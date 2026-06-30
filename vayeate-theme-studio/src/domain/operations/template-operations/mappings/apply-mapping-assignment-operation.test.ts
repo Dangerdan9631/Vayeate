@@ -72,6 +72,45 @@ describe('ApplyMappingAssignmentOperation', () => {
     expect(next.mappings[2]).toBe(template.mappings[2]);
   });
 
+  it('marks selected mappings ignored and clears variable assignments', () => {
+    const template = createTemplate();
+    const next = operation.execute({
+      template,
+      mappingIds: [selected[0]],
+      assignment: { kind: 'ignored', value: true },
+      catalogs: [],
+    });
+
+    expect(next.mappings[0]).toEqual(expect.objectContaining({
+      ignored: true,
+      colorVariableRef: null,
+      contrastVariableRef: null,
+      styleVariableRef: null,
+    }));
+    expect(next.mappings[1]).toBe(template.mappings[1]);
+    expect(next.mappings[2]).toBe(template.mappings[2]);
+  });
+
+  it('does not assign variables to ignored mappings', () => {
+    const template = createTemplate();
+    const ignored = {
+      ...template,
+      mappings: [
+        { ...template.mappings[0]!, ignored: true, colorVariableRef: null, contrastVariableRef: null },
+        ...template.mappings.slice(1),
+      ],
+    };
+
+    const next = operation.execute({
+      template: ignored,
+      mappingIds: [selected[0]],
+      assignment: { kind: 'color', value: 'accentColor' },
+      catalogs: [],
+    });
+
+    expect(next).toBe(ignored);
+  });
+
   it('returns the same template for stale targets and no-op assignments', () => {
     const template = createTemplate();
     expect(operation.execute({

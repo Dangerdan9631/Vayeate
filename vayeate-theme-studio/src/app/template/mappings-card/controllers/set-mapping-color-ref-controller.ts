@@ -56,6 +56,11 @@ export class SetMappingColorRefController {
     const store = this.catalogsStore.getStore();
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
+    if (
+      template.mappings.some((m) =>
+        m.token.key === tokenKey && m.token.type === tokenType && m.ignored === true
+      )
+    ) return;
     const catalogs = getAllLoadedCatalogs(store.state.catalogs);
     const isOrphan = isMappingOrphanForTemplate(
       template,
@@ -86,6 +91,7 @@ export class SetMappingColorRefController {
       return;
     }
     const next = this.setMappingColorRefOp.execute(base, tokenKey, tokenType, colorRef);
+    if (next === base) return;
     this.saveTemplate.execute(next);
     this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
     await this.recordTemplateUndo.execute({

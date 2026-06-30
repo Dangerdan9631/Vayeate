@@ -4,6 +4,7 @@ import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/dat
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveColorVariableOperation as RemoveColorVariableOp } from '../../../../domain/operations/template-operations/variables-color/remove-color-variable-operation';
 import { RemoveContrastVariableOperation as RemoveContrastVariableOp } from '../../../../domain/operations/template-operations/variables-contrast/remove-contrast-variable-operation';
+import { RemoveStyleVariableOperation as RemoveStyleVariableOp } from '../../../../domain/operations/template-operations/variables-style/remove-style-variable-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/template-operations/template-details/save-template-operation';
 import { ValidateCanRemoveVariable } from '../../../../domain/validations/template-validations/validate-can-remove-variable';
@@ -16,6 +17,7 @@ import { deriveUndoContext } from '../../../../model/undo-history';
 import {
   TEMPLATE_COLOR_VARIABLE_REMOVED,
   TEMPLATE_CONTRAST_VARIABLE_REMOVED,
+  TEMPLATE_STYLE_VARIABLE_REMOVED,
 } from '../../../../model/undo-action-types';
 
 /**
@@ -32,6 +34,7 @@ export class RemoveVariableController {
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly removeColorVariableFromTemplate: RemoveColorVariableOp,
     private readonly removeContrastVariableFromTemplate: RemoveContrastVariableOp,
+    private readonly removeStyleVariableFromTemplate: RemoveStyleVariableOp,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
     private readonly recordTemplateUndo: RecordTemplateUndoOperation,
@@ -55,16 +58,23 @@ export class RemoveVariableController {
     }));
 
     const isColor = template.colorVariables.some((variable) => variable.key === key);
+    const isContrast = template.contrastVariables.some((variable) => variable.key === key);
     const base = this.bumpTemplateVersionForEdit.execute(template);
     const next = isColor
       ? this.removeColorVariableFromTemplate.execute(base, key)
-      : this.removeContrastVariableFromTemplate.execute(base, key);
+      : isContrast
+        ? this.removeContrastVariableFromTemplate.execute(base, key)
+        : this.removeStyleVariableFromTemplate.execute(base, key);
     this.saveTemplate.execute(next);
     this.refreshTemplateRefsAndSelect.execute(next.name, next.version, next, entityRefsChanged(template, next));
 
     void this.recordTemplateUndo.execute({
       description: `Remove ${key} variable`,
-      actionType: isColor ? TEMPLATE_COLOR_VARIABLE_REMOVED : TEMPLATE_CONTRAST_VARIABLE_REMOVED,
+      actionType: isColor
+        ? TEMPLATE_COLOR_VARIABLE_REMOVED
+        : isContrast
+          ? TEMPLATE_CONTRAST_VARIABLE_REMOVED
+          : TEMPLATE_STYLE_VARIABLE_REMOVED,
       target: `${template.name}@${template.version}:variable:${key}`,
       before: template,
       after: next,

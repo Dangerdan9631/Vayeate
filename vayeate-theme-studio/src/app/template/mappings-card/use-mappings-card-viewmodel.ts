@@ -4,8 +4,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAppDispatch } from '../../core/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../domain/utils/compare-versions';
 import type { Catalog, Token } from '../../../model/schema/catalog';
-import type { ColorVariableKey, ContrastVariableKey, TokenType } from '../../../model/schema/primitives';
-import type { CatalogReference, ColorVariable, ContrastVariable, Mapping } from '../../../model/schema/template-schemas';
+import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../model/schema/primitives';
+import type { CatalogReference, ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../model/schema/template-schemas';
 import { MappingsCardActionType } from './actions/mappings-card-action-type';
 import { computeOrphanKeys, type SemanticCatalogInfo } from '../../../domain/utils/compute-orphan-keys';
 import { CatalogsStore } from '../../../domain/catalog/state/catalogs-store';
@@ -23,6 +23,7 @@ const templateUiStore = container.resolve(TemplateUiStore);
 const EMPTY_GROUPS: readonly string[] = [];
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
+const EMPTY_STYLE_VARIABLES: readonly StyleVariable[] = [];
 const EMPTY_STRINGS: readonly string[] = [];
 const EMPTY_CATALOG_REFS: readonly CatalogReference[] = [];
 const EMPTY_VERSION_KEYS: readonly string[] = [];
@@ -39,6 +40,7 @@ function filterMappings(
   searchQuery: string,
   selectedColorKeys: readonly string[],
   selectedContrastKeys: readonly string[],
+  selectedStyleKeys: readonly string[],
 ): Mapping[] {
   return mappings.filter((m) => {
     if (!matchesSearch(m.token.key, searchQuery)) return false;
@@ -48,6 +50,9 @@ function filterMappings(
     if (selectedContrastKeys.length > 0) {
       if (!m.contrastVariableRef || !selectedContrastKeys.includes(m.contrastVariableRef))
         return false;
+    }
+    if (selectedStyleKeys.length > 0) {
+      if (!m.styleVariableRef || !selectedStyleKeys.includes(m.styleVariableRef)) return false;
     }
     return true;
   });
@@ -141,6 +146,10 @@ export function useMappingsCardViewModel() {
   const mappingContrastVariableFilter = useStore(
     templateUiStore.api,
     useShallow((state) => state.state.mappingContrastVariableFilter),
+  );
+  const mappingStyleVariableFilter = useStore(
+    templateUiStore.api,
+    useShallow((state) => state.state.mappingStyleVariableFilter),
   );
   const selectedMappingIds = useStore(
     templateUiStore.api,
@@ -239,6 +248,30 @@ export function useMappingsCardViewModel() {
     [dispatch],
   );
 
+  const updateMappingStyleRef = useCallback(
+    (tokenKey: string, tokenType: TokenType, styleRef: StyleVariableKey | null) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingExistingTokenStyleVariableListOnCommit,
+        value: styleRef,
+        tokenKey,
+        tokenType,
+      });
+    },
+    [dispatch],
+  );
+
+  const updateMappingIgnored = useCallback(
+    (tokenKey: string, tokenType: TokenType, ignored: boolean) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingExistingTokenIgnoredCheckboxOnToggle,
+        value: ignored,
+        tokenKey,
+        tokenType,
+      });
+    },
+    [dispatch],
+  );
+
   const updateMappingGroupRef = useCallback(
     (tokenKey: string, tokenType: TokenType, groupRef: string | null) => {
       void dispatch({
@@ -322,6 +355,16 @@ export function useMappingsCardViewModel() {
     [dispatch],
   );
 
+  const setMappingStyleVariableFilter = useCallback(
+    (values: StyleVariableKey[]) => {
+      void dispatch({
+        type: MappingsCardActionType.MappingStyleVariableFilterListOnSelect,
+        values,
+      });
+    },
+    [dispatch],
+  );
+
   const toggleMappingSelection = useCallback(
     (mappingId: TemplateMappingId) => {
       void dispatch({
@@ -384,6 +427,11 @@ export function useMappingsCardViewModel() {
     [template?.contrastVariables],
   );
 
+  const sortedStyleVariables = useMemo(
+    () => [...(template?.styleVariables ?? EMPTY_STYLE_VARIABLES)].sort((a, b) => a.key.localeCompare(b.key)),
+    [template?.styleVariables],
+  );
+
   const sortedSemanticTokenModifiers = useMemo(
     () => [...(template?.semanticTokenModifiers ?? EMPTY_STRINGS)].sort((a, b) => a.localeCompare(b)),
     [template?.semanticTokenModifiers],
@@ -420,6 +468,7 @@ export function useMappingsCardViewModel() {
           mappingSearchText,
           mappingColorVariableFilter,
           mappingContrastVariableFilter,
+          mappingStyleVariableFilter,
         ).sort((a, b) => a.token.key.localeCompare(b.token.key)),
       ]),
     ) as Record<TokenType, Mapping[]>;
@@ -428,6 +477,7 @@ export function useMappingsCardViewModel() {
     mappingSearchText,
     mappingColorVariableFilter,
     mappingContrastVariableFilter,
+    mappingStyleVariableFilter,
   ]);
 
   const mappingsByGroup = useMemo(() => {
@@ -518,6 +568,8 @@ export function useMappingsCardViewModel() {
       group: getUniformValue(selectedMappings, (mapping) => mapping.groupRef ?? null),
       color: getUniformValue(selectedMappings, (mapping) => mapping.colorVariableRef ?? null),
       contrast: getUniformValue(selectedMappings, (mapping) => mapping.contrastVariableRef ?? null),
+      style: getUniformValue(selectedMappings, (mapping) => mapping.styleVariableRef ?? null),
+      ignored: getUniformValue(selectedMappings, (mapping) => mapping.ignored === true),
     }),
     [selectedMappings],
   );
@@ -530,6 +582,7 @@ export function useMappingsCardViewModel() {
     sortedGroups,
     sortedColorVariables,
     sortedContrastVariables,
+    sortedStyleVariables,
     sortedSemanticTokenModifiers,
     sortedSemanticTokenLanguages,
     orphanKeys,
@@ -537,6 +590,7 @@ export function useMappingsCardViewModel() {
     mappingSearchText,
     mappingColorVariableFilter,
     mappingContrastVariableFilter,
+    mappingStyleVariableFilter,
     selectedMappingIds,
     selectedVisibleMappingIds,
     selectedMappingKeys,
@@ -546,11 +600,14 @@ export function useMappingsCardViewModel() {
     onUpdateGroupRef: updateMappingGroupRef,
     onUpdateColorRef: updateMappingColorRef,
     onUpdateContrastRef: updateMappingContrastRef,
+    onUpdateStyleRef: updateMappingStyleRef,
+    onUpdateIgnored: updateMappingIgnored,
     semanticVariant,
     onRemoveMapping: removeMapping,
     setMappingSearchText,
     setMappingColorVariableFilter,
     setMappingContrastVariableFilter,
+    setMappingStyleVariableFilter,
     toggleMappingSelection,
     setMappingGroupSelection,
     setMappingTokenTypeSelection,

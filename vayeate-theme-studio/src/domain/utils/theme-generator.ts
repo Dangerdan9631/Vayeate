@@ -6,7 +6,7 @@
 import { adjustColorToMeetContrast } from './color-adjust-contrast';
 import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery, yieldToEventLoop } from '../core/scheduler';
 import type { Mapping, Template } from '../../model/schema/template-schemas';
-import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/schema/theme-schemas';
+import type { ColorAssignment, ContrastAssignment, StyleAssignment, StyleAssignmentValue, Theme } from '../../model/schema/theme-schemas';
 
 /**
  * VS Code `tokenColors` entry grouping scopes that share one foreground color.
@@ -14,7 +14,7 @@ import type { ColorAssignment, ContrastAssignment, Theme } from '../../model/sch
 export interface TokenColorRule {
   name: string;
   scope: string[];
-  settings: { foreground: string };
+  settings: { foreground?: string; fontStyle?: string };
 }
 
 /**
@@ -68,6 +68,27 @@ function contrastValueForRef(
   };
 }
 
+function styleValueForRef(
+  styleAssignments: readonly StyleAssignment[] | undefined,
+  styleVariableRef: string,
+  mode: Mode,
+): StyleAssignmentValue | null {
+  const a = styleAssignments?.find((x) => x.styleVariableRef === styleVariableRef);
+  if (!a) return null;
+  return mode === 'dark' ? a.dark : a.useDarkForLight ? a.dark : a.light;
+}
+
+function fontStyleFromValue(value: StyleAssignmentValue | null): string | null {
+  if (!value) return null;
+  const parts = [
+    value.italic ? 'italic' : null,
+    value.bold ? 'bold' : null,
+    value.underline ? 'underline' : null,
+    value.strikethrough ? 'strikethrough' : null,
+  ].filter((part): part is string => part !== null);
+  return parts.length > 0 ? parts.join(' ') : null;
+}
+
 /**
  * Resolves the hex color for one template mapping in the given mode.
  *
@@ -83,6 +104,7 @@ export function resolveColor(
   mapping: Mapping,
   mode: Mode,
 ): string | null {
+  if (mapping.ignored === true) return null;
   const colorRef = mapping.colorVariableRef;
   if (!colorRef) return null;
 
@@ -150,11 +172,12 @@ export async function generateThemeAsync(
   yieldGate: () => Promise<void> = yieldEvery(DEFERRED_WORK_YIELD_INTERVAL),
 ): Promise<GeneratedTheme> {
   const colors: Record<string, string> = {};
-  const tokenGroupsByColorRef = new Map<string, { scopes: string[]; color: string | null }>();
+  const tokenGroupsByColorRef = new Map<string, { scopes: string[]; color: string | null; fontStyle: string | null }>();
   const semanticTokenColors: Record<string, string | SemanticTokenValue> = {};
 
   for (const m of template.mappings) {
     await yieldGate();
+    if (m.ignored === true) continue;
     applyMappingToGeneratedTheme(theme, template, m, mode, colors, tokenGroupsByColorRef, semanticTokenColors);
   }
 
@@ -163,10 +186,11 @@ export async function generateThemeAsync(
 
 function buildGeneratedTheme(theme: Theme, template: Template, mode: Mode): GeneratedTheme {
   const colors: Record<string, string> = {};
-  const tokenGroupsByColorRef = new Map<string, { scopes: string[]; color: string | null }>();
+  const tokenGroupsByColorRef = new Map<string, { scopes: string[]; color: string | null; fontStyle: string | null }>();
   const semanticTokenColors: Record<string, string | SemanticTokenValue> = {};
 
   for (const m of template.mappings) {
+    if (m.ignored === true) continue;
     applyMappingToGeneratedTheme(theme, template, m, mode, colors, tokenGroupsByColorRef, semanticTokenColors);
   }
 
@@ -179,10 +203,14 @@ function applyMappingToGeneratedTheme(
   mapping: Mapping,
   mode: Mode,
   colors: Record<string, string>,
-  tokenGroupsByColorRef: Map<string, { scopes: string[]; color: string | null }>,
+  tokenGroupsByColorRef: Map<string, { scopes: string[]; color: string | null; fontStyle: string | null }>,
   semanticTokenColors: Record<string, string | SemanticTokenValue>,
 ): void {
   const resolved = resolveColor(theme, template, mapping, mode);
+  const styleValue = mapping.styleVariableRef
+    ? styleValueForRef(theme.styleAssignments, mapping.styleVariableRef, mode)
+    : null;
+  const fontStyle = fontStyleFromValue(styleValue);
   const key = mapping.token.key;
   const tokenType = mapping.token.type;
 
@@ -193,13 +221,14 @@ function applyMappingToGeneratedTheme(
 
   if (tokenType === 'textmate token') {
     const colorRef = mapping.colorVariableRef;
-    if (!colorRef) return;
-    const existing = tokenGroupsByColorRef.get(colorRef);
+    const groupRef = fontStyle ? `${colorRef ?? ''}::${fontStyle}` : (colorRef ?? '');
+    if (!colorRef && !fontStyle) return;
+    const existing = tokenGroupsByColorRef.get(groupRef);
     if (existing) {
       existing.scopes.push(key);
       if (resolved && existing.color === null) existing.color = resolved;
     } else {
-      tokenGroupsByColorRef.set(colorRef, { scopes: [key], color: resolved ?? null });
+      tokenGroupsByColorRef.set(groupRef, { scopes: [key], color: resolved ?? null, fontStyle });
     }
     return;
   }
@@ -209,7 +238,13 @@ function applyMappingToGeneratedTheme(
       semanticTokenColors[key] = { strikethrough: true };
       return;
     }
-    if (resolved) semanticTokenColors[key] = resolved;
+    if (resolved || fontStyle || styleValue?.strikethrough) {
+      semanticTokenColors[key] = {
+        ...(resolved ? { foreground: resolved } : {}),
+        ...(fontStyle ? { fontStyle } : {}),
+        ...(styleValue?.strikethrough ? { strikethrough: true } : {}),
+      };
+    }
   }
 }
 
@@ -217,16 +252,19 @@ function finalizeGeneratedTheme(
   themeName: string,
   mode: Mode,
   colors: Record<string, string>,
-  tokenGroupsByColorRef: Map<string, { scopes: string[]; color: string | null }>,
+  tokenGroupsByColorRef: Map<string, { scopes: string[]; color: string | null; fontStyle: string | null }>,
   semanticTokenColors: Record<string, string | SemanticTokenValue>,
 ): GeneratedTheme {
   const tokenColors: TokenColorRule[] = [];
-  for (const [colorRef, { scopes, color }] of tokenGroupsByColorRef) {
-    if (color && scopes.length > 0) {
+  for (const [groupRef, { scopes, color, fontStyle }] of tokenGroupsByColorRef) {
+    if ((color || fontStyle) && scopes.length > 0) {
       tokenColors.push({
-        name: colorRef,
+        name: groupRef,
         scope: scopes,
-        settings: { foreground: color },
+        settings: {
+          ...(color ? { foreground: color } : {}),
+          ...(fontStyle ? { fontStyle } : {}),
+        },
       });
     }
   }

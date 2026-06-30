@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import { SetTemplateAddVariableNameOperation } from '../../../../domain/operations/template-operations/variables/set-template-add-variable-name-operation';
-import type { TemplateVariableKind } from '../../../../domain/state/ui/template-ui-state';
+import type { TemplateVariableKind } from '../../../../model/template-variable-kind';
 
 /**
  * Handles TEMPLATE_VARIABLES_ADD_VARIABLE_NAME_TEXT_ON_CHANGE by updating the add-variable input.

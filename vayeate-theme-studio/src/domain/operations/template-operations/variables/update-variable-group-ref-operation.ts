@@ -29,9 +29,18 @@ export class UpdateVariableGroupRefOperation {
         ),
       };
     }
+    const contrastIdx = template.contrastVariables.findIndex((v) => v.key === variableKey);
+    if (contrastIdx >= 0) {
+      return {
+        ...template,
+        contrastVariables: template.contrastVariables.map((v) =>
+          v.key === variableKey ? { ...v, groupRef } : v,
+        ),
+      };
+    }
     return {
       ...template,
-      contrastVariables: template.contrastVariables.map((v) =>
+      styleVariables: (template.styleVariables ?? []).map((v) =>
         v.key === variableKey ? { ...v, groupRef } : v,
       ),
     };

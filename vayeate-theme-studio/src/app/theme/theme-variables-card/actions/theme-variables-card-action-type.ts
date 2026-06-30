@@ -1,4 +1,5 @@
 import type { ColorVariableKey, ContrastComparisonMethod, ContrastValue, ContrastVariableKey, HexColor } from '../../../../model/schema/primitives';
+import type { StyleAssignmentValue } from '../../../../model/schema/theme-schemas';
 import { coalesceLatest, type ActionCoalesceFn } from '../../../core/action-queue/action-coalesce';
 import type { AppAction } from '../../../core/action-queue/app-action';
 
@@ -27,6 +28,8 @@ export enum ThemeVariablesCardActionType {
   ContrastLightMinTextOnCommit = 'THEME_VARIABLES_CONTRAST_LIGHT_MIN_TEXT_ON_COMMIT',
   ContrastLightMaxTextOnCommit = 'THEME_VARIABLES_CONTRAST_LIGHT_MAX_TEXT_ON_COMMIT',
   ContrastUseDarkForLightCheckboxOnToggle = 'THEME_VARIABLES_CONTRAST_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE',
+  StyleFieldCheckboxOnToggle = 'THEME_VARIABLES_STYLE_FIELD_CHECKBOX_ON_TOGGLE',
+  StyleUseDarkForLightCheckboxOnToggle = 'THEME_VARIABLES_STYLE_USE_DARK_FOR_LIGHT_CHECKBOX_ON_TOGGLE',
 }
 
 /**
@@ -65,7 +68,15 @@ export type ThemeVariablesCardActions =
     }
   | { type: ThemeVariablesCardActionType.ContrastLightMinTextOnCommit; value: string; ref: ContrastVariableKey }
   | { type: ThemeVariablesCardActionType.ContrastLightMaxTextOnCommit; value: string; ref: ContrastVariableKey }
-  | { type: ThemeVariablesCardActionType.ContrastUseDarkForLightCheckboxOnToggle; checked: boolean; ref: ContrastVariableKey };
+  | { type: ThemeVariablesCardActionType.ContrastUseDarkForLightCheckboxOnToggle; checked: boolean; ref: ContrastVariableKey }
+  | {
+      type: ThemeVariablesCardActionType.StyleFieldCheckboxOnToggle;
+      checked: boolean;
+      ref: string;
+      side: 'light' | 'dark';
+      field: keyof StyleAssignmentValue;
+    }
+  | { type: ThemeVariablesCardActionType.StyleUseDarkForLightCheckboxOnToggle; checked: boolean; ref: string };
 
 
 const themeVariablesCardTypes = new Set<string>(Object.values(ThemeVariablesCardActionType));
