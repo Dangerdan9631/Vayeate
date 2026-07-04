@@ -1,11 +1,17 @@
 import { singleton } from 'tsyringe';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SetThemeSaturationAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
+import { SetThemeValueAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-value-adjustment-operation';
+import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
 import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
-import { recordThemePaneSelectionUndo } from './record-theme-pane-selection-undo';
+import { commitPendingPaletteAdjustmentForSelection } from '../../theme-pane-selection/commit-pending-palette-adjustment-for-selection';
+import { recordThemePaneSelectionUndo, themePaneSelectionsEqual } from './record-theme-pane-selection-undo';
 
 /**
  * Orchestrates set variables select all work for the theme UI.
@@ -15,6 +21,11 @@ export class SetVariablesSelectAllController {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
+    private readonly setTheme: SetThemeOperation,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
+    private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
+    private readonly setThemeSaturationAdjustment: SetThemeSaturationAdjustmentOperation,
+    private readonly setThemeValueAdjustment: SetThemeValueAdjustmentOperation,
     private readonly catalogUiStore: CatalogUiStore,
     private readonly templateUiStore: TemplateUiStore,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
@@ -36,7 +47,21 @@ export class SetVariablesSelectAllController {
     };
     const nextColor = checked === true ? theme.colorAssignments.map((a) => a.colorRef) : [];
     const nextContrast = checked === true ? theme.contrastAssignments.map((a) => a.contrastVariableRef) : [];
-    this.setThemePaneSelections.execute(nextColor, nextContrast);
+    const after = {
+      checkedColorRefs: nextColor,
+      checkedContrastRefs: nextContrast,
+    };
+    if (themePaneSelectionsEqual(before, after)) return;
+
+    const paletteAdjustment = commitPendingPaletteAdjustmentForSelection({
+      themeUiStore: this.themeUiStore,
+      setTheme: this.setTheme,
+      applyThemeStateAndSchedulePersist: this.applyThemeStateAndSchedulePersist,
+      setThemeHueAdjustment: this.setThemeHueAdjustment,
+      setThemeSaturationAdjustment: this.setThemeSaturationAdjustment,
+      setThemeValueAdjustment: this.setThemeValueAdjustment,
+    });
+    this.setThemePaneSelections.execute(after.checkedColorRefs, after.checkedContrastRefs);
     const nextState = this.themeUiStore.getStore().state;
     await recordThemePaneSelectionUndo(
       this.recordThemeUndo,
@@ -51,6 +76,7 @@ export class SetVariablesSelectAllController {
           checkedColorRefs: [...nextState.checkedColorRefs],
           checkedContrastRefs: [...nextState.checkedContrastRefs],
         },
+        paletteAdjustment,
       },
     );
   }

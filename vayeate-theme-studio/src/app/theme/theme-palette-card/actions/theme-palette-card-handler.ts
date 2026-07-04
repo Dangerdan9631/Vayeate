@@ -72,7 +72,8 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.AssignColorPickerOnClose:
         return this.assignColorFromPicker.run(action.value, undefined, action.snapshot);
       case ThemePaletteCardActionType.HueReferenceRecenterButtonOnClick:
-        return this.recenterHueReference.run();
+        await this.recenterHueReference.run();
+        return this.computePaletteClusters.run();
       case ThemePaletteCardActionType.HueReferenceCommit:
         return this.commitHueReferenceColor.run(action.value);
       case ThemePaletteCardActionType.HueReferenceColorEyedropperButtonOnClick:
@@ -82,18 +83,15 @@ export class ThemePaletteCardHandler {
       case ThemePaletteCardActionType.HueSliderOnDelta:
         return this.setThemeHueAdjustment.run(action.value, { deferPreview: true });
       case ThemePaletteCardActionType.HueSliderOnCommit:
-        await this.setThemeHueAdjustment.run(action.value, { deferPreview: false });
-        return this.computePaletteClusters.run();
+        return this.setThemeHueAdjustment.run(action.value, { deferPreview: false });
       case ThemePaletteCardActionType.SaturationSliderOnDelta:
         return this.setThemeSaturationAdjustment.run(action.value, { deferPreview: true });
       case ThemePaletteCardActionType.SaturationSliderOnCommit:
-        await this.setThemeSaturationAdjustment.run(action.value, { deferPreview: false });
-        return this.computePaletteClusters.run();
+        return this.setThemeSaturationAdjustment.run(action.value, { deferPreview: false });
       case ThemePaletteCardActionType.ValueSliderOnDelta:
         return this.setThemeValueAdjustment.run(action.value, { deferPreview: true });
       case ThemePaletteCardActionType.ValueSliderOnCommit:
-        await this.setThemeValueAdjustment.run(action.value, { deferPreview: false });
-        return this.computePaletteClusters.run();
+        return this.setThemeValueAdjustment.run(action.value, { deferPreview: false });
       case ThemePaletteCardActionType.ClusterCountSliderOnDelta:
         await this.setPaletteClusterCountKPreview.run(action.value);
         return this.computePaletteClusters.run();

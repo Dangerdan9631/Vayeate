@@ -107,7 +107,6 @@ export function useThemePaletteCardViewModel() {
   const hueFrameRef = useRef<number | null>(null);
   const saturationFrameRef = useRef<number | null>(null);
   const valueFrameRef = useRef<number | null>(null);
-  const lastCheckedColorRefsArrayRef = useRef(checkedColorRefsArray);
 
   const lastSelectedRefForHueRef = useRef<{ name: string; version: string } | null>(null);
   useEffect(() => {
@@ -148,13 +147,10 @@ export function useThemePaletteCardViewModel() {
     if (!themeTemplateRef) return;
     void dispatch({ type: ThemePaletteCardActionType.RecomputeClusters });
   }, [
-    themeColorAssignments,
-    applyPaletteToDark,
-    applyPaletteToLight,
-    checkedColorRefsArray,
     colorVariablesFromTemplate,
     clusterCountK,
     paletteClusterByDark,
+    selectedRef,
     themeTemplateRef,
     dispatch,
   ]);
@@ -257,22 +253,6 @@ export function useThemePaletteCardViewModel() {
     },
     [dispatch],
   );
-
-  useEffect(() => {
-    if (lastCheckedColorRefsArrayRef.current === checkedColorRefsArray) return;
-    lastCheckedColorRefsArrayRef.current = checkedColorRefsArray;
-    if (hueAdjustment !== 0) commitHueAdjustment(hueAdjustment);
-    if (saturationAdjustment !== 0) commitSaturationAdjustment(saturationAdjustment);
-    if (valueAdjustment !== 0) commitValueAdjustment(valueAdjustment);
-  }, [
-    checkedColorRefsArray,
-    hueAdjustment,
-    saturationAdjustment,
-    valueAdjustment,
-    commitHueAdjustment,
-    commitSaturationAdjustment,
-    commitValueAdjustment,
-  ]);
 
   const setApplyHueToDark = useCallback(
     (checked: boolean) => {

@@ -3,7 +3,14 @@ import type { RecordThemeUndoOperation } from '../../../../domain/operations/und
 import type { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import type { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import type { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
-import { THEME_PANE_SELECTIONS_SET } from '../../../../model/undo-action-types';
+import type { PendingPaletteAdjustmentCommit } from '../../theme-pane-selection/commit-pending-palette-adjustment-for-selection';
+import {
+  THEME_PALETTE_HUE_ADJUSTMENT_SET,
+  THEME_PALETTE_HUE_RECENTERED,
+  THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+  THEME_PALETTE_VALUE_ADJUSTMENT_SET,
+  THEME_PANE_SELECTIONS_SET,
+} from '../../../../model/undo-action-types';
 import { deriveUndoContext } from '../../../../model/undo-history';
 
 /**
@@ -16,6 +23,22 @@ export interface ThemePaneSelectionsUndoValue {
 
 function arraysEqual(a: readonly string[], b: readonly string[]): boolean {
   return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+/**
+ * Returns whether two theme pane selection snapshots contain the same ordered refs.
+ * @param before Previous selection snapshot.
+ * @param after Next selection snapshot.
+ * @returns True when both color and contrast selections match.
+ */
+export function themePaneSelectionsEqual(
+  before: ThemePaneSelectionsUndoValue,
+  after: ThemePaneSelectionsUndoValue,
+): boolean {
+  return (
+    arraysEqual(before.checkedColorRefs, after.checkedColorRefs) &&
+    arraysEqual(before.checkedContrastRefs, after.checkedContrastRefs)
+  );
 }
 
 function selectionScope(before: ThemePaneSelectionsUndoValue, after: ThemePaneSelectionsUndoValue): string {
@@ -46,6 +69,7 @@ export async function recordThemePaneSelectionUndo(
     description: string;
     before: ThemePaneSelectionsUndoValue;
     after: ThemePaneSelectionsUndoValue;
+    paletteAdjustment?: PendingPaletteAdjustmentCommit | null;
   },
 ): Promise<void> {
   const theme = themeUiStore.getStore().state.theme;
@@ -59,11 +83,49 @@ export async function recordThemePaneSelectionUndo(
   });
   setCurrentUndoStackId.executeForContext(context);
   const scope = selectionScope(input.before, input.after);
+  const selectionTarget = `${theme.name}@${theme.version}:pane-selections:${scope}`;
+  if (input.paletteAdjustment) {
+    const target = `${theme.name}@${theme.version}:palette-selection-recenter`;
+    await recordThemeUndo.execute({
+      description: selectionDescription(scope),
+      actionType: THEME_PALETTE_HUE_RECENTERED,
+      target,
+      before: input.paletteAdjustment.beforeTheme,
+      after: input.paletteAdjustment.afterTheme,
+      extraDiffs: [
+        {
+          actionType: THEME_PALETTE_HUE_ADJUSTMENT_SET,
+          target,
+          before: input.paletteAdjustment.hueAdjustment,
+          after: 0,
+        },
+        {
+          actionType: THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
+          target,
+          before: input.paletteAdjustment.saturationAdjustment,
+          after: 0,
+        },
+        {
+          actionType: THEME_PALETTE_VALUE_ADJUSTMENT_SET,
+          target,
+          before: input.paletteAdjustment.valueAdjustment,
+          after: 0,
+        },
+        {
+          actionType: THEME_PANE_SELECTIONS_SET,
+          target: selectionTarget,
+          before: input.before,
+          after: input.after,
+        },
+      ],
+    });
+    return;
+  }
 
   await recordThemeUndo.execute({
     description: selectionDescription(scope),
     actionType: THEME_PANE_SELECTIONS_SET,
-    target: `${theme.name}@${theme.version}:pane-selections:${scope}`,
+    target: selectionTarget,
     before: input.before,
     after: input.after,
     coalesceWithPrevious: true,

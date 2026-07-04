@@ -46,6 +46,7 @@ import { SetColorUseDarkForLightController } from './theme-variables-card/contro
 import { SetContrastUseDarkForLightController } from './theme-variables-card/controllers/set-contrast-use-dark-for-light-controller';
 import { ToggleVariableSelectionController } from './theme-variables-card/controllers/toggle-variable-selection-controller';
 import { RecenterHueReferenceController } from './theme-palette-card/controllers/recenter-hue-reference-controller';
+import { SetColorRefsSelectionBatchController } from './theme-palette-card/controllers/set-color-refs-selection-batch-controller';
 import { CommitAssignColorEyeDropperController } from './theme-palette-card/controllers/commit-assign-color-eye-dropper-controller';
 import { IncrementThemeVersionController } from './theme-details-card/controllers/increment-theme-version-controller';
 import { DeleteThemeVersionController } from './theme-details-card/controllers/delete-theme-version-controller';
@@ -1148,6 +1149,15 @@ describe('theme renderer workflows', () => {
       const controller = new ToggleVariableSelectionController(
         themeUiStore,
         new SetThemePaneSelectionsOperation(themeUiStore),
+        new SetThemeOperation(themesStore, themeUiStore),
+        new ApplyThemeStateAndSchedulePersistOperation(
+          new ApplyThemeStateOperation(themeUiStore),
+          { schedule: vi.fn() } as never,
+          themeUiStore,
+        ),
+        new SetThemeHueAdjustmentOperation(themeUiStore),
+        new SetThemeSaturationAdjustmentOperation(themeUiStore),
+        new SetThemeValueAdjustmentOperation(themeUiStore),
         new CatalogUiStore(),
         new TemplateUiStore(),
         recordThemeUndo,
@@ -1172,6 +1182,61 @@ describe('theme renderer workflows', () => {
 
       await testUndo.redo.execute();
       expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+    });
+
+    it('recenters pending palette sliders when theme variable selection changes', async () => {
+      await undoManagerV2.clearPersisted();
+      const themeUiStore = new ThemeUiStore();
+      const themesStore = new ThemesStore();
+      const { testUndo, recordThemeUndo, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
+      seedTheme(themeUiStore, themesStore);
+      themeUiStore.getStore().setThemePaneSelections(['editorFg'], []);
+      themeUiStore.getStore().setHueAdjustment(25);
+      themeUiStore.getStore().setSaturationAdjustment(20);
+      themeUiStore.getStore().setValueAdjustment(-15);
+      const controller = new ToggleVariableSelectionController(
+        themeUiStore,
+        new SetThemePaneSelectionsOperation(themeUiStore),
+        new SetThemeOperation(themesStore, themeUiStore),
+        new ApplyThemeStateAndSchedulePersistOperation(
+          new ApplyThemeStateOperation(themeUiStore),
+          { schedule: vi.fn() } as never,
+          themeUiStore,
+        ),
+        new SetThemeHueAdjustmentOperation(themeUiStore),
+        new SetThemeSaturationAdjustmentOperation(themeUiStore),
+        new SetThemeValueAdjustmentOperation(themeUiStore),
+        new CatalogUiStore(),
+        new TemplateUiStore(),
+        recordThemeUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+
+      const beforeDark = themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value;
+      await controller.run(true, 'editorContrast');
+
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+      expect(themeUiStore.getStore().state.checkedContrastRefs).toEqual(['editorContrast']);
+      expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).not.toBe(beforeDark);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
+
+      await waitForUndoRecorded(undoStackStore);
+      await testUndo.undo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+      expect(themeUiStore.getStore().state.checkedContrastRefs).toEqual([]);
+      expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe(beforeDark);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(25);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(20);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(-15);
+
+      await testUndo.redo.execute();
+      expect(themeUiStore.getStore().state.checkedContrastRefs).toEqual(['editorContrast']);
+      expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).not.toBe(beforeDark);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
     });
 
     it('records, undoes, and redoes a contrast dark value edit', async () => {
@@ -1286,6 +1351,93 @@ describe('theme renderer workflows', () => {
       expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
       expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
       expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
+    });
+
+    it('records, undoes, and redoes a swatch selection change with pending palette adjustments as one entry', async () => {
+      await undoManagerV2.clearPersisted();
+      const themeUiStore = new ThemeUiStore();
+      const themesStore = new ThemesStore();
+      const { testUndo, recordThemeUndo, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
+      seedTheme(themeUiStore, themesStore);
+      themeUiStore.getStore().setThemePaneSelections(['editorFg'], []);
+      themeUiStore.getStore().setHueAdjustment(25);
+      themeUiStore.getStore().setSaturationAdjustment(20);
+      themeUiStore.getStore().setValueAdjustment(-15);
+      const controller = new SetColorRefsSelectionBatchController(
+        themeUiStore,
+        new SetThemePaneSelectionsOperation(themeUiStore),
+        new SetThemeOperation(themesStore, themeUiStore),
+        new ApplyThemeStateAndSchedulePersistOperation(
+          new ApplyThemeStateOperation(themeUiStore),
+          { schedule: vi.fn() } as never,
+          themeUiStore,
+        ),
+        new SetThemeHueAdjustmentOperation(themeUiStore),
+        new SetThemeSaturationAdjustmentOperation(themeUiStore),
+        new SetThemeValueAdjustmentOperation(themeUiStore),
+        recordThemeUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+
+      const beforeDark = themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value;
+      await controller.run(['editorFg'], false);
+
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual([]);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).not.toBe(beforeDark);
+      await waitForUndoRecorded(undoStackStore);
+      expect(undoStackStore.getStore().state.undoMenu.recentActions).toHaveLength(1);
+
+      await testUndo.undo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+      expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).toBe(beforeDark);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(25);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(20);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(-15);
+
+      await testUndo.redo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual([]);
+      expect(themeUiStore.getStore().state.theme?.colorAssignments[0].dark?.value).not.toBe(beforeDark);
+      expect(themeUiStore.getStore().state.hueAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.saturationAdjustment).toBe(0);
+      expect(themeUiStore.getStore().state.valueAdjustment).toBe(0);
+    });
+
+    it('records, undoes, and redoes a swatch selection change without pending palette adjustments', async () => {
+      await undoManagerV2.clearPersisted();
+      const themeUiStore = new ThemeUiStore();
+      const themesStore = new ThemesStore();
+      const { testUndo, recordThemeUndo, undoStackStore } = createThemeUndoHarness(themeUiStore, themesStore);
+      seedTheme(themeUiStore, themesStore);
+      const controller = new SetColorRefsSelectionBatchController(
+        themeUiStore,
+        new SetThemePaneSelectionsOperation(themeUiStore),
+        new SetThemeOperation(themesStore, themeUiStore),
+        new ApplyThemeStateAndSchedulePersistOperation(
+          new ApplyThemeStateOperation(themeUiStore),
+          { schedule: vi.fn() } as never,
+          themeUiStore,
+        ),
+        new SetThemeHueAdjustmentOperation(themeUiStore),
+        new SetThemeSaturationAdjustmentOperation(themeUiStore),
+        new SetThemeValueAdjustmentOperation(themeUiStore),
+        recordThemeUndo,
+        testUndo.setCurrentUndoStackId,
+      );
+
+      await controller.run(['editorFg'], true);
+
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
+      await waitForUndoRecorded(undoStackStore);
+      expect(undoStackStore.getStore().state.undoMenu.recentActions).toHaveLength(1);
+
+      await testUndo.undo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual([]);
+
+      await testUndo.redo.execute();
+      expect(themeUiStore.getStore().state.checkedColorRefs).toEqual(['editorFg']);
     });
 
     it('records, undoes, and redoes an eyedropper palette color assignment', async () => {

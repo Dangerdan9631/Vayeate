@@ -1,12 +1,18 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey, ContrastVariableKey } from '../../../../model/schema/primitives';
+import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/theme-operations/pickers/set-theme-pane-selections-operation';
+import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
+import { SetThemeSaturationAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
+import { SetThemeValueAdjustmentOperation } from '../../../../domain/operations/theme-operations/palette-hue/set-theme-value-adjustment-operation';
+import { SetThemeOperation } from '../../../../domain/operations/theme-operations/theme-details/set-theme-operation';
 import { RecordThemeUndoOperation } from '../../../../domain/operations/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/ui/theme-ui-store';
-import { recordThemePaneSelectionUndo } from './record-theme-pane-selection-undo';
+import { commitPendingPaletteAdjustmentForSelection } from '../../theme-pane-selection/commit-pending-palette-adjustment-for-selection';
+import { recordThemePaneSelectionUndo, themePaneSelectionsEqual } from './record-theme-pane-selection-undo';
 
 /**
  * Toggle one variable (color or contrast) in selection; ref determines which set to update.
@@ -19,6 +25,11 @@ export class ToggleVariableSelectionController {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
+    private readonly setTheme: SetThemeOperation,
+    private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
+    private readonly setThemeHueAdjustment: SetThemeHueAdjustmentOperation,
+    private readonly setThemeSaturationAdjustment: SetThemeSaturationAdjustmentOperation,
+    private readonly setThemeValueAdjustment: SetThemeValueAdjustmentOperation,
     private readonly catalogUiStore: CatalogUiStore,
     private readonly templateUiStore: TemplateUiStore,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
@@ -45,11 +56,28 @@ export class ToggleVariableSelectionController {
     if (isColor) {
       if (checked) colorSet.add(ref);
       else colorSet.delete(ref);
-      this.setThemePaneSelections.execute([...colorSet], state.checkedContrastRefs);
     } else {
       if (checked) contrastSet.add(ref);
       else contrastSet.delete(ref);
-      this.setThemePaneSelections.execute(state.checkedColorRefs, [...contrastSet]);
+    }
+    const after = {
+      checkedColorRefs: [...colorSet],
+      checkedContrastRefs: [...contrastSet],
+    };
+    if (themePaneSelectionsEqual(before, after)) return;
+
+    const paletteAdjustment = commitPendingPaletteAdjustmentForSelection({
+      themeUiStore: this.themeUiStore,
+      setTheme: this.setTheme,
+      applyThemeStateAndSchedulePersist: this.applyThemeStateAndSchedulePersist,
+      setThemeHueAdjustment: this.setThemeHueAdjustment,
+      setThemeSaturationAdjustment: this.setThemeSaturationAdjustment,
+      setThemeValueAdjustment: this.setThemeValueAdjustment,
+    });
+    if (isColor) {
+      this.setThemePaneSelections.execute(after.checkedColorRefs, before.checkedContrastRefs);
+    } else {
+      this.setThemePaneSelections.execute(before.checkedColorRefs, after.checkedContrastRefs);
     }
     const nextState = this.themeUiStore.getStore().state;
     await recordThemePaneSelectionUndo(
@@ -65,6 +93,7 @@ export class ToggleVariableSelectionController {
           checkedColorRefs: [...nextState.checkedColorRefs],
           checkedContrastRefs: [...nextState.checkedContrastRefs],
         },
+        paletteAdjustment,
       },
     );
   }
