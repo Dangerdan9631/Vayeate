@@ -12,7 +12,7 @@ React components and component-local UI helpers for the Common UI domain.
 ## Contents
 
 - Subfolders: None
-- Files: `eyedropper-utils.ts`, `EyedropperCanvas.tsx`, `EyedropperLoupe.tsx`, `EyedropperOverlay.tsx`
+- Files: `eyedropper-canvas-utils.ts`, `EyedropperCanvas.tsx`, `EyedropperLoupe.tsx`, `EyedropperOverlay.tsx`
 
 ## Rules
 

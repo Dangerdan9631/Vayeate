@@ -4,7 +4,7 @@ import { useStore } from 'zustand';
 import { EyedropperUiStore } from '../../../../domain/state/Common/ui/eyedropper-ui-store';
 import { WindowStore } from '../../../../domain/state/Common/ui/window-store';
 import type { EyedropperPointerSample } from '../../../../model/Common/eyedropper';
-import { EYEDROPPER_LOUPE_SIZE, loupeFixedPosition } from '../../../components/Common/eyedropper-overlay/eyedropper-utils';
+import { EYEDROPPER_LOUPE_SIZE, loupeFixedPosition } from '../../../../domain/operations/Common/eyedropper-operations/eyedropper-loupe-operation';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 const windowStore = container.resolve(WindowStore);

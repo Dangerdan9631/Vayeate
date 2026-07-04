@@ -12,7 +12,7 @@ Policy-owned domain operations for the Common business domain.
 ## Contents
 
 - Subfolders: None
-- Files: `close-eyedropper-operation.ts`, `load-eyedropper-snapshot-operation.ts`, `open-eyedropper-operation.ts`, `set-eyedropper-overlay-viewport-size-operation.ts`, `update-eyedropper-pointer-operation.ts`, `update-eyedropper-zoom-operation.ts`
+- Files: `close-eyedropper-operation.ts`, `eyedropper-loupe-operation.ts`, `eyedropper-zoom-operation.ts`, `load-eyedropper-snapshot-operation.ts`, `open-eyedropper-operation.ts`, `set-eyedropper-overlay-viewport-size-operation.ts`, `update-eyedropper-pointer-operation.ts`, `update-eyedropper-zoom-operation.ts`
 
 ## Rules
 

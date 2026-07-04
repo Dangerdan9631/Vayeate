@@ -4,13 +4,15 @@ import { EyedropperCanvas } from './EyedropperCanvas';
 import { EyedropperLoupe } from './EyedropperLoupe';
 import {
   clampEyedropperCanvasInAspectBounds,
-  clampEyedropperZoomToFitRange,
   clampElementScroll,
   clientToCanvasFloatClamped,
+  scrollContainerContentSize,
+} from './eyedropper-canvas-utils';
+import {
+  clampEyedropperZoomToFitRange,
   EYEDROPPER_ZOOM_MAX,
   EYEDROPPER_ZOOM_STEP,
-  scrollContainerContentSize,
-} from './eyedropper-utils';
+} from '../../../../domain/operations/Common/eyedropper-operations/eyedropper-zoom-operation';
 import type { Point } from '../../../../model/Common/point';
 
 /**

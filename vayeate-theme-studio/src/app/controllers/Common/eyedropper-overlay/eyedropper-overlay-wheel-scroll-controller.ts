@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { UpdateEyedropperZoomOperation } from '../../../../domain/operations/Common/eyedropper-operations/update-eyedropper-zoom-operation';
 import { EyedropperUiStore } from '../../../../domain/state/Common/ui/eyedropper-ui-store';
-import { clampEyedropperZoomToFitRange, EYEDROPPER_ZOOM_STEP, eyedropperZoomFitContain } from '../../../components/Common/eyedropper-overlay/eyedropper-utils';
+import { clampEyedropperZoomToFitRange, EYEDROPPER_ZOOM_STEP, eyedropperZoomFitContain } from '../../../../domain/operations/Common/eyedropper-operations/eyedropper-zoom-operation';
 
 /**
  * Applies wheel-driven zoom changes for the eyedropper overlay canvas.

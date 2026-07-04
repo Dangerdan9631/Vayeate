@@ -3,7 +3,7 @@ import type { Size } from '../../../../model/Common/point';
 import { SetEyedropperOverlayViewportSizeOperation } from '../../../../domain/operations/Common/eyedropper-operations/set-eyedropper-overlay-viewport-size-operation';
 import { UpdateEyedropperZoomOperation } from '../../../../domain/operations/Common/eyedropper-operations/update-eyedropper-zoom-operation';
 import { EyedropperUiStore } from '../../../../domain/state/Common/ui/eyedropper-ui-store';
-import { clampEyedropperZoomToFitRange, eyedropperZoomFitContain } from '../../../components/Common/eyedropper-overlay/eyedropper-utils';
+import { clampEyedropperZoomToFitRange, eyedropperZoomFitContain } from '../../../../domain/operations/Common/eyedropper-operations/eyedropper-zoom-operation';
 
 /**
  * Syncs eyedropper overlay viewport size and reclamps zoom after layout changes.

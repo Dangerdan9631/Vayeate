@@ -1,6 +1,6 @@
 import { forwardRef, MouseEvent, useEffect, useRef } from 'react';
 import { useEyedropperCanvasViewModel } from '../../../viewmodel/Common/eyedropper-overlay/use-eyedropper-canvas-viewmodel';
-import { clientToCanvasPixel, getCanvasColor, loadSnapshotToCanvas } from './eyedropper-utils';
+import { clientToCanvasPixel, getCanvasColor, loadSnapshotToCanvas } from './eyedropper-canvas-utils';
 import type { EyedropperPointerSample } from '../../../../model/Common/eyedropper';
 import type { Point } from '../../../../model/Common/point';
 

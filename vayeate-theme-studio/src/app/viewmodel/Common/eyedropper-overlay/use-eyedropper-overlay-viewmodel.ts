@@ -11,7 +11,7 @@ import { EyedropperOverlayActionType } from '../../../actions/Common/eyedropper-
 import {
   clampEyedropperZoomToFitRange,
   eyedropperZoomFitContain,
-} from '../../../components/Common/eyedropper-overlay/eyedropper-utils';
+} from '../../../../domain/operations/Common/eyedropper-operations/eyedropper-zoom-operation';
 
 const eyedropperUiStore = container.resolve(EyedropperUiStore);
 

@@ -5,7 +5,7 @@ import {
   EYEDROPPER_LOUPE_PIXEL_RADIUS,
   loupeSourceRect,
   loupeCrosshairCenter,
-} from './eyedropper-utils';
+} from '../../../../domain/operations/Common/eyedropper-operations/eyedropper-loupe-operation';
 
 interface EyedropperLoupeProps {
   loupeCanvasRef: RefObject<HTMLCanvasElement | null>;
