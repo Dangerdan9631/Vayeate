@@ -37,44 +37,44 @@ const inventoryTargets = [
 ];
 
 const viewmodelFiles = [
-  'src/app/common/eyedropper-overlay/use-eyedropper-overlay-viewmodel.ts',
-  'src/app/common/styled-tooltip/use-styled-tooltip-viewmodel.ts',
-  'src/app/app/app-shell/use-app-shell-viewmodel.ts',
-  'src/app/app/menu-bar/use-menubar-viewmodel.ts',
-  'src/app/app/ribbon/use-ribbon-viewmodel.ts',
-  'src/app/app/status-bar/use-status-bar-viewmodel.ts',
-  'src/app/catalog/bulk-add-dialog/use-bulk-add-dialog-viewmodel.ts',
-  'src/app/catalog/catalog-details-card/use-catalog-details-card-viewmodel.ts',
-  'src/app/catalog/catalog-page/use-catalog-viewmodel.ts',
-  'src/app/catalog/catalogs-card/use-catalogs-card-viewmodel.ts',
-  'src/app/catalog/create-dialog/use-create-catalog-dialog-viewmodel.ts',
-  'src/app/catalog/tokens-card/use-tokens-card-viewmodel.ts',
-  'src/app/template/create-template-dialog/use-create-template-dialog-viewmodel.ts',
-  'src/app/template/groups-card/use-groups-card-viewmodel.ts',
-  'src/app/template/mappings-card/use-mappings-card-viewmodel.ts',
-  'src/app/template/template-catalogs-card/use-template-catalogs-card-viewmodel.ts',
-  'src/app/template/template-details-card/use-template-details-card-viewmodel.ts',
-  'src/app/template/template-page/use-template-viewmodel.ts',
-  'src/app/template/templates-card/use-templates-card-viewmodel.ts',
-  'src/app/template/variables-card/use-variables-card-viewmodel.ts',
-  'src/app/theme/create-theme-dialog/use-create-theme-dialog-viewmodel.ts',
-  'src/app/theme/editor-previews-card/use-editor-previews-card-viewmodel.ts',
-  'src/app/theme/theme-details-card/use-theme-details-card-viewmodel.ts',
-  'src/app/theme/theme-page/use-theme-viewmodel.ts',
-  'src/app/theme/theme-palette-card/use-theme-palette-card-viewmodel.ts',
-  'src/app/theme/theme-variables-card/use-theme-variables-card-viewmodel.ts',
-  'src/app/theme/themes-card/use-themes-card-viewmodel.ts',
+  'src/app/viewmodel/Common/eyedropper-overlay/use-eyedropper-overlay-viewmodel.ts',
+  'src/app/viewmodel/Common/styled-tooltip/use-styled-tooltip-viewmodel.ts',
+  'src/app/viewmodel/Common/app-shell/use-app-shell-viewmodel.ts',
+  'src/app/viewmodel/Common/menu-bar/use-menubar-viewmodel.ts',
+  'src/app/viewmodel/Common/ribbon/use-ribbon-viewmodel.ts',
+  'src/app/viewmodel/Common/status-bar/use-status-bar-viewmodel.ts',
+  'src/app/viewmodel/Catalog/bulk-add-dialog/use-bulk-add-dialog-viewmodel.ts',
+  'src/app/viewmodel/Catalog/catalog-details-card/use-catalog-details-card-viewmodel.ts',
+  'src/app/viewmodel/Catalog/catalog-page/use-catalog-viewmodel.ts',
+  'src/app/viewmodel/Catalog/catalogs-card/use-catalogs-card-viewmodel.ts',
+  'src/app/viewmodel/Catalog/create-dialog/use-create-catalog-dialog-viewmodel.ts',
+  'src/app/viewmodel/Catalog/tokens-card/use-tokens-card-viewmodel.ts',
+  'src/app/viewmodel/Template/create-template-dialog/use-create-template-dialog-viewmodel.ts',
+  'src/app/viewmodel/Template/groups-card/use-groups-card-viewmodel.ts',
+  'src/app/viewmodel/Template/mappings-card/use-mappings-card-viewmodel.ts',
+  'src/app/viewmodel/Template/template-catalogs-card/use-template-catalogs-card-viewmodel.ts',
+  'src/app/viewmodel/Template/template-details-card/use-template-details-card-viewmodel.ts',
+  'src/app/viewmodel/Template/template-page/use-template-viewmodel.ts',
+  'src/app/viewmodel/Template/templates-card/use-templates-card-viewmodel.ts',
+  'src/app/viewmodel/Template/variables-card/use-variables-card-viewmodel.ts',
+  'src/app/viewmodel/Theme/create-theme-dialog/use-create-theme-dialog-viewmodel.ts',
+  'src/app/viewmodel/Theme/editor-previews-card/use-editor-previews-card-viewmodel.ts',
+  'src/app/viewmodel/Theme/theme-details-card/use-theme-details-card-viewmodel.ts',
+  'src/app/viewmodel/Theme/theme-page/use-theme-viewmodel.ts',
+  'src/app/viewmodel/Theme/theme-palette-card/use-theme-palette-card-viewmodel.ts',
+  'src/app/viewmodel/Theme/theme-variables-card/use-theme-variables-card-viewmodel.ts',
+  'src/app/viewmodel/Theme/themes-card/use-themes-card-viewmodel.ts',
 ];
 
 const actionTypeFiles = [
-  'src/app/common/eyedropper-overlay/actions/eyedropper-overlay-action-type.ts',
-  'src/app/common/styled-tooltip/actions/styled-tooltip-action-type.ts',
-  'src/app/app/app-shell/actions/app-shell-action-type.ts',
-  'src/app/app/menu-bar/actions/app-menu-action-type.ts',
-  'src/app/app/ribbon/actions/app-ribbon-action-type.ts',
-  'src/app/catalog/actions/catalog-action-type.ts',
-  'src/app/template/actions/template-action-type.ts',
-  'src/app/theme/actions/theme-action-type.ts',
+  'src/app/actions/Common/eyedropper-overlay/eyedropper-overlay-action-type.ts',
+  'src/app/actions/Common/styled-tooltip/styled-tooltip-action-type.ts',
+  'src/app/actions/Common/app-shell/app-shell-action-type.ts',
+  'src/app/actions/Common/menu-bar/app-menu-action-type.ts',
+  'src/app/actions/Common/ribbon/app-ribbon-action-type.ts',
+  'src/app/actions/Catalog/catalog-action-type.ts',
+  'src/app/actions/Template/template-action-type.ts',
+  'src/app/actions/Theme/theme-action-type.ts',
 ];
 
 async function readText(relativePath: string): Promise<string> {
@@ -170,9 +170,9 @@ describe('component workflow compliance', () => {
 
   it('prevents placeholder undo actions and whole-application undo snapshots', async () => {
     const undoSources = await Promise.all([
-      readText('src/domain/core/undo-stack-types.ts'),
-      readText('src/domain/core/undo-processor.ts'),
-      readText('src/domain/core/undo-stack.ts'),
+      readText('src/domain/core/Common/undo-stack-types.ts'),
+      readText('src/domain/core/Common/undo-processor.ts'),
+      readText('src/domain/core/Common/undo-stack.ts'),
     ]);
     const combined = undoSources.join('\n');
 
@@ -185,8 +185,8 @@ describe('component workflow compliance', () => {
 
   it('keeps undo summaries read-only and context-scoped', async () => {
     const [stateSource, modelSource] = await Promise.all([
-      readText('src/domain/state/undo-stack/undo-stack-state.ts'),
-      readText('src/model/undo-history.ts'),
+      readText('src/domain/state/Common/undo-stack/undo-stack-state.ts'),
+      readText('src/model/Common/undo-history.ts'),
     ]);
 
     expect(stateSource).toContain('UndoAvailabilitySummary');
@@ -199,12 +199,12 @@ describe('component workflow compliance', () => {
 
   it('tracks representative undo workflow participation across catalog, template, and theme', async () => {
     const workflowSources = await Promise.all([
-      readText('src/app/catalog/tokens-card/controllers/update-token-key-controller.ts'),
-      readText('src/app/template/variables-card/controllers/add-variable-controller.ts'),
-      readText('src/app/template/groups-card/controllers/add-group-and-clear-input-controller.ts'),
-      readText('src/app/theme/theme-palette-card/controllers/assign-color-from-picker-controller.ts'),
-      readText('src/app/theme/theme-palette-card/controllers/record-palette-color-assign-undo.ts'),
-      readText('src/app/theme/theme-variables-card/controllers/set-color-variable-dark-controller.ts'),
+      readText('src/app/controllers/Catalog/tokens-card/update-token-key-controller.ts'),
+      readText('src/app/controllers/Template/variables-card/add-variable-controller.ts'),
+      readText('src/app/controllers/Template/groups-card/add-group-and-clear-input-controller.ts'),
+      readText('src/app/controllers/Theme/theme-palette-card/assign-color-from-picker-controller.ts'),
+      readText('src/app/controllers/Theme/theme-palette-card/record-palette-color-assign-undo.ts'),
+      readText('src/app/controllers/Theme/theme-variables-card/set-color-variable-dark-controller.ts'),
     ]);
     const combined = workflowSources.join('\n');
 
@@ -220,7 +220,7 @@ describe('component workflow compliance', () => {
 
   it('keeps universal undo coverage enforcement artifacts synchronized', async () => {
     const [exclusions, spec, workflowContract, tasks] = await Promise.all([
-      readText('test/architecture/undo-controller-exclusions.ts'),
+      readText('test/utils/undo-controller-exclusions.ts'),
       readText('specs/004-add-undo-functionality/spec.md'),
       readText('specs/004-add-undo-functionality/contracts/undo-workflow-integration.md'),
       readText('specs/004-add-undo-functionality/tasks.md'),

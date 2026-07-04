@@ -93,7 +93,7 @@ Every `*-controller.ts` under `src/app/**` must be classified before closure:
 - **Excluded with evidence**: non-state-changing, lifecycle hydration,
   undo/redo infrastructure, navigation/context selection, app preferences,
   window chrome, transient overlay, queue status, or non-reversible actions
-  appear in `test/architecture/undo-controller-exclusions.ts`.
+  appear in `test/utils/undo-controller-exclusions.ts`.
 
 `test/architecture/undo-controller-coverage.test.ts` enforces that every
 controller is either recording or explicitly excluded. New mutating controllers

@@ -79,7 +79,9 @@ export default tseslint.config(
   {
     files: [
       '*.config.{js,ts}',
+      '.dependency-cruiser.cjs',
       'electron/**/*.ts',
+      'scripts/**/*.mjs',
       'vite*.ts',
     ],
     languageOptions: {
@@ -90,8 +92,6 @@ export default tseslint.config(
   },
   {
     files: [
-      'src/**/*.test.{ts,tsx}',
-      'src/test-setup.ts',
       'test/**/*.ts',
     ],
     languageOptions: {

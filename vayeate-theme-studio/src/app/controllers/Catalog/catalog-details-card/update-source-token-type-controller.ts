@@ -1,0 +1,68 @@
+import type { TokenType } from '../../../../model/Common/schema/primitives';
+import { singleton } from 'tsyringe';
+import { CatalogsStore } from '../../../../domain/state/Catalog/catalog/catalogs-store';
+import { BumpCatalogVersionForEditOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-details/bump-catalog-version-for-edit-operation';
+import { SaveCatalogOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-details/save-catalog-operation';
+import { UpdateSourceTokenTypeInCatalogOperation } from '../../../../domain/operations/Catalog/catalog-operations/sources/update-source-token-type-in-catalog-operation';
+import { ValidateCanUpdateCatalogSource } from '../../../../domain/validations/Catalog/catalog/validate-can-update-catalog-source';
+import { RefreshCatalogRefsAndSelectOperation } from '../../../../domain/operations/Catalog/delete/refresh-catalog-refs-and-select-operation';
+import { getCurrentCatalog } from '../../../../domain/state/Catalog/catalog/catalogs-store';
+import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
+import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
+import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
+import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { CATALOG_SOURCE_TOKEN_TYPE_UPDATED } from '../../../../model/Common/undo-action-types';
+
+/**
+ * Changes the token type assigned to an existing remote source row.
+ */
+@singleton()
+export class UpdateSourceTokenTypeController {
+  constructor(
+    private readonly catalogsStore: CatalogsStore,
+    private readonly catalogUiStore: CatalogUiStore,
+    private readonly templateUiStore: TemplateUiStore,
+    private readonly themeUiStore: ThemeUiStore,
+    private readonly saveCatalog: SaveCatalogOperation,
+    private readonly bumpCatalogVersionForEdit: BumpCatalogVersionForEditOperation,
+    private readonly updateSourceTokenTypeInCatalog: UpdateSourceTokenTypeInCatalogOperation,
+    private readonly refreshCatalogRefsAndSelect: RefreshCatalogRefsAndSelectOperation,
+    private readonly validateCanUpdateCatalogSource: ValidateCanUpdateCatalogSource,
+    private readonly recordCatalogUndo: RecordCatalogUndoOperation,
+    private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
+  ) {}
+
+  /**
+   * Commits a new token type for the source at the given index.
+   * @param sourceIndex - Zero-based index in the catalog sources array.
+   * @param value - Selected token type for the source.
+   */
+  run(sourceIndex: number, value: TokenType): void {
+    const store = this.catalogsStore.getStore();
+    const catalog = getCurrentCatalog(store.state.catalogs, this.catalogUiStore.getStore().state.selectedRef);
+    if (!catalog || !this.validateCanUpdateCatalogSource.test(catalog, sourceIndex)) return;
+
+    this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
+      tabId: 'catalogs',
+      catalogRef: { name: catalog.name, version: catalog.version },
+      templateRef: this.templateUiStore.getStore().state.selectedRef,
+      themeRef: this.themeUiStore.getStore().state.selectedRef,
+    }));
+
+    const base = this.bumpCatalogVersionForEdit.execute(catalog);
+    const updated = this.updateSourceTokenTypeInCatalog.execute(base, sourceIndex, value);
+    this.saveCatalog.execute(updated);
+    this.refreshCatalogRefsAndSelect.execute(updated.name, updated.version, updated, entityRefsChanged(catalog, updated));
+
+    void this.recordCatalogUndo.execute({
+      description: 'Update catalog source token type',
+      actionType: CATALOG_SOURCE_TOKEN_TYPE_UPDATED,
+      target: `${catalog.name}@${catalog.version}:source:${sourceIndex}`,
+      before: catalog,
+      after: updated,
+    });
+  }
+}

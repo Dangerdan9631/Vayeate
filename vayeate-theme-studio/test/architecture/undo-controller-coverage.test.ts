@@ -1,7 +1,7 @@
 import { access, readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { UNDO_RECORDING_EXCLUDED_CONTROLLERS } from './undo-controller-exclusions';
+import { UNDO_RECORDING_EXCLUDED_CONTROLLERS } from '../utils/undo-controller-exclusions';
 
 const repoRoot = process.cwd();
 
@@ -90,7 +90,7 @@ describe('undo controller coverage', () => {
       [
         'Every *-controller.ts under src/app/** must either import',
         'RecordCatalogUndoOperation / RecordTemplateUndoOperation / RecordThemeUndoOperation / RecordUndoEntryOperation,',
-        'or appear in UNDO_RECORDING_EXCLUDED_CONTROLLERS (test/architecture/undo-controller-exclusions.ts).',
+        'or appear in UNDO_RECORDING_EXCLUDED_CONTROLLERS (test/utils/undo-controller-exclusions.ts).',
         'Unclassified controllers:',
         ...unclassified,
       ].join('\n'),

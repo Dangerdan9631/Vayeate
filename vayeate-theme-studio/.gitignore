@@ -7,6 +7,8 @@ node_modules/
 # Build output
 dist/
 dist-electron/
+dependency-graph.html
+architecture-graph.html
 *.local
 
 # Environment

@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { Rect } from './model/rect';
+import type { Rect } from './model/Common/rect';
 
 export interface ElectronAPI {
   fetchUrl: (url: string) => Promise<string>;

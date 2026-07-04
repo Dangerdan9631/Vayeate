@@ -13,7 +13,7 @@ Run focused policy and renderer tests first, followed by routing, undo, and
 architecture coverage:
 
 ```powershell
-npx vitest run src/domain/operations/template-operations/mappings
+npx vitest run src/domain/operations/Template/template-operations/mappings
 npx vitest run src/app/template/template-flow-routing.test.ts
 npx vitest run src/app/template/template-renderer-workflows.test.tsx
 npx vitest run src/domain/operations/undo-operations

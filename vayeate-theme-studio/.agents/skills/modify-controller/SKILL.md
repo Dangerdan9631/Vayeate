@@ -7,13 +7,14 @@ description: Controller contract, naming conventions, DI patterns, and orchestra
 
 ## Contract
 
-**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update `*-controller.ts: one exported class…` and vice versa.** AST checks currently enforce **no `this.<OtherController>.run`** under `src/domain/**` (`describe('domain *-controller.ts: controllers do not call other controllers .run')`); app-controller enforcement is intended by this rule but is not currently encoded by that test.
+**Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change class/file naming here, update `*-controller.ts: one exported class…` and vice versa.** AST checks enforce **no `this.<OtherController>.run`** under `src/app/controllers/**` (`describe('app *-controller.ts: controllers do not call other controllers .run')`).
 
 - Suffix **`Controller`**; **one** public method **`run`** returning **`void`** or **`Promise<…>`** as needed (per action or use case).
 - **Inject** concrete classes via **tsyringe** **`@singleton()`** — no string or symbol tokens.
 - **Read** state through injected store snapshots such as `this.catalogsStore.getStore().state`; **never** mutate state here.
 - Compose **validations** then **operations**. For command failures they may throw; for UI validation they may use `Validator<T>`/`ValidationResult` and call an operation that writes error-message state.
 - **Must not** call another controller's `run` (or resolve another `*Controller`). A controller may sequence multiple operations for one UI use case after validation, provided it does not mutate state directly or embed business algorithms. Put reusable domain algorithms in operations; keep UI-outcome orchestration in controllers.
+- **Exception:** `LoadAppController` may call `InitializeWindowCallbacksController.run()` during shell startup, and `InitializeWindowCallbacksController` may call `HandleKeyboardShortcutController.run(event)` only from the registered global key callback. Keep these as app-shell/window adapter paths, not general controller orchestration precedent.
 
 ## Naming
 

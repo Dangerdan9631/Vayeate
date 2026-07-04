@@ -35,7 +35,7 @@ implementation and testing of each story.
 **Purpose**: Project initialization and rule-aware scaffolding
 
 - [X] T001 Review and pin the remediation scope in `specs/002-constitution-compliance-remediation/spec.md`, `specs/002-constitution-compliance-remediation/plan.md`, and `specs/002-constitution-compliance-remediation/contracts/use-case-boundaries.md`
-- [X] T002 Identify the initial violation inventory and map each one to a target seam in `test/architecture/layer-boundaries.test.ts`, `src/domain/operations/action-queue/enqueue-action-queue-operation.ts`, `src/domain/operations/background-queue/enqueue-background-queue-action-operation.ts`, and `src/domain/operations/app-operations/initialize-window-callbacks-operation.ts`
+- [X] T002 Identify the initial violation inventory and map each one to a target seam in `test/architecture/layer-boundaries.test.ts`, `src/domain/operations/Common/action-queue/enqueue-action-queue-operation.ts`, `src/domain/operations/Common/background-queue/enqueue-background-queue-action-operation.ts`, and `src/domain/operations/Common/app-operations/initialize-window-callbacks-operation.ts`
 - [X] T003 [P] Record the required enforcement and structure updates in `specs/002-constitution-compliance-remediation/contracts/enforcement-and-structure.md`, `specs/002-constitution-compliance-remediation/quickstart.md`, and `AGENTS.md`
 
 ---
@@ -49,10 +49,10 @@ until this phase is complete. Preparatory tests, seam adapters, and enforcement
 updates may be completed early only when they do not depend on unfinished
 focused controller use-case alignment.
 
-- [X] T004 Create typed inner-owned queue and lifecycle boundary contracts in `src/domain/operations/action-queue/`, `src/domain/operations/background-queue/`, and `src/model/`
-- [X] T005 [P] Introduce supporting plain workflow models and operation-port seams for focused controller use cases in `src/domain/operations/catalog-operations/`, `src/domain/operations/template-operations/`, `src/domain/operations/theme-operations/`, and `src/domain/operations/app-operations/`
-- [X] T006 [P] Refactor outer-edge DI and bootstrap ownership in `src/main.tsx`, `src/app/app/app-shell/AppProvider.tsx`, `src/app/core/action-queue/action-processor.ts`, and `src/app/core/background-queue/background-queue.ts`
-- [X] T007 [P] Establish adapter implementations for the new inner-owned seams in `src/app/core/action-queue/`, `src/app/core/background-queue/`, `src/gateway/services/window-service.ts`, and `electron/`
+- [X] T004 Create typed inner-owned queue and lifecycle boundary contracts in `src/domain/operations/Common/action-queue/`, `src/domain/operations/Common/background-queue/`, and `src/model/`
+- [X] T005 [P] Introduce supporting plain workflow models and operation-port seams for focused controller use cases in `src/domain/operations/Catalog/catalog-operations/`, `src/domain/operations/Template/template-operations/`, `src/domain/operations/Theme/theme-operations/`, and `src/domain/operations/Common/app-operations/`
+- [X] T006 [P] Refactor outer-edge DI and bootstrap ownership in `src/main.tsx`, `src/app/components/Common/app-shell/AppProvider.tsx`, `src/app/core/Common/action-queue/action-processor.ts`, and `src/app/core/Common/background-queue/background-queue.ts`
+- [X] T007 [P] Establish adapter implementations for the new inner-owned seams in `src/app/core/Common/action-queue/`, `src/app/core/Common/background-queue/`, `src/gateway/services/Common/window-service.ts`, and `electron/`
 - [X] T008 Update architectural enforcement for the new steady state in `test/architecture/layer-boundaries.test.ts`
 - [X] T009 Reduce baseline duplication and clarify module ownership in `src/app/core/`, `src/app/common/`, `src/domain/utils/`, and `src/app/**/actions/`
 
@@ -74,10 +74,10 @@ focused controller use-case alignment.
 
 ### Implementation for User Story 1
 
-- [X] T013 [P] [US1] Refactor catalog authoring controllers into focused controller use cases that orchestrate operation ports in `src/app/catalog/catalog-details-card/controllers/`, `src/app/catalog/tokens-card/controllers/`, `src/app/catalog/bulk-add-dialog/controllers/`, and `src/domain/operations/catalog-operations/`
-- [X] T014 [P] [US1] Refactor template authoring controllers into focused controller use cases that orchestrate operation ports in `src/app/template/groups-card/controllers/`, `src/app/template/variables-card/controllers/`, `src/app/template/mappings-card/controllers/`, `src/app/template/template-catalogs-card/controllers/`, and `src/domain/operations/template-operations/`
-- [X] T015 [P] [US1] Refactor theme authoring controllers into focused controller use cases that orchestrate operation ports in `src/app/theme/theme-details-card/controllers/`, `src/app/theme/theme-palette-card/controllers/`, `src/app/theme/theme-variables-card/controllers/`, and `src/domain/operations/theme-operations/`
-- [X] T016 [US1] Rewire action-handler-to-controller-use-case flow for catalog, template, and theme entry points in `src/app/catalog/actions/catalog-handler.ts`, `src/app/template/actions/template-handler.ts`, `src/app/theme/actions/theme-handler.ts`, and the touched action-type modules under `src/app/**/actions/`
+- [X] T013 [P] [US1] Refactor catalog authoring controllers into focused controller use cases that orchestrate operation ports in `src/app/controllers/Catalog/catalog-details-card/`, `src/app/controllers/Catalog/tokens-card/`, `src/app/controllers/Catalog/bulk-add-dialog/`, and `src/domain/operations/Catalog/catalog-operations/`
+- [X] T014 [P] [US1] Refactor template authoring controllers into focused controller use cases that orchestrate operation ports in `src/app/controllers/Template/groups-card/`, `src/app/controllers/Template/variables-card/`, `src/app/controllers/Template/mappings-card/`, `src/app/controllers/Template/template-catalogs-card/`, and `src/domain/operations/Template/template-operations/`
+- [X] T015 [P] [US1] Refactor theme authoring controllers into focused controller use cases that orchestrate operation ports in `src/app/controllers/Theme/theme-details-card/`, `src/app/controllers/Theme/theme-palette-card/`, `src/app/controllers/Theme/theme-variables-card/`, and `src/domain/operations/Theme/theme-operations/`
+- [X] T016 [US1] Rewire action-handler-to-controller-use-case flow for catalog, template, and theme entry points in `src/app/actions/Catalog/catalog-handler.ts`, `src/app/actions/Template/template-handler.ts`, `src/app/actions/Theme/theme-handler.ts`, and the touched action-type modules under `src/app/**/actions/`
 - [X] T017 [US1] Remove remaining handler-, component-, service-, or gateway-owned mutation ordering and naming drift from touched authoring flow files in `src/app/catalog/**`, `src/app/template/**`, and `src/app/theme/**`
 
 **Checkpoint**: User Story 1 should be fully functional and independently testable
@@ -98,11 +98,11 @@ focused controller use-case alignment.
 
 ### Implementation for User Story 2
 
-- [X] T021 [P] [US2] Replace domain queue dependencies with inward-owned ports and models in `src/domain/operations/action-queue/enqueue-action-queue-operation.ts`, `src/domain/operations/background-queue/*.ts`, `src/domain/catalog/operations/*.ts`, and `src/domain/operations/**/load-*.ts`
-- [X] T022 [P] [US2] Move lifecycle callback translation to the outer boundary in `src/domain/operations/app-operations/initialize-window-callbacks-operation.ts`, `src/app/app/window/controllers/*.ts`, `src/app/app/app-shell/controllers/handle-keyboard-shortcut-controller.ts`, and `src/gateway/services/window-service.ts`
-- [X] T023 [P] [US2] Refactor persistence and preview continuation behavior behind replaceable seams in `src/domain/operations/theme-operations/theme-details/*.ts`, `src/domain/operations/template-operations/template-details/*.ts`, `src/domain/operations/catalog-operations/catalog-details/*.ts`, `src/gateway/theme/*.ts`, and `src/gateway/preview/preview-gateway.ts`
-- [X] T024 [US2] Rewire outer-edge composition and DI ownership for queue and lifecycle seams in `src/main.tsx`, `src/app/app/app-shell/AppProvider.tsx`, `src/app/core/action-queue/*.ts`, and `src/app/core/background-queue/*.ts`
-- [X] T025 [US2] Remove touched string-token indirection and document any remaining justified infrastructure seam in `src/main.tsx`, `src/app/core/background-queue/background-queue.ts`, `specs/002-constitution-compliance-remediation/contracts/use-case-boundaries.md`, and `specs/002-constitution-compliance-remediation/plan.md`
+- [X] T021 [P] [US2] Replace domain queue dependencies with inward-owned ports and models in `src/domain/operations/Common/action-queue/enqueue-action-queue-operation.ts`, `src/domain/operations/Common/background-queue/*.ts`, `src/domain/operations/Catalog/catalog/*.ts`, and `src/domain/operations/**/load-*.ts`
+- [X] T022 [P] [US2] Move lifecycle callback translation to the outer boundary in `src/domain/operations/Common/app-operations/initialize-window-callbacks-operation.ts`, `src/app/controllers/Common/window/*.ts`, `src/app/controllers/Common/app-shell/handle-keyboard-shortcut-controller.ts`, and `src/gateway/services/Common/window-service.ts`
+- [X] T023 [P] [US2] Refactor persistence and preview continuation behavior behind replaceable seams in `src/domain/operations/Theme/theme-operations/theme-details/*.ts`, `src/domain/operations/Template/template-operations/template-details/*.ts`, `src/domain/operations/Catalog/catalog-operations/catalog-details/*.ts`, `src/gateway/gateway/Theme/theme/*.ts`, and `src/gateway/gateway/Common/preview/preview-gateway.ts`
+- [X] T024 [US2] Rewire outer-edge composition and DI ownership for queue and lifecycle seams in `src/main.tsx`, `src/app/components/Common/app-shell/AppProvider.tsx`, `src/app/core/Common/action-queue/*.ts`, and `src/app/core/Common/background-queue/*.ts`
+- [X] T025 [US2] Remove touched string-token indirection and document any remaining justified infrastructure seam in `src/main.tsx`, `src/app/core/Common/background-queue/background-queue.ts`, `specs/002-constitution-compliance-remediation/contracts/use-case-boundaries.md`, and `specs/002-constitution-compliance-remediation/plan.md`
 
 **Checkpoint**: User Stories 1 and 2 should both work independently
 

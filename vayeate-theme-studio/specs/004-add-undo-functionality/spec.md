@@ -307,7 +307,7 @@ errors.
 - **FR-019**: System MUST record undo entries from every completed
   state-changing reversible controller under `src/app/**`, using domain-scoped
   `Record*UndoOperation` facades unless the controller is explicitly excluded
-  with evidence in `test/architecture/undo-controller-exclusions.ts`.
+  with evidence in `test/utils/undo-controller-exclusions.ts`.
 - **FR-020**: System MUST enforce universal undo controller classification in
   `test/architecture/undo-controller-coverage.test.ts` so new mutating
   controllers cannot ship without recording or documented exclusion.
@@ -353,7 +353,7 @@ errors.
 - **SC-006**: Final validation includes representative undoable workflows from
   app shell, catalog, template, and theme areas, and 100% of state-changing
   reversible controllers under `src/app/**` record via `Record*UndoOperation`
-  facades with exclusions inventoried in `test/architecture/undo-controller-exclusions.ts`.
+  facades with exclusions inventoried in `test/utils/undo-controller-exclusions.ts`.
 - **SC-007**: In history navigation testing, 100% of selected recent-action list
   items return the active context to the state immediately after the selected
   item.

@@ -56,16 +56,16 @@ function normalizeSlashes(value: string): string {
 
 function authoringControllerRoots(): string[] {
   return [
-    'src/app/catalog/catalog-details-card/controllers',
-    'src/app/catalog/tokens-card/controllers',
-    'src/app/catalog/bulk-add-dialog/controllers',
-    'src/app/template/groups-card/controllers',
-    'src/app/template/variables-card/controllers',
-    'src/app/template/mappings-card/controllers',
-    'src/app/template/template-catalogs-card/controllers',
-    'src/app/theme/theme-details-card/controllers',
-    'src/app/theme/theme-palette-card/controllers',
-    'src/app/theme/theme-variables-card/controllers',
+    'src/app/controllers/Catalog/catalog-details-card',
+    'src/app/controllers/Catalog/tokens-card',
+    'src/app/controllers/Catalog/bulk-add-dialog',
+    'src/app/controllers/Template/groups-card',
+    'src/app/controllers/Template/variables-card',
+    'src/app/controllers/Template/mappings-card',
+    'src/app/controllers/Template/template-catalogs-card',
+    'src/app/controllers/Theme/theme-details-card',
+    'src/app/controllers/Theme/theme-palette-card',
+    'src/app/controllers/Theme/theme-variables-card',
   ];
 }
 
@@ -112,17 +112,17 @@ describe('layer boundaries', () => {
     const files = (await walk('src/app')).map(normalizeSlashes);
 
     for (const filePath of files) {
-      expect(filePath.includes('/src/app/app/components/app-shell/actions/'), filePath).toBe(false);
+      expect(filePath.includes('/src/app/components/Common/app-shell/actions/'), filePath).toBe(false);
       expect(filePath.includes('/src/app/theme/components/'), filePath).toBe(false);
     }
   });
 
   it('keeps top-level authoring handlers thin and free of policy or detail ownership', async () => {
     const files = [
-      path.join(sourceRoot, 'app/app/actions/app-handler.ts'),
-      path.join(sourceRoot, 'app/catalog/actions/catalog-handler.ts'),
-      path.join(sourceRoot, 'app/template/actions/template-handler.ts'),
-      path.join(sourceRoot, 'app/theme/actions/theme-handler.ts'),
+      path.join(sourceRoot, 'app/actions/Common/app-handler.ts'),
+      path.join(sourceRoot, 'app/actions/Catalog/catalog-handler.ts'),
+      path.join(sourceRoot, 'app/actions/Template/template-handler.ts'),
+      path.join(sourceRoot, 'app/actions/Theme/theme-handler.ts'),
     ];
 
     for (const filePath of files) {
@@ -154,9 +154,9 @@ describe('layer boundaries', () => {
 
   it('keeps undo policy independent from React, Electron, filesystem, and gateway details', async () => {
     const files = await walkMany([
-      'src/domain/core',
-      'src/domain/state/undo-stack',
-      'src/domain/operations/undo-operations',
+      'src/domain/core/Common',
+      'src/domain/state/Common/undo-stack',
+      'src/domain/operations/Common/undo-operations',
     ]);
 
     for (const filePath of files) {

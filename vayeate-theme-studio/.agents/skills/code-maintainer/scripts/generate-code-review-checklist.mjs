@@ -97,11 +97,11 @@ const allSourceFiles = uniq([...appFiles, ...domainFiles, ...gatewayFiles, ...mo
 
 const relevantFileResolvers = {
   "app-architecture": () => allSourceFiles,
-  component: () => sourceFilesMatching((rel, name) => rel.startsWith("src/app/") && name.endsWith(".tsx")),
-  controller: () => sourceFilesMatching((_, name) => name.endsWith("-controller.ts"), "src", "app"),
-  gateway: () => sourceFilesMatching((_, name) => name.endsWith("-gateway.ts"), "src", "gateway"),
+  component: () => sourceFilesMatching((rel, name) => rel.startsWith("src/app/components/") && name.endsWith(".tsx")),
+  controller: () => sourceFilesMatching((rel, name) => rel.startsWith("src/app/controllers/") && name.endsWith("-controller.ts"), "src", "app"),
+  gateway: () => sourceFilesMatching((rel, name) => rel.startsWith("src/gateway/gateway/") && name.endsWith("-gateway.ts"), "src", "gateway"),
   "layer-app": () => appFiles,
-  "layer-domain": () => uniq([...domainFiles, ...sourceFilesMatching((_, name) => name.endsWith("-controller.ts"), "src", "app")]),
+  "layer-domain": () => uniq([...domainFiles, ...sourceFilesMatching((rel, name) => rel.startsWith("src/app/controllers/") && name.endsWith("-controller.ts"), "src", "app")]),
   "layer-electron": () => electronFiles,
   "layer-gateway": () => gatewayFiles,
   model: () => modelFiles,
@@ -109,7 +109,7 @@ const relevantFileResolvers = {
   service: () => sourceFilesMatching((rel, name) => rel.includes("/services/") && name.endsWith(".ts"), "src", "gateway"),
   state: () => sourceFilesMatching((rel, name) => rel.includes("/state/") && name.endsWith(".ts"), "src", "domain"),
   validation: () => sourceFilesMatching((rel, name) => rel.includes("/validations/") && name.endsWith(".ts"), "src", "domain"),
-  viewmodel: () => sourceFilesMatching((_, name) => name.startsWith("use-") && name.endsWith("-viewmodel.ts"), "src", "app"),
+  viewmodel: () => sourceFilesMatching((rel, name) => rel.startsWith("src/app/viewmodel/") && name.startsWith("use-") && name.endsWith("-viewmodel.ts"), "src", "app"),
 };
 
 const ruleFiles = parseRuleNames();

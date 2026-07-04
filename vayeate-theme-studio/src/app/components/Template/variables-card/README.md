@@ -1,0 +1,24 @@
+# Variables Card
+
+React components and component-local UI helpers for the Template UI domain.
+
+## Placement
+
+- Path: `src/app/components/Template/variables-card`
+- Layer: App layer
+- Role bucket: `components`
+- Domain bucket: `Template`
+
+## Contents
+
+- Subfolders: None
+- Files: `ColorVariableRow.tsx`, `ContrastVariableRow.tsx`, `StyleVariableRow.tsx`, `VariablesCard.tsx`
+
+## Rules
+
+- Keep React rendering, action construction, handlers, controllers, and viewmodels in the app layer.
+- Components call viewmodel callbacks; viewmodels enqueue actions; handlers call controllers; controllers call validations and operations.
+- Do not write domain stores or perform business mutation in app code.
+
+See the repository root AGENTS.md for the complete architecture and mutation-flow rules.
+
