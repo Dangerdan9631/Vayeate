@@ -12,7 +12,7 @@ Policy-owned domain operations for the Catalog business domain.
 ## Contents
 
 - Subfolders: `bulk-add`, `catalog-details`, `sources`, `tokens`
-- Files: None
+- Files: `catalog-versions-by-name-from-refs-operation.ts`, `merge-mappings-from-catalog-data-operation.ts`
 
 ## Rules
 

@@ -10,14 +10,14 @@ import {
   type KeyboardEvent
 } from 'react';
 import type { ColorAssignment } from '../../../../model/Theme/schema/theme-schemas';
-import type { ClusterResult } from '../../../../domain/utils/Theme/color-clustering';
+import type { ClusterResult } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-clustering-operation';
 import {
   buildColorAssignmentsByGroup,
   PALETTE_UNGROUPED_KEY,
   sortedPaletteGroupKeys,
-} from '../../../../domain/utils/Theme/palette-cluster-inputs';
-import { hexToHue, hslToRgb, hsvToRgb, rgbToHsv } from '../../../../domain/utils/Theme/color-hsl';
-import { hexToRgb, rgbToHex } from '../../../../domain/utils/Theme/color-hex';
+} from '../../../../domain/operations/Theme/theme-operations/theme-utils/palette-cluster-inputs-operation';
+import { hexToHue, hslToRgb, hsvToRgb, rgbToHsv } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-hsl-operation';
+import { hexToRgb, rgbToHex } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-hex-operation';
 import type { ThemePaneState } from '../../../../model/Theme/theme-pane-state';
 import { useThemePaletteCardViewModel } from '../../../viewmodel/Theme/theme-palette-card/use-theme-palette-card-viewmodel';
 import { TriStateCheckbox, type TriState } from '../../Common/tristate-checkbox/TriStateCheckbox';

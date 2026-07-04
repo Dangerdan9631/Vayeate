@@ -1,14 +1,20 @@
 import { singleton } from 'tsyringe';
 import type { Template } from '../../../../model/Template/schema/template-schemas';
-import { referencedColorVarKeysFromTemplate } from '../../../utils/Template/referenced-color-var-keys-from-template';
-import { referencedContrastVarKeysFromTemplate } from '../../../utils/Template/referenced-contrast-var-keys-from-template';
-import { referencedStyleVarKeysFromTemplate } from '../../../utils/Template/referenced-style-var-keys-from-template';
+import { ReferencedColorVarKeysFromTemplateOperation } from '../../../operations/Template/template-operations/referenced-color-var-keys-from-template-operation';
+import { ReferencedContrastVarKeysFromTemplateOperation } from '../../../operations/Template/template-operations/referenced-contrast-var-keys-from-template-operation';
+import { ReferencedStyleVarKeysFromTemplateOperation } from '../../../operations/Template/template-operations/referenced-style-var-keys-from-template-operation';
 
 /**
  * Checks that a template variable is not referenced elsewhere before removal.
  */
 @singleton()
 export class ValidateCanRemoveVariable {
+  constructor(
+    private readonly referencedColorVarKeysFromTemplate: ReferencedColorVarKeysFromTemplateOperation,
+    private readonly referencedContrastVarKeysFromTemplate: ReferencedContrastVarKeysFromTemplateOperation,
+    private readonly referencedStyleVarKeysFromTemplate: ReferencedStyleVarKeysFromTemplateOperation,
+  ) {}
+
   /**
    * Resolves whether the variable key is still referenced by color or contrast mappings.
    *
@@ -18,12 +24,12 @@ export class ValidateCanRemoveVariable {
    */
   test(template: Template, key: string): boolean {
     if (template.colorVariables.some((variable) => variable.key === key)) {
-      return !referencedColorVarKeysFromTemplate(template).has(key);
+      return !this.referencedColorVarKeysFromTemplate.execute(template).has(key);
     }
     if (template.contrastVariables.some((variable) => variable.key === key)) {
-      return !referencedContrastVarKeysFromTemplate(template).has(key);
+      return !this.referencedContrastVarKeysFromTemplate.execute(template).has(key);
     }
     return (template.styleVariables ?? []).some((variable) => variable.key === key)
-      && !referencedStyleVarKeysFromTemplate(template).has(key);
+      && !this.referencedStyleVarKeysFromTemplate.execute(template).has(key);
   }
 }

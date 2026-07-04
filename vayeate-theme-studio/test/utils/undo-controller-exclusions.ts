@@ -87,6 +87,7 @@ export const THEME_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/controllers/Theme/theme-page/load-theme-page-controller.ts',
   'src/app/controllers/Theme/theme-page/clear-theme-save-error-controller.ts',
   'src/app/controllers/Theme/editor-previews-card/load-theme-previews-controller.ts',
+  'src/app/controllers/Theme/editor-previews-card/resolve-editor-preview-scope-map-controller.ts',
   'src/app/controllers/Theme/theme-variables-card/set-theme-variables-search-text-controller.ts',
   'src/app/controllers/Theme/theme-palette-card/set-assign-color-preview-controller.ts',
   'src/app/controllers/Theme/theme-palette-card/set-palette-cluster-count-k-preview-controller.ts',

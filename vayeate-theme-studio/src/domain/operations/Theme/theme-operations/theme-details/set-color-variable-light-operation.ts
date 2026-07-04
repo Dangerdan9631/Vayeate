@@ -4,7 +4,7 @@ import type { ColorVariableKey } from '../../../../../model/Common/schema/primit
 import type { Theme } from '../../../../../model/Theme/schema/theme-schemas';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { normalizeHexSafe } from '../../../../utils/Theme/color-hex';
+import { normalizeHexSafe } from '../theme-utils/color-hex-operation';
 import type { ThemeColorVariableEditResult } from './theme-color-variable-edit-result';
 
 /**

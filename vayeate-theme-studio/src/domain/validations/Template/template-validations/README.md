@@ -12,7 +12,7 @@ Pre-mutation validations for the Template business domain.
 ## Contents
 
 - Subfolders: None
-- Files: `validate-can-lock-template.ts`, `validate-can-remove-variable.ts`, `validate-is-template-name-valid.ts`
+- Files: `validate-can-lock-template.ts`, `validate-can-remove-variable.ts`, `validate-is-mapping-orphan-for-template.ts`, `validate-is-template-mapping-complete.ts`, `validate-is-template-name-valid.ts`
 
 ## Rules
 

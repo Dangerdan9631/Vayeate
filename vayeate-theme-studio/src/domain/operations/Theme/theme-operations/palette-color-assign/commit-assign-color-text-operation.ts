@@ -4,9 +4,9 @@ import type { ThemePaletteAssignUndoValue } from '../../../../../model/Theme/the
 import { DebouncedThemePersistGateway } from '../../../../../gateway/gateway/Theme/theme/debounced-theme-persist-gateway';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { normalizeHexSafe } from '../../../../utils/Theme/color-hex';
-import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../utils/Theme/theme-assignment-utils';
-import { buildThemePaletteAssignUndoValue, themePaletteAssignUndoValuesEqual } from '../../../../utils/Theme/theme-palette-assign-undo-utils';
+import { normalizeHexSafe } from '../theme-utils/color-hex-operation';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../theme-utils/theme-assignment-utils-operation';
+import { buildThemePaletteAssignUndoValue, themePaletteAssignUndoValuesEqual } from '../theme-utils/theme-palette-assign-undo-utils-operation';
 
 /**
  * Input or state shape for theme palette assign color edit result.

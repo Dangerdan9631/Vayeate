@@ -7,10 +7,11 @@ import { container } from 'tsyringe';
 import { getCurrentTemplate, getCurrentTemplateRefs, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import type { Mapping, Template } from '../../../../model/Template/schema/template-schemas';
-import { isTemplateMappingComplete } from '../../../../domain/utils/Template/is-template-mapping-complete';
+import { ValidateIsTemplateMappingComplete } from '../../../../domain/validations/Template/template-validations/validate-is-template-mapping-complete';
 
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
+const validateIsTemplateMappingComplete = container.resolve(ValidateIsTemplateMappingComplete);
 
 /**
  * Read model and action callbacks for the template details card.
@@ -50,7 +51,7 @@ export function useTemplateDetailsCardViewModel(): TemplateDetailsCardViewModel 
 
   const canLock = useMemo(() => {
     if (!template || template.locked || !isLatestVersion) return false;
-    return template.mappings.every((m: Mapping) => isTemplateMappingComplete(m));
+    return template.mappings.every((m: Mapping) => validateIsTemplateMappingComplete.test(m));
   }, [template, isLatestVersion]);
   const canShowLockButton = useMemo(() => template !== null && !template.locked && isLatestVersion, [template, isLatestVersion]);
   const lockButtonTitle = useMemo(

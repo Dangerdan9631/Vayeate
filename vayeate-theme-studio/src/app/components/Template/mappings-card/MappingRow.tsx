@@ -1,7 +1,10 @@
 import { memo, type ChangeEvent } from 'react';
 import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../../model/Common/schema/primitives';
 import type { ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../../model/Template/schema/template-schemas';
-import { isTemplateMappingBlockingLock } from '../../../../domain/utils/Template/is-template-mapping-complete';
+import { container } from 'tsyringe';
+import { ValidateIsTemplateMappingComplete } from '../../../../domain/validations/Template/template-validations/validate-is-template-mapping-complete';
+
+const validateIsTemplateMappingComplete = container.resolve(ValidateIsTemplateMappingComplete);
 
 /**
  * Props for a single non-semantic token mapping row.
@@ -39,7 +42,7 @@ function MappingRowComponent({
   isSelected,
   onToggleSelection,
 }: MappingRowProps) {
-  const isBlockingLock = isTemplateMappingBlockingLock(mapping);
+  const isBlockingLock = !validateIsTemplateMappingComplete.test(mapping);
   const isIgnored = mapping.ignored === true;
 
   function onMappingGroupRefSelectChange(e: ChangeEvent<HTMLSelectElement>) {

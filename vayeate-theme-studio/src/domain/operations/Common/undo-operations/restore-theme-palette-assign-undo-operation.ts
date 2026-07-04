@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { ThemePaletteAssignUndoValue } from '../../../../model/Theme/theme-palette-assign-undo';
 import { ThemeUiStore } from '../../../state/Theme/ui/theme-ui-store';
-import { applyThemePaletteAssignUndoValue } from '../../../utils/Theme/theme-palette-assign-undo-utils';
+import { applyThemePaletteAssignUndoValue } from '../../Theme/theme-operations/theme-utils/theme-palette-assign-undo-utils-operation';
 import { ApplyThemeUndoStateOperation } from './apply-theme-undo-state-operation';
 
 /**

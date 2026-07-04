@@ -1,25 +1,13 @@
 import { singleton } from 'tsyringe';
-import type { ContrastVariable, Mapping } from '../../../model/Template/schema/template-schemas';
-import type { ColorAssignment, ContrastAssignment } from '../../../model/Theme/schema/theme-schemas';
 import {
   buildScopeColorMapFromInputs,
-  selectScopeColorMapInputs,
   type ScopeColorMap,
-} from '../../../domain/utils/Theme/scope-resolver';
+  type ScopeColorMapInputs,
+} from '../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import type {
   ScopeResolverWorkerRequest,
   ScopeResolverWorkerResponse,
-} from '../../../domain/utils/Theme/scope-resolver-worker-messages';
-
-/**
- * Inputs required to build a scope color map off the main thread.
- */
-export interface ScopeResolverInputs {
-  mappings: readonly Mapping[];
-  colorAssignments: readonly ColorAssignment[];
-  contrastAssignments: readonly ContrastAssignment[];
-  contrastVariables: readonly ContrastVariable[];
-}
+} from '../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-worker-messages-operation';
 
 /**
  * Runs scope color map and contrast resolution off the main thread with request coalescing.
@@ -33,23 +21,17 @@ export class ScopeResolverService {
   /**
    * Builds a scope color map from template mappings and theme assignments off the main thread.
    *
-   * @param inputs - Mappings, color assignments, and contrast data for resolution.
+   * @param inputs - Normalized scope-map inputs for resolution.
    * @returns Resolved scope color map, or null when a newer request superseded this one.
    */
-  buildScopeColorMap(inputs: ScopeResolverInputs): Promise<ScopeColorMap | null> {
+  buildScopeColorMap(inputs: ScopeColorMapInputs): Promise<ScopeColorMap | null> {
     const seq = ++this.sequence;
     this.latestSequence = seq;
-    const normalizedInputs = selectScopeColorMapInputs(
-      inputs.mappings,
-      inputs.colorAssignments,
-      inputs.contrastAssignments,
-      inputs.contrastVariables,
-    );
 
     if (typeof Worker === 'undefined') {
       return new Promise((resolve) => {
         queueMicrotask(() => {
-          const result = buildScopeColorMapFromInputs(normalizedInputs);
+          const result = buildScopeColorMapFromInputs(inputs);
           resolve(seq !== this.latestSequence ? null : result);
         });
       });
@@ -82,7 +64,7 @@ export class ScopeResolverService {
       const request: ScopeResolverWorkerRequest = {
         type: 'build-scope-map',
         sequence: seq,
-        inputs: normalizedInputs,
+        inputs,
       };
       worker.postMessage(request);
     });

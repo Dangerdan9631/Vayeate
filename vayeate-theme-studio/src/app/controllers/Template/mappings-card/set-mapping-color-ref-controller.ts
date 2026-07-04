@@ -4,7 +4,7 @@ import type { TokenType } from '../../../../model/Common/schema/primitives';
 import { singleton } from 'tsyringe';
 import { CatalogsStore, getAllLoadedCatalogs } from '../../../../domain/state/Catalog/catalog/catalogs-store';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
-import { isMappingOrphanForTemplate } from '../../../../domain/utils/Template/is-mapping-orphan-for-template';
+import { ValidateIsMappingOrphanForTemplate } from '../../../../domain/validations/Template/template-validations/validate-is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveMappingFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/mappings/remove-mapping-from-template-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
@@ -33,6 +33,7 @@ export class SetMappingColorRefController {
     private readonly catalogUiStore: CatalogUiStore,
     private readonly themeUiStore: ThemeUiStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
+    private readonly validateIsMappingOrphanForTemplate: ValidateIsMappingOrphanForTemplate,
     private readonly removeMappingFromTemplate: RemoveMappingFromTemplateOperation,
     private readonly setMappingColorRefOp: SetMappingColorRefOp,
     private readonly saveTemplate: SaveTemplateOperation,
@@ -62,7 +63,7 @@ export class SetMappingColorRefController {
       )
     ) return;
     const catalogs = getAllLoadedCatalogs(store.state.catalogs);
-    const isOrphan = isMappingOrphanForTemplate(
+    const isOrphan = this.validateIsMappingOrphanForTemplate.test(
       template,
       tokenKey,
       tokenType,

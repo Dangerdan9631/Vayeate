@@ -12,7 +12,7 @@ Policy-owned domain operations for the Template business domain.
 ## Contents
 
 - Subfolders: `groups`, `mappings`, `mappings-semantic`, `template-details`, `template-list`, `variables`, `variables-color`, `variables-contrast`, `variables-style`
-- Files: None
+- Files: `group-names-in-use-from-template-operation.ts`, `merge-assignments-from-template-operation.ts`, `referenced-color-var-keys-from-template-operation.ts`, `referenced-contrast-var-keys-from-template-operation.ts`, `referenced-style-var-keys-from-template-operation.ts`
 
 ## Rules
 

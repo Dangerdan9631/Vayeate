@@ -1,6 +1,7 @@
 import { singleton } from 'tsyringe';
 import { getAllLoadedCatalogs, CatalogsStore } from '../../../../domain/state/Catalog/catalog/catalogs-store';
 import { ApplyMappingAssignmentOperation } from '../../../../domain/operations/Template/template-operations/mappings/apply-mapping-assignment-operation';
+import { ValidateIsMappingOrphanForTemplate } from '../../../../domain/validations/Template/template-validations/validate-is-mapping-orphan-for-template';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/Template/template-operations/template-list/refresh-template-refs-and-select-operation';
@@ -56,6 +57,7 @@ export class ApplySelectedMappingAssignmentController {
     private readonly catalogUiStore: CatalogUiStore,
     private readonly themeUiStore: ThemeUiStore,
     private readonly applyAssignment: ApplyMappingAssignmentOperation,
+    private readonly validateIsMappingOrphanForTemplate: ValidateIsMappingOrphanForTemplate,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -87,11 +89,22 @@ export class ApplySelectedMappingAssignmentController {
       }));
     if (selectedVisibleMappingIds.length === 0) return;
 
+    const catalogs = getAllLoadedCatalogs(this.catalogsStore.getStore().state.catalogs);
+    const orphanMappingIds = assignment.kind === 'color' && assignment.value === null
+      ? selectedVisibleMappingIds.filter((mappingId) =>
+          this.validateIsMappingOrphanForTemplate.test(
+            template,
+            mappingId.tokenKey,
+            mappingId.tokenType,
+            catalogs,
+          )
+        )
+      : [];
     const assigned = this.applyAssignment.execute({
       template,
       mappingIds: selectedVisibleMappingIds,
       assignment,
-      catalogs: getAllLoadedCatalogs(this.catalogsStore.getStore().state.catalogs),
+      orphanMappingIds,
     });
     if (assigned === template) return;
     const next = this.bumpTemplateVersionForEdit.execute(assigned);

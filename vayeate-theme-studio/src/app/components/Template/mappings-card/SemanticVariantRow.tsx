@@ -11,7 +11,10 @@ import { parseSemanticSelector } from '../../../../model/Common/parse-semantic-s
 import { SEMANTIC_WILDCARD_TYPE } from '../../../../model/Common/semantic-token-constants';
 import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../../model/Common/schema/primitives';
 import type { ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../../model/Template/schema/template-schemas';
-import { isTemplateMappingBlockingLock } from '../../../../domain/utils/Template/is-template-mapping-complete';
+import { container } from 'tsyringe';
+import { ValidateIsTemplateMappingComplete } from '../../../../domain/validations/Template/template-validations/validate-is-template-mapping-complete';
+
+const validateIsTemplateMappingComplete = container.resolve(ValidateIsTemplateMappingComplete);
 
 /**
  * Placeholder modifier prefix for empty variant rows; filter out for display and when updating.
@@ -70,7 +73,7 @@ function SemanticVariantRowComponent({
   isSelected,
   onToggleSelection,
 }: SemanticVariantRowProps) {
-  const isBlockingLock = isTemplateMappingBlockingLock(mapping);
+  const isBlockingLock = !validateIsTemplateMappingComplete.test(mapping);
   const isIgnored = mapping.ignored === true;
   let parsed: { type: string; modifiers: string[]; language: string | null };
   try {

@@ -3,14 +3,14 @@ import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import type { ThemePaneState } from '../../../../model/Theme/theme-pane-state';
-import { buildThemePaneSnapshot } from '../../../../domain/utils/Theme/theme-pane-utils';
+import { buildThemePaneSnapshot } from '../../../../domain/operations/Theme/theme-operations/theme-utils/theme-pane-utils-operation';
 import { ThemePreviewStore } from '../../../../domain/state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
-import { resolveColorForThemeTokenKey } from '../../../../domain/utils/Theme/scope-resolver';
+import { resolveColorForThemeTokenKey } from '../../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import { ThemePaletteCardActionType } from '../../../actions/Theme/theme-palette-card/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../../../actions/Theme/theme-variables-card/theme-variables-card-action-type';
-import { normalizeThemeHex } from '../../../../domain/utils/Theme/normalize-theme-hex';
+import { normalizeThemeHex } from '../../../../domain/operations/Theme/theme-operations/theme-utils/normalize-theme-hex-operation';
 import type { ColorAssignment, ContrastAssignment, Theme } from '../../../../model/Theme/schema/theme-schemas';
 import type { ColorVariable, ContrastVariable, Mapping } from '../../../../model/Template/schema/template-schemas';
 

@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { SetAssignColorPreviewOperation } from '../../../../domain/operations/Theme/theme-operations/palette-color-assign/set-assign-color-preview-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { normalizeHexSafe } from '../../../../domain/utils/Theme/color-hex';
+import { normalizeHexSafe } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-hex-operation';
 
 /**
  * Orchestrates set assign color preview work for the theme UI.

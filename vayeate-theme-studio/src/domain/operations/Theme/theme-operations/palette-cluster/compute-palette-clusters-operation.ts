@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import { ClusteringService } from '../../../../../gateway/services/Common/clustering-service';
 import { ThemePreviewStore } from '../../../../state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { buildPaletteClusterGroupInputs } from '../../../../utils/Theme/palette-cluster-inputs';
+import { buildPaletteClusterGroupInputs } from '../theme-utils/palette-cluster-inputs-operation';
 
 /**
  * Computes palette clusters from current theme or catalog data.

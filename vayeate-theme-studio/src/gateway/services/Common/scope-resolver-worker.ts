@@ -1,8 +1,8 @@
-import { buildScopeColorMapFromInputs } from '../../../domain/utils/Theme/scope-resolver';
+import { buildScopeColorMapFromInputs } from '../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import type {
   ScopeResolverWorkerRequest,
   ScopeResolverWorkerResponse,
-} from '../../../domain/utils/Theme/scope-resolver-worker-messages';
+} from '../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-worker-messages-operation';
 
 /**
  * Handles scope map requests by running {@link buildScopeColorMapFromInputs} off the main thread.

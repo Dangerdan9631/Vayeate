@@ -17,14 +17,17 @@ import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-u
 import {
   getTemplateAddVariableDraftKey,
 } from '../../../../domain/state/Template/ui/template-ui-state';
-import { referencedColorVarKeysFromTemplate } from '../../../../domain/utils/Template/referenced-color-var-keys-from-template';
-import { referencedContrastVarKeysFromTemplate } from '../../../../domain/utils/Template/referenced-contrast-var-keys-from-template';
-import { referencedStyleVarKeysFromTemplate } from '../../../../domain/utils/Template/referenced-style-var-keys-from-template';
+import { ReferencedColorVarKeysFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/referenced-color-var-keys-from-template-operation';
+import { ReferencedContrastVarKeysFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/referenced-contrast-var-keys-from-template-operation';
+import { ReferencedStyleVarKeysFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/referenced-style-var-keys-from-template-operation';
 import type { TemplateVariableKind } from '../../../../model/Template/template-variable-kind';
 import type { ColorVariable, ContrastVariable, StyleVariable, Template } from '../../../../model/Template/schema/template-schemas';
 
 const templatesStore = container.resolve(TemplatesStore);
 const templateUiStore = container.resolve(TemplateUiStore);
+const referencedColorVarKeysFromTemplate = container.resolve(ReferencedColorVarKeysFromTemplateOperation);
+const referencedContrastVarKeysFromTemplate = container.resolve(ReferencedContrastVarKeysFromTemplateOperation);
+const referencedStyleVarKeysFromTemplate = container.resolve(ReferencedStyleVarKeysFromTemplateOperation);
 
 const EMPTY_COLOR_VARIABLES: readonly ColorVariable[] = [];
 const EMPTY_CONTRAST_VARIABLES: readonly ContrastVariable[] = [];
@@ -242,17 +245,17 @@ export function useVariablesCardViewModel(): VariablesCardViewModel {
 
   const referencedColorVarKeys = useMemo(() => {
     if (!template) return new Set<string>();
-    return referencedColorVarKeysFromTemplate(template);
+    return referencedColorVarKeysFromTemplate.execute(template);
   }, [template]);
 
   const referencedContrastVarKeys = useMemo(() => {
     if (!template) return new Set<string>();
-    return referencedContrastVarKeysFromTemplate(template);
+    return referencedContrastVarKeysFromTemplate.execute(template);
   }, [template]);
 
   const referencedStyleVarKeys = useMemo(() => {
     if (!template) return new Set<string>();
-    return referencedStyleVarKeysFromTemplate(template);
+    return referencedStyleVarKeysFromTemplate.execute(template);
   }, [template]);
 
   const onVariablesSearchChange = useCallback(

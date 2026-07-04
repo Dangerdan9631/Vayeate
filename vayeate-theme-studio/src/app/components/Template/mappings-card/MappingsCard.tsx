@@ -17,7 +17,10 @@ import { SEMANTIC_WILDCARD_TYPE } from '../../../../model/Common/semantic-token-
 import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey, TokenType } from '../../../../model/Common/schema/primitives';
 import type { ColorVariable, ContrastVariable, Mapping, StyleVariable } from '../../../../model/Template/schema/template-schemas';
 import { TriStateCheckbox, type TriState } from '../../Common/tristate-checkbox/TriStateCheckbox';
-import { isTemplateMappingBlockingLock } from '../../../../domain/utils/Template/is-template-mapping-complete';
+import { container } from 'tsyringe';
+import { ValidateIsTemplateMappingComplete } from '../../../../domain/validations/Template/template-validations/validate-is-template-mapping-complete';
+
+const validateIsTemplateMappingComplete = container.resolve(ValidateIsTemplateMappingComplete);
 
 const UNGROUPED_KEY = '__ungrouped__';
 const MAPPING_ROW_ESTIMATED_HEIGHT = 30;
@@ -430,7 +433,7 @@ function SemanticBlockRows({
   const baseKey = `${base.token.type}::${base.token.key}`;
   const isVirtualStarBase = base.token.key === SEMANTIC_WILDCARD_TYPE;
   const isBaseOrphan = !isVirtualStarBase && orphanKeys.has(baseKey);
-  const isBaseBlockingLock = !isVirtualStarBase && isTemplateMappingBlockingLock(base);
+  const isBaseBlockingLock = !isVirtualStarBase && !validateIsTemplateMappingComplete.test(base);
   const isBaseSelected = selectedMappingKeys.has(baseKey);
   const isBaseIgnored = base.ignored === true;
   const type = base.token.key;

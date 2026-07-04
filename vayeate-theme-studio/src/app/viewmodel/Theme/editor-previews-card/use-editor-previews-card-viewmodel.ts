@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
@@ -7,9 +7,11 @@ import type { TokenKey } from '../../../../model/Common/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, Theme, ThemePreviewTokenRefField } from '../../../../model/Theme/schema/theme-schemas';
 import type { ContrastVariable, Mapping } from '../../../../model/Template/schema/template-schemas';
 import type { TokenizedPreview } from '../../../../model/Theme/preview-types';
+import type { ScopeColorMap } from '../../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { ThemePreviewStore } from '../../../../domain/state/Theme/ui/theme-preview-store';
 import { ThemeDetailsCardActionType } from '../../../actions/Theme/theme-details-card/theme-details-card-action-type';
+import { EditorPreviewsCardActionType } from '../../../actions/Theme/editor-previews-card/editor-previews-card-action-type';
 
 const themeUiStore = container.resolve(ThemeUiStore);
 const themePreviewStore = container.resolve(ThemePreviewStore);
@@ -28,6 +30,7 @@ export interface EditorPreviewsCardViewModel {
   contrastAssignments: readonly ContrastAssignment[];
   contrastVariables: readonly ContrastVariable[];
   mappings: readonly Mapping[];
+  scopeColorMap: ScopeColorMap;
   idePrimaryTokenRef: TokenKey | null;
   onChangeIdePrimaryTokenRef: (tokenKey: TokenKey | null) => void;
   ideForegroundTokenRef: TokenKey | null;
@@ -126,6 +129,7 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     themePreviewStore.api,
     (state) => state.state.editorPreviewsGeneration,
   );
+  const scopeColorMap = useStore(themePreviewStore.api, (state) => state.state.scopeColorMap);
   const panePreviewColorAssignments = useStore(
     themeUiStore.api,
     useShallow((state) => state.state.panePreviewColorAssignments),
@@ -143,6 +147,10 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     () => (themeTemplateRef ? { templateRef: themeTemplateRef } : null),
     [themeTemplateRef],
   );
+
+  useEffect(() => {
+    void dispatch({ type: EditorPreviewsCardActionType.PreviewScopeMapOnRequest });
+  }, [dispatch, scopeThemeInputsGeneration, scopeTemplateInputsGeneration]);
 
   const dispatchPreviewTokenRef = useCallback(
     (tokenRefField: ThemePreviewTokenRefField, value: TokenKey | null) => {
@@ -215,6 +223,7 @@ export function useEditorPreviewsCardViewModel(): EditorPreviewsCardViewModel {
     contrastAssignments,
     contrastVariables: contrastVariablesFromTemplate,
     mappings: templateMappings,
+    scopeColorMap,
     idePrimaryTokenRef,
     onChangeIdePrimaryTokenRef: changeIdePrimaryTokenRef,
     ideForegroundTokenRef,

@@ -7,12 +7,12 @@ import {
   areThemePaneDerivationInputsEqual,
   deriveThemePaneFields,
   selectThemePaneDerivationInputs,
-} from '../../../utils/Theme/derive-theme-pane-fields';
+} from '../../../operations/Theme/theme-operations/theme-utils/derive-theme-pane-fields-operation';
 import {
   areScopeThemeGenerationInputsEqual,
   selectScopeThemeGenerationInputs,
-} from '../../../utils/Theme/scope-theme-generation-inputs';
-import type { ClusterResult } from '../../../utils/Theme/color-clustering';
+} from '../../../operations/Theme/theme-operations/theme-utils/scope-theme-generation-inputs-operation';
+import type { ClusterResult } from '../../../operations/Theme/theme-operations/theme-utils/color-clustering-operation';
 import { initialThemeUiState, type GenerateResult, type LoadState, type ThemeUiState } from './theme-ui-state';
 
 /**

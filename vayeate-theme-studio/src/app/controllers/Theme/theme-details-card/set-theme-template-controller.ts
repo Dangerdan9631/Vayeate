@@ -7,7 +7,7 @@ import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/u
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
 import { ThemePreviewStore } from '../../../../domain/state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { mergeAssignmentsFromTemplate } from '../../../../domain/utils/Template/theme-template-merge';
+import { MergeAssignmentsFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/merge-assignments-from-template-operation';
 import { deriveUndoContext } from '../../../../model/Common/undo-history';
 import { THEME_LOADED_TEMPLATE_SET, THEME_TEMPLATE_SET } from '../../../../model/Common/undo-action-types';
 
@@ -21,6 +21,7 @@ export class SetThemeTemplateController {
     private readonly themePreviewStore: ThemePreviewStore,
     private readonly applyThemeStateAndSchedulePersist: ApplyThemeStateAndSchedulePersistOperation,
     private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
+    private readonly mergeAssignmentsFromTemplate: MergeAssignmentsFromTemplateOperation,
     private readonly setThemeLoadedTemplate: SetThemeLoadedTemplateOperation,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
     private readonly setCurrentUndoStackId: SetCurrentUndoStackIdOperation,
@@ -47,7 +48,7 @@ export class SetThemeTemplateController {
     }));
 
     const before = theme;
-    const merged = mergeAssignmentsFromTemplate(theme, template);
+    const merged = this.mergeAssignmentsFromTemplate.execute(theme, template);
     this.applyThemeStateAndSchedulePersist.execute(merged);
     this.setThemeLoadedTemplate.execute(template);
 

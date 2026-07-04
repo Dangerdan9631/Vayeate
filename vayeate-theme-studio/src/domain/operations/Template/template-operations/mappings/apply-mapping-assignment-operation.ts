@@ -1,18 +1,16 @@
 import { singleton } from 'tsyringe';
-import type { Catalog } from '../../../../../model/Catalog/schema/catalog';
 import type { Template } from '../../../../../model/Template/schema/template-schemas';
 import type {
   TemplateMappingAssignment,
   TemplateMappingId,
 } from '../../../../../model/Template/template-mapping-assignment';
 import { templateMappingIdKey } from '../../../../../model/Template/template-mapping-assignment';
-import { isMappingOrphanForTemplate } from '../../../../utils/Template/is-mapping-orphan-for-template';
 
 export interface ApplyMappingAssignmentInput {
   template: Template;
   mappingIds: readonly TemplateMappingId[];
   assignment: TemplateMappingAssignment;
-  catalogs: readonly Catalog[];
+  orphanMappingIds?: readonly TemplateMappingId[];
 }
 
 /** Applies one validated assignment to a set of persisted template mappings. */
@@ -20,6 +18,7 @@ export interface ApplyMappingAssignmentInput {
 export class ApplyMappingAssignmentOperation {
   execute(input: ApplyMappingAssignmentInput): Template {
     const selectedKeys = new Set(input.mappingIds.map(templateMappingIdKey));
+    const orphanKeys = new Set((input.orphanMappingIds ?? []).map(templateMappingIdKey));
     if (selectedKeys.size === 0) return input.template;
     const hasTarget = input.template.mappings.some((mapping) => selectedKeys.has(templateMappingIdKey({
       tokenKey: mapping.token.key,
@@ -35,12 +34,7 @@ export class ApplyMappingAssignmentOperation {
       if (
         input.assignment.kind === 'color'
         && input.assignment.value === null
-        && isMappingOrphanForTemplate(
-          input.template,
-          mapping.token.key,
-          mapping.token.type,
-          [...input.catalogs],
-        )
+        && orphanKeys.has(templateMappingIdKey(id))
       ) {
         return [];
       }

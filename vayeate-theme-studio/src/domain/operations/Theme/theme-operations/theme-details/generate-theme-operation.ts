@@ -7,10 +7,10 @@ import { getLoadedTheme } from '../../../../state/Theme/data/themes-state';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
 import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import { assertValidThemeFileName } from '../../../../utils/Theme/assert-valid-theme-file-name';
-import { stringifyThemeAsync } from '../../../../utils/Theme/stringify-theme';
-import { generateThemePairAsync } from '../../../../utils/Theme/theme-generator';
-import { toSafeFileName } from '../../../../utils/Theme/to-safe-theme-file-name';
+import { assertValidThemeFileName } from '../theme-utils/assert-valid-theme-file-name-operation';
+import { stringifyThemeAsync } from '../theme-utils/stringify-theme-operation';
+import { generateThemePairAsync } from '../theme-utils/theme-generator-operation';
+import { toSafeFileName } from '../theme-utils/to-safe-theme-file-name-operation';
 
 const EXTENSION_THEMES_EXPORT_PREFIX = 'exthemes';
 

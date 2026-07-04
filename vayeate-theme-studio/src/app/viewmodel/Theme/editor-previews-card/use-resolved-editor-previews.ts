@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { container } from 'tsyringe';
-import type { ContrastVariable, Mapping } from '../../../../model/Template/schema/template-schemas';
+import { useMemo, useRef } from 'react';
+import type { ContrastVariable } from '../../../../model/Template/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment } from '../../../../model/Theme/schema/theme-schemas';
 import type { TokenizedPreview } from '../../../../model/Theme/preview-types';
 import {
@@ -8,13 +7,8 @@ import {
   resolvePreviewLine,
   type PreviewTokenTooltipContext,
   type ResolvedPreviewLine,
-} from '../../../../domain/utils/Theme/resolve-editor-preview-lines';
-import type { ScopeColorMap } from '../../../../domain/utils/Theme/scope-resolver';
-import { ScopeResolverService } from '../../../../gateway/services/Common/scope-resolver-service';
-
-const scopeResolverService = container.resolve(ScopeResolverService);
-
-const EMPTY_SCOPE_COLOR_MAP: ScopeColorMap = { entries: [] };
+} from '../../../../domain/operations/Theme/theme-operations/theme-utils/resolve-editor-preview-lines-operation';
+import type { ScopeColorMap } from '../../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 
 /**
  * Stable cache version from store generations and resolved default foreground colors.
@@ -49,7 +43,7 @@ export interface ResolvedPreview {
  */
 export function useResolvedEditorPreviews(params: {
   previews: readonly TokenizedPreview[];
-  mappings: readonly Mapping[];
+  scopeColorMap: ScopeColorMap;
   colorAssignments: readonly ColorAssignment[];
   contrastAssignments: readonly ContrastAssignment[];
   contrastVariables: readonly ContrastVariable[];
@@ -67,7 +61,7 @@ export function useResolvedEditorPreviews(params: {
 } {
   const {
     previews,
-    mappings,
+    scopeColorMap,
     colorAssignments,
     contrastAssignments,
     contrastVariables,
@@ -78,8 +72,6 @@ export function useResolvedEditorPreviews(params: {
     scopeTemplateInputsGeneration,
     editorPreviewsGeneration,
   } = params;
-
-  const [scopeColorMap, setScopeColorMap] = useState<ScopeColorMap>(EMPTY_SCOPE_COLOR_MAP);
 
   const resolutionCacheVersion = useMemo(
     () =>
@@ -98,33 +90,6 @@ export function useResolvedEditorPreviews(params: {
       defaultEditorFgLight,
     ],
   );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void scopeResolverService
-      .buildScopeColorMap({
-        mappings,
-        colorAssignments,
-        contrastAssignments,
-        contrastVariables,
-      })
-      .then((map: ScopeColorMap | null) => {
-        if (cancelled || map === null) return;
-        setScopeColorMap(map);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    mappings,
-    colorAssignments,
-    contrastAssignments,
-    contrastVariables,
-    scopeThemeInputsGeneration,
-    scopeTemplateInputsGeneration,
-  ]);
 
   const tooltipContext = useMemo(
     (): PreviewTokenTooltipContext => ({

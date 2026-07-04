@@ -4,7 +4,7 @@ import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Tem
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { RemoveGroupFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/groups/remove-group-from-template-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
-import { groupNamesInUseFromTemplate } from '../../../../domain/utils/Template/group-names-in-use-from-template';
+import { GroupNamesInUseFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/group-names-in-use-from-template-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/Template/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
@@ -25,6 +25,7 @@ export class RemoveGroupController {
     private readonly catalogUiStore: CatalogUiStore,
     private readonly themeUiStore: ThemeUiStore,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
+    private readonly groupNamesInUseFromTemplate: GroupNamesInUseFromTemplateOperation,
     private readonly removeGroupFromTemplate: RemoveGroupFromTemplateOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -40,7 +41,7 @@ export class RemoveGroupController {
   run(groupId: string): void {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     if (!template) return;
-    const inUse = groupNamesInUseFromTemplate(template);
+    const inUse = this.groupNamesInUseFromTemplate.execute(template);
     if (inUse.has(groupId)) return;
 
     this.setCurrentUndoStackId.executeForContext(deriveUndoContext({

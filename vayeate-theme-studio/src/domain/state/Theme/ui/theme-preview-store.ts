@@ -3,6 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import { createStore } from 'zustand/vanilla';
 import type { TokenizedPreview } from '../../../../model/Theme/preview-types';
 import type { Template } from '../../../../model/Template/schema/template-schemas';
+import type { ScopeColorMap } from '../../../operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import { initialThemePreviewState, type ThemePreviewState } from './theme-preview-state';
 
 interface ThemePreviewStoreState {
@@ -11,6 +12,7 @@ interface ThemePreviewStoreState {
   setSelectedSampleKey: (value: string) => void;
   setEditorPreviews: (previews: TokenizedPreview[]) => void;
   setLoadedTemplate: (template: Template | null) => void;
+  setScopeColorMap: (scopeColorMap: ScopeColorMap) => void;
 }
 
 /**
@@ -34,6 +36,9 @@ export class ThemePreviewStore {
       setLoadedTemplate: (template: Template | null) => set((storeState) => {
         (storeState.state as ThemePreviewState).loadedTemplateForTheme = template;
         storeState.state.scopeTemplateInputsGeneration += 1;
+      }),
+      setScopeColorMap: (scopeColorMap: ScopeColorMap) => set((storeState) => {
+        storeState.state.scopeColorMap = scopeColorMap;
       }),
     }))
   );

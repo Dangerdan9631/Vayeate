@@ -12,7 +12,7 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Co
 
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 
-import { parseContrastValue } from '../../../../domain/utils/Theme/contrast-utils';
+import { parseContrastValue } from '../../../../domain/operations/Theme/theme-operations/theme-utils/contrast-utils-operation';
 
 import { deriveUndoContext } from '../../../../model/Common/undo-history';
 

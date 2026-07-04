@@ -3,7 +3,7 @@ import { DebouncedThemePersistGateway } from '../../../../../gateway/gateway/The
 import type { Theme } from '../../../../../model/Theme/schema/theme-schemas';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../utils/Theme/theme-assignment-utils';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../theme-utils/theme-assignment-utils-operation';
 
 /**
  * Palette adjustment snapshot committed immediately before a theme pane selection change.

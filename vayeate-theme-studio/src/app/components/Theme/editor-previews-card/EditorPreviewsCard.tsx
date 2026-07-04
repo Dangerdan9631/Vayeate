@@ -17,8 +17,8 @@ import {
   type PreviewTokenTooltipContext,
   type ResolvedPreviewLine,
   type ResolvedPreviewToken,
-} from '../../../../domain/utils/Theme/resolve-editor-preview-lines';
-import { resolveColorForThemeTokenKey } from '../../../../domain/utils/Theme/scope-resolver';
+} from '../../../../domain/operations/Theme/theme-operations/theme-utils/resolve-editor-preview-lines-operation';
+import { resolveColorForThemeTokenKey } from '../../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 
 const DEFAULT_DARK_FG = '#d4d4d4';
 const DEFAULT_LIGHT_FG = '#1f1f1f';
@@ -147,6 +147,7 @@ export function EditorPreviewsCard() {
     contrastAssignments,
     contrastVariables,
     mappings,
+    scopeColorMap,
     idePrimaryTokenRef,
     onChangeIdePrimaryTokenRef,
     ideForegroundTokenRef,
@@ -259,7 +260,7 @@ export function EditorPreviewsCard() {
 
   const { getResolvedPreview, tooltipContext } = useResolvedEditorPreviews({
     previews,
-    mappings,
+    scopeColorMap,
     colorAssignments,
     contrastAssignments,
     contrastVariables,

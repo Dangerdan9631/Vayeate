@@ -4,13 +4,13 @@ import { singleton } from 'tsyringe';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { GetCatalogRefsOperation } from '../../../../domain/operations/Catalog/delete/get-catalog-refs-operation';
 import { LoadCatalogOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-details/load-catalog-operation';
+import { CatalogVersionsByNameFromRefsOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-versions-by-name-from-refs-operation';
+import {
+  MergeMappingsFromCatalogDataOperation,
+  type CatalogDataItem,
+} from '../../../../domain/operations/Catalog/catalog-operations/merge-mappings-from-catalog-data-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
-import {
-  mergeMappingsFromCatalogData,
-  type CatalogDataItem,
-} from '../../../../domain/utils/Catalog/template-catalog-merge';
-import { catalogVersionsByNameFromRefs } from '../../../../domain/utils/Catalog/catalog-versions-by-name-from-refs';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/Template/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
@@ -32,6 +32,8 @@ export class UpdateAllCatalogsController {
     private readonly themeUiStore: ThemeUiStore,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
+    private readonly catalogVersionsByNameFromRefs: CatalogVersionsByNameFromRefsOperation,
+    private readonly mergeMappingsFromCatalogData: MergeMappingsFromCatalogDataOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -47,7 +49,7 @@ export class UpdateAllCatalogsController {
     const template = getCurrentTemplate(this.templatesStore.getStore().state.templates, this.templateUiStore.getStore().state.selectedRef);
     const catalogRefs = this.getCatalogRefs.execute();
     if (!template) return;
-    const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
+    const catalogVersionsByName = this.catalogVersionsByNameFromRefs.execute(catalogRefs);
     const allAtLatest = template.catalogRefs.every((ref) => {
       const versions = catalogVersionsByName[ref.name];
       const latest = versions?.[0];
@@ -82,7 +84,7 @@ export class UpdateAllCatalogsController {
       }
     }
     const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-      mergeMappingsFromCatalogData(catalogData, base.mappings);
+      this.mergeMappingsFromCatalogData.execute(catalogData, base.mappings);
     const newGroups = [...(base.groups ?? [])];
     for (const g of groupsToEnsure) {
       if (!newGroups.includes(g)) newGroups.push(g);

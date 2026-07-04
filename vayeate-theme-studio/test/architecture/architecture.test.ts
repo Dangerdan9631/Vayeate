@@ -31,7 +31,7 @@
  * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../AGENTS.md#layer-electron.mdc) — no domain in main |
  * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../AGENTS.md#viewmodel.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) |
  * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § Actions (payloads) |
- * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (distinct from `deferred` background queue) |
+ * | `gateway/services/*-worker.ts: pure worker entry (domain utility helpers only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (distinct from `deferred` background queue) |
  */
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -580,7 +580,7 @@ describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
 /**
  * @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (distinct from `deferred` background queue).
  */
-describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', () => {
+describe('gateway/services/*-worker.ts: pure worker entry (domain utility helpers only)', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
     if (!isNonTestTsSource(b)) return false;
@@ -591,7 +591,9 @@ describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', 
     const bad: string[] = [];
     for (const m of source.matchAll(IMPORT_FROM_RE)) {
       const p = m[1].replace(/\\/g, '/');
-      if (!/^(\.\.\/)+domain\/utils\//.test(p)) {
+      const isDomainUtils = /^(\.\.\/)+domain\/utils\//.test(p);
+      const isThemeUtilsOperation = /^(\.\.\/)+domain\/operations\/Theme\/theme-operations\/theme-utils\//.test(p);
+      if (!isDomainUtils && !isThemeUtilsOperation) {
         bad.push(p);
       }
     }
@@ -606,7 +608,7 @@ describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', 
   it.each(files)('%s', (file) => {
     const src = readFileSync(file, 'utf8');
     const bad = forbiddenWorkerImportsInSource(src);
-    expect(bad, 'worker entry must import only domain/utils modules').toEqual([]);
+    expect(bad, 'worker entry must import only domain utility helper modules').toEqual([]);
   });
 });
 

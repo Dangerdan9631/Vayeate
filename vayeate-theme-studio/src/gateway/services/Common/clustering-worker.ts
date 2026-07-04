@@ -1,5 +1,5 @@
-import { clusterColors, type ClusterResult } from '../../../domain/utils/Theme/color-clustering';
-import type { PaletteClusterGroupInput } from '../../../domain/utils/Theme/palette-cluster-inputs';
+import { clusterColors, type ClusterResult } from '../../../domain/operations/Theme/theme-operations/theme-utils/color-clustering-operation';
+import type { PaletteClusterGroupInput } from '../../../domain/operations/Theme/theme-operations/theme-utils/palette-cluster-inputs-operation';
 
 /**
  * Message posted to the clustering worker to run one batched cluster job.

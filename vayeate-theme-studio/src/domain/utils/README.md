@@ -10,7 +10,7 @@ Files related to Utils.
 
 ## Contents
 
-- Subfolders: `Catalog`, `Common`, `Template`, `Theme`
+- Subfolders: `Common`
 - Files: None
 
 ## Rules

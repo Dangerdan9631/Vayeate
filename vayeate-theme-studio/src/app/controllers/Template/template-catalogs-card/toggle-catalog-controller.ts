@@ -3,13 +3,13 @@ import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-u
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { GetCatalogRefsOperation } from '../../../../domain/operations/Catalog/delete/get-catalog-refs-operation';
 import { LoadCatalogOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-details/load-catalog-operation';
+import { CatalogVersionsByNameFromRefsOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-versions-by-name-from-refs-operation';
+import {
+  MergeMappingsFromCatalogDataOperation,
+  type CatalogDataItem,
+} from '../../../../domain/operations/Catalog/catalog-operations/merge-mappings-from-catalog-data-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
-import {
-  mergeMappingsFromCatalogData,
-  type CatalogDataItem,
-} from '../../../../domain/utils/Catalog/template-catalog-merge';
-import { catalogVersionsByNameFromRefs } from '../../../../domain/utils/Catalog/catalog-versions-by-name-from-refs';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/Template/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
@@ -51,6 +51,8 @@ export class ToggleCatalogController {
     private readonly themeUiStore: ThemeUiStore,
     private readonly getCatalogRefs: GetCatalogRefsOperation,
     private readonly loadCatalog: LoadCatalogOperation,
+    private readonly catalogVersionsByNameFromRefs: CatalogVersionsByNameFromRefsOperation,
+    private readonly mergeMappingsFromCatalogData: MergeMappingsFromCatalogDataOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -69,7 +71,7 @@ export class ToggleCatalogController {
     if (!template) return;
     const currentlyIncluded = template.catalogRefs.some((r) => r.name === catalogName);
     const include = !currentlyIncluded;
-    const catalogVersionsByName = catalogVersionsByNameFromRefs(catalogRefs);
+    const catalogVersionsByName = this.catalogVersionsByNameFromRefs.execute(catalogRefs);
 
     this.setCurrentUndoStackId.executeForContext(deriveUndoContext({
       tabId: 'templates',
@@ -90,7 +92,7 @@ export class ToggleCatalogController {
     }
     const catalogData = await loadCatalogData(this.loadCatalog, newCatalogRefs);
     const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-      mergeMappingsFromCatalogData(catalogData, base.mappings);
+      this.mergeMappingsFromCatalogData.execute(catalogData, base.mappings);
     let newGroups: string[];
     if (include) {
       newGroups = [...(base.groups ?? [])];

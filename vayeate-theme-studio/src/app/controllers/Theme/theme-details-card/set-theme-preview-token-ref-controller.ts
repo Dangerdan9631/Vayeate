@@ -6,7 +6,7 @@ import { SetThemePreviewTokenRefFieldOperation } from '../../../../domain/operat
 import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { applyHueShift } from '../../../../domain/utils/Theme/color-hsl';
+import { applyHueShift } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-hsl-operation';
 import { deriveUndoContext } from '../../../../model/Common/undo-history';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,

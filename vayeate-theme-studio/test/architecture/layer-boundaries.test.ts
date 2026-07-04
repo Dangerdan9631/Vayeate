@@ -117,6 +117,17 @@ describe('layer boundaries', () => {
     }
   });
 
+  it('keeps viewmodels free of gateway details', async () => {
+    const files = await walk('src/app/viewmodel');
+
+    for (const filePath of files) {
+      const targets = await getRelativeImportTargets(filePath);
+      for (const target of targets) {
+        expect(isInside(target, path.join(sourceRoot, 'gateway')), filePath).toBe(false);
+      }
+    }
+  });
+
   it('keeps top-level authoring handlers thin and free of policy or detail ownership', async () => {
     const files = [
       path.join(sourceRoot, 'app/actions/Common/app-handler.ts'),

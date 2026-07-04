@@ -5,8 +5,8 @@ import {
   type MouseEvent,
   type MutableRefObject,
 } from 'react';
-import type { ClusterResult } from '../../../../domain/utils/Theme/color-clustering';
-import { normalizeThemeHex } from '../../../../domain/utils/Theme/normalize-theme-hex';
+import type { ClusterResult } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-clustering-operation';
+import { normalizeThemeHex } from '../../../../domain/operations/Theme/theme-operations/theme-utils/normalize-theme-hex-operation';
 import type { TriState } from '../../Common/tristate-checkbox/TriStateCheckbox';
 
 const PRIMARY_SINGLE_CLICK_DELAY_MS = 300;

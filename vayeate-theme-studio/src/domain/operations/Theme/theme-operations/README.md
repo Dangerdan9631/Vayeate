@@ -11,7 +11,7 @@ Policy-owned domain operations for the Theme business domain.
 
 ## Contents
 
-- Subfolders: `palette-cluster`, `palette-color-assign`, `palette-hue`, `pickers`, `previews`, `theme-details`, `theme-list`, `theme-pane-selection`, `variables`
+- Subfolders: `palette-cluster`, `palette-color-assign`, `palette-hue`, `pickers`, `previews`, `theme-details`, `theme-list`, `theme-pane-selection`, `theme-utils`, `variables`
 - Files: `types.ts`
 
 ## Rules

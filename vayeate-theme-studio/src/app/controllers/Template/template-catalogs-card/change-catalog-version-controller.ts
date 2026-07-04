@@ -2,12 +2,12 @@ import { singleton } from 'tsyringe';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { LoadCatalogOperation } from '../../../../domain/operations/Catalog/catalog-operations/catalog-details/load-catalog-operation';
+import {
+  MergeMappingsFromCatalogDataOperation,
+  type CatalogDataItem,
+} from '../../../../domain/operations/Catalog/catalog-operations/merge-mappings-from-catalog-data-operation';
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
-import {
-  mergeMappingsFromCatalogData,
-  type CatalogDataItem,
-} from '../../../../domain/utils/Catalog/template-catalog-merge';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/Template/template-operations/template-list/refresh-template-refs-and-select-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
@@ -48,6 +48,7 @@ export class ChangeCatalogVersionController {
     private readonly catalogUiStore: CatalogUiStore,
     private readonly themeUiStore: ThemeUiStore,
     private readonly loadCatalog: LoadCatalogOperation,
+    private readonly mergeMappingsFromCatalogData: MergeMappingsFromCatalogDataOperation,
     private readonly bumpTemplateVersionForEdit: BumpTemplateVersionForEditOperation,
     private readonly saveTemplate: SaveTemplateOperation,
     private readonly refreshTemplateRefsAndSelect: RefreshTemplateRefsAndSelectOperation,
@@ -78,7 +79,7 @@ export class ChangeCatalogVersionController {
     );
     const catalogData = await loadCatalogData(this.loadCatalog, newCatalogRefs);
     const { mappings: newMappings, groupsToEnsure, semanticTokenModifiers, semanticTokenLanguages } =
-      mergeMappingsFromCatalogData(catalogData, base.mappings);
+      this.mergeMappingsFromCatalogData.execute(catalogData, base.mappings);
     const newGroups = [...(base.groups ?? [])];
     for (const g of groupsToEnsure) {
       if (!newGroups.includes(g)) newGroups.push(g);

@@ -1,5 +1,6 @@
 import { singleton } from 'tsyringe';
 import { LoadThemePreviewsController } from '../../../controllers/Theme/editor-previews-card/load-theme-previews-controller';
+import { ResolveEditorPreviewScopeMapController } from '../../../controllers/Theme/editor-previews-card/resolve-editor-preview-scope-map-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/Common/logger';
 import { EditorPreviewsCardActions, EditorPreviewsCardActionType } from './editor-previews-card-action-type';
 
@@ -12,6 +13,7 @@ export class EditorPreviewsCardHandler {
 
   constructor(
     private readonly loadThemePreviews: LoadThemePreviewsController,
+    private readonly resolveEditorPreviewScopeMap: ResolveEditorPreviewScopeMapController,
     loggerFactory: LoggerFactory,
   ) {
     this.log = loggerFactory.create(EditorPreviewsCardHandler.name);
@@ -26,6 +28,8 @@ export class EditorPreviewsCardHandler {
     switch (action.type) {
       case EditorPreviewsCardActionType.PagePreviewsOnLoad:
         return this.loadThemePreviews.run();
+      case EditorPreviewsCardActionType.PreviewScopeMapOnRequest:
+        return this.resolveEditorPreviewScopeMap.run();
     }
 
     this.log.error('Unhandled action (EditorPreviewsCardAction union not exhaustive)', { action });

@@ -4,7 +4,7 @@ import type { ContrastComparisonMethod, ContrastVariableKey } from '../../../../
 import type { Theme } from '../../../../../model/Theme/schema/theme-schemas';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { parseContrastValue, updateContrastAssignment } from '../../../../utils/Theme/contrast-utils';
+import { parseContrastValue, updateContrastAssignment } from '../theme-utils/contrast-utils-operation';
 import type {
   ThemeContrastVariableEditResult,
   ThemeContrastVariableField,

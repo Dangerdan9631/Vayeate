@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../../model/Theme/schema/theme-schemas';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../utils/Theme/theme-assignment-utils';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../theme-utils/theme-assignment-utils-operation';
 
 /**
  * Live palette preview for assign-color (checked refs only); does not persist.

@@ -27,7 +27,7 @@ import {
 } from '../../../../model/Common/undo-action-types';
 import type { UndoAction } from '../../../core/Common/undo-stack-types';
 import type { UndoDiffHandler } from '../../../core/Common/undo-processor';
-import { resolveThemeContrastActionField, THEME_CONTRAST_FIELD_ACTION_TYPES } from '../../../utils/Theme/theme-contrast-undo-utils';
+import { resolveThemeContrastActionField, THEME_CONTRAST_FIELD_ACTION_TYPES } from '../../Theme/theme-operations/theme-utils/theme-contrast-undo-utils-operation';
 import type { SetThemeHueAdjustmentOperation } from '../../Theme/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import type { SetThemeSaturationAdjustmentOperation } from '../../Theme/theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
 import type { SetThemeValueAdjustmentOperation } from '../../Theme/theme-operations/palette-hue/set-theme-value-adjustment-operation';

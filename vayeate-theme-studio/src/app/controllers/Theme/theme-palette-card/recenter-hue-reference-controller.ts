@@ -8,7 +8,7 @@ import { SetThemeOperation } from '../../../../domain/operations/Theme/theme-ope
 import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../domain/utils/Theme/theme-assignment-utils';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../domain/operations/Theme/theme-operations/theme-utils/theme-assignment-utils-operation';
 import { deriveUndoContext } from '../../../../model/Common/undo-history';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,

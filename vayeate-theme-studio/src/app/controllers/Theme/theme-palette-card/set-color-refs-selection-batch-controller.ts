@@ -10,7 +10,7 @@ import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/u
 import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
 import type { ThemeUiState } from '../../../../domain/state/Theme/ui/theme-ui-state';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../domain/utils/Theme/theme-assignment-utils';
+import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../domain/operations/Theme/theme-operations/theme-utils/theme-assignment-utils-operation';
 import { deriveUndoContext } from '../../../../model/Common/undo-history';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,

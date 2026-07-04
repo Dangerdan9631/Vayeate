@@ -1,6 +1,6 @@
 import type { ColorAssignment, Theme, ThemeReference } from '../../../../model/Theme/schema/theme-schemas';
 import type { SelectedColorsDisplay } from '../../../../model/Theme/theme-pane-state';
-import type { ClusterResult } from '../../../utils/Theme/color-clustering';
+import type { ClusterResult } from '../../../operations/Theme/theme-operations/theme-utils/color-clustering-operation';
 
 /**
  * Load phase for theme page or selected theme content.

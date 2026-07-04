@@ -25,9 +25,11 @@ description: Gateway layer patterns for services, gateways, web workers, and sys
   `gateway/services/<Domain>/*-worker.ts` entry files instantiated by a matching
   `*-worker-service.ts`.
 - Worker entry files are **pure compute boundaries**: they may import only
-  `domain/utils/**` modules (no `domain/state`, `domain/operations`,
-  `src/app`, gateways, or stores). Keep request/response message types
-  colocated with the worker entry or in `domain/utils` when shared.
+  worker-safe domain helper modules (`domain/utils/**` or Theme helper
+  operations under `domain/operations/Theme/theme-operations/theme-utils/**`;
+  no `domain/state`, `src/app`, gateways, or stores). Keep request/response
+  message types colocated with the worker entry or in those helper modules when
+  shared.
 - Services own worker lifecycle (spawn, postMessage, terminate) and map results
   back to model types; operations enqueue work through gateways/services, not
   by importing worker entries directly.
