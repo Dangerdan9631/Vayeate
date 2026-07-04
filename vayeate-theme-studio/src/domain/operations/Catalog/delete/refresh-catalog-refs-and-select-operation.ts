@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../model/Catalog/schema/catalog';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Common/background-queue';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Queue/background-queue';
 import { CatalogGateway } from '../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/Catalog/catalog/catalogs-store';
 import { CatalogUiStore } from '../../../state/Catalog/ui/catalog-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 const noopContinuation: ContinuationHandler = {
   onQueue: () => noopContinuation,

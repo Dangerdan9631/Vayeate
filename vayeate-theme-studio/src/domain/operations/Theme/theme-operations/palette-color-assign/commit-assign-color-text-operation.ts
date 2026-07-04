@@ -6,7 +6,8 @@ import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
 import { normalizeHexSafe } from '../theme-utils/color-hex-operation';
 import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../theme-utils/theme-assignment-utils-operation';
-import { buildThemePaletteAssignUndoValue, themePaletteAssignUndoValuesEqual } from '../theme-utils/theme-palette-assign-undo-utils-operation';
+import { buildThemePaletteAssignUndoValue } from '../theme-utils/theme-palette-assign-undo-utils-operation';
+import { ValidateThemePaletteAssignUndoValuesEqual } from '../../../../validations/Theme/theme-validations/validate-theme-palette-assign-undo-values-equal';
 
 /**
  * Input or state shape for theme palette assign color edit result.
@@ -39,6 +40,7 @@ export class CommitAssignColorTextOperation {
     private readonly themeUiStore: ThemeUiStore,
     private readonly themesStore: ThemesStore,
     private readonly debouncedThemePersist: DebouncedThemePersistGateway,
+    private readonly validateThemePaletteAssignUndoValuesEqual: ValidateThemePaletteAssignUndoValuesEqual,
   ) {}
 
   /**
@@ -84,7 +86,7 @@ export class CommitAssignColorTextOperation {
     return {
       before: beforePatch,
       after: afterPatch,
-      changed: !themePaletteAssignUndoValuesEqual(beforePatch, afterPatch),
+      changed: !this.validateThemePaletteAssignUndoValuesEqual.test(beforePatch, afterPatch),
     };
   }
 

@@ -1,6 +1,6 @@
 import { useStore } from 'zustand';
 import { useCallback, useMemo } from 'react';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { ValidateIsTemplateNameValid } from '../../../../domain/validations/Template/template-validations/validate-is-template-name-valid';
 import { CreateTemplateDialogStore } from '../../../../domain/state/Template/ui/create-template-dialog-store';
 import { container } from 'tsyringe';

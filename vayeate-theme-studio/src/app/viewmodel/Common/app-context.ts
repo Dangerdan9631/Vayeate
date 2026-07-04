@@ -1,5 +1,5 @@
 import { createContext } from 'use-context-selector';
-import type { AppAction } from '../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../core/Queue/action-queue/app-action';
 
 /**
  * React context value exposing the action-queue dispatch callback.

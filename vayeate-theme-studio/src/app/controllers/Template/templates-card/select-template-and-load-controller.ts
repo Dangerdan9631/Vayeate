@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
 import { LoadCatalogForDisplayOperation } from '../../../../domain/operations/Catalog/delete/load-catalog-for-display-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { LoadTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/load-template-operation';
 import { SetSelectedTemplateRefOperation } from '../../../../domain/operations/Template/template-operations/template-list/set-selected-template-ref-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
 /**
  * Handles TEMPLATE_TEMPLATES_LIST_ON_COMMIT by selecting and loading a template.

@@ -4,15 +4,15 @@ import { createRoot } from 'react-dom/client';
 import { App } from './app/components/Common/app-shell/App';
 import { container, DependencyContainer } from 'tsyringe';
 import { BootstrapAppController } from './app/core/Common/bootstrap/bootstrap-app-controller';
-import { BackgroundQueue } from './app/core/Common/background-queue/background-queue';
-import { DataIoBackgroundQueue } from './app/core/Common/background-queue/data-io-background-queue';
-import { MainBackgroundQueue } from './app/core/Common/background-queue/main-background-queue';
-import { DeferredBackgroundQueue } from './app/core/Common/background-queue/deferred-background-queue';
+import { BackgroundQueue } from './app/core/Queue/background-queue/background-queue';
+import { DataIoBackgroundQueue } from './app/core/Queue/background-queue/data-io-background-queue';
+import { MainBackgroundQueue } from './app/core/Queue/background-queue/main-background-queue';
+import { DeferredBackgroundQueue } from './app/core/Queue/background-queue/deferred-background-queue';
 import { WindowService } from './gateway/services/Common/window-service';
-import { UndoGateway } from './gateway/gateway/Common/undo/undo-gateway';
+import { UndoGateway } from './gateway/gateway/Undo/undo/undo-gateway';
 import { WindowCallbacksPort } from './domain/operations/Common/app-operations/window-callbacks-port';
-import { BackgroundQueuePort } from './domain/operations/Common/background-queue/background-queue-port';
-import { UndoPersistencePort } from './domain/operations/Common/undo-operations/undo-persistence-port';
+import { BackgroundQueuePort } from './domain/operations/Queue/background-queue/background-queue-port';
+import { UndoPersistencePort } from './domain/operations/Undo/undo-operations/undo-persistence-port';
 
 export function registerRendererQueues(registry: DependencyContainer): void {
   registry.register(BackgroundQueuePort, { useClass: BackgroundQueue });

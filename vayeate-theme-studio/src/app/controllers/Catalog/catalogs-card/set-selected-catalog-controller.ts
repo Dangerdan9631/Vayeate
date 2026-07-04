@@ -1,9 +1,9 @@
 import { singleton } from 'tsyringe';
 import { SetSelectedCatalogOperation } from '../../../../domain/operations/Catalog/delete/set-selected-catalog-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
 /**
  * Updates the selected catalog ref and switches undo context for the catalogs tab.

@@ -1,5 +1,5 @@
 import { CatalogName, Version } from "../../../../model/Common/schema/primitives";
-import { AppAction } from "../../../core/Common/action-queue/app-action";
+import { AppAction } from "../../../core/Queue/action-queue/app-action";
 
 /**
  * Action type constants for the catalogs picker card.

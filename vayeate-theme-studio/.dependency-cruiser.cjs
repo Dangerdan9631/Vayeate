@@ -211,11 +211,11 @@ module.exports = {
       name: 'app-files-stay-in-role-buckets',
       severity: 'error',
       comment:
-        'App files must live under src/app/{actions,components,controllers,viewmodel,core}/{Common,Catalog,Template,Theme}.',
+        'App files must live under src/app/{actions,components,controllers,viewmodel,core}/{Common,Catalog,Template,Theme,Queue,Undo}.',
       from: {
         path: '^src/app/',
         pathNot: [
-          '^src/app/(?:actions|components|controllers|viewmodel|core)/(?:Common|Catalog|Template|Theme)(?:/|$)',
+          '^src/app/(?:actions|components|controllers|viewmodel|core)/(?:Common|Catalog|Template|Theme|Queue|Undo)(?:/|$)',
           '^src/app/(?:README[.]md|[^/]+/README[.]md)',
           '[.](?:test|spec)[.](?:ts|tsx)$'
         ]
@@ -226,11 +226,11 @@ module.exports = {
       name: 'domain-files-stay-in-role-buckets',
       severity: 'error',
       comment:
-        'Domain files must live under src/domain/{operations,validations,state,utils,core}/{Common,Catalog,Template,Theme}.',
+        'Domain files must live under src/domain/{operations,validations,state,utils,core}/{Common,Catalog,Template,Theme,Queue,Undo}.',
       from: {
         path: '^src/domain/',
         pathNot: [
-          '^src/domain/(?:operations|validations|state|utils|core)/(?:Common|Catalog|Template|Theme)(?:/|$)',
+          '^src/domain/(?:operations|validations|state|utils|core)/(?:Common|Catalog|Template|Theme|Queue|Undo)(?:/|$)',
           '^src/domain/(?:README[.]md|[^/]+/README[.]md)'
         ]
       },
@@ -240,11 +240,11 @@ module.exports = {
       name: 'gateway-files-stay-in-role-buckets',
       severity: 'error',
       comment:
-        'Gateway files must live under src/gateway/{gateway,services}/{Common,Catalog,Template,Theme}.',
+        'Gateway files must live under src/gateway/{gateway,services}/{Common,Catalog,Template,Theme,Queue,Undo}.',
       from: {
         path: '^src/gateway/',
         pathNot: [
-          '^src/gateway/(?:gateway|services)/(?:Common|Catalog|Template|Theme)(?:/|$)',
+          '^src/gateway/(?:gateway|services)/(?:Common|Catalog|Template|Theme|Queue|Undo)(?:/|$)',
           '^src/gateway/(?:README[.]md|[^/]+/README[.]md)'
         ]
       },
@@ -254,11 +254,11 @@ module.exports = {
       name: 'model-files-stay-in-domain-buckets',
       severity: 'error',
       comment:
-        'Model files must live under src/model/{Common,Catalog,Template,Theme}.',
+        'Model files must live under src/model/{Common,Catalog,Template,Theme,Queue,Undo}.',
       from: {
         path: '^src/model/',
         pathNot: [
-          '^src/model/(?:Common|Catalog|Template|Theme)(?:/|$)',
+          '^src/model/(?:Common|Catalog|Template|Theme|Queue|Undo)(?:/|$)',
           '^src/model/README[.]md$'
         ]
       },

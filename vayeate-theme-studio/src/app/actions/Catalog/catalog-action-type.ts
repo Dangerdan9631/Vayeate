@@ -4,7 +4,7 @@ import { CatalogBulkAddDialogActions } from "./bulk-add-dialog/catalog-bulk-add-
 import { CatalogDetailsCardActions } from "./catalog-details-card/catalog-details-card-action-type";
 import { TokensCardActions } from "./tokens-card/tokens-card-action-type";
 import { CatalogPageActions } from "./catalog-page/catalog-page-action-type";
-import type { AppAction } from '../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../core/Queue/action-queue/app-action';
 import {
   isCatalogBulkAddDialogAction,
   tryCoalesceCatalogBulkAddDialogAction,

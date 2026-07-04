@@ -4,15 +4,15 @@ import type { ContrastVariableKey } from '../../../../model/Common/schema/primit
 
 import { SetContrastUseDarkForLightOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-contrast-use-dark-for-light-operation';
 
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
 
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
-import { THEME_CONTRAST_USE_DARK_FOR_LIGHT_SET } from '../../../../model/Common/undo-action-types';
+import { THEME_CONTRAST_USE_DARK_FOR_LIGHT_SET } from '../../../../model/Undo/undo-action-types';
 
 
 

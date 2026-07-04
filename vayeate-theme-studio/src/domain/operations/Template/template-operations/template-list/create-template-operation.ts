@@ -3,7 +3,7 @@ import { templateDataFileKey } from '../../../../../model/Common/data-path-keys'
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
 import { createTemplateWithParams } from '../../../../../model/Template/factories/template-factory';
 import { singleton } from 'tsyringe';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 /**
  * Creates template and updates list or selection state.

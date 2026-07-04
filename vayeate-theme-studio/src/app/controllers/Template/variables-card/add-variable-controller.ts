@@ -12,15 +12,15 @@ import { getTemplateAddVariableDraftKey } from '../../../../domain/state/Templat
 import type { TemplateVariableKind } from '../../../../model/Template/template-variable-kind';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordTemplateUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-template-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/Template/template-undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import {
   TEMPLATE_COLOR_VARIABLE_ADDED,
   TEMPLATE_CONTRAST_VARIABLE_ADDED,
   TEMPLATE_STYLE_VARIABLE_ADDED,
-} from '../../../../model/Common/undo-action-types';
+} from '../../../../model/Undo/undo-action-types';
 
 /**
  * Handles TEMPLATE_VARIABLES_ADD_VARIABLE_BUTTON_ON_CLICK by adding a color or contrast variable.

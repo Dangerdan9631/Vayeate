@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import { UNDO_BASELINE_FRAME_ID } from '../../../../model/Common/undo-history';
+import { UNDO_BASELINE_FRAME_ID } from '../../../../model/Undo/undo-history';
 import { useMenuBarViewModel } from '../../../viewmodel/Common/menu-bar/use-menubar-viewmodel';
 
 /**

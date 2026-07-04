@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import { SetStyleUseDarkForLightOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-style-use-dark-for-light-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { THEME_STYLE_USE_DARK_FOR_LIGHT_SET } from '../../../../model/Common/undo-action-types';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { THEME_STYLE_USE_DARK_FOR_LIGHT_SET } from '../../../../model/Undo/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
 /**
  * Orchestrates style use-dark-for-light updates.

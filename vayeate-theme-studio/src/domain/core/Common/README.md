@@ -12,7 +12,7 @@ App-layer infrastructure for the Common domain.
 ## Contents
 
 - Subfolders: None
-- Files: `scheduler.ts`, `undo-manager-v2.ts`, `undo-processor.ts`, `undo-stack-persist-scheduler.ts`, `undo-stack-types.ts`, `undo-stack.ts`
+- Files: None
 
 ## Rules
 

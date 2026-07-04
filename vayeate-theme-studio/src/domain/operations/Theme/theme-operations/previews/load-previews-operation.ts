@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { PreviewGateway } from '../../../../../gateway/gateway/Common/preview/preview-gateway';
 import { ThemePreviewStore } from '../../../../state/Theme/ui/theme-preview-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Loads previews from persistence into the store.

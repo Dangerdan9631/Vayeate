@@ -170,9 +170,9 @@ describe('component workflow compliance', () => {
 
   it('prevents placeholder undo actions and whole-application undo snapshots', async () => {
     const undoSources = await Promise.all([
-      readText('src/domain/core/Common/undo-stack-types.ts'),
-      readText('src/domain/core/Common/undo-processor.ts'),
-      readText('src/domain/core/Common/undo-stack.ts'),
+      readText('src/domain/core/Undo/undo-stack-types.ts'),
+      readText('src/domain/core/Undo/undo-processor.ts'),
+      readText('src/domain/core/Undo/undo-stack.ts'),
     ]);
     const combined = undoSources.join('\n');
 
@@ -185,8 +185,8 @@ describe('component workflow compliance', () => {
 
   it('keeps undo summaries read-only and context-scoped', async () => {
     const [stateSource, modelSource] = await Promise.all([
-      readText('src/domain/state/Common/undo-stack/undo-stack-state.ts'),
-      readText('src/model/Common/undo-history.ts'),
+      readText('src/domain/state/Undo/undo-stack/undo-stack-state.ts'),
+      readText('src/model/Undo/undo-history.ts'),
     ]);
 
     expect(stateSource).toContain('UndoAvailabilitySummary');

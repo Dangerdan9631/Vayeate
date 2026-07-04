@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/Theme/theme-operations/pickers/set-theme-pane-selections-operation';
 import { LoadTemplateSnapshotOperation } from '../../../../domain/operations/Template/template-operations/template-details/load-template-snapshot-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';

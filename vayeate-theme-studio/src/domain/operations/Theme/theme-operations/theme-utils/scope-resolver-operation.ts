@@ -123,20 +123,6 @@ export function selectScopeColorMapInputs(
 }
 
 /**
- * Compares two scope color map input snapshots for memoization invalidation.
- *
- * @param before - Previous scope map inputs.
- * @param after - Current scope map inputs.
- * @returns True when serialized inputs are identical.
- */
-export function areScopeColorMapInputsEqual(
-  before: ScopeColorMapInputs,
-  after: ScopeColorMapInputs,
-): boolean {
-  return hashScopeColorMapInputs(before) === hashScopeColorMapInputs(after);
-}
-
-/**
  * Stable version string for cache keys; changes only when assignment values read by buildScopeColorMap change.
  *
  * @param inputs - Scope color map inputs to fingerprint.

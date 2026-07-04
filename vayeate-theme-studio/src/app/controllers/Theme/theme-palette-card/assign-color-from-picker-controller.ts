@@ -1,12 +1,12 @@
 import { singleton } from 'tsyringe';
 import { CommitAssignColorTextOperation } from '../../../../domain/operations/Theme/theme-operations/palette-color-assign/commit-assign-color-text-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import type { ThemePaneState } from '../../../../model/Theme/theme-pane-state';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import { recordPaletteColorAssignUndo } from './record-palette-color-assign-undo';
 
 /**

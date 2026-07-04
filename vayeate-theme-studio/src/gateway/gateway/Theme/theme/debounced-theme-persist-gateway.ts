@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import { BackgroundQueuePort } from '../../../../domain/operations/Common/background-queue/background-queue-port';
+import { BackgroundQueuePort } from '../../../../domain/operations/Queue/background-queue/background-queue-port';
 import { themeDataFileKey } from '../../../../model/Common/data-path-keys';
 import type { Theme } from '../../../../model/Theme/schema/theme-schemas';
 import { ThemeGateway } from './theme-gateway';

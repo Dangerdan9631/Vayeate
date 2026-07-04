@@ -1,4 +1,4 @@
-import type { AppAction } from '../../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../../core/Queue/action-queue/app-action';
 
 /**
  * Action type literals dispatched from the Editor Previews Card.

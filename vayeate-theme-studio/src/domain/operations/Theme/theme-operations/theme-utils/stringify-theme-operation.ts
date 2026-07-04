@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 import type { GeneratedTheme } from './theme-generator-operation';
-import { yieldToEventLoop } from '../../../../core/Common/scheduler';
+import { yieldToEventLoop } from '../../../../core/Queue/scheduler';
 
 /**
  * Serializes a generated theme to JSON with four-space indent.

@@ -6,7 +6,7 @@ import { TemplateCatalogsCardActions } from "./template-catalogs-card/template-c
 import { MappingsCardActions } from "./mappings-card/mappings-card-action-type";
 import { GroupsCardActions } from "./groups-card/groups-card-action-type";
 import { VariablesCardActions } from "./variables-card/variables-card-action-type";
-import type { AppAction } from '../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../core/Queue/action-queue/app-action';
 import { isTemplatePageAction } from './template-page/template-page-action-type';
 import { isTemplatesCardAction } from './templates-card/templates-card-action-type';
 import { isTemplateDetailsCardAction } from './template-details-card/template-details-card-action-type';

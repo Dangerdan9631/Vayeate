@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/Common/schema/primitives';
 import { SetColorVariableDarkOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-color-variable-dark-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { THEME_COLOR_VARIABLE_DARK_SET } from '../../../../model/Common/undo-action-types';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { THEME_COLOR_VARIABLE_DARK_SET } from '../../../../model/Undo/undo-action-types';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 
 /**

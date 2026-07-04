@@ -9,11 +9,11 @@ import { SetThemeSaveErrorOperation } from '../../../../domain/operations/Theme/
 import { LoadThemeRefsOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/load-theme-refs-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/Theme/theme-operations/pickers/set-theme-pane-selections-operation';
 import { SetThemeOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-theme-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { THEME_VERSION_INCREMENTED } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { THEME_VERSION_INCREMENTED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Orchestrates increment theme version work for the theme UI.

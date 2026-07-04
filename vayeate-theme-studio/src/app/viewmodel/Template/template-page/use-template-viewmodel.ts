@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { TemplatePageActionType } from '../../../actions/Template/template-page/template-page-action-type';
 import { container } from 'tsyringe';
 import { CreateTemplateDialogStore } from '../../../../domain/state/Template/ui/create-template-dialog-store';

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, type ReactNode } from 'react';
 import { container } from 'tsyringe';
-import { ActionQueue } from '../../../core/Common/action-queue/action-queue';
-import { AppAction } from '../../../core/Common/action-queue/app-action';
+import { ActionQueue } from '../../../core/Queue/action-queue/action-queue';
+import { AppAction } from '../../../core/Queue/action-queue/app-action';
 import { AppContextValue, AppContext } from '../../../viewmodel/Common/app-context';
 
 /**

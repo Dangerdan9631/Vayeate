@@ -8,10 +8,10 @@ import { getCurrentCatalog } from '../../../../domain/state/Catalog/catalog/cata
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { CATALOG_SYNCED } from '../../../../model/Common/undo-action-types';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { CATALOG_SYNCED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Pulls token data from remote sources into the selected catalog version.

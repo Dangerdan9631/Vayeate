@@ -3,16 +3,16 @@ import type { ThemePreviewTokenRefField } from '../../../../model/Theme/schema/t
 import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/Theme/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import { SetThemeHueReferenceHexOperation } from '../../../../domain/operations/Theme/theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
 import { SetThemePreviewTokenRefFieldOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-theme-preview-token-ref-field-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { applyHueShift } from '../../../../domain/operations/Theme/theme-operations/theme-utils/color-hsl-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
   THEME_PREVIEW_TOKEN_REF_SET,
-} from '../../../../model/Common/undo-action-types';
+} from '../../../../model/Undo/undo-action-types';
 
 /**
  * Set a preview token ref field (THEME_DETAILS_PREVIEW_TOKEN_REF_LIST_ON_COMMIT). Updates theme, saves, recenters hue.

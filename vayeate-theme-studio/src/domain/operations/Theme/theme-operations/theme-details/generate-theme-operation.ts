@@ -6,8 +6,8 @@ import { getCurrentTemplate, TemplatesStore } from '../../../../state/Template/d
 import { getLoadedTheme } from '../../../../state/Theme/data/themes-state';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import { assertValidThemeFileName } from '../theme-utils/assert-valid-theme-file-name-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import { ValidateIsThemeFileNameValid } from '../../../../validations/Theme/theme-validations/validate-is-theme-file-name-valid';
 import { stringifyThemeAsync } from '../theme-utils/stringify-theme-operation';
 import { generateThemePairAsync } from '../theme-utils/theme-generator-operation';
 import { toSafeFileName } from '../theme-utils/to-safe-theme-file-name-operation';
@@ -28,6 +28,7 @@ export class GenerateThemeOperation {
     private readonly templateGateway: TemplateGateway,
     private readonly fileSystemService: FileSystemService,
     private readonly enqueueBackgroundAction: EnqueueBackgroundQueueActionOperation,
+    private readonly validateIsThemeFileNameValid: ValidateIsThemeFileNameValid,
   ) { }
 
   /**
@@ -71,8 +72,12 @@ export class GenerateThemeOperation {
           const { dark, light } = await generateThemePairAsync(themeForGeneration, template);
           const darkFileName = toSafeFileName(themeForGeneration.name, false);
           const lightFileName = toSafeFileName(themeForGeneration.name, true);
-          assertValidThemeFileName(darkFileName);
-          assertValidThemeFileName(lightFileName);
+          if (!this.validateIsThemeFileNameValid.test(darkFileName)) {
+            throw new Error(`Invalid theme output filename: ${darkFileName}`);
+          }
+          if (!this.validateIsThemeFileNameValid.test(lightFileName)) {
+            throw new Error(`Invalid theme output filename: ${lightFileName}`);
+          }
           const darkPath = `${EXTENSION_THEMES_EXPORT_PREFIX}/${darkFileName}`;
           const lightPath = `${EXTENSION_THEMES_EXPORT_PREFIX}/${lightFileName}`;
           await this.fileSystemService.saveFile(darkPath, await stringifyThemeAsync(dark));

@@ -1,5 +1,5 @@
-import type { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
-import type { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
+import type { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
+import type { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
 import type { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import type { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import type { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
@@ -10,8 +10,8 @@ import {
   THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
   THEME_PALETTE_VALUE_ADJUSTMENT_SET,
   THEME_PANE_SELECTIONS_SET,
-} from '../../../../model/Common/undo-action-types';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+} from '../../../../model/Undo/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
 /**
  * Shape used by the Theme Variables Card for theme pane selections undo value.

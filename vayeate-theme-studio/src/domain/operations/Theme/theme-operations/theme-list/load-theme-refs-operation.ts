@@ -2,8 +2,8 @@ import { singleton } from 'tsyringe';
 import { ThemeGateway } from '../../../../../gateway/gateway/Theme/theme/theme-gateway';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Loads theme refs from persistence into the store.

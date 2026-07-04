@@ -4,9 +4,9 @@ import { ThemeGateway } from '../../../../../gateway/gateway/Theme/theme/theme-g
 import { getLoadedTheme } from '../../../../state/Theme/data/themes-state';
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { immediateContinuation } from '../../../Common/background-queue/immediate-continuation';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { immediateContinuation } from '../../../Queue/background-queue/immediate-continuation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Loads theme from persistence into the store.

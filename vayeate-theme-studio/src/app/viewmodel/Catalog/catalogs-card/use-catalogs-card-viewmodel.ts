@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/Common/compare-versions';
 import type { CatalogReference } from '../../../../model/Template/schema/template-schemas';
 import { CatalogsCardActionType } from '../../../actions/Catalog/catalogs-card/catalogs-card-action-type';

@@ -10,11 +10,11 @@ import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-s
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { ClearCatalogNewSourceDataOperation } from '../../../../domain/operations/Catalog/catalog-operations/sources/clear-catalog-new-source-data-operation';
-import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { CATALOG_SOURCE_ADDED } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { CATALOG_SOURCE_ADDED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Appends the new-source row to the selected remote catalog and records undo.

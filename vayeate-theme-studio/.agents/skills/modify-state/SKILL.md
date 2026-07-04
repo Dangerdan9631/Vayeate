@@ -7,7 +7,7 @@ description: Zustand store conventions, store shape patterns, access rules by co
 
 ## Store shape
 
-- State lives in domain-owned **zustand vanilla stores** under `src/domain/state/<Domain>/**`, where `<Domain>` is `Common`, `Catalog`, `Template`, or `Theme`. Use subfolders such as `src/domain/state/Catalog/catalog/`, `src/domain/state/Catalog/ui/`, and `src/domain/state/Common/undo-stack/`.
+- State lives in domain-owned **zustand vanilla stores** under `src/domain/state/<Domain>/**`, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`. Use subfolders such as `src/domain/state/Catalog/catalog/`, `src/domain/state/Queue/ui/`, and `src/domain/state/Undo/undo-stack/`.
 - Use `createStore(...)` with **`immer(...)`** middleware.
 - Each store exposes:
   - One data root such as `state` or `config`

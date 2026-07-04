@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { LoadAppConfigOperation } from '../../../../domain/operations/Common/app-operations/load-app-config-operation';
-import { ClearPersistedUndoOperation } from '../../../../domain/operations/Common/undo-operations/clear-persisted-undo-operation';
-import { LoadUndoHistoryOperation } from '../../../../domain/operations/Common/undo-operations/load-undo-history-operation';
+import { ClearPersistedUndoOperation } from '../../../../domain/operations/Undo/undo-operations/clear-persisted-undo-operation';
+import { LoadUndoHistoryOperation } from '../../../../domain/operations/Undo/undo-operations/load-undo-history-operation';
 import { InitializeWindowCallbacksController } from '../window/initialize-window-callbacks-controller';
 
 /**

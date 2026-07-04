@@ -5,8 +5,8 @@ import { ValidateIsMappingOrphanForTemplate } from '../../../../domain/validatio
 import { BumpTemplateVersionForEditOperation } from '../../../../domain/operations/Template/template-operations/template-details/bump-template-version-for-edit-operation';
 import { SaveTemplateOperation } from '../../../../domain/operations/Template/template-operations/template-details/save-template-operation';
 import { RefreshTemplateRefsAndSelectOperation } from '../../../../domain/operations/Template/template-operations/template-list/refresh-template-refs-and-select-operation';
-import { RecordTemplateUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-template-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/Template/template-undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
@@ -14,14 +14,14 @@ import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
 import type { TemplateMappingAssignment } from '../../../../model/Template/template-mapping-assignment';
 import { templateMappingIdKey } from '../../../../model/Template/template-mapping-assignment';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import {
   TEMPLATE_MAPPING_COLOR_REF_SET,
   TEMPLATE_MAPPING_CONTRAST_REF_SET,
   TEMPLATE_MAPPING_GROUP_REF_SET,
   TEMPLATE_MAPPING_IGNORED_SET,
   TEMPLATE_MAPPING_STYLE_REF_SET,
-} from '../../../../model/Common/undo-action-types';
+} from '../../../../model/Undo/undo-action-types';
 
 function matchesSelectedFilters(
   mapping: { token: { key: string }; colorVariableRef: string | null; contrastVariableRef: string | null; styleVariableRef?: string | null },

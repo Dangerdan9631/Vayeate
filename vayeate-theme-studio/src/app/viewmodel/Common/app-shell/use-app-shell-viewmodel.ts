@@ -3,7 +3,7 @@ import { container } from 'tsyringe';
 import type { TabId } from '../../../../model/Common/app-ui';
 import { UiStore } from '../../../../domain/state/Common/ui/ui-store';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { AppShellActionType } from '../../../actions/Common/app-shell/app-shell-action-type';
 
 /**

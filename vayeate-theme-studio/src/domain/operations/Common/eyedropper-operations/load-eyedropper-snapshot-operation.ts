@@ -2,8 +2,8 @@ import { singleton } from 'tsyringe';
 import { ScreenshotService } from '../../../../gateway/services/Common/screenshot-service';
 import type { EyedropperDisplaySnapshotEntry } from '../../../../model/Common/eyedropper';
 import { EyedropperUiStore } from '../../../state/Common/ui/eyedropper-ui-store';
-import { yieldToEventLoop } from '../../../core/Common/scheduler';
-import { EnqueueBackgroundQueueActionOperation } from '../background-queue/enqueue-background-queue-action-operation';
+import { yieldToEventLoop } from '../../../core/Queue/scheduler';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 /**
  * Loads eyedropper snapshot from persistence into the store.

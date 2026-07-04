@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { templateDataFileKey } from '../../../../../model/Common/data-path-keys';
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Deletes template and refreshes related list or selection state.

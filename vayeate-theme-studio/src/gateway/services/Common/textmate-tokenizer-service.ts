@@ -3,7 +3,7 @@ import { createOnigScanner, createOnigString, loadWASM } from 'vscode-oniguruma'
 import { Registry } from 'vscode-textmate';
 import type { IRawGrammar } from 'vscode-textmate';
 import type { TokenizedLine, TokenizedToken } from '../../../model/Theme/preview-types';
-import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery } from '../../../domain/core/Common/scheduler';
+import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery } from '../../../domain/core/Queue/scheduler';
 /**
  * Oniguruma bindings passed to the TextMate registry after WASM load.
  */

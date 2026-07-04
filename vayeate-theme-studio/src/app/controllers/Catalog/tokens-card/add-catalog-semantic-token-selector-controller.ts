@@ -9,11 +9,11 @@ import { getCurrentCatalog } from '../../../../domain/state/Catalog/catalog/cata
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { CATALOG_SEMANTIC_SELECTOR_ADDED } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { CATALOG_SEMANTIC_SELECTOR_ADDED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Merges a typed semantic selector string into the catalog registry lists.

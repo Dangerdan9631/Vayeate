@@ -139,7 +139,7 @@ describe('PascalCase filenames for .tsx under src/app', () => {
   });
 });
 
-/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/app/{actions,components,controllers,viewmodel,core}/{Common,Catalog,Template,Theme}`). */
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/app/{actions,components,controllers,viewmodel,core}/{Common,Catalog,Template,Theme,Queue,Undo}`). */
 describe('src/app files stay in role/domain buckets', () => {
   const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
     const b = basename(f);
@@ -150,11 +150,11 @@ describe('src/app files stay in role/domain buckets', () => {
   });
 
   it.each(files)('%s', (file) => {
-    expect(sourceRel(file)).toMatch(/^app\/(?:actions|components|controllers|viewmodel|core)\/(?:Common|Catalog|Template|Theme)\//);
+    expect(sourceRel(file)).toMatch(/^app\/(?:actions|components|controllers|viewmodel|core)\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
   });
 });
 
-/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/domain/{operations,validations,state,utils,core}/{Common,Catalog,Template,Theme}`). */
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/domain/{operations,validations,state,utils,core}/{Common,Catalog,Template,Theme,Queue,Undo}`). */
 describe('src/domain files stay in role/domain buckets', () => {
   const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
     const b = basename(f);
@@ -164,11 +164,11 @@ describe('src/domain files stay in role/domain buckets', () => {
   });
 
   it.each(files)('%s', (file) => {
-    expect(sourceRel(file)).toMatch(/^domain\/(?:operations|validations|state|utils|core)\/(?:Common|Catalog|Template|Theme)\//);
+    expect(sourceRel(file)).toMatch(/^domain\/(?:operations|validations|state|utils|core)\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
   });
 });
 
-/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/gateway/{gateway,services}/{Common,Catalog,Template,Theme}`). */
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/gateway/{gateway,services}/{Common,Catalog,Template,Theme,Queue,Undo}`). */
 describe('src/gateway files stay in role/domain buckets', () => {
   const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
     const b = basename(f);
@@ -178,11 +178,11 @@ describe('src/gateway files stay in role/domain buckets', () => {
   });
 
   it.each(files)('%s', (file) => {
-    expect(sourceRel(file)).toMatch(/^gateway\/(?:gateway|services)\/(?:Common|Catalog|Template|Theme)\//);
+    expect(sourceRel(file)).toMatch(/^gateway\/(?:gateway|services)\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
   });
 });
 
-/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/model/{Common,Catalog,Template,Theme}`). */
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/model/{Common,Catalog,Template,Theme,Queue,Undo}`). */
 describe('src/model files stay in domain buckets', () => {
   const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
     const b = basename(f);
@@ -192,7 +192,7 @@ describe('src/model files stay in domain buckets', () => {
   });
 
   it.each(files)('%s', (file) => {
-    expect(sourceRel(file)).toMatch(/^model\/(?:Common|Catalog|Template|Theme)\//);
+    expect(sourceRel(file)).toMatch(/^model\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
   });
 });
 
@@ -388,26 +388,26 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
     return true;
   }
 
-  if (rel === 'domain/operations/Common/undo-operations/apply-catalog-source-url-undo-operation.ts') {
+  if (rel === 'domain/operations/Catalog/catalog-undo-operations/apply-catalog-source-url-undo-operation.ts') {
     return operationType === 'ApplyCatalogUndoStateOperation';
   }
-  if (rel === 'domain/operations/Common/undo-operations/apply-catalog-undo-state-operation.ts') {
+  if (rel === 'domain/operations/Catalog/catalog-undo-operations/apply-catalog-undo-state-operation.ts') {
     return operationType === 'SaveCatalogOperation' || operationType === 'RefreshCatalogRefsAndSelectOperation';
   }
-  if (rel === 'domain/operations/Common/undo-operations/apply-template-undo-state-operation.ts') {
+  if (rel === 'domain/operations/Template/template-undo-operations/apply-template-undo-state-operation.ts') {
     return operationType === 'SaveTemplateOperation' || operationType === 'RefreshTemplateRefsAndSelectOperation';
   }
-  if (rel === 'domain/operations/Common/undo-operations/apply-theme-undo-state-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-undo-operations/apply-theme-undo-state-operation.ts') {
     return operationType === 'SetThemeOperation' || operationType === 'ApplyThemeStateAndSchedulePersistOperation';
   }
-  if (rel === 'domain/operations/Common/undo-operations/restore-theme-palette-assign-undo-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-undo-operations/restore-theme-palette-assign-undo-operation.ts') {
     return operationType === 'ApplyThemeUndoStateOperation';
   }
   if (rel === 'domain/operations/Theme/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation.ts') {
     return operationType === 'ApplyThemeStateOperation';
   }
 
-  if (rel === 'domain/operations/Common/undo-operations/apply-catalog-lifecycle-undo-operation.ts') {
+  if (rel === 'domain/operations/Catalog/catalog-undo-operations/apply-catalog-lifecycle-undo-operation.ts') {
     return (
       operationType === 'DeleteCatalogOperation' ||
       operationType === 'ApplyCatalogUndoStateOperation' ||
@@ -416,7 +416,7 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
       operationType === 'RefreshCatalogRefsAndSelectOperation'
     );
   }
-  if (rel === 'domain/operations/Common/undo-operations/apply-template-lifecycle-undo-operation.ts') {
+  if (rel === 'domain/operations/Template/template-undo-operations/apply-template-lifecycle-undo-operation.ts') {
     return (
       operationType === 'DeleteTemplateOperation' ||
       operationType === 'ApplyTemplateUndoStateOperation' ||
@@ -426,7 +426,7 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
       operationType === 'SetTemplateOperation'
     );
   }
-  if (rel === 'domain/operations/Common/undo-operations/apply-theme-lifecycle-undo-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-undo-operations/apply-theme-lifecycle-undo-operation.ts') {
     return (
       operationType === 'DeleteThemeOperation' ||
       operationType === 'ApplyThemeUndoStateOperation' ||
@@ -438,19 +438,19 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
   }
 
   if (
-    rel === 'domain/operations/Common/undo-operations/record-catalog-undo-operation.ts' ||
-    rel === 'domain/operations/Common/undo-operations/record-template-undo-operation.ts' ||
-    rel === 'domain/operations/Common/undo-operations/record-theme-undo-operation.ts'
+    rel === 'domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation.ts' ||
+    rel === 'domain/operations/Template/template-undo-operations/record-template-undo-operation.ts' ||
+    rel === 'domain/operations/Theme/theme-undo-operations/record-theme-undo-operation.ts'
   ) {
     return operationType === 'RecordUndoEntryOperation' || operationType === 'BuildUniversalUndoProcessorOperation';
   }
 
   if (
-    rel === 'domain/operations/Common/undo-operations/load-undo-history-operation.ts' ||
-    rel === 'domain/operations/Common/undo-operations/set-current-undo-stack-id-operation.ts' ||
-    rel === 'domain/operations/Common/undo-operations/undo-operation.ts' ||
-    rel === 'domain/operations/Common/undo-operations/redo-operation.ts' ||
-    rel === 'domain/operations/Common/undo-operations/history-go-to-operation.ts'
+    rel === 'domain/operations/Undo/undo-operations/load-undo-history-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/undo-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/redo-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/history-go-to-operation.ts'
   ) {
     return operationType === 'BuildUniversalUndoProcessorOperation';
   }

@@ -11,13 +11,13 @@ description: Gateway layer patterns for services, gateways, web workers, and sys
 
 - Talk to **outside systems**: filesystem, IPC bridge, shell, native APIs.
 - **No** domain/business rules; system-oriented error handling is OK.
-- Live under `src/gateway/services/<Domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, or `Theme`. Shared system services currently belong under `src/gateway/services/Common/`.
+- Live under `src/gateway/services/<Domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`. Shared system services currently belong under `src/gateway/services/Common/`.
 
 ## Gateways
 
 - **Abstractions** over services: parse/serialize, map JSON ↔ model types.
 - **No** business logic; conversion and I/O orchestration at the edge only.
-- Live under `src/gateway/gateway/<Domain>/<system-or-domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, or `Theme`.
+- Live under `src/gateway/gateway/<Domain>/<system-or-domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`.
 
 ## Web Workers
 

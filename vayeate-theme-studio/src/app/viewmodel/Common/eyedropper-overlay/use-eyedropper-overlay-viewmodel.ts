@@ -1,7 +1,7 @@
 import { EyedropperUiStore } from '../../../../domain/state/Common/ui/eyedropper-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { useCallback, useMemo } from 'react';
 import type { HexColor } from '../../../../model/Common/schema/primitives';
 import type { Rect } from '../../../../model/Common/rect';

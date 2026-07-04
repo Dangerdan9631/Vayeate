@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { CloseWindowController } from '../../../controllers/Common/window/close-window-controller';
-import { HistoryGoToController } from '../../../core/Common/undo/history-go-to-controller';
-import { RedoController } from '../../../core/Common/undo/redo-controller';
-import { UndoController } from '../../../core/Common/undo/undo-controller';
+import { HistoryGoToController } from '../../../core/Undo/undo/history-go-to-controller';
+import { RedoController } from '../../../core/Undo/undo/redo-controller';
+import { UndoController } from '../../../core/Undo/undo/undo-controller';
 import { ForceReloadWindowController } from '../../../controllers/Common/app-shell/force-reload-window-controller';
 import { ReloadWindowController } from '../../../controllers/Common/app-shell/reload-window-controller';
 import { ToggleDevToolsController } from '../../../controllers/Common/app-shell/toggle-dev-tools-controller';

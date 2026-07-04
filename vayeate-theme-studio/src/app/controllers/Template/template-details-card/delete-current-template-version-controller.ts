@@ -9,10 +9,10 @@ import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-u
 import { getCurrentTemplate, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordTemplateUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-template-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { TEMPLATE_VERSION_DELETED } from '../../../../model/Common/undo-action-types';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/Template/template-undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { TEMPLATE_VERSION_DELETED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Handles TEMPLATE_DETAILS_DELETE_VERSION_BUTTON_ON_CLICK by deleting the selected version.

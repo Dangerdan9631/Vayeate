@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/Common/compare-versions';
 import { GroupsCardActionType } from '../../../actions/Template/groups-card/groups-card-action-type';
 import { container } from 'tsyringe';

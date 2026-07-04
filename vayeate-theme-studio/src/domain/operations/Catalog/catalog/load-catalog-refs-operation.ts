@@ -2,8 +2,8 @@ import { singleton } from 'tsyringe';
 import { CatalogGateway } from '../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/Catalog/catalog/catalogs-store';
 import { CatalogUiStore } from '../../../state/Catalog/ui/catalog-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Queue/background-queue';
 
 /**
  * Lists catalog refs from disk and seeds the catalogs store on first page load.

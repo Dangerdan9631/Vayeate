@@ -9,10 +9,10 @@ import { SetTemplateIsCreatingOperation } from '../../../../domain/operations/Te
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordTemplateUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-template-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { TEMPLATE_CREATED } from '../../../../model/Common/undo-action-types';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/Template/template-undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { TEMPLATE_CREATED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Handles TEMPLATE_CREATE_DIALOG_OK_BUTTON_ON_CLICK by creating a new template.

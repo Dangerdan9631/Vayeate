@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Theme } from '../../../../../model/Theme/schema/theme-schemas';
 import { themeDataFileKey } from '../../../../../model/Common/data-path-keys';
 import { ThemeGateway } from '../../../../../gateway/gateway/Theme/theme/theme-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 import { createThemeWithParams } from '../../../../../model/Theme/factories/theme-factory';
 
 /**

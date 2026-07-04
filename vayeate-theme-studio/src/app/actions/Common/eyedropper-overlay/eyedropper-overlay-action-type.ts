@@ -1,8 +1,8 @@
 import type { EyedropperPointerSample } from '../../../../model/Common/eyedropper';
 import type { Size } from '../../../../model/Common/point';
 import type { HexColor } from '../../../../model/Common/schema/primitives';
-import { coalesceLatest, type ActionCoalesceFn } from '../../../core/Common/action-queue/action-coalesce';
-import type { AppAction } from '../../../core/Common/action-queue/app-action';
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/Queue/action-queue/action-coalesce';
+import type { AppAction } from '../../../core/Queue/action-queue/app-action';
 
 /**
  * Action type discriminants for the eyedropper overlay flow.

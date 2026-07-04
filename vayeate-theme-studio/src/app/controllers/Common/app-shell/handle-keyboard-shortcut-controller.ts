@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import type { KeyboardShortcutEvent } from '../../../../domain/operations/Common/app-operations/types';
-import { RedoOperation } from '../../../../domain/operations/Common/undo-operations/redo-operation';
-import { UndoOperation } from '../../../../domain/operations/Common/undo-operations/undo-operation';
+import { RedoOperation } from '../../../../domain/operations/Undo/undo-operations/redo-operation';
+import { UndoOperation } from '../../../../domain/operations/Undo/undo-operations/undo-operation';
 
 /**
  * Handles global keyboard shortcuts registered through the window service.

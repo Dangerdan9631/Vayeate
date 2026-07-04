@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
-import type { UndoHistoryListEntry } from '../../../../model/Common/undo-history';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import type { UndoHistoryListEntry } from '../../../../model/Undo/undo-history';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { AppShellActionType } from '../../../actions/Common/app-shell/app-shell-action-type';
 import { AppMenuActionType } from '../../../actions/Common/menu-bar/app-menu-action-type';
 import { UiStore } from '../../../../domain/state/Common/ui/ui-store';
@@ -9,7 +9,7 @@ import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { AppConfigStore } from '../../../../domain/state/Common/data/app-config-store';
 import { WindowStore } from '../../../../domain/state/Common/ui/window-store';
-import { UndoStackStore } from '../../../../domain/state/Common/undo-stack/undo-stack-store';
+import { UndoStackStore } from '../../../../domain/state/Undo/undo-stack/undo-stack-store';
 
 /**
  * Resolved UI store for menu open state.

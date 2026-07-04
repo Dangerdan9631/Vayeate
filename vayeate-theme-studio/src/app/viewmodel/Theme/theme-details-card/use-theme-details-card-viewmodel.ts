@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { getCurrentTemplateRefs, TemplatesStore } from '../../../../domain/state/Template/data/templates-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { compareVersions } from '../../../../domain/utils/Common/compare-versions';

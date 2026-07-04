@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import type { LoadState } from '../../../../domain/state/Theme/ui/theme-ui-state';
 import { ThemePageActionType } from '../../../actions/Theme/theme-page/theme-page-action-type';

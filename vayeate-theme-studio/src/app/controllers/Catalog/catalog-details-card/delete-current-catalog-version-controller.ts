@@ -7,10 +7,10 @@ import { LoadCatalogRefsOperation } from '../../../../domain/operations/Catalog/
 import { CatalogsStore, getCurrentCatalog, getCurrentCatalogRefs } from '../../../../domain/state/Catalog/catalog/catalogs-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { CATALOG_VERSION_DELETED } from '../../../../model/Common/undo-action-types';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { CATALOG_VERSION_DELETED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Deletes the selected catalog version and selects the nearest remaining version.

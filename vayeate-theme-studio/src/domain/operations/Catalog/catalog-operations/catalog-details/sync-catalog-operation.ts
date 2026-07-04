@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { Catalog } from '../../../../../model/Catalog/schema/catalog';
 import { TokenSyncGateway } from '../../../../../gateway/gateway/Catalog/catalog/token-sync-gateway';
 import { nextPatchVersion } from '../../../../utils/Common/next-patch-version';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 /**
  * Sync tokens from sources and return updated catalog. No setState, no save. Single responsibility: sync.

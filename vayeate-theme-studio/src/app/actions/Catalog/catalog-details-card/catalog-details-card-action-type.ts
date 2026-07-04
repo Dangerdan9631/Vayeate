@@ -1,6 +1,6 @@
 import { SourceType, TokenType } from "../../../../model/Common/schema/primitives";
-import { coalesceLatest, type ActionCoalesceFn } from '../../../core/Common/action-queue/action-coalesce';
-import { AppAction } from "../../../core/Common/action-queue/app-action";
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/Queue/action-queue/action-coalesce';
+import { AppAction } from "../../../core/Queue/action-queue/app-action";
 
 /**
  * Action type constants for the catalog details card.

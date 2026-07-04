@@ -3,11 +3,11 @@ import { ApplyThemeStateOperation } from '../../../../domain/operations/Theme/th
 import { LoadThemeWithLinkedTemplateOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/load-theme-with-linked-template-operation';
 import { SetSelectedThemeRefOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/set-selected-theme-ref-operation';
 import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/Theme/theme-operations/pickers/set-theme-pane-selections-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
 /**
  * Orchestrates select theme and load work for the theme UI.

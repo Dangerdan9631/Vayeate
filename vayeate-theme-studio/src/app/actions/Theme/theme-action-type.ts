@@ -5,7 +5,7 @@ import type { ThemePageActions } from './theme-page/theme-page-action-type';
 import type { ThemePaletteCardActions } from './theme-palette-card/theme-palette-card-action-type';
 import type { ThemesCardActions } from './themes-card/themes-card-action-type';
 import type { ThemeVariablesCardActions } from './theme-variables-card/theme-variables-card-action-type';
-import type { AppAction } from '../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../core/Queue/action-queue/app-action';
 import { isCreateThemeDialogAction, tryCoalesceCreateThemeDialogAction } from './create-theme-dialog/create-theme-dialog-action-type';
 import { isEditorPreviewsCardAction } from './editor-previews-card/editor-previews-card-action-type';
 import { isThemeDetailsCardAction } from './theme-details-card/theme-details-card-action-type';

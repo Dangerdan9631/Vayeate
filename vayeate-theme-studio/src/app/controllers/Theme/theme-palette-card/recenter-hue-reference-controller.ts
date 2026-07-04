@@ -5,17 +5,17 @@ import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/Th
 import { SetThemeSaturationAdjustmentOperation } from '../../../../domain/operations/Theme/theme-operations/palette-hue/set-theme-saturation-adjustment-operation';
 import { SetThemeValueAdjustmentOperation } from '../../../../domain/operations/Theme/theme-operations/palette-hue/set-theme-value-adjustment-operation';
 import { SetThemeOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-theme-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../../../../domain/operations/Theme/theme-operations/theme-utils/theme-assignment-utils-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_RECENTERED,
   THEME_PALETTE_SATURATION_ADJUSTMENT_SET,
   THEME_PALETTE_VALUE_ADJUSTMENT_SET,
-} from '../../../../model/Common/undo-action-types';
+} from '../../../../model/Undo/undo-action-types';
 
 /**
  * Orchestrates recenter hue reference work for the theme UI.

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { EditorPreviewsCardActionType } from '../../../actions/Theme/editor-previews-card/editor-previews-card-action-type';
 
 /**

@@ -4,7 +4,7 @@ import { WindowStore } from '../../../../domain/state/Common/ui/window-store';
 import { container } from 'tsyringe';
 import { StyledTooltipUiStore } from '../../../../domain/state/Common/ui/styled-tooltip-ui-store';
 import type { StyledTooltipState } from '../../../../model/Common/styled-tooltip';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { StyledTooltipActionType } from '../../../actions/Common/styled-tooltip/styled-tooltip-action-type';
 
 const OFFSET = 8;

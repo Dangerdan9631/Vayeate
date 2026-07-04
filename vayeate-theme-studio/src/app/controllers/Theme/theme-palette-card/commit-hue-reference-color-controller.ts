@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import { SetThemeHueAdjustmentOperation } from '../../../../domain/operations/Theme/theme-operations/palette-hue/set-theme-hue-adjustment-operation';
 import { SetThemeHueReferenceHexOperation } from '../../../../domain/operations/Theme/theme-operations/palette-hue/set-theme-hue-reference-hex-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import { recordCommitHueReferenceColorUndo } from './record-commit-hue-reference-color-undo';
 
 /**

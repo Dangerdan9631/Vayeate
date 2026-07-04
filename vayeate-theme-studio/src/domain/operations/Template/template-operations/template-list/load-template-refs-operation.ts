@@ -2,8 +2,8 @@ import { singleton } from 'tsyringe';
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
 import { TemplatesStore } from '../../../../state/Template/data/templates-store';
 import { TemplateUiStore } from '../../../../state/Template/ui/template-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Loads template refs from persistence into the store.

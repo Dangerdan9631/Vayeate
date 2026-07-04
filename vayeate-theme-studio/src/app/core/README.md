@@ -10,7 +10,7 @@ Files related to Core.
 
 ## Contents
 
-- Subfolders: `Common`
+- Subfolders: `Common`, `Queue`, `Undo`
 - Files: None
 
 ## Rules

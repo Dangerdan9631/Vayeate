@@ -7,11 +7,11 @@ import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-s
 import { CatalogsStore, getCurrentCatalog } from '../../../../domain/state/Catalog/catalog/catalogs-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import type { DialogResultOkCancel } from '../../../../model/Common/dialog-result';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { CATALOG_CREATED } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { CATALOG_CREATED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * User outcome when closing the create-catalog dialog.

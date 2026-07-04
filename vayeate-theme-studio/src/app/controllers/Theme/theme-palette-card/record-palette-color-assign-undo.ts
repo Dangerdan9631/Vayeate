@@ -1,8 +1,8 @@
 import type { ThemePaletteAssignUndoValue } from '../../../../model/Theme/theme-palette-assign-undo';
 
-import type { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
+import type { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
 
-import { THEME_PALETTE_COLOR_ASSIGNED } from '../../../../model/Common/undo-action-types';
+import { THEME_PALETTE_COLOR_ASSIGNED } from '../../../../model/Undo/undo-action-types';
 
 
 

@@ -10,15 +10,15 @@ import { SaveTemplateOperation } from '../../../../domain/operations/Template/te
 import { ValidateCanRemoveVariable } from '../../../../domain/validations/Template/template-validations/validate-can-remove-variable';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { RecordTemplateUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-template-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordTemplateUndoOperation } from '../../../../domain/operations/Template/template-undo-operations/record-template-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 import {
   TEMPLATE_COLOR_VARIABLE_REMOVED,
   TEMPLATE_CONTRAST_VARIABLE_REMOVED,
   TEMPLATE_STYLE_VARIABLE_REMOVED,
-} from '../../../../model/Common/undo-action-types';
+} from '../../../../model/Undo/undo-action-types';
 
 /**
  * Handles TEMPLATE_VARIABLES_REMOVE_BUTTON_ON_CLICK by removing a variable.

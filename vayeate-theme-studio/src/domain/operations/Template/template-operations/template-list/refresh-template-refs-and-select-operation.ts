@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 import type { Template } from '../../../../../model/Template/schema/template-schemas';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
 import { TemplatesStore } from '../../../../state/Template/data/templates-store';
 import { TemplateUiStore } from '../../../../state/Template/ui/template-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 const noopContinuation: ContinuationHandler = {
   onQueue: () => noopContinuation,

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import type { TokenKey } from '../../../../model/Common/schema/primitives';
 import type { ColorAssignment, ContrastAssignment, Theme, ThemePreviewTokenRefField } from '../../../../model/Theme/schema/theme-schemas';
 import type { ContrastVariable, Mapping } from '../../../../model/Template/schema/template-schemas';

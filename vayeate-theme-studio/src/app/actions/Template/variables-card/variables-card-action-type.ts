@@ -1,7 +1,7 @@
 import type { ColorVariableKey, ContrastVariableKey, StyleVariableKey } from "../../../../model/Common/schema/primitives";
 import type { TemplateVariableKind } from "../../../../model/Template/template-variable-kind";
-import { coalesceLatest, type ActionCoalesceFn } from '../../../core/Common/action-queue/action-coalesce';
-import { AppAction } from "../../../core/Common/action-queue/app-action";
+import { coalesceLatest, type ActionCoalesceFn } from '../../../core/Queue/action-queue/action-coalesce';
+import { AppAction } from "../../../core/Queue/action-queue/app-action";
 
 /**
  * Action type constants for the template variables card.

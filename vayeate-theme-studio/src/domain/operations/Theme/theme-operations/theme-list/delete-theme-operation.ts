@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { themeDataFileKey } from '../../../../../model/Common/data-path-keys';
 import { ThemeGateway } from '../../../../../gateway/gateway/Theme/theme/theme-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Deletes theme and refreshes related list or selection state.

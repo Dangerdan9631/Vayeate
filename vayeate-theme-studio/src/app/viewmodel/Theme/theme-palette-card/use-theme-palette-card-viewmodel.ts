@@ -6,7 +6,7 @@ import type { ThemePaneState } from '../../../../model/Theme/theme-pane-state';
 import { buildThemePaneSnapshot } from '../../../../domain/operations/Theme/theme-operations/theme-utils/theme-pane-utils-operation';
 import { ThemePreviewStore } from '../../../../domain/state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { resolveColorForThemeTokenKey } from '../../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import { ThemePaletteCardActionType } from '../../../actions/Theme/theme-palette-card/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../../../actions/Theme/theme-variables-card/theme-variables-card-action-type';

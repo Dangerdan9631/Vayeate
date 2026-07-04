@@ -18,10 +18,10 @@ shell commands, and other important information, read the current plan:
 
 ## Feature and concept folders
 
-- `src/app/` is organized by architectural role first, then domain: `actions/`, `components/`, `controllers/`, `viewmodel/`, and `core/`, each divided into `Common/`, `Catalog/`, `Template/`, and `Theme/` (for example `src/app/components/Catalog/catalog-page/` and `src/app/controllers/Catalog/catalog-page/`). Feature action unions include local action unions, feature guards delegate to local guards, and feature handlers may delegate to local handlers before routing their own switch cases to controllers.
-- `src/domain/` is organized by architectural role first, then domain: `operations/`, `validations/`, `state/`, `utils/`, and `core/`, each divided into `Common/`, `Catalog/`, `Template/`, and `Theme/` (for example `src/domain/operations/Catalog/` and `src/domain/state/Catalog/`). Do not add new domain-first folders such as `src/domain/<business-domain>/operations/`.
-- `src/gateway/` is organized as `gateway/` for gateway facades and conversion helpers, and `services/` for system integration services and worker entries; both buckets are divided into `Common/`, `Catalog/`, `Template/`, and `Theme/` (for example `src/gateway/gateway/Catalog/`).
-- `src/model/` is divided directly into `Common/`, `Catalog/`, `Template/`, and `Theme/`.
+- `src/app/` is organized by architectural role first, then domain: `actions/`, `components/`, `controllers/`, `viewmodel/`, and `core/`, each divided into `Common/`, `Catalog/`, `Template/`, `Theme/`, `Queue/`, and `Undo/` (for example `src/app/components/Catalog/catalog-page/` and `src/app/core/Queue/action-queue/`). Feature action unions include local action unions, feature guards delegate to local guards, and feature handlers may delegate to local handlers before routing their own switch cases to controllers.
+- `src/domain/` is organized by architectural role first, then domain: `operations/`, `validations/`, `state/`, `utils/`, and `core/`, each divided into `Common/`, `Catalog/`, `Template/`, `Theme/`, `Queue/`, and `Undo/` (for example `src/domain/operations/Catalog/` and `src/domain/state/Undo/undo-stack/`). Domain-specific undo replay helpers live under `Catalog/`, `Template/`, and `Theme/` (for example `src/domain/operations/Catalog/catalog-undo-operations/`). Do not add new domain-first folders such as `src/domain/<business-domain>/operations/`.
+- `src/gateway/` is organized as `gateway/` for gateway facades and conversion helpers, and `services/` for system integration services and worker entries; both buckets are divided into `Common/`, `Catalog/`, `Template/`, `Theme/`, and `Undo/` (for example `src/gateway/gateway/Catalog/`).
+- `src/model/` is divided directly into `Common/`, `Catalog/`, `Template/`, `Theme/`, `Queue/`, and `Undo/`.
 
 ## Mutation flow
 
@@ -52,8 +52,8 @@ flowchart LR
 - **Business logic only in operations.** Gateways/services: system + conversion, not business domain rules.
 - **Controllers** must not call other controllers; only validations and operations ([controller.mdc](controller.mdc)).
 - **Exception — queues, follow-up actions, and App shell:**
-  - The action and background queue implementations may call their queue-status controllers directly to update queue observability state. **Rationale:** routing those status updates through the queued action pipeline would require enqueueing actions to mutate queue state, which **cycles** through the queues. This exception is scoped to the queue implementations under `src/app/core/Common/action-queue/` and `src/app/core/Common/background-queue/`.
-  - **Background queue keys:** `main` (serial deferred renderer work), `deferred` (pooled deferred renderer work — not Web Workers), and `data_io` (keyed persistence I/O). Jobs on `deferred` must be I/O-bound or cooperatively yield; genuinely CPU-bound work belongs in Web Workers under `src/gateway/services/Common/Common/*-worker.ts`.
+  - The action and background queue implementations may call their queue-status controllers directly to update queue observability state. **Rationale:** routing those status updates through the queued action pipeline would require enqueueing actions to mutate queue state, which **cycles** through the queues. This exception is scoped to the queue implementations under `src/app/core/Queue/action-queue/` and `src/app/core/Queue/background-queue/`.
+  - **Background queue keys:** `main` (serial deferred renderer work), `deferred` (pooled deferred renderer work — not Web Workers), and `data_io` (keyed persistence I/O). Jobs on `deferred` must be I/O-bound or cooperatively yield; genuinely CPU-bound work belongs in Web Workers under `src/gateway/services/Common/*-worker.ts`.
   - Controllers may enqueue a follow-up action only to adapt a completed UI flow into the target component action, currently the eyedropper commit path (`CloseEyedropperOverlayController` via `EnqueueActionQueueOperation`). **Rationale:** the originating UI interaction has completed and the stored commit target determines which component action receives the selected value. Do not use this exception for general controller orchestration.
   - App shell load and unload controllers should be invoked directly from `useEffect` calls in the **app shell viewmodel** hook used exclusively by that shell (e.g. `useAppShellViewModel` in `src/app/viewmodel/Common/app-shell/use-app-shell-viewmodel.ts`). **Rationale:** these handlers handle initial app setup and cleanup that may occur before the action queue is ready or after it is cleaned up; colocating lifecycle in the shell’s viewmodel keeps mount/unload next to shell-only selectors without spreading `useEffect` across arbitrary components.
   - `LoadAppController` may call `InitializeWindowCallbacksController.run()` during shell startup, and `InitializeWindowCallbacksController` may call `HandleKeyboardShortcutController.run(event)` only from the registered global key callback. **Rationale:** these are app-shell/window integration adapter paths that connect one-time startup and Electron/global-input callbacks to existing controller entry points. Do not use this exception for general controller orchestration.
@@ -61,7 +61,7 @@ flowchart LR
 
 ## Store conventions
 
-- Store classes live under `src/domain/state/{Common,Catalog,Template,Theme}/**`.
+- Store classes live under `src/domain/state/{Common,Catalog,Template,Theme,Queue,Undo}/**`.
 - Name files in **kebab-case** with a `-store.ts` suffix and export one `@singleton()` class.
 - Build stores with `createStore(...)` from `zustand/vanilla` and `immer(...)` from `zustand/middleware/immer`.
 - Expose `api` for React subscriptions and `getStore()` for domain-layer reads and writes.

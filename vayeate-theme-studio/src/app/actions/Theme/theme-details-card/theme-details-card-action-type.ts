@@ -1,6 +1,6 @@
 import type { TemplateName, ThemeName, TokenKey, Version } from '../../../../model/Common/schema/primitives';
 import type { ThemePreviewTokenRefField } from '../../../../model/Theme/schema/theme-schemas';
-import type { AppAction } from '../../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../../core/Queue/action-queue/app-action';
 
 /**
  * Action type literals dispatched from the Theme Details Card.

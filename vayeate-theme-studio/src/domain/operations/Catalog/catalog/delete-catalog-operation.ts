@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 import { catalogDataFileKey } from '../../../../model/Common/data-path-keys';
 import { CatalogGateway } from '../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Queue/background-queue';
 
 /**
  * Schedules deletion of a catalog file on disk via the background queue.

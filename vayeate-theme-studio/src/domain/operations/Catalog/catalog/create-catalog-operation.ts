@@ -3,7 +3,7 @@ import type { CatalogReference } from '../../../../model/Template/schema/templat
 import { catalogDataFileKey } from '../../../../model/Common/data-path-keys';
 import { CatalogGateway } from '../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
 import { CatalogsStore } from '../../../state/Catalog/catalog/catalogs-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
 import { CatalogType } from '../../../../model/Common/schema/primitives';
 
 /**

@@ -2,8 +2,8 @@ import { singleton } from 'tsyringe';
 import type { Template } from '../../../../../model/Template/schema/template-schemas';
 import { templateDataFileKey } from '../../../../../model/Common/data-path-keys';
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Persists template from the store through background I/O.

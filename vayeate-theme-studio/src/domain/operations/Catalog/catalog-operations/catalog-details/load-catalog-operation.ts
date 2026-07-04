@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 import { catalogDataFileKey } from '../../../../../model/Common/data-path-keys';
 import { CatalogGateway } from '../../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 import { Catalog } from '../../../../../model/Catalog/schema/catalog';
 
 /**

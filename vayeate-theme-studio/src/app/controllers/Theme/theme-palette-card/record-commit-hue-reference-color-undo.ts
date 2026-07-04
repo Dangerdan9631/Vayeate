@@ -1,8 +1,8 @@
-import type { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
+import type { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_REFERENCE_SET,
-} from '../../../../model/Common/undo-action-types';
+} from '../../../../model/Undo/undo-action-types';
 
 /**
  * Records an undo entry after commit hue reference color undo.

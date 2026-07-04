@@ -121,9 +121,9 @@ export const THEME_INFRASTRUCTURE_EXCLUDED_CONTROLLERS = [
  * Undo/redo/goto and keyboard shortcut routing — never record.
  */
 export const APP_UNDO_INFRASTRUCTURE_EXCLUDED_CONTROLLERS = [
-  'src/app/core/Common/undo/undo-controller.ts',
-  'src/app/core/Common/undo/redo-controller.ts',
-  'src/app/core/Common/undo/history-go-to-controller.ts',
+  'src/app/core/Undo/undo/undo-controller.ts',
+  'src/app/core/Undo/undo/redo-controller.ts',
+  'src/app/core/Undo/undo/history-go-to-controller.ts',
   'src/app/controllers/Common/app-shell/handle-keyboard-shortcut-controller.ts',
 ] as const;
 
@@ -192,10 +192,10 @@ export const COMMON_EYEDROPPER_EXCLUDED_CONTROLLERS = [
  * Action/background queue status — documented architecture exception.
  */
 export const CORE_QUEUE_STATUS_EXCLUDED_CONTROLLERS = [
-  'src/app/core/Common/action-queue/controllers/update-action-queue-status-controller.ts',
-  'src/app/core/Common/action-queue/controllers/signal-action-queue-processing-complete-controller.ts',
-  'src/app/core/Common/background-queue/controllers/update-background-queue-status-controller.ts',
-  'src/app/core/Common/background-queue/controllers/signal-background-queue-processing-complete-controller.ts',
+  'src/app/core/Queue/action-queue/controllers/update-action-queue-status-controller.ts',
+  'src/app/core/Queue/action-queue/controllers/signal-action-queue-processing-complete-controller.ts',
+  'src/app/core/Queue/background-queue/controllers/update-background-queue-status-controller.ts',
+  'src/app/core/Queue/background-queue/controllers/signal-background-queue-processing-complete-controller.ts',
 ] as const;
 
 // ---------------------------------------------------------------------------

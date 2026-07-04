@@ -1,5 +1,5 @@
 import { CatalogType } from "../../../../model/Common/schema/primitives";
-import { AppAction } from "../../../core/Common/action-queue/app-action";
+import { AppAction } from "../../../core/Queue/action-queue/app-action";
 
 /**
  * Action type constants for the create-catalog dialog.

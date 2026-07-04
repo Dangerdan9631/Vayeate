@@ -8,7 +8,7 @@ import {
   THEME_CONTRAST_VARIABLE_LIGHT_METHOD_SET,
   THEME_CONTRAST_VARIABLE_LIGHT_MIN_SET,
   THEME_CONTRAST_VARIABLE_LIGHT_VALUE_SET,
-} from '../../../../../model/Common/undo-action-types';
+} from '../../../../../model/Undo/undo-action-types';
 import type { ThemeContrastVariableField } from '../theme-details/theme-contrast-variable-edit-result';
 
 export interface ThemeContrastActionField {

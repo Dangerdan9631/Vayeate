@@ -1,5 +1,5 @@
 import type { ThemeName, Version } from '../../../../model/Common/schema/primitives';
-import type { AppAction } from '../../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../../core/Queue/action-queue/app-action';
 
 /**
  * Action type literals dispatched from the Themes Card.

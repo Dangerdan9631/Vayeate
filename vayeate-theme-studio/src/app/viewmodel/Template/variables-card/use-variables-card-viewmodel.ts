@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { compareVersions } from '../../../../domain/utils/Common/compare-versions';
 import {
   colorVariableKeySchema,

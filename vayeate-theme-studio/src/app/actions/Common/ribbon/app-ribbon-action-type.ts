@@ -1,5 +1,5 @@
 import type { TabId } from '../../../../model/Common/app-ui';
-import type { AppAction } from '../../../core/Common/action-queue/app-action';
+import type { AppAction } from '../../../core/Queue/action-queue/app-action';
 
 /**
  * Action type strings for ribbon tab controls.

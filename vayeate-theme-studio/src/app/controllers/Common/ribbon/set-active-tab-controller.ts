@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
 import type { TabId } from '../../../../model/Common/app-ui';
 import { SetUiActiveTabOperation } from '../../../../domain/operations/Common/app-operations/set-ui-active-tab-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
 /**
  * Switches the active primary tab and aligns the undo stack context.

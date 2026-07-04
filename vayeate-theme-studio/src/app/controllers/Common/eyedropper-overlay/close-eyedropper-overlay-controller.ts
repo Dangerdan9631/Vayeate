@@ -3,8 +3,8 @@ import type { HexColor } from '../../../../model/Common/schema/primitives';
 import { CloseEyedropperOperation } from '../../../../domain/operations/Common/eyedropper-operations/close-eyedropper-operation';
 import { EyedropperUiStore } from '../../../../domain/state/Common/ui/eyedropper-ui-store';
 import { EyedropperCommitTargetType, type EyedropperCommitTarget } from '../../../../model/Common/eyedropper';
-import { ActionQueue, type IActionQueue } from '../../../core/Common/action-queue/action-queue';
-import type { AppAction } from '../../../core/Common/action-queue/app-action';
+import { ActionQueue, type IActionQueue } from '../../../core/Queue/action-queue/action-queue';
+import type { AppAction } from '../../../core/Queue/action-queue/app-action';
 import { ThemePaletteCardActionType } from '../../../actions/Theme/theme-palette-card/theme-palette-card-action-type';
 import { ThemeVariablesCardActionType } from '../../../actions/Theme/theme-variables-card/theme-variables-card-action-type';
 

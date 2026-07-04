@@ -22,15 +22,15 @@ import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-u
 
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 
-import { RecordCatalogUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-catalog-undo-operation';
+import { RecordCatalogUndoOperation } from '../../../../domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation';
 
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 
 import { entityRefsChanged } from '../../../../domain/utils/Common/entity-refs-changed';
 
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
 
-import { CATALOG_SOURCE_URL_UPDATED } from '../../../../model/Common/undo-action-types';
+import { CATALOG_SOURCE_URL_UPDATED } from '../../../../model/Undo/undo-action-types';
 
 
 

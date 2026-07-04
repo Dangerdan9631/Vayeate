@@ -1,4 +1,4 @@
-import { AppAction } from "../../../core/Common/action-queue/app-action";
+import { AppAction } from "../../../core/Queue/action-queue/app-action";
 
 /**
  * Action type constants for catalog page lifecycle.

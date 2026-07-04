@@ -7,7 +7,7 @@ description: App layer structure, organization patterns for actions, handlers, c
 
 ## Structure
 
-- `src/app/actions/<Domain>/<feature>/` — action types + **handlers**, where `<Domain>` is `Common`, `Catalog`, `Template`, or `Theme`. `*-action-type.ts` modules may export action unions plus **is*Action** guard functions; use separate `*-action-guard.ts` files only if that split is introduced and tested. Feature action unions may include local action unions, feature guards may delegate to local guards, and feature handlers may delegate to local handlers after an action guard. Leaf handlers route to controllers only.
+- `src/app/actions/<Domain>/<feature>/` — action types + **handlers**, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`. `*-action-type.ts` modules may export action unions plus **is*Action** guard functions; use separate `*-action-guard.ts` files only if that split is introduced and tested. Feature action unions may include local action unions, feature guards may delegate to local guards, and feature handlers may delegate to local handlers after an action guard. Leaf handlers route to controllers only.
 
   **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When handler module naming or export shape changes here, update `*-handler.ts: one exported class…` and vice versa.** Tests also forbid imports from `domain/operations`, `domain/validations`, and `domain/state` in `src/app/actions/**/*-handler.ts`; require at least one exported `is*Action` guard function in `src/app/actions/**/*-action-type.ts`; and forbid `domain/state` imports in `src/app/actions/**/*-action-type.ts` (payload hygiene).
 

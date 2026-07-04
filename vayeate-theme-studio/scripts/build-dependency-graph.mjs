@@ -284,7 +284,7 @@ function basename(path) {
 function getArchitectureLayer(path) {
   const normalized = normalizePath(path);
   const parts = normalized.split("/");
-  const domainNames = new Set(["Common", "Catalog", "Template", "Theme"]);
+  const domainNames = new Set(["Common", "Catalog", "Template", "Theme", "Queue", "Undo"]);
 
   if (parts[0] === "src" && parts[1] === "app" && ["actions", "components", "controllers", "viewmodel", "core"].includes(parts[2]) && domainNames.has(parts[3])) {
     return `${parts[1]}/${parts[2]}/${parts[3]}`;
@@ -579,7 +579,7 @@ function renderHtml({ cytoscapeSource, graph, mode, entry, layerColors, generate
       const layerColors = ${layerColorsJson};
       const parentColors = ${parentColorsJson};
       let dependencyDirection = "both";
-      let zoomSpeed = 0.72;
+      let zoomSpeed = 4;
       let activeSelection = null;
       const hiddenGroupIds = new Set();
 

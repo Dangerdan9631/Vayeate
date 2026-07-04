@@ -7,12 +7,12 @@ import { SetThemePaneSelectionsOperation } from '../../../../domain/operations/T
 import { SetThemeCreateFormNameOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/set-theme-create-form-name-operation';
 import { SetThemeCreateDialogOpenOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/set-theme-create-dialog-open-operation';
 import { SetThemeIsCreatingOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/set-theme-is-creating-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { ThemeCreateDialogStore } from '../../../../domain/state/Theme/ui/theme-create-dialog-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { THEME_CREATED } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { THEME_CREATED } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Orchestrates create theme work for the theme UI.

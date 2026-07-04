@@ -5,7 +5,7 @@ import { singleton } from 'tsyringe';
  */
 
 import { adjustColorToMeetContrast } from './color-adjust-contrast-operation';
-import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery, yieldToEventLoop } from '../../../../core/Common/scheduler';
+import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery, yieldToEventLoop } from '../../../../core/Queue/scheduler';
 import type { Mapping, Template } from '../../../../../model/Template/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, StyleAssignment, StyleAssignmentValue, Theme } from '../../../../../model/Theme/schema/theme-schemas';
 

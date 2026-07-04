@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
 import type { ColorVariableKey } from '../../../../model/Common/schema/primitives';
 import { SetColorVariableLightOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-color-variable-light-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { THEME_COLOR_VARIABLE_LIGHT_SET } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { THEME_COLOR_VARIABLE_LIGHT_SET } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Orchestrates set color variable light work for the theme UI.

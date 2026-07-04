@@ -1,11 +1,11 @@
 import { singleton } from 'tsyringe';
 import { ScopeResolverGateway } from '../../../../../gateway/gateway/Common/scope-resolver/scope-resolver-gateway';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 import type { ContrastVariable, Mapping } from '../../../../../model/Template/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment } from '../../../../../model/Theme/schema/theme-schemas';
 import { ThemePreviewStore } from '../../../../state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 /**
  * Inputs for resolving editor preview scope colors.

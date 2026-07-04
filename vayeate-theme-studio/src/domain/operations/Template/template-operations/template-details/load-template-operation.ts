@@ -4,7 +4,7 @@ import { templateDataFileKey } from '../../../../../model/Common/data-path-keys'
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
 import { getCurrentTemplate, TemplatesStore } from '../../../../state/Template/data/templates-store';
 import { TemplateUiStore } from '../../../../state/Template/ui/template-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 /**
  * Loads template from persistence into the store.

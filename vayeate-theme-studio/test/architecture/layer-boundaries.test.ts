@@ -166,8 +166,8 @@ describe('layer boundaries', () => {
   it('keeps undo policy independent from React, Electron, filesystem, and gateway details', async () => {
     const files = await walkMany([
       'src/domain/core/Common',
-      'src/domain/state/Common/undo-stack',
-      'src/domain/operations/Common/undo-operations',
+      'src/domain/state/Undo/undo-stack',
+      'src/domain/operations/Undo/undo-operations',
     ]);
 
     for (const filePath of files) {

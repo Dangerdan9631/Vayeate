@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 import type { CatalogReference } from '../../../../model/Template/schema/template-schemas';
 import { CatalogsStore, getCurrentCatalog } from '../../../state/Catalog/catalog/catalogs-store';
 import { CatalogUiStore } from '../../../state/Catalog/ui/catalog-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
 import { CatalogGateway } from '../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
 
 /**

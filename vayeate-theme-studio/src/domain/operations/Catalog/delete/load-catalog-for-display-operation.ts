@@ -2,9 +2,9 @@ import { singleton } from 'tsyringe';
 import { catalogDataFileKey } from '../../../../model/Common/data-path-keys';
 import { CatalogGateway } from '../../../../gateway/gateway/Catalog/catalog/catalog-gateway';
 import { CatalogsStore, getCurrentCatalog } from '../../../state/Catalog/catalog/catalogs-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../Queue/background-queue/enqueue-background-queue-action-operation';
 import { CatalogReference } from '../../../../model/Template/schema/template-schemas';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Common/background-queue';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../model/Queue/background-queue';
 
 /**
  * Loads catalog for display from persistence into the store.

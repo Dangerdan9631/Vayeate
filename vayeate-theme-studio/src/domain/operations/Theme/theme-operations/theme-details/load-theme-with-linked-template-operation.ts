@@ -7,8 +7,8 @@ import type { ColorAssignment, ContrastAssignment, StyleAssignment, Theme } from
 import { ThemesStore } from '../../../../state/Theme/data/themes-store';
 import { ThemePreviewStore } from '../../../../state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
-import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Common/background-queue';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
+import type { BackgroundQueueContinuation as ContinuationHandler } from '../../../../../model/Queue/background-queue';
 
 /**
  * Loads theme with linked template from persistence into the store.

@@ -3,13 +3,13 @@ import type { TemplateName, Version } from '../../../../model/Common/schema/prim
 import { LoadTemplateSnapshotOperation } from '../../../../domain/operations/Template/template-operations/template-details/load-template-snapshot-operation';
 import { ApplyThemeStateAndSchedulePersistOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation';
 import { SetThemeLoadedTemplateOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-theme-loaded-template-operation';
-import { RecordThemeUndoOperation } from '../../../../domain/operations/Common/undo-operations/record-theme-undo-operation';
-import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Common/undo-operations/set-current-undo-stack-id-operation';
+import { RecordThemeUndoOperation } from '../../../../domain/operations/Theme/theme-undo-operations/record-theme-undo-operation';
+import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation';
 import { ThemePreviewStore } from '../../../../domain/state/Theme/ui/theme-preview-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 import { MergeAssignmentsFromTemplateOperation } from '../../../../domain/operations/Template/template-operations/merge-assignments-from-template-operation';
-import { deriveUndoContext } from '../../../../model/Common/undo-history';
-import { THEME_LOADED_TEMPLATE_SET, THEME_TEMPLATE_SET } from '../../../../model/Common/undo-action-types';
+import { deriveUndoContext } from '../../../../model/Undo/undo-history';
+import { THEME_LOADED_TEMPLATE_SET, THEME_TEMPLATE_SET } from '../../../../model/Undo/undo-action-types';
 
 /**
  * Orchestrates set theme template work for the theme UI.

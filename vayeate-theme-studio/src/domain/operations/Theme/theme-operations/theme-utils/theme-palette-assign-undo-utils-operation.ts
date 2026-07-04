@@ -47,31 +47,6 @@ export function applyThemePaletteAssignUndoValue(theme: Theme, patch: ThemePalet
 }
 
 /**
- * Compares palette assign undo patches without serializing whole themes.
- * @param before Patch before the edit.
- * @param after Patch after the edit.
- * @returns True when both patches are equivalent.
- */
-export function themePaletteAssignUndoValuesEqual(
-  before: ThemePaletteAssignUndoValue,
-  after: ThemePaletteAssignUndoValue,
-): boolean {
-  if (before.assignments.length !== after.assignments.length) return false;
-  for (let index = 0; index < before.assignments.length; index += 1) {
-    const left = before.assignments[index];
-    const right = after.assignments[index];
-    if (
-      left.colorRef !== right.colorRef
-      || left.light !== right.light
-      || left.dark !== right.dark
-    ) {
-      return false;
-    }
-  }
-  return true;
-}
-
-/**
  * Operation wrapper for theme theme palette assign undo utils helpers.
  */
 @singleton()

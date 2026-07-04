@@ -1,5 +1,5 @@
 import type { TabId } from '../../../../model/Common/app-ui';
-import { useAppDispatch } from '../../../core/Common/action-queue/use-app-dispatch';
+import { useAppDispatch } from '../../../core/Queue/action-queue/use-app-dispatch';
 import { AppRibbonActionType } from '../../../actions/Common/ribbon/app-ribbon-action-type';
 
 /**

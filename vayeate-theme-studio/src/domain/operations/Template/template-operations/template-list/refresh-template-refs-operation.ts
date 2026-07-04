@@ -2,7 +2,7 @@ import type { TemplateReference } from '../../../../../model/Theme/schema/theme-
 import { TemplateGateway } from '../../../../../gateway/gateway/Template/template/template-gateway';
 import { singleton } from 'tsyringe';
 import { TemplatesStore } from '../../../../state/Template/data/templates-store';
-import { EnqueueBackgroundQueueActionOperation } from '../../../Common/background-queue/enqueue-background-queue-action-operation';
+import { EnqueueBackgroundQueueActionOperation } from '../../../Queue/background-queue/enqueue-background-queue-action-operation';
 
 /**
  * List templates and set entries in templates slice. Single responsibility: refresh ref list.

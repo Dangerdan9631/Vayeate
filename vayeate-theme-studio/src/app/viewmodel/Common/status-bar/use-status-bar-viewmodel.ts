@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { BackgroundQueueUiStore } from '../../../../domain/state/Common/ui/background-queue-ui-store';
+import { BackgroundQueueUiStore } from '../../../../domain/state/Queue/ui/background-queue-ui-store';
 import { container } from 'tsyringe';
 import { useStore } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
-import { ActionQueueUiStore } from '../../../../domain/state/Common/ui/action-queue-ui-store';
-import type { QueueMap } from '../../../../domain/state/Common/ui/background-queue-ui-state';
+import { ActionQueueUiStore } from '../../../../domain/state/Queue/ui/action-queue-ui-store';
+import type { QueueMap } from '../../../../domain/state/Queue/ui/background-queue-ui-state';
 
 /**
  * Resolved action queue UI store for foreground queue status.
