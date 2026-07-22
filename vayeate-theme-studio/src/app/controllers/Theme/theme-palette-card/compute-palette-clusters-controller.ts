@@ -13,9 +13,9 @@ export class ComputePaletteClustersController {
 
   /**
  * Validates input and invokes the domain operations for this interaction.
- * @returns Promise resolved when orchestration completes.
+ * @returns Nothing; the operation schedules its worker-backed compute work.
    */
-  async run(): Promise<void> {
-    await this.computePaletteClusters.execute();
+  run(): void {
+    this.computePaletteClusters.execute();
   }
 }

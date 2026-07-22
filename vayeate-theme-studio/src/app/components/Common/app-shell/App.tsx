@@ -1,4 +1,4 @@
-import '../../../styles.css';
+import '../../../../styles.css';
 import { AppProvider } from './AppProvider';
 import { ColorSchemeProvider } from './ColorSchemeProvider';
 import { AppShell } from './AppShell';

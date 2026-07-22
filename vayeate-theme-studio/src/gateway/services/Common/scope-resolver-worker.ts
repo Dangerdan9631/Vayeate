@@ -1,3 +1,7 @@
+// Scope resolver helpers retain legacy tsyringe-decorated compatibility wrappers.
+// Workers have a separate module realm, so they must initialize metadata before
+// evaluating that helper graph.
+import 'reflect-metadata';
 import { buildScopeColorMapFromInputs } from '../../../domain/operations/Theme/theme-operations/theme-utils/scope-resolver-operation';
 import type {
   ScopeResolverWorkerRequest,

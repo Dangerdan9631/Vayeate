@@ -13,7 +13,10 @@ type IdleDeadlineLike = {
   timeRemaining: () => number;
 };
 
-type RequestIdleCallbackLike = (callback: (deadline: IdleDeadlineLike) => void) => IdleHandle;
+type RequestIdleCallbackLike = (
+  callback: (deadline: IdleDeadlineLike) => void,
+  options?: { timeout: number },
+) => IdleHandle;
 
 type CancelIdleCallbackLike = (handle: IdleHandle) => void;
 
@@ -49,9 +52,12 @@ export function LazyEditorPreviewsCard() {
     const cancelIdle = getCancelIdleCallback();
 
     if (requestIdle) {
-      const idleHandle = requestIdle(() => {
-        setShouldRenderEditorPreviews(true);
-      });
+      const idleHandle = requestIdle(
+        () => {
+          setShouldRenderEditorPreviews(true);
+        },
+        { timeout: 500 },
+      );
       return () => {
         cancelIdle?.(idleHandle);
       };

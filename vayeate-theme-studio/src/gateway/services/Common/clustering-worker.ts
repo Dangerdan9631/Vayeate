@@ -1,4 +1,4 @@
-import { clusterColors, type ClusterResult } from '../../../domain/operations/Theme/theme-operations/theme-utils/color-clustering-operation';
+import { clusterColors, type ClusterResult } from '../../../domain/utils/Theme/color-clustering';
 import type { PaletteClusterGroupInput } from '../../../domain/operations/Theme/theme-operations/theme-utils/palette-cluster-inputs-operation';
 
 /**
