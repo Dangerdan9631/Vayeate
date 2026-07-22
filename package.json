@@ -118,19 +118,74 @@
                 "path": "./themes/deathscythe-light-color-theme.json"
             },
             {
-                "label": "Test",
+                "label": "Altron",
                 "uiTheme": "vs-dark",
-                "path": "./themes/test-color-theme.json"
+                "path": "./themes/altron-color-theme.json"
             },
             {
-                "label": "Vayeate-V0-Dark",
-                "uiTheme": "vs-dark",
-                "path": "./themes/vayeate-v0-color-theme.json"
-            },
-            {
-                "label": "Vayeate-V0-Light",
+                "label": "Altron Light",
                 "uiTheme": "vs",
-                "path": "./themes/vayeate-v0-light-color-theme.json"
+                "path": "./themes/altron-light-color-theme.json"
+            },
+            {
+                "label": "Serpent",
+                "uiTheme": "vs-dark",
+                "path": "./themes/serpent-color-theme.json"
+            },
+            {
+                "label": "Serpent Light",
+                "uiTheme": "vs",
+                "path": "./themes/serpent-light-color-theme.json"
+            },
+            {
+                "label": "Shenlong",
+                "uiTheme": "vs-dark",
+                "path": "./themes/shenlong-color-theme.json"
+            },
+            {
+                "label": "Shenlong Light",
+                "uiTheme": "vs",
+                "path": "./themes/shenlong-light-color-theme.json"
+            },
+            {
+                "label": "Taurus",
+                "uiTheme": "vs-dark",
+                "path": "./themes/taurus-color-theme.json"
+            },
+            {
+                "label": "Taurus Light",
+                "uiTheme": "vs",
+                "path": "./themes/taurus-light-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 2",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tallgeese-2-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 2 Light",
+                "uiTheme": "vs",
+                "path": "./themes/tallgeese-2-light-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 3",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tallgeese-3-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 3 Light",
+                "uiTheme": "vs",
+                "path": "./themes/tallgeese-3-light-color-theme.json"
+            },
+            {
+                "label": "Wing Zero",
+                "uiTheme": "vs-dark",
+                "path": "./themes/wing-zero-color-theme.json"
+            },
+            {
+                "label": "Wing Zero Light",
+                "uiTheme": "vs",
+                "path": "./themes/wing-zero-light-color-theme.json"
             }
         ]
     },
