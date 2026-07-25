@@ -1,5 +1,4 @@
 import { singleton } from 'tsyringe';
-import { DebouncedThemePersistGateway } from '../../../../../gateway/gateway/Theme/theme/debounced-theme-persist-gateway';
 import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
 
 /**
@@ -9,7 +8,6 @@ import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
 export class SetThemeSaturationAdjustmentOperation {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
-    private readonly debouncedThemePersist: DebouncedThemePersistGateway,
   ) {}
 
   /**
@@ -18,20 +16,6 @@ export class SetThemeSaturationAdjustmentOperation {
    * @param options Preview update options.
    */
   execute(value: number, options?: { deferPreview?: boolean }): void {
-    const store = this.themeUiStore.getStore();
-    store.setSaturationAdjustment(value, options);
-    if (options?.deferPreview) {
-      return;
-    }
-
-    const { theme, panePreviewColorAssignments } = store.state;
-    if (!theme) {
-      return;
-    }
-
-    this.debouncedThemePersist.schedulePreviewRefresh({
-      ...theme,
-      colorAssignments: panePreviewColorAssignments,
-    });
+    this.themeUiStore.getStore().setSaturationAdjustment(value, options);
   }
 }

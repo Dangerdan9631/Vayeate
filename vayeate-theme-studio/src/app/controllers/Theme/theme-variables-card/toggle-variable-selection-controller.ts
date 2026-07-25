@@ -6,7 +6,7 @@ import { SetCurrentUndoStackIdOperation } from '../../../../domain/operations/Un
 import { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import { CommitPendingPaletteAdjustmentForSelectionOperation } from '../../../../domain/operations/Theme/theme-operations/theme-pane-selection/commit-pending-palette-adjustment-for-selection-operation';
+import { CommitPendingPaletteAdjustmentOperation } from '../../../../domain/operations/Theme/theme-operations/theme-pane-selection/commit-pending-palette-adjustment-operation';
 import { recordThemePaneSelectionUndo, themePaneSelectionsEqual } from './record-theme-pane-selection-undo';
 
 /**
@@ -20,7 +20,7 @@ export class ToggleVariableSelectionController {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
-    private readonly commitPendingPaletteAdjustmentForSelection: CommitPendingPaletteAdjustmentForSelectionOperation,
+    private readonly commitPendingPaletteAdjustment: CommitPendingPaletteAdjustmentOperation,
     private readonly catalogUiStore: CatalogUiStore,
     private readonly templateUiStore: TemplateUiStore,
     private readonly recordThemeUndo: RecordThemeUndoOperation,
@@ -57,7 +57,7 @@ export class ToggleVariableSelectionController {
     };
     if (themePaneSelectionsEqual(before, after)) return;
 
-    const paletteAdjustment = this.commitPendingPaletteAdjustmentForSelection.execute();
+    const paletteAdjustment = this.commitPendingPaletteAdjustment.execute();
     if (isColor) {
       this.setThemePaneSelections.execute(after.checkedColorRefs, before.checkedContrastRefs);
     } else {

@@ -6,7 +6,7 @@ import { ThemeUiStore } from '../../../../state/Theme/ui/theme-ui-store';
 import { applyPaletteAdjustmentsToAssignmentsFiltered } from '../theme-utils/theme-assignment-utils-operation';
 
 /**
- * Palette adjustment snapshot committed immediately before a theme pane selection change.
+ * Palette adjustment snapshot committed to the selected theme.
  */
 export interface PendingPaletteAdjustmentCommit {
   beforeTheme: Theme;
@@ -17,10 +17,10 @@ export interface PendingPaletteAdjustmentCommit {
 }
 
 /**
- * Commits current slider adjustments against the existing selection, then resets sliders to center.
+ * Applies current palette slider adjustments to the selected theme and schedules persistence.
  */
 @singleton()
-export class CommitPendingPaletteAdjustmentForSelectionOperation {
+export class CommitPendingPaletteAdjustmentOperation {
   constructor(
     private readonly themeUiStore: ThemeUiStore,
     private readonly themesStore: ThemesStore,
@@ -28,8 +28,7 @@ export class CommitPendingPaletteAdjustmentForSelectionOperation {
   ) {}
 
   /**
-   * Applies pending palette slider adjustments to the current selection before a pane selection change.
-   * @returns Commit details for undo recording, or null when sliders are already centered.
+   * Persists the current slider adjustments and returns the applied theme change.
    */
   execute(): PendingPaletteAdjustmentCommit | null {
     const store = this.themeUiStore.getStore();
@@ -55,13 +54,12 @@ export class CommitPendingPaletteAdjustmentForSelectionOperation {
       ),
     };
 
-    store.setTheme(afterTheme);
+    store.setTheme(afterTheme, true);
     this.themesStore.getStore().updateTheme(afterTheme);
     const selectedRef = store.state.selectedRef;
     if (selectedRef?.name === afterTheme.name && selectedRef.version === afterTheme.version) {
       store.setThemeLoadState('loaded');
     }
-    store.setTheme(afterTheme, true);
     store.setSaveError(null);
     this.debouncedThemePersist.schedule(afterTheme, (message) => {
       store.setSaveError(message);

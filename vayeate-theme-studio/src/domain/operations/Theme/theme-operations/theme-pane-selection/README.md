@@ -12,7 +12,7 @@ Policy-owned domain operations for the Theme business domain.
 ## Contents
 
 - Subfolders: None
-- Files: `commit-pending-palette-adjustment-for-selection-operation.ts`
+- Files: `commit-pending-palette-adjustment-operation.ts`
 
 ## Rules
 

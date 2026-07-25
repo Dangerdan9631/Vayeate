@@ -3,7 +3,7 @@ import type { RecordThemeUndoOperation } from '../../../../domain/operations/The
 import type { CatalogUiStore } from '../../../../domain/state/Catalog/ui/catalog-ui-store';
 import type { TemplateUiStore } from '../../../../domain/state/Template/ui/template-ui-store';
 import type { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
-import type { PendingPaletteAdjustmentCommit } from '../../../../domain/operations/Theme/theme-operations/theme-pane-selection/commit-pending-palette-adjustment-for-selection-operation';
+import type { PendingPaletteAdjustmentCommit } from '../../../../domain/operations/Theme/theme-operations/theme-pane-selection/commit-pending-palette-adjustment-operation';
 import {
   THEME_PALETTE_HUE_ADJUSTMENT_SET,
   THEME_PALETTE_HUE_RECENTERED,
