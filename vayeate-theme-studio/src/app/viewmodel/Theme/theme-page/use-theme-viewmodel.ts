@@ -32,9 +32,11 @@ export function useThemeViewModel(): ThemeViewModel {
   const isThemeLoaded = useMemo(() => themeLoadState === 'loaded', [themeLoadState]);
 
   useEffect(() => {
-    if (pageLoadState !== 'unloaded') return;
     void dispatch({ type: ThemePageActionType.PageOnLoad });
-  }, [dispatch, pageLoadState]);
+    return () => {
+      void dispatch({ type: ThemePageActionType.PageOnUnload });
+    };
+  }, [dispatch]);
 
   return {
     pageLoadState,

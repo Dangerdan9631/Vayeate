@@ -35,6 +35,7 @@ export interface ElectronAPI {
   fsDeleteFile: (relativePath: string) => Promise<void>;
   fsListFiles: (relativeDirPath: string) => Promise<string[]>;
   fsListDirEntries: (relativeDirPath: string) => Promise<Array<{ name: string; isDirectory: boolean }>>;
+  fsWatchFile: (relativePath: string, callback: () => void) => Promise<() => Promise<void>>;
 }
 
 declare global {

@@ -1,7 +1,8 @@
 import type { BrowserWindow } from 'electron';
 import { desktopCapturer, ipcMain, net, screen } from 'electron';
+import { watch, type FSWatcher } from 'node:fs';
 import { mkdir, readFile, readdir, stat, unlink, writeFile } from 'node:fs/promises';
-import { dirname } from 'node:path';
+import { basename, dirname } from 'node:path';
 import {
   resolveExthemesExportFile,
   resolveSafeProjectRelativePath,
@@ -11,7 +12,30 @@ import { openThemePreviewHost, type ThemePreviewHostRequest } from './theme-prev
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 type BoundsDto = { x: number; y: number; width: number; height: number };
 
+interface AppFileWrite {
+  contents: string;
+  revision: number;
+}
+
+const appFileWrites = new Map<string, AppFileWrite>();
+let nextAppFileWriteRevision = 0;
+
 export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): void {
+  const fileWatchers = new Map<string, {
+    watcher: FSWatcher;
+    timeout: NodeJS.Timeout | null;
+    removeDestroyedListener: () => void;
+  }>();
+
+  const stopFileWatcher = (watchId: string): void => {
+    const active = fileWatchers.get(watchId);
+    if (!active) return;
+    if (active.timeout) clearTimeout(active.timeout);
+    active.watcher.close();
+    active.removeDestroyedListener();
+    fileWatchers.delete(watchId);
+  };
+
   ipcMain.handle('theme-preview-host:open', async (_event, request: ThemePreviewHostRequest) =>
     openThemePreviewHost(request),
   );
@@ -27,7 +51,16 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
       ? resolveExthemesExportFile(rel)
       : resolveSafeProjectRelativePath(rel, 'file');
     await mkdir(dirname(abs), { recursive: true });
-    await writeFile(abs, contents, { encoding: 'utf-8' });
+    const appWrite = { contents, revision: ++nextAppFileWriteRevision };
+    appFileWrites.set(abs, appWrite);
+    try {
+      await writeFile(abs, contents, { encoding: 'utf-8' });
+    } catch (error) {
+      if (appFileWrites.get(abs)?.revision === appWrite.revision) {
+        appFileWrites.delete(abs);
+      }
+      throw error;
+    }
   });
 
   ipcMain.handle('fs:loadFile', async (_event, rel: string): Promise<string | null> => {
@@ -69,6 +102,60 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
       return entries.map((e) => ({ name: e.name, isDirectory: e.isDirectory() }));
     },
   );
+
+  ipcMain.handle('fs:watchFile', async (event, watchId: string, rel: string): Promise<void> => {
+    stopFileWatcher(watchId);
+    const abs = resolveSafeProjectRelativePath(rel, 'file');
+    let lastContents: string | null;
+    try {
+      lastContents = await readFile(abs, 'utf-8');
+    } catch {
+      lastContents = null;
+    }
+    let lastSuppressedAppWriteRevision = appFileWrites.get(abs)?.revision ?? 0;
+
+    const watcher = watch(dirname(abs), { persistent: false }, (_eventType, changedName) => {
+      if (changedName && changedName.toString() !== basename(abs)) return;
+      const active = fileWatchers.get(watchId);
+      if (!active) return;
+      if (active.timeout) clearTimeout(active.timeout);
+      active.timeout = setTimeout(async () => {
+        active.timeout = null;
+        let contents: string | null;
+        try {
+          contents = await readFile(abs, 'utf-8');
+        } catch {
+          contents = null;
+        }
+        if (contents === lastContents) return;
+        lastContents = contents;
+        const appWrite = appFileWrites.get(abs);
+        if (
+          contents !== null
+          && appWrite?.contents === contents
+          && appWrite.revision > lastSuppressedAppWriteRevision
+        ) {
+          lastSuppressedAppWriteRevision = appWrite.revision;
+          return;
+        }
+        if (!event.sender.isDestroyed()) {
+          event.sender.send('fs:fileChanged', watchId);
+        }
+      }, 75);
+    });
+
+    const onDestroyed = () => stopFileWatcher(watchId);
+    event.sender.once('destroyed', onDestroyed);
+    fileWatchers.set(watchId, {
+      watcher,
+      timeout: null,
+      removeDestroyedListener: () => event.sender.removeListener('destroyed', onDestroyed),
+    });
+  });
+
+  ipcMain.handle('fs:unwatchFile', (_event, watchId: string): void => {
+    stopFileWatcher(watchId);
+  });
 
   /**
    * Full virtual desktop: layout + per-display PNG bytes (ScreenshotService).

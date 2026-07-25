@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 type BoundsDto = { x: number; y: number; width: number; height: number };
+let nextFileWatchId = 0;
 
 const electronAPI = {
   openThemePreviewHost: (request: { displayName: string }) =>
@@ -73,6 +74,23 @@ const electronAPI = {
     ipcRenderer.invoke('fs:listDirEntries', relativeDirPath) as Promise<
       Array<{ name: string; isDirectory: boolean }>
     >,
+  fsWatchFile: async (relativePath: string, callback: () => void) => {
+    const watchId = `renderer-file-watch-${++nextFileWatchId}`;
+    const handler = (_event: Electron.IpcRendererEvent, changedWatchId: string) => {
+      if (changedWatchId === watchId) callback();
+    };
+    ipcRenderer.on('fs:fileChanged', handler);
+    try {
+      await ipcRenderer.invoke('fs:watchFile', watchId, relativePath);
+    } catch (error) {
+      ipcRenderer.removeListener('fs:fileChanged', handler);
+      throw error;
+    }
+    return async () => {
+      ipcRenderer.removeListener('fs:fileChanged', handler);
+      await ipcRenderer.invoke('fs:unwatchFile', watchId);
+    };
+  },
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);

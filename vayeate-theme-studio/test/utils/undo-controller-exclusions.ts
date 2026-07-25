@@ -71,7 +71,7 @@ export const TEMPLATE_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
 // C5 legacy `restore-template-state-controller.ts` removed per plan cleanup.
 
 // ---------------------------------------------------------------------------
-// Phase D6 — Theme: non-state-changing (13)
+// Phase D6 — Theme: non-state-changing
 // ---------------------------------------------------------------------------
 
 /**
@@ -85,6 +85,7 @@ export const THEME_NON_STATE_CHANGING_EXCLUDED_CONTROLLERS = [
   'src/app/controllers/Theme/create-theme-dialog/close-theme-create-dialog-controller.ts',
   'src/app/controllers/Theme/create-theme-dialog/set-theme-create-form-name-controller.ts',
   'src/app/controllers/Theme/theme-page/load-theme-page-controller.ts',
+  'src/app/controllers/Theme/theme-page/unload-theme-page-controller.ts',
   'src/app/controllers/Theme/theme-page/clear-theme-save-error-controller.ts',
   'src/app/controllers/Theme/editor-previews-card/open-in-app-preview-controller.ts',
   'src/app/controllers/Theme/editor-previews-card/resolve-editor-preview-scope-map-controller.ts',

@@ -80,4 +80,15 @@ export class FileSystemService {
   ): Promise<Array<{ name: string; isDirectory: boolean }>> {
     return this.getAPI().fsListDirEntries(relativeDirPath);
   }
+
+  /**
+   * Watches one package-relative file and reports content changes not caused by app writes.
+   *
+   * @param relativePath - Path from the app package root.
+   * @param callback - Invoked after an external content change settles.
+   * @returns An async function that stops the watcher.
+   */
+  async watchFile(relativePath: string, callback: () => void): Promise<() => Promise<void>> {
+    return this.getAPI().fsWatchFile(relativePath, callback);
+  }
 }

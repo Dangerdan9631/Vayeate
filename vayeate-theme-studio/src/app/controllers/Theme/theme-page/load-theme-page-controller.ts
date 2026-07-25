@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { SetThemeFileWatchingOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/set-theme-file-watching-operation';
 import { LoadThemeRefsOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/load-theme-refs-operation';
 import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 
@@ -9,6 +10,7 @@ import { ThemeUiStore } from '../../../../domain/state/Theme/ui/theme-ui-store';
 export class LoadThemePageController {
   constructor(
     private readonly loadThemeRefs: LoadThemeRefsOperation,
+    private readonly setThemeFileWatching: SetThemeFileWatchingOperation,
     private readonly themeUiStore: ThemeUiStore,
   ) {}
 
@@ -17,6 +19,7 @@ export class LoadThemePageController {
  * @returns Promise resolved when orchestration completes.
    */
   run(): void {
+    this.setThemeFileWatching.execute(true);
     if (this.themeUiStore.getStore().state.pageLoadState !== 'unloaded') return;
     this.loadThemeRefs.execute();
   }

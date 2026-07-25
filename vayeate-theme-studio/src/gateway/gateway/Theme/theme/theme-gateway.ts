@@ -131,4 +131,21 @@ export class ThemeGateway {
       return [];
     }
   }
+
+  /**
+   * Watches one theme file for external content updates.
+   *
+   * @param name - Theme name.
+   * @param version - Theme version.
+   * @param onChange - Invoked when the file should be reloaded.
+   * @returns An async function that stops the watcher.
+   */
+  async watchTheme(
+    name: string,
+    version: string,
+    onChange: () => void,
+  ): Promise<() => Promise<void>> {
+    const rel = themeRelativeFilePath(name, version);
+    return this.fileSystemService.watchFile(rel, onChange);
+  }
 }

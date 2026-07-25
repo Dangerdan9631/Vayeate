@@ -5,6 +5,7 @@ import type { AppAction } from '../../../core/Queue/action-queue/app-action';
  */
 export enum ThemePageActionType {
   PageOnLoad = 'THEME_PAGE_ON_LOAD',
+  PageOnUnload = 'THEME_PAGE_ON_UNLOAD',
   PageSaveErrorDismissButtonOnClick = 'THEME_PAGE_SAVE_ERROR_DISMISS_BUTTON_ON_CLICK',
 }
 
@@ -13,6 +14,7 @@ export enum ThemePageActionType {
  */
 export type ThemePageActions =
   | { type: ThemePageActionType.PageOnLoad }
+  | { type: ThemePageActionType.PageOnUnload }
   | { type: ThemePageActionType.PageSaveErrorDismissButtonOnClick };
 
 
