@@ -12,7 +12,7 @@ Policy-owned domain operations for the Theme business domain.
 ## Contents
 
 - Subfolders: None
-- Files: `load-previews-operation.ts`
+- Files: `load-previews-operation.ts`, `open-in-app-preview-operation.ts`, `open-theme-preview-host-operation.ts`, `resolve-editor-preview-scope-map-operation.ts`
 
 ## Rules
 

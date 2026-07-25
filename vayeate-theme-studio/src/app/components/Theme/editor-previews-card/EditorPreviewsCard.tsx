@@ -371,9 +371,7 @@ export function EditorPreviewsCard() {
   if (!vm.theme?.templateRef) return null;
 
   return (
-    <div className="tokens-card theme-previews-card">
-      <h2>Editor Previews</h2>
-
+    <div className="theme-previews-content">
       <div className="theme-preview-fields theme-preview-fields-grid">
         <FilterableTokenSelect
           label="IDE Foreground"

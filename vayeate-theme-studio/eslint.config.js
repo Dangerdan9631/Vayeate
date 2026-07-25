@@ -12,6 +12,7 @@ export default tseslint.config(
       'dist-electron/**',
       'node_modules/**',
       'previews/**',
+      'temp/**',
     ],
   },
   js.configs.recommended,

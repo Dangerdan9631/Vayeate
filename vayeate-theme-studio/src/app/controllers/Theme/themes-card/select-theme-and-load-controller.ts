@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { DebouncedThemePersistGateway } from '../../../../gateway/gateway/Theme/theme/debounced-theme-persist-gateway';
 import { ApplyThemeStateOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/apply-theme-state-operation';
 import { LoadThemeWithLinkedTemplateOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/load-theme-with-linked-template-operation';
 import { SetSelectedThemeRefOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/set-selected-theme-ref-operation';
@@ -20,6 +21,7 @@ export class SelectThemeAndLoadController {
     private readonly loadThemeWithLinkedTemplate: LoadThemeWithLinkedTemplateOperation,
     private readonly setThemePaneSelections: SetThemePaneSelectionsOperation,
     private readonly applyThemeState: ApplyThemeStateOperation,
+    private readonly debouncedThemePersist: DebouncedThemePersistGateway,
     private readonly catalogUiStore?: CatalogUiStore,
     private readonly templateUiStore?: TemplateUiStore,
     private readonly setCurrentUndoStackId?: SetCurrentUndoStackIdOperation,
@@ -49,6 +51,7 @@ export class SelectThemeAndLoadController {
         theme.contrastAssignments.map((assignment) => assignment.contrastVariableRef),
       );
       if (theme) this.applyThemeState.execute(theme);
+      this.debouncedThemePersist.schedulePreviewRefresh(theme);
       await this.setCurrentUndoStackId?.executeAndLoadForContext(deriveUndoContext({
         tabId: 'themes',
         catalogRef: this.catalogUiStore?.getStore().state.selectedRef ?? null,

@@ -1,4 +1,5 @@
 import { singleton } from 'tsyringe';
+import { DebouncedThemePersistGateway } from '../../../../gateway/gateway/Theme/theme/debounced-theme-persist-gateway';
 import { ApplyThemeStateOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/apply-theme-state-operation';
 import { GetThemeRefsOperation } from '../../../../domain/operations/Theme/theme-operations/theme-list/get-theme-refs-operation';
 import { LoadThemeOperation } from '../../../../domain/operations/Theme/theme-operations/theme-details/load-theme-operation';
@@ -23,6 +24,7 @@ export class SelectThemeByNameController {
     private readonly loadTemplateSnapshot: LoadTemplateSnapshotOperation,
     private readonly applyThemeState: ApplyThemeStateOperation,
     private readonly setThemeLoadedTemplate: SetThemeLoadedTemplateOperation,
+    private readonly debouncedThemePersist: DebouncedThemePersistGateway,
   ) {}
 
   /**
@@ -48,6 +50,7 @@ export class SelectThemeByNameController {
             : null;
         if (theme) this.applyThemeState.execute(theme);
         this.setThemeLoadedTemplate.execute(template);
+        this.debouncedThemePersist.schedulePreviewRefresh(theme);
       });
   }
 }

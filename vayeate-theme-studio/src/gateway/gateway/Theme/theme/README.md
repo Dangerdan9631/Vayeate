@@ -12,7 +12,7 @@ Gateway facades and wire conversion for the Theme domain.
 ## Contents
 
 - Subfolders: None
-- Files: `debounced-theme-persist-gateway.ts`, `theme-gateway.ts`
+- Files: `debounced-theme-persist-gateway.ts`, `live-theme-export-gateway.ts`, `theme-gateway.ts`
 
 ## Rules
 

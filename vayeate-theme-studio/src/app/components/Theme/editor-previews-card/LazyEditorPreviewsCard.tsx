@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy } from 'react';
 import { useLazyEditorPreviewsCardViewModel } from '../../../viewmodel/Theme/editor-previews-card/use-lazy-editor-previews-card-viewmodel';
 
 const EditorPreviewsCard = lazy(async () => {
@@ -6,32 +6,9 @@ const EditorPreviewsCard = lazy(async () => {
   return { default: module.EditorPreviewsCard };
 });
 
-type IdleHandle = number;
-
-type IdleDeadlineLike = {
-  didTimeout: boolean;
-  timeRemaining: () => number;
-};
-
-type RequestIdleCallbackLike = (
-  callback: (deadline: IdleDeadlineLike) => void,
-  options?: { timeout: number },
-) => IdleHandle;
-
-type CancelIdleCallbackLike = (handle: IdleHandle) => void;
-
-function getRequestIdleCallback(): RequestIdleCallbackLike | undefined {
-  return window.requestIdleCallback as RequestIdleCallbackLike | undefined;
-}
-
-function getCancelIdleCallback(): CancelIdleCallbackLike | undefined {
-  return window.cancelIdleCallback as CancelIdleCallbackLike | undefined;
-}
-
 function ThemePreviewsFallback() {
   return (
-    <div className="tokens-card theme-previews-card" aria-busy="true">
-      <h2>Editor Previews</h2>
+    <div className="theme-previews-content" aria-busy="true">
       <div className="theme-preview-block">
         <span className="theme-preview-placeholder">Preparing previews…</span>
       </div>
@@ -43,47 +20,39 @@ function ThemePreviewsFallback() {
  * Renders the Lazy Editor Previews Card UI for the theme editor.
  */
 export function LazyEditorPreviewsCard() {
-  const { onPagePreviewsLoad } = useLazyEditorPreviewsCardViewModel();
-  const hasQueuedPreviewLoadRef = useRef(false);
-  const [shouldRenderEditorPreviews, setShouldRenderEditorPreviews] = useState(false);
+  const { isInAppPreviewOpen, isPreviewHostEnabled, isPreviewHostOpening, previewHostError, onOpenInAppPreviewClick, onOpenPreviewHostClick } = useLazyEditorPreviewsCardViewModel();
 
-  useEffect(() => {
-    const requestIdle = getRequestIdleCallback();
-    const cancelIdle = getCancelIdleCallback();
+  function onPreviewButtonClick() {
+    onOpenInAppPreviewClick();
+  }
 
-    if (requestIdle) {
-      const idleHandle = requestIdle(
-        () => {
-          setShouldRenderEditorPreviews(true);
-        },
-        { timeout: 500 },
-      );
-      return () => {
-        cancelIdle?.(idleHandle);
-      };
-    }
-
-    const timeoutHandle = window.setTimeout(() => {
-      setShouldRenderEditorPreviews(true);
-    }, 0);
-    return () => {
-      window.clearTimeout(timeoutHandle);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!shouldRenderEditorPreviews || hasQueuedPreviewLoadRef.current) return;
-    hasQueuedPreviewLoadRef.current = true;
-    onPagePreviewsLoad();
-  }, [onPagePreviewsLoad, shouldRenderEditorPreviews]);
-
-  if (!shouldRenderEditorPreviews) {
-    return <ThemePreviewsFallback />;
+  function onPreviewHostButtonClick() {
+    onOpenPreviewHostClick();
   }
 
   return (
-    <Suspense fallback={<ThemePreviewsFallback />}>
-      <EditorPreviewsCard />
-    </Suspense>
+    <div className="tokens-card theme-previews-card">
+      <div className="theme-preview-toolbar">
+        <h2>Editor Previews</h2>
+        <div className="theme-preview-toolbar-actions">
+          <button type="button" className="btn-primary" onClick={onPreviewButtonClick} disabled={isInAppPreviewOpen}>
+            {isInAppPreviewOpen ? 'Preview Open' : 'Open Preview'}
+          </button>
+          <button type="button" className="btn-secondary" onClick={onPreviewHostButtonClick} disabled={isPreviewHostOpening}>
+            {isPreviewHostOpening ? 'Opening Preview Host…' : isPreviewHostEnabled ? 'Open Preview Host Again' : 'Open Preview Host'}
+          </button>
+        </div>
+      </div>
+      {previewHostError && (
+        <p className="theme-preview-error" role="alert">
+          {previewHostError}
+        </p>
+      )}
+      {isInAppPreviewOpen && (
+        <Suspense fallback={<ThemePreviewsFallback />}>
+          <EditorPreviewsCard />
+        </Suspense>
+      )}
+    </div>
   );
 }

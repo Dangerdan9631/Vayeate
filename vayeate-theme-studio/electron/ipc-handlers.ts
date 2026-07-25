@@ -6,11 +6,16 @@ import {
   resolveExthemesExportFile,
   resolveSafeProjectRelativePath,
 } from './paths';
+import { openThemePreviewHost, type ThemePreviewHostRequest } from './theme-preview-host';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 type BoundsDto = { x: number; y: number; width: number; height: number };
 
 export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): void {
+  ipcMain.handle('theme-preview-host:open', async (_event, request: ThemePreviewHostRequest) =>
+    openThemePreviewHost(request),
+  );
+
   ipcMain.handle('fs:createFile', async (_event, rel: string) => {
     const abs = resolveSafeProjectRelativePath(rel, 'file');
     await mkdir(dirname(abs), { recursive: true });

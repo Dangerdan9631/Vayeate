@@ -3,6 +3,8 @@ import { contextBridge, ipcRenderer } from 'electron';
 type BoundsDto = { x: number; y: number; width: number; height: number };
 
 const electronAPI = {
+  openThemePreviewHost: (request: { displayName: string }) =>
+    ipcRenderer.invoke('theme-preview-host:open', request) as Promise<void>,
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,
   screenshotGetFullDisplaySnapshot: () =>
     ipcRenderer.invoke('screenshot:getFullDisplaySnapshot') as Promise<{

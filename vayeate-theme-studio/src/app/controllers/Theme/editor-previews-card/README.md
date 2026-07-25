@@ -12,7 +12,7 @@ Controller entry points that orchestrate validations and operations for the Them
 ## Contents
 
 - Subfolders: None
-- Files: `load-theme-previews-controller.ts`
+- Files: `open-in-app-preview-controller.ts`, `open-theme-preview-host-controller.ts`, `resolve-editor-preview-scope-map-controller.ts`
 
 ## Rules
 

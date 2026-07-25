@@ -6,6 +6,22 @@ import type { ScopeColorMap } from '../../../operations/Theme/theme-operations/t
  * Theme preview pane UI state for sample selection, filters, and loaded preview template.
  */
 export interface ThemePreviewState {
+  /**
+   * Whether the in-app editor preview has been enabled for this app session.
+   */
+  isInAppPreviewOpen: boolean;
+  /**
+   * Whether live theme export has been enabled by launching the VS Code preview host.
+   */
+  isPreviewHostEnabled: boolean;
+  /**
+   * Whether the preview-host extension is currently being generated and launched.
+   */
+  isPreviewHostOpening: boolean;
+  /**
+   * Last preview-host launch failure shown by the preview toolbar.
+   */
+  previewHostError: string | null;
   filterText: string;
   selectedSampleKey: string;
   editorPreviews: TokenizedPreview[];
@@ -25,6 +41,10 @@ export interface ThemePreviewState {
  * Default theme preview pane state before samples or templates are loaded.
  */
 export const initialThemePreviewState: ThemePreviewState = {
+  isInAppPreviewOpen: false,
+  isPreviewHostEnabled: false,
+  isPreviewHostOpening: false,
+  previewHostError: null,
   filterText: '',
   selectedSampleKey: '',
   editorPreviews: [],

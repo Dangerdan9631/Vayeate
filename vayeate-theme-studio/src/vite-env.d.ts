@@ -3,6 +3,7 @@
 import type { Rect } from './model/Common/rect';
 
 export interface ElectronAPI {
+  openThemePreviewHost: (request: { displayName: string }) => Promise<void>;
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{
     fullBounds: Rect;

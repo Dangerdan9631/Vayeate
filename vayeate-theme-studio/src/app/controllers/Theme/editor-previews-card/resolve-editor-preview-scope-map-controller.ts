@@ -21,12 +21,16 @@ export class ResolveEditorPreviewScopeMapController {
   run(): void {
     const themeState = this.themeUiStore.getStore().state;
     const previewState = this.themePreviewStore.getStore().state;
+    if (!previewState.isInAppPreviewOpen) {
+      return;
+    }
 
     this.resolveEditorPreviewScopeMap.execute({
       mappings: previewState.loadedTemplateForTheme?.mappings ?? [],
       colorAssignments: themeState.panePreviewColorAssignments,
       contrastAssignments: themeState.theme?.contrastAssignments ?? [],
-      contrastVariables: previewState.loadedTemplateForTheme?.contrastVariables ?? [],
+      contrastVariables:
+        previewState.loadedTemplateForTheme?.contrastVariables ?? [],
       scopeThemeInputsGeneration: themeState.scopeThemeInputsGeneration,
       scopeTemplateInputsGeneration: previewState.scopeTemplateInputsGeneration,
     });

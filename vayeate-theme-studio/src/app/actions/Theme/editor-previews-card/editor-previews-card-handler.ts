@@ -1,8 +1,12 @@
 import { singleton } from 'tsyringe';
-import { LoadThemePreviewsController } from '../../../controllers/Theme/editor-previews-card/load-theme-previews-controller';
+import { OpenInAppPreviewController } from '../../../controllers/Theme/editor-previews-card/open-in-app-preview-controller';
+import { OpenThemePreviewHostController } from '../../../controllers/Theme/editor-previews-card/open-theme-preview-host-controller';
 import { ResolveEditorPreviewScopeMapController } from '../../../controllers/Theme/editor-previews-card/resolve-editor-preview-scope-map-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/Common/logger';
-import { EditorPreviewsCardActions, EditorPreviewsCardActionType } from './editor-previews-card-action-type';
+import {
+  EditorPreviewsCardActions,
+  EditorPreviewsCardActionType,
+} from './editor-previews-card-action-type';
 
 /**
  * Routes Editor Previews Card actions to their controllers.
@@ -12,7 +16,8 @@ export class EditorPreviewsCardHandler {
   private readonly log: Logger;
 
   constructor(
-    private readonly loadThemePreviews: LoadThemePreviewsController,
+    private readonly openInAppPreview: OpenInAppPreviewController,
+    private readonly openThemePreviewHost: OpenThemePreviewHostController,
     private readonly resolveEditorPreviewScopeMap: ResolveEditorPreviewScopeMapController,
     loggerFactory: LoggerFactory,
   ) {
@@ -20,18 +25,23 @@ export class EditorPreviewsCardHandler {
   }
 
   /**
- * Dispatches the action to the matching controller.
- * @param action Input for this call.
- * @returns Promise resolved when orchestration completes.
+   * Dispatches the action to the matching controller.
+   * @param action Input for this call.
+   * @returns Promise resolved when orchestration completes.
    */
   async handle(action: EditorPreviewsCardActions): Promise<void> {
     switch (action.type) {
-      case EditorPreviewsCardActionType.PagePreviewsOnLoad:
-        return this.loadThemePreviews.run();
+      case EditorPreviewsCardActionType.OpenInAppPreviewButtonOnClick:
+        return this.openInAppPreview.run();
+      case EditorPreviewsCardActionType.OpenPreviewHostButtonOnClick:
+        return this.openThemePreviewHost.run();
       case EditorPreviewsCardActionType.PreviewScopeMapOnRequest:
         return this.resolveEditorPreviewScopeMap.run();
     }
 
-    this.log.error('Unhandled action (EditorPreviewsCardAction union not exhaustive)', { action });
+    this.log.error(
+      'Unhandled action (EditorPreviewsCardAction union not exhaustive)',
+      { action },
+    );
   }
 }
