@@ -24,7 +24,7 @@
         "editor.findMatchBackground": "#c9b0ab",
         "editor.findMatchHighlightBackground": "#dfd0cd66",
         "editor.findRangeHighlightBackground": "#dfd0cd22",
-        "editor.foreground": "#a5805a",
+        "editor.foreground": "#3d2f21",
         "editor.hoverHighlightBackground": "#b0a7a7",
         "editor.inactiveSelectionBackground": "#dfd0cd99",
         "editor.lineHighlightBackground": "#a6999644",
@@ -47,7 +47,7 @@
         "editorGutter.modifiedBackground": "#80503066",
         "editorHoverWidget.background": "#b0a7a7",
         "editorIndentGuide.background": "#dfd0cd99",
-        "editorLineNumber.foreground": "#8f543c",
+        "editorLineNumber.foreground": "#a86347",
         "editorLink.activeForeground": "#c0763f",
         "editorMarkerNavigation.background": "#b0a7a7",
         "editorMarkerNavigationError.background": "#6a0903",
@@ -130,7 +130,7 @@
         "progressBar.background": "#dcaa91",
         "scrollbar.shadow": "#9f959366",
         "scrollbarSlider.activeBackground": "#cbc4c366",
-        "scrollbarSlider.background": "#aba2a033",
+        "scrollbarSlider.background": "#b5acac",
         "scrollbarSlider.hoverBackground": "#aba2a055",
         "selection.background": "#dfd0cd99",
         "sideBar.background": "#b0a7a7",
@@ -283,7 +283,7 @@
         "menu.separatorBackground": "#dcaa91",
         "merge.commonContentBackground": "#e38e1c33",
         "merge.commonHeaderBackground": "#c24e27",
-        "minimap.background": "#905a3666",
+        "minimap.background": "#bbb2b2",
         "minimap.errorHighlight": "#f0d8d0",
         "minimap.findMatchHighlight": "#905a3666",
         "minimap.foregroundOpacity": "#905a3666",
@@ -352,7 +352,7 @@
         "panelSection.border": "#336699",
         "panelSection.dropBackground": "#0a0402",
         "panelSectionHeader.background": "#5a1207",
-        "editorLineNumber.activeForeground": "#8f543c",
+        "editorLineNumber.activeForeground": "#a86347",
         "terminal.border": "#d1ac93",
         "sideBar.dropBackground": "#336699",
         "editorIndentGuide.activeBackground": "#aa928e",
@@ -2782,7 +2782,7 @@
                 "constant.character.character-class.regexp"
             ],
             "settings": {
-                "foreground": "#8c670d"
+                "foreground": "#0b7e27"
             }
         },
         {
@@ -2794,7 +2794,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
             ],
             "settings": {
-                "foreground": "#d12a10"
+                "foreground": "#d71910"
             }
         },
         {
@@ -2859,7 +2859,7 @@
                 "entity.name.section.toml"
             ],
             "settings": {
-                "foreground": "#d12910"
+                "foreground": "#ffffff"
             }
         },
         {
@@ -2888,7 +2888,7 @@
                 "keyword.other.documentation.js.jsdoc"
             ],
             "settings": {
-                "foreground": "#8c6543"
+                "foreground": "#4d7836"
             }
         },
         {
@@ -2898,7 +2898,7 @@
                 "text.xml"
             ],
             "settings": {
-                "foreground": "#906250"
+                "foreground": "#aa534d"
             }
         },
         {
@@ -2918,7 +2918,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
             ],
             "settings": {
-                "foreground": "#a35a21"
+                "foreground": "#a25b21"
             }
         },
         {
@@ -2929,7 +2929,7 @@
                 "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
             ],
             "settings": {
-                "foreground": "#8c670d"
+                "foreground": "#0b7c58"
             }
         },
         {
@@ -2938,7 +2938,7 @@
                 "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
             ],
             "settings": {
-                "foreground": "#8c670d"
+                "foreground": "#826b0c"
             }
         },
         {
@@ -2958,7 +2958,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
             ],
             "settings": {
-                "foreground": "#d12a10"
+                "foreground": "#0d72ae"
             }
         },
         {
@@ -3036,7 +3036,7 @@
             "foreground": "#ad5412"
         },
         "regexp": {
-            "foreground": "#8c670d"
+            "foreground": "#0b7e27"
         },
         "string": {
             "foreground": "#8c670d"
@@ -3093,13 +3093,13 @@
             "foreground": "#8e6349"
         },
         "xmlDocCommentName": {
-            "foreground": "#8c6543"
+            "foreground": "#4d7836"
         },
         "xmlDocCommentAttributeQuotes": {
-            "foreground": "#8c6543"
+            "foreground": "#4d7836"
         },
         "xmlDocCommentDelimiter": {
-            "foreground": "#8c6543"
+            "foreground": "#4d7836"
         },
         "xmlDocCommentText": {
             "foreground": "#906250"

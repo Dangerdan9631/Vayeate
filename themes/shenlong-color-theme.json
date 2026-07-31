@@ -130,7 +130,7 @@
         "progressBar.background": "#ffffff",
         "scrollbar.shadow": "#101d2b",
         "scrollbarSlider.activeBackground": "#a8ff60",
-        "scrollbarSlider.background": "#4f94c4",
+        "scrollbarSlider.background": "#264761",
         "scrollbarSlider.hoverBackground": "#294e6d",
         "selection.background": "#1e5f9d",
         "sideBar.background": "#172a3c",
@@ -283,7 +283,7 @@
         "menu.separatorBackground": "#ffffff",
         "merge.commonContentBackground": "#9dff65",
         "merge.commonHeaderBackground": "#1a3855",
-        "minimap.background": "#a8ff60",
+        "minimap.background": "#101d2b",
         "minimap.errorHighlight": "#ff5252",
         "minimap.findMatchHighlight": "#a8ff60",
         "minimap.foregroundOpacity": "#a8ff60",
@@ -494,7 +494,7 @@
                 "comment.block.documentation"
             ],
             "settings": {
-                "foreground": "#4e7690"
+                "foreground": "#397e5c"
             }
         },
         {
@@ -1164,7 +1164,7 @@
                 "punctuation.separator.variable.toml"
             ],
             "settings": {
-                "foreground": "#a8ff60"
+                "foreground": "#f9ff60"
             }
         },
         {
@@ -2432,7 +2432,7 @@
                 "entity.other.attribute-name.xml"
             ],
             "settings": {
-                "foreground": "#a8ff60"
+                "foreground": "#60ffa2"
             }
         },
         {
@@ -2590,7 +2590,7 @@
                 "entity.other.attribute-name"
             ],
             "settings": {
-                "foreground": "#3a8100"
+                "foreground": "#00815b"
             }
         },
         {
@@ -2752,7 +2752,7 @@
                 "variable.language.entity.xml"
             ],
             "settings": {
-                "foreground": "#ffe45c"
+                "foreground": "#5cf5ff"
             }
         },
         {
@@ -2770,7 +2770,7 @@
                 "source.regex-pipeline.obsidian string.regexp.control.obsidian"
             ],
             "settings": {
-                "foreground": "#ffe45c"
+                "foreground": "#5cf4ff"
             }
         },
         {
@@ -2782,7 +2782,7 @@
                 "constant.character.character-class.regexp"
             ],
             "settings": {
-                "foreground": "#ff7373"
+                "foreground": "#73ff79"
             }
         },
         {
@@ -2794,7 +2794,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
             ],
             "settings": {
-                "foreground": "#a8ff60"
+                "foreground": "#ffa560"
             }
         },
         {
@@ -2813,7 +2813,7 @@
                 "constant.character.parameter-entity.xml"
             ],
             "settings": {
-                "foreground": "#ffe985"
+                "foreground": "#f2ff85"
             }
         },
         {
@@ -2828,7 +2828,7 @@
                 "source.regex-pipeline.obsidian string.regexp.replace.obsidian"
             ],
             "settings": {
-                "foreground": "#ff7373"
+                "foreground": "#73ff79"
             }
         },
         {
@@ -2843,7 +2843,7 @@
                 "constant.other.reference.link"
             ],
             "settings": {
-                "foreground": "#ffe985"
+                "foreground": "#85f7ff"
             }
         },
         {
@@ -2859,7 +2859,7 @@
                 "entity.name.section.toml"
             ],
             "settings": {
-                "foreground": "#a9d5ff"
+                "foreground": "#a9d7ff"
             }
         },
         {
@@ -2888,7 +2888,7 @@
                 "keyword.other.documentation.js.jsdoc"
             ],
             "settings": {
-                "foreground": "#867000"
+                "foreground": "#228300"
             }
         },
         {
@@ -2898,7 +2898,7 @@
                 "text.xml"
             ],
             "settings": {
-                "foreground": "#4e7690"
+                "foreground": "#777436"
             }
         },
         {
@@ -2918,7 +2918,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
             ],
             "settings": {
-                "foreground": "#a8ff60"
+                "foreground": "#ffd960"
             }
         },
         {
@@ -2938,7 +2938,7 @@
                 "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
             ],
             "settings": {
-                "foreground": "#a8ff60"
+                "foreground": "#f9ff60"
             }
         },
         {
@@ -2958,7 +2958,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
             ],
             "settings": {
-                "foreground": "#ffe45c"
+                "foreground": "#5ca2ff"
             }
         },
         {
@@ -2967,7 +2967,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.vnicode.obsidian"
             ],
             "settings": {
-                "foreground": "#ffffff"
+                "foreground": "#f7f3ed"
             }
         },
         {
@@ -2976,7 +2976,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.sticky.obsidian"
             ],
             "settings": {
-                "foreground": "#9bb7c9"
+                "foreground": "#95cfb0"
             }
         }
     ],
@@ -3003,10 +3003,10 @@
             "foreground": "#f2fbff"
         },
         "interface": {
-            "foreground": "#a8ff60"
+            "foreground": "#60ffa2"
         },
         "keyword": {
-            "foreground": "#ffe45c"
+            "foreground": "#5cf5ff"
         },
         "label": {
             "foreground": "#f2fbff"
@@ -3030,13 +3030,13 @@
             "foreground": "#f2fbff"
         },
         "parameter": {
-            "foreground": "#ffe985"
+            "foreground": "#f2ff85"
         },
         "property": {
             "foreground": "#ff5252"
         },
         "regexp": {
-            "foreground": "#ff7373"
+            "foreground": "#73ff79"
         },
         "string": {
             "foreground": "#a8ff60"
@@ -3048,7 +3048,7 @@
             "foreground": "#f2fbff"
         },
         "typeParameter": {
-            "foreground": "#ffe985"
+            "foreground": "#f2ff85"
         },
         "variable": {
             "foreground": "#f2fbff"
@@ -3060,19 +3060,19 @@
             "foreground": "#f2fbff"
         },
         "comment.documentation": {
-            "foreground": "#4e7690"
+            "foreground": "#397e5c"
         },
         "stringEscapeCharacter": {
-            "foreground": "#a8ff60"
+            "foreground": "#f9ff60"
         },
         "controlKeyword": {
-            "foreground": "#ffe45c"
+            "foreground": "#5cf5ff"
         },
         "plainKeyword": {
-            "foreground": "#ffe45c"
+            "foreground": "#5cf5ff"
         },
         "delegate": {
-            "foreground": "#a8ff60"
+            "foreground": "#60ffa2"
         },
         "constant": {
             "foreground": "#ff7373"
@@ -3090,19 +3090,19 @@
             "foreground": "#ffffff"
         },
         "xmlDocCommentAttributeName": {
-            "foreground": "#3a8100"
+            "foreground": "#00815b"
         },
         "xmlDocCommentName": {
-            "foreground": "#867000"
+            "foreground": "#228300"
         },
         "xmlDocCommentAttributeQuotes": {
-            "foreground": "#867000"
+            "foreground": "#228300"
         },
         "xmlDocCommentDelimiter": {
-            "foreground": "#867000"
+            "foreground": "#228300"
         },
         "xmlDocCommentText": {
-            "foreground": "#4e7690"
+            "foreground": "#397e5c"
         },
         "*.deprecated": {
             "strikethrough": true

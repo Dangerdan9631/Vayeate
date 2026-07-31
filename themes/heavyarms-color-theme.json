@@ -130,7 +130,7 @@
         "progressBar.background": "#e8c8b8",
         "scrollbar.shadow": "#100808",
         "scrollbarSlider.activeBackground": "#80503066",
-        "scrollbarSlider.background": "#7a1e1066",
+        "scrollbarSlider.background": "#511b13",
         "scrollbarSlider.hoverBackground": "#70201066",
         "selection.background": "#5a2010",
         "sideBar.background": "#201008",
@@ -283,7 +283,7 @@
         "menu.separatorBackground": "#e8c8b8",
         "merge.commonContentBackground": "#40280833",
         "merge.commonHeaderBackground": "#2a1008",
-        "minimap.background": "#ae6c4166",
+        "minimap.background": "#161010",
         "minimap.errorHighlight": "#f0d8d0",
         "minimap.findMatchHighlight": "#ae6c4166",
         "minimap.foregroundOpacity": "#ae6c4166",
@@ -2782,7 +2782,7 @@
                 "constant.character.character-class.regexp"
             ],
             "settings": {
-                "foreground": "#c29018"
+                "foreground": "#18c241"
             }
         },
         {
@@ -2794,7 +2794,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.replace.delete.obsidian"
             ],
             "settings": {
-                "foreground": "#ec6955"
+                "foreground": "#ec5b55"
             }
         },
         {
@@ -2859,7 +2859,7 @@
                 "entity.name.section.toml"
             ],
             "settings": {
-                "foreground": "#e63c23"
+                "foreground": "#23e689"
             }
         },
         {
@@ -2888,7 +2888,7 @@
                 "keyword.other.documentation.js.jsdoc"
             ],
             "settings": {
-                "foreground": "#836547"
+                "foreground": "#4c7535"
             }
         },
         {
@@ -2898,7 +2898,7 @@
                 "text.xml"
             ],
             "settings": {
-                "foreground": "#876255"
+                "foreground": "#a6514b"
             }
         },
         {
@@ -2918,7 +2918,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.singleline.obsidian"
             ],
             "settings": {
-                "foreground": "#c07030"
+                "foreground": "#c07130"
             }
         },
         {
@@ -2929,7 +2929,7 @@
                 "source.regex-pipeline.obsidian string.regexp.paren.obsidian"
             ],
             "settings": {
-                "foreground": "#c29018"
+                "foreground": "#18c28b"
             }
         },
         {
@@ -2938,7 +2938,7 @@
                 "source.regex-pipeline.obsidian string.regexp.escape.obsidian"
             ],
             "settings": {
-                "foreground": "#c29018"
+                "foreground": "#c2a018"
             }
         },
         {
@@ -2947,7 +2947,7 @@
                 "source.regex-pipeline.obsidian string.regexp.pattern.obsidian"
             ],
             "settings": {
-                "foreground": "#b07428"
+                "foreground": "#60b028"
             }
         },
         {
@@ -2958,7 +2958,7 @@
                 "source.regex-pipeline.obsidian keyword.operator.options.rule.insensitive.obsidian"
             ],
             "settings": {
-                "foreground": "#ec6955"
+                "foreground": "#55b4ec"
             }
         },
         {
@@ -3036,7 +3036,7 @@
             "foreground": "#e07828"
         },
         "regexp": {
-            "foreground": "#c29018"
+            "foreground": "#18c241"
         },
         "string": {
             "foreground": "#c29018"
@@ -3093,13 +3093,13 @@
             "foreground": "#85634d"
         },
         "xmlDocCommentName": {
-            "foreground": "#836547"
+            "foreground": "#4c7535"
         },
         "xmlDocCommentAttributeQuotes": {
-            "foreground": "#836547"
+            "foreground": "#4c7535"
         },
         "xmlDocCommentDelimiter": {
-            "foreground": "#836547"
+            "foreground": "#4c7535"
         },
         "xmlDocCommentText": {
             "foreground": "#876255"
