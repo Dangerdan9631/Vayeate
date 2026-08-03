@@ -16,6 +16,8 @@
     "electron:dev": "vite",
     "electron:build": "tsc && vite build",
     "electron:preview": "electron .",
+    "generate:themes": "node scripts/run-theme-build.mjs themes",
+    "generate:theme-screenshots": "node scripts/run-theme-build.mjs screenshots",
     "deps:graph": "node scripts/build-dependency-graph.mjs --mode module --out dependency-graph.html",
     "deps:arch": "node scripts/build-dependency-graph.mjs --mode architecture --out architecture-graph.html",
     "deps:check": "depcruise src --include-only \"^src\" --validate",

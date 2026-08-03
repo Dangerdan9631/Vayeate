@@ -10,7 +10,7 @@ Repository automation scripts for architecture and dependency tooling.
 ## Contents
 
 - Subfolders: None
-- Files: `build-dependency-graph.mjs`
+- Files: `build-dependency-graph.mjs`, `node-file-system-service.ts`, `run-theme-build.mjs`, `theme-build-node.ts`, `theme-screenshot-cli.ts`
 
 ## Rules
 

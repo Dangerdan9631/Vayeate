@@ -1,8 +1,15 @@
 /// <reference types="vite/client" />
 
 import type { Rect } from './model/Common/rect';
+import type {
+  ThemeScreenshotRequest,
+  ThemeScreenshotResult,
+} from './model/Theme/theme-build';
 
 export interface ElectronAPI {
+  generateThemeScreenshots: (
+    requests: readonly ThemeScreenshotRequest[],
+  ) => Promise<ThemeScreenshotResult[]>;
   openThemePreviewHost: (request: { displayName: string }) => Promise<void>;
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{

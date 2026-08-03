@@ -59,6 +59,8 @@ export interface MenuBarViewModel {
   handleEditMenuTrigger: () => void;
   handleHistoryMenuTrigger: () => void;
   handleViewMenuTrigger: () => void;
+  handleGenerateAllThemes: () => void;
+  handleGenerateThemeScreenshots: () => void;
   handleExit: () => void;
   handleUndo: () => void;
   handleRedo: () => void;
@@ -131,6 +133,14 @@ export function useMenuBarViewModel(): MenuBarViewModel {
 
   const handleExit = useCallback(() => {
     void dispatch({ type: AppMenuActionType.FileMenuExitButtonOnClick });
+  }, [dispatch]);
+
+  const handleGenerateAllThemes = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.FileMenuGenerateAllThemesButtonOnClick });
+  }, [dispatch]);
+
+  const handleGenerateThemeScreenshots = useCallback(() => {
+    void dispatch({ type: AppMenuActionType.FileMenuGenerateThemeScreenshotsButtonOnClick });
   }, [dispatch]);
 
   const handleFileMenuTrigger = useCallback(() => {
@@ -220,6 +230,8 @@ export function useMenuBarViewModel(): MenuBarViewModel {
     handleEditMenuTrigger,
     handleHistoryMenuTrigger,
     handleViewMenuTrigger,
+    handleGenerateAllThemes,
+    handleGenerateThemeScreenshots,
     handleExit,
     handleUndo,
     handleRedo,

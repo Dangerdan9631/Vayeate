@@ -12,7 +12,7 @@ Controller entry points that orchestrate validations and operations for the Them
 ## Contents
 
 - Subfolders: None
-- Files: `delete-theme-version-controller.ts`, `generate-theme-controller.ts`, `increment-theme-version-controller.ts`, `set-theme-preview-token-ref-controller.ts`, `set-theme-template-controller.ts`
+- Files: `delete-theme-version-controller.ts`, `generate-all-themes-controller.ts`, `generate-theme-controller.ts`, `generate-theme-screenshots-controller.ts`, `increment-theme-version-controller.ts`, `set-theme-preview-token-ref-controller.ts`, `set-theme-template-controller.ts`
 
 ## Rules
 

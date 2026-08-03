@@ -105,6 +105,19 @@ describe('light theme quality', () => {
         ).toBeGreaterThanOrEqual(4.5);
       }
 
+      const commandPalettePairs = [
+        ['quickInput.foreground', 'quickInput.background'],
+        ['quickInputList.focusForeground', 'quickInputList.focusBackground'],
+        ['quickInputList.focusHighlightForeground', 'quickInputList.focusBackground'],
+        ['quickInputList.focusIconForeground', 'quickInputList.focusBackground'],
+      ] as const;
+      for (const [foregroundRef, backgroundRef] of commandPalettePairs) {
+        expect(
+          contrast(trackedLight.colors[foregroundRef], trackedLight.colors[backgroundRef]),
+          `${theme.name} ${foregroundRef}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+
       for (const rule of trackedLight.tokenColors) {
         if (!rule.settings.foreground) continue;
         expect(

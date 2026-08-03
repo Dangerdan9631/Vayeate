@@ -5,6 +5,8 @@ import type { AppAction } from '../../../core/Queue/action-queue/app-action';
  */
 export enum AppMenuActionType {
   FileMenuTriggerButtonOnClick = 'APP_FILE_MENU_TRIGGER_BUTTON_ON_CLICK',
+  FileMenuGenerateAllThemesButtonOnClick = 'APP_FILE_MENU_GENERATE_ALL_THEMES_BUTTON_ON_CLICK',
+  FileMenuGenerateThemeScreenshotsButtonOnClick = 'APP_FILE_MENU_GENERATE_THEME_SCREENSHOTS_BUTTON_ON_CLICK',
   FileMenuExitButtonOnClick = 'APP_FILE_MENU_EXIT_BUTTON_ON_CLICK',
   EditMenuTriggerButtonOnClick = 'APP_EDIT_MENU_TRIGGER_BUTTON_ON_CLICK',
   EditMenuUndoButtonOnClick = 'APP_EDIT_MENU_UNDO_BUTTON_ON_CLICK',
@@ -23,6 +25,8 @@ export enum AppMenuActionType {
  */
 export type AppMenuActions =
   | { type: AppMenuActionType.FileMenuTriggerButtonOnClick }
+  | { type: AppMenuActionType.FileMenuGenerateAllThemesButtonOnClick }
+  | { type: AppMenuActionType.FileMenuGenerateThemeScreenshotsButtonOnClick }
   | { type: AppMenuActionType.FileMenuExitButtonOnClick }
   | { type: AppMenuActionType.EditMenuTriggerButtonOnClick }
   | { type: AppMenuActionType.EditMenuUndoButtonOnClick }

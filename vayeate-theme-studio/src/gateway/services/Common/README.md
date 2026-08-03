@@ -12,7 +12,7 @@ Platform and runtime services for the Common domain.
 ## Contents
 
 - Subfolders: None
-- Files: `clustering-service.ts`, `clustering-worker.ts`, `file-system-service.ts`, `log-service-types.ts`, `log-service.ts`, `scope-resolver-service.ts`, `scope-resolver-worker.ts`, `screenshot-service-types.ts`, `screenshot-service.ts`, `textmate-tokenizer-service.ts`, `theme-preview-host-service.ts`, `web-service.ts`, `window-service.ts`
+- Files: `clustering-service.ts`, `clustering-worker.ts`, `file-system-service.ts`, `log-service-types.ts`, `log-service.ts`, `scope-resolver-service.ts`, `scope-resolver-worker.ts`, `screenshot-service-types.ts`, `screenshot-service.ts`, `textmate-tokenizer-service.ts`, `theme-preview-host-service.ts`, `theme-screenshot-service.ts`, `web-service.ts`, `window-service.ts`
 
 ## Rules
 

@@ -8,6 +8,8 @@ import { ReloadWindowController } from '../../../controllers/Common/app-shell/re
 import { ToggleDevToolsController } from '../../../controllers/Common/app-shell/toggle-dev-tools-controller';
 import { CloseAllMenusController } from '../../../controllers/Common/menu-bar/close-all-menus-controller';
 import { ToggleMenuOpenController } from '../../../controllers/Common/menu-bar/toggle-menu-open-controller';
+import { GenerateAllThemesController } from '../../../controllers/Theme/theme-details-card/generate-all-themes-controller';
+import { GenerateThemeScreenshotsController } from '../../../controllers/Theme/theme-details-card/generate-theme-screenshots-controller';
 import { Logger, LoggerFactory } from '../../../../domain/utils/Common/logger';
 import { AppMenuActions, AppMenuActionType } from './app-menu-action-type';
 
@@ -20,6 +22,8 @@ export class AppMenuHandler {
 
   constructor(
     private readonly closeWindow: CloseWindowController,
+    private readonly generateAllThemes: GenerateAllThemesController,
+    private readonly generateThemeScreenshots: GenerateThemeScreenshotsController,
     private readonly closeAllMenus: CloseAllMenusController,
     private readonly performUndo: UndoController,
     private readonly performRedo: RedoController,
@@ -41,6 +45,10 @@ export class AppMenuHandler {
     switch (action.type) {
       case AppMenuActionType.FileMenuTriggerButtonOnClick:
         return this.toggleMenuOpen.run('file');
+      case AppMenuActionType.FileMenuGenerateAllThemesButtonOnClick:
+        return this.generateAllThemes.run();
+      case AppMenuActionType.FileMenuGenerateThemeScreenshotsButtonOnClick:
+        return this.generateThemeScreenshots.run();
       case AppMenuActionType.FileMenuExitButtonOnClick:
         return this.closeWindow.run();
       case AppMenuActionType.EditMenuTriggerButtonOnClick:

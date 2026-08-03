@@ -6,7 +6,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /**
  * Theme Studio package root (contains data/, electron/).
  */
-export const PROJECT_ROOT = resolve(join(__dirname, '..'));
+export const PROJECT_ROOT = process.env.VAYEATE_THEME_STUDIO_ROOT
+  ? resolve(process.env.VAYEATE_THEME_STUDIO_ROOT)
+  : resolve(join(__dirname, '..'));
 
 /**
  * Repository-relative data directory: vayeate-theme-studio/data
@@ -70,5 +72,19 @@ export function resolveExthemesExportFile(rel: string): string {
   }
   const themesDir = join(PROJECT_ROOT, '..', 'themes');
   return join(themesDir, ...segments);
+}
+
+/**
+ * Resolves a repository `images/*.png` screenshot path without allowing traversal.
+ */
+export function resolveThemeScreenshotExportFile(rel: string): string {
+  const match = /^images\/([a-z0-9-]+-theme\.png)$/.exec(rel.replace(/\\/g, '/'));
+  if (!match) {
+    throw new Error('Invalid theme screenshot path');
+  }
+  const screenshotRoot = process.env.THEME_SCREENSHOT_OUTPUT_ROOT
+    ? resolve(process.env.THEME_SCREENSHOT_OUTPUT_ROOT)
+    : join(PROJECT_ROOT, '..', 'images');
+  return join(screenshotRoot, match[1]);
 }
 

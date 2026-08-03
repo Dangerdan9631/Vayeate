@@ -10,7 +10,7 @@ Electron main-process and preload code. Keep business logic out of this layer.
 ## Contents
 
 - Subfolders: None
-- Files: `ipc-handlers.ts`, `log-forwarding.ts`, `main-window.ts`, `main.ts`, `paths.ts`, `preload.ts`, `theme-preview-host.ts`
+- Files: `ipc-handlers.ts`, `log-forwarding.ts`, `main-window.ts`, `main.ts`, `paths.ts`, `preload.ts`, `theme-preview-host.ts`, `theme-screenshot-host.ts`, `theme-screenshot.ts`
 
 ## Rules
 

@@ -34,6 +34,8 @@ export function MenuBar() {
     handleEditMenuTrigger,
     handleHistoryMenuTrigger,
     handleViewMenuTrigger,
+    handleGenerateAllThemes,
+    handleGenerateThemeScreenshots,
     handleExit,
     handleUndo,
     handleRedo,
@@ -123,6 +125,24 @@ export function MenuBar() {
           </button>
           {fileOpen && (
             <div className="menu-edit-dropdown" role="menu">
+              <button
+                type="button"
+                role="menuitem"
+                className="menu-edit-item"
+                onClick={handleGenerateAllThemes}
+                aria-label="Generate all themes"
+              >
+                Generate All Themes
+              </button>
+              <button
+                type="button"
+                role="menuitem"
+                className="menu-edit-item"
+                onClick={handleGenerateThemeScreenshots}
+                aria-label="Generate theme screenshots"
+              >
+                Generate Theme Screenshots
+              </button>
               <button
                 type="button"
                 role="menuitem"

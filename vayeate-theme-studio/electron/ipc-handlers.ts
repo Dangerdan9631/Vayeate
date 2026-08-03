@@ -8,6 +8,10 @@ import {
   resolveSafeProjectRelativePath,
 } from './paths';
 import { openThemePreviewHost, type ThemePreviewHostRequest } from './theme-preview-host';
+import {
+  generateThemeScreenshots,
+  type ThemeScreenshotRequest,
+} from './theme-screenshot';
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 type BoundsDto = { x: number; y: number; width: number; height: number };
@@ -38,6 +42,11 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
 
   ipcMain.handle('theme-preview-host:open', async (_event, request: ThemePreviewHostRequest) =>
     openThemePreviewHost(request),
+  );
+
+  ipcMain.handle(
+    'theme-screenshot:generate-all',
+    async (_event, requests: ThemeScreenshotRequest[]) => generateThemeScreenshots(requests),
   );
 
   ipcMain.handle('fs:createFile', async (_event, rel: string) => {

@@ -110,6 +110,8 @@ export const THEME_INFRASTRUCTURE_EXCLUDED_CONTROLLERS = [
   'src/app/controllers/Theme/editor-previews-card/open-theme-preview-host-controller.ts',
   'src/app/controllers/Theme/theme-palette-card/persist-current-theme-controller.ts',
   'src/app/controllers/Theme/theme-details-card/generate-theme-controller.ts',
+  'src/app/controllers/Theme/theme-details-card/generate-all-themes-controller.ts',
+  'src/app/controllers/Theme/theme-details-card/generate-theme-screenshots-controller.ts',
 ] as const;
 
 // D7 also listed (deleted per plan cleanup): restore-theme-state-controller.ts,

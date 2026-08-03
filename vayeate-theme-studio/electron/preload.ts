@@ -4,6 +4,10 @@ type BoundsDto = { x: number; y: number; width: number; height: number };
 let nextFileWatchId = 0;
 
 const electronAPI = {
+  generateThemeScreenshots: (requests: unknown[]) =>
+    ipcRenderer.invoke('theme-screenshot:generate-all', requests) as Promise<
+      Array<{ outputPath: string; success: boolean; error?: string }>
+    >,
   openThemePreviewHost: (request: { displayName: string }) =>
     ipcRenderer.invoke('theme-preview-host:open', request) as Promise<void>,
   fetchUrl: (url: string) => ipcRenderer.invoke('net:fetch', url) as Promise<string>,

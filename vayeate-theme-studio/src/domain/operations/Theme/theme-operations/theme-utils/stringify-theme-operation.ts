@@ -1,5 +1,5 @@
 import { singleton } from 'tsyringe';
-import type { GeneratedTheme } from './theme-generator-operation';
+import type { GeneratedTheme } from '../../../../../model/Theme/generated-theme';
 import { yieldToEventLoop } from '../../../../core/Queue/scheduler';
 
 /**

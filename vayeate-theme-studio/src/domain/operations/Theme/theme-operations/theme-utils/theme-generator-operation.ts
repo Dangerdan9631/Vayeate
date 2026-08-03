@@ -8,36 +8,13 @@ import { adjustColorToMeetContrast } from './color-adjust-contrast-operation';
 import { DEFERRED_WORK_YIELD_INTERVAL, yieldEvery, yieldToEventLoop } from '../../../../core/Queue/scheduler';
 import type { Mapping, Template } from '../../../../../model/Template/schema/template-schemas';
 import type { ColorAssignment, ContrastAssignment, StyleAssignment, StyleAssignmentValue, Theme } from '../../../../../model/Theme/schema/theme-schemas';
+import type {
+  GeneratedTheme,
+  SemanticTokenValue,
+  TokenColorRule,
+} from '../../../../../model/Theme/generated-theme';
 
-/**
- * VS Code `tokenColors` entry grouping scopes that share one foreground color.
- */
-export interface TokenColorRule {
-  name: string;
-  scope: string[];
-  settings: { foreground?: string; fontStyle?: string };
-}
-
-/**
- * Semantic token color value or style override in generated theme JSON.
- */
-export interface SemanticTokenValue {
-  foreground?: string;
-  fontStyle?: string;
-  strikethrough?: boolean;
-}
-
-/**
- * VS Code color theme object produced by {@link generateTheme}.
- */
-export interface GeneratedTheme {
-  name: string;
-  type: 'dark' | 'light';
-  semanticHighlighting: boolean;
-  colors: Record<string, string>;
-  tokenColors: TokenColorRule[];
-  semanticTokenColors: Record<string, string | SemanticTokenValue>;
-}
+export type { GeneratedTheme } from '../../../../../model/Theme/generated-theme';
 
 type Mode = 'dark' | 'light';
 
