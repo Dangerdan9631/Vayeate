@@ -475,7 +475,9 @@
                 "punctuation.definition.comment.xml",
                 "comment.line.number-sign.toml",
                 "punctuation.definition.comment.toml",
-                "punctuation.whitespace.comment.leading.toml"
+                "punctuation.whitespace.comment.leading.toml",
+                "comment.block.kotlin",
+                "comment.line.double-slash.kotlin"
             ],
             "settings": {
                 "foreground": "#666e7a"
@@ -491,7 +493,8 @@
                 "comment.block.documentation.javadoc",
                 "comment.block.documentation.js",
                 "comment.block.documentation.ruby",
-                "comment.block.documentation"
+                "comment.block.documentation",
+                "comment.block.documentation.kotlin"
             ],
             "settings": {
                 "foreground": "#377a5d"
@@ -647,7 +650,9 @@
                 "string.quoted.double.toml",
                 "string.quoted.single.toml",
                 "string.quoted.triple.double.toml",
-                "string.quoted.triple.single.toml"
+                "string.quoted.triple.single.toml",
+                "string.quoted.double.kotlin",
+                "string.quoted.triple.kotlin"
             ],
             "settings": {
                 "foreground": "#b7d989"
@@ -1161,7 +1166,10 @@
                 "punctuation.separator.array.toml",
                 "punctuation.separator.inline-table.toml",
                 "punctuation.separator.key-value.toml",
-                "punctuation.separator.variable.toml"
+                "punctuation.separator.variable.toml",
+                "constant.character.escape.kotlin",
+                "punctuation.definition.string.begin.kotlin",
+                "punctuation.definition.string.end.kotlin"
             ],
             "settings": {
                 "foreground": "#a9dce4"
@@ -1274,7 +1282,8 @@
                 "constant.other.timestamp.yaml",
                 "constant.language.boolean.toml",
                 "constant.other.date.toml",
-                "constant.other.time.toml"
+                "constant.other.time.toml",
+                "constant.language.kotlin"
             ],
             "settings": {
                 "foreground": "#f3b2b2"
@@ -1361,7 +1370,10 @@
                 "constant.numeric.hex.toml",
                 "constant.numeric.integer.toml",
                 "constant.numeric.octal.toml",
-                "constant.numeric.toml"
+                "constant.numeric.toml",
+                "constant.numeric.binary.kotlin",
+                "constant.numeric.decimal.kotlin",
+                "constant.numeric.hex.kotlin"
             ],
             "settings": {
                 "foreground": "#f7d27a"
@@ -1459,7 +1471,8 @@
                 "variable.other.object.property",
                 "entity.name.tag",
                 "entity.name.section",
-                "source.regex-pipeline.obsidian entity.name.pattern.obsidian"
+                "source.regex-pipeline.obsidian entity.name.pattern.obsidian",
+                "entity.name.function.kotlin"
             ],
             "settings": {
                 "foreground": "#ff8b8b"
@@ -1870,7 +1883,8 @@
                 "source.yaml",
                 "entity.name.tag.localname.xml",
                 "entity.name.tag.namespace.xml",
-                "entity.name.tag.xml"
+                "entity.name.tag.xml",
+                "keyword.operator.kotlin"
             ],
             "settings": {
                 "foreground": "#f5d77a"
@@ -2402,7 +2416,9 @@
                 "support.type.tag-prefix.yaml",
                 "keyword.other.entity.xml",
                 "keyword.other.entitytype.xml",
-                "keyword.other.page-props.xml"
+                "keyword.other.page-props.xml",
+                "storage.type.kotlin",
+                "support.type.kotlin"
             ],
             "settings": {
                 "foreground": "#d8dde5"
@@ -2477,7 +2493,10 @@
                 "entity.name.variable.parameter",
                 "entity.name.type.type-parameter",
                 "storage.type.generic",
-                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian"
+                "source.regex-pipeline.obsidian keyword.operator.options.rule.unicode.obsidian",
+                "entity.name.function.annotation.kotlin",
+                "meta.annotation.kotlin",
+                "punctuation.definition.annotation.kotlin"
             ],
             "settings": {
                 "foreground": "#f5dc7a"
@@ -2565,7 +2584,10 @@
                 "variable.other",
                 "meta.property.yaml",
                 "variable.other.alias.yaml",
-                "variable.other.key.toml"
+                "variable.other.key.toml",
+                "variable.other.interpolated.expression.kotlin",
+                "variable.other.interpolated.kotlin",
+                "variable.other.readwrite.kotlin"
             ],
             "settings": {
                 "foreground": "#ffffff"
@@ -2749,7 +2771,9 @@
                 "source.regex-pipeline.obsidian keyword.control.apply.obsidian",
                 "source.regex-pipeline.obsidian keyword.control.regex.pattern.obsidian",
                 "storage.modifier.chomping-indicator.yaml",
-                "variable.language.entity.xml"
+                "variable.language.entity.xml",
+                "keyword.control.kotlin",
+                "storage.modifier.kotlin"
             ],
             "settings": {
                 "foreground": "#7af0f5"
@@ -3111,6 +3135,51 @@
             "foreground": "#f3b2b2"
         },
         "property:java": {
+            "foreground": "#ffffff"
+        },
+        "class:kotlin": {
+            "foreground": "#d8dde5"
+        },
+        "decorator:kotlin": {
+            "foreground": "#f5dc7a"
+        },
+        "enum:kotlin": {
+            "foreground": "#d8dde5"
+        },
+        "enumMember:kotlin": {
+            "foreground": "#f3b2b2"
+        },
+        "function:kotlin": {
+            "foreground": "#ff8b8b"
+        },
+        "interface:kotlin": {
+            "foreground": "#a9e4dc"
+        },
+        "method:kotlin": {
+            "foreground": "#ff8b8b"
+        },
+        "namespace:kotlin": {
+            "foreground": "#a9e4dc"
+        },
+        "operator:kotlin": {
+            "foreground": "#f5d77a"
+        },
+        "parameter:kotlin": {
+            "foreground": "#f5dc7a"
+        },
+        "property:kotlin": {
+            "foreground": "#ffffff"
+        },
+        "struct:kotlin": {
+            "foreground": "#d8dde5"
+        },
+        "type:kotlin": {
+            "foreground": "#d8dde5"
+        },
+        "typeParameter:kotlin": {
+            "foreground": "#f5dc7a"
+        },
+        "variable:kotlin": {
             "foreground": "#ffffff"
         }
     }
