@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PROJECT_ROOT } from './paths';
 
@@ -15,6 +15,100 @@ const PREVIEW_USER_DATA_ROOT = join(
 );
 const PREVIEW_DARK_LABEL = 'Vayeate Live Preview';
 const PREVIEW_LIGHT_LABEL = 'Vayeate Live Preview Light';
+const MARKDOWN_PREVIEW_STYLE_PATH = './styles/markdown-preview.css';
+const SOURCE_MARKDOWN_PREVIEW_STYLE_PATH = join(
+  PROJECT_ROOT,
+  '..',
+  'styles',
+  'markdown-preview.css',
+);
+const PREVIEW_MARKDOWN_COLOR_CONTRIBUTIONS = [
+  ['Heading1Foreground', 'Foreground color for Markdown level 1 headings.'],
+  ['Heading2Foreground', 'Foreground color for Markdown level 2 headings.'],
+  ['Heading3Foreground', 'Foreground color for Markdown level 3 headings.'],
+  ['Heading4Foreground', 'Foreground color for Markdown level 4 headings.'],
+  ['Heading5Foreground', 'Foreground color for Markdown level 5 headings.'],
+  ['Heading6Foreground', 'Foreground color for Markdown level 6 headings.'],
+  ['BoldForeground', 'Foreground color for bold Markdown text.'],
+  ['ItalicForeground', 'Foreground color for italic Markdown text.'],
+  ['UnorderedListMarkerForeground', 'Foreground color for unordered Markdown list markers.'],
+  ['OrderedListMarkerForeground', 'Foreground color for ordered Markdown list markers.'],
+  ['QuoteForeground', 'Foreground color for Markdown blockquote text.'],
+  ['TableHeaderForeground', 'Foreground color for Markdown table headers.'],
+].map(([name, description]) => ({
+  id: `vayeate.markdown${name}`,
+  description,
+  defaults: {
+    dark: 'editor.foreground',
+    light: 'editor.foreground',
+    highContrast: 'editor.foreground',
+    highContrastLight: 'editor.foreground',
+  },
+}));
+const PREVIEW_MARKDOWN_TABLE_COLOR_CONTRIBUTIONS = [
+  {
+    id: 'vayeate.markdownTableHeaderBackground',
+    description: 'Background color for Markdown table headers.',
+    defaults: {
+      dark: 'editor.background',
+      light: 'editor.background',
+      highContrast: 'editor.background',
+      highContrastLight: 'editor.background',
+    },
+  },
+  {
+    id: 'vayeate.markdownTableHeaderBorder',
+    description: 'Border color for Markdown table headers.',
+    defaults: {
+      dark: 'textSeparator.foreground',
+      light: 'textSeparator.foreground',
+      highContrast: 'textSeparator.foreground',
+      highContrastLight: 'textSeparator.foreground',
+    },
+  },
+];
+const PREVIEW_MARKDOWN_BACKGROUND_COLOR_CONTRIBUTIONS = [
+  {
+    id: 'vayeate.markdownBackground',
+    description: 'Background color for the Markdown preview.',
+    defaults: {
+      dark: 'editor.background',
+      light: 'editor.background',
+      highContrast: 'editor.background',
+      highContrastLight: 'editor.background',
+    },
+  },
+  {
+    id: 'vayeate.markdownCodeBlockBackground',
+    description: 'Background color for Markdown code blocks.',
+    defaults: {
+      dark: 'textCodeBlock.background',
+      light: 'textCodeBlock.background',
+      highContrast: 'textCodeBlock.background',
+      highContrastLight: 'textCodeBlock.background',
+    },
+  },
+  {
+    id: 'vayeate.markdownQuoteBackground',
+    description: 'Background color for Markdown blockquotes.',
+    defaults: {
+      dark: 'textBlockQuote.background',
+      light: 'textBlockQuote.background',
+      highContrast: 'textBlockQuote.background',
+      highContrastLight: 'textBlockQuote.background',
+    },
+  },
+  {
+    id: 'vayeate.markdownTableRowBackground',
+    description: 'Background color for Markdown table rows.',
+    defaults: {
+      dark: 'editor.background',
+      light: 'editor.background',
+      highContrast: 'editor.background',
+      highContrastLight: 'editor.background',
+    },
+  },
+];
 
 /**
  * Runtime request from the renderer to build and open the preview extension.
@@ -52,6 +146,12 @@ export function buildThemePreviewExtensionManifest(displayName: string) {
     engines: { vscode: '^1.76.0' },
     categories: ['Themes'],
     contributes: {
+      colors: [
+        ...PREVIEW_MARKDOWN_COLOR_CONTRIBUTIONS,
+        ...PREVIEW_MARKDOWN_TABLE_COLOR_CONTRIBUTIONS,
+        ...PREVIEW_MARKDOWN_BACKGROUND_COLOR_CONTRIBUTIONS,
+      ],
+      'markdown.previewStyles': [MARKDOWN_PREVIEW_STYLE_PATH],
       themes: [
         {
           label: PREVIEW_DARK_LABEL,
@@ -90,6 +190,7 @@ export async function openThemePreviewHost(
   const userSettingsDir = join(PREVIEW_USER_DATA_ROOT, 'User');
   await Promise.all([
     mkdir(join(PREVIEW_EXTENSION_ROOT, 'themes'), { recursive: true }),
+    mkdir(join(PREVIEW_EXTENSION_ROOT, 'styles'), { recursive: true }),
     mkdir(userSettingsDir, { recursive: true }),
   ]);
 
@@ -106,6 +207,10 @@ export async function openThemePreviewHost(
       join(userSettingsDir, 'settings.json'),
       `${JSON.stringify(settings, null, 2)}\n`,
       'utf-8',
+    ),
+    copyFile(
+      SOURCE_MARKDOWN_PREVIEW_STYLE_PATH,
+      join(PREVIEW_EXTENSION_ROOT, 'styles', 'markdown-preview.css'),
     ),
   ]);
 

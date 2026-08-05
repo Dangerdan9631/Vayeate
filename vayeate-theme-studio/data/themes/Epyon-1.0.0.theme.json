@@ -1,1 +1,1730 @@
-{"name":"Epyon","version":"1.0.0","templateRef":{"name":"vayeate","version":"1.0.17"},"idePrimaryTokenRef":"activityBar.background","ideForegroundTokenRef":"activityBar.foreground","themeBackgroundTokenRef":"editor.background","themeForegroundTokenRef":"editor.foreground","lineNumberBackgroundTokenRef":"editorGutter.background","lineNumberForegroundTokenRef":"editorLineNumber.foreground","ideTabTokenRef":"tab.activeBackground","ideTabBarBackgroundTokenRef":"tab.inactiveBackground","ideTabBarForegroundTokenRef":"tab.activeForeground","editorPreviewScrollbarBackgroundTokenRef":"editor.background","editorPreviewScrollbarForegroundTokenRef":"scrollbarSlider.background","editorPreviewSelectionBackgroundTokenRef":"editor.selectionBackground","editorPreviewMenuForegroundTokenRef":"menu.foreground","editorPreviewMenuBackgroundTokenRef":"menu.background","colorAssignments":[{"colorRef":"TerminalBlack","light":{"value":"#883a20"},"dark":{"value":"#251116"},"useDarkForLight":false},{"colorRef":"TerminalBlue","light":{"value":"#3161f2"},"dark":{"value":"#b7c9ff"},"useDarkForLight":false},{"colorRef":"TerminalBrightBlack","light":{"value":"#835553"},"dark":{"value":"#c59d9b"},"useDarkForLight":false},{"colorRef":"TerminalBrightBlue","light":{"value":"#3161f2"},"dark":{"value":"#b7c9ff"},"useDarkForLight":false},{"colorRef":"TerminalBrightCyan","light":{"value":"#0c7e65"},"dark":{"value":"#80ead3"},"useDarkForLight":false},{"colorRef":"TerminalBrightGreen","light":{"value":"#167e31"},"dark":{"value":"#9de7b0"},"useDarkForLight":false},{"colorRef":"TerminalBrightMagenta","light":{"value":"#d80e5d"},"dark":{"value":"#ffb5d2"},"useDarkForLight":false},{"colorRef":"TerminalBrightRed","light":{"value":"#dd0e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"TerminalBrightWhite","light":{"value":"#883a20"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"TerminalBrightYellow","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"TerminalCyan","light":{"value":"#0c7e65"},"dark":{"value":"#80ead3"},"useDarkForLight":false},{"colorRef":"TerminalGreen","light":{"value":"#167e31"},"dark":{"value":"#9de7b0"},"useDarkForLight":false},{"colorRef":"TerminalMagenta","light":{"value":"#d80e5d"},"dark":{"value":"#ffb5d2"},"useDarkForLight":false},{"colorRef":"TerminalRed","light":{"value":"#dd0e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"TerminalWhite","light":{"value":"#835553"},"dark":{"value":"#f0c9c0"},"useDarkForLight":false},{"colorRef":"TerminalYellow","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"ChromePrimaryBackground","light":{"value":"#7e2939"},"dark":{"value":"#7e2939"},"useDarkForLight":false},{"colorRef":"ChromePrimaryForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"ChromeSecondaryBackground","light":{"value":"#d8b7ba"},"dark":{"value":"#421a24"},"useDarkForLight":false},{"colorRef":"ChromeSecondaryForeground","light":{"value":"#97432f"},"dark":{"value":"#f0c9c0"},"useDarkForLight":false},{"colorRef":"ChromePanelBackground","light":{"value":"#e7dad8"},"dark":{"value":"#331921"},"useDarkForLight":false},{"colorRef":"ChromePanelForeground","light":{"value":"#97432f"},"dark":{"value":"#f0c9c0"},"useDarkForLight":false},{"colorRef":"ChromeMutedBackground","light":{"value":"#d0bdbe"},"dark":{"value":"#56303a"},"useDarkForLight":false},{"colorRef":"ChromeMutedForeground","light":{"value":"#97432f"},"dark":{"value":"#f0c9c0"},"useDarkForLight":false},{"colorRef":"ChromeBorder","light":{"value":"#c68b91"},"dark":{"value":"#a7525d"},"useDarkForLight":false},{"colorRef":"ChromeShadow","light":{"value":"#00000033"},"dark":{"value":"#251116"},"useDarkForLight":false},{"colorRef":"ChromeLinkForeground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"ChromeHighlightedForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"ChromeSelectionForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"ChromeHighlightedBackground","light":{"value":"#7e2939"},"dark":{"value":"#7e2939"},"useDarkForLight":false},{"colorRef":"ChromeBadgeBackground","light":{"value":"#7e2939"},"dark":{"value":"#7e2939"},"useDarkForLight":false},{"colorRef":"ChromeBadgeForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"ChromeOverlayBackground","light":{"value":"#e7dad8f2"},"dark":{"value":"#56303a"},"useDarkForLight":false},{"colorRef":"ChromeOverlayHoverBackground","light":{"value":"#d0bdbe"},"dark":{"value":"#a7525d"},"useDarkForLight":false},{"colorRef":"ChromeSelectionBackground","light":{"value":"#7e2939"},"dark":{"value":"#7e2939"},"useDarkForLight":false},{"colorRef":"ChromeHoverBackground","light":{"value":"#d0bdbe"},"dark":{"value":"#56303a"},"useDarkForLight":false},{"colorRef":"ChromeInactiveSelectionBackground","light":{"value":"#d8b7ba"},"dark":{"value":"#56303a"},"useDarkForLight":false},{"colorRef":"ChromeActiveBorder","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"ChromePlaceholderForeground","light":{"value":"#835553"},"dark":{"value":"#c59d9b"},"useDarkForLight":false},{"colorRef":"ChromeScrollbarBackground","light":{"value":"#cfbbbb"},"dark":{"value":"#542a31"},"useDarkForLight":false},{"colorRef":"ChromeScrollbarHoverBackground","light":{"value":"#c68b91"},"dark":{"value":"#56303a"},"useDarkForLight":false},{"colorRef":"ChromeSubtleForeground","light":{"value":"#835553"},"dark":{"value":"#c59d9b"},"useDarkForLight":false},{"colorRef":"ChromeFocusForeground","light":{"value":"#883a20"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"ChromeHoverForeground","light":{"value":"#97432f"},"dark":{"value":"#f0c9c0"},"useDarkForLight":false},{"colorRef":"StatusDebugBackground","light":{"value":"#7e2939"},"dark":{"value":"#7e2939"},"useDarkForLight":false},{"colorRef":"StatusDebugForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"StatusRemoteForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"StatusNoFolderBackground","light":{"value":"#7e2939"},"dark":{"value":"#7e2939"},"useDarkForLight":false},{"colorRef":"StatusNoFolderForeground","light":{"value":"#fffdfb"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"DiagnosticErrorBackground","light":{"value":"#f6c1bf"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"DiagnosticErrorForeground","light":{"value":"#d80e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"DiagnosticWarningForeground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"DiagnosticNotificationErrorForeground","light":{"value":"#d80e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"DiagnosticWarningBackground","light":{"value":"#e4d5be"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"DiagnosticInfoBackground","light":{"value":"#e4d5be"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"DiagnosticValidationErrorBackground","light":{"value":"#f6c1bf"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"EditorComment","light":{"value":"#a26f6c"},"dark":{"value":"#c59d9b"},"useDarkForLight":false},{"colorRef":"EditorString","light":{"value":"#167e31"},"dark":{"value":"#9de7b0"},"useDarkForLight":false},{"colorRef":"EditorStringEscape","light":{"value":"#0c7e65"},"dark":{"value":"#80ead3"},"useDarkForLight":false},{"colorRef":"EditorPreprocessor","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"EditorParameter","light":{"value":"#866d09"},"dark":{"value":"#ffe47a"},"useDarkForLight":false},{"colorRef":"EditorKeyword","light":{"value":"#087c81"},"dark":{"value":"#7af9ff"},"useDarkForLight":false},{"colorRef":"EditorTypeClass","light":{"value":"#ce330d"},"dark":{"value":"#ffb4a2"},"useDarkForLight":false},{"colorRef":"EditorTypeInterface","light":{"value":"#0c7e63"},"dark":{"value":"#80ead1"},"useDarkForLight":false},{"colorRef":"EditorObjectKey","light":{"value":"#8b6909"},"dark":{"value":"#ffdc7a"},"useDarkForLight":false},{"colorRef":"EditorField","light":{"value":"#c0460c"},"dark":{"value":"#ffe8dd"},"useDarkForLight":false},{"colorRef":"EditorConstant","light":{"value":"#d80e5d"},"dark":{"value":"#ffb5d2"},"useDarkForLight":false},{"colorRef":"EditorMethod","light":{"value":"#dd0e0e"},"dark":{"value":"#ff8787"},"useDarkForLight":false},{"colorRef":"EditorNumber","light":{"value":"#906709"},"dark":{"value":"#ffd166"},"useDarkForLight":false},{"colorRef":"EditorDocTag","light":{"value":"#3f8c21"},"dark":{"value":"#9fff7a"},"useDarkForLight":false},{"colorRef":"EditorDocAttribute","light":{"value":"#238a90"},"dark":{"value":"#80e5ea"},"useDarkForLight":false},{"colorRef":"EditorDocText","light":{"value":"#618745"},"dark":{"value":"#abce92"},"useDarkForLight":false},{"colorRef":"EditorDocParam","light":{"value":"#917922"},"dark":{"value":"#ffe37a"},"useDarkForLight":false},{"colorRef":"EditorBackground","light":{"value":"#fff4f1"},"dark":{"value":"#252223"},"useDarkForLight":false},{"colorRef":"EditorForeground","light":{"value":"#883a20"},"dark":{"value":"#fff6f3"},"useDarkForLight":false},{"colorRef":"EditorLineHighlightBackground","light":{"value":"#f2e6e3"},"dark":{"value":"#33192199"},"useDarkForLight":false},{"colorRef":"EditorSelectionBackground","light":{"value":"#7e293942"},"dark":{"value":"#7e293999"},"useDarkForLight":false},{"colorRef":"EditorFindMatchBackground","light":{"value":"#86690952"},"dark":{"value":"#e77e9a"},"useDarkForLight":false},{"colorRef":"EditorFindMatchHighlightBackground","light":{"value":"#8669092e"},"dark":{"value":"#6b2e3d"},"useDarkForLight":false},{"colorRef":"EditorRangeHighlightBackground","light":{"value":"#7e293920"},"dark":{"value":"#7e293966"},"useDarkForLight":false},{"colorRef":"EditorBracketMatchBackground","light":{"value":"#d8b7ba"},"dark":{"value":"#421a24"},"useDarkForLight":false},{"colorRef":"EditorBracketMatchBorder","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"EditorCursorForeground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"EditorLineNumberForeground","light":{"value":"#835553"},"dark":{"value":"#c59d9b"},"useDarkForLight":false},{"colorRef":"EditorRulerForeground","light":{"value":"#c68b91"},"dark":{"value":"#a7525d"},"useDarkForLight":false},{"colorRef":"EditorGutterBackground","light":{"value":"#e7dad8"},"dark":{"value":"#331921"},"useDarkForLight":false},{"colorRef":"EditorGutterAddedBackground","light":{"value":"#16792f"},"dark":{"value":"#9de7b0"},"useDarkForLight":false},{"colorRef":"EditorGutterDeletedBackground","light":{"value":"#d80e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"EditorGutterModifiedBackground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"EditorWidgetBackground","light":{"value":"#d8b7ba"},"dark":{"value":"#421a24"},"useDarkForLight":false},{"colorRef":"EditorWidgetBorder","light":{"value":"#c68b91"},"dark":{"value":"#a7525d"},"useDarkForLight":false},{"colorRef":"EditorInlayHintForeground","light":{"value":"#97432f"},"dark":{"value":"#f0c9c0"},"useDarkForLight":false},{"colorRef":"EditorInlayHintBackground","light":{"value":"#d0bdbe"},"dark":{"value":"#56303a"},"useDarkForLight":false},{"colorRef":"EditorInvalidForeground","light":{"value":"#d80e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"EditorLinkForeground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"EditorCodeLensForeground","light":{"value":"#835553"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"EditorIndentGuideActiveBackground","light":{"value":"#c68b91"},"dark":{"value":"#a7525d"},"useDarkForLight":false},{"colorRef":"EditorMarkdownHeader","light":{"value":"#087d47"},"dark":{"value":"#a2ffd4"},"useDarkForLight":false},{"colorRef":"EditorMarkdownReference","light":{"value":"#08787d"},"dark":{"value":"#7afaff"},"useDarkForLight":false},{"colorRef":"EditorMarkdownAlt","light":{"value":"#b64d0c"},"dark":{"value":"#ffeadd"},"useDarkForLight":false},{"colorRef":"EditorDeprecatedComment","light":{"value":"#b16867"},"dark":{"value":"#ce9392"},"useDarkForLight":false},{"colorRef":"EditorRegexp","light":{"value":"#0f67f0"},"dark":{"value":"#b5d2ff"},"useDarkForLight":false},{"colorRef":"EditorRegexpEscape","light":{"value":"#0c7e65"},"dark":{"value":"#80ead3"},"useDarkForLight":false},{"colorRef":"EditorRegexpControl","light":{"value":"#087b81"},"dark":{"value":"#7af8ff"},"useDarkForLight":false},{"colorRef":"EditorRegexpName","light":{"value":"#8b6909"},"dark":{"value":"#ffdc7a"},"useDarkForLight":false},{"colorRef":"EditorRegexpOperator","light":{"value":"#93671a"},"dark":{"value":"#e7cc9d"},"useDarkForLight":false},{"colorRef":"EditorRegexpOperatorAlt","light":{"value":"#68740b"},"dark":{"value":"#deea80"},"useDarkForLight":false},{"colorRef":"EditorRegexpPatternString","light":{"value":"#167e31"},"dark":{"value":"#9de7b0"},"useDarkForLight":false},{"colorRef":"EditorRegexpReplaceString","light":{"value":"#0f67f0"},"dark":{"value":"#b5d2ff"},"useDarkForLight":false},{"colorRef":"EditorRegexpOption","light":{"value":"#0e6bdd"},"dark":{"value":"#7ab6ff"},"useDarkForLight":false},{"colorRef":"EditorRegexpOptionMuted","light":{"value":"#4f792a"},"dark":{"value":"#aece92"},"useDarkForLight":false},{"colorRef":"DiffInsertedBackground","light":{"value":"#16792f66"},"dark":{"value":"#10da4328"},"useDarkForLight":false},{"colorRef":"DiffRemovedBackground","light":{"value":"#d80e0e66"},"dark":{"value":"#ff000028"},"useDarkForLight":false},{"colorRef":"GitConflictingForeground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"GitDeletedForeground","light":{"value":"#d80e0e"},"dark":{"value":"#ff7b7b"},"useDarkForLight":false},{"colorRef":"GitIgnoredForeground","light":{"value":"#835553"},"dark":{"value":"#c59d9b"},"useDarkForLight":false},{"colorRef":"GitModifiedForeground","light":{"value":"#866909"},"dark":{"value":"#ffe07a"},"useDarkForLight":false},{"colorRef":"GitUntrackedForeground","light":{"value":"#16792f"},"dark":{"value":"#c59d9b"},"useDarkForLight":false}],"contrastAssignments":[{"contrastVariableRef":"Terminal","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"Chrome","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":3,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"ChromeOnPrimary","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"ChromeOnPanel","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"ChromeOnMuted","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"ChromeText","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"ChromeBorder","light":{"value":1.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":1.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"Comment","light":{"value":3.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":3.5,"comparisonMethod":"equalTo","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"String","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":3,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"Keyword","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":3,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"Text","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"Diagnostic","light":{"value":4.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":3,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"DiffBackground","light":{"value":1.5,"comparisonMethod":"lessThan","min":null,"max":null},"dark":{"value":1,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"DiffForeground","light":{"value":2.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":2.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false},{"contrastVariableRef":"DiffGutter","light":{"value":2.5,"comparisonMethod":"greaterThan","min":null,"max":null},"dark":{"value":2.5,"comparisonMethod":"greaterThan","min":null,"max":null},"useDarkForLight":false}],"styleAssignments":[{"styleVariableRef":"Deprecated","light":{"bold":false,"underline":false,"italic":false,"strikethrough":true},"dark":{"bold":false,"underline":false,"italic":false,"strikethrough":true},"useDarkForLight":false},{"styleVariableRef":"DiagnosticWarning","light":{"bold":false,"underline":true,"italic":false,"strikethrough":false},"dark":{"bold":false,"underline":true,"italic":false,"strikethrough":false},"useDarkForLight":false}],"applyPaletteToDark":true,"applyPaletteToLight":true,"paletteClusterCountK":5,"paletteClusterGroupIds":[]}
+{
+  "name": "Epyon",
+  "version": "1.0.0",
+  "templateRef": {
+    "name": "vayeate",
+    "version": "1.0.18"
+  },
+  "idePrimaryTokenRef": "activityBar.background",
+  "ideForegroundTokenRef": "activityBar.foreground",
+  "themeBackgroundTokenRef": "editor.background",
+  "themeForegroundTokenRef": "editor.foreground",
+  "lineNumberBackgroundTokenRef": "editorGutter.background",
+  "lineNumberForegroundTokenRef": "editorLineNumber.foreground",
+  "ideTabTokenRef": "tab.activeBackground",
+  "ideTabBarBackgroundTokenRef": "tab.inactiveBackground",
+  "ideTabBarForegroundTokenRef": "tab.activeForeground",
+  "editorPreviewScrollbarBackgroundTokenRef": "editor.background",
+  "editorPreviewScrollbarForegroundTokenRef": "scrollbarSlider.background",
+  "editorPreviewSelectionBackgroundTokenRef": "editor.selectionBackground",
+  "editorPreviewMenuForegroundTokenRef": "menu.foreground",
+  "editorPreviewMenuBackgroundTokenRef": "menu.background",
+  "colorAssignments": [
+    {
+      "colorRef": "TerminalBlack",
+      "light": {
+        "value": "#883a20"
+      },
+      "dark": {
+        "value": "#251116"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBlue",
+      "light": {
+        "value": "#3161f2"
+      },
+      "dark": {
+        "value": "#b7c9ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightBlack",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightBlue",
+      "light": {
+        "value": "#3161f2"
+      },
+      "dark": {
+        "value": "#b7c9ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightCyan",
+      "light": {
+        "value": "#0c7e65"
+      },
+      "dark": {
+        "value": "#80ead3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightGreen",
+      "light": {
+        "value": "#167e31"
+      },
+      "dark": {
+        "value": "#9de7b0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightMagenta",
+      "light": {
+        "value": "#d80e5d"
+      },
+      "dark": {
+        "value": "#ffb5d2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightRed",
+      "light": {
+        "value": "#dd0e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightWhite",
+      "light": {
+        "value": "#883a20"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalBrightYellow",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalCyan",
+      "light": {
+        "value": "#0c7e65"
+      },
+      "dark": {
+        "value": "#80ead3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalGreen",
+      "light": {
+        "value": "#167e31"
+      },
+      "dark": {
+        "value": "#9de7b0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalMagenta",
+      "light": {
+        "value": "#d80e5d"
+      },
+      "dark": {
+        "value": "#ffb5d2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalRed",
+      "light": {
+        "value": "#dd0e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalWhite",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#f0c9c0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "TerminalYellow",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromePrimaryBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromePrimaryForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeSecondaryBackground",
+      "light": {
+        "value": "#d8b7ba"
+      },
+      "dark": {
+        "value": "#421a24"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeSecondaryForeground",
+      "light": {
+        "value": "#97432f"
+      },
+      "dark": {
+        "value": "#f0c9c0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromePanelBackground",
+      "light": {
+        "value": "#e7dad8"
+      },
+      "dark": {
+        "value": "#331921"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromePanelForeground",
+      "light": {
+        "value": "#97432f"
+      },
+      "dark": {
+        "value": "#f0c9c0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeMutedBackground",
+      "light": {
+        "value": "#d0bdbe"
+      },
+      "dark": {
+        "value": "#56303a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeMutedForeground",
+      "light": {
+        "value": "#97432f"
+      },
+      "dark": {
+        "value": "#f0c9c0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeBorder",
+      "light": {
+        "value": "#c68b91"
+      },
+      "dark": {
+        "value": "#a7525d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeShadow",
+      "light": {
+        "value": "#00000033"
+      },
+      "dark": {
+        "value": "#251116"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeLinkForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeHighlightedForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeSelectionForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeHighlightedBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeBadgeBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeBadgeForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeOverlayBackground",
+      "light": {
+        "value": "#e7dad8f2"
+      },
+      "dark": {
+        "value": "#56303a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeOverlayHoverBackground",
+      "light": {
+        "value": "#d0bdbe"
+      },
+      "dark": {
+        "value": "#a7525d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeSelectionBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeHoverBackground",
+      "light": {
+        "value": "#d0bdbe"
+      },
+      "dark": {
+        "value": "#56303a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeInactiveSelectionBackground",
+      "light": {
+        "value": "#d8b7ba"
+      },
+      "dark": {
+        "value": "#56303a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeActiveBorder",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromePlaceholderForeground",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeScrollbarBackground",
+      "light": {
+        "value": "#cfbbbb"
+      },
+      "dark": {
+        "value": "#542a31"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeScrollbarHoverBackground",
+      "light": {
+        "value": "#c68b91"
+      },
+      "dark": {
+        "value": "#56303a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeSubtleForeground",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeFocusForeground",
+      "light": {
+        "value": "#883a20"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "ChromeHoverForeground",
+      "light": {
+        "value": "#97432f"
+      },
+      "dark": {
+        "value": "#f0c9c0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "StatusDebugBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "StatusDebugForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "StatusRemoteForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "StatusNoFolderBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "StatusNoFolderForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticErrorBackground",
+      "light": {
+        "value": "#f6c1bf"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticErrorForeground",
+      "light": {
+        "value": "#d80e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticWarningForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticNotificationErrorForeground",
+      "light": {
+        "value": "#d80e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticWarningBackground",
+      "light": {
+        "value": "#e4d5be"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticInfoBackground",
+      "light": {
+        "value": "#e4d5be"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiagnosticValidationErrorBackground",
+      "light": {
+        "value": "#f6c1bf"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorComment",
+      "light": {
+        "value": "#a26f6c"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorString",
+      "light": {
+        "value": "#167e31"
+      },
+      "dark": {
+        "value": "#9de7b0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorStringEscape",
+      "light": {
+        "value": "#0c7e65"
+      },
+      "dark": {
+        "value": "#80ead3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorPreprocessor",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorParameter",
+      "light": {
+        "value": "#866d09"
+      },
+      "dark": {
+        "value": "#ffe47a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorKeyword",
+      "light": {
+        "value": "#087c81"
+      },
+      "dark": {
+        "value": "#7af9ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorTypeClass",
+      "light": {
+        "value": "#ce330d"
+      },
+      "dark": {
+        "value": "#ffb4a2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorTypeInterface",
+      "light": {
+        "value": "#0c7e63"
+      },
+      "dark": {
+        "value": "#80ead1"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorObjectKey",
+      "light": {
+        "value": "#8b6909"
+      },
+      "dark": {
+        "value": "#ffdc7a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorField",
+      "light": {
+        "value": "#c0460c"
+      },
+      "dark": {
+        "value": "#ffe8dd"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorConstant",
+      "light": {
+        "value": "#d80e5d"
+      },
+      "dark": {
+        "value": "#ffb5d2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorMethod",
+      "light": {
+        "value": "#dd0e0e"
+      },
+      "dark": {
+        "value": "#ff8787"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorNumber",
+      "light": {
+        "value": "#906709"
+      },
+      "dark": {
+        "value": "#ffd166"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorDocTag",
+      "light": {
+        "value": "#3f8c21"
+      },
+      "dark": {
+        "value": "#9fff7a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorDocAttribute",
+      "light": {
+        "value": "#238a90"
+      },
+      "dark": {
+        "value": "#80e5ea"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorDocText",
+      "light": {
+        "value": "#618745"
+      },
+      "dark": {
+        "value": "#abce92"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorDocParam",
+      "light": {
+        "value": "#917922"
+      },
+      "dark": {
+        "value": "#ffe37a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorBackground",
+      "light": {
+        "value": "#fff4f1"
+      },
+      "dark": {
+        "value": "#252223"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorForeground",
+      "light": {
+        "value": "#883a20"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorLineHighlightBackground",
+      "light": {
+        "value": "#f2e6e3"
+      },
+      "dark": {
+        "value": "#33192199"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorSelectionBackground",
+      "light": {
+        "value": "#7e293942"
+      },
+      "dark": {
+        "value": "#7e293999"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorFindMatchBackground",
+      "light": {
+        "value": "#86690952"
+      },
+      "dark": {
+        "value": "#e77e9a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorFindMatchHighlightBackground",
+      "light": {
+        "value": "#8669092e"
+      },
+      "dark": {
+        "value": "#6b2e3d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRangeHighlightBackground",
+      "light": {
+        "value": "#7e293920"
+      },
+      "dark": {
+        "value": "#7e293966"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorBracketMatchBackground",
+      "light": {
+        "value": "#d8b7ba"
+      },
+      "dark": {
+        "value": "#421a24"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorBracketMatchBorder",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorCursorForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorLineNumberForeground",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRulerForeground",
+      "light": {
+        "value": "#c68b91"
+      },
+      "dark": {
+        "value": "#a7525d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorGutterBackground",
+      "light": {
+        "value": "#e7dad8"
+      },
+      "dark": {
+        "value": "#331921"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorGutterAddedBackground",
+      "light": {
+        "value": "#16792f"
+      },
+      "dark": {
+        "value": "#9de7b0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorGutterDeletedBackground",
+      "light": {
+        "value": "#d80e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorGutterModifiedBackground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorWidgetBackground",
+      "light": {
+        "value": "#d8b7ba"
+      },
+      "dark": {
+        "value": "#421a24"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorWidgetBorder",
+      "light": {
+        "value": "#c68b91"
+      },
+      "dark": {
+        "value": "#a7525d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorInlayHintForeground",
+      "light": {
+        "value": "#97432f"
+      },
+      "dark": {
+        "value": "#f0c9c0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorInlayHintBackground",
+      "light": {
+        "value": "#d0bdbe"
+      },
+      "dark": {
+        "value": "#56303a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorInvalidForeground",
+      "light": {
+        "value": "#d80e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorLinkForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorCodeLensForeground",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorIndentGuideActiveBackground",
+      "light": {
+        "value": "#c68b91"
+      },
+      "dark": {
+        "value": "#a7525d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorMarkdownHeader",
+      "light": {
+        "value": "#087d47"
+      },
+      "dark": {
+        "value": "#a2ffd4"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorMarkdownReference",
+      "light": {
+        "value": "#08787d"
+      },
+      "dark": {
+        "value": "#7afaff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorMarkdownAlt",
+      "light": {
+        "value": "#b64d0c"
+      },
+      "dark": {
+        "value": "#ffeadd"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorDeprecatedComment",
+      "light": {
+        "value": "#b16867"
+      },
+      "dark": {
+        "value": "#ce9392"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexp",
+      "light": {
+        "value": "#0f67f0"
+      },
+      "dark": {
+        "value": "#b5d2ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpEscape",
+      "light": {
+        "value": "#0c7e65"
+      },
+      "dark": {
+        "value": "#80ead3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpControl",
+      "light": {
+        "value": "#087b81"
+      },
+      "dark": {
+        "value": "#7af8ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpName",
+      "light": {
+        "value": "#8b6909"
+      },
+      "dark": {
+        "value": "#ffdc7a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpOperator",
+      "light": {
+        "value": "#93671a"
+      },
+      "dark": {
+        "value": "#e7cc9d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpOperatorAlt",
+      "light": {
+        "value": "#68740b"
+      },
+      "dark": {
+        "value": "#deea80"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpPatternString",
+      "light": {
+        "value": "#167e31"
+      },
+      "dark": {
+        "value": "#9de7b0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpReplaceString",
+      "light": {
+        "value": "#0f67f0"
+      },
+      "dark": {
+        "value": "#b5d2ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpOption",
+      "light": {
+        "value": "#0e6bdd"
+      },
+      "dark": {
+        "value": "#7ab6ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "EditorRegexpOptionMuted",
+      "light": {
+        "value": "#4f792a"
+      },
+      "dark": {
+        "value": "#aece92"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiffInsertedBackground",
+      "light": {
+        "value": "#16792f66"
+      },
+      "dark": {
+        "value": "#10da4328"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "DiffRemovedBackground",
+      "light": {
+        "value": "#d80e0e66"
+      },
+      "dark": {
+        "value": "#ff000028"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "GitConflictingForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "GitDeletedForeground",
+      "light": {
+        "value": "#d80e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "GitIgnoredForeground",
+      "light": {
+        "value": "#835553"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "GitModifiedForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "GitUntrackedForeground",
+      "light": {
+        "value": "#16792f"
+      },
+      "dark": {
+        "value": "#c59d9b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownHeading1Foreground",
+      "light": {
+        "value": "#087d47"
+      },
+      "dark": {
+        "value": "#a2ffd4"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownHeading2Foreground",
+      "light": {
+        "value": "#08787d"
+      },
+      "dark": {
+        "value": "#7afaff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownHeading3Foreground",
+      "light": {
+        "value": "#b64d0c"
+      },
+      "dark": {
+        "value": "#ffeadd"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownHeading4Foreground",
+      "light": {
+        "value": "#ce330d"
+      },
+      "dark": {
+        "value": "#ffb4a2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownHeading5Foreground",
+      "light": {
+        "value": "#d80e5d"
+      },
+      "dark": {
+        "value": "#ffb5d2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownHeading6Foreground",
+      "light": {
+        "value": "#dd0e0e"
+      },
+      "dark": {
+        "value": "#ff8787"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownBoldForeground",
+      "light": {
+        "value": "#087c81"
+      },
+      "dark": {
+        "value": "#7af9ff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownItalicForeground",
+      "light": {
+        "value": "#b64d0c"
+      },
+      "dark": {
+        "value": "#ffeadd"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownUnorderedListMarkerForeground",
+      "light": {
+        "value": "#ce330d"
+      },
+      "dark": {
+        "value": "#ffb4a2"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownOrderedListMarkerForeground",
+      "light": {
+        "value": "#906709"
+      },
+      "dark": {
+        "value": "#ffd166"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownQuoteForeground",
+      "light": {
+        "value": "#883a20"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownTableHeaderForeground",
+      "light": {
+        "value": "#fffdfb"
+      },
+      "dark": {
+        "value": "#fff6f3"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownTableHeaderBackground",
+      "light": {
+        "value": "#7e2939"
+      },
+      "dark": {
+        "value": "#7e2939"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownTableHeaderBorder",
+      "light": {
+        "value": "#c68b91"
+      },
+      "dark": {
+        "value": "#a7525d"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownAlertNoteForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownAlertTipForeground",
+      "light": {
+        "value": "#167e31"
+      },
+      "dark": {
+        "value": "#9de7b0"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownAlertImportantForeground",
+      "light": {
+        "value": "#08787d"
+      },
+      "dark": {
+        "value": "#7afaff"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownAlertWarningForeground",
+      "light": {
+        "value": "#866909"
+      },
+      "dark": {
+        "value": "#ffe07a"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownAlertCautionForeground",
+      "light": {
+        "value": "#dd0e0e"
+      },
+      "dark": {
+        "value": "#ff7b7b"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownBackground",
+      "light": {
+        "value": "#fff4f1"
+      },
+      "dark": {
+        "value": "#252223"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownCodeBlockBackground",
+      "light": {
+        "value": "#d8b7ba"
+      },
+      "dark": {
+        "value": "#421a24"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownQuoteBackground",
+      "light": {
+        "value": "#d8b7ba"
+      },
+      "dark": {
+        "value": "#421a24"
+      },
+      "useDarkForLight": false
+    },
+    {
+      "colorRef": "MarkdownTableRowBackground",
+      "light": {
+        "value": "#fff4f1"
+      },
+      "dark": {
+        "value": "#252223"
+      },
+      "useDarkForLight": false
+    }
+  ],
+  "contrastAssignments": [
+    {
+      "contrastVariableRef": "Terminal",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "Chrome",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "ChromeOnPrimary",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "ChromeOnPanel",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "ChromeOnMuted",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "ChromeText",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "ChromeBorder",
+      "light": {
+        "value": 1.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 1.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "Comment",
+      "light": {
+        "value": 3.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 3.5,
+        "comparisonMethod": "equalTo",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "String",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "Keyword",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "Text",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "Diagnostic",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 3,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "DiffBackground",
+      "light": {
+        "value": 1.5,
+        "comparisonMethod": "lessThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 1,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "DiffForeground",
+      "light": {
+        "value": 2.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 2.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "DiffGutter",
+      "light": {
+        "value": 2.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 2.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    },
+    {
+      "contrastVariableRef": "MarkdownTableHeaderText",
+      "light": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "dark": {
+        "value": 4.5,
+        "comparisonMethod": "greaterThan",
+        "min": null,
+        "max": null
+      },
+      "useDarkForLight": false
+    }
+  ],
+  "styleAssignments": [
+    {
+      "styleVariableRef": "Deprecated",
+      "light": {
+        "bold": false,
+        "underline": false,
+        "italic": false,
+        "strikethrough": true
+      },
+      "dark": {
+        "bold": false,
+        "underline": false,
+        "italic": false,
+        "strikethrough": true
+      },
+      "useDarkForLight": false
+    },
+    {
+      "styleVariableRef": "DiagnosticWarning",
+      "light": {
+        "bold": false,
+        "underline": true,
+        "italic": false,
+        "strikethrough": false
+      },
+      "dark": {
+        "bold": false,
+        "underline": true,
+        "italic": false,
+        "strikethrough": false
+      },
+      "useDarkForLight": false
+    }
+  ],
+  "applyPaletteToDark": true,
+  "applyPaletteToLight": true,
+  "paletteClusterCountK": 5,
+  "paletteClusterGroupIds": []
+}

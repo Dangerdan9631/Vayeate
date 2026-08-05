@@ -187,6 +187,101 @@
                 "uiTheme": "vs",
                 "path": "./themes/wing-zero-light-color-theme.json"
             }
+        ],
+        "colors": [
+            {
+                "id": "vayeate.markdownHeading1Foreground",
+                "description": "Foreground color for Markdown level 1 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading2Foreground",
+                "description": "Foreground color for Markdown level 2 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading3Foreground",
+                "description": "Foreground color for Markdown level 3 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading4Foreground",
+                "description": "Foreground color for Markdown level 4 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading5Foreground",
+                "description": "Foreground color for Markdown level 5 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading6Foreground",
+                "description": "Foreground color for Markdown level 6 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownBoldForeground",
+                "description": "Foreground color for bold Markdown text.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownItalicForeground",
+                "description": "Foreground color for italic Markdown text.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownUnorderedListMarkerForeground",
+                "description": "Foreground color for unordered Markdown list markers.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownOrderedListMarkerForeground",
+                "description": "Foreground color for ordered Markdown list markers.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownQuoteForeground",
+                "description": "Foreground color for Markdown blockquote text.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownTableHeaderForeground",
+                "description": "Foreground color for Markdown table headers.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownTableHeaderBackground",
+                "description": "Background color for Markdown table headers.",
+                "defaults": { "dark": "editor.background", "light": "editor.background", "highContrast": "editor.background", "highContrastLight": "editor.background" }
+            },
+            {
+                "id": "vayeate.markdownTableHeaderBorder",
+                "description": "Border color for Markdown table headers.",
+                "defaults": { "dark": "textSeparator.foreground", "light": "textSeparator.foreground", "highContrast": "textSeparator.foreground", "highContrastLight": "textSeparator.foreground" }
+            },
+            {
+                "id": "vayeate.markdownBackground",
+                "description": "Background color for the Markdown preview.",
+                "defaults": { "dark": "editor.background", "light": "editor.background", "highContrast": "editor.background", "highContrastLight": "editor.background" }
+            },
+            {
+                "id": "vayeate.markdownCodeBlockBackground",
+                "description": "Background color for Markdown code blocks.",
+                "defaults": { "dark": "textCodeBlock.background", "light": "textCodeBlock.background", "highContrast": "textCodeBlock.background", "highContrastLight": "textCodeBlock.background" }
+            },
+            {
+                "id": "vayeate.markdownQuoteBackground",
+                "description": "Background color for Markdown blockquotes.",
+                "defaults": { "dark": "textBlockQuote.background", "light": "textBlockQuote.background", "highContrast": "textBlockQuote.background", "highContrastLight": "textBlockQuote.background" }
+            },
+            {
+                "id": "vayeate.markdownTableRowBackground",
+                "description": "Background color for Markdown table rows.",
+                "defaults": { "dark": "editor.background", "light": "editor.background", "highContrast": "editor.background", "highContrastLight": "editor.background" }
+            }
+        ],
+        "markdown.previewStyles": [
+            "./styles/markdown-preview.css"
         ]
     },
     "scripts": {

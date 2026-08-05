@@ -21,6 +21,29 @@ describe('VS Code theme preview extension build', () => {
         path: './themes/active-light-color-theme.json',
       },
     ]);
+    expect(manifest.contributes['markdown.previewStyles']).toEqual([
+      './styles/markdown-preview.css',
+    ]);
+    expect(manifest.contributes.colors.map(({ id }) => id)).toEqual([
+      'vayeate.markdownHeading1Foreground',
+      'vayeate.markdownHeading2Foreground',
+      'vayeate.markdownHeading3Foreground',
+      'vayeate.markdownHeading4Foreground',
+      'vayeate.markdownHeading5Foreground',
+      'vayeate.markdownHeading6Foreground',
+      'vayeate.markdownBoldForeground',
+      'vayeate.markdownItalicForeground',
+      'vayeate.markdownUnorderedListMarkerForeground',
+      'vayeate.markdownOrderedListMarkerForeground',
+      'vayeate.markdownQuoteForeground',
+      'vayeate.markdownTableHeaderForeground',
+      'vayeate.markdownTableHeaderBackground',
+      'vayeate.markdownTableHeaderBorder',
+      'vayeate.markdownBackground',
+      'vayeate.markdownCodeBlockBackground',
+      'vayeate.markdownQuoteBackground',
+      'vayeate.markdownTableRowBackground',
+    ]);
   });
 
   it('selects the generated preview theme in the isolated extension-host profile', () => {

@@ -66,7 +66,7 @@ describe('light theme quality', () => {
   it('keeps every tracked light export synchronized, readable, and analogous to its dark pair', () => {
     const template = templateSchema.parse(
       JSON.parse(
-        fs.readFileSync(path.join(studioRoot, 'data', 'templates', 'vayeate-1.0.17.template.json'), 'utf8'),
+        fs.readFileSync(path.join(studioRoot, 'data', 'templates', 'vayeate-1.0.18.template.json'), 'utf8'),
       ),
     );
     const sourceFiles = fs.readdirSync(themeDataDirectory).filter((name) => name.endsWith('.theme.json'));
