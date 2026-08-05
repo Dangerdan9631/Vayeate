@@ -1,0 +1,37 @@
+.vscode-body {
+  background-color: var(--vscode-vayeate-markdownBackground, var(--vscode-editor-background));
+}
+
+.vscode-body h1 { color: var(--vscode-vayeate-markdownHeading1Foreground, currentColor); }
+.vscode-body h2 { color: var(--vscode-vayeate-markdownHeading2Foreground, currentColor); }
+.vscode-body h3 { color: var(--vscode-vayeate-markdownHeading3Foreground, currentColor); }
+.vscode-body h4 { color: var(--vscode-vayeate-markdownHeading4Foreground, currentColor); }
+.vscode-body h5 { color: var(--vscode-vayeate-markdownHeading5Foreground, currentColor); }
+.vscode-body h6 { color: var(--vscode-vayeate-markdownHeading6Foreground, currentColor); }
+
+.vscode-body strong { color: var(--vscode-vayeate-markdownBoldForeground, currentColor); }
+.vscode-body em { color: var(--vscode-vayeate-markdownItalicForeground, currentColor); }
+.vscode-body strong em,
+.vscode-body em strong { color: var(--vscode-vayeate-markdownBoldForeground, currentColor); }
+
+.vscode-body ul > li::marker { color: var(--vscode-vayeate-markdownUnorderedListMarkerForeground, currentColor); }
+.vscode-body ol > li::marker { color: var(--vscode-vayeate-markdownOrderedListMarkerForeground, currentColor); }
+.vscode-body blockquote {
+  color: var(--vscode-vayeate-markdownQuoteForeground, currentColor);
+  background-color: var(--vscode-vayeate-markdownQuoteBackground, transparent);
+}
+
+.vscode-body pre {
+  background-color: var(--vscode-vayeate-markdownCodeBlockBackground, transparent);
+}
+
+.vscode-body table thead,
+.vscode-body table thead th {
+  background-color: var(--vscode-vayeate-markdownTableHeaderBackground, transparent);
+  color: var(--vscode-vayeate-markdownTableHeaderForeground, currentColor);
+  border-color: var(--vscode-vayeate-markdownTableHeaderBorder, currentColor);
+}
+
+.vscode-body table tbody tr {
+  background-color: var(--vscode-vayeate-markdownTableRowBackground, transparent);
+}

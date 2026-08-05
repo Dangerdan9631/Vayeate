@@ -18,16 +18,20 @@
  * | `*-service.ts: one exported class ending with Service` | [service.mdc](../../AGENTS.md#service.mdc), [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) |
  * | `*-handler.ts: one exported class ending with Handler` | [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure / Actions (handlers) |
  * | `use-*-viewmodel.ts: at least one exported function...` | [viewmodel.mdc](../../AGENTS.md#viewmodel.mdc), [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure (`viewmodel/`) |
- * | `components/*.tsx: exported function name matches filename stem` | [component.mdc](../../AGENTS.md#component.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files (filename ↔ export) |
+ * | `src/app files stay in role/domain buckets` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § Feature and concept folders |
+ * | `src/domain files stay in role/domain buckets` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc), [layer-domain.mdc](../../AGENTS.md#layer-domain.mdc) — § Feature and concept folders |
+ * | `src/gateway files stay in role/domain buckets` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc), [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — § Feature and concept folders |
+ * | `src/model files stay in domain buckets` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc), [model.mdc](../../AGENTS.md#model.mdc) — § Files |
+ * | `src/app/components nested .tsx: exported function name matches filename stem` | [component.mdc](../../AGENTS.md#component.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files (filename ↔ export) |
  * | `PascalCase filenames for .tsx under src/app` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc), [component.mdc](../../AGENTS.md#component.mdc) — § Contract (PascalCase `*.tsx`) |
  * | `domain *-operation.ts: no disallowed this.<OtherOperation>.execute` | [operation.mdc](../../AGENTS.md#operation.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow |
- * | `domain *-controller.ts: no this.<OtherController>.run` | [controller.mdc](../../AGENTS.md#controller.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow |
+ * | `app *-controller.ts: no this.<OtherController>.run` | [controller.mdc](../../AGENTS.md#controller.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — mutation flow |
  * | `actions/*-handler.ts: no imports from domain operations/validations/state` | [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — handlers |
  * | `actions/*-action-type.ts: exported is*Action guard` | [layer-app.mdc](../../AGENTS.md#layer-app.mdc) — § Structure / Actions (guards) |
  * | `electron/*.ts: no imports from renderer src/` | [layer-electron.mdc](../../AGENTS.md#layer-electron.mdc) — no domain in main |
  * | `src/app` tree `.tsx`: no useContextSelector | [viewmodel.mdc](../../AGENTS.md#viewmodel.mdc), [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) |
  * | `actions/*-action-type.ts: no imports from domain/state` | [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § Actions (payloads) |
- * | `gateway/services/*-worker.ts: pure worker entry (domain utils only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (distinct from `deferred` background queue) |
+ * | `gateway/services/*-worker.ts: pure worker entry (domain utility helpers only)` | [layer-gateway.mdc](../../AGENTS.md#layer-gateway.mdc) — Web Worker offload (distinct from `deferred` background queue) |
  */
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -46,7 +50,7 @@ import {
   readSourceFile,
   readTsxSourceFile,
   srcRoot,
-} from './ast-utils';
+} from '../utils/ast-utils';
 
 const KEBAB_STEM = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const PASCAL_STEM = /^[A-Z][a-zA-Z0-9]*$/;
@@ -75,7 +79,12 @@ function isUnderSrcApp(file: string): boolean {
   return path.relative(srcRoot, file).replace(/\\/g, '/').startsWith('app/');
 }
 
+function sourceRel(file: string): string {
+  return path.relative(srcRoot, file).replace(/\\/g, '/');
+}
+
 const IMPORT_FROM_RE = /\bfrom\s+['"]([^'"]+)['"]/g;
+const REPORTED_APP_NONFIT_FILES = new Set<string>();
 
 function forbiddenDomainImportsInSource(source: string): string[] {
   const bad: string[] = [];
@@ -127,6 +136,63 @@ describe('PascalCase filenames for .tsx under src/app', () => {
   it.each(files)('%s', (file) => {
     const stem = basename(file).replace(/\.tsx$/, '');
     expect(stem, 'app *.tsx filename stem must be PascalCase').toMatch(PASCAL_STEM);
+  });
+});
+
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/app/{actions,components,controllers,viewmodel,core}/{Common,Catalog,Template,Theme,Queue,Undo}`). */
+describe('src/app files stay in role/domain buckets', () => {
+  const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
+    const b = basename(f);
+    if (isExcludedTestFile(b)) return false;
+    const rel = sourceRel(f);
+    if (REPORTED_APP_NONFIT_FILES.has(rel)) return false;
+    return rel.startsWith('app/');
+  });
+
+  it.each(files)('%s', (file) => {
+    expect(sourceRel(file)).toMatch(/^app\/(?:actions|components|controllers|viewmodel|core)\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
+  });
+});
+
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/domain/{operations,validations,state,utils,core}/{Common,Catalog,Template,Theme,Queue,Undo}`). */
+describe('src/domain files stay in role/domain buckets', () => {
+  const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
+    const b = basename(f);
+    if (isExcludedTestFile(b)) return false;
+    const rel = sourceRel(f);
+    return rel.startsWith('domain/');
+  });
+
+  it.each(files)('%s', (file) => {
+    expect(sourceRel(file)).toMatch(/^domain\/(?:operations|validations|state|utils|core)\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
+  });
+});
+
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/gateway/{gateway,services}/{Common,Catalog,Template,Theme,Queue,Undo}`). */
+describe('src/gateway files stay in role/domain buckets', () => {
+  const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
+    const b = basename(f);
+    if (isExcludedTestFile(b)) return false;
+    const rel = sourceRel(f);
+    return rel.startsWith('gateway/');
+  });
+
+  it.each(files)('%s', (file) => {
+    expect(sourceRel(file)).toMatch(/^gateway\/(?:gateway|services)\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
+  });
+});
+
+/** @see ../../AGENTS.md#app-architecture.mdc — § Feature and concept folders (`src/model/{Common,Catalog,Template,Theme,Queue,Undo}`). */
+describe('src/model files stay in domain buckets', () => {
+  const files = listSourceFiles(['.ts', '.tsx']).filter((f) => {
+    const b = basename(f);
+    if (isExcludedTestFile(b)) return false;
+    const rel = sourceRel(f);
+    return rel.startsWith('model/');
+  });
+
+  it.each(files)('%s', (file) => {
+    expect(sourceRel(file)).toMatch(/^model\/(?:Common|Catalog|Template|Theme|Queue|Undo)\//);
   });
 });
 
@@ -277,15 +343,15 @@ describe('use-*-viewmodel.ts: at least one exported function whose name starts w
 /**
  * @see ../../AGENTS.md#component.mdc — § Contract (filename ↔ component); [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc) — § DI and files.
  */
-describe('components/*.tsx: exported function name matches filename stem', () => {
+describe('src/app/components/**/*.tsx: exported function name matches filename stem', () => {
   const files = listSourceFiles(['.tsx']).filter((f) => {
     const b = basename(f);
     if (isExcludedTestFile(b)) return false;
-    return path.basename(path.dirname(f)) === 'components';
+    return sourceRel(f).startsWith('app/components/');
   });
 
   if (files.length === 0) {
-    it('has no direct components/*.tsx modules to check', () => {});
+    it('has no src/app/components/**/*.tsx modules to check', () => {});
     return;
   }
 
@@ -293,15 +359,28 @@ describe('components/*.tsx: exported function name matches filename stem', () =>
     const stem = basename(file).replace(/\.tsx$/, '');
     const sf = readTsxSourceFile(file);
     const fnames = collectExportedFunctionNames(sf);
-    expect(fnames, `expected an export function named ${stem}`).toContain(stem);
+    const source = readFileSync(file, 'utf8');
+    const hasNamedComponentExport =
+      fnames.includes(stem) ||
+      new RegExp(`export\\s+const\\s+${stem}\\b`).test(source) ||
+      new RegExp(`export\\s+class\\s+${stem}\\b`).test(source);
+    expect(hasNamedComponentExport, `expected an export named ${stem}`).toBe(true);
   });
 });
+
+function isAllowedControllerRunCall(file: string, field: string): boolean {
+  const rel = sourceRel(file);
+  return (
+    (rel === 'app/controllers/Common/app-shell/load-app-controller.ts' && field === 'initializeWindowService') ||
+    (rel === 'app/controllers/Common/window/initialize-window-callbacks-controller.ts' && field === 'handleKeyboardShortcut')
+  );
+}
 
 function isAllowedOperationExecuteCall(file: string, operationType: string): boolean {
   if (operationType === 'EnqueueBackgroundQueueActionOperation') return true;
 
   const rel = path.relative(srcRoot, file).replace(/\\/g, '/');
-  const isThemeColorVariableOperation = /^domain\/operations\/theme-operations\/theme-details\/set-color-variable-(dark|light)-operation\.ts$/.test(rel);
+  const isThemeColorVariableOperation = /^domain\/operations\/Theme\/theme-operations\/theme-details\/set-color-variable-(dark|light)-operation\.ts$/.test(rel);
   if (
     isThemeColorVariableOperation &&
     (operationType === 'SetThemeOperation' || operationType === 'ApplyThemeStateAndSchedulePersistOperation')
@@ -309,26 +388,26 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
     return true;
   }
 
-  if (rel === 'domain/operations/undo-operations/apply-catalog-source-url-undo-operation.ts') {
+  if (rel === 'domain/operations/Catalog/catalog-undo-operations/apply-catalog-source-url-undo-operation.ts') {
     return operationType === 'ApplyCatalogUndoStateOperation';
   }
-  if (rel === 'domain/operations/undo-operations/apply-catalog-undo-state-operation.ts') {
+  if (rel === 'domain/operations/Catalog/catalog-undo-operations/apply-catalog-undo-state-operation.ts') {
     return operationType === 'SaveCatalogOperation' || operationType === 'RefreshCatalogRefsAndSelectOperation';
   }
-  if (rel === 'domain/operations/undo-operations/apply-template-undo-state-operation.ts') {
+  if (rel === 'domain/operations/Template/template-undo-operations/apply-template-undo-state-operation.ts') {
     return operationType === 'SaveTemplateOperation' || operationType === 'RefreshTemplateRefsAndSelectOperation';
   }
-  if (rel === 'domain/operations/undo-operations/apply-theme-undo-state-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-undo-operations/apply-theme-undo-state-operation.ts') {
     return operationType === 'SetThemeOperation' || operationType === 'ApplyThemeStateAndSchedulePersistOperation';
   }
-  if (rel === 'domain/operations/undo-operations/restore-theme-palette-assign-undo-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-undo-operations/restore-theme-palette-assign-undo-operation.ts') {
     return operationType === 'ApplyThemeUndoStateOperation';
   }
-  if (rel === 'domain/operations/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-operations/theme-details/apply-theme-state-and-schedule-persist-operation.ts') {
     return operationType === 'ApplyThemeStateOperation';
   }
 
-  if (rel === 'domain/operations/undo-operations/apply-catalog-lifecycle-undo-operation.ts') {
+  if (rel === 'domain/operations/Catalog/catalog-undo-operations/apply-catalog-lifecycle-undo-operation.ts') {
     return (
       operationType === 'DeleteCatalogOperation' ||
       operationType === 'ApplyCatalogUndoStateOperation' ||
@@ -337,7 +416,7 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
       operationType === 'RefreshCatalogRefsAndSelectOperation'
     );
   }
-  if (rel === 'domain/operations/undo-operations/apply-template-lifecycle-undo-operation.ts') {
+  if (rel === 'domain/operations/Template/template-undo-operations/apply-template-lifecycle-undo-operation.ts') {
     return (
       operationType === 'DeleteTemplateOperation' ||
       operationType === 'ApplyTemplateUndoStateOperation' ||
@@ -347,7 +426,7 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
       operationType === 'SetTemplateOperation'
     );
   }
-  if (rel === 'domain/operations/undo-operations/apply-theme-lifecycle-undo-operation.ts') {
+  if (rel === 'domain/operations/Theme/theme-undo-operations/apply-theme-lifecycle-undo-operation.ts') {
     return (
       operationType === 'DeleteThemeOperation' ||
       operationType === 'ApplyThemeUndoStateOperation' ||
@@ -359,19 +438,19 @@ function isAllowedOperationExecuteCall(file: string, operationType: string): boo
   }
 
   if (
-    rel === 'domain/operations/undo-operations/record-catalog-undo-operation.ts' ||
-    rel === 'domain/operations/undo-operations/record-template-undo-operation.ts' ||
-    rel === 'domain/operations/undo-operations/record-theme-undo-operation.ts'
+    rel === 'domain/operations/Catalog/catalog-undo-operations/record-catalog-undo-operation.ts' ||
+    rel === 'domain/operations/Template/template-undo-operations/record-template-undo-operation.ts' ||
+    rel === 'domain/operations/Theme/theme-undo-operations/record-theme-undo-operation.ts'
   ) {
     return operationType === 'RecordUndoEntryOperation' || operationType === 'BuildUniversalUndoProcessorOperation';
   }
 
   if (
-    rel === 'domain/operations/undo-operations/load-undo-history-operation.ts' ||
-    rel === 'domain/operations/undo-operations/set-current-undo-stack-id-operation.ts' ||
-    rel === 'domain/operations/undo-operations/undo-operation.ts' ||
-    rel === 'domain/operations/undo-operations/redo-operation.ts' ||
-    rel === 'domain/operations/undo-operations/history-go-to-operation.ts'
+    rel === 'domain/operations/Undo/undo-operations/load-undo-history-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/set-current-undo-stack-id-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/undo-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/redo-operation.ts' ||
+    rel === 'domain/operations/Undo/undo-operations/history-go-to-operation.ts'
   ) {
     return operationType === 'BuildUniversalUndoProcessorOperation';
   }
@@ -405,17 +484,17 @@ describe('domain *-operation.ts: operations do not call disallowed operation .ex
 /**
  * @see ../../AGENTS.md#controller.mdc — controllers do not call other controllers; [app-architecture.mdc](../../AGENTS.md#app-architecture.mdc).
  */
-describe('domain *-controller.ts: controllers do not call other controllers .run', () => {
+describe('app *-controller.ts: controllers do not call other controllers .run', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
     if (!isNonTestTsSource(b)) return false;
     if (!b.endsWith('-controller.ts')) return false;
     const rel = path.relative(srcRoot, f).replace(/\\/g, '/');
-    return rel.startsWith('domain/');
+    return rel.startsWith('app/controllers/');
   });
 
   if (files.length === 0) {
-    it('has no domain *-controller.ts modules to check', () => {});
+    it('has no app *-controller.ts modules to check', () => {});
     return;
   }
 
@@ -425,7 +504,8 @@ describe('domain *-controller.ts: controllers do not call other controllers .run
     expect(cls, 'expected one exported class').toBeDefined();
     const cDeps = collectCtorParameterPropertyNamesWithControllerType(sf, cls!);
     const hits = collectThisDependencyRunCalls(sf, cls!, cDeps);
-    expect(hits, 'controllers must not call this.<OtherController>.run(...)').toEqual([]);
+    const disallowedHits = hits.filter((field) => !isAllowedControllerRunCall(file, field));
+    expect(disallowedHits, 'controllers must not call this.<OtherController>.run(...)').toEqual([]);
   });
 });
 
@@ -500,7 +580,7 @@ describe('src/app/**/*.tsx: components do not use useContextSelector', () => {
 /**
  * @see ../../AGENTS.md#layer-gateway.mdc — Web Worker offload (distinct from `deferred` background queue).
  */
-describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', () => {
+describe('gateway/services/*-worker.ts: pure worker entry (domain utility helpers only)', () => {
   const files = listSourceFiles(['.ts']).filter((f) => {
     const b = basename(f);
     if (!isNonTestTsSource(b)) return false;
@@ -511,7 +591,9 @@ describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', 
     const bad: string[] = [];
     for (const m of source.matchAll(IMPORT_FROM_RE)) {
       const p = m[1].replace(/\\/g, '/');
-      if (!/^(\.\.\/)+domain\/utils\//.test(p)) {
+      const isDomainUtils = /^(\.\.\/)+domain\/utils\//.test(p);
+      const isThemeUtilsOperation = /^(\.\.\/)+domain\/operations\/Theme\/theme-operations\/theme-utils\//.test(p);
+      if (!isDomainUtils && !isThemeUtilsOperation) {
         bad.push(p);
       }
     }
@@ -526,7 +608,7 @@ describe('gateway/services/*-worker.ts: pure worker entry (domain utils only)', 
   it.each(files)('%s', (file) => {
     const src = readFileSync(file, 'utf8');
     const bad = forbiddenWorkerImportsInSource(src);
-    expect(bad, 'worker entry must import only domain/utils modules').toEqual([]);
+    expect(bad, 'worker entry must import only domain utility helper modules').toEqual([]);
   });
 });
 

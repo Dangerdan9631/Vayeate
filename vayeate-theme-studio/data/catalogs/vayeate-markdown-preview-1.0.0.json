@@ -1,0 +1,101 @@
+{
+  "name": "vayeate-markdown-preview",
+  "version": "1.0.0",
+  "type": "manual",
+  "locked": true,
+  "sources": [],
+  "tokens": [
+    {
+      "key": "markdownAlert.note.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "markdownAlert.tip.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "markdownAlert.important.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "markdownAlert.warning.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "markdownAlert.caution.foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownHeading1Foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownHeading2Foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownHeading3Foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownHeading4Foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownHeading5Foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownHeading6Foreground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownBoldForeground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownItalicForeground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownUnorderedListMarkerForeground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownOrderedListMarkerForeground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownQuoteForeground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownTableHeaderForeground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownTableHeaderBackground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownTableHeaderBorder",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownBackground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownCodeBlockBackground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownQuoteBackground",
+      "type": "theme"
+    },
+    {
+      "key": "vayeate.markdownTableRowBackground",
+      "type": "theme"
+    }
+  ]
+}

@@ -1,31 +1,28 @@
-<div align="center">
-
-![Vayeate](/images/Vayeate.png)
-
 # Vayeate
-</div>
 
 A custom extension and settings for Visual Studio Code.
-![Vayeate](/images/vayeate-theme.png)
-![Mercurius](/images/mercurius-theme.png)
 
 ## Included themes
 
-* Vayeate
-* Leo
-* Mercurius
-* Aries
-* Virgo
-* Tallgeese
-* Tallgeese Light
-* Epyon
-* Epyon Light
-* Sandrock
-* Sandrock Light
-* Heavyarms
-* Heavyarms Light
-* Deathscythe
-* Deathscythe Light
+| Dark themes | Theme | Light themes |
+| --- | --- | --- |
+| <img src="./images/vayeate-theme.png" alt="Vayeate dark theme" width="600"> | **Vayeate**<br><img src="./images/Vayeate.png" alt="Vayeate" width="100"> | <img src="./images/vayeate-light-theme.png" alt="Vayeate light theme" width="600"> |
+| <img src="./images/mercurius-theme.png" alt="Mercurius dark theme" width="600"> | **Mercurius**<br><img src="./images/Mercurius.png" alt="Vayeate" width="100"> | <img src="./images/mercurius-light-theme.png" alt="Mercurius light theme" width="600"> |
+| <img src="./images/wing-zero-theme.png" alt="Wing Zero dark theme" width="600"> | **Wing Zero**<br><img src="./images/Wing Zero.png" alt="Vayeate" width="100"> | <img src="./images/wing-zero-light-theme.png" alt="Wing Zero light theme" width="600"> |
+| <img src="./images/deathscythe-theme.png" alt="Deathscythe dark theme" width="600"> | **Deathscythe**<br><img src="./images/Deathscythe.png" alt="Vayeate" width="100"> | <img src="./images/deathscythe-light-theme.png" alt="Deathscythe light theme" width="600"> |
+| <img src="./images/heavyarms-theme.png" alt="Heavyarms dark theme" width="600"> | **Heavyarms**<br><img src="./images/Heavyarms.png" alt="Vayeate" width="100"> | <img src="./images/heavyarms-light-theme.png" alt="Heavyarms light theme" width="600"> |
+| <img src="./images/sandrock-theme.png" alt="Sandrock dark theme" width="600"> | **Sandrock**<br><img src="./images/Sandrock.png" alt="Vayeate" width="100"> | <img src="./images/sandrock-light-theme.png" alt="Sandrock light theme" width="600"> |
+| <img src="./images/altron-theme.png" alt="Altron dark theme" width="600"> | **Altron**<br><img src="./images/Altron.png" alt="Vayeate" width="100"> | <img src="./images/altron-light-theme.png" alt="Altron light theme" width="600"> |
+| <img src="./images/shenlong-theme.png" alt="Shenlong dark theme" width="600"> | **Shenlong**<br><img src="./images/Shenlong.png" alt="Vayeate" width="100"> | <img src="./images/shenlong-light-theme.png" alt="Shenlong light theme" width="600"> |
+| <img src="./images/tallgeese-theme.png" alt="Tallgeese dark theme" width="600"> | **Tallgeese**<br><img src="./images/Tallgeese.png" alt="Vayeate" width="100"> | <img src="./images/tallgeese-light-theme.png" alt="Tallgeese light theme" width="600"> |
+| <img src="./images/tallgeese-2-theme.png" alt="Tallgeese 2 dark theme" width="600"> | **Tallgeese 2**<br><img src="./images/Tallgeese 2.png" alt="Vayeate" width="100"> | <img src="./images/tallgeese-2-light-theme.png" alt="Tallgeese 2 light theme" width="600"> |
+| <img src="./images/tallgeese-3-theme.png" alt="Tallgeese 3 dark theme" width="600"> | **Tallgeese 3**<br><img src="./images/Tallgeese 3.png" alt="Vayeate" width="100"> | <img src="./images/tallgeese-3-light-theme.png" alt="Tallgeese 3 light theme" width="600"> |
+| <img src="./images/epyon-theme.png" alt="Epyon dark theme" width="600"> | **Epyon**<br><img src="./images/Epyon.png" alt="Vayeate" width="100"> | <img src="./images/epyon-light-theme.png" alt="Epyon light theme" width="600"> |
+| <img src="./images/leo-theme.png" alt="Leo dark theme" width="600"> | **Leo**<br><img src="./images/Leo.png" alt="Vayeate" width="100"> | <img src="./images/leo-light-theme.png" alt="Leo light theme" width="600"> |
+| <img src="./images/aries-theme.png" alt="Aries dark theme" width="600"> | **Aries**<br><img src="./images/Aries.png" alt="Vayeate" width="100"> | <img src="./images/aries-light-theme.png" alt="Aries light theme" width="600"> |
+| <img src="./images/taurus-theme.png" alt="Taurus dark theme" width="600"> | **Taurus**<br><img src="./images/Taurus.png" alt="Vayeate" width="100"> | <img src="./images/taurus-light-theme.png" alt="Taurus light theme" width="600"> |
+| <img src="./images/virgo-theme.png" alt="Virgo dark theme" width="600"> | **Virgo**<br><img src="./images/Virgo.png" alt="Vayeate" width="100"> | <img src="./images/virgo-light-theme.png" alt="Virgo light theme" width="600"> |
+| <img src="./images/serpent-theme.png" alt="Serpent dark theme" width="600"> | **Serpent**<br><img src="./images/Serpent.png" alt="Vayeate" width="100"> | <img src="./images/serpent-light-theme.png" alt="Serpent light theme" width="600"> |
 
 ## What's in the repo?
 

@@ -8,7 +8,7 @@
     },
     "description": "A custom color theme for VS Code",
     "publisher": "Dangerdan9631",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "engines": {
         "vscode": "^1.76.0"
     },
@@ -118,24 +118,174 @@
                 "path": "./themes/deathscythe-light-color-theme.json"
             },
             {
-                "label": "Test",
+                "label": "Altron",
                 "uiTheme": "vs-dark",
-                "path": "./themes/test-color-theme.json"
+                "path": "./themes/altron-color-theme.json"
             },
             {
-                "label": "Vayeate-V0-Dark",
-                "uiTheme": "vs-dark",
-                "path": "./themes/vayeate-v0-color-theme.json"
-            },
-            {
-                "label": "Vayeate-V0-Light",
+                "label": "Altron Light",
                 "uiTheme": "vs",
-                "path": "./themes/vayeate-v0-light-color-theme.json"
+                "path": "./themes/altron-light-color-theme.json"
+            },
+            {
+                "label": "Serpent",
+                "uiTheme": "vs-dark",
+                "path": "./themes/serpent-color-theme.json"
+            },
+            {
+                "label": "Serpent Light",
+                "uiTheme": "vs",
+                "path": "./themes/serpent-light-color-theme.json"
+            },
+            {
+                "label": "Shenlong",
+                "uiTheme": "vs-dark",
+                "path": "./themes/shenlong-color-theme.json"
+            },
+            {
+                "label": "Shenlong Light",
+                "uiTheme": "vs",
+                "path": "./themes/shenlong-light-color-theme.json"
+            },
+            {
+                "label": "Taurus",
+                "uiTheme": "vs-dark",
+                "path": "./themes/taurus-color-theme.json"
+            },
+            {
+                "label": "Taurus Light",
+                "uiTheme": "vs",
+                "path": "./themes/taurus-light-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 2",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tallgeese-2-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 2 Light",
+                "uiTheme": "vs",
+                "path": "./themes/tallgeese-2-light-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 3",
+                "uiTheme": "vs-dark",
+                "path": "./themes/tallgeese-3-color-theme.json"
+            },
+            {
+                "label": "Tallgeese 3 Light",
+                "uiTheme": "vs",
+                "path": "./themes/tallgeese-3-light-color-theme.json"
+            },
+            {
+                "label": "Wing Zero",
+                "uiTheme": "vs-dark",
+                "path": "./themes/wing-zero-color-theme.json"
+            },
+            {
+                "label": "Wing Zero Light",
+                "uiTheme": "vs",
+                "path": "./themes/wing-zero-light-color-theme.json"
             }
+        ],
+        "colors": [
+            {
+                "id": "vayeate.markdownHeading1Foreground",
+                "description": "Foreground color for Markdown level 1 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading2Foreground",
+                "description": "Foreground color for Markdown level 2 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading3Foreground",
+                "description": "Foreground color for Markdown level 3 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading4Foreground",
+                "description": "Foreground color for Markdown level 4 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading5Foreground",
+                "description": "Foreground color for Markdown level 5 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownHeading6Foreground",
+                "description": "Foreground color for Markdown level 6 headings.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownBoldForeground",
+                "description": "Foreground color for bold Markdown text.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownItalicForeground",
+                "description": "Foreground color for italic Markdown text.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownUnorderedListMarkerForeground",
+                "description": "Foreground color for unordered Markdown list markers.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownOrderedListMarkerForeground",
+                "description": "Foreground color for ordered Markdown list markers.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownQuoteForeground",
+                "description": "Foreground color for Markdown blockquote text.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownTableHeaderForeground",
+                "description": "Foreground color for Markdown table headers.",
+                "defaults": { "dark": "editor.foreground", "light": "editor.foreground", "highContrast": "editor.foreground", "highContrastLight": "editor.foreground" }
+            },
+            {
+                "id": "vayeate.markdownTableHeaderBackground",
+                "description": "Background color for Markdown table headers.",
+                "defaults": { "dark": "editor.background", "light": "editor.background", "highContrast": "editor.background", "highContrastLight": "editor.background" }
+            },
+            {
+                "id": "vayeate.markdownTableHeaderBorder",
+                "description": "Border color for Markdown table headers.",
+                "defaults": { "dark": "textSeparator.foreground", "light": "textSeparator.foreground", "highContrast": "textSeparator.foreground", "highContrastLight": "textSeparator.foreground" }
+            },
+            {
+                "id": "vayeate.markdownBackground",
+                "description": "Background color for the Markdown preview.",
+                "defaults": { "dark": "editor.background", "light": "editor.background", "highContrast": "editor.background", "highContrastLight": "editor.background" }
+            },
+            {
+                "id": "vayeate.markdownCodeBlockBackground",
+                "description": "Background color for Markdown code blocks.",
+                "defaults": { "dark": "textCodeBlock.background", "light": "textCodeBlock.background", "highContrast": "textCodeBlock.background", "highContrastLight": "textCodeBlock.background" }
+            },
+            {
+                "id": "vayeate.markdownQuoteBackground",
+                "description": "Background color for Markdown blockquotes.",
+                "defaults": { "dark": "textBlockQuote.background", "light": "textBlockQuote.background", "highContrast": "textBlockQuote.background", "highContrastLight": "textBlockQuote.background" }
+            },
+            {
+                "id": "vayeate.markdownTableRowBackground",
+                "description": "Background color for Markdown table rows.",
+                "defaults": { "dark": "editor.background", "light": "editor.background", "highContrast": "editor.background", "highContrastLight": "editor.background" }
+            }
+        ],
+        "markdown.previewStyles": [
+            "./styles/markdown-preview.css"
         ]
     },
     "scripts": {
-        "install-extension": "vsce package && code --install-extension vayeate-1.3.0.vsix",
-        "install-extension:cursor": "vsce package && cursor --install-extension vayeate-1.3.0.vsix"
+        "install-extension": "vsce package && code --install-extension vayeate-1.4.0.vsix",
+        "install-extension:cursor": "vsce package && cursor --install-extension vayeate-1.4.0.vsix"
     }
 }

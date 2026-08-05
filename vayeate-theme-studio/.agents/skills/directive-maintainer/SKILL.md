@@ -81,7 +81,7 @@ Scope: `AGENTS.md`, `.agents/skills/*/SKILL.md`, and `.claude/skills/*/SKILL.md`
 
 ### Missing window callback exception [operation.mdc, lines 12-18]
 - **Directive:** `AGENTS.md`
-- **Code evidence:** `vayeate-theme-studio/src/domain/operations/app-operations/initialize-window-callbacks-operation.ts`
+- **Code evidence:** `vayeate-theme-studio/src/domain/operations/Common/app-operations/initialize-window-callbacks-operation.ts`
 - **Drift:** The code intentionally injects controller classes into `InitializeWindowCallbacksOperation` to register `WindowService.init(...)` callbacks, but the directive still states operations must not inject or bridge controllers without documenting this exception.
 - **Suggested update:** Add an exception bullet that explicitly allows controller injection only for `InitializeWindowCallbacksOperation` callback registration, and state that the exception does not permit broader controller orchestration inside operations.
 

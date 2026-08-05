@@ -1352,6 +1352,162 @@
     {
       "key": "sideBarTitle.background",
       "type": "theme"
+    },
+    {
+      "key": "comment.block.documentation.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.block.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "comment.line.double-slash.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.character.escape.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.language.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.binary.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.decimal.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "constant.numeric.hex.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.annotation.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "entity.name.function.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.control.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "keyword.operator.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "meta.annotation.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.annotation.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.begin.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "punctuation.definition.string.end.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.modifier.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "storage.type.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.double.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "string.quoted.triple.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "support.type.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.interpolated.expression.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.interpolated.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "variable.other.readwrite.kotlin",
+      "type": "textmate token"
+    },
+    {
+      "key": "class:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "decorator:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "enum:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "enumMember:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "function:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "interface:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "method:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "namespace:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "operator:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "parameter:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "property:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "struct:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "type:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "typeParameter:kotlin",
+      "type": "semantic token"
+    },
+    {
+      "key": "variable:kotlin",
+      "type": "semantic token"
     }
   ],
   "semanticTokenTypes": [

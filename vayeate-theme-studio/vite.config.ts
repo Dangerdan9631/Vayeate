@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import electron from 'vite-plugin-electron/simple';
-import { rendererPlugins } from './vite.renderer-plugins';
-import { viteElectronDevShutdown } from './vite.electron-dev-shutdown.plugin';
+import { rendererPlugins } from './vite.renderer-plugins.ts';
+import { viteElectronDevShutdown } from './vite.electron-dev-shutdown.plugin.ts';
 
 export default defineConfig(({ mode }) => {
 	const isDebug = mode === 'debug';

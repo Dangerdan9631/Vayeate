@@ -1,30 +1,23 @@
-# Legacy shared state
+# State
 
-Zustand vanilla stores and state shapes for cross-cutting or not-yet-migrated concerns. New domain-specific state should prefer `src/domain/<business-domain>/state/` or `src/domain/ui/<flow>/state/`; this folder remains the home for shared legacy stores until migrated.
+Files related to State.
 
-## Layout
+## Placement
 
-| Folder | Role |
-|--------|------|
-| `data/` | Persisted entity caches — themes, templates, and app configuration. |
-| `ui/` | Editor and shell UI state — tabs, dialogs, pane selections, queues, window geometry, and overlays. |
-| `undo-stack/` | Undo stack identity, menu snapshot, and per-tab context for history navigation. |
+- Path: `src/domain/state`
+- Layer: Domain layer
+- Role bucket: `state`
 
-Each concept is split into a `*-state.ts` module (types and initial values) and a `*-store.ts` module (`@singleton()` store class with immer-backed mutations).
+## Contents
 
-## Store contract
+- Subfolders: `Catalog`, `Common`, `Template`, `Theme`
+- Files: None
 
-- Built with `createStore(...)` and `immer(...)` from zustand.
-- Expose `api` for React subscriptions via viewmodels and `getStore()` for domain reads and writes.
-- Mutation methods live on the object returned by `getStore()`; only **operations** call those methods.
-- Controllers and validations may read snapshots; they must not mutate store state.
+## Rules
 
-Pure selectors and helpers colocated in `*-state.ts` or `*-store.ts` operate on state shapes without mutating stores.
+- Keep business rules, validations, store state, and state mutation policy in the domain layer.
+- Only operations mutate stores. Controllers and validations may read snapshots.
+- Do not import React, Electron main-process APIs, or raw filesystem APIs here.
 
-## Boundaries
+See the repository root AGENTS.md for the complete architecture and mutation-flow rules.
 
-- No React imports in this folder.
-- Queue observability stores (`action-queue-ui-store`, `background-queue-ui-store`) are updated only from their queue implementations, not from normal operations or UI.
-- Entity data in `data/` stores is authoritative in memory; persistence is handled by operations through gateways.
-
-For full zustand conventions and consumer access rules, see [AGENTS.md](../../../AGENTS.md) and `.agents/skills/modify-state/SKILL.md`.

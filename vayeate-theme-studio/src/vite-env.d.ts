@@ -1,8 +1,16 @@
 /// <reference types="vite/client" />
 
-import type { Rect } from './model/rect';
+import type { Rect } from './model/Common/rect';
+import type {
+  ThemeScreenshotRequest,
+  ThemeScreenshotResult,
+} from './model/Theme/theme-build';
 
 export interface ElectronAPI {
+  generateThemeScreenshots: (
+    requests: readonly ThemeScreenshotRequest[],
+  ) => Promise<ThemeScreenshotResult[]>;
+  openThemePreviewHost: (request: { displayName: string }) => Promise<void>;
   fetchUrl: (url: string) => Promise<string>;
   screenshotGetFullDisplaySnapshot: () => Promise<{
     fullBounds: Rect;
@@ -34,6 +42,7 @@ export interface ElectronAPI {
   fsDeleteFile: (relativePath: string) => Promise<void>;
   fsListFiles: (relativeDirPath: string) => Promise<string[]>;
   fsListDirEntries: (relativeDirPath: string) => Promise<Array<{ name: string; isDirectory: boolean }>>;
+  fsWatchFile: (relativePath: string, callback: () => void) => Promise<() => Promise<void>>;
 }
 
 declare global {

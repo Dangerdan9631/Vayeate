@@ -2672,6 +2672,40 @@ body {
   min-height: 0;
 }
 
+.theme-preview-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 0 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.theme-preview-toolbar h2 {
+  margin: 0;
+}
+
+.theme-preview-toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.theme-previews-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding-top: 12px;
+}
+
 .theme-preview-fields {
   display: flex;
   flex-direction: column;

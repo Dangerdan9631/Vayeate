@@ -1,6 +1,6 @@
 ---
 name: modify-service
-description: Service roles, system integration patterns, placement under src/gateway/services/, and DI conventions. Use when authoring, modifying, or interacting with services
+description: Service roles, system integration patterns, placement under src/gateway/services/Common/, and DI conventions. Use when authoring, modifying, or interacting with services
 ---
 
 # Service
@@ -14,7 +14,7 @@ description: Service roles, system integration patterns, placement under src/gat
 
 ## Placement
 
-- Lives under **`src/gateway/services/`** (or equivalent `services` subtree).
+- Lives under **`src/gateway/services/Common/`**.
 
 ## Callers
 

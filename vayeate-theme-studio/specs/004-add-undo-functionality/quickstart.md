@@ -139,7 +139,7 @@ Before marking the feature complete:
 
 ```powershell
 npm run lint
-npm test -- src/domain/session-and-preview-baseline.test.ts src/domain/core/undo-stack.test.ts src/domain/core/undo-manager-v2.test.ts src/domain/operations/undo-operations/record-undo-entry-operation.test.ts src/gateway/undo/undo-gateway.test.ts src/app/app/menu-bar/menu-bar-renderer-workflows.test.tsx src/app/catalog/catalog-renderer-workflows.test.tsx src/app/template/template-renderer-workflows.test.tsx src/app/theme/theme-renderer-workflows.test.tsx test/architecture/layer-boundaries.test.ts test/architecture/component-workflow-compliance.test.ts
+npm test -- src/domain/session-and-preview-baseline.test.ts src/domain/core/Common/undo-stack.test.ts src/domain/core/Common/undo-manager-v2.test.ts src/domain/operations/Common/undo-operations/record-undo-entry-operation.test.ts src/gateway/gateway/Common/undo/undo-gateway.test.ts src/app/app/menu-bar/menu-bar-renderer-workflows.test.tsx src/app/catalog/catalog-renderer-workflows.test.tsx src/app/template/template-renderer-workflows.test.tsx src/app/theme/theme-renderer-workflows.test.tsx test/architecture/layer-boundaries.test.ts test/architecture/component-workflow-compliance.test.ts
 npm test
 ```
 

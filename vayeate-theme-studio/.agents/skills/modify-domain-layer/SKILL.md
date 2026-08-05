@@ -7,8 +7,8 @@ description: Domain layer organization, structure patterns for operations, valid
 
 ## Top-level domain structure
 
-- `src/domain/` is organized by domain first. Business-domain folders such as `catalog/` own business state and validations. UI-domain folders under `ui/<flow>/` own renderer-facing UI state and operations. Each domain may contain its own `operations/`, `validations/`, `state/`, and helpers. Legacy shared concept folders such as `operations/`, `validations/`, `state/`, `utils/`, and `core/` remain valid for shared or not-yet-migrated concerns. App-facing controller orchestration lives under `src/app/**/controllers/`.
-- Controllers under `src/app/**/controllers/` run validations then operations only (**must not** invoke other controllers); **never** set store state directly
+- `src/domain/` is organized by architectural role first, then domain: `operations/`, `validations/`, `state/`, `utils/`, and `core/`, each divided into `Common/`, `Catalog/`, `Template/`, `Theme/`, `Queue/`, and `Undo/`. Use paths such as `src/domain/operations/Catalog/catalog/`, `src/domain/operations/Queue/action-queue/`, `src/domain/operations/Undo/undo-operations/`, and `src/domain/state/Undo/undo-stack/`. Do not add new domain-first folders such as `src/domain/<business-domain>/operations/`. App-facing controller orchestration lives under `src/app/controllers/**`.
+- Controllers under `src/app/controllers/**` run validations then operations only (**must not** invoke other controllers); **never** set store state directly
 
   **Convention tests (keep in sync):** [`vayeate-theme-studio/test/architecture/architecture.test.ts`](vayeate-theme-studio/test/architecture/architecture.test.ts). **When you change controller class/file naming here, update that `describe` and vice versa.**
 

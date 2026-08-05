@@ -11,21 +11,25 @@ description: Gateway layer patterns for services, gateways, web workers, and sys
 
 - Talk to **outside systems**: filesystem, IPC bridge, shell, native APIs.
 - **No** domain/business rules; system-oriented error handling is OK.
+- Live under `src/gateway/services/<Domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`. Shared system services currently belong under `src/gateway/services/Common/`.
 
 ## Gateways
 
 - **Abstractions** over services: parse/serialize, map JSON ↔ model types.
 - **No** business logic; conversion and I/O orchestration at the edge only.
+- Live under `src/gateway/gateway/<Domain>/<system-or-domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`.
 
 ## Web Workers
 
 - CPU-heavy work that must not block the renderer main thread is offloaded via
-  `gateway/services/*-worker.ts` entry files instantiated by a matching
+  `gateway/services/<Domain>/*-worker.ts` entry files instantiated by a matching
   `*-worker-service.ts`.
 - Worker entry files are **pure compute boundaries**: they may import only
-  `domain/utils/**` modules (no `domain/state`, `domain/operations`,
-  `src/app`, gateways, or stores). Keep request/response message types
-  colocated with the worker entry or in `domain/utils` when shared.
+  worker-safe domain helper modules (`domain/utils/**` or Theme helper
+  operations under `domain/operations/Theme/theme-operations/theme-utils/**`;
+  no `domain/state`, `src/app`, gateways, or stores). Keep request/response
+  message types colocated with the worker entry or in those helper modules when
+  shared.
 - Services own worker lifecycle (spawn, postMessage, terminate) and map results
   back to model types; operations enqueue work through gateways/services, not
   by importing worker entries directly.

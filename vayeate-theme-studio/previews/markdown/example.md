@@ -99,6 +99,25 @@ At the command prompt, type `nano`.
 
 My favorite search engine is [Duck Duck Go](https://duckduckgo.com).
 
+| Theme | Preview | Status |
+| --- | --- | --- |
+| Vayeate | Markdown elements | Ready |
+
+> [!NOTE]
+> Notes use the informational preview color.
+
+> [!TIP]
+> Tips use the success preview color.
+
+> [!IMPORTANT]
+> Important messages use the emphasis preview color.
+
+> [!WARNING]
+> Warnings use the warning preview color.
+
+> [!CAUTION]
+> Cautions use the error preview color.
+
 [hobbit-hole][1]
 
 [1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle

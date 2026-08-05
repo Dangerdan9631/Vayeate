@@ -11,6 +11,7 @@ description: Gateway facade patterns, role in converting wire data to domain mod
 
 - Facade over **services**: convert **wire/raw** data ↔ **domain models** (e.g. JSON → zod parse).
 - **No** business logic; system-edge concerns (shape, defaults, errors from I/O) only.
+- Lives under `src/gateway/gateway/<Domain>/<system-or-domain>/`, where `<Domain>` is `Common`, `Catalog`, `Template`, `Theme`, `Queue`, or `Undo`.
 
 ## DI
 

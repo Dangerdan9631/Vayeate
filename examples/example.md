@@ -30,6 +30,11 @@ This text is **_really important_**.
 This is really***very***important text.  
 This is really<strong><em>very</em></strong>important text.  
 
+
+| there | is | a |
+|--- |--- |--- |
+|table | here | |
+
 ---
 > Dorothy followed her through many of the beautiful rooms in her castle.
 >
@@ -100,5 +105,40 @@ At the command prompt, type `nano`.
 My favorite search engine is [Duck Duck Go](https://duckduckgo.com).
 
 [hobbit-hole][1]
+
+---
+
+## Preview color coverage
+
+~~Strikethrough text~~ and a [themed link](https://code.visualstudio.com) exercise additional inline Markdown elements.
+
+- [ ] An incomplete task
+- [x] A completed task
+
+```typescript
+const previewMessage = 'Standalone code blocks use the Markdown code-block background.';
+console.log(previewMessage);
+```
+
+| Theme element | Sample | Purpose |
+| --- | --- | --- |
+| Header | Vayeate | Header background and foreground |
+| Row one | Markdown | Table row background |
+| Row two | Preview | Table row background |
+
+> [!NOTE]
+> Notes use the informational alert foreground.
+
+> [!TIP]
+> Tips use the success alert foreground.
+
+> [!IMPORTANT]
+> Important messages use the emphasis alert foreground.
+
+> [!WARNING]
+> Warnings use the warning alert foreground.
+
+> [!CAUTION]
+> Cautions use the error alert foreground.
 
 [1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle
