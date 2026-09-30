@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "run_dir": "minis\\deathscythe\\source",
+  "spritesheet": "minis\\deathscythe\\spritesheet.webp",
+  "validation": "minis\\deathscythe\\source\\final\\validation.json",
+  "contact_sheet": "minis\\deathscythe\\source\\qa\\contact-sheet.png",
+  "review": "minis\\deathscythe\\source\\qa\\review.json",
+  "package": "minis\\deathscythe"
+}
