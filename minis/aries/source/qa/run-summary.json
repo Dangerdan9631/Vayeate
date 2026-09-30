@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "run_dir": "minis\\aries\\source",
+  "spritesheet": "minis\\aries\\spritesheet.webp",
+  "validation": "minis\\aries\\source\\final\\validation.json",
+  "contact_sheet": "minis\\aries\\source\\qa\\contact-sheet.png",
+  "review": "minis\\aries\\source\\qa\\review.json",
+  "package": "minis\\aries"
+}

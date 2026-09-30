@@ -1,0 +1,16 @@
+{
+  "validation": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\final\\validation-extended.json",
+  "review": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\review.json",
+  "ok": true,
+  "spriteVersionNumber": 2,
+  "continuity": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\look-continuity.json",
+  "contact_sheet": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\contact-sheet-extended.png",
+  "chroma_despill": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\chroma-despill-extended.json",
+  "direction_semantics": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\direction-semantics.json",
+  "direction_sheet": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\look-directions.png",
+  "run_dir": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini",
+  "package": "C:\\Users\\dangr\\.codex\\pets\\aries-mini",
+  "blind_direction_validation": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\qa\\direction-blind-validation.json",
+  "backup": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\backup-v1",
+  "spritesheet": "E:\\Source\\Github\\Dangerdan9631\\Vayeate\\.hatch-pet\\aries-mini\\final\\spritesheet-extended.webp"
+}

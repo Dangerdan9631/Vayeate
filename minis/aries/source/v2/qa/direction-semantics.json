@@ -1,0 +1,155 @@
+{
+  "directions": [
+    {
+      "observed": "up",
+      "direction": "000",
+      "expected": "up",
+      "reason": "visor centered; visor raised and chin exposed",
+      "horizontal_evidence": "visor centered",
+      "vertical_evidence": "visor raised and chin exposed",
+      "verdict": "pass"
+    },
+    {
+      "observed": "up-right",
+      "direction": "022.5",
+      "expected": "up-right",
+      "reason": "visor slightly right of helmet center; visor high",
+      "horizontal_evidence": "visor slightly right of helmet center",
+      "vertical_evidence": "visor high",
+      "verdict": "pass"
+    },
+    {
+      "observed": "up-right",
+      "direction": "045",
+      "expected": "up-right",
+      "reason": "visor on screen-right side; visor high",
+      "horizontal_evidence": "visor on screen-right side",
+      "vertical_evidence": "visor high",
+      "verdict": "pass"
+    },
+    {
+      "observed": "up-right",
+      "direction": "067.5",
+      "expected": "up-right",
+      "reason": "visor on screen-right side; slight upward pitch",
+      "horizontal_evidence": "visor on screen-right side",
+      "vertical_evidence": "slight upward pitch",
+      "verdict": "pass"
+    },
+    {
+      "observed": "right",
+      "direction": "090",
+      "expected": "right",
+      "reason": "visor at screen-right edge; roughly level side view",
+      "horizontal_evidence": "visor at screen-right edge",
+      "vertical_evidence": "roughly level side view",
+      "verdict": "pass"
+    },
+    {
+      "observed": "down-right",
+      "direction": "112.5",
+      "expected": "down-right",
+      "reason": "visor right of helmet center; visor lower",
+      "horizontal_evidence": "visor right of helmet center",
+      "vertical_evidence": "visor lower",
+      "verdict": "pass"
+    },
+    {
+      "observed": "down-right",
+      "direction": "135",
+      "expected": "down-right",
+      "reason": "visor lower-right; visor low",
+      "horizontal_evidence": "visor lower-right",
+      "vertical_evidence": "visor low",
+      "verdict": "pass"
+    },
+    {
+      "observed": "down with faint right cue",
+      "direction": "157.5",
+      "expected": "down-right",
+      "reason": "rightward cue faint while visor is low; visor low",
+      "horizontal_evidence": "rightward cue faint while visor is low",
+      "vertical_evidence": "visor low",
+      "verdict": "warning"
+    },
+    {
+      "observed": "down",
+      "direction": "180",
+      "expected": "down",
+      "reason": "visor centered; visor lowest beneath helmet",
+      "horizontal_evidence": "visor centered",
+      "vertical_evidence": "visor lowest beneath helmet",
+      "verdict": "pass"
+    },
+    {
+      "observed": "down-left",
+      "direction": "202.5",
+      "expected": "down-left",
+      "reason": "visor screen-left and low; helmet pitched down",
+      "horizontal_evidence": "visor screen-left and low",
+      "vertical_evidence": "helmet pitched down",
+      "verdict": "pass"
+    },
+    {
+      "observed": "down-left",
+      "direction": "225",
+      "expected": "down-left",
+      "reason": "visor screen-left; visor low",
+      "horizontal_evidence": "visor screen-left",
+      "vertical_evidence": "visor low",
+      "verdict": "pass"
+    },
+    {
+      "observed": "down-left",
+      "direction": "247.5",
+      "expected": "down-left",
+      "reason": "visor screen-left and low; helmet pitched down",
+      "horizontal_evidence": "visor screen-left and low",
+      "vertical_evidence": "helmet pitched down",
+      "verdict": "pass"
+    },
+    {
+      "observed": "left",
+      "direction": "270",
+      "expected": "left",
+      "reason": "visor at screen-left edge; roughly level side view",
+      "horizontal_evidence": "visor at screen-left edge",
+      "vertical_evidence": "roughly level side view",
+      "verdict": "pass"
+    },
+    {
+      "observed": "up-left",
+      "direction": "292.5",
+      "expected": "up-left",
+      "reason": "visor screen-left; visor raised",
+      "horizontal_evidence": "visor screen-left",
+      "vertical_evidence": "visor raised",
+      "verdict": "pass"
+    },
+    {
+      "observed": "up-left",
+      "direction": "315",
+      "expected": "up-left",
+      "reason": "visor high-left; visor raised",
+      "horizontal_evidence": "visor high-left",
+      "vertical_evidence": "visor raised",
+      "verdict": "pass"
+    },
+    {
+      "observed": "up-left",
+      "direction": "337.5",
+      "expected": "up-left",
+      "reason": "visor slightly screen-left; visor high with chin exposed",
+      "horizontal_evidence": "visor slightly screen-left",
+      "vertical_evidence": "visor high with chin exposed",
+      "verdict": "pass"
+    }
+  ],
+  "reviewed_by": "independent visual QA worker",
+  "ok": true,
+  "review_warnings": [
+    "157.5 has a faint horizontal cue",
+    "Mild 337.5-to-000 head recentering; no wrong direction or conspicuous scale change",
+    "Transparent negative spaces are between legs and attached rifle, not interior seams"
+  ]
+}

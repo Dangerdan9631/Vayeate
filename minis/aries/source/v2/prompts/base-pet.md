@@ -1,0 +1,7 @@
+Create one clean full-body reference sprite for Codex pet Aries Mini.
+
+Pet identity: Miniature chibi interpretation of the attached Gundam Wing Aries mobile suit. Match its steel/slate blue armor, off-white pale gray twin tall rectangular shoulder turbine housings with deep dark intake mouths, vivid cyan single visor, angular helmet, compact wing extensions, pale gray side armor, dark navy rifle and feet. Symmetrical grounded design for consistent animated sprites. Ignore the reference image black silhouette backdrop and white canvas. No olive green, orange visor, cream helmet, horns, or generic animal features..
+Style: Pet-safe sprite: compact full-body mascot, readable in a 192x208 cell, clear silhouette, simple face, stable palette/materials, and crisp edges for chroma-key extraction. Style `flat-vector`: Flat vector-style mascot with simple geometric forms, crisp color areas, clean outline, and minimal shading. User style notes: Match the provided anime mechanical line art, simplified only for legibility at 192x208; crisp dark outlines and flat shaded slate blue armor..
+
+
+Place a single centered pose on a perfectly flat pure green #00FF00 chroma-key background. Keep the full pet visible, compact, readable at 192x208, and easy to animate. Preserve approved reference identity cues. No scenery, text, borders, checkerboard transparency, shadows, glows, detached effects, or extra props. Keep #00FF00 and close colors out of the pet, props, highlights, and effects.

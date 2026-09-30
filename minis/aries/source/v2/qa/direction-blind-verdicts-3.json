@@ -1,0 +1,88 @@
+{
+  "pairs": [
+    {
+      "A": "screen-left",
+      "pair": "horizontal-1",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-right"
+    },
+    {
+      "A": "screen-right",
+      "pair": "horizontal-2",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-left"
+    },
+    {
+      "A": "screen-left",
+      "pair": "horizontal-3",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-right"
+    },
+    {
+      "A": "screen-left",
+      "pair": "horizontal-4",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-right"
+    },
+    {
+      "A": "screen-left",
+      "pair": "horizontal-5",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-right"
+    },
+    {
+      "A": "screen-right",
+      "pair": "horizontal-6",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-left"
+    },
+    {
+      "A": "ambiguous",
+      "pair": "horizontal-7",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "screen-left"
+    },
+    {
+      "A": "down",
+      "pair": "vertical-1",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "up"
+    },
+    {
+      "A": "up",
+      "pair": "vertical-2",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "down"
+    },
+    {
+      "A": "up",
+      "pair": "vertical-3",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "down"
+    },
+    {
+      "A": "up",
+      "pair": "vertical-4",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "down"
+    },
+    {
+      "A": "down",
+      "pair": "vertical-5",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "up"
+    },
+    {
+      "A": "down",
+      "pair": "vertical-6",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "up"
+    },
+    {
+      "A": "up",
+      "pair": "vertical-7",
+      "reason": "Visible cyan visor, helmet pitch, and chin orientation at normal pet size.",
+      "B": "down"
+    }
+  ]
+}
